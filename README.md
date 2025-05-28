@@ -1,16 +1,3 @@
-
-
-# BACKUP START AND ENTRYPOINT
-Start-Process "C:\Program Files\Google\Chrome\Application\chrome.exe" -ArgumentList "--remote-debugging-port=9222", "--user-data-dir=C:\temp\chrome-debug"
-netstat -an | findstr 9222
-
-
-
-python main.py extract
-python main.py update
-
-
-
 # Requirements
 - This requires a Pro Roll20 subscription, which I have.
 
@@ -85,16 +72,5 @@ python main.py update
     - determine if new features need to be added, rules need to be updated, ect
     - plan to make it modular
     - once all of the above have been identified and planned for, we can rewrite the whole thing.
-
-
-
-
-
-
-New-Item index.html     
-New-Item style.css      
-New-Item script.js      
-rulebook.md    
-README.md      
 
 
