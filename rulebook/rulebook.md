@@ -1439,194 +1439,400 @@ When or where you excel beyond normal capability. Only applies when the context 
 
 ---
 
-## Features
+
+
+## ANALYSIS SUMMARY
+
+I've reviewed the comprehensive documentation and codebase for your Vitality System RPG. This includes:
+
+**Documentation Analyzed:**
+- Complete rulebook.md (50+ pages of rules)
+- System rules dictionary 
+- Workplan for 60+ upgrade expansion
+- Codebase overview with Excel/HTML/ScriptCards/Python integration
+- Character sheet analyzer and template system
+
+**Current Features Section Status:**
+The existing Features section contains many combat-focused abilities (Heal, Summon, Barrier, Backlash, etc.) that need to be replaced with utility-focused abilities that enable new check types rather than enhance combat.
+
+**Key Change Understanding:**
+- Features should enable **impossible-without-the-feature** check types
+- Cost based on mechanical impact: 1, 3, 5, or 10 utility points
+- Focus on non-combat utility that creates new possibilities
+- Remove combat abilities, replace with utility versions
+
+## REVISED FEATURES SECTION
+
+### Features
 
 Abilities that enable entirely new categories of actions and checks impossible through standard character capabilities. Features grant access to supernatural effects, reality manipulation, or fundamentally new interaction methods with the game world.
-Features allow you to make checks you normally couldn't make. They create new possibilities rather than enhancing existing ones.
 
-**Cost**: 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
+**Core Principle:** Features allow you to make checks you normally couldn't make. They create new possibilities rather than enhancing existing ones.
 
-
-Features enable check types impossible without the feature.
-- Telepathy: Make Communication checks to read surface thoughts
-- Phasing: Make Mobility checks to pass through solid barriers  
-- Precognition: Make Awareness checks to glimpse future possibilities
-
-
-
-### Feature Categories
-
-#### Movement Features
-These abilities fundamentally alter how you traverse the world.
-
-**20p Flight**: Move your full Movement Speed through the air, remaining aloft without foothold
-- **10p Float**: Fly at half speed only
-
-**20p Teleportation**: Instantly appear at a visible point within Movement Speed
-- **10p Portal**: Create linked portals at two points within range, lasting until your next turn
-- **5p Motionless**: Teleport even while in a Hold
-- **10p Escort**: Take the Carry Action with your teleport
-- **1p/x Long Range**: Charge for x actions to double teleport distance with each charge
-
-**20p Burrowing**: Move through ground at full speed (soft materials) or half speed (hard materials)
-- **30p Bunker**: Remain underground between turns (cannot attack while underground)
-- **10p Versatile Tunneller**: Choose temporary or permanent tunnels when burrowing
-
-#### Perception Features
-
-**1p Darkvision**: See in complete darkness
-
-**5p Echolocation**: Use sound for precise environmental information
-- Base range: (Tier × 2) meters
-- **5p Enhanced**: Range increases to (Tier × 10) meters
-
-**2p Far Hearing**: Hear clearly at 10× normal distance (can purchase multiple times)
-
-**2p Telescopic Vision**: See detail at 10× normal distance (can purchase multiple times)
-
-**1p-3p Microscopic Vision**:
-- 1p: See individual dust particles
-- 2p: See cellular makeup
-- 3p: See atomic level
-
-**2p Scent Tracking**: Identify creatures and objects by scent
-- **5p Enhanced**: Track scents up to 72 hours old
-
-**5p Tremor Sense**: Detect vibrations through ground contact
-- Base range: (Tier × 2) meters
-- **5p Enhanced**: Range increases to (Tier × 10) meters
-
-**3p X-Ray Vision**: See through 10cm of material (stackable for greater thickness)
-
-**2p Infrared Vision**: See heat signatures through 10cm of material (stackable)
-
-**Variable Unique Sense**: Automatically detect specific phenomena within range
-- Examples: Magic, electricity, teleportation, specific creature types
-- Cost varies by scope and power (consult GM)
-
-#### Social Features
-
-**2p Telepathy**: Communicate mentally with visible or familiar creatures
-
-**3p Mind Reading**: Read surface thoughts or deeper with contested roll
-- **-1p Surface Only**: Only access immediate thoughts
-- **-1p Touch Required**: Must make physical contact
-
-**2p Telepath**: Two-way mental communication with willing targets
-
-**2p Technopath**: Use Communication in place of Intelligence with machines
-
-#### Supernatural Features
-
-**30p Invisibility**: Take Hide Action in plain sight, immune to sight-based abilities
-
-**60p Regeneration**: Heal 20-50 HP per turn based on Tier, wake from unconsciousness when fully healed
-
-**30p Heal**: Restore 25 HP to touched target (Tier uses per rest)
-- **15p/x Increased Charges**: Double uses
-- **15p/x Increased Healing**: Double HP restored
-- **15p Ranged**: Heal within 15 spaces
-- **30p Quick Healing**: Use as Quick Action
-
-**30p Summon**: Call forth loyal minion creatures (10p per summon type)
-- Base: 10 HP minion with standard stats
-- **15p/x Resummon**: Resummon defeated minions x times
-- **15p Helpful Companion**: Summon gains utility abilities
-- **15p Heroic**: Summon gains special attacks
-- **40p Game Hunter**: Capture and summon defeated enemies
-
-**30p Barrier**: Create protective field (50 HP, 10+Tier DR)
-- **5p/x Increased Radius**: Expand coverage
-- **30p Tough**: Increase to 100 HP
-- **30p Firing Position**: Attack out but not in
-
-#### Utility Features
-
-**1p Light Sleeper**: Maintain awareness while sleeping
-
-**1p Linguist**: Know dozen+ languages, can decipher unknown ones
-
-**2p Drone/Familiar**: Control small creature/robot that uses your skills
-
-**2p Parkour**: Difficult terrain doesn't slow you, climbing costs 2 spaces per 1
-
-**2p Ward**: Place detection wards on objects/areas (Intelligence score maximum)
-
-**2p Lock**: Magically secure containers (3 × Intelligence to break)
-
-**3p Perfect Sanctuary**: Create impenetrable zone for short duration
-
-**Variable Wealth**: Represents financial resources
-- Poor (-2p): Limited resources
-- Comfortable (0p): Stable finances
-- Well-Off (2p): High income
-- Wealthy (5p): Immense resources
+**Cost Structure:** 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
 
 ---
 
-## Descriptors
+### 1-Point Features (Minor Utility Enhancements)
 
-Descriptors represent your character's fundamental connection to specific forces or concepts. They provide thematic abilities and immunities.
+**Animal Speech**
+Make Communication checks to converse with specific animal types. They respond with their level of intelligence and knowledge.
 
-### Elemental Descriptors (5p)
+**Material Sense** 
+Make Awareness checks to identify the composition, age, and origin of objects by touch.
 
-**Acid**: Corrode objects by touch, immunity to acid, dissolve barriers
+**Perfect Pitch**
+Make Awareness checks to identify sounds, voices, or musical notes with supernatural precision.
 
-**Air**: Control air currents, create breathable atmosphere, manipulate pressure
+**Eidetic Memory**
+Make Intelligence checks to recall any information you've previously encountered with perfect accuracy.
 
-**Cold**: Freeze objects/water, create ice structures, cold immunity
+**Internal Clock**
+Make Awareness checks to know the exact time, date, or duration of events without external references.
 
-**Earth**: Detect underground structures, reshape stone, immovable stance
+**Lie Detection**
+Make Awareness checks to detect when someone is deliberately lying or withholding truth.
 
-**Fire**: Ignite objects, radiate heat, fire immunity
+**Scent Tracking**
+Make Awareness checks to follow trails by scent, even hours or days old.
 
-**Electricity**: Detect currents, transfer power, electrical immunity
+**Perfect Navigation** 
+Make Intelligence checks to determine exact location, direction, and distance to any place you've been before.
 
-**Sonic**: Project voice, shatter materials with frequency, sound manipulation
+**Botanical Communication**
+Make Communication checks to sense the health, needs, and recent history of plants.
 
-**Water**: Control water flow, purify liquids, enhanced swimming
-
-### Energy Descriptors (5p)
-
-**Kinetic**: Enhance moving objects, absorb/redirect impacts, defy gravity
-
-**Light**: Emit blinding light, create illusions, light-based signaling
-
-**Plasma**: Surround self with damaging aura, weld materials, radiation resistance
-
-### Specialized Descriptors (5p)
-
-**Biological**: Rapid healing, toxin immunity, animal empathy, plant growth
-
-**Hacking**: Machine communication, bypass security, remote system control
-
-**Mental**: Share memories, amplify emotions, psychic shielding
-
-**Arcane**: Detect magic, interpret magical effects, leave traceable marks
-
-### Reality Descriptors (10p)
-
-**Atomic**: Perceive atomic structure, alter density, start chain reactions
-
-**Cosmic**: Universal awareness, inspire awe, operate in any environment
-
-**Dimensional**: Detect portals, stabilize rifts, create personal dimensions
-
-**Space**: Subspace storage, spatial memory, teleportation
-
-**Time**: Temporal perception, limited time manipulation, glimpse outcomes
-
-**Note**: Reality Descriptors often require GM discussion for specific applications and limitations.
+**Weather Prediction**
+Make Intelligence checks to accurately predict weather patterns up to 24 hours in advance.
 
 ---
 
-## Character Creation Example
+### 3-Point Features (Moderate Reality Interaction)
 
-A Tier 3 character has 10 utility points to spend:
-- **Stealth** expertise (1p) - Activity-Based
-- **Urban Areas** expertise (1p) - Situational  
-- **Darkvision** (1p) - Sense Feature
-- **Parkour** (2p) - Movement Feature
-- **Biological** descriptor (5p) - For rapid healing theme
+**Telepathy**
+Make Communication checks to read surface thoughts of conscious beings within line of sight.
 
-This creates a stealthy urban predator who can see in darkness, traverse the city efficiently, and heal from injuries - blending enhanced human skills with supernatural abilities.
+**Psychometry**
+Make Intelligence checks to perceive the recent history and emotional imprints of objects through touch.
+
+**Clairvoyance**
+Make Awareness checks to observe distant locations you can clearly visualize or have visited before.
+
+**Phase Touch**
+Make Mobility checks to selectively phase parts of your body through solid barriers (hand through wall, etc.).
+
+**Aura Reading**
+Make Awareness checks to perceive the emotional state, health condition, and supernatural nature of living beings.
+
+**Dream Walking**
+Make Communication checks to enter and interact with the dreams of sleeping individuals you can see.
+
+**Spirit Communication**
+Make Communication checks to speak with the spirits of the recently deceased in the immediate area.
+
+**Technopathy**
+Make Intelligence checks to interface directly with electronic devices and understand their functions/data.
+
+**Precognitive Flashes**
+Make Awareness checks to glimpse potential outcomes of immediate actions (next few seconds).
+
+**Matter Analysis**
+Make Intelligence checks to understand the atomic composition and structural properties of any substance.
+
+**Environmental Manipulation**
+Make Intelligence checks to influence local environmental conditions (temperature, humidity, air pressure).
+
+**Probability Sight**
+Make Intelligence checks to calculate the likelihood of specific outcomes in complex situations.
+
+---
+
+### 5-Point Features (Significant Reality Manipulation)
+
+**True Telepathy**
+Make Communication checks to establish two-way mental communication with any intelligent being regardless of distance or barriers.
+
+**Astral Projection**
+Make Mobility checks to project your consciousness to distant locations, becoming invisible and intangible.
+
+**Time Perception**
+Make Awareness checks to perceive the flow of time differently, seeing events in slow motion or experiencing accelerated time.
+
+**Dimensional Sight**
+Make Awareness checks to see into parallel dimensions, alternate realities, or through dimensional barriers.
+
+**Memory Manipulation**
+Make Communication checks to view, modify, or implant memories in willing or unconscious subjects.
+
+**Molecular Control**
+Make Intelligence checks to rearrange molecular structures of small objects, changing their properties or form.
+
+**Quantum Tunneling**
+Make Mobility checks to teleport through solid barriers by exploiting quantum mechanics (short range).
+
+**Probability Control**
+Make Intelligence checks to subtly influence probability, making unlikely events more or less likely to occur.
+
+**Reality Anchoring**
+Make Intelligence checks to stabilize local reality, preventing supernatural alterations or dimensional instabilities.
+
+**Temporal Echo**
+Make Awareness checks to perceive past events that occurred in your current location.
+
+**Consciousness Transfer**
+Make Communication checks to temporarily swap consciousness with willing participants.
+
+**Dimensional Storage**
+Make Intelligence checks to create pocket dimensions for storing objects without weight or bulk.
+
+---
+
+### 10-Point Features (Reality-Altering Capabilities)
+
+**True Precognition**
+Make Intelligence checks to perceive detailed future events up to days in advance, with accuracy based on roll success.
+
+**Reality Revision**
+Make Intelligence checks to make minor alterations to recent events (within the last hour), changing their outcomes.
+
+**Dimensional Travel**
+Make Mobility checks to open portals to alternate dimensions, parallel Earths, or entirely different realities.
+
+**Time Manipulation**
+Make Intelligence checks to slow, accelerate, or briefly pause time in localized areas around yourself.
+
+**Consciousness Network**
+Make Communication checks to link multiple minds into a temporary collective consciousness, sharing all thoughts and knowledge.
+
+**Matter Creation**
+Make Intelligence checks to create small amounts of any non-living matter from quantum foam.
+
+**Causal Manipulation**
+Make Intelligence checks to alter cause-and-effect relationships, making effects occur without their normal causes.
+
+**Universal Translation**
+Make Communication checks to understand and communicate in any language, including alien or interdimensional tongues.
+
+**Quantum Consciousness**
+Make Awareness checks to exist in multiple probable states simultaneously, experiencing different possible realities.
+
+**Reality Programming**
+Make Intelligence checks to temporarily alter the fundamental laws of physics in a small area around yourself.
+
+---
+
+
+
+You're absolutely right! I focused only on Features and missed Senses and Movement sections. Here are the missing sections:
+
+---
+
+## Senses
+
+Enhanced perceptual capabilities that enable Awareness checks impossible through normal human senses. Senses expand what you can perceive and detect in your environment.
+
+**Core Principle:** Senses allow you to make Awareness checks to perceive things that would be impossible with normal human senses.
+
+### 1-Point Senses (Basic Enhanced Perception)
+
+**Darkvision**
+Make Awareness checks to see clearly in complete darkness as if it were dim light.
+
+**Enhanced Hearing**
+Make Awareness checks to hear sounds at frequencies beyond normal human range or at much greater distances.
+
+**Scent Enhancement**
+Make Awareness checks to identify specific individuals, substances, or emotional states through smell.
+
+**Tactile Sensitivity**
+Make Awareness checks to detect minute textures, vibrations, or temperature differences through touch.
+
+**Magnetic Sense**
+Make Awareness checks to determine cardinal directions and detect magnetic fields or metal objects.
+
+### 3-Point Senses (Specialized Detection)
+
+**Echolocation**
+Make Awareness checks to navigate and identify objects in complete darkness using sound reflection. Range: Tier × 10 meters.
+
+**Thermal Vision**
+Make Awareness checks to see heat signatures through walls and detect living creatures by their body temperature.
+
+**Microscopic Vision**
+Make Awareness checks to see cellular-level detail, identify microscopic organisms, or examine fine craftsmanship.
+
+**Tremor Sense**
+Make Awareness checks to detect movement and identify creatures through ground vibrations. Range: Tier × 5 meters.
+
+**Aura Sight**
+Make Awareness checks to perceive emotional states, health conditions, and supernatural auras around living beings.
+
+**Time Sense**
+Make Awareness checks to perceive temporal distortions, time dilation effects, or chronological inconsistencies.
+
+### 5-Point Senses (Supernatural Perception)
+
+**X-Ray Vision**
+Make Awareness checks to see through solid objects up to Tier × 2 meters thick, revealing hidden structures or concealed items.
+
+**Psychic Resonance**
+Make Awareness checks to detect psychic activity, mental powers in use, or lingering psychic imprints.
+
+**Dimensional Sight**
+Make Awareness checks to see into adjacent dimensions, detect dimensional rifts, or spot interdimensional travelers.
+
+**Life Detection**
+Make Awareness checks to sense all living creatures within Tier × 100 meters, regardless of concealment or barriers.
+
+**Energy Sight**
+Make Awareness checks to see all forms of energy (electrical, magical, radioactive) as visible spectrums.
+
+### 10-Point Senses (Reality-Piercing Perception)
+
+**Omniscient Sight**
+Make Awareness checks to perceive events occurring anywhere on Earth that you can clearly visualize.
+
+**Temporal Vision**
+Make Awareness checks to see past or future states of objects and locations with perfect clarity.
+
+**Quantum Perception**
+Make Awareness checks to perceive probability clouds, quantum states, and potential realities simultaneously.
+
+**Universal Detection**
+Make Awareness checks to sense any specific type of phenomenon anywhere within a city-sized area.
+
+---
+
+## Movement
+
+Enhanced locomotion capabilities that enable Mobility checks for movement types impossible through normal human means. Movement abilities expand how and where you can travel.
+
+**Core Principle:** Movement abilities allow you to make Mobility checks to travel in ways that would be impossible with normal human locomotion.
+
+### 1-Point Movement (Basic Enhanced Mobility)
+
+**Enhanced Climbing**
+Make Mobility checks to climb any surface at full speed, including smooth walls and overhangs.
+
+**Superior Swimming**
+Make Mobility checks to swim at full land speed and hold breath for extended periods underwater.
+
+**Perfect Balance**
+Make Mobility checks to walk across narrow surfaces, tightropes, or unstable terrain without falling.
+
+**Parkour Mastery**
+Make Mobility checks to navigate urban environments using walls, buildings, and obstacles as movement paths.
+
+**Speed Burst**
+Make Mobility checks to move at double speed for short distances without fatigue.
+
+### 3-Point Movement (Specialized Locomotion)
+
+**Wall Walking**
+Make Mobility checks to walk on walls and ceilings at normal speed, defying gravity on solid surfaces.
+
+**Water Walking**
+Make Mobility checks to walk on any liquid surface as if it were solid ground.
+
+**Phase Movement**
+Make Mobility checks to briefly become intangible, passing through solid barriers up to 1 meter thick.
+
+**Elastic Movement**
+Make Mobility checks to stretch your limbs to reach distant objects or compress your body to fit through small spaces.
+
+**Burrowing**
+Make Mobility checks to move through earth, sand, or loose rock at half speed, creating temporary tunnels.
+
+### 5-Point Movement (Supernatural Locomotion)
+
+**True Flight**
+Make Mobility checks to fly in any direction at full speed with perfect maneuverability.
+
+**Short-Range Teleportation**
+Make Mobility checks to instantly teleport to any visible location within Tier × 10 meters.
+
+**Dimensional Step**
+Make Mobility checks to step into pocket dimensions, becoming temporarily invisible and intangible.
+
+**Quantum Movement**
+Make Mobility checks to exist in multiple locations simultaneously for brief periods.
+
+**Gravity Control**
+Make Mobility checks to alter your personal gravity, walking on any surface or floating in mid-air.
+
+### 10-Point Movement (Reality-Defying Travel)
+
+**Long-Range Teleportation**
+Make Mobility checks to teleport to any location on Earth that you can clearly visualize or have visited.
+
+**Interdimensional Travel**
+Make Mobility checks to travel between parallel dimensions or alternate realities.
+
+**Time Travel**
+Make Mobility checks to move forward or backward through time by up to Tier hours.
+
+**Astral Travel**
+Make Mobility checks to project yourself across infinite distances as a incorporeal consciousness.
+
+**Omnipresence**
+Make Mobility checks to exist simultaneously in up to Tier different locations for extended periods.
+
+---
+
+
+
+### Descriptors
+
+#### Elemental Descriptors (5p)
+
+**Fire**
+- **Utility Applications**: Make Intelligence checks to forge materials without tools, melt locks, create emergency lighting, or purify contaminated substances through controlled burning
+- **Environmental Control**: Make Intelligence checks to regulate temperature in buildings, melt ice barriers, or create smoke signals visible for miles
+- **Detection**: Make Awareness checks to sense heat sources through walls, track warm-blooded creatures, or identify recent fires
+- **Crafting**: Make Intelligence checks to work glass, ceramics, or metals with precision using controlled flame
+
+**Water**
+- **Utility Applications**: Make Intelligence checks to purify contaminated water sources, create ice tools/weapons, or navigate underwater environments
+- **Environmental Control**: Make Intelligence checks to create fog banks for concealment, redirect waterways, or cause/stop precipitation
+- **Detection**: Make Awareness checks to locate water sources underground, sense moisture levels, or track creatures through wet environments  
+- **Life Support**: Make Intelligence checks to extract moisture from air in deserts or create breathable air pockets underwater
+
+**Earth**
+- **Utility Applications**: Make Intelligence checks to locate mineral deposits, create stone tools/barriers, or navigate underground
+- **Environmental Control**: Make Intelligence checks to create earthquakes, shape landscape, or reinforce structures
+- **Detection**: Make Awareness checks to sense vibrations through ground, locate underground spaces, or identify geological instabilities
+- **Construction**: Make Intelligence checks to shape stone into precise architectural forms or create permanent fortifications
+
+**Air**
+- **Utility Applications**: Make Intelligence checks to create updrafts for assisted flight, carry messages via wind, or clear toxic gases
+- **Environmental Control**: Make Intelligence checks to create localized weather patterns, disperse crowds with wind, or amplify/muffle sounds
+- **Detection**: Make Awareness checks to track scents across great distances, overhear distant conversations, or sense air pressure changes
+- **Navigation**: Make Awareness checks to determine wind patterns for sailing/flying or predict weather changes
+
+#### Reality Descriptors (10p)
+
+**Time**
+- **Temporal Perception**: Make Awareness checks to see the past/future states of objects and locations
+- **Chronological Analysis**: Make Intelligence checks to determine exact timing of past events or predict future schedules
+- **Temporal Crafting**: Make Intelligence checks to age or restore objects to different time periods
+- **Historical Investigation**: Make Intelligence checks to witness past events as they occurred
+
+**Space**
+- **Dimensional Analysis**: Make Intelligence checks to measure exact distances/volumes without tools or understand spatial relationships
+- **Spatial Navigation**: Make Awareness checks to navigate through complex 3D environments or folded space
+- **Geometric Construction**: Make Intelligence checks to create perfect geometric forms or impossible architectural spaces
+- **Distance Manipulation**: Make Intelligence checks to compress or expand the apparent distance between locations
+
+**Probability**
+- **Outcome Analysis**: Make Intelligence checks to calculate precise odds of complex events or identify statistical anomalies
+- **Pattern Recognition**: Make Awareness checks to spot improbable coincidences or detect manipulated probability
+- **Luck Adjustment**: Make Intelligence checks to subtly influence random events in your favor
+- **Chaos Detection**: Make Awareness checks to sense when probability is being externally manipulated
+
+**Dimensional**
+- **Planar Sight**: Make Awareness checks to see into adjacent dimensions or detect dimensional instabilities
+- **Interdimensional Travel**: Make Mobility checks to step between parallel versions of the same location
+- **Cross-Dimensional Communication**: Make Communication checks to contact beings in alternate realities
+- **Reality Comparison**: Make Intelligence checks to understand how other dimensions differ from your own
+
+
