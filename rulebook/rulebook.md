@@ -1,4 +1,4 @@
-## SECTION 1: BASIC RULES - REVISED
+# SECTION 1: BASIC RULES - REVISED
 
 ### **DICE SYSTEM**
 **D20 Rolls**
@@ -56,7 +56,7 @@
 
 
 
-## SECTION 2: CHARACTER BASICS 
+# SECTION 2: CHARACTER BASICS 
 
 ### **ACTION ECONOMY**
 **Turn Structure:** Primary Action + Quick Action + Free Action + Movement + Reaction
@@ -166,7 +166,7 @@ Upgrade Options:
    - 5 × (Tier - 1) points
 
 
-## SECTION 3: CORE CHARACTER ARCHETYPES
+# SECTION 3: CORE CHARACTER ARCHETYPES
 
 ### **MOVEMENT ARCHETYPES**
 *Choose one to define core movement capabilities*
@@ -347,7 +347,7 @@ Upgrade Options:
 - Base utility pool: 5 × (Tier - 2)
 
 
-## SECTION 4: ATTACK AND EFFECT TYPES - REVISED
+# SECTION 4: ATTACK AND EFFECT TYPES - REVISED
 
 ### **ATTACK TYPES**
 *Determines how attacks are delivered and their targeting methods*
@@ -418,7 +418,7 @@ Upgrade Options:
 
 
 
-## SECTION 5: TRAITS AND FLAWS
+# SECTION 5: TRAITS AND FLAWS
 
 ### **FLAWS**
 *Permanent disadvantages that grant stat bonuses*
@@ -510,7 +510,7 @@ Upgrade Options:
 
 
 
-## SECTION 6: UNIQUE ABILITIES
+# SECTION 6: UNIQUE ABILITIES
 
 ### **BOONS**
 *Permanent abilities that change how your character is built*
@@ -718,7 +718,7 @@ Upgrade Options:
 
 
 
-## SECTION 7: SPECIAL ATTACKS
+# SECTION 7: SPECIAL ATTACKS
 
 ### **BASIC RULES**
 **Special Attack Allocation:** You get Special Attacks equal to your Tier  
@@ -758,9 +758,9 @@ Upgrade Options:
 **Advanced Conditions:** Control (30p), Capture (20p), Stun (20p), Weaken (20p), Mimic (+20p) Disable Specials (10p), Frighten (10p), Enthrall (10p), Frenzy (10p)
 
 
-## SECTION 7: SPECIAL ATTACKS
+# SECTION 8: SPECIAL ATTACKS
 
-### **BASIC RULES**
+## **BASIC RULES**
 **Special Attack Components:**
 
 **Quantity:** Check your Special Attack Archetype
@@ -801,9 +801,9 @@ Upgrade Options:
 
 
 
+## Limits
 
-
-## CHARGE-UP TREE 
+### CHARGE-UP TREE 
 
 ### **Base:** Charge-Up (20p)
 *Must use Primary Action on consecutive turns to charge before using attack*
@@ -846,7 +846,7 @@ Upgrade Options:
 
 
 
-# RESERVES TREE
+### RESERVES TREE
 
 ## **Base:** Reserves Tree (10p)
 *Can only be used 3 times per combat. Regain all uses after combat ends.*
