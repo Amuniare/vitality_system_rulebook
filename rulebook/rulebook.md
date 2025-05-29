@@ -803,9 +803,7 @@ Upgrade Options:
 
 ## Limits
 
-### CHARGE-UP TREE 
-
-### **Base:** Charge-Up (20p)
+### Charge-Up (20p)
 *Must use Primary Action on consecutive turns to charge before using attack*
 
 +30p **Extended Charge** Must charge for two turns before using
@@ -841,14 +839,7 @@ Upgrade Options:
 
 
 
-
-
-
-
-
-### RESERVES TREE
-
-## **Base:** Reserves Tree (10p)
+### Reserves (10p)
 *Can only be used 3 times per combat. Regain all uses after combat ends.*
 
 +10p **Reserves 2** Reduce to 2 uses per combat
@@ -870,7 +861,6 @@ Upgrade Options:
 * +20p **Reserves 1** Reduce pool by 1 use
 * +30p **Pool Drain** Using any attack in pool prevents others from being used for 1 turn
 * +40p **Cascade Lock** If any attack in pool misses, no attacks in pool can be used for 1 turn
-
 
 
 +50p **Resource Drain** When out of uses, take 10 damage at start of each turn
