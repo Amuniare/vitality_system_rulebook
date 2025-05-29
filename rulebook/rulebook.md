@@ -1322,391 +1322,311 @@ Selection: Choose Accuracy, Damage, or Conditions when purchasing
 
 
 
-# UTILITY ABILITIES
-
-## Utility Points
-
-**Calculation**: You receive utility points equal to 5 × (Tier - 1).
-- Tier 1: 0 points
-- Tier 3: 10 points  
-- Tier 5: 20 points
-- Tier 10: 45 points
-
-**Spending Rules**: Utility points purchase Features and Expertises only. You cannot transfer these points to other pools or save them for later advancement.
-
-**Point Tracking**: During character creation, subtract each purchase from your utility point total. You cannot exceed your available points.
 
 
 
 
 
-# UTILITY ABILITIES
-
-## Utility Points
-
-**Calculation**: You receive utility points equal to 5 × (Tier - 1).
-- Tier 1: 0 points
-- Tier 3: 10 points  
-- Tier 5: 20 points
-- Tier 10: 45 points
-
-**Spending Rules**: Utility points purchase Features and Expertises only. You cannot transfer these points to other pools or save them for later advancement.
-
-**Point Tracking**: During character creation, subtract each purchase from your utility point total. You cannot exceed your available points.
-
-## Features
-
-**Definition**: Abilities that enable entirely new categories of actions and checks impossible through standard character capabilities. Features grant access to supernatural effects, reality manipulation, or fundamentally new interaction methods with the game world.
-
-**Mechanical Function**: Features allow you to make checks you normally couldn't make. They create new possibilities rather than enhancing existing ones.
-
-**Cost**: 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
-
-**Examples**: 
-- Telepathy allows Communication checks directly into someone's mind
-- Phasing enables Mobility checks to move through solid barriers
-- Time Sight permits Awareness checks to perceive past or future events
 
 
+# Utility Abilities
 
+These abilities represent your character's capabilities outside of combat. The Vitality System divides these into two distinct categories: **Expertises** and **Features**.
+
+**Point Pools**
+- Utility Points: 5 × (Tier - 1)
+- Can be spent on Expertises, Features, Senses, or Descriptors
+
+---
 
 ## Expertises
 
-**Definition**: Specialized knowledge, training, or unique abilities that enhance your effectiveness within existing skill categories. Expertises can represent peak human achievement, superhuman talent, or distinctive capabilities that improve standard actions.
+Specialized knowledge, training, or unique abilities that enhance your effectiveness within existing skill categories. Expertises can represent peak human achievement, superhuman talent, or distinctive capabilities that improve standard actions.
+Expertises add to rolls you can already make. They provide bonuses to existing check categories rather than creating new ones.
 
-**Mechanical Function**: Expertises add to rolls you can already make. They provide bonuses to existing check categories rather than creating new ones.
 
-**Cost**: 1, 2, or 3 utility points based on frequency of applicable use across typical gameplay scenarios.
+**Use Limitation Limitation**: You can only apply two levels of expertise to any skill check two levels per individual expertise.
 
-**Pricing Rationale**:
-- **1 Point**: Situational applications with narrow utility (Gamer, Star Gazer, Local Celebrity)
-- **2 Points**: Moderate applications with regular utility (Master Acrobat, Lie Detector, Assessment)  
-- **3 Points**: Broad applications with frequent utility (Stealth, Persuasion, Investigation)
 
-**Scope Clarification**: Expertises encompass both realistic human capabilities and superhuman talents, provided they enhance existing skill frameworks rather than creating entirely new action categories.
+### Expertise Mechanics
+- **Basic (1p)**: Add your Tier to relevant checks
+- **Mastered (3p)**: Add 2 × your Tier to relevant checks
+- **Stacking**: Maximum 2 × Tier bonus per roll from combined expertises
+- **Custom Expertises**: Players may propose custom expertises tied to a core stat with GM approval
 
-### Multi-Level Purchase
+### Activity-Based Expertises
 
-**Investment Structure**: Purchase a second level by paying 3× the base cost of the expertise.
+What you're exceptionally good at doing. Always applies when performing the relevant activity.
 
-**Mechanical Benefit**: Double the Tier bonus provided by that expertise to applicable checks.
+#### Mobility (3)
+- **Climbing** – Navigating vertical terrain with speed and control
+- **Acrobatics** – Tumbling, flipping, and maintaining balance in motion
+- **Stealth** – Moving silently and remaining unseen
 
-**Calculation Example**: 
-- Stealth expertise (3p) normally adds Tier to stealth checks
-- Second level costs additional 9p (total investment: 12p)
-- Two-level Stealth adds 2 × Tier to stealth checks
+#### Power (3)
+- **Force** – Breaking, lifting, shoving, and overpowering obstacles
+- **Leaping** – Explosive jumps and extended aerial movement
+- **Grappling** – Holding, pinning, or throwing in close combat
 
-**Purchase Limitation**: Maximum two levels per individual expertise.
+#### Endurance (2)
+- **Exertion** – Sustained effort under physical stress
+- **Resistance** – Withstanding pain, illness, toxins, or conditions
 
-## Mechanical Application
+#### Focus (3)
+- **Vehicles** – Operating and maneuvering mechanical transports
+- **Crafting** – Building, repairing, and shaping physical tools or items
+- **Sleight of Hand** – Subtle, dexterous manipulation or concealment
 
-### Features
-**Activation**: Features provide their described effects automatically when relevant conditions occur or conscious activation requirements are met. Most features require no roll unless specifically noted in their description.
+#### Awareness (4)
+- **Tracking** – Following trails, signs, or behavioral patterns
+- **Searching** – Scanning for hidden, lost, or obscured details
+- **Perception** – Noticing changes, cues, or threats in real time
+- **Sense Motives** – Reading intent, emotion, or deception in others
 
-**New Check Categories**: Features enable check types impossible without the feature.
+#### Communication (5)
+- **Persuasion** – Convincing others with logic, charm, or appeal
+- **Deception** – Misleading through lies, trickery, or half-truths
+- **Intimidation** – Coercing through fear, threat, or force of presence
+- **Disguise** – Altering appearance or identity convincingly
+- **Understand** – Interpreting tone, language, and hidden meaning
+
+#### Intelligence (5)
+- **Strategy** – Tactical decision-making and multi-step planning
+- **Innovate** – Developing new methods, systems, or breakthroughs
+- **Decoding** – Interpreting codes, puzzles, or unfamiliar systems
+- **Research** – Investigating topics, gathering data, or studying deeply
+- **Problem Solving** – Applying logic and creativity to overcome challenges
+
+### Situational Expertises
+
+When or where you excel beyond normal capability. Only applies when the context matches.
+
+#### Mobility (3)
+- **Vertical Environments** – Comfortable in areas with ladders, walls, cliffs, or scaffolding
+- **Confined Spaces** – Familiar with cramped hallways, vents, crawlspaces, or tight tunnels
+- **Treacherous Terrain** – Adept in swamps, rubble, slick surfaces, or loose ground
+
+#### Power (2)
+- **Close Quarters Combat** – Environments where space is limited and brute force rules
+- **Heavy Industry** – Warehouses, loading zones, construction sites, or factories
+
+#### Endurance (2)
+- **Extreme Weather** – Cold, heat, storms, or other harsh conditions
+- **Long Operations** – Familiarity with extended missions, watches, or survival situations
+
+#### Focus (3)
+- **High-Speed Environments** – Vehicles, races, or fast-paced operations
+- **Workshops & Labs** – Precision workspaces with tools, components, and procedures
+- **Disaster Zones** – Fires, crashes, malfunctions, or other chaotic settings
+
+#### Awareness (4)
+- **Urban Areas** – Streets, alleys, rooftops, and the social rhythms of cities
+- **Wilderness** – Forests, deserts, mountains, and other natural landscapes
+- **Chaotic Scenes** – Riots, protests, crowds, or high-distraction areas
+- **Low Visibility** – Darkness, fog, smoke, or other sight-limiting conditions
+
+#### Communication (4)
+- **Formal Settings** – Boardrooms, courtrooms, or ceremonial environments
+- **Underground Culture** – Black markets, street deals, or hidden social networks
+- **Diplomatic Zones** – Neutral ground, political meetings, or cultural exchanges
+- **Public Forums** – Rallies, stages, broadcasts, or press interactions
+
+#### Intelligence (4)
+- **Data-Dense Environments** – Archives, control rooms, or multi-system interfaces
+- **Tech-Heavy Settings** – Laboratories, research centers, or digital spaces
+- **Unstable Systems** – Glitches, corrupted files, failing machines, or broken code
+- **Unknown Constructs** – Alien tech, forgotten ruins, or arcane machines
+
+---
+
+## Features
+
+Abilities that enable entirely new categories of actions and checks impossible through standard character capabilities. Features grant access to supernatural effects, reality manipulation, or fundamentally new interaction methods with the game world.
+Features allow you to make checks you normally couldn't make. They create new possibilities rather than enhancing existing ones.
+
+**Cost**: 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
+
+
+Features enable check types impossible without the feature.
 - Telepathy: Make Communication checks to read surface thoughts
 - Phasing: Make Mobility checks to pass through solid barriers  
 - Precognition: Make Awareness checks to glimpse future possibilities
 
-### Expertises  
-**Bonus Application**: Add your Tier bonus to applicable skill checks when the expertise's specialty applies to the current situation.
 
-**Situational Relevance**: The GM determines when an expertise applies based on the expertise description and the specific circumstances of the attempted action.
 
-**Stacking Rules**: 
-- **Multi-Level Stacking**: Multiple levels of the same expertise stack (that's the purpose of multi-level purchase)
-- **Different Expertise Stacking**: Multiple different expertises can apply to the same check if their specialties genuinely overlap with the situation
-- **Source Limitation**: You cannot gain the same mechanical bonus from multiple different sources
+### Feature Categories
 
-**Application Example**: A character with two-level Stealth expertise (12p total) making a Mobility check to sneak past guards adds 2 × Tier to the roll. If the same character also possessed Urban Navigation expertise (2p) and the sneaking occurred in a familiar city environment, both bonuses would apply for a total of 3 × Tier bonus.
+#### Movement Features
+These abilities fundamentally alter how you traverse the world.
 
+**20p Flight**: Move your full Movement Speed through the air, remaining aloft without foothold
+- **10p Float**: Fly at half speed only
 
-# COMPLETE FEATURES LIST
+**20p Teleportation**: Instantly appear at a visible point within Movement Speed
+- **10p Portal**: Create linked portals at two points within range, lasting until your next turn
+- **5p Motionless**: Teleport even while in a Hold
+- **10p Escort**: Take the Carry Action with your teleport
+- **1p/x Long Range**: Charge for x actions to double teleport distance with each charge
 
-## 1-Point Features
+**20p Burrowing**: Move through ground at full speed (soft materials) or half speed (hard materials)
+- **30p Bunker**: Remain underground between turns (cannot attack while underground)
+- **10p Versatile Tunneller**: Choose temporary or permanent tunnels when burrowing
 
-**Darkvision**: See normally in complete darkness without penalty.
+#### Perception Features
 
-**Water Walking**: Move across liquid surfaces at full Movement Speed.
+**1p Darkvision**: See in complete darkness
 
-**Scent Tracking**: Identify creatures and objects by scent, track trails up to 72 hours old.
+**5p Echolocation**: Use sound for precise environmental information
+- Base range: (Tier × 2) meters
+- **5p Enhanced**: Range increases to (Tier × 10) meters
 
-**Far Hearing**: Magnify hearing range by 10× per purchase (maximum purchases equal to half Tier).
+**2p Far Hearing**: Hear clearly at 10× normal distance (can purchase multiple times)
 
-**Telescopic Vision**: See fine details at 10× normal distance per purchase (maximum purchases equal to half Tier).
+**2p Telescopic Vision**: See detail at 10× normal distance (can purchase multiple times)
 
-**Infrared Vision**: Detect heat signatures through solid matter up to 10cm thickness.
+**1p-3p Microscopic Vision**:
+- 1p: See individual dust particles
+- 2p: See cellular makeup
+- 3p: See atomic level
 
-## 3-Point Features
+**2p Scent Tracking**: Identify creatures and objects by scent
+- **5p Enhanced**: Track scents up to 72 hours old
 
-**Enhanced Jump**: Jump distance equals full Movement Speed, +1 Movement Speed bonus at Tiers 1-6, +2 at Tiers 7+.
+**5p Tremor Sense**: Detect vibrations through ground contact
+- Base range: (Tier × 2) meters
+- **5p Enhanced**: Range increases to (Tier × 10) meters
 
-**Growth**: Increase size category, gain +2 reach and +Tier to Power-based checks for scene duration.
+**3p X-Ray Vision**: See through 10cm of material (stackable for greater thickness)
 
-**Shrink**: Decrease size category, gain +Tier to stealth checks and ability to fit through small spaces for scene duration.
+**2p Infrared Vision**: See heat signatures through 10cm of material (stackable)
 
-**X-Ray Vision**: See through solid matter up to 10cm thickness, increase by 10× per additional purchase.
+**Variable Unique Sense**: Automatically detect specific phenomena within range
+- Examples: Magic, electricity, teleportation, specific creature types
+- Cost varies by scope and power (consult GM)
 
-**Microscopic Vision**: See progressively smaller details (dust particles at 1 purchase, cellular structures at 2, atomic level at 3).
+#### Social Features
 
-**Carry Enhancement**: Add Power + Tier to Capacity score for supernatural lifting capability.
+**2p Telepathy**: Communicate mentally with visible or familiar creatures
 
-**Environmental Immunity**: Complete immunity to one environmental category (heat, cold, pressure, radiation, etc.).
+**3p Mind Reading**: Read surface thoughts or deeper with contested roll
+- **-1p Surface Only**: Only access immediate thoughts
+- **-1p Touch Required**: Must make physical contact
 
-## 5-Point Features
+**2p Telepath**: Two-way mental communication with willing targets
 
-**Dynamic Entry**: On first turn of combat, move yourself and allies (up to Intelligence score) up to Communication score spaces.
+**2p Technopath**: Use Communication in place of Intelligence with machines
 
-**Echolocation**: Navigate by sound analysis, detect objects within Tier × 2 meters base range (Tier × 10 for +5p upgrade).
+#### Supernatural Features
 
-**Tremorsense**: Detect ground vibrations, same range options as Echolocation.
+**30p Invisibility**: Take Hide Action in plain sight, immune to sight-based abilities
 
-**Burrowing**: Move through ground at full speed (loose materials) or half speed (hard materials), choose permanent or temporary tunnels.
+**60p Regeneration**: Heal 20-50 HP per turn based on Tier, wake from unconsciousness when fully healed
 
-**Shapeshifter**: Transform into different creatures or objects, retain mental attributes but gain basic physical capabilities of new form.
+**30p Heal**: Restore 25 HP to touched target (Tier uses per rest)
+- **15p/x Increased Charges**: Double uses
+- **15p/x Increased Healing**: Double HP restored
+- **15p Ranged**: Heal within 15 spaces
+- **30p Quick Healing**: Use as Quick Action
 
-**Invisibility**: Become completely undetectable to normal sight, can Hide while in direct observation.
+**30p Summon**: Call forth loyal minion creatures (10p per summon type)
+- Base: 10 HP minion with standard stats
+- **15p/x Resummon**: Resummon defeated minions x times
+- **15p Helpful Companion**: Summon gains utility abilities
+- **15p Heroic**: Summon gains special attacks
+- **40p Game Hunter**: Capture and summon defeated enemies
 
-**Swinging**: Requires anchor points, +1 Movement Speed (Tiers 1-6) or +2 (Tiers 7+), move at full speed across any surface.
+**30p Barrier**: Create protective field (50 HP, 10+Tier DR)
+- **5p/x Increased Radius**: Expand coverage
+- **30p Tough**: Increase to 100 HP
+- **30p Firing Position**: Attack out but not in
 
-## 5-Point Descriptors - Elemental
-**Fire**: Immunity to heat damage, ignite objects by touch, intensify/suppress existing flames, radiate damaging heat aura.
+#### Utility Features
 
-**Water**: Command water flows, purify water by touch, swim at enhanced speed, summon localized weather effects.
+**1p Light Sleeper**: Maintain awareness while sleeping
 
-**Earth**: Detect underground structures, reshape stone/soil, immunity to unstable terrain, identify minerals and gems.
+**1p Linguist**: Know dozen+ languages, can decipher unknown ones
 
-**Air**: Control local air pressure and currents, generate protective wind barriers, carry objects on air currents, create breathable atmosphere.
+**2p Drone/Familiar**: Control small creature/robot that uses your skills
 
-**Cold**: Instantly freeze surfaces and objects, immunity to cold damage, create complex ice structures, slow enemies with frigid aura.
+**2p Parkour**: Difficult terrain doesn't slow you, climbing costs 2 spaces per 1
 
-**Electricity**: Generate electrical aura, detect power sources from distance, transfer electricity between objects, immunity to electrical damage.
+**2p Ward**: Place detection wards on objects/areas (Intelligence score maximum)
 
-**Acid**: Degrade materials by touch, immunity to corrosive effects, dissolve barriers regardless of material hardness.
+**2p Lock**: Magically secure containers (3 × Intelligence to break)
 
-**Sonic**: Project voice across vast distances, map spaces through sound analysis, create precise resonant frequencies, enhance/dampen environmental noise.
+**3p Perfect Sanctuary**: Create impenetrable zone for short duration
 
-## 5-Point Descriptors - Energy  
-**Light**: Emit blinding illumination, bend light for illusions and focused cutting beams, immunity to light-based effects, project visible signals across distances.
+**Variable Wealth**: Represents financial resources
+- Poor (-2p): Limited resources
+- Comfortable (0p): Stable finances
+- Well-Off (2p): High income
+- Wealthy (5p): Immense resources
 
-**Kinetic**: Enhance force of moving objects, absorb and redirect impact energy, ignore movement impediments, maintain momentum on difficult surfaces.
+---
 
-**Plasma**: Surround self with damaging plasma field, detect energy sources, manipulate plasma-like materials for welding/sealing, immunity to high-energy environments.
+## Descriptors
 
-## 5-Point Descriptors - Specialized
-**Biological**: Rapid healing of injuries, immunity to toxins and diseases, influence animal behavior, revive plants by touch.
+Descriptors represent your character's fundamental connection to specific forces or concepts. They provide thematic abilities and immunities.
 
-**Hacking**: Communicate with machines, decode encrypted data instantly, remotely control electronic systems, temporarily seize control of complex technology.
+### Elemental Descriptors (5p)
 
-**Mental**: Share memories directly, amplify emotions to overwhelming levels, immunity to psychic intrusion, retrieve forgotten memories perfectly.
+**Acid**: Corrode objects by touch, immunity to acid, dissolve barriers
 
-**Arcane**: Detect and analyze magical effects, decipher mystical symbols, leave magical traces, locate enchanted items regardless of concealment.
+**Air**: Control air currents, create breathable atmosphere, manipulate pressure
 
-## 10-Point Features
+**Cold**: Freeze objects/water, create ice structures, cold immunity
 
-**Flight**: Move full Movement Speed in any direction including vertical, immunity to terrain penalties, ignore ground-based obstacles and hazards.
+**Earth**: Detect underground structures, reshape stone, immovable stance
 
-**Teleportation**: Instant movement to visible locations within Movement Speed range, bypass all physical barriers, minor visual/audio signature per teleport.
+**Fire**: Ignite objects, radiate heat, fire immunity
 
-**Portal Creation**: Create linked entry/exit points within Movement Speed range, usable by team members, portals persist until start of next turn.
+**Electricity**: Detect currents, transfer power, electrical immunity
 
-**Phasing**: Move through solid matter at normal speed, cannot end turn inside objects, immunity to physical barriers and containment.
+**Sonic**: Project voice, shatter materials with frequency, sound manipulation
 
-## 10-Point Descriptors - Reality
-**Time**: Perceive temporal flow alterations, temporarily halt small area motion, glimpse potential near-future outcomes, immunity to time-based effects.
+**Water**: Control water flow, purify liquids, enhanced swimming
 
-**Space**: Create subspace storage pockets, detect recent teleportation events, perfectly memorize spatial layouts, open long-distance rifts.
+### Energy Descriptors (5p)
 
-**Dimensional**: Detect planar anomalies, stabilize dimensional shifts, access alternate dimensions, create personal pocket dimensions.
+**Kinetic**: Enhance moving objects, absorb/redirect impacts, defy gravity
 
-**Atomic**: Perceive atomic structure of materials, alter object density and composition, immunity to temperature and radiation, initiate controlled atomic reactions.
+**Light**: Emit blinding light, create illusions, light-based signaling
 
-**Cosmic**: Intuitive universal knowledge, inspire awe through cosmic presence, immunity to all environmental effects, infuse others with cosmic energy.
+**Plasma**: Surround self with damaging aura, weld materials, radiation resistance
 
+### Specialized Descriptors (5p)
 
-# COMPLETE EXPERTISES LIST
+**Biological**: Rapid healing, toxin immunity, animal empathy, plant growth
 
-## 1-Point Expertises
-*Situational applications with narrow utility*
+**Hacking**: Machine communication, bypass security, remote system control
 
-### Physical Specializations
-**Skilled Driver**: Add Tier to Mobility checks when operating motor vehicles.
+**Mental**: Share memories, amplify emotions, psychic shielding
 
-**Expert Climber**: Add Tier to Mobility checks for vertical surfaces and hazardous climbs.
+**Arcane**: Detect magic, interpret magical effects, leave traceable marks
 
-**Equestrian**: Add Tier to checks involving mounted travel or animal riding.
+### Reality Descriptors (10p)
 
-**Marathoner**: Add Tier to Endurance checks for extended physical activities.
+**Atomic**: Perceive atomic structure, alter density, start chain reactions
 
-**Weightlifter**: Add Tier to Power checks for lifting or carrying beyond normal capacity.
+**Cosmic**: Universal awareness, inspire awe, operate in any environment
 
-**Combat Mobility**: Add Tier to Mobility checks during combat encounters for repositioning.
+**Dimensional**: Detect portals, stabilize rifts, create personal dimensions
 
-### Mental Specializations  
-**Gamer**: Add Tier to Intelligence checks involving games of strategy or skill.
+**Space**: Subspace storage, spatial memory, teleportation
 
-**Star Gazer**: Add Tier to Intelligence checks related to astronomy or celestial knowledge.
+**Time**: Temporal perception, limited time manipulation, glimpse outcomes
 
-**Mathematician**: Add Tier to Intelligence checks involving numerical calculations or logical puzzles.
+**Note**: Reality Descriptors often require GM discussion for specific applications and limitations.
 
-**Codebreaker**: Add Tier to Intelligence checks for deciphering encrypted information.
+---
 
-**Eidetic Memory**: Add Tier to Intelligence checks for recalling previously encountered information.
+## Character Creation Example
 
-**Pop Culture Guru**: Add Tier to Intelligence checks about modern cultural references.
+A Tier 3 character has 10 utility points to spend:
+- **Stealth** expertise (1p) - Activity-Based
+- **Urban Areas** expertise (1p) - Situational  
+- **Darkvision** (1p) - Sense Feature
+- **Parkour** (2p) - Movement Feature
+- **Biological** descriptor (5p) - For rapid healing theme
 
-### Social Specializations
-**Local Celebrity**: Add Tier to Communication checks with people who recognize your reputation within specific communities.
-
-**Etiquette Expert**: Add Tier to Communication checks in formal or high-class social settings.
-
-**Comedian**: Add Tier to Communication checks when using humor to influence opinions.
-
-**Public Speaker**: Add Tier to Communication checks when addressing audiences.
-
-**Dance Virtuoso**: Add Tier to Communication checks involving dance performances.
-
-### Craft Specializations
-**Brewmaster**: Add Tier to Intelligence checks for creating alcoholic beverages.
-
-**Cook**: Add Tier to Intelligence checks for food preparation and culinary arts.
-
-**Gemologist**: Add Tier to Intelligence checks involving gems, minerals, or precious materials.
-
-**Geology Buff**: Add Tier to Intelligence checks for identifying rock formations or natural resources.
-
-### Awareness Specializations
-**Always on Edge**: Add Tier to Awareness checks for identifying potential threats in unfamiliar environments.
-
-**Diviner's Touch**: Add Tier to Awareness checks for sensing the history of objects through contact.
-
-**Sound Tracker**: Add Tier to Awareness checks for locating sources of faint environmental noises.
-
-### Miscellaneous Specializations
-**Cheater**: Add Tier to Communication checks when attempting deception during games or contests.
-
-**Silent Step**: Add Tier to Mobility checks for moving quietly across noisy terrain.
-
-**Iron Gut**: Add Tier to Endurance checks for resisting food poisoning or contaminated substances.
-
-## 2-Point Expertises  
-*Moderate applications with regular utility*
-
-### Physical Mastery
-**Master Acrobat**: Add Tier to Mobility checks for complex stunts, flips, and tightrope walking.
-
-**Fleet-Footed**: Add Tier to Mobility checks involving sprints, dodges, and rapid movement.
-
-**Juggernaut**: Add Tier to Power checks for plowing through obstacles without stopping.
-
-**Martial Artist**: Add Tier to Power checks for unarmed combat techniques.
-
-**Pain Tolerance**: Add Tier to Endurance checks for maintaining function despite sustained injuries.
-
-**Stone Stamina**: Add Tier to Endurance checks for resisting environmental hardships.
-
-### Technical Proficiency
-**Master Craftsman**: Add Tier to Intelligence checks for creating intricate, high-quality items.
-
-**Locksmith**: Add Tier to Intelligence checks for bypassing mechanical or electronic locks.
-
-**Tinker**: Add Tier to Intelligence checks for field repairs and modifications of devices.
-
-**Mechanical Aptitude**: Add Tier to Intelligence checks for repairing or modifying machinery.
-
-**Computer Wiz**: Add Tier to Intelligence checks for using computer systems.
-
-### Perception Excellence
-**Lie Detector**: Add Tier to Awareness checks for detecting falsehoods through observation.
-
-**Eagle Eye**: Add Tier to Awareness checks for identifying distant objects or details.
-
-**Heat Spotter**: Add Tier to Awareness checks for detecting heat signatures or thermal footprints.
-
-**Assessment**: Add Tier to Awareness checks for evaluating combat capabilities and threat levels.
-
-**Insightful**: Add Tier to Awareness checks for understanding emotional states and motivations.
-
-### Social Competence
-**Reputation**: Add Tier to Communication checks with those familiar with your accomplishments.
-
-**Charming Rogue**: Add Tier to Communication checks using humor or cunning charm.
-
-**Cultural Expert**: Add Tier to Communication checks when interacting with unfamiliar cultures.
-
-**Attractive**: Add Tier to Communication checks with individuals attracted to your appearance.
-
-**Collector of Rumors**: Add Tier to Communication checks for gathering local gossip and information.
-
-### Survival Skills
-**Underwater Navigator**: Add Tier to Mobility checks for swimming and underwater movement.
-
-**Break and Enter**: Add Tier to Mobility checks for infiltrating restricted areas.
-
-**Trap Specialist**: Add Tier to Intelligence checks for identifying and disabling traps.
-
-**Long-Distance Specialist**: Add Tier to Endurance checks for extended tasks requiring stamina.
-
-### Combat Applications
-**Sniper's Focus**: Add Tier to Focus checks for precision and steady aim during ranged attacks.
-
-**Honed Reflexes**: Add Tier to Awareness checks for reacting quickly to sudden threats.
-
-**Battle Survivor**: Add Tier to Endurance checks for recovering from injuries.
-
-## 3-Point Expertises
-*Broad applications with frequent utility*
-
-### Core Social Skills
-**Persuasion**: Add Tier to Communication checks for influencing others across diverse social contexts.
-
-**Deception**: Add Tier to Communication checks for lying convincingly and maintaining false personas.
-
-**Intimidation**: Add Tier to Communication checks for forcing compliance through threat of harm.
-
-**Insight**: Add Tier to Communication checks for understanding true motivations and detecting emotional shifts.
-
-**Diplomacy**: Add Tier to Communication checks for resolving conflicts between hostile parties.
-
-### Investigation & Analysis  
-**Investigation**: Add Tier to Intelligence checks for tracking down information and solving complex problems.
-
-**Deduction**: Add Tier to Intelligence checks for reaching accurate conclusions from available evidence.
-
-**Technology**: Add Tier to Intelligence checks for understanding, repairing, and operating advanced devices.
-
-**Knowledge**: Add Tier to Intelligence checks for recalling general information about the world and history.
-
-### Physical Excellence
-**Stealth**: Add Tier to Mobility checks for moving unseen across various environments and situations.
-
-**Precision**: Add Tier to Focus checks for executing intricate manual tasks requiring fine motor control.
-
-**Search**: Add Tier to Awareness checks for systematically finding objects or information in large areas.
-
-**Tracking**: Add Tier to Awareness checks for following trails, footprints, and subtle environmental signs.
-
-### Specialized Operations
-**Blend**: Add Tier to Communication checks for moving inconspicuously within groups of people.
-
-**Evasion**: Add Tier to Mobility checks for escaping dangerous situations through quick thinking and movement.
-
-**Demolition Expert**: Add Tier to Intelligence checks for building, placing, or using explosive devices.
-
-**Security Clearance**: Add Tier to Intelligence checks where classified government knowledge applies.
-
-### Advanced Combat
-**Feat of Strength**: Add Tier to Power checks when performing superhuman displays of physical force.
-
-**Resolute**: Add Tier to Endurance checks for maintaining composure during prolonged mental or emotional pressure.
-
-
-
-
-
-
-
-
-
-
-
+This creates a stealthy urban predator who can see in darkness, traverse the city efficiently, and heal from injuries - blending enhanced human skills with supernatural abilities.
