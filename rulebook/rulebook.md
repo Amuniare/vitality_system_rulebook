@@ -844,39 +844,38 @@ Upgrade Options:
 
 +10p **Reserves 2** Reduce to 2 uses per combat
 * +20p **Reserves 1** Reduce to 1 use per combat
-* +30p **Fragile Reserve** If you take damage while at 1 remaining use, lose that use
-* +40p **Stress Failure** If you fail any skill check, lose 1 remaining use
+* +40p **Fragile Reserve** Each time you take damage, lose 1 use
+* +40p Critical Failure If you roll a natural 1 on any d20, lose 1 use
+
 
 +30p **Extended Recovery** Regain uses after full rest instead of after combat, once per day
-* +20p **Prep** You need to spend 8 hours of time preparing, to recover all charges
-* +30p **Weekly Preparation** Can only regain uses once per week
-* +10p **Environmental Reset** Must return to specific safe location to regain uses
+* +20p **Preparation** You need to spend 8 hours of time preparing, to recover uses
+* +50p **Weekly Preparation** Can only regain uses once per week
+* +20p **Slow Recovery** Regain only 1 use per rest period instead of all uses
 
-+20p **Slow Recovery** Regain only 1 use per rest period instead of all uses
-* +30p **Trickle Restoration** Regain 1 use per hour of rest
-* +40p **Manual Reload** Must spend Primary Action during rest to regain each use
-* +20p **Partial Recovery** Only regain half your maximum uses per rest (round up)
+
++30p **Volatile Uses** External factors can cause unexpected use loss
+* +20p **Proximity Loss** Lose 1 use when enemy ends turn adjacent to you
+* +40p **Damage Cascade** Taking 10+ damage in single attack causes loss of 1 use
+* +50p **Condition Trigger** Gaining any Advanced Condition causes loss of all remaining uses
+
+
 
 +20p **Shared Pool** Multiple special attacks share same use pool, total uses divided among them, +1 use for each special attack added
 * +20p **Reserves 1** Reduce pool by 1 use
-* +30p **Pool Drain** Using any attack in pool prevents others from being used for 1 turn
-* +40p **Cascade Lock** If any attack in pool misses, no attacks in pool can be used for 1 turn
+* +30p **Pool Drain** If any attack in pool misses, remove an extra use
+* +20p **Cascade Lock** If any attack in pool misses, no attacks in pool can be used for 1 turn
 
 
-+50p **Resource Drain** When out of uses, take 10 damage at start of each turn
++50p **Resource Drain** When out of uses, cannot take Quick Actions
 * +30p **Stat Drain** When out of uses, subtract Tier from Accuracy and Damage
-* +40p **Action Lock** When out of uses, cannot take Quick Actions
-* +60p **Movement Lock** When out of uses, Movement reduced to 1 space per turn
+* +40p **Life Drain** When out of uses, take 10 damage at start of each turn, until you hit 0 hp
+* +60p **Movement Lock** When out of uses, Movement reduced by your Tier
 
-+40p **Feedback** Each use deals 5 damage to you after the attack resolves
-* +20p **Escalating Feedback** Each successive use deals additional 5 damage (5, 10, 15, etc.)
-* +30p **Condition Feedback** Each use applies Daze condition to yourself for 1 turn
-* +40p **Stat Feedback** Each use reduces your Durability by 2 until rest
-
-
-
-
-
++40p **Usage Prerequisites**  Cannot use until turn 3 of combat
+* +20p **Unhealthy** Must be below half HP to use
+* +30p **Melee** Must be adjacent to enemy to use  
+* +50p **Target History** Can only target enemies you have not attacked this combat
 
 
 
