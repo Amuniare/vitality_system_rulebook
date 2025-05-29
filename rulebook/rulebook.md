@@ -1441,27 +1441,8 @@ When or where you excel beyond normal capability. Only applies when the context 
 
 
 
-## ANALYSIS SUMMARY
 
-I've reviewed the comprehensive documentation and codebase for your Vitality System RPG. This includes:
-
-**Documentation Analyzed:**
-- Complete rulebook.md (50+ pages of rules)
-- System rules dictionary 
-- Workplan for 60+ upgrade expansion
-- Codebase overview with Excel/HTML/ScriptCards/Python integration
-- Character sheet analyzer and template system
-
-**Current Features Section Status:**
-The existing Features section contains many combat-focused abilities (Heal, Summon, Barrier, Backlash, etc.) that need to be replaced with utility-focused abilities that enable new check types rather than enhance combat.
-
-**Key Change Understanding:**
-- Features should enable **impossible-without-the-feature** check types
-- Cost based on mechanical impact: 1, 3, 5, or 10 utility points
-- Focus on non-combat utility that creates new possibilities
-- Remove combat abilities, replace with utility versions
-
-## REVISED FEATURES SECTION
+## FEATURES SECTION
 
 ### Features
 
@@ -1836,3 +1817,308 @@ Make Mobility checks to exist simultaneously in up to Tier different locations f
 - **Reality Comparison**: Make Intelligence checks to understand how other dimensions differ from your own
 
 
+
+
+
+
+# UTILITY SYSTEM EXPANSIONS
+
+## Wealth System
+
+Represents your character's financial resources. The GM will set a wealth level for each game at base and decide if any wealth tiers are off limits and what the cost is for these tiers. If you are above the base tier, please come up with a narrative reason.
+
+**Global Setting Example:**
+- Poor: -2p
+- Comfortable: Base
+- Well Off: 2p
+- Wealthy: 5p and a narrative justification.
+
+**Mutants Setting Example:**
+- Base Tier: Poor
+- Comfortable: 3p and a narrative justification.
+
+### Poor
+Heroes living paycheck-to-paycheck or relying on makeshift solutions. Housing is often cramped, unstable, or shared, with few luxuries.
+
+| **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
+|-------------------|------------|-------------------------|-------------------------------|
+| **Incidental** | $0-$50 | Effortless; no checks required. | Bus fare, cheap meals, second-hand clothes, basic tools, duct tape. |
+| **Standard** | $50-$200 | 1 per session; no check required. | Low-end laptops, plane tickets to nearby locations, burner phones. |
+| **Unusual** | $200-$1,000 | Requires planning, narrative justification, **a DC 20 check, and a bit of downtime.** | Used cars, custom gadgets, bribes, short-term rentals of gear. |
+| **Extreme** | $1,000-$5,000 | Requires significant planning, narrative justification, **a DC 30 check, and a large amount of downtime.** | Surveillance systems, stolen prototypes, access to small labs. |
+
+### Comfortable
+Heroes with stable finances and reasonable housing, such as apartments or small homes with utilities and basic amenities.
+
+| **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
+|-------------------|------------|-------------------------|-------------------------------|
+| **Incidental** | $0-$200 | Effortless; no checks required. | Meals, taxi rides, affordable gadgets, costume repairs, minor tools. |
+| **Standard** | $200-$1,000 | 1 per session; no check required. | Decent laptops, multi-day travel, advanced smartphones, surveillance gear. |
+| **Unusual** | $1,000-$5,000 | Requires planning, narrative justification, **a DC 20 check, and a bit of downtime.** | Custom vehicles, specialized equipment, short-term lab access. |
+| **Extreme** | $5,000-$25,000 | Requires significant planning, narrative justification, **a DC 30 check, and a large amount of downtime.** | Armored vehicles, high-tech gadgets, temporary private labs. |
+
+### Well-Off
+Heroes with high incomes or substantial financial backing. They live in large homes or luxury apartments with private security and premium services.
+
+| **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
+|-------------------|------------|-------------------------|-------------------------------|
+| **Incidental** | $0-$1,000 | Effortless; no checks required. | Personal vehicles, high-quality meals, routine gear maintenance. |
+| **Standard** | $1,000-$5,000 | 1 per session; no check required. | High-quality laptops, international travel, top-tier costumes. |
+| **Unusual** | $5,000-$25,000 | Requires planning, narrative justification, **a DC 20 check, and a bit of downtime.** | Advanced vehicles, custom surveillance drones, tailored weaponry. |
+| **Extreme** | $25,000-$100,000 | Requires significant planning, narrative justification, **a DC 30 check, and a large amount of downtime.** | Advanced prototypes, long-term lab use, armored transport. |
+
+### Wealthy
+Heroes with immense wealth, such as billionaires, royalty, or corporate executives. They live in mansions, penthouses, or private estates with access to cutting-edge technology and services.
+
+| **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
+|-------------------|------------|-------------------------|-------------------------------|
+| **Incidental** | $0-$25,000 | Effortless; no checks required. | Lavish dinners, top-tier gadget upgrades, luxury clothing. |
+| **Standard** | $25,000-$100,000 | 1 per session; no check required. | High-end vehicles, professional-grade labs, elite security systems. |
+| **Unusual** | $100,000-$1,000,000 | Requires planning, narrative justification, **a DC 20 check, and a bit of downtime.** | High-end medical facilities, prototype tech, elite private transport. |
+| **Extreme** | $1,000,000+ | Requires significant planning, narrative justification, **a DC 30 check, and a large amount of downtime.** | Custom-built headquarters, advanced robotics, personal spacecraft. |
+
+## Descriptor Expansions
+
+### Additional Elemental Descriptors (5p)
+
+**Sonic**
+
+- Project your voice with perfect clarity across vast distances, as if speaking directly beside the listener
+- Detect and analyze sound vibrations to map spaces or identify hidden structures
+- Modulate sound waves to enhance or dampen any noise in your vicinity
+- Create precise sonic frequencies to resonate with and shatter specific materials
+
+**Air**
+
+- Carry objects on air currents, lifting and moving items up to your carrying capacity
+- Generate winds strong enough to extinguish flames or clear smoke/gases from an area
+- Control local air pressure and flow to create protective barriers or corridors
+- Create pockets of breathable air in otherwise inhospitable environments
+
+### Additional Energy Descriptors (5p)
+
+**Kinetic**
+
+- Enhance the force of moving objects, turning a pebble into a deadly projectile or a thrown spear into a devastating missile
+- Ignore impediments like mud, snow, or rubble, maintaining momentum without slowing
+- Absorb kinetic energy from impacts and transfer it elsewhere, such as reversing the force back to an attacker
+- Defy gravity temporarily, running on walls or maintaining footing on impossibly narrow surfaces
+
+**Plasma**
+
+- Surround yourself with glowing plasma, providing light and damaging nearby enemies with searing heat
+- Detect the presence of plasma generators, power sources, or active weapons within a wide radius
+- Manipulate plasma-like materials to weld, seal, or fuse objects permanently
+- Withstand high-energy environments, including intense radiation or plasma discharges
+
+### Additional Specialized Descriptors (5p)
+
+**Biological**
+
+- Heal from significant injuries and lost limbs or organs relatively quickly
+- Identify, neutralize, or create potent toxins and antidotes instinctively. Immune to any chemical or biological effects
+- Form deep connections with animals, influencing their actions and understanding their emotions
+- Revive withered plants by touch, causing them to grow rapidly, even in barren environments
+
+**Hacking**
+
+- Communicate with machines as though they were sentient, intuitively diagnosing malfunctions or errors
+- Instantly decode encrypted data or bypass advanced security systems
+- Remotely interact with and control electronic systems, such as locking or unlocking doors, or rerouting power
+- Temporarily seize control of complex systems like vehicles, turrets, or robotic units. Discuss with GM particular application and limitation for this power
+
+**Mental**
+
+- Share vivid memories, ideas, or concepts directly into another's mind, bypassing verbal communication entirely
+- Amplify the emotions of those around you to overwhelming levels, inducing fear, joy, or rage
+- Shield yourself from psychic intrusion, emotional manipulation, or mind-altering effects
+- Instantly retrieve forgotten memories or suppressed knowledge, including sensory details from years past
+
+**Arcane**
+
+- Detect and analyze magical effects within a wide radius, understanding their source and purpose
+- Decipher, replicate, or counter magical glyphs and sigils, even if highly advanced
+- Leave subtle magical traces on objects or locations, readable only by those with arcane knowledge
+- Sense and locate magical artifacts or enchanted items, regardless of concealment
+
+### Reality Descriptors (10p)
+
+**Atomic**
+
+- Perceive the atomic structure of objects, identifying weaknesses or flaws for precise interaction
+- Alter the density or composition of objects with a focused effort, such as hardening glass into steel
+- Ability to alter the distance between atoms for objects you can touch
+- Immune to any extreme temperature or radiation effects
+- Ability to start atomic chain reactions. Discuss with GM particular application and limitation for this power
+
+**Cosmic**
+
+- Intuitively know information about the state of the universe, the cosmos and other cosmic beings
+- Inspire awe or reverence in those around you, projecting a cosmic aura of authority
+- Operate unharmed in any environments, immune to any environmental effect
+- You can infuse other beings with Cosmic energy and power. Discuss with GM particular application and limitation for this power
+
+**Dimensional**
+
+- Detect portals, rifts, or planar anomalies, even when hidden or camouflaged
+- Stabilize dimensional shifts, preventing involuntary displacement for yourself or allies
+- Open portals to other planes. Discuss with GM particular application and limitation for this power
+- Create a personal dimension with unique features. Discuss with GM particular application and limitation for this power
+
+**Space**
+
+- Open temporary pockets of subspace to store or retrieve objects instantly
+- Sense recent teleportation events or spatial distortions
+- Perfectly memorize and navigate spatial layouts, even after brief exposure
+- Open rifts to teleport vast distances. Discuss with GM particular application and limitation for this power
+
+**Time**
+
+- Perceive the flow of time, unaffected by warped or frozen time effects
+- Temporarily halt the motion of objects or small areas, freezing them in place for seconds
+- Glimpse potential outcomes moments before they occur, aiding critical decisions
+- Accelerate or reverse time in an area, or move yourself through time. Discuss with GM particular application and limitation for this power
+
+## Senses Expansions
+
+2p **Infrared Vision** Allows you to see creatures through 10 cm of material. Each time you purchase, increase the thickness of the material you can see through by 10x. *Note Certain hyperdense materials may be challenging.*
+
+Xp **Unique Sense** You have an extra sense. You automatically detect when within your range. If they can be subtle, they may roll against your Perception. Examples Include Effects from a Descriptor (Electricity, Space, Time, Magic), A type of being (Human, divine beings, eldritch horror, powered person), Usage of an ability. (Teleporting, Burrowing, specific Feature usage).
+
+## 1p Niche Features
+
+**Multi-limbed** You have additional limbs. Each purchase of this feature grants you one extra limb.
+
+**Botanical Communion** You can communicate with and influence plant life for information or aid.
+
+**Ancestral Knowledge** You can communicate with ancestral spirits for guidance.
+
+**Dreamwalker** You can enter and interact with dreams.
+
+**Divine Insight** You occasionally glimpse alternate dimensions, supernatural realms, and otherworldly realities.
+
+**Debt** Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect.
+
+**Foreigner** Your distinct appearance and mannerisms mark you as a foreigner, attracting curiosity wherever you go. This attention can grant you access to influential individuals and places eager to learn about your homeland, but it may also create unwanted suspicion.
+
+**Glory Hound** You crave attention and know how to get it. After a fight or a noteworthy event, you can attempt to take the majority of the credit, potentially at the expense of others' reputations.
+
+**Trust-fund Kid** Increase your wealth category by 1, each time you make a standard purchase, make a DC 10 check, all purchase checks are Communication checks, if you fail a check, you lose access to the higher wealth tier until the relationship is repaired. Work with the GM to establish the relationship.
+
+**The Prophesied One** A prophecy involves you. Those who believe in it will go to great lengths to assist you. Work with the GM to determine the prophecy's nature and cost.
+
+**Noble Favor** Due to your noble birth, you are treated with respect and courtesy wherever you go. You can easily secure audiences with local nobles when needed.
+
+**Matter Manipulation** You can temporarily convert one mundane material into another, or transform one object into another similar object requiring the same weight and density.
+
+**Object Encryption** You can seal items in a protective field to prevent tampering.
+
+**Master Sculptor** Choose a material. You can precisely shape, mold, or alter that material at a rapid pace, working on 8 cubic meters per minute.
+
+**Fall Protection** Half your falling damage taken after calculating Durability. You fall at half the speed.
+
+**Water Walk** You can walk on liquids.
+
+**Aquatic** You can swim at your full speed and are unbothered by aquatic circumstances such as cold and depth pressure while swimming.
+
+**Personal Vehicle** You own a vehicle that allows you to travel quickly.
+
+**Stable Housing** You have access to a home that supports more than just yourself.
+
+## 2p Standard Features
+
+**Forbiddance** Once per rest, over the course of an hour, you may create a ward that protects up to a 100 by 100 SP area from observation, teleportation, and communication through the barrier. Additionally, the GM will split all entities into three categories; you can choose one of those, and each turn they are inside the barrier, they will suffer damage equal to 10 + your focus or power against their durability. The ward lasts one day. If you use this feature every day for 100 days in the same spot, the effect becomes permanent. This ward can safeguard critical areas or be used to trap enemies in strategic locations.
+
+**Glyph of Warding** It takes one hour to set up the trap, and you may set it to release one of your moveset attacks. The glyph may not be moved from where it was set up. You can have a number of active traps equal to your intelligence score. If the trap is triggered, the attack is released. You suffer/are limited by your downsides when setting the trap. Hidden traps will require a perception or intelligence check against double your intelligence to detect. You must see the trap to arm or disarm it. This ability allows you to secure areas or ambush unsuspecting foes.
+
+**Mystic Guardian** You can create temporary magical guardians or constructs that can complete simple tasks. These guardians can act as watchmen, couriers, or assistants in problem-solving tasks, enhancing exploration or story-driven moments.
+
+**Spiritual Bind** You can temporarily bind yourself to an object or location, granting limited influence, observation, or protection. This feature allows for innovative solutions to puzzles or stealth encounters, such as keeping watch without being present physically.
+
+**Sponsor** Someone has invested a great deal of time and/or money to get you where you are. You have greater access to resources, and they are inclined to protect their investment. However, you are beholden to them, and they might cut their losses if things get too dicey. This relationship can lead to powerful benefits but introduces roleplaying challenges through debts or obligations.
+
+**Streetwise Network** You have connections throughout various segments of society, providing you with valuable information about local people and places wherever you travel. Use this feature to uncover secrets, gather rumors, or arrange covert meetings.
+
+**Underworld Connection** You maintain a reliable contact within the criminal underworld who can facilitate communication and deliver messages discreetly across long distances. Your connection can also provide contraband, information, or covert assistance in precarious situations.
+
+**Well Connected** Once per session, if you say, "I Know a Guy," workshop with the GM to create an NPC who can help you with a specific task. Roll a secret d100 to determine your standing with them. Based on the nature of the request and your standing, the GM will then decide what they will ask in return. This ability enables you to shape relationships and forge alliances that enhance the story.
+
+**Auratic Sway** Emits a subtle aura that affects emotions or moods in the immediate vicinity. You can make an Intimidation or Communication check against everyone nearby to slightly alter their mood or emotions. Success allows you to steer group dynamics, calm crowds, or create fear as needed.
+
+**Psychic Link** You can share or transfer memories with a touch, or form a temporary psychic connection with another being. This connection can be used for strategic coordination, emotional support, or unique insight into the other's thoughts and intentions.
+
+**Supernatural Intuition** You can sense the presence of supernatural beings and forces. This ability can act as an early warning system or guide your party toward hidden dangers or opportunities.
+
+**Temporal Echo** You can temporarily replay past events regarding persons, places, and objects. -1p if you can only do one of the three. This ability allows you to uncover secrets, retrace steps, or resolve mysteries tied to your surroundings.
+
+**Quantum Pocket** You can store and retrieve objects in a subspace storage. This ability allows you to carry large or dangerous items without arousing suspicion or taking up inventory space.
+
+**Lock** You can place a protective barrier around a container or room. Your bonus to resist someone breaking into the container or room is 3 × your intelligence. You can only have one lock active at a time, but you can disable and activate a new one at any time from anywhere. This feature can protect critical resources or delay enemies trying to access important areas.
+
+**Simultaneous Processing** You can perform hundreds of simple mental tasks simultaneously. This feature allows for unique problem-solving opportunities, such as tracking multiple variables in puzzles or analyzing large amounts of data.
+
+**Hidden Trap** It takes one hour to set up the trap, and you may set it to release one of your moveset attacks. You can set a number of traps equal to your awareness per rest. If the trap is triggered, the attack is released. You suffer/are limited by your downsides when setting the trap. Hidden traps will require a perception check against double your awareness to detect and a mobility check to disarm or avoid. Traps can act as defensive tools or narrative elements for ambushes and distractions.
+
+**Prodigy** You're a quick learner. You become temporarily proficient on a topic if you can spend 1 hours of active downtime learning and researching. This ability can be used to overcome challenges where expertise is lacking, giving your party a strategic edge.
+
+**Future Sight** You receive visions of a future that may or may not happen. Once per session, you may attempt to force one of these visions. Roll a 1d100; the higher the number, the more accurate and less vague the vision becomes. Visions can provide cryptic hints or direct guidance for pivotal narrative moments.
+
+## 3p Premium Features
+
+**Immortality** You are immortal, you can be killed but you will return to life after 24 hours. Discuss with the GM a limitation for said immortality, a way in which you can truly be killed. Additionally, where you return and if there are any changes that affect you.
+
+**Self-Sacrifice** As you activate this feature, increase your Tier by 4, for 6 rounds. At the end of the 6 rounds, you die. May change the penalty and/or bonus for something equivalent, discuss with GM. Cannot use last stand if you use Self-Sacrifice.
+
+**Perfect Sanctuary** Create an impenetrable zone around you and your allies for a short duration. Nothing can enter or leave this zone without your permission. Discuss specific limitations with the GM. This feature can buy time to regroup, heal, or devise a strategy in dangerous situations.
+
+**Mind Reading** Make a mind reading check with a bonus of double either your awareness or intelligence vs resolve defense to attempt to read a target's mind that you can see. On a success, you gain whatever information you're looking for that the target knows, even subconsciously. On a failure, they know you tried to read their mind and are immune to this feature until you have completed a full rest. You cannot reduce the cost past 1p.
+-1p Just surface thoughts.
+-1p Must touch the target; use focus vs avoidance DC if unwilling.
+This ability can uncover hidden motives, secret plans, or valuable insights, adding depth to social and investigative encounters.
+
+**Perception Filter** Temporarily render objects or areas unnoticed by others. May require stealth checks. This ability can conceal critical items, entrances, or even entire rooms, creating unique opportunities for subterfuge or ambushes.
+
+**Alchemist** You are a master of creating experimental tinctures and tonics. The concoctions work a single time to accomplish a specific goal. You will need time to gather the required ingredients, requiring a science or awareness check to forage or rolling a d100 and communication to purchase. The GM will decide the DCs, the amount of time it takes, and any costs. For more powerful concoctions, special ingredients with complex requirements may be needed. Once gathered, you must make a crafting check using dexterity or intelligence. This feature allows for tailored solutions to challenges, such as crafting potions to heal allies or neutralize threats.
+
+**Ritualist** You can create magical rituals. These rituals work a single time and to accomplish a specific goal. The GM will determine the DC based on the setting. It will take one uninterrupted hour to complete and may require special ingredients, such as a specific location, blood, or a rare object. This ability allows you to craft powerful, story-driven effects that can turn the tide of major events.
+
+**Inventor** You can create technological inventions. These inventions work a single time and to accomplish a specific goal. The GM will determine the DC of the Intelligence check based on the setting. It will take a number of hours of active downtime equal to the DC - 10. Requires a suitable lab or workshop. Your inventions can provide creative solutions to otherwise insurmountable challenges. Using certain items, materials and knowledge that you discover in the world may lower the DC, allowing you to create inventions that would otherwise be impossible, failing the roll will mean that the items, material or knowledge can't be used in the future.
+
+**Know It All** You're very bossy and like to tell others how to do things. If you can spend one minute explaining how to do something better, another character can add your intelligence to any check, provided they follow your advice. This feature allows you to shape group dynamics by enabling others to succeed through your expertise.
+
+**Social Network** You have extensive connections with various influential individuals. These connections can provide critical assistance, such as opening doors to exclusive events, securing resources, or obtaining valuable information.
+
+**Bard** You can sing a tune to help inspire others. You give a +4 bonus to any check for one minute, a number of times per day equal to your communication score. This feature can be used to bolster your party's morale, enhance skill checks, or sway NPCs through captivating performances.
+
+**Enhanced Climb** You can climb at your full movement speed but cannot end your turn on a surface without a hold.
+
+**Fall Proof** You don't take fall damage.
+
+**Super Climb** You can climb at your full movement speed and can cling to most surfaces even upside down.
+
+**Chemical Assistance** You consume a chemical substance to assist you. It must be addictive. You gain a cumulative +1 to checks from one utility stat chosen when you take this feature. You also gain a cumulative -1 penalty to all checks as long as you are sober. You may take this feature multiple times. This ability introduces roleplay opportunities as you balance the benefits of enhancement against the narrative and mechanical consequences of addiction.
+
+**Corruption** When taking this feature, you may choose 1 of the following:
+
+- Choose 1 attack, each time you make that attack, add your Tier bonus to the Accuracy, Damage, and Condition Roll.
+- Choose a situation (civilians dying, life or death, particular emotion, an ally is unconscious or at great risk), when that situation occurs, you gain 2 Tiers at the start of your turn until the end of your next turn.
+- After a failed roll, you may choose to add your Tier to the roll.
+
+Each time this situation occurs, roll a secret d20, the DC starts at 2, and increases by 1 for each time this feature has been used. If you fail to meet the DC, your character becomes corrupted, they are now an NPC, the GM will instruct you how to act as your character is now corrupted. Additionally, each time you successfully roll, choose a minor narrative quirk to represent how the character is becoming more corrupted.
+
+**Bleeding Edge** Your technology is the most advanced and powerful there is, allowing you greater feats beyond what normal technology can accomplish. However, it can only be repaired, maintained, modified, or upgraded using very specific or hard-to-find tools, methods, or materials. This ability provides unique opportunities for innovation but introduces challenges in maintaining your equipment.
+
+**Hexer** You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 SP of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM when you take this ability. The curse may be lifted by killing the Hexer or fulfilling one other condition (related to the special condition) imposed when the curse is made, which must be known to the target.
+
+You may choose one of the following effects or discuss with the GM an appropriate custom effect:
+
+- Death: The cursed individual suffers a slow and agonizing demise.
+- Discord: The cursed individual's relationships deteriorate, leading to strife.
+- Fear: The cursed individual becomes consumed by irrational terror.
+- Hopelessness: The cursed individual loses all sense of optimism or purpose.
+- Insanity: The cursed individual's mind fractures into madness.
+- Sleep: The cursed individual enters a deep, death-like slumber.
+- Cursed Transformation: The cursed individual undergoes a monstrous transformation.
+- Eternal Torment: The cursed individual is condemned to endless suffering.
+
+If the target moves outside your range during the curse's preparation, the process is interrupted. The curse can serve as a major plot driver, forcing adversaries to react or bargain with you.
