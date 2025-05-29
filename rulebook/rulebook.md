@@ -1322,13 +1322,109 @@ Selection: Choose Accuracy, Damage, or Conditions when purchasing
 
 
 
+# UTILITY ABILITIES
+
+## Utility Points
+
+**Calculation**: You receive utility points equal to 5 × (Tier - 1).
+- Tier 1: 0 points
+- Tier 3: 10 points  
+- Tier 5: 20 points
+- Tier 10: 45 points
+
+**Spending Rules**: Utility points purchase Features and Expertises only. You cannot transfer these points to other pools or save them for later advancement.
+
+**Point Tracking**: During character creation, subtract each purchase from your utility point total. You cannot exceed your available points.
 
 
 
 
 
+# UTILITY ABILITIES
 
-**Dynamic Entry (10p)** → On first turn of combat, move yourself and allies (up to Intelligence score) up to Communication score spaces
+## Utility Points
 
+**Calculation**: You receive utility points equal to 5 × (Tier - 1).
+- Tier 1: 0 points
+- Tier 3: 10 points  
+- Tier 5: 20 points
+- Tier 10: 45 points
+
+**Spending Rules**: Utility points purchase Features and Expertises only. You cannot transfer these points to other pools or save them for later advancement.
+
+**Point Tracking**: During character creation, subtract each purchase from your utility point total. You cannot exceed your available points.
+
+## Features
+
+**Definition**: Abilities that enable entirely new categories of actions and checks impossible through standard character capabilities. Features grant access to supernatural effects, reality manipulation, or fundamentally new interaction methods with the game world.
+
+**Mechanical Function**: Features allow you to make checks you normally couldn't make. They create new possibilities rather than enhancing existing ones.
+
+**Cost**: 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
+
+**Examples**: 
+- Telepathy allows Communication checks directly into someone's mind
+- Phasing enables Mobility checks to move through solid barriers
+- Time Sight permits Awareness checks to perceive past or future events
+
+### Feature Subtypes
+
+**Descriptors**: Thematic power suites tied to elemental, energy, or conceptual forces that grant multiple related capabilities within a specific domain.
+- Fire Descriptor (5p): Immunity to heat, ignite objects by touch, manipulate existing flames, detect heat sources
+- Time Descriptor (10p): Temporal perception, limited time manipulation effects, chronological awareness
+
+**Senses**: Enhanced perception capabilities that provide entirely new forms of awareness and detection impossible through normal human senses.
+- Echolocation (5p): Navigate by sound analysis, detect objects within Tier × 2 meters, function normally while blinded
+- X-Ray Vision (3p): See through solid matter up to 10cm thickness, detect hidden objects and structural weaknesses
+
+## Expertises
+
+**Definition**: Specialized knowledge, training, or unique abilities that enhance your effectiveness within existing skill categories. Expertises can represent peak human achievement, superhuman talent, or distinctive capabilities that improve standard actions.
+
+**Mechanical Function**: Expertises add to rolls you can already make. They provide bonuses to existing check categories rather than creating new ones.
+
+**Cost**: 1, 2, or 3 utility points based on frequency of applicable use across typical gameplay scenarios.
+
+**Pricing Rationale**:
+- **1 Point**: Situational applications with narrow utility (Gamer, Star Gazer, Local Celebrity)
+- **2 Points**: Moderate applications with regular utility (Master Acrobat, Lie Detector, Assessment)  
+- **3 Points**: Broad applications with frequent utility (Stealth, Persuasion, Investigation)
+
+**Scope Clarification**: Expertises encompass both realistic human capabilities and superhuman talents, provided they enhance existing skill frameworks rather than creating entirely new action categories.
+
+### Multi-Level Purchase
+
+**Investment Structure**: Purchase a second level by paying 3× the base cost of the expertise.
+
+**Mechanical Benefit**: Double the Tier bonus provided by that expertise to applicable checks.
+
+**Calculation Example**: 
+- Stealth expertise (3p) normally adds Tier to stealth checks
+- Second level costs additional 9p (total investment: 12p)
+- Two-level Stealth adds 2 × Tier to stealth checks
+
+**Purchase Limitation**: Maximum two levels per individual expertise.
+
+## Mechanical Application
+
+### Features
+**Activation**: Features provide their described effects automatically when relevant conditions occur or conscious activation requirements are met. Most features require no roll unless specifically noted in their description.
+
+**New Check Categories**: Features enable check types impossible without the feature.
+- Telepathy: Make Communication checks to read surface thoughts
+- Phasing: Make Mobility checks to pass through solid barriers  
+- Precognition: Make Awareness checks to glimpse future possibilities
+
+### Expertises  
+**Bonus Application**: Add your Tier bonus to applicable skill checks when the expertise's specialty applies to the current situation.
+
+**Situational Relevance**: The GM determines when an expertise applies based on the expertise description and the specific circumstances of the attempted action.
+
+**Stacking Rules**: 
+- **Multi-Level Stacking**: Multiple levels of the same expertise stack (that's the purpose of multi-level purchase)
+- **Different Expertise Stacking**: Multiple different expertises can apply to the same check if their specialties genuinely overlap with the situation
+- **Source Limitation**: You cannot gain the same mechanical bonus from multiple different sources
+
+**Application Example**: A character with two-level Stealth expertise (12p total) making a Mobility check to sneak past guards adds 2 × Tier to the roll. If the same character also possessed Urban Navigation expertise (2p) and the sneaking occurred in a familiar city environment, both bonuses would apply for a total of 3 × Tier bonus.
 
 
