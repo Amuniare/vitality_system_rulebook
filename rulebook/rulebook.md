@@ -707,27 +707,6 @@ Upgrade Options:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # SECTION 7: SPECIAL ATTACKS
 
 ### **BASIC RULES**
@@ -1029,9 +1008,314 @@ Upgrade Options:
 
 
 
+## UPGRADES 
 
 
+### ACCURACY BONUSES
+*Roll modification and critical hit enhancement*
 
+**10p - Accurate Attack**  
+Effect: +Tier to Accuracy rolls, -Tier to Damage and Condition rolls  
+Usage: Basic accuracy/damage trade-off  
+
+**20p - Reliable Accuracy**  
+Effect: Advantage on Accuracy rolls, -4 penalty to all Accuracy rolls  
+Usage: Consistent hitting with reduced total bonus  
+
+**30p - Critical Accuracy**  
+Effect: Critical hit range expanded to 15-20 on d20  
+Restriction: Cannot apply to AOE attacks  
+
+**20p - Powerful Critical**  
+Effect: Add Tier bonus again to Effect rolls on critical hits  
+Usage: Enhances critical hit damage/condition strength  
+
+**30p - Overhit**  
+Effect: When Accuracy exceeds target Avoidance by 5+, add half the difference to Effect roll  
+Usage: Rewards high accuracy against low-defense targets  
+
+**20p - Blitz**  
+Effect: +1 Accuracy per 6 spaces moved toward target this turn  
+Usage: Mobile attacker bonus, stacks with movement  
+
+**20p - Ricochet**  
+Effect: Critical hits trigger additional attack against different target within range  
+Restriction: Secondary attack cannot crit from target being Stunned  
+Exclusion: Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet  
+
+**30p - Double-Tap**  
+Effect: Critical hits trigger same attack again against same target  
+Restriction: Secondary attack cannot crit from target being Stunned  
+Exclusion: Cannot trigger from Ricochet, Explosive Critical, or other Double-Tap  
+
+**40p - Explosive Critical**  
+Effect: Critical hits trigger attack against all enemies within 3 spaces of target  
+Restriction: Cannot apply to AOE attacks, secondary attacks cannot crit from Stun  
+Exclusion: Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical  
+
+---
+
+### DAMAGE BONUSES
+*Damage dice manipulation and enhancement effects*
+
+#### Core Damage Modifiers
+
+**10p - Power Attack**  
+Effect: +Tier to Damage rolls, -Tier to Accuracy rolls  
+Usage: Basic damage/accuracy trade-off  
+
+**20p - High Impact**  
+Effect: Replace 3d6 damage roll with flat 15 damage  
+Usage: Eliminates damage variance for consistent output  
+
+**50p - Enhanced Effect**  
+Effect: Add one additional damage die to damage rolls  
+Usage: Increases damage potential and average  
+
+#### Dice Manipulation
+
+**10p - Reliable Effect**  
+Effect: Roll extra die on Effect rolls, drop lowest result  
+
+**20p - Consistent Effect**  
+Effect: Reroll all 1s on damage dice  
+
+**50p - Critical Effect**  
+Effect: All effect dice explode on rolls of 5 or 6  
+Usage: Dice continue rolling when showing 5-6, cumulative  
+
+#### Armor and Defense Bypass
+
+**30p - Armor Piercing**  
+Effect: -Tier to Attack rolls, ignore target's Durability Endurance bonus  
+Note: For Direct attacks, reduce Damage roll instead of Attack roll  
+
+**40p - Brutal**  
+Effect: When Damage roll exceeds target Durability by 10+, deal extra damage equal to half the difference  
+Banned Combination: Cannot combine with Heavy Strike or Headshot  
+
+#### Damage Over Time and Area
+
+**50p - Bleed**  
+Effect: Target takes identical damage again at end of your next 2 turns  
+Duration: 2 additional damage instances  
+
+**20p - Splash Damage**  
+Effect: Adjacent targets take Tier+1d6 damage if Attack roll would hit their Avoidance  
+Usage: Applies to Melee and Ranged attacks only  
+
+**50p - Environmental**  
+Effect: All hexes hit by attack become hazardous terrain  
+Hazard Effect: Deal attack's Damage and Condition to any character entering or ending turn in hex  
+
+#### Utility Effects
+
+**20p - Shatter**  
+Effect: Deal double damage to structures and vehicles  
+Usage: Specialized anti-object enhancement  
+
+**80p - Leech**  
+Effect: Regain HP equal to half damage dealt  
+Restriction: Cannot apply to AOE attacks  
+
+#### Instant Defeat Mechanics
+
+**20p per tier - Finishing Blow**  
+Effect: If attack reduces enemy to 5×tier HP or below, enemy is defeated instead  
+Maximum: 3 tiers purchasable, stacks multiplicatively  
+Restriction: Cannot apply to AOE attacks  
+
+**20p - Culling Strike**  
+Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead  
+Restriction: Cannot apply to AOE attacks  
+
+---
+
+### CONDITION BONUSES
+*Condition application and enhancement*
+
+**30p - Critical Condition**  
+Effect: Condition rolls critical hit on 15-20 range  
+Restriction: Cannot apply to AOE attacks  
+
+**20p - Lasting Condition**  
+Effect: If Condition roll exceeds Resistance by 10+, condition duration extends by 1 turn  
+
+**60p - Mass Effect**  
+Effect: Single Direct condition attack targets up to Tier enemies simultaneously  
+Effect Modifier: -Tier penalty to Condition rolls  
+
+**60p - Collateral Condition**  
+Effect: Successful condition triggers attack against all targets within 3-space burst  
+Restriction: Cannot apply to AOE attacks, triggers only once per attack  
+
+**40p - Contagious**  
+Effect: Successful condition triggers attack against nearest enemy  
+Maximum Triggers: Tier/2 times per attack (rounded down)  
+Restriction: Cannot apply to AOE attacks  
+
+**30p - Cursed**  
+Effect: If 2×(Condition roll - Resistance) ≥ target's remaining HP, condition becomes permanent  
+
+**40p - Overwhelming Affliction**  
+Effect: If Condition roll exceeds Resistance by 3×Tier, condition becomes permanent regardless of target HP  
+
+---
+
+### SPECIALIZED COMBAT
+*Unique attack patterns and combat techniques*
+
+#### Melee Specialization
+
+**40p - Heavy Strike**  
+Requirement: Expend all Movement and one Quick Action to charge  
+Effect: +3×Tier to Damage and Condition rolls, -Tier to Accuracy rolls  
+Banned Combination: Cannot combine with Brutal  
+
+**40p - Quick Strikes**  
+Requirement: Expend all Movement and one Quick Action to charge  
+Effect: Make same Melee attack three times against single target, -Tier to Accuracy rolls  
+
+**30p - Whirlwind Strike**  
+Effect: Single Melee attack targets up to Tier enemies simultaneously  
+Effect Modifier: -Tier penalty to Accuracy rolls  
+
+#### Ranged Specialization
+
+**60p - Headshot**  
+Requirement: Expend all Movement and one Quick Action to charge  
+Effect: +3×Tier to Damage and Condition rolls, -Tier to Accuracy rolls  
+Banned Combination: Cannot combine with Brutal  
+
+**60p - Barrage**  
+Requirement: Expend all Movement and one Quick Action to charge  
+Effect: Make same Ranged attack three times against single target, -Tier to Accuracy rolls  
+
+**60p - Scatter Shot**  
+Effect: Single Ranged attack targets up to Tier enemies simultaneously  
+Effect Modifier: -Tier penalty to Accuracy rolls  
+
+#### Universal Combat Techniques
+
+**40p - Flurry of Blows**  
+Effect: Make same attack three times against single target  
+Effect Modifier: -Tier to Accuracy, Damage, and Condition rolls  
+Usage: Works with Melee or Ranged attacks  
+
+**20p - Pounce**  
+Effect: Move up to 6 spaces in straight line toward target as part of attack  
+Usage: Movement occurs during attack resolution  
+
+**40p - Splinter**  
+Effect: Defeating enemy triggers another attack against new target before turn ends  
+Chain Limit: Maximum Tier/2 additional attacks (rounded up)  
+Restriction: Cannot apply to AOE attacks  
+
+#### Tactical Enhancements
+
+**30p - Menacing**  
+Effect: Reducing enemy to 0 HP allows Intimidation attempt against all enemies within 3 spaces  
+Surrender Threshold: Enemies with HP ≤ Intimidation bonus surrender  
+
+**30p - Disengage**  
+Effect: Successful hit prevents opportunity attacks from all hit targets until end of turn  
+
+**60p - Extra Attack**  
+Effect: Successful hit with successful effect allows identical attack against same target  
+Usage: Must hit and succeed on both Accuracy and Effect  
+
+#### Sequential Attack Systems
+
+**20p - Analyzing Strike**  
+Effect: +1 to chosen stat (Accuracy/Damage/Conditions) per previous Analyzing Strike against same target  
+Maximum Bonus: Equal to Tier  
+Reset Condition: Bonus resets if you skip attacking target for one turn  
+Limitation: Only one target can have Analyzing Strike bonus at any time  
+
+**30p - Follow-Up Strike**  
+Effect: Successful hit with successful effect allows one Base Attack against same target  
+Frequency: Once per turn maximum  
+
+**40p - Counterattack**  
+Effect: Using attack against enemy that missed you or failed their effect adds Tier to chosen roll  
+Bonus Selection: Choose Accuracy, Damage, or Condition when purchasing  
+Restriction: Cannot use with limits requiring you to be attacked or affected  
+
+**40p - Exploit**  
+Effect: +Tier to Effect rolls against targets currently afflicted by any Condition  
+
+#### Combat Control
+
+**20p - Priority Target**  
+Effect: After hitting target, mark them as Priority Target until start of next turn  
+Ally Bonus: Other characters gain Tier/2 Accuracy bonus against marked target (rounded up)  
+Frequency: Once per turn  
+
+**10p - Bully**  
+Effect: Damaging target with Power score equal to or less than yours allows 1-space forced movement  
+
+**20p - Martial Artist**  
+Effect: Critical hits allow choice of Grab, 3-space forced movement, or Prone condition  
+
+**30p - Grappler**  
+Effect: +Tier damage against targets you have Grabbed  
+Requirement: Must have Grab condition active on target  
+
+---
+
+### VARIABLE BONUSES
+*Situational and scaling enhancements*
+
+#### Enemy Type Bonuses
+*20p each - Choose Accuracy, Damage, or Condition when purchasing*
+
+**Minion Slayer**: Bonus applies against 10 maximum HP enemies  
+**Captain Slayer**: Bonus applies against 25 maximum HP enemies  
+**Elite Slayer**: Bonus applies against 50 maximum HP enemies  
+**Boss Slayer**: Bonus applies against 100 maximum HP enemies  
+
+#### Resource-Based Bonuses
+
+**20p - Lucky Strike**  
+Effect: Using Effort on this attack allows rolling extra die on the Effort roll  
+
+**20p - Compressed Release**  
+Requirement: Active Aura ability  
+Effect: Disable Aura until start of next turn, +Tier to Accuracy and Effect rolls  
+
+#### Environmental Bonuses
+
+**30p - Domain**  
+Requirement: Active Barrier ability  
+Effect: +Tier to chosen roll when attacking targets within your Barrier  
+Selection: Choose Accuracy, Damage, or Conditions when purchasing  
+
+**30p - Tower Defense**  
+Requirement: Active Wall ability  
+Effect: +Tier to chosen roll when attacking targets on opposite side of your Wall  
+Selection: Choose Accuracy, Damage, or Conditions when purchasing  
+
+#### Sustained Attack Systems
+
+**40p - Channeled**  
+Requirement: Ranged or AOE attack type  
+Effect: Spend Primary Action + Movement on subsequent turns to repeat attack  
+Scaling: +Tier to chosen roll for each consecutive turn channeling (maximum 5 turns)  
+Selection: Choose Accuracy, Damage, or Conditions when purchasing  
+
+**20p - Focused**  
+Requirement: Melee attack type  
+Effect: Spend Primary Action + Movement on subsequent turns to repeat attack  
+Scaling: +Tier to chosen roll for each consecutive turn focusing (maximum 5 turns)  
+Selection: Choose Accuracy, Damage, or Conditions when purchasing  
+
+---
+
+### BANNED COMBINATIONS
+
+**Brutal + Heavy Strike**: Damage multiplication effects stack inappropriately  
+**Brutal + Headshot**: Damage multiplication effects stack inappropriately  
+**Critical Effect + Consistent Effect**: Dice reroll conflicts  
 
 
 
