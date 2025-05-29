@@ -1,4 +1,4 @@
-# SECTION 1: BASIC RULES - REVISED
+# SECTION 1: BASIC RULES
 
 ### **DICE SYSTEM**
 **D20 Rolls**
@@ -260,7 +260,7 @@ Upgrade Options:
 - Tiers 1-4: +1 to all | Tiers 5-7: +2 to all | Tiers 8+: +3 to all
 - Affects: Accuracy, Damage, Conditions, Avoidance, Durability, Resistances, Initiative, Movement
 
-### **DEFENSIVE ARCHETYPES** *(New)*
+### **DEFENSIVE ARCHETYPES** 
 *Choose one to define core defensive capabilities*
 
 **Stalwart**
@@ -325,8 +325,9 @@ Upgrade Options:
 
 **Basic**
 - Tier × 10 points for base attack improvements only
-- No specialty upgrades
-- Good for new players
+- No special attacks
+- Good for builds that use base attack
+
 
 ### **UTILITY ARCHETYPES**
 *Defines non-combat capabilities and specialized skills*
@@ -536,8 +537,9 @@ Upgrade Options:
 ### **OTHER UNIQUE ABILITIES**
 *Specialized powers and abilities for character customization*
 
-### **AURA (30p)**
+### **AURA**
 *Passive field around you affecting enemies or allies*
+- **Cost**: 30p
 - **Activation:** Quick Action to activate, Quick Action each turn to maintain
 - **Base Radius:** 1 space
 - **Upgrades:**
@@ -556,8 +558,9 @@ Upgrade Options:
 - **Bolster Aura** → Allies in radius receive benefit of your Fighting Actions
   - **Passive Buff (30p/x)** → You and allies always under effect of X chosen Fighting Actions
 
-### **BARRIER (30p)**
+### **BARRIER**
 *Temporary protective field summoning*
+- **Cost**: 30p
 - **Activation:** Quick Action to summon, Quick Action each turn to maintain
 - **Base Radius:** 1 space, appears centered on you
 - **Statistics:** 50 HP, full Condition immunity, AV = 0, DR = 10 + Tier
@@ -576,8 +579,9 @@ Upgrade Options:
   - **Transparent (10p)** → Barrier is see-through
   - **Variable Size (10p)** → Change size each activation
 
-### **CREATE WALL (30p)**
+### **CREATE WALL**
 *Temporary battlefield structure creation*
+- **Cost**: 30p
 - **Activation:** Quick Action to summon, Quick Action each turn to maintain  
 - **Size:** 10m long × 4m high
 - **Placement:** Roll d20 + Tier, targets with higher Avoidance can move to other side
@@ -594,8 +598,9 @@ Upgrade Options:
   - **Variable Size (20p)** → Change size each activation
   - **Rapid Summon (20p)** → Add Tier twice to placement roll
 
-### **SHIELD (30p)**
+### **SHIELD**
 *Personal protective energy field*
+- **Cost**: 30p
 - **Effect:** Gain shield with Tier×3 HP at start of each turn (not cumulative)
 - **Function:** Shield HP taken before personal HP, uses your AV and DR
 - **Restriction:** Cannot purchase Avoidance or Durability bonuses
@@ -605,8 +610,9 @@ Upgrade Options:
   - **Heavy Shield (-15p)** → Only recover Tier HP per turn (cannot be increased)
   - **Area Shield (30p)** → While shield has HP, all ranged/ranged AOE vs adjacent squares hit your shield instead
 
-### **BACKLASH (30p)**
+### **BACKLASH**
 *Automatic counterattack system*
+- **Cost**: 30p
 - **Trigger:** When hit by melee attack
 - **Effect:** Make base attack against attacker
 - **Uses:** Tier uses per turn, all uses regain at start of your turn
@@ -615,8 +621,9 @@ Upgrade Options:
   - **Distant Response (30p)** → Triggered by any attack type, can respond with Base Ranged/Direct attack
   - **Explosive Response (30p)** → Base attack becomes 3sp AOE Burst
 
-### **BOOST (60p)**
+### **BOOST**
 *Temporary power enhancement*
+- **Cost**: 60p
 - **Effect:** Increase Tier by half (rounded up) as Free Action
 - **Duration Options:**
   - **Short** → 3 turns once per fight, regain after 3 rounds of rest (stunned while resting, damage interrupts)
@@ -624,10 +631,10 @@ Upgrade Options:
 - **Upgrades:**
   - **Affects Others (15p)** → Can target other creatures instead of yourself
 
-### **SUMMON TREE (10p base per summon)**
-*Prerequisites must be met to purchase higher tiers*
 
-**BASE SUMMON (10p)**
+
+**BASE SUMMON**
+- **Cost**: 10p per summon
 - Your Tier, 10 HP (minion), standard stats, no Special Attacks, no Utility, acts on your initiative
 
 **BASIC UPGRADES (5-15p)**
@@ -652,19 +659,22 @@ Upgrade Options:
 **ELITE UPGRADES (40p)**
 - **Game Hunter (40p)** → Summon defeated enemies under specific conditions (complex rules, GM approval)
 
-### **INVISIBILITY (30p)**
+### **INVISIBILITY**
 *Advanced concealment ability*
+- **Cost**: 30p
 - **Effect:** Can take Hide Action while in line of sight of enemies
 - **Immunity:** Unaffected by sight-based abilities
 
-### **REGENERATION (60p)**
+### **REGENERATION**
 *Rapid healing ability*
+- **Cost**: 60p
 - **Effect:** Regain HP at start of each turn: 20 HP (Tiers 1-4), 30 HP (5-6), 40 HP (7-8), 50 HP (9-10)
 - **Unconscious:** Wake up once healed to full HP
 - **Restriction:** Cannot purchase Avoidance or Durability bonuses
 
-### **HEAL (30p)**
+### **HEAL**
 *Restore others' health*
+- **Cost**: 30p
 - **Action:** Touch living being
 - **Base:** As an action, heal a creature (5 x Tier) HP, 5 Uses per rest.
 - **Upgrades:**
@@ -679,7 +689,7 @@ Upgrade Options:
   - **Mass Healing (15p)** → Additional target per action, pay charges per target
   - **Quick Healing (30p)** → Heal as Quick Action
 
-### **COUNTER (30p)**
+### **COUNTER**
 *Nullify enemy actions*
 - **Range:** 30 spaces, must see target
 - **Action:** Declare target on your turn  
@@ -803,7 +813,8 @@ Upgrade Options:
 
 ## Limits
 
-### Charge-Up (20p)
+### Charge-Up
+**Cost**: 20p
 *Must use Primary Action on consecutive turns to charge before using attack*
 
 +30p **Extended Charge** Must charge for two turns before using
@@ -837,35 +848,29 @@ Upgrade Options:
 * +Variable **Reaction Delay** Cannot use Reactions while charging, gain points equal to cost of reaction abilities you have purchased
 
 
-
-
-### Reserves (10p)
+### Reserves 
+**Cost**: 10p
 *Can only be used 3 times per combat. Regain all uses after combat ends.*
 
 +10p **Reserves 2** Reduce to 2 uses per combat
 * +20p **Reserves 1** Reduce to 1 use per combat
 * +40p **Fragile Reserve** Each time you take damage, lose 1 use
-* +40p Critical Failure If you roll a natural 1 on any d20, lose 1 use
-
+* +40p **Critical Failure** If you roll a natural 1 on any d20, lose 1 use
 
 +30p **Extended Recovery** Regain uses after full rest instead of after combat, once per day
 * +20p **Preparation** You need to spend 8 hours of time preparing, to recover uses
 * +50p **Weekly Preparation** Can only regain uses once per week
 * +20p **Slow Recovery** Regain only 1 use per rest period instead of all uses
 
-
 +30p **Volatile Uses** External factors can cause unexpected use loss
 * +20p **Proximity Loss** Lose 1 use when enemy ends turn adjacent to you
 * +40p **Damage Cascade** Taking 10+ damage in single attack causes loss of 1 use
 * +50p **Condition Trigger** Gaining any Advanced Condition causes loss of all remaining uses
 
-
-
 +20p **Shared Pool** Multiple special attacks share same use pool, total uses divided among them, +1 use for each special attack added
 * +20p **Reserves 1** Reduce pool by 1 use
 * +30p **Pool Drain** If any attack in pool misses, remove an extra use
 * +20p **Cascade Lock** If any attack in pool misses, no attacks in pool can be used for 1 turn
-
 
 +50p **Resource Drain** When out of uses, cannot take Quick Actions
 * +30p **Stat Drain** When out of uses, subtract Tier from Accuracy and Damage
@@ -876,6 +881,172 @@ Upgrade Options:
 * +20p **Unhealthy** Must be below half HP to use
 * +30p **Melee** Must be adjacent to enemy to use  
 * +50p **Target History** Can only target enemies you have not attacked this combat
+
+
+
+
+
+
+
+
+
+
+### Cooldown
+**Cost**: 20p
+*Cannot use again for 1 turns after use*
+
++10p **Cooldown 2** Cannot use again for 2 turns after use
+* +20p **Cooldown 3** Cannot use again for 3 turns after use
+* +30p **Permanent Injury** Each use increases cooldown by 1 turn permanently 
+* +30p **Fates** Roll a d4-1 when the attack is made, the cooldown is extended by the result
+
++20p **Failure Extension** If attack misses or fails effect, cooldown increases by 2 turns
+* +30p **Cascade Extension** If attack fails, all your special attacks gain +1 turn cooldown
+* +30p **Attrition** Take 10 damage for each turn spent on cooldown
+
+
++30p **Shared Cooldown** 3 special attacks share same cooldown timer
+* +20p **Pool Interference** When one attack is on cooldown, all others have +1 turn added
+* +40p **System Lock** If any shared attack fails, entire pool gains +2 turn cooldown
+* +50p **Cascade Shutdown** One attack failing puts all shared attacks on 5-turn cooldown
+
++20p **Conditional Reset** Must wait cooldown period then expend a quick action to regain special attack
+* +40p **Combat Victory** Instead of quick action, you need to expend an action
+* +30p **Environmental** Cooldown only resets in specific location/weather/time
+* +50p **Ally Dependent** Ally must use specific action to reset your cooldown
+
++50p **Trigger Extension** Taking damage or gaining conditions adds 1 turn to current cooldown
+* +30p **Damage Cascade** Taking 15+ damage adds 2 turns to cooldown
+* +40p **Condition Spiral** Each different condition adds separate turn to cooldown
+* +60p **Pain Memory** Each time you take damage, all future cooldowns increase by 1
+
++60p **Status Degradation** Cooldown increases based on current health/condition state
+* +40p **Death Proximity** Cooldown increases by 1 turn for every 25 HP below maximum
+* +50p **Condition Burden** Each active condition adds 1 turn to base cooldown
+* +70p **Wounded System** While below 50% HP, all cooldowns doubled
+
+
+
+### Reliability
+**Cost**: 20p
+*Roll d20 before use; if under 5, attack fails and action is wasted*
+
++20p **Unreliable 10** Must roll 10+ or attack fails
+* +40p **Unreliable 15** Must roll 15+ or attack fails
+* +60p **Unreliable 20** Must roll 20 or attack fails
+* +30p **Double Check** Must make reliability check twice, both must succeed
+
++30p **Stress Breakdown** Reliability DC increases by 2 each turn of combat
+* +40p **Rapid Degradation** Reliability DC increases by 3 each turn of combat
+* +50p **Permanent Decay** Each failed check permanently increases future DCs by 1
+* +60p **Combat Fatigue** DC increases by 1 for each action taken this combat
+
++40p **Equipment Dependent** Attack fails if you don't have specific required item
+* +20p **Fragile Gear** Each use has 25% chance to break required equipment
+* +30p **Consumable** Required item is destroyed each use, must acquire new one
+* +50p **Maintenance** Equipment breaks if attack fails, requires action to repair
+
++50p **Health Dependent** Reliability DC increases as HP decreases
+* +40p **Critical Malfunction** DC becomes 15 when below 50% HP, 20 when below 25% HP
+* +60p **Death Spiral** DC increases by 1 for every 10 HP below maximum
+* +70p **System Failure** Automatic failure when below 25% HP
+
++60p **Cascading Failure** Each failure increases next reliability DC by 5
+* +40p **Accelerated Decay** Each failure increases DC by 10 instead of 5
+* +50p **Spread Effect** Failed checks increase DC for all your special attacks
+* +80p **Critical Cascade** Three failures in combat make ability unusable for rest of session
+
++70p **Failure Backlash** When attack fails, negative effect occurs to you
+* +50p **Self Damage** Take 15 damage when attack fails
+* +60p **Condition Infliction** Gain Daze condition when attack fails
+* +80p **Stat Drain** Lose 2 from chosen stat until rest when attack fails
+
+
+### Sequential
+**Cost**: 30p
+*Must successfully use different special attack this turn before using this one*
+
++20p **Action Chain** Must use specific Primary Action type this turn before use
+* +30p **Double Chain** Must use two different Primary Actions this turn before use
+* +40p **Perfect Chain** All prerequisite actions this turn must succeed or this fails
+* +50p **Exhausting Chain** Must spend Effort on prerequisite action or this fails
+
++30p **Target History** Can only target enemies you have/haven't attacked this combat
+* +40p **Fresh Targets Only** Can only target enemies no one has damaged this combat
+* +50p **Finishing Move** Can only target enemies below 25% HP
+* +60p **Hunter Restriction** Can only target specific enemy type chosen at character creation
+
++40p **Ally Setup** Ally must use specific action type before you can use this
+* +30p **Coordination** Ally must target same enemy you're about to attack
+* +50p **Sacrifice** Ally must take damage this turn for you to use this
+* +60p **Perfect Teamwork** Ally's setup action must succeed or your attack fails
+
++50p **Combat Gate** Cannot use until specific battlefield condition occurs
+* +40p **Slaughter** Cannot use until enemy has been defeated this combat
+* +60p **Escalation** Cannot use until someone has taken 25+ damage this turn
+* +70p **Desperation** Cannot use until ally is unconscious
+
++60p **Ability Cycle** Must use all other special attacks once before reusing this
+* +50p **Perfect Cycle** All other special attacks must have succeeded before reuse
+* +70p **Combat Cycle** Must use all other abilities and wait 1 full turn before reuse
+* +80p **Master Cycle** Each other ability must be used twice before reusing this
+
++40p **Turn Window** Can only use on turn immediately following trigger condition
+* +50p **Narrow Window** Trigger must have occurred same turn as use
+* +60p **Precise Timing** Can only use if trigger occurred on previous turn, no earlier
+* +70p **Fading Opportunity** Each turn after trigger, reliability DC increases by 5
+
+
+
+### Health State  
+**Cost**: 30p
+*Can only use when below 50% maximum HP*
+
++20p **Critical State** Can only use when at 25% HP or below
+* +40p **Death's Door** Can only use when at 10 HP or below
+* +50p **Last Breath** Can only use during Last Stand
+* +60p **Zero Hour** Can only use when at exactly 0 HP
+
++30p **Fresh Wound** Must have taken damage this turn to use
+* +40p **Significant Trauma** Must have taken 15+ damage this turn to use
+* +50p **Recent Pain** Must have taken damage within last 2 turns to use
+* +60p **Continuous Suffering** Must take damage every turn or lose access
+
++50p **Blood Price** Each use costs 15 HP, paid after attack resolves
+* +70p **Escalating Price** Each successive use costs additional 15 HP (15, 30, 45...)
+* +80p **Vital Sacrifice** Each use permanently reduces maximum HP by 5
+* +90p **Life Force** Each use costs 25% of current HP
+
++60p **Last Resort** Can only use when ally is unconscious or dying
+* +50p **Desperation** Can only use when 2+ allies are unconscious
+* +70p **Avenge** Can only use same turn ally falls unconscious
+* +80p **Final Stand** Can only use when you are last conscious team member
+
++40p **Condition Lock** Can only use while affected by Advanced Condition
+* +50p **Multiple Afflictions** Must be affected by 2+ different conditions
+* +60p **Specific Condition** Can only use while affected by one chosen Advanced Condition
+* +70p **Deterioration** Each use while conditioned makes condition permanent
+
++70p **No Mercy** Using this ability disables all your healing and defensive abilities until rest
+* +50p **Pain Embrace** Cannot benefit from any healing while this combat continues
+* +60p **Vulnerability** All resistances reduced to 0 until rest after using this
+* +80p **System Overload** All other special attacks become unusable until rest
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
