@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitality System - Character Builder</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="character-builder.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Character Builder</h2>
+                <p>Vitality System</p>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">← Back to Rulebook</a>
+                </div>
+            </div>
+            
+            <div class="character-management">
+                <h3>My Characters</h3>
+                <div class="folder-controls">
+                    <button id="new-folder-btn" class="btn-secondary">+ New Folder</button>
+                    <button id="new-character-btn" class="btn-primary">+ New Character</button>
+                </div>
+                <div id="character-tree" class="character-tree"></div>
+            </div>
+            
+            <div class="point-pools" id="point-pools">
+                <h3>Point Pools</h3>
+                <div class="pool-display">
+                    <div class="pool-item">
+                        <span>Combat Attributes:</span>
+                        <span id="combat-points">0/0</span>
+                    </div>
+                    <div class="pool-item">
+                        <span>Utility Attributes:</span>
+                        <span id="utility-points">0/0</span>
+                    </div>
+                    <div class="pool-item">
+                        <span>Main Pool:</span>
+                        <span id="main-points">0/0</span>
+                    </div>
+                    <div class="pool-item">
+                        <span>Utility Pool:</span>
+                        <span id="utility-pool-points">0/0</span>
+                    </div>
+                    <div class="pool-item">
+                        <span>Special Attacks:</span>
+                        <span id="special-attack-points">0/0</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <main class="content" id="content">
+            <div id="welcome-screen" class="welcome-screen">
+                <h1>Vitality System Character Builder</h1>
+                <p>Create and manage your characters with full point tracking and validation.</p>
+                <p>Select a character from the sidebar or create a new one to begin.</p>
+            </div>
+            
+            <div id="character-builder" class="character-builder hidden">
+                <!-- Character Header -->
+                <div class="character-header">
+                    <div class="basic-info">
+                        <input type="text" id="character-name" placeholder="Hero Name" class="large-input">
+                        <input type="text" id="real-name" placeholder="Real Name" class="large-input">
+                        <div class="tier-selector">
+                            <label for="tier-select">Character Tier:</label>
+                            <select id="tier-select">
+                                <option value="1">1 - Novice</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4" selected>4</option>
+                                <option value="5">5 - Professional</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10 - World-class Expert</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="character-actions">
+                        <button id="save-character" class="btn-primary">Save Character</button>
+                        <button id="export-json" class="btn-secondary">Export JSON</button>
+                        <button id="delete-character" class="btn-danger">Delete</button>
+                    </div>
+                </div>
+
+                <!-- Character Tabs -->
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="archetypes">1. Archetypes</button>
+                    <button class="tab-btn" data-tab="attributes">2. Attributes</button>
+                    <button class="tab-btn" data-tab="abilities">3. Abilities</button>
+                    <button class="tab-btn" data-tab="special-attacks">4. Special Attacks</button>
+                    <button class="tab-btn" data-tab="utility">5. Utility</button>
+                    <button class="tab-btn" data-tab="summary">Summary</button>
+                </div>
+
+                <!-- Archetypes Tab -->
+                <div id="tab-archetypes" class="tab-content active">
+                    <h2>Choose Archetypes</h2>
+                    
+                    <div class="archetype-section">
+                        <h3>Movement Archetype</h3>
+                        <div class="archetype-grid" id="movement-archetypes">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-section">
+                        <h3>Attack Type Archetype</h3>
+                        <div class="archetype-grid" id="attack-type-archetypes">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-section">
+                        <h3>Effect Type Archetype</h3>
+                        <div class="archetype-grid" id="effect-type-archetypes">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-section">
+                        <h3>Unique Ability Archetype</h3>
+                        <div class="archetype-grid" id="unique-ability-archetypes">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-section">
+                        <h3>Defensive Archetype</h3>
+                        <div class="archetype-grid" id="defensive-archetypes">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-section">
+                        <h3>Special Attack Archetype</h3>
+                        <div class="archetype-grid" id="special-attack-archetypes">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="archetype-section">
+                        <h3>Utility Archetype</h3>
+                        <div class="archetype-grid" id="utility-archetypes">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attributes Tab -->
+                <div id="tab-attributes" class="tab-content">
+                    <h2>Assign Attributes</h2>
+                    
+                    <div class="attributes-section">
+                        <h3>Combat Attributes</h3>
+                        <p class="pool-info">Points Available: <span id="combat-pool-display">0</span></p>
+                        <div class="attribute-grid">
+                            <div class="attribute-item">
+                                <label>Focus</label>
+                                <input type="number" id="attr-focus" min="0" max="10" value="0">
+                                <span class="attr-description">Accuracy, Initiative, Resolve</span>
+                            </div>
+                            <div class="attribute-item">
+                                <label>Mobility</label>
+                                <input type="number" id="attr-mobility" min="0" max="10" value="0">
+                                <span class="attr-description">Movement, Initiative, Avoidance</span>
+                            </div>
+                            <div class="attribute-item">
+                                <label>Power</label>
+                                <input type="number" id="attr-power" min="0" max="10" value="0">
+                                <span class="attr-description">Damage, Conditions, Stability</span>
+                            </div>
+                            <div class="attribute-item">
+                                <label>Endurance</label>
+                                <input type="number" id="attr-endurance" min="0" max="10" value="0">
+                                <span class="attr-description">Vitality, Durability</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="attributes-section">
+                        <h3>Utility Attributes</h3>
+                        <p class="pool-info">Points Available: <span id="utility-pool-display">0</span></p>
+                        <div class="attribute-grid">
+                            <div class="attribute-item">
+                                <label>Awareness</label>
+                                <input type="number" id="attr-awareness" min="0" max="10" value="0">
+                                <span class="attr-description">Notice things, Initiative</span>
+                            </div>
+                            <div class="attribute-item">
+                                <label>Communication</label>
+                                <input type="number" id="attr-communication" min="0" max="10" value="0">
+                                <span class="attr-description">Social skills</span>
+                            </div>
+                            <div class="attribute-item">
+                                <label>Intelligence</label>
+                                <input type="number" id="attr-intelligence" min="0" max="10" value="0">
+                                <span class="attr-description">Knowledge and reasoning</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Abilities Tab -->
+                <div id="tab-abilities" class="tab-content">
+                    <h2>Purchase Abilities</h2>
+                    <p class="pool-info">Main Pool Points Available: <span id="main-pool-display">0</span></p>
+                    
+                    <div class="abilities-section">
+                        <h3>Boons</h3>
+                        <div id="boons-list" class="ability-list">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="abilities-section">
+                        <h3>Traits</h3>
+                        <div id="traits-list" class="ability-list">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="abilities-section">
+                        <h3>Flaws</h3>
+                        <div id="flaws-list" class="ability-list">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Attacks Tab -->
+                <div id="tab-special-attacks" class="tab-content">
+                    <h2>Create Special Attacks</h2>
+                    <p class="pool-info">Special Attack Points Available: <span id="special-attack-pool-display">0</span></p>
+                    
+                    <div class="special-attacks-controls">
+                        <button id="add-special-attack" class="btn-primary">+ Add Special Attack</button>
+                    </div>
+                    
+                    <div id="special-attacks-list" class="special-attacks-list">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Utility Tab -->
+                <div id="tab-utility" class="tab-content">
+                    <h2>Utility Options</h2>
+                    <p class="pool-info">Utility Points Available: <span id="utility-points-display">0</span></p>
+                    
+                    <div class="utility-section">
+                        <h3>Expertise</h3>
+                        <div id="expertise-list" class="utility-list">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="utility-section">
+                        <h3>Features</h3>
+                        <div id="features-list" class="utility-list">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="utility-section">
+                        <h3>Senses</h3>
+                        <div id="senses-list" class="utility-list">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="utility-section">
+                        <h3>Descriptors</h3>
+                        <div id="descriptors-list" class="utility-list">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Tab -->
+                <div id="tab-summary" class="tab-content">
+                    <h2>Character Summary</h2>
+                    <div id="character-summary" class="character-summary">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="character-builder.js"></script>
+</body>
+</html>
