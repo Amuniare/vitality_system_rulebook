@@ -39,7 +39,8 @@ class AutoLinker {
                 this.sectionMap.set(text.toLowerCase(), {
                     id: heading.id,
                     text: text,
-                    level: parseInt(heading.tagName.charAt(1))
+                    level: parseInt(heading.tagName.charAt(1)),
+                    element: heading
                 });
                 
                 // Store common variations
@@ -49,7 +50,8 @@ class AutoLinker {
                         this.sectionMap.set(variation.toLowerCase(), {
                             id: heading.id,
                             text: text,
-                            level: parseInt(heading.tagName.charAt(1))
+                            level: parseInt(heading.tagName.charAt(1)),
+                            element: heading
                         });
                     }
                 });
@@ -143,14 +145,13 @@ class AutoLinker {
             'Area of Effect': ['aoe', 'area of effect', 'combat']
         };
 
-        // Find actual definition locations in the document
+        // Find actual definition locations in the document with multiple candidates
         Object.entries(gameTerms).forEach(([term, fallbackSections]) => {
-            const definitionLocation = this.findDefinitionLocation(container, term, fallbackSections);
-            if (definitionLocation) {
+            const definitionLocations = this.findAllDefinitionLocations(container, term, fallbackSections);
+            if (definitionLocations.length > 0) {
                 this.termDictionary.set(term.toLowerCase(), {
                     term: term,
-                    id: definitionLocation.id,
-                    section: definitionLocation.text
+                    candidates: definitionLocations // Store all possible targets
                 });
             }
         });
@@ -158,12 +159,23 @@ class AutoLinker {
         console.log('Term dictionary entries:', Array.from(this.termDictionary.keys()).slice(0, 10));
     }
 
-    findDefinitionLocation(container, term, fallbackSections) {
-        // Look for the term in headings first (most authoritative)
+    findAllDefinitionLocations(container, term, fallbackSections) {
+        const locations = [];
         const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        
+        // Look for headings that contain the term
         for (let heading of headings) {
-            if (heading.textContent.toLowerCase().includes(term.toLowerCase())) {
-                return { id: heading.id, text: heading.textContent.trim() };
+            const headingText = heading.textContent.toLowerCase();
+            const termLower = term.toLowerCase();
+            
+            if (headingText.includes(termLower)) {
+                locations.push({
+                    id: heading.id,
+                    text: heading.textContent.trim(),
+                    level: parseInt(heading.tagName.charAt(1)),
+                    element: heading,
+                    relevance: this.calculateRelevance(headingText, termLower)
+                });
             }
         }
         
@@ -174,21 +186,46 @@ class AutoLinker {
             );
             
             if (fallbackHeading) {
-                return { id: fallbackHeading.id, text: fallbackHeading.textContent.trim() };
+                // Check if we already have this location
+                const exists = locations.some(loc => loc.id === fallbackHeading.id);
+                if (!exists) {
+                    locations.push({
+                        id: fallbackHeading.id,
+                        text: fallbackHeading.textContent.trim(),
+                        level: parseInt(fallbackHeading.tagName.charAt(1)),
+                        element: fallbackHeading,
+                        relevance: 0.5 // Lower relevance for fallback matches
+                    });
+                }
             }
         }
         
-        // If no specific section found, try to find any section that mentions the term
-        const allText = container.textContent.toLowerCase();
-        if (allText.includes(term.toLowerCase())) {
-            // Find the first heading, as a last resort
-            const firstHeading = headings[0];
-            if (firstHeading && firstHeading.id) {
-                return { id: firstHeading.id, text: firstHeading.textContent.trim() };
+        // Sort by relevance (higher is better) and then by heading level (lower is more specific)
+        return locations.sort((a, b) => {
+            if (b.relevance !== a.relevance) {
+                return b.relevance - a.relevance;
             }
+            return a.level - b.level; // Lower level = more specific
+        });
+    }
+
+    calculateRelevance(headingText, term) {
+        // Exact match gets highest score
+        if (headingText === term) return 1.0;
+        
+        // Term is the main part of the heading
+        if (headingText.startsWith(term + ' ') || headingText.endsWith(' ' + term)) {
+            return 0.9;
         }
         
-        return null;
+        // Term appears as a complete word
+        const words = headingText.split(/\s+/);
+        if (words.includes(term)) {
+            return 0.8;
+        }
+        
+        // Term is contained within a word
+        return 0.3;
     }
 
     // Apply auto-linking to HTML content
@@ -202,8 +239,8 @@ class AutoLinker {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = htmlContent;
 
-        // Process text nodes for linking
-        this.processTextNodes(tempDiv);
+        // Process text nodes for linking with context awareness
+        this.processTextNodesWithContext(tempDiv);
 
         const result = tempDiv.innerHTML;
         
@@ -214,21 +251,36 @@ class AutoLinker {
         return result;
     }
 
-    processTextNodes(container) {
+    processTextNodesWithContext(container) {
         const walker = document.createTreeWalker(
             container,
             NodeFilter.SHOW_TEXT,
             {
                 acceptNode: (node) => {
-                    // Skip text inside links, code blocks, and other special elements
+                    // Skip text inside links, code blocks, headings, bold text, and other special elements
                     let parent = node.parentElement;
-                    const skipTags = ['A', 'CODE', 'PRE', 'SCRIPT', 'STYLE'];
+                    const skipTags = [
+                        'A',           // Links (existing and auto-generated)
+                        'CODE', 'PRE', // Code blocks
+                        'SCRIPT', 'STYLE', // Scripts and styles
+                        'H1', 'H2', 'H3', 'H4', 'H5', 'H6', // All headings
+                        'STRONG', 'B', // Bold text
+                        'EM', 'I',     // Italic text
+                        'TITLE'        // Title attributes
+                    ];
                     
                     while (parent && parent !== container) {
                         if (skipTags.includes(parent.tagName)) {
                             return NodeFilter.FILTER_REJECT;
                         }
+                        if (parent.classList && parent.classList.contains('auto-link')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
                         parent = parent.parentElement;
+                    }
+                    
+                    if (node.textContent.trim().length < 3) {
+                        return NodeFilter.FILTER_REJECT;
                     }
                     
                     return NodeFilter.FILTER_ACCEPT;
@@ -242,10 +294,15 @@ class AutoLinker {
             textNodes.push(node);
         }
 
-        // Process each text node
+        console.log(`Processing ${textNodes.length} text nodes for auto-linking`);
+
+        // Process each text node with context awareness
         textNodes.forEach(textNode => {
-            const newContent = this.linkifyText(textNode.textContent);
-            if (newContent !== textNode.textContent) {
+            const currentSection = this.findCurrentSection(textNode, container);
+            const originalContent = textNode.textContent;
+            const newContent = this.linkifyTextWithContext(originalContent, currentSection);
+            
+            if (newContent !== originalContent && newContent.includes('auto-link')) {
                 const wrapper = document.createElement('span');
                 wrapper.innerHTML = newContent;
                 
@@ -258,14 +315,73 @@ class AutoLinker {
         });
     }
 
-    linkifyText(text) {
+    findCurrentSection(textNode, container) {
+        // Walk up the DOM to find the current section
+        let element = textNode.parentElement;
+        
+        while (element && element !== container) {
+            // Check if this element is a heading or has an id that matches a section
+            if (element.tagName && element.tagName.match(/^H[1-6]$/)) {
+                if (element.id) {
+                    return {
+                        id: element.id,
+                        text: element.textContent.trim(),
+                        level: parseInt(element.tagName.charAt(1))
+                    };
+                }
+            }
+            element = element.parentElement;
+        }
+        
+        // If we didn't find a direct parent heading, look for the preceding heading
+        let walker = document.createTreeWalker(
+            container,
+            NodeFilter.SHOW_ELEMENT,
+            {
+                acceptNode: (node) => {
+                    return node.tagName && node.tagName.match(/^H[1-6]$/) && node.id ? 
+                        NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+                }
+            }
+        );
+
+        let lastHeading = null;
+        let currentNode;
+        
+        while (currentNode = walker.nextNode()) {
+            // Check if we've passed our text node
+            if (currentNode.compareDocumentPosition(textNode) & Node.DOCUMENT_POSITION_FOLLOWING) {
+                break;
+            }
+            lastHeading = currentNode;
+        }
+        
+        if (lastHeading) {
+            return {
+                id: lastHeading.id,
+                text: lastHeading.textContent.trim(),
+                level: parseInt(lastHeading.tagName.charAt(1))
+            };
+        }
+        
+        return null;
+    }
+
+    linkifyTextWithContext(text, currentSection) {
         let result = text;
+
+        // Only process text that's likely to contain linkable terms
+        if (text.trim().length < 3) {
+            return result;
+        }
 
         // 1. Link section references first (higher priority)
         result = this.linkSectionReferences(result);
 
-        // 2. Link game terms
-        result = this.linkGameTerms(result);
+        // 2. Link game terms with context awareness
+        if (!result.includes('auto-link')) {
+            result = this.linkGameTermsWithContext(result, currentSection);
+        }
 
         return result;
     }
@@ -298,7 +414,7 @@ class AutoLinker {
         return result;
     }
 
-    linkGameTerms(text) {
+    linkGameTermsWithContext(text, currentSection) {
         let result = text;
 
         // Sort terms by length (descending) to handle longer terms first
@@ -309,16 +425,61 @@ class AutoLinker {
             const termData = this.termDictionary.get(termKey);
             const term = termData.term;
             
-            // Create regex that matches whole words only
-            const regex = new RegExp(`\\b${this.escapeRegex(term)}\\b`, 'gi');
+            // Find the best target for this term given the current context
+            const bestTarget = this.findBestTarget(termData.candidates, currentSection, term);
             
-            result = result.replace(regex, (match) => {
-                // Don't link if already inside a link
-                return `<a href="#${termData.id}" class="auto-link term-link" title="See ${term} in ${termData.section}">${match}</a>`;
-            });
+            if (bestTarget) {
+                // Create regex that matches whole words only
+                const regex = new RegExp(`\\b${this.escapeRegex(term)}\\b`, 'gi');
+                
+                result = result.replace(regex, (match) => {
+                    return `<a href="#${bestTarget.id}" class="auto-link term-link" title="See ${term} in ${bestTarget.text}">${match}</a>`;
+                });
+            }
         });
 
         return result;
+    }
+
+    findBestTarget(candidates, currentSection, term) {
+        if (!candidates || candidates.length === 0) {
+            return null;
+        }
+        
+        // If we have no current section context, return the best candidate
+        if (!currentSection) {
+            return candidates[0];
+        }
+        
+        // Filter out candidates that would link back to the current section or its close relatives
+        const validCandidates = candidates.filter(candidate => {
+            // Don't link to the exact same section
+            if (candidate.id === currentSection.id) {
+                return false;
+            }
+            
+            // Don't link if the current section is more specific and contains the term
+            if (currentSection.text.toLowerCase().includes(term.toLowerCase()) && 
+                currentSection.level > candidate.level) {
+                return false;
+            }
+            
+            // Don't link to parent sections if we're already in a specific subsection
+            if (candidate.text.toLowerCase().includes(currentSection.text.toLowerCase()) &&
+                candidate.level < currentSection.level) {
+                return false;
+            }
+            
+            return true;
+        });
+        
+        // If no valid candidates after filtering, don't create a link
+        if (validCandidates.length === 0) {
+            return null;
+        }
+        
+        // Return the best remaining candidate
+        return validCandidates[0];
     }
 
     escapeRegex(string) {
