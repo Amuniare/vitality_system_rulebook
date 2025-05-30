@@ -130,6 +130,44 @@
             line-height: 1.6;
         }
 
+        .automation-section {
+            background: var(--bg-primary);
+            border: 2px solid var(--accent-primary);
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 8px;
+        }
+
+        .automation-section h3 {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .automation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .automation-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-secondary);
+            padding: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .automation-item h4 {
+            color: var(--accent-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .automation-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
         .hub-footer {
             text-align: center;
             margin-top: 4rem;
@@ -193,7 +231,6 @@
         .hub-link:nth-child(1) { animation-delay: 0.1s; }
         .hub-link:nth-child(2) { animation-delay: 0.2s; }
         .hub-link:nth-child(3) { animation-delay: 0.3s; }
-        .hub-link:nth-child(4) { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
@@ -205,25 +242,42 @@
         
         <nav class="hub-navigation">
             <a href="rules/index.html" class="hub-link">
-                <h2>📖 Rulebook</h2>
-                <p>Complete RPG rules, mechanics, combat system, character creation, and game master guidance for the Vitality System</p>
+                <h2>Rulebook</h2>
+                <p>Complete RPG rules, mechanics, combat system, character creation, and game master guidance</p>
             </a>
             
             <a href="character-builder/character-builder.html" class="hub-link">
-                <h2>🎲 Character Builder</h2>
-                <p>Advanced character creation tool with archetypes, limits, upgrades, validation, and Roll20 export functionality</p>
+                <h2>Character Builder</h2>
+                <p>Advanced character creation tool with archetypes, limits, upgrades, validation, and Roll20 export</p>
             </a>
             
             <a href="campaigns/index.html" class="hub-link">
-                <h2>🗺️ Campaign Lore</h2>
-                <p>World building, campaign settings, session notes, NPC databases, and narrative resources for your games</p>
-            </a>
-            
-            <a href="tools/index.html" class="hub-link">
-                <h2>🔧 Automation Tools</h2>
-                <p>Roll20 integration tools, character data extraction, automated sheet updates, and API management utilities</p>
+                <h2>Campaign Lore</h2>
+                <p>World building, campaign settings, session notes, and narrative resources</p>
             </a>
         </nav>
+
+        <section class="automation-section">
+            <h3>Roll20 Automation Tools</h3>
+            <div class="automation-grid">
+                <div class="automation-item">
+                    <h4>Character Data Extraction</h4>
+                    <p>Extract character sheets from Roll20 campaigns for backup and analysis</p>
+                </div>
+                <div class="automation-item">
+                    <h4>Sheet Updates</h4>
+                    <p>Automatically update character sheets with new builds and modifications</p>
+                </div>
+                <div class="automation-item">
+                    <h4>API Management</h4>
+                    <p>Manage Roll20 APIs including Scriptcards, ChatSetAttribute, and TokenMod</p>
+                </div>
+                <div class="automation-item">
+                    <h4>Template Generation</h4>
+                    <p>Generate Roll20-compatible macros and templates from character builds</p>
+                </div>
+            </div>
+        </section>
 
         <footer class="hub-footer">
             <p>Vitality System - A comprehensive RPG framework with advanced digital integration</p>
