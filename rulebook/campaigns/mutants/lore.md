@@ -96,370 +96,104 @@
 - **Gala Attack:** Mayor killed, martial law declared, election called
 - **Present:** Emergency election campaign underway, multiple candidates dead
 
-## Session Notes
+## Session Notes (Condensed)
 
 ### Session 1: "The Warehouse"
-- Team assembled at warehouse to meet mysterious hacker Wraith
-- Police arrived forcing team inside, encountered security guards on loading dock and catwalk
-- Flashpoint established surveillance and created communication devices
-- Corporate mercenaries provided serious resistance in basement
-- Bri demonstrated immortality by surviving multiple headshots
-- Marquis revealed bone manipulation abilities in combat
-- Mason used blood control to mind-control opponents
-- Lucille showed crowd control with marble powers
+- Team assembled at warehouse to meet Wraith, forced inside by police arrival
+- Combat with security guards and corporate mercenaries in basement
+- Key character reveals: Bri's immortality, Marquis's bone manipulation, Mason's blood control, Lucille's marble powers
 - Pepper suffered serious head injury during fight
-- Flashpoint downloaded data about Project Revival and Golden Sentinel's meetings
-- Team escaped through tunnel created by Lucille's marble manipulation
-- Post-mission: Henry's family connection to Bri revealed (mother-son relationship)
-- Team split between Flashpoint's investigation and group bonding at Henry's place
-- Flashpoint discovered Golden Sentinel met with Dr. Marcus Chen about Project Revival
-- Movie night established team dynamics and relationships
+- Flashpoint downloaded Project Revival data and Golden Sentinel's meetings with Dr. Chen
+- Team escaped through Lucille's marble tunnel
+- Post-mission: Bri revealed as Henry's mother, team bonding at movie night
+- Chen identified as whistleblower who approached Golden Sentinel
 
 ### Session 2: "Investigation Develops"
-- Movie night at Henry's apartment, team watched 22 Jump Street
-- Mason and Florian had meaningful conversation about their motivations
-- Bri showed unusual maternal concern, warning Henry about vigilante dangers
-- Cecilia noted Bri's uncharacteristic behavior toward Henry
-- Team split investigation: Vagrant/Florian/Marquis surveilled depot, Mason/Bri tracked Chen
-- Depot team observed Apollo arrive and destroy evidence inside bunker
-- Police guards left when Apollo arrived, smoke emerged from structure
-- Thing 1 spotted "ULMH" markings inside the facility
+- Team split investigation: depot surveillance vs Chen confrontation
+- Apollo arrived at depot, destroyed evidence while police withdrew
+- Chen confronted at home, revealed he was whistleblower about Project Revival
+- Chen fled town with family after confession
 - Medical freezer marked "donations" discovered at depot
-- Chen confronted at suburban home while unloading cello with family
-- Under pressure, Chen revealed he approached Golden Sentinel as whistleblower
-- Chen hastily packed family to flee town after confessing about Project Revival
-- Wraith meeting planned with quantum splitting power demonstration
-- Team began planning investigation of Khan Corp and Apollo
-- Chen's revelation established Golden Sentinel as victim, not perpetrator
+- Golden Sentinel established as victim trying to expose conspiracy, not perpetrator
 
 ### Session 3: "Origins and Infiltration"
-- Apollo's origin flashback: 10,000 BC tribal celebration turned massacre
-- Young couple exchanging bone necklaces attacked by raiders
-- Apollo's first power manifestation created daylight explosion, leaving wasteland
-- Transition from Apollo's ancient scream to modern Ferrari engine sound
-- Hotel event: Lucille posed as "Della," aspiring hero with marble powers
-- Team provided surveillance equipment disguised as designer glasses
-- Apollo showed genuine interest in mentoring potential heroes
-- Discussion about putting mutants where humans "have to accept them"
-- Apollo nearly caught Lucille in lie about her power limitations
-- Hotel atmosphere mixed fawning admirers with casual cruelty
-- ULMH facility infiltration with multiple synchronized elements
-- Mason controlled two police officers through blood manipulation for distraction
-- Vagrant amplified effectiveness through fear powers
-- Flashpoint provided technical support and communication monitoring
-- Psychological evaluation sequence revealed facility screening procedures
-- Lapin and Kali's MLF operation provided additional chaos cover
-- Data analysis revealed Project Revival details: Concorp cloning vs ULMH eugenics
+- Apollo's origin flashback: 10,000 BC tribal massacre triggered first power manifestation
+- Hotel infiltration: Lucille posed as "Della" to approach Apollo
+- Apollo showed genuine mentoring interest but nearly caught lie about powers
+- ULMH facility infiltration with coordinated team elements
+- Data revealed Project Revival: Concorp cloning vs ULMH eugenics approaches
 - Project Element discovery: four individuals sharing one hero identity
-- Aurora Astell (Water), Vivienne Fantana (Earth), Fiona Foncello (Fire), Wayona Walter (Wind)
-- Alley investigation near weapons depot found engagement ring for Vivienne
-- Strategic removal of security cameras indicated professional operation
-- Ring inscription connected Golden Sentinel's personal life to conspiracy
+- Engagement ring found linking Golden Sentinel to Vivienne
 
 ### Session 4: "Rescue and Revelations"
-- Team spotted blue-skinned Varia being pursued by Khan Corp operatives
-- Group decided to intervene and help unknown mutant
-- Varia demonstrated impressive abilities, throwing vehicle onto three assassins
-- Team successfully fought off Khan Corp forces and rescued Varia
-- Warehouse introduction: Varia hacked Wraith's computers with technopathic abilities
-- Henry became upset about security breach and confronted Varia
-- Team discussed investigating Project Element facility
-- Varia agreed to accompany them, interested in Lucille's missing sister
-- Lucille used marble sensing to detect Vivienne's presence at facility
-- Vivienne emerged for confrontation at nearby construction site
-- Emotional confrontation: Lucille slapped Vivienne demanding explanations
-- Vivienne revealed full commitment to Project Element and establishment heroes
-- Ideological divide exposed between sisters over MLF involvement
-- Lucille revealed possession of Golden Sentinel's engagement ring
-- Combat erupted when other Element members arrived during argument
-- Fire Element launched first attack with flame cone
-- Neo Sentinel delivered powerful kick to Earth Element (Vivienne)
-- Vagrant used fear powers to stun Wind Element member
-- Mason and twins suffered severe injuries during prolonged combat
-- Lucille made conscious choice not to kill her sister despite opportunity
-- Neo Sentinel helped negotiate ceasefire after Vivienne knocked unconscious
-- Wind Element gave Neo Sentinel contact information for future communication
-- Neo Sentinel carried injured team members away from scene
-- Marquis disappeared during combat to avoid arrest/recognition
-- MLF meeting: Lucille brought Neo Sentinel to meet Serena Kleist
-- Serena revealed small Seattle MLF cell with only 5 members
-- Philosophical discussion about systemic change vs immediate aid
-- Neo Sentinel questioned MLF methods and long-term strategy
-- Agreement on balanced approach: safe houses, aid, defensive focus
-- Neo Sentinel joined MLF alliance despite philosophical differences
+- Team rescued blue-skinned Varia from Khan Corp operatives
+- Varia demonstrated technopathic abilities, hacking Wraith's systems
+- Confrontation at Project Element facility between Lucille and sister Vivienne
+- Vivienne revealed commitment to establishment heroes, ideological split exposed
+- Combat with Element members, several team injuries
+- Neo Sentinel negotiated ceasefire, carried injured to safety
+- MLF meeting: Neo Sentinel joined alliance despite philosophical differences
 
 ### Session 5: "Rose Guard Formation"
-- Week of downtime with individual character activities and development
-- Team formed masked vigilante group "Rose Guard" with public personas
-- Four members revealed costumed identities while Henry and William remained anonymous
-- First mission targeted Vipers human trafficking outpost
-- Team rescued Kendrick Yao (technopathic journalist) and another captive
-- Several enemies killed during violent warehouse encounter
-- Kendrick detected "Override echoes" emanating from Varia during rescue
-- Team secured shipping container base from defeated Vipers organization
-- Discussion of Override connection and "second coming" implications
-- Mason's hexing ability demonstrated by removing enemy's cold immunity
-- Public debut as Rose Guard with team name and mission statement
-- Elliot Tran received team images and statements for media coverage
-- Moral questions raised about violent methods vs effective results
-- Base of operations established in former criminal facility
+- Team formed masked vigilante group "Rose Guard" after week of downtime
+- First mission rescued Kendrick Yao from Vipers trafficking operation
+- Kendrick detected "Override echoes" from Varia, suggesting deeper connection
+- Secured shipping container base, violent encounter with several deaths
+- Public debut established team reputation and mission statement
 
 ### Session 6: "Plans and Preparations"
-- Wednesday night: team cleared shipping container site before MLF arrival
-- Mason showed emotional distress about casual attitude toward killing
-- Henry struggled with accidentally killing someone when powers acted unexpectedly
-- Bri revealed Henry's extended family history to him
-- Connections disclosed: Hellbeast (Kenji Sato) as brother, Achilles as sister
-- Indirect reference to Baatar Khan as another relative
-- Bri encouraged Henry to practice controlling his bone manipulation powers
-- Thursday: news broadcast about Headsman declaring war on criminal gangs
-- Serena and Lucille discussed potential contact with Headsman
-- Information about Angel being moved in 72 hours from journalist contact
-- New Christians member requested meeting about Angel's situation
-- Neo-Sentinel met with Wyonna (Element) about ULMH training
-- Challenging questions about motivations and ethics during meeting
-- Warned that "reading a book doesn't make you a good hero"
-- Concern expressed about being "pushed in the wrong direction"
-- Team planning session at Wraith's place at 7pm
-- Mason and Marquis showed hesitation about upcoming operation
-- Lucille proposed using Headsman as distraction for authorities
-- Research tasks divided: tracking Headsman vs researching convoy
-- Information gathering revealed convoy details: 1 main truck, 5 prisoners, 4 escort vehicles
-- 20-30 Sentinel squad officers with Apollo 5-minute response time
-- Convoy route along river through 2km tunnel with drainage access
-- Headsman intelligence: targeting warehouse late Friday, asking about Vipers
-- Friday evening New Christians meeting with Andrew Stark at upscale bar
-- Negotiation resulted in $25,000 payment ($5,000 advance) for Angel's rescue
-- Organizational support through protesters and burner phone provided
-- Friday night warehouse confrontation with Headsman killing gang members
-- Mason attempted blood control but discovered cybernetic resistance
-- Red Viper appeared with toxic gas abilities during chaotic fight
-- Marquis severely poisoned and nearly died but survived (advanced to Tier 3)
-- Florian's weakening ability proved effective against Red Viper
-- Headsman brutally killed Red Viper during the encounter
-- Varia failed to disable Headsman's cybernetic arms
-- Team transported Headsman to Wraith who successfully disabled arms
-- Lucille informed MLF about potential new safehouse acquisition
+- Bri revealed Henry's family connections: Hellbeast as brother, Achilles as sister
+- Angel rescue mission planned with New Christians funding ($25,000)
+- Neo-Sentinel met with Element about ULMH training, received ethical challenges
+- Warehouse confrontation: Headsman killed Red Viper, nearly killed Marquis
+- Mason attempted to rehabilitate captured Headsman through emotional appeal
+- Henry's Galvanize deadline reduced to 3 days for Crimson Front delivery
 
 ### Session 7: "Shadows of Tartarus"
-- Saturday morning: Lucille recruited 10 mutant members from Black Fangs
-- Power vacuum creation led to recruitment opportunity
-- Recruits expected payment (100K per year each) causing financial strain
-- Decision to place recruits with Unity for political motivation
-- Low success roll (13/100) indicated severe complications
-- Unity and recruits disappeared, later revealed as kidnapping
-- Saturday: Mason had rehabilitation conversation with captured Headsman
-- Connected through references to Headsman's daughter Rebecca
-- Appealed to honor daughter's memory by becoming non-lethal
-- Meaningful progress made with Headsman genuinely considering change
-- Saturday afternoon: Henry confronted by Galvanize about Rose Guard
-- Provided misinformation about team abilities to protect identities
-- Admitted to team about infiltrating Smoke Stack organization
-- Team generally understanding and accepting of his double agent status
-- Galvanize remained suspicious and began investigating Henry's reliability
-- 40-day deadline given to deliver Crimson Front prisoners
-- Saturday evening: team finalized convoy interception plan for Sunday noon
-- Ethical debate about freeing all prisoners vs only Angel
-- Concerns about potentially releasing dangerous extremists
-- Decision to prioritize intelligence gathering about Tartarus facility
-- New Christians provided protesters and $20,000 payment agreement
-- Sunday noon convoy operation: team collapsed tunnel to trap transport
-- Battle with Sentinel Squad officers and energy constructs
-- Neo-Sentinel mind-controlled by Nova Gale (no lasting effects)
-- Lucille collapsed tunnel further to prevent capture, killing Voltage
-- Team split during escape, most fleeing via ambulance
-- Sunday afternoon: Neo-Sentinel revived Voltage using electrical powers
-- Voltage underwent dramatic transformation, evolving beyond battery dependency
-- Enhanced electrical powers and new magnetism abilities developed
-- Metal armor formation using magnetic control demonstrated
-- Resentment toward Lucille for tunnel collapse that caused death
-- Neo-Sentinel detected "Override echoes" within Voltage during revival
-- Sunday evening: $20,000 payment secured from Andrew Stark
-- Partnership formed with Angel rather than simple payment arrangement
-- Angel agreed to let team lead next joint operation
-- Critical Tartarus intelligence provided: joint UHLM/Concorp/state facility
-- Location underwater in Puget Sound (secretly)
-- Sunday night media response: anti-mutant sentiment following prison break
-- TANN leading narrative with no significant sympathetic coverage
-- Mason confronted Lucille about willingness to sacrifice team members
-- Most team members accepted decision as necessary under circumstances
-- Group discussion about moral gray areas and future approach
+- Lucille recruited Black Fangs members, but Unity and recruits disappeared (kidnapped)
+- Convoy operation: team collapsed tunnel, rescued Angel and prisoners
+- Voltage killed in tunnel collapse but revived by Neo-Sentinel with enhanced powers
+- Partnership formed with Angel, Tartarus intelligence gathered
+- Media backlash intensified anti-mutant sentiment citywide
 
 ### Session 8: "Override Echoes"
-- Monday evening celebration party at Airbnb rented by Florian
-- Team celebrated successful convoy operation from previous session
-- Lucille organized party to build team cohesion and relationships
-- Voltage showed resentment toward Lucille while flirting with Darlene
-- Neo-Sentinel and Voltage discussed enhanced powers post-resurrection
-- Serena Kleist attempted to recruit Florian to MLF (declined)
-- Team realized Unity and recruits were missing, raising concerns
-- Tuesday investigation: team searched for Unity after discovering disappearance
-- Lucille used contacts to learn Janggi received influx of new mutant mercenaries
-- Deduction that these were likely MLF recruits sent with Unity
-- Team captured broker working with Janggi for information extraction
-- Mason used blood control to extract location and intelligence
-- Intelligence revealed Unity being tortured at Janggi's warehouse
-- Discovery of Smokestack's Override technology: giant robot with quantum computer
-- Energy weapons and fusion core included in technology cache
-- Tuesday evening: team negotiated with Janggi using Override tech as leverage
-- Janggi sent Achilles to retrieve Override tech from Smokestack
-- Neo-Sentinel became fixated on Override tech, triggering confrontation
-- Battle erupted when Neo-Sentinel attempted to access technology
-- Neo-Sentinel interfaced with tech, transforming it into 6-meter combat mech
-- Lucille created escape tunnel for Unity during combat
-- Team defeated Janggi's mercenaries while Janggi escaped
-- Hoover-tronics seriously injured but stabilized after fight
-- Team escaped with Unity and temporary Override mech (one use remaining)
-- Acquired valuable blackmail material on key city figures
-- Mayor Brenda Calloway: anti-mutant corporate donations while maintaining neutrality
-- Altheon Technologies: unethical experiments documentation
-- Victor Sterling: evidence of mutant daughter while promoting anti-mutant rhetoric
-- Tartarus intelligence gathered: underwater facility in Puget Sound
-- Tunnel entrance through parking garage off pier
-- Flashpoint being held there, building tech for facility
-- Nova Gale scheduled for inspection due to ethical concerns
-- "Rehabilitation" program called Oversear making mutants compliant
-- Prisoner Mnemonic with perfect recall being held
-- Three Crimson Front members imprisoned: Zephyr, Mire, Specter
+- Team celebrated at party, discovered Unity's kidnapping by Janggi
+- Warehouse assault: rescued Unity, Neo-Sentinel interfaced with Override tech
+- Created temporary 6-meter combat mech, defeated Janggi's forces
+- Acquired blackmail material on Mayor Calloway, Altheon Technologies, Victor Sterling
+- Detailed Tartarus intelligence: underwater facility with rehabilitation program
 
 ### Session 9: "Crisis of Faith"
-- Friday evening strategic meeting at Wraith's place about Tartarus approach
-- Neo-Sentinel expressed ethics concerns about freeing all prisoners
-- Marquis advocated for freeing everyone including Crimson Front
-- Previously installed backdoor revealed Ambassador (telepath) works at Tartarus
-- Nova Gale and Guardian Flux marked as "Tartarus Overseer Program"
-- Monday inspection scheduled at facility
-- Neo-Sentinel intercepted by Apollo for face-to-face meeting
-- Henry tasked with security for mysterious shipment at gallery
-- Saturday 3-4 AM: Achilles appeared at gallery for crate retrieval
-- Henry hid rather than confront, recognizing extreme danger
-- Achilles easily cut through glass and effortlessly took crate
-- Galvanize arrived furious that Henry didn't protect shipment
-- Deadline reduced from 40 days to only 3 days for Crimson Front delivery
-- Neo-Sentinel's rooftop meeting with Apollo at sunset
-- Apollo confronted about suspicions of vigilante involvement
-- Discussion of ethics, rehabilitation, and justice philosophies
-- Neo-Sentinel admitted involvement after ethical debate
-- Apollo offered deal: spend time at Tartarus observing methods
-- Two-week investigation agreement from within facility
-- Messages sent before departure: team notified of inability to participate
-- Voltage asked to impersonate Neo-Sentinel during absence
-- Two-week period developments: William explored prohibition tunnels beneath Seattle
-- Marquis joined MLF after abandoning apartment, bringing Cecilia
-- Marquis recruited two new mutants for MLF organization
-- Voltage failed to convincingly impersonate Neo-Sentinel (poor performance)
-- Mason investigated blood anomalies, appearing exhausted and sleep-deprived
-- Neo-Sentinel's Tartarus discoveries: Flashpoint reconditioned, building Sentinel robots
-- Crimson Front members housed: Amber, Fracture, Zephyr, Specter, Mire
-- Cobra Frost and Mnemonic (perfect recall mutant) imprisoned
-- Genetic engineering wing experimenting on mutant bodies
-- Ambassador's office conducting "reconditioning" sessions
-- Conversations with Nova Gale and Guardian Flux about facility ethics
-- Flashpoint's lab visit: observed Sentinel robot construction with anti-violence protocols
-- Robots programmed to protect all humans regardless of mutant status
-- Ethical debates with Nova Gale about rehabilitation vs control
-- Team reunion after two weeks: Neo-Sentinel argued for ULMH licensing
-- Mason appeared exhausted from blood anomaly tracking work
-- Strong negative reactions: Marquis accused brainwashing, stormed out
-- Florian refused citing career concerns and government control fears
-- Mason expressed willingness to try ULMH program
-- Neo-Sentinel threw object at Marquis in frustration, hitting with unexpected force
-- Group fractured over establishment cooperation vs resistance approach
-- Neo-Sentinel convinced Voltage to join ULMH program
+- Neo-Sentinel spent two weeks inside Tartarus observing "rehabilitation" methods
+- Discovered Flashpoint building Sentinel robots, Crimson Front members imprisoned
+- Team reunion created major ideological split over working with establishment
+- Marquis accused Neo-Sentinel of brainwashing, stormed out
+- Group fractured: Neo-Sentinel and Voltage joined ULMH, others remained resistant
 
 ### Session 10: "Gala and the Pantheon"
-- Six-month downtime: significant refugee crisis emerged as neighboring cities implemented harsh anti-mutant laws
-- Disease outbreak among refugee communities prompted quarantine discussions
-- Khan Corp charity gala announced with mayor expected to speak
-- Invitations extended to ULMH, MLF representatives, and media figures
-- Vagrant attempted to get Pepper into gala: Florian refused due to image concerns
-- Varia agreed to bring Pepper as her date to event
-- Marquis planned to attend disguised as staff member
-- Gala networking: Florian gathered intelligence on council emergency powers deliberations
-- Marquis attempted and failed to plant surveillance device
-- Mason attended with Nova Gale as his date
-- Lucille collected political intelligence from various councilors
-- Emotional reunion between Varia and Baatar Khan at gala
-- Khan expressed pride in Varia's growth, not anger at departure
-- Discussion of potential collaboration with Dr. Chavez
-- Deeper context revealed about Varia's creation as Override rebirth attempt
-- Blackout crashed through ceiling declaring leadership had failed mutants
-- Energy beams instantly killed Mayor Brenda Calloway
-- Masked attackers entered through doors causing widespread chaos
-- Apollo attacked and revealed true form as godlike energy being
-- Multiple casualties including Wyona of Element (permanently killed)
-- Apollo departed angrily after revealing divine nature
-- Lucille created escape tunnel for surviving council members
-- Aftermath: martial law declared with police emergency powers
-- Mayoral election announced for October 22nd, filing deadline October 3rd
-- Multiple faction candidates emerged: Angel (New Christians), Unity (MLF)
-- Police Commissioner Eleanor Braddock, Corporate Representative Katerina Lange
-- Congressman Marshawn Becker, Maxwell Ryder, Lucien Drake
-- Vagrant confirmed Pepper died in explosion, blamed Apollo
-- District X referendum scheduled before final mayoral debate
-- Plague continued spreading: high mortality but survivors gained stronger powers
+- Six-month downtime: refugee crisis emerged, disease outbreak among mutants
+- Khan Corp charity gala: emotional reunion between Varia and Baatar Khan
+- Blackout attacked, killed Mayor Calloway instantly
+- Apollo revealed godlike true form during battle, then disappeared
+- Pepper (Vagrant's twin) killed in explosion, multiple Element casualties
+- Martial law declared, mayoral election announced for October 22nd
 
 ### Session 11: "Election Chaos"
-- Monday-Tuesday preparation: Varia trained intensively, stressed over Apollo's departure
-- Florian recruited by Asha Nair for campaign social media management
-- Florian recruited Vagrant as personal security for campaign work
-- Henry provided security for Unity as MLF responsibility
-- Ambassador consulted with Varia and Mason about ULMH candidate support
-- Varia suggested potential alignment with MLF/Unity, outreach for mutual support
-- Friday candidate meeting called to discuss election logistics
-- Police Commissioner Braddock outlined upcoming election schedule
-- Varia suggested reaching out to "Group X" for negotiation
-- Virtual reality prison suddenly formed around everyone in meeting room
-- Percentage counter appeared indicating something loading in system
-- Hellbeast materialized as enemy within the prison environment
-- Combat erupted both against Hellbeast and between various factions
-- Florian killed Maxwell Ryder using sound manipulation powers
-- Police subsequently killed Florian in retaliation for candidate murder
-- Vagrant recovered Florian's body and escaped from scene
-- Mason, Marquis, and Varia with police reinforcements defeated Hellbeast
-- Three candidates died: Police Commissioner Braddock, Congressman Becker, Maxwell Ryder
-- Hellbeast revealed as Henry's half-brother from Bri's WWII era
+- Candidate meeting disrupted by VR prison trap with Hellbeast attack
+- Florian killed Maxwell Ryder, then killed by police in retaliation
+- Three candidates died: Braddock, Becker, Ryder
+- Hellbeast revealed as Henry's half-brother from WWII era
 - Remaining candidates: Angel, Unity, Asha Nair, Katarina Lyaaine, Lucian Drake
-- Roland Cain arrived and questioned team members separately
-- Vagrant successfully escaped police custody using stealth abilities
-- Characters released from questioning, met in lobby afterward
-- Police officer delivered message from Wraith requesting 3 AM meeting
 
 ### Session 12: "Final Confrontation"
-- Team regrouped after questioning, split up for various activities
-- Mason searched for Lucille while Varia and Henry tracked Vagrant
-- Varia used technopathy to locate Vagrant's phone position
-- Team reunited at Wraith's warehouse for planning session
-- Wraith explained escalating violence threatened democracy and city
-- Team agreed to reassemble to address the crisis
-- Varia revealed Demo (simulation power mutant) behind VR prison attack
-- Baatar Khan contacted for Demo's location information
-- Suspicion that Lucian Drake kidnapped Demo, warehouse location provided
-- Warehouse rescue mission: team infiltrated Gilded Chain facility
-- Varia broke through roof to rescue chained Demo
-- Combat with enhanced criminals using mutant-enhancing drugs
-- Coordinated team attacks defeated enemies successfully
-- Lucian Drake captured and turned over to police
-- Demo rescued but unconscious and severely injured
-- Hospital crisis: Demo woke with drugs still in system
-- Uncontrolled simulation powers activated, threatening hospital deaths
-- Several people killed by Demo's uncontrolled simulation
-- Varia forced to kill Demo to stop deadly simulation
-- Varia experienced complete mental breakdown over incident
-- Varia called Mason expressing belief mutants need registration/monitoring
-- Conversation escalated with Varia becoming hostile toward "meatbags"
-- All technology in Seattle failed due to Override-style disruption
-- Team's phones and electronics completely destroyed
-- Morning: fleet of Sentinel robots emerged from Puget Sound
-- Varia floating above city controlling entire robot army
-- Robots systematically collaring all mutants throughout the city
-- Team regrouped as Varia had gone completely rogue
-- Preparation for final battle: Bri revealed staying with Baatar Khan
-- Team recruited allies: Achilles (for payment) and Hellbeast (police released)
-- Achilles and Bri had tense family reunion
-- Bri attempted emotional reach to Hellbeast before restraint break
-- Hellbeast broke free and headed toward battle
-- Session ended with team preparing to confront Varia and robot army
+- Team rescued Demo from Lucian Drake's warehouse
+- Hospital crisis: Demo's powers killed several people before Varia stopped him
+- Varia's mental breakdown led to Override-style technology disruption
+- Sentinel robot army emerged with Varia controlling from above
+- All mutants systematically collared throughout Seattle
+- Team recruited Achilles and Hellbeast for final battle against rogue Varia
+
+
 
 ## Session Summaries
 
