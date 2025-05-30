@@ -348,7 +348,7 @@ Upgrade Options:
 - Base utility pool: 5 × (Tier - 2)
 
 
-# SECTION 4: ATTACK AND EFFECT TYPES - REVISED
+# SECTION 4: ATTACK AND EFFECT TYPES
 
 ### **ATTACK TYPES**
 *Determines how attacks are delivered and their targeting methods*
@@ -370,7 +370,7 @@ Upgrade Options:
 **AREA ATTACK** 
 - **Range:** Originates from your position
 - **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
-- **Penalty:** -Tier to all Accuracy rolls
+- **Penalty:** -Tier to all Effect rolls
 
 ### **HYBRID ATTACKS**
 *Combine damage and conditions in single attack*
@@ -741,7 +741,7 @@ Upgrade Options:
 - **Enhanced Scale (20p):** Double the size of Area attacks (6sp radius, 12sp cone, 24sp line)
 - **Precise (30p):** Choose which targets are affected by Area attacks
 - **Ranged Origin (20p):** Area attacks can originate from designated point within 15 spaces
-- **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only, AOE accuracy penalty becomes effect penalty
+- **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only
 
 **Hybrid:** +30p to any Attack Type  
 **Advanced Conditions:** Control (30p), Capture (20p), Stun (20p), Weaken (20p), Mimic (+20p) Disable Specials (10p), Frighten (10p), Enthrall (10p), Frenzy (10p)
