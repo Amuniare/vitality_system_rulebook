@@ -96,7 +96,7 @@
 - **Gala Attack:** Mayor killed, martial law declared, election called
 - **Present:** Emergency election campaign underway, multiple candidates dead
 
-## Session Notes (Condensed)
+## Session Notes
 
 ### Session 1: "The Warehouse"
 - Team assembled at warehouse to meet Wraith, forced inside by police arrival
