@@ -2030,7 +2030,7 @@ Represents your character's financial resources. The GM will set a wealth level 
 Heroes living paycheck-to-paycheck or relying on makeshift solutions. Housing is often cramped, unstable, or shared, with few luxuries.
 
 | **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
-|-||-|-|
+|-------|------------|-------------------------|-------------------------------|
 | **Incidental** | $0-$50 | Effortless; no checks required. | Bus fare, cheap meals, second-hand clothes, basic tools, duct tape. |
 | **Standard** | $50-$200 | 1 per session; no check required. | Low-end laptops, plane tickets to nearby locations, burner phones. |
 | **Unusual** | $200-$1,000 | Requires planning, narrative justification, a challenging skill check, and downtime. | Used cars, custom gadgets, bribes, short-term rentals of gear. |
@@ -2040,7 +2040,7 @@ Heroes living paycheck-to-paycheck or relying on makeshift solutions. Housing is
 Heroes with stable finances and reasonable housing, such as apartments or small homes with utilities and basic amenities.
 
 | **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
-|-||-|-|
+|-------|------------|-------------------------|-------------------------------|
 | **Incidental** | $0-$200 | Effortless; no checks required. | Meals, taxi rides, affordable gadgets, costume repairs, minor tools. |
 | **Standard** | $200-$1,000 | 1 per session; no check required. | Decent laptops, multi-day travel, advanced smartphones, surveillance gear. |
 | **Unusual** | $1,000-$5,000 | Requires planning, narrative justification, a challenging skill check, and downtime. | Custom vehicles, specialized equipment, short-term lab access. |
