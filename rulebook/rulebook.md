@@ -1502,9 +1502,6 @@ Make Awareness checks to exist in multiple probable states simultaneously, exper
 **Multi-limbed**
 You have additional limbs. Each purchase of this feature grants you one extra limb.
 
-**Water Walk**
-You can walk on liquids.
-
 **Personal Vehicle**
 You own a vehicle that allows you to travel quickly.
 
@@ -1679,9 +1676,6 @@ You can sing a tune to help inspire others. You give a +4 bonus to any check for
 
 #### 5-Point Specialized Features
 
-**Astral Projection**
-Make Mobility checks to project your consciousness to distant locations, becoming invisible and intangible.
-
 **Time Perception**
 Make Awareness checks to perceive the flow of time differently, seeing events in slow motion or experiencing accelerated time.
 
@@ -1802,83 +1796,88 @@ Gain a supernatural sense for a specific phenomenon within 10 spaces at Tier 1, 
 
 ## Movement
 
-Enhanced locomotion capabilities that enable Mobility checks for movement types impossible through normal human means. Movement abilities expand how and where you can travel.
+Enhanced locomotion capabilities that function seamlessly during combat. Movement abilities integrate with your movement action and require no skill checks or preparation time.
 
-**Core Principle:** Movement abilities allow you to make Mobility checks to travel in ways that would be impossible with normal human locomotion.
-
-### 1-Point Movement
-
-**Water Walking**
-You can to walk on any liquid surface as if it were solid ground.
-
-
-**Perfect Balance**
-You can to walk across narrow surfaces, tightropes, or unstable terrain without falling.
-
-**Parkour Mastery**
-You can to navigate urban environments using walls, buildings, and obstacles as movement paths.
-
-
-
-**Fall Protection**
-Half your falling damage taken after calculating Durability.
-
-**Aquatic**
-You can swim at your full speed and are unbothered by aquatic circumstances such as cold and depth pressure while swimming.
-
-
-### 3-Point Movement
-
-**Wall Walking**
-You can to walk on walls and ceilings at normal speed, defying gravity on solid surfaces.
-
-**Limited Phasing**
-You can to selectively phase parts of your body through solid barriers (hand through wall, etc.).
-
-
-
-**Fall Proof**
-You don't take fall damage.
-
-**Burrowing**
-You can to move through earth, sand, or loose rock at half speed, creating temporary tunnels.
+**Core Principle:** Movement abilities modify how you can move during combat turns. They activate instantly and integrate with your base movement speed and actions.
+**Point Cost:** Based on tactical advantage and versatility in combat situations.
+**Combat Integration:** All movement abilities work with your base movement speed and can be split before and after other actions on your turn.
 
 ### 5-Point Movement
 
+**Wall Walking**
+Move on walls and ceilings at normal speed, defying gravity on solid surfaces. You can change orientation as part of your movement without spending additional actions.
 
-**Elastic Movement**
-You can to stretch your limbs to reach distant objects or compress your body to fit through small spaces.
-
-
-**Long-Range Teleportation**
-Make a Movility check, and spend 1 minute preparing, to move to teleport to any location on Earth that you can clearly visualize or have visited.
-
-**Interdimensional Travel**
-Make a Movility check to travel between parallel dimensions or alternate realities.
-
-**Gravity Control**
-Make a Movility check to alter your personal gravity, walking on any surface or floating in mid-air.
-
-
+**Burrowing** 
+Move through earth, sand, or loose rock at half speed. You create temporary tunnels that collapse after you pass unless you spend a Primary Action to make them permanent.
 
 ### 10-Point Movement
 
 **Flight**
-Make Mobility checks to fly in any direction at full speed with perfect maneuverability.
+Move in any direction at full speed with perfect maneuverability. You can hover in place and are unaffected by ground-based obstacles or terrain penalties.
+
+**Phasing**
+Selectively phase parts of your body or your entire body through solid barriers. You can move through walls, floors, and other solid objects at normal speed. You must end your movement in an unoccupied space.
 
 **Short-Range Teleportation**
-You can to move to instantly teleport to any visible location, within your movement.
+Instantly teleport to any visible location within your movement range. This movement ignores obstacles and opportunity attacks. You cannot teleport to occupied spaces or locations you cannot clearly see.
 
+**Portal Creation**
+Create two linked portals as part of your movement action. Each portal occupies one space and can be placed anywhere within your movement range. Your movement is consumed equal to the total distance between both portal locations. Any creature or object can move through either portal to instantly emerge from the other. Portals persist until the start of your next turn or until you create new ones. Only one pair of portals can exist at a time.
 
+## Movement Features
+
+Enhanced locomotion capabilities that enable checks for movement types impossible through normal human means. Movement Features expand how and where you can travel through skill checks and preparation.
+
+**Core Principle:** Movement Features allow you to make checks to travel in ways that would be impossible with normal human locomotion. They require skill checks, preparation time, or both.
+
+**Point Cost:** Based on scope, range, and utility applications enabled.
+
+### 1-Point Movement Features
+
+**Water Walking**
+Make Mobility checks to walk on any liquid surface as if it were solid ground. The surface must support your weight based on its viscosity and your movement speed.
+
+**Perfect Balance**
+Make Mobility checks to walk across narrow surfaces, tightropes, or unstable terrain without falling. Width restrictions and environmental hazards affect check difficulty.
+
+**Parkour Mastery**
+Make Mobility checks to navigate urban environments using walls, buildings, and obstacles as movement paths. Complex routes require higher check difficulties.
+
+**Fall Protection**
+Make Mobility checks when falling to reduce damage by half after calculating Durability. Automatic for falls under 10 feet.
+
+**Aquatic**
+Make Mobility checks to swim at full speed in any aquatic environment. You are unaffected by water temperature, pressure, or current when swimming.
+
+### 3-Point Movement Features
+
+**Fall Proof**
+Make Mobility checks to completely negate fall damage from any height. Failure results in normal fall damage calculations.
+
+**Elastic Movement**
+Make Mobility checks to stretch your limbs to reach distant objects or compress your body to fit through spaces one-quarter your normal size.
+
+### 5-Point Movement Features
+
+**Long-Range Teleportation**
+Make Mobility checks after spending 1 minute in preparation to teleport to any location on Earth that you can clearly visualize or have previously visited. Check difficulty increases with distance and unfamiliarity.
+
+**Interdimensional Travel**
+Make Mobility checks after spending 10 minutes in preparation to travel between parallel dimensions or alternate realities. GM determines available destinations and check difficulties.
+
+**Gravity Control**
+Make Mobility checks to alter your personal gravity, allowing you to walk on any surface or float in mid-air for up to 1 minute. Maintaining control requires concentration.
+
+### 10-Point Movement Features
 
 **Time Travel**
-Make a Movility check to move forward or backward through time.
+Make Mobility checks after spending 1 hour in preparation to move forward or backward through time. Check difficulty increases with temporal distance. GM determines limitations and potential paradox consequences.
 
 **Astral Travel**
-Make an Awareness check to project yourself across infinite distances as a incorporeal consciousness.
+Make Awareness checks after spending 10 minutes in preparation to project yourself across infinite distances as incorporeal consciousness. Your physical body remains vulnerable while projecting.
 
 **Omnipresence**
-Make an Awareness check to exist simultaneously in up to Tier different locations for brief periods.
+Make Awareness checks after spending 1 hour in preparation to exist simultaneously in up to Tier different locations for up to 10 minutes. Maintaining multiple presences requires concentration checks each turn.
 
 
 
