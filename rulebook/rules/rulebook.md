@@ -1433,7 +1433,7 @@ Abilities that enable entirely new categories of actions and checks impossible t
 
 ### Mental/Psychic Powers
 
-#### 1-Point Mental Features
+#### Mental Features (1p)
 
 **Material Sense** 
 Make Awareness checks to identify the composition, age, and origin of objects by touch.
@@ -1450,7 +1450,7 @@ Make Communication checks to converse with specific animal types and sense the h
 **Weather Prediction**
 Make Intelligence checks to accurately predict weather patterns up to 24 hours in advance.
 
-#### 3-Point Mental Features
+#### Mental Features (3p)
 
 **Telepathy**
 Make Communication checks to establish two-way mental communication with any intelligent being regardless of distance or barriers. No range limitations and allows deep mental contact.
@@ -1471,7 +1471,7 @@ Make Intelligence checks to interface directly with electronic devices and under
 You can share or transfer memories with a touch, or form a temporary psychic connection with another being. This connection can be used for strategic coordination, emotional support, or unique insight into the other's thoughts and intentions.
 
 
-#### 5-Point Mental Features
+#### Mental Features (5p)
 
 **Mind-Reading**
 Make Communication checks to read surface thoughts of conscious beings within line of sight. Range limited to visual contact and surface-level thoughts only.
@@ -1482,7 +1482,7 @@ Make Communication checks to view, modify, or implant memories in willing or unc
 **Consciousness Transfer**
 Make Communication checks to temporarily swap consciousness with willing participants.
 
-#### 10-Point Mental Features
+#### Mental Features (10p) 
 
 **True Precognition**
 Make Intelligence checks to perceive detailed future events up to days in advance, with accuracy based on roll success.
@@ -1497,7 +1497,7 @@ Make Awareness checks to exist in multiple probable states simultaneously, exper
 
 ### Physical Enhancements
 
-#### 1-Point Physical Features
+#### Physical Features (1p)
 
 **Multi-limbed**
 You have additional limbs. Each purchase of this feature grants you one extra limb.
@@ -1508,7 +1508,7 @@ You own a vehicle that allows you to travel quickly.
 **Stable Housing**
 You have access to a home that supports more than just yourself.
 
-#### 3-Point Physical Features
+#### Physical Features (3p)
 
 **Mystic Guardian**
 You can create temporary magical guardians or constructs that can complete simple tasks. These guardians can act as watchmen, couriers, or assistants in problem-solving tasks.
@@ -1525,7 +1525,7 @@ You can sense the presence of supernatural beings and forces. This ability can a
 **Temporal Echo**
 You can temporarily replay past events regarding persons, places, and objects. This ability allows you to uncover secrets, retrace steps, or resolve mysteries tied to your surroundings.
 
-#### 5-Point Physical Features
+#### Physical Features (5p)
 
 **Quantum Tunneling**
 Make Mobility checks to teleport through solid barriers by exploiting quantum mechanics (short range). Work with GM to establish specific range and material limitations.
@@ -1539,7 +1539,7 @@ Make Intelligence checks to stabilize local reality, preventing supernatural alt
 **Hexer**
 You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions.
 
-#### 10-Point Physical Features
+#### Physical Features (10p)
 
 **Reality Revision**
 Make Intelligence checks to make minor alterations to recent events (within the last hour), changing their outcomes. Work with GM to establish limitations and consequences.
@@ -1560,7 +1560,7 @@ As you activate this feature, increase your Tier by 4, for 6 rounds. At the end 
 
 ### Crafting/Creation Abilities
 
-#### 1-Point Crafting Features
+#### Crafting Features (1p) 
 
 **Lock**
 You can place a protective barrier around a container or room. Your bonus to resist someone breaking into the container or room is 3 × your Intelligence. You can only have one lock active at a time, but you can disable and activate a new one at any time from anywhere.
@@ -1568,7 +1568,7 @@ You can place a protective barrier around a container or room. Your bonus to res
 **Object Encryption**
 You can seal items in a protective field to prevent tampering.
 
-#### 3-Point Crafting Features
+#### Crafting Features (3p) 
 
 **Forbiddance**
 Once per rest, over the course of an hour, you may create a ward that protects up to a 100 by 100 space area from observation, teleportation, and communication through the barrier. Choose one category of being (work with GM to define). Chosen creatures take (10 + Focus or Power) damage per turn spent in the area. The ward lasts one day. If you use this feature every day for 100 days in the same spot, the effect becomes permanent.
@@ -1588,7 +1588,7 @@ You can create magical rituals. These rituals work a single time and to accompli
 **Inventor**
 You can create technological inventions. These inventions work a single time and to accomplish a specific goal. The GM will determine the Intelligence check difficulty based on the setting. It will take a number of hours of active downtime equal to the difficulty minus 10. Requires a suitable lab or workshop.
 
-#### 5-Point Crafting Features
+#### Crafting Features (5p) 
 
 **Matter Manipulation**
 Make Intelligence checks to temporarily convert one mundane material into another, or transform one object into another similar object requiring the same weight and density. Work with GM to establish duration and material limitations.
@@ -1605,7 +1605,7 @@ It takes one hour to set up the trap, and you may set it to release one of your 
 **Bleeding Edge**
 Your technology is the most advanced and powerful there is, allowing you greater feats beyond what normal technology can accomplish. However, it can only be repaired, maintained, modified, or upgraded using very specific or hard-to-find tools, methods, or materials.
 
-#### 10-Point Crafting Features
+#### Crafting Features (10p) 
 
 **Matter Creation**
 Make Intelligence checks to create small amounts of any non-living matter from quantum foam. Work with GM to establish limitations and energy requirements.
@@ -1617,12 +1617,12 @@ Make Communication checks to understand and communicate in any language, includi
 
 ### Social/Network Features
 
-#### 1-Point Social Features
+#### Social Features (1p)
 
 **Debt**
 Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect.
 
-#### 3-Point Social Features
+#### Social Features (3p)
 
 **Sponsor**
 Someone has invested a great deal of time and/or money to get you where you are. You have greater access to resources, and they are inclined to protect their investment. However, you are beholden to them, and they might cut their losses if things get too dicey.
@@ -1643,12 +1643,12 @@ You have extensive connections with various influential individuals. These conne
 
 ### Unique/Specialized Features
 
-#### 1-Point Specialized Features
+#### Specialized Features (1p)
 
 **The Prophesied One**
 A prophecy involves you. Those who believe in it will go to great lengths to assist you. Work with the GM to determine the prophecy's nature and cost.
 
-#### 3-Point Specialized Features
+#### Specialized Features (3p)
 
 **Ancestral Knowledge**
 You can communicate with ancestral spirits for guidance.
@@ -1674,7 +1674,7 @@ You're very bossy and like to tell others how to do things. If you can spend one
 **Bard**
 You can sing a tune to help inspire others. You give a +4 bonus to any check for one minute, a number of times per day equal to your Communication score.
 
-#### 5-Point Specialized Features
+#### Specialized Features (5p)
 
 **Time Perception**
 Make Awareness checks to perceive the flow of time differently, seeing events in slow motion or experiencing accelerated time.
@@ -1691,7 +1691,7 @@ Work with GM to establish corruption mechanics. When taking this feature, choose
 **Simultaneous Processing**
 You can perform hundreds of simple mental tasks simultaneously. This feature allows for unique problem-solving opportunities, such as tracking multiple variables in puzzles or analyzing large amounts of data.
 
-#### 10-Point Specialized Features
+#### Specialized Features (10p)
 
 **Dimensional Travel**
 Make Mobility checks to open portals to alternate dimensions, parallel Earths, or entirely different realities. Work with GM to establish specific limitations and requirements.
@@ -1707,7 +1707,7 @@ Enhanced perceptual capabilities that enable Awareness checks impossible through
 
 **Core Principle:** Senses allow you to make Awareness checks to perceive things that would be impossible with normal human senses.
 
-### 1-Point Senses
+### Senses (1p)
 
 **Infrared Vision**
 See heat signatures through barriers up to 10cm thick. Each additional purchase increases penetration by 10x (10cm → 1m → 10m → 100m). Certain hyperdense materials may be challenging.
@@ -1733,7 +1733,7 @@ Make Awareness checks to detect when someone is deliberately lying or withholdin
 **Scent Tracking**
 Make Awareness checks to follow trails by scent, even hours or days old.
 
-### 3-Point Senses
+### Senses (3p)
 
 **Echolocation**
 Make Awareness checks to navigate and identify objects in complete darkness using sound reflection. Range: Tier × 10 Sp.
@@ -1756,7 +1756,7 @@ Make Awareness checks to perceive temporal distortions, time dilation effects, o
 **Precognitive Flashes**
 Make Awareness checks to glimpse potential outcomes of immediate actions (next few seconds).
 
-### 5-Point Senses
+### Senses (5p)
 
 **X-Ray Vision**
 Make Awareness checks to see through solid objects up to Tier × 2 Sp thick, revealing hidden structures or concealed items.
@@ -1773,7 +1773,7 @@ Make Awareness checks to sense all living creatures within Tier × 100 Sp, regar
 **Energy Sight**
 Make Awareness checks to see all forms of energy (electrical, magical, radioactive) as visible spectrums.
 
-### 10-Point Senses
+### Senses (10p)
 
 **Omniscient Sight**
 Make Awareness checks to perceive events occurring anywhere on Earth that you can clearly visualize.
@@ -1802,7 +1802,7 @@ Enhanced locomotion capabilities that function seamlessly during combat. Movemen
 **Point Cost:** Based on tactical advantage and versatility in combat situations.
 **Combat Integration:** All movement abilities work with your base movement speed and can be split before and after other actions on your turn.
 
-### 5-Point Movement
+### Movement (5p)
 
 **Wall Walking**
 Move on walls and ceilings at normal speed, defying gravity on solid surfaces. You can change orientation as part of your movement without spending additional actions.
@@ -1810,7 +1810,7 @@ Move on walls and ceilings at normal speed, defying gravity on solid surfaces. Y
 **Burrowing** 
 Move through earth, sand, or loose rock at half speed. You create temporary tunnels that collapse after you pass unless you spend a Primary Action to make them permanent.
 
-### 10-Point Movement
+### Movement (10p)
 
 **Flight**
 Move in any direction at full speed with perfect maneuverability. You can hover in place and are unaffected by ground-based obstacles or terrain penalties.
@@ -1832,7 +1832,7 @@ Enhanced locomotion capabilities that enable checks for movement types impossibl
 
 **Point Cost:** Based on scope, range, and utility applications enabled.
 
-### 1-Point Movement Features
+### Movement Features (1p)
 
 **Water Walking**
 Make Mobility checks to walk on any liquid surface as if it were solid ground. The surface must support your weight based on its viscosity and your movement speed.
@@ -1849,7 +1849,7 @@ Make Mobility checks when falling to reduce damage by half after calculating Dur
 **Aquatic**
 Make Mobility checks to swim at full speed in any aquatic environment. You are unaffected by water temperature, pressure, or current when swimming.
 
-### 3-Point Movement Features
+### Movement Features (3p)
 
 **Fall Proof**
 Make Mobility checks to completely negate fall damage from any height. Failure results in normal fall damage calculations.
@@ -1857,7 +1857,7 @@ Make Mobility checks to completely negate fall damage from any height. Failure r
 **Elastic Movement**
 Make Mobility checks to stretch your limbs to reach distant objects or compress your body to fit through spaces one-quarter your normal size.
 
-### 5-Point Movement Features
+### Movement Features (5p)
 
 **Long-Range Teleportation**
 Make Mobility checks after spending 1 minute in preparation to teleport to any location on Earth that you can clearly visualize or have previously visited. Check difficulty increases with distance and unfamiliarity.
@@ -1868,7 +1868,7 @@ Make Mobility checks after spending 10 minutes in preparation to travel between 
 **Gravity Control**
 Make Mobility checks to alter your personal gravity, allowing you to walk on any surface or float in mid-air for up to 1 minute. Maintaining control requires concentration.
 
-### 10-Point Movement Features
+### Movement Features (10p)
 
 **Time Travel**
 Make Mobility checks after spending 1 hour in preparation to move forward or backward through time. Check difficulty increases with temporal distance. GM determines limitations and potential paradox consequences.
