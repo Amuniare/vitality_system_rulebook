@@ -221,3 +221,67 @@ body {
         display: none;
     }
 }
+
+/* Auto-linking Styles */
+.auto-link {
+    color: #3498db;
+    text-decoration: none;
+    border-bottom: 1px dotted #3498db;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.auto-link:hover {
+    color: #2980b9;
+    border-bottom-color: #2980b9;
+    background-color: rgba(52, 152, 219, 0.1);
+    padding: 1px 2px;
+    margin: -1px -2px;
+    border-radius: 2px;
+}
+
+/* Different styles for different link types */
+.auto-link.term-link {
+    border-bottom-style: dotted;
+}
+
+.auto-link.section-link {
+    border-bottom-style: dashed;
+    color: #27ae60;
+    border-bottom-color: #27ae60;
+}
+
+.auto-link.section-link:hover {
+    color: #229954;
+    border-bottom-color: #229954;
+    background-color: rgba(39, 174, 96, 0.1);
+}
+
+/* Highlighted target when linked to */
+.highlighted {
+    background-color: rgba(52, 152, 219, 0.2) !important;
+    padding: 10px !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.3) !important;
+}
+
+/* Tooltip-style title attributes are handled by browser */
+.auto-link[title] {
+    position: relative;
+}
+
+/* Ensure auto-links don't break text flow */
+.auto-link {
+    display: inline;
+    word-break: normal;
+}
+
+/* Print styles - remove link styling for print */
+@media print {
+    .auto-link {
+        color: inherit !important;
+        border-bottom: none !important;
+        text-decoration: none !important;
+    }
+}

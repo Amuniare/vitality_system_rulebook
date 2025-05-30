@@ -1,5 +1,6 @@
 class RulebookApp {
     constructor() {
+        this.autoLinker = new AutoLinker();
         this.init();
     }
 
@@ -8,6 +9,7 @@ class RulebookApp {
             await this.loadRulebook();
             this.generateNavigation();
             this.setupEventListeners();
+            this.logAutoLinkingStats();
         } catch (error) {
             console.error('Failed to initialize app:', error);
             document.getElementById('content').innerHTML = 
@@ -23,11 +25,14 @@ class RulebookApp {
             }
             
             const markdown = await response.text();
-            const html = marked.parse(markdown);
+            let html = marked.parse(markdown);
+            
+            // Apply auto-linking BEFORE adding to DOM
+            html = this.autoLinker.applyAutoLinking(html);
             
             document.getElementById('content').innerHTML = html;
             
-            // Add IDs to headings for navigation
+            // Add IDs to headings for navigation (after auto-linking)
             this.addHeadingIds();
             
         } catch (error) {
@@ -78,11 +83,21 @@ class RulebookApp {
     }
 
     setupEventListeners() {
-        // Smooth scroll for navigation links
-        document.querySelectorAll('.nav-item').forEach(link => {
-            link.addEventListener('click', (e) => {
+        // Smooth scroll for navigation links (existing auto-links work automatically)
+        document.addEventListener('click', (e) => {
+            // Handle both navigation and auto-links
+            if (e.target.matches('.nav-item, .auto-link')) {
                 e.preventDefault();
-                const targetId = link.getAttribute('data-target');
+                
+                let targetId;
+                if (e.target.classList.contains('nav-item')) {
+                    targetId = e.target.getAttribute('data-target');
+                } else {
+                    // Auto-link
+                    const href = e.target.getAttribute('href');
+                    targetId = href.substring(1); // Remove the #
+                }
+                
                 const targetElement = document.getElementById(targetId);
                 
                 if (targetElement) {
@@ -90,11 +105,19 @@ class RulebookApp {
                         behavior: 'smooth',
                         block: 'start'
                     });
+                    
+                    // Add visual feedback for auto-linked terms
+                    if (e.target.classList.contains('auto-link')) {
+                        targetElement.classList.add('highlighted');
+                        setTimeout(() => {
+                            targetElement.classList.remove('highlighted');
+                        }, 2000);
+                    }
                 }
-            });
+            }
         });
 
-        // Mobile menu toggle (if needed)
+        // Mobile menu toggle (existing code)
         const menuToggle = document.createElement('button');
         menuToggle.className = 'menu-toggle';
         menuToggle.innerHTML = '☰ Menu';
@@ -102,6 +125,11 @@ class RulebookApp {
             document.getElementById('sidebar').classList.toggle('open');
         });
         document.body.appendChild(menuToggle);
+    }
+
+    logAutoLinkingStats() {
+        const stats = this.autoLinker.getStats();
+        console.log('Auto-linking Statistics:', stats);
     }
 }
 
