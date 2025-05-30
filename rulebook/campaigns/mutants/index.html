@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutants Campaign - Vitality System</title>
+    <link rel="stylesheet" href="../../rules/viewer/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Navigation enhancement */
+        .nav-links {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg-secondary, #34495e);
+            border: 1px solid var(--accent-primary, #3498db);
+            border-radius: 4px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: var(--accent-primary, #3498db);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border: 1px solid var(--accent-primary, #3498db);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--accent-primary, #3498db);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .breadcrumb {
+            background: var(--bg-primary, #2c3e50);
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-primary, #3498db);
+            font-size: 0.9em;
+            color: var(--text-muted, #bdc3c7);
+        }
+
+        .breadcrumb a {
+            color: var(--accent-primary, #3498db);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Mutants Campaign</h2>
+                <p>Neo-Tokyo 2157</p>
+                
+                <div class="nav-links">
+                    <a href="../../index.html" class="nav-link">Hub Home</a>
+                    <a href="../../rules/index.html" class="nav-link">Rulebook</a>
+                    <a href="../../character-builder/character-builder.html" class="nav-link">Character Builder</a>
+                    <a href="../index.html" class="nav-link">All Campaigns</a>
+                </div>
+            </div>
+
+            <div class="nav-content" id="nav-content">
+                <div class="loading">Loading navigation...</div>
+            </div>
+        </nav>
+        
+        <main class="content" id="content">
+            <div class="breadcrumb">
+                <a href="../../index.html">Vitality System Hub</a> > 
+                <a href="../index.html">Campaign Lore</a> > 
+                <strong>Mutants Campaign</strong>
+            </div>
+            <div class="loading">Loading campaign lore...</div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="../../rules/viewer/auto-linker.js"></script>
+    <script>
+        class MutantsCampaignApp {
+            constructor() {
+                this.autoLinker = new AutoLinker();
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.loadLore();
+                    this.generateNavigation();
+                    this.setupEventListeners();
+                } catch (error) {
+                    console.error('Failed to initialize campaign:', error);
+                    document.getElementById('content').innerHTML = 
+                        '<div class="error">Failed to load campaign lore. Please try refreshing the page.</div>';
+                }
+            }
+
+            async loadLore() {
+                try {
+                    const response = await fetch('lore.md');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const markdown = await response.text();
+                    console.log('Markdown loaded, length:', markdown.length);
+                    
+                    let html = marked.parse(markdown);
+                    console.log('HTML parsed, length:', html.length);
+                    
+                    // Add IDs to headings BEFORE auto-linking
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    this.addHeadingIdsToElement(tempDiv);
+                    html = tempDiv.innerHTML;
+                    
+                    // Apply auto-linking AFTER headings have IDs
+                    console.log('Applying auto-linking...');
+                    html = this.autoLinker.applyAutoLinking(html);
+                    console.log('Auto-linking applied');
+                    
+                    document.getElementById('content').innerHTML = 
+                        '<div class="breadcrumb"><a href="../../index.html">Vitality System Hub</a> > <a href="../index.html">Campaign Lore</a> > <strong>Mutants Campaign</strong></div>' + 
+                        html;
+                    
+                } catch (error) {
+                    throw new Error(`Failed to load campaign lore: ${error.message}`);
+                }
+            }
+
+            addHeadingIdsToElement(element) {
+                const headings = element.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                headings.forEach((heading, index) => {
+                    if (!heading.id) {
+                        heading.id = this.createSlug(heading.textContent) + '-' + index;
+                    }
+                });
+            }
+
+            createSlug(text) {
+                return text
+                    .toLowerCase()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .trim();
+            }
+
+            generateNavigation() {
+                const headings = document.querySelectorAll('#content h1, #content h2, #content h3');
+                const navContent = document.getElementById('nav-content');
+                
+                if (headings.length === 0) {
+                    navContent.innerHTML = '<div class="loading">No headings found</div>';
+                    return;
+                }
+
+                let navHTML = '';
+                headings.forEach(heading => {
+                    const level = heading.tagName.toLowerCase();
+                    const text = heading.textContent;
+                    const id = heading.id;
+                    
+                    navHTML += `
+                        <a href="#${id}" class="nav-item ${level}" data-target="${id}">
+                            ${text}
+                        </a>
+                    `;
+                });
+
+                navContent.innerHTML = navHTML;
+            }
+
+            setupEventListeners() {
+                // Smooth scroll for navigation links
+                document.addEventListener('click', (e) => {
+                    if (e.target.matches('.nav-item, .auto-link')) {
+                        e.preventDefault();
+                        
+                        let targetId;
+                        if (e.target.classList.contains('nav-item')) {
+                            targetId = e.target.getAttribute('data-target');
+                        } else {
+                            const href = e.target.getAttribute('href');
+                            if (href && href.startsWith('#')) {
+                                targetId = href.substring(1);
+                            }
+                        }
+                        
+                        if (targetId) {
+                            const targetElement = document.getElementById(targetId);
+                            
+                            if (targetElement) {
+                                targetElement.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                                
+                                if (e.target.classList.contains('auto-link')) {
+                                    targetElement.classList.add('highlighted');
+                                    setTimeout(() => {
+                                        targetElement.classList.remove('highlighted');
+                                    }, 2000);
+                                }
+                            } else {
+                                console.warn('Target element not found:', targetId);
+                            }
+                        }
+                    }
+                });
+
+                // Mobile menu toggle
+                const menuToggle = document.createElement('button');
+                menuToggle.className = 'menu-toggle';
+                menuToggle.innerHTML = '☰ Menu';
+                menuToggle.addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.toggle('open');
+                });
+                document.body.appendChild(menuToggle);
+            }
+        }
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new MutantsCampaignApp();
+        });
+    </script>
+</body>
+</html>
