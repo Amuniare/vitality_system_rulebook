@@ -111,15 +111,15 @@ Upgrade Options:
 
 **Assist Action**
 - **Base:** Give Aim/Empower/Refine to adjacent ally
-- **15p Upgrade:** Range increases to 15 spaces, can target multiple allies equal to Communication score
+- **30p Upgrade:** Range increases to 15 spaces, can target multiple allies equal to Communication score
 
 **Carry Action**
 - **Base:** Make a Power check to move a willing character, a character you have grappled, or a heavy object (speed based on Power check vs weight, GM determines DC)
-- **15p Upgrade:** Move at full speed regardless of weight, can carry additional characters equal to half your Tier, can carry unwilling targets if you succeed at contested Power check
+- **15p Upgrade:** Move at full speed regardless of weight, can carry additional characters equal to half your Tier
 
 **Protect Action**
 - **Base:** You can use a reaction to make any non-direct attack vs adjacent ally, that would hit, now hits you instead
-- **15p Upgrade:** Can protect all adjacent allies simultaneously, you gain extra reactions equal to half your Tier (rounded up), to use the protect action
+- **30p Upgrade:** Can protect all adjacent allies simultaneously, you gain extra reactions equal to half your Tier (rounded up), to use the protect action
 
 
 ####  **PERSONAL ACTIONS**
