@@ -83,17 +83,20 @@ def extract_all_characters(auto_close=False):
             return
         
         # Save extracted data
-        output_dir = Path("extracted_characters")
+        char_dir = Path('characters')
+        char_dir.mkdir(exist_ok=True)
+
+        output_dir = Path("extracted")
         output_dir.mkdir(exist_ok=True)
         
-        logger.info(f"Saving extracted data to {output_dir}")
+        logger.info(f"Saving extracted data to {char_dir} / {output_dir}")
         
         for char_name, char_data in all_characters.items():
             # Create safe filename
             safe_name = char_name.replace(" ", "_").replace("/", "_").replace("*", "_")
             safe_name = "".join(c for c in safe_name if c.isalnum() or c in "._-")
             
-            output_file = output_dir / f"{safe_name}.json"
+            output_file = char_dir / output_dir / f"{safe_name}.json"
             save_json(char_data, output_file)
             logger.info(f"Saved {char_name} to {output_file}")
         
@@ -141,8 +144,12 @@ def update_character(auto_close=False):
         # Create updater
         updater = CharacterUpdater(chat)
         
+        char_dir = Path('characters')
+        input_dir = Path("input")
+        input_dir.mkdir(exist_ok=True)
+
         # Example: Update a character from template
-        template_path = Path('templates') / "characters" / "fred.json"
+        template_path = char_dir / input_dir / "Golden Sentinel.json"
         if template_path.exists():
             logger.info(f"Updating character from template: {template_path}")
             success = updater.update_character_from_json(template_path)
@@ -190,8 +197,12 @@ def create_character(auto_close=False):
         # Create updater
         updater = CharacterUpdater(chat)
         
-        # Example: Create a character from template
-        template_path = Path('templates') / "characters" / "fred.json"
+        char_dir = Path('characters')
+        input_dir = Path("input")
+        input_dir.mkdir(exist_ok=True)
+
+        # Example: Update a character from template
+        template_path = char_dir / input_dir / "Golden Sentinel.json"
         if template_path.exists():
             logger.info(f"Creating character from template: {template_path}")
             success = updater.create_character_from_json(template_path)
