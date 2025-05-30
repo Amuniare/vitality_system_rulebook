@@ -253,13 +253,19 @@ class AutoLinker {
 
 
 
+
     processTextNodesWithContext(container) {
         const walker = document.createTreeWalker(
             container,
             NodeFilter.SHOW_TEXT,
             {
                 acceptNode: (node) => {
-                    // Skip text inside links, code blocks, headings, bold text, and other special elements
+                    // Skip empty or very short text nodes
+                    if (!node.textContent || node.textContent.trim().length < 3) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    
+                    // Check immediate parent and ancestors
                     let parent = node.parentElement;
                     const skipTags = [
                         'A',           // Links (existing and auto-generated)
@@ -271,17 +277,27 @@ class AutoLinker {
                         'TITLE'        // Title attributes
                     ];
                     
-                    while (parent && parent !== container) {
+                    // Check up to 3 levels of parents (prevents infinite loops)
+                    let levelCount = 0;
+                    while (parent && parent !== container && levelCount < 3) {
                         if (skipTags.includes(parent.tagName)) {
                             return NodeFilter.FILTER_REJECT;
                         }
                         if (parent.classList && parent.classList.contains('auto-link')) {
                             return NodeFilter.FILTER_REJECT;
                         }
+                        
+                        // Check if parent is styled as bold
+                        if (this.isBoldStyled(parent)) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
                         parent = parent.parentElement;
+                        levelCount++;
                     }
                     
-                    if (node.textContent.trim().length < 3) {
+                    // Additional check: don't link text that matches nearby headings
+                    if (this.isTextSameAsNearbyHeading(node, container)) {
                         return NodeFilter.FILTER_REJECT;
                     }
                     
@@ -316,7 +332,7 @@ class AutoLinker {
             }
         });
     }
-
+    
 
     
     // Add these helper methods to your AutoLinker class:
