@@ -251,6 +251,7 @@ class AutoLinker {
         return result;
     }
 
+
     processTextNodesWithContext(container) {
         const walker = document.createTreeWalker(
             container,
@@ -270,16 +271,36 @@ class AutoLinker {
                     ];
                     
                     while (parent && parent !== container) {
+                        // Check tag name
                         if (skipTags.includes(parent.tagName)) {
                             return NodeFilter.FILTER_REJECT;
                         }
+                        
+                        // Check for auto-link class
                         if (parent.classList && parent.classList.contains('auto-link')) {
                             return NodeFilter.FILTER_REJECT;
                         }
+                        
+                        // Check for CSS-based bold styling
+                        if (this.isBoldStyled(parent)) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
+                        // Check if parent is a heading by role or class
+                        if (this.isHeadingElement(parent)) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        
                         parent = parent.parentElement;
                     }
                     
+                    // Skip very short text nodes
                     if (node.textContent.trim().length < 3) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    
+                    // Additional check: skip if the text is the same as a heading
+                    if (this.isTextSameAsNearbyHeading(node, container)) {
                         return NodeFilter.FILTER_REJECT;
                     }
                     
@@ -287,33 +308,57 @@ class AutoLinker {
                 }
             }
         );
-
-        const textNodes = [];
-        let node;
-        while (node = walker.nextNode()) {
-            textNodes.push(node);
-        }
-
-        console.log(`Processing ${textNodes.length} text nodes for auto-linking`);
-
-        // Process each text node with context awareness
-        textNodes.forEach(textNode => {
-            const currentSection = this.findCurrentSection(textNode, container);
-            const originalContent = textNode.textContent;
-            const newContent = this.linkifyTextWithContext(originalContent, currentSection);
+    
+        // ... rest of the method
+    }
+    
+    // Add these helper methods to your AutoLinker class:
+    
+    isBoldStyled(element) {
+        try {
+            const computedStyle = window.getComputedStyle(element);
+            const fontWeight = computedStyle.fontWeight;
             
-            if (newContent !== originalContent && newContent.includes('auto-link')) {
-                const wrapper = document.createElement('span');
-                wrapper.innerHTML = newContent;
-                
-                // Replace the text node with the wrapper's contents
-                while (wrapper.firstChild) {
-                    textNode.parentNode.insertBefore(wrapper.firstChild, textNode);
-                }
-                textNode.parentNode.removeChild(textNode);
-            }
+            // Check for bold font weights
+            return fontWeight === 'bold' || 
+                   fontWeight === 'bolder' || 
+                   parseInt(fontWeight) >= 600;
+        } catch (e) {
+            return false;
+        }
+    }
+    
+    isHeadingElement(element) {
+        // Check by tag name
+        if (/^H[1-6]$/i.test(element.tagName)) {
+            return true;
+        }
+        
+        // Check by role attribute
+        if (element.getAttribute('role') === 'heading') {
+            return true;
+        }
+        
+        // Check by common heading classes
+        const headingClasses = ['heading', 'title', 'header', 'subtitle'];
+        return headingClasses.some(cls => 
+            element.classList && element.classList.contains(cls)
+        );
+    }
+    
+    isTextSameAsNearbyHeading(textNode, container) {
+        const text = textNode.textContent.trim().toLowerCase();
+        if (text.length < 3) return false;
+        
+        // Find all headings in the container
+        const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6, [role="heading"]');
+        
+        return Array.from(headings).some(heading => {
+            const headingText = heading.textContent.trim().toLowerCase();
+            return headingText === text || headingText.includes(text);
         });
     }
+
 
     findCurrentSection(textNode, container) {
         // Walk up the DOM to find the current section
