@@ -30,6 +30,54 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="auto-linker.js"></script>
     <script src="script.js"></script>
+    
+    <script>
+    // GitHub Pages debugging
+    console.log('Current location:', window.location.href);
+    console.log('Base URL:', window.location.origin + window.location.pathname);
+    console.log('Document ready state:', document.readyState);
+
+    // Test if we can access the markdown file
+    fetch('rulebook.md')
+        .then(response => {
+            console.log('Markdown file access test:', response.status, response.statusText);
+            console.log('Response headers:', [...response.headers.entries()]);
+            return response.text();
+        })
+        .then(text => {
+            console.log('Markdown file size:', text.length, 'characters');
+            if (text.length < 100) {
+                console.warn('Markdown file appears to be empty or very small');
+                console.log('First 200 characters:', text.substring(0, 200));
+            } else {
+                console.log('Markdown file looks good. First 100 characters:', text.substring(0, 100));
+            }
+        })
+        .catch(error => {
+            console.error('Cannot access markdown file:', error);
+            console.log('Consider one of these solutions:');
+            console.log('1. Convert rulebook.md to rulebook.html');
+            console.log('2. Embed content directly in index.html');
+            console.log('3. Use GitHub Pages Jekyll processing');
+            console.log('4. Ensure rulebook.md is in the correct directory');
+        });
+
+    // Test marked.js availability
+    if (typeof marked !== 'undefined') {
+        console.log('marked.js is available:', marked.version || 'version unknown');
+    } else {
+        console.error('marked.js is not loaded!');
+    }
+
+    // Test auto-linker availability
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof AutoLinker !== 'undefined') {
+            console.log('AutoLinker class is available');
+        } else {
+            console.error('AutoLinker class is not available!');
+        }
+    });
+    </script>
 </body>
 
 </html>
