@@ -84,7 +84,7 @@
 - Occur outside your turn
 - Base reaction: Punish (attack when enemy moves away)
 
-### Primary Actions
+### PRIMARY ACTIONS
 All characters can take these actions at base - no special training required
 
 Upgrade Options:
