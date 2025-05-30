@@ -2,3 +2,7 @@ aoes subtract from accuracy but should they maybe instead subtract from effect, 
 
 power change
 
+
+
+can you create a nice homepage and make stuf the the rules has a nav back to the homepage
+and lore campaign lore should also have one too

@@ -6,6 +6,52 @@
     <title>Vitality System RPG Rulebook</title>
     <link rel="stylesheet" href="viewer/style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Navigation enhancement */
+        .nav-links {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg-secondary, #34495e);
+            border: 1px solid var(--accent-primary, #3498db);
+            border-radius: 4px;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: var(--accent-primary, #3498db);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border: 1px solid var(--accent-primary, #3498db);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--accent-primary, #3498db);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .breadcrumb {
+            background: var(--bg-primary, #2c3e50);
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-primary, #3498db);
+            font-size: 0.9em;
+            color: var(--text-muted, #bdc3c7);
+        }
+
+        .breadcrumb a {
+            color: var(--accent-primary, #3498db);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -13,18 +59,27 @@
             <div class="sidebar-header">
                 <h2>Vitality System</h2>
                 <p>RPG Rulebook</p>
+                
+                <div class="nav-links">
+                    <a href="../index.html" class="nav-link">🏠 Hub Home</a>
+                    <a href="../character-builder/character-builder.html" class="nav-link">🎲 Character Builder</a>
+                    <a href="../campaigns/index.html" class="nav-link">🗺️ Campaigns</a>
+                </div>
             </div>
 
             <div class="nav-content" id="nav-content">
                 <div class="loading">Loading navigation...</div>
             </div>
-
         </nav>
         
         <main class="content" id="content">
+            <div class="breadcrumb">
+                <a href="../index.html">Vitality System Hub</a> > <strong>Rulebook</strong>
+            </div>
             <div class="loading">Loading rulebook...</div>
         </main>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="viewer/auto-linker.js"></script>
     <script src="viewer/script.js"></script>
@@ -77,5 +132,4 @@
     });
     </script>
 </body>
-
 </html>
