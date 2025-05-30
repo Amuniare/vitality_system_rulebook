@@ -76,13 +76,14 @@
 - Examples: Speaking, activating certain abilities
 
 **Movement (M)**
-- **Base:** (Mobility + 6) spaces, or (Mobility + Tier), whichever is higher
+- **Base:** (Mobility + 6) or (Mobility + Tier), whichever is higher
+- You can move a number of Spaces (Sp) equal to your movement
 - Can be split before/after actions
 - Difficult terrain costs extra movement
 
 **Reactions**
 - Occur outside your turn
-- Base reaction: Punish (attack when enemy moves away)
+- Base reaction: Punish (base attack when enemy moves away)
 
 ### PRIMARY ACTIONS
 All characters can take these actions at base - no special training required
@@ -113,12 +114,12 @@ Upgrade Options:
 - **15p Upgrade:** Range increases to 15 spaces, can target multiple allies equal to Communication score
 
 **Carry Action**
-- **Base:** Move willing character (speed based on Capacity vs weight)
-- **15p Upgrade:** Move at full speed regardless of weight, can carry additional characters equal to half your Tier, can carry unwilling targets if you succeed at contested Capacity check
+- **Base:** Make a Power check to move a willing character, a character you have grappled, or a heavy object (speed based on Power check vs weight, GM determines DC)
+- **15p Upgrade:** Move at full speed regardless of weight, can carry additional characters equal to half your Tier, can carry unwilling targets if you succeed at contested Power check
 
 **Protect Action**
-- **Base:** Next non-direct attack vs adjacent ally hits you instead
-- **15p Upgrade:** Can protect multiple adjacent allies simultaneously, works against direct attacks too, gain +Tier to Durability while protecting
+- **Base:** You can use a reaction to make any non-direct attack vs adjacent ally, that would hit, now hits you instead
+- **15p Upgrade:** Can protect all adjacent allies simultaneously, you gain extra reactions equal to half your Tier (rounded up), to use the protect action
 
 
 ####  **PERSONAL ACTIONS**
@@ -365,12 +366,12 @@ Upgrade Options:
 **DIRECT ATTACK** 
 - **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
 - **Restriction:** Must be Condition attack only
-- **Penalty:** -Tier to all Effect rolls
+- **Penalty:** -Tier to all Damage and Condition rolls
 
 **AREA ATTACK** 
 - **Range:** Originates from your position
 - **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
-- **Penalty:** -Tier to all Effect rolls
+- **Penalty:** -Tier to all Damage and Condition rolls
 
 ### **HYBRID ATTACKS**
 *Combine damage and conditions in single attack*
@@ -378,12 +379,14 @@ Upgrade Options:
 
 - Attack applies both Damage AND Condition
 - **Order of Resolution:** Choose Damage or Condition to resolve first - if first effect fails, entire attack fails
-- **Penalty:** -Tier to ALL Hybrid Damage and Condition rolls
+- **Penalty:** -Tier to ALL Damage and Condition rolls
 - **Rule:** When combined with Direct or Area attacks, only the Hybrid penalty applies
 
 ### **BASIC CONDITIONS**
 *Simple impairments any character can inflict through Normal Attacks*
 *Uses standard Condition formulas from Basic Rules*
+
+**Duration:** Basic conditions last until the end of your next turn.
 
 **STABILITY CONDITIONS**
 - **Disarm** → Drop held item, launch (Condition roll - Resistance) spaces
@@ -404,10 +407,12 @@ Upgrade Options:
 *Complex effects unlocked by Effect Type Archetype or purchased for Special Attacks*
 *Uses standard Condition formulas from Basic Rules*
 
+**Duration:** Advanced conditions last until the start of your next turn.
+
 - **Control (Resolve)** → Take over target's next turn completely
 - **Capture (Stability)** → Prevent all movement, Avoidance reduced to 10
 - **Stun (Resolve/Vitality)** → No actions, Avoidance = 0, all attacks auto-hit and crit
-- **Weaken (Vitality)** → Reduce chosen stat by Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances
+- **Weaken (Vitality)** → Reduce chosen stat by Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances; this effect does not expire, target cannot be affected by more than 1 instance of Weaken
 - **Disable Specials (Resolve/Vitality)** → Cannot use Special Attacks
   - **Mimic** → Gain use of disabled Special Attacks
 - **Frighten (Resolve)** → Move away, defensive actions only
@@ -551,7 +556,7 @@ Upgrade Options:
 **Aura Types:**
 - **Attack Aura** → Attacks anything entering or ending turn in radius once per round, -Tier to Accuracy
   - **Condition Effect (0p)** → Inflicts Basic Condition instead of damage
-  - **Direct Effect (30p)** → Auto-hits without Accuracy roll, -Tier to Effect rolls  
+  - **Direct Effect (30p)** → Auto-hits without Accuracy roll, -Tier to Damage and Condition rolls  
   - **Precise (15p)** → Only attacks chosen targets
 - **Obscuring Aura** → Provides visual cover, sight-based abilities prevented, attacks through aura suffer -Tier penalty
   - **Clairvoyance (15p)** → You can see through your own aura
@@ -710,9 +715,9 @@ Upgrade Options:
 # SECTION 7: SPECIAL ATTACKS
 
 ### **BASIC RULES**
-**Special Attack Allocation:** You get Special Attacks equal to your Tier  
-**Starting Points:** No base points unless granted by Special Attack Archetype  
-**Point Generation:** Take Limits on attacks to gain points for Upgrades  
+**Special Attack Allocation:** You get Special Attacks equal to your Tier, unless otherwise specified by your Special Attack Archetype  
+**Starting Points:** No base points unless granted by your Special Attack Archetype  
+**Point Generation:** Take Limits on attacks to gain points for Upgrades, unless your archetype doesn't let you take limits
 
 ### **POINT CALCULATION FROM LIMITS**
 **Limit Value Scaling:**
@@ -725,6 +730,9 @@ Upgrade Options:
 - 100 points of Limits = 75 upgrade points  
 - 150 points of Limits = 100 upgrade points
 - 250 points of Limits = 125 upgrade points
+
+**Breaking Down the Math (Tier 5 Example):**
+- **250 Points of Limits:** 50×1.0 + 100×0.5 + 100×0.25 = 125 upgrade points
 
 ### **ATTACK & EFFECT TYPE ACCESS**
 **Free Access:** Use Attack and Effect Types from your chosen Archetypes  
@@ -746,46 +754,12 @@ Upgrade Options:
 **Hybrid:** +30p to any Attack Type  
 **Advanced Conditions:** Control (30p), Capture (20p), Stun (20p), Weaken (20p), Mimic (+20p) Disable Specials (10p), Frighten (10p), Enthrall (10p), Frenzy (10p)
 
-
-# SECTION 8: SPECIAL ATTACKS
-
-## **BASIC RULES**
-**Special Attack Components:**
-
-**Quantity:** Check your Special Attack Archetype
-- **Base Rule:** Tier number of Special Attacks  
-- **Archetype Variations:** Your archetype may modify this number
-
-**Base Points:** Check your Special Attack Archetype
-- **Point Allocation:** Your archetype determines starting upgrade points per attack
-- **Limit System:** Your archetype determines if you can take Limits for additional points
-
-**Attack Type Access:** Check your Attack Type and Effect Type Archetypes
-- **Archetype Types:** Types from your chosen archetypes cost no upgrade points
-- **Non-Archetype Types:** Types not from your archetypes cost upgrade points
-
-**Point Generation:** Check your Special Attack Archetype (if Limits available)
-- **Conversion Rate:** Your archetype determines how Limit points convert to upgrade points
-- **Scaling System:** All archetypes using Limits apply diminishing returns
-
-### **POINT SCALING FROM LIMITS**
-**Diminishing Returns Formula:**
-- **First (Tier × 10) points of Limits:** Full value
-- **Next (Tier × 20) points of Limits:** Half value  
-- **All remaining Limit points:** Quarter value
-
-**Breaking Down the Math (Tier 5 Example):**
-- **250 Points of Limits:** 50×1.0 + 100×0.5 + 100×0.25 = 125 upgrade points
-
 ### **CREATION CHECKLIST**
 1. **Check Special Attack Archetype:** Quantity, base points, Limits availability, conversion rates
 2. **Check Attack/Effect Archetypes:** Which types cost nothing vs require upgrade points
 3. **Apply Limits (if available):** Generate additional upgrade points using scaling formula
 4. **Select Attack Types:** Use archetype types or purchase non-archetype types
 5. **Purchase Upgrades:** Spend available points on enhancements
-
-
-
 
 
 
@@ -1027,8 +1001,8 @@ Effect: Critical hit range expanded to 15-20 on d20
 Restriction: Cannot apply to AOE attacks  
 
 **20p - Powerful Critical**  
-Effect: Add Tier bonus again to Effect rolls on critical hits  
-Usage: Enhances critical hit damage/condition strength  
+Effect: Add Tier bonus again to Damage and Condition rolls on critical hits  
+Usage: Enhances critical hit effect roll strength  
 
 **30p - Overhit**  
 Effect: When Accuracy exceeds target Avoidance by 5+, add half the difference to Effect roll  
@@ -1075,7 +1049,7 @@ Usage: Increases damage potential and average
 #### Dice Manipulation
 
 **10p - Reliable Effect**  
-Effect: Roll extra die on Effect rolls, drop lowest result  
+Effect: Roll extra die on damage and condition rolls, drop lowest result  
 
 **20p - Consistent Effect**  
 Effect: Reroll all 1s on damage dice  
@@ -1242,7 +1216,7 @@ Bonus Selection: Choose Accuracy, Damage, or Condition when purchasing
 Restriction: Cannot use with limits requiring you to be attacked or affected  
 
 **40p - Exploit**  
-Effect: +Tier to Effect rolls against targets currently afflicted by any Condition  
+Effect: +Tier to Damage and Condition rolls against targets currently afflicted by any Condition  
 
 #### Combat Control
 
@@ -1281,7 +1255,7 @@ Effect: Using Effort on this attack allows rolling extra die on the Effort roll
 
 **20p - Compressed Release**  
 Requirement: Active Aura ability  
-Effect: Disable Aura until start of next turn, +Tier to Accuracy and Effect rolls  
+Effect: Disable Aura until start of next turn, +Tier to Accuracy, Damage and Condition rolls  
 
 #### Environmental Bonuses
 
@@ -1327,7 +1301,7 @@ Selection: Choose Accuracy, Damage, or Conditions when purchasing
 
 
 
-# SECTION 9: UTILITY ABILITIES
+# SECTION 8: UTILITY ABILITIES
 
 These abilities represent your character's capabilities outside of combat. The Vitality System divides these into two distinct categories: **Expertises** and **Features**.
 
@@ -1342,10 +1316,8 @@ These abilities represent your character's capabilities outside of combat. The V
 Specialized knowledge, training, or unique abilities that enhance your effectiveness within existing skill categories. Expertises can represent peak human achievement, superhuman talent, or distinctive capabilities that improve standard actions.
 Expertises add to rolls you can already make. They provide bonuses to existing check categories rather than creating new ones.
 
-**Use Limitation**: You can only apply two levels of expertise to any skill check two levels per individual expertise.
-
 ### Expertise Mechanics
-- **Stacking**: Maximum 2 × Tier bonus per roll from combined expertises
+- **Stacking**: You can only apply two levels of expertise to any skill check two levels per individual expertise.
 - **Custom Expertises**: Players may propose custom expertises tied to a core stat with GM approval
 
 #### Activity-Based Expertises
