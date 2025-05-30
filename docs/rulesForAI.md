@@ -94,3 +94,7 @@ Before writing any code or referencing any methods, I will:
 - Check all method references exist
 - Handle None values in string operations
 - Verify all imports and dependencies
+
+
+# NO SYMBOLS
+NO SYMBOLS - Plain text only
