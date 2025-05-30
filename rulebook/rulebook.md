@@ -25,7 +25,6 @@
 **Accuracy:** 1d20 + Tier + Focus  
 **Damage:** 3d6 + Tier + (Power × 1.5) - Durability  
 **Conditions:** 1d20 + Tier + Power vs Resistance  
-**Movement:** 6 + Mobility or (Tier + Mobility) if higher
 
 ### **ATTRIBUTES**
 **Combat AP:** Tier × 2 (Focus, Power, Mobility, Endurance)  
@@ -52,7 +51,11 @@
 
 
 
+## **STACKING BONUSES & RULE INTERACTIONS**
 
+**Stacking Bonuses** - As you build your character, you will receive bonuses from different sources (Flaws + Traits + Special Attacks + Archetypes), these bonuses are additive, unless otherwise stated.
+
+**Specific vs General Rule** - When a specific ability, feature, or rule contradicts a general game rule, the specific rule takes precedence. If two specific rules conflict, the more restrictive rule applies. When in doubt, the GM makes the final determination.
 
 
 
@@ -84,6 +87,8 @@
 **Reactions**
 - Occur outside your turn
 - Base reaction: Punish (base attack when enemy moves away)
+
+
 
 ### PRIMARY ACTIONS
 All characters can take these actions at base - no special training required
@@ -419,7 +424,7 @@ Upgrade Options:
 - **Enthrall (Resolve)** → Must defend caster
 - **Frenzy (Resolve)** → Attack nearest character randomly
 
----
+
 
 
 
@@ -588,12 +593,12 @@ Upgrade Options:
 *Temporary battlefield structure creation*
 - **Cost**: 30p
 - **Activation:** Quick Action to summon, Quick Action each turn to maintain  
-- **Size:** 10m long × 4m high
+- **Size:** 10 Sp long × 4 Sp high
 - **Placement:** Roll d20 + Tier, targets with higher Avoidance can move to other side
 - **Statistics:** 50 HP, full Condition immunity, AV = 0, DR = 10 + Tier
 - **Uses:** Twice per rest
 - **Upgrades:**
-  - **Increased Size (10p/x)** → +10m length OR +4m height per X
+  - **Increased Size (10p/x)** → +10 Sp length OR +4 Sp height per X
   - **Shapeable (10p/x)** → Add X 90-degree bends
   - **Damaging (30p)** → Touching or melee attacking wall triggers Direct base attack
   - **Tough (30p)** → 100 HP instead of 50 HP
@@ -805,7 +810,7 @@ Upgrade Options:
 * +30p **Ally Coordination** Adjacent ally must attack same target you're charging against or charge fails
 * +Variable **Reaction Delay** Cannot use Reactions while charging, gain points equal to cost of reaction abilities you have purchased
 
----
+
 
 ### **RESERVES**
 **Cost**: 10p
@@ -841,7 +846,7 @@ Upgrade Options:
 * +40p **Melee** Must be adjacent to enemy to use  
 * +50p **Target History** Can only target enemies you have not attacked this combat
 
----
+
 
 ### **COOLDOWN**
 **Cost**: 10p
@@ -871,7 +876,7 @@ Upgrade Options:
 * +50p **Condition Spiral** Conditions last until the end of your cooldown period
 * +50p **Death Proximity** Cooldown increases by 1 turn for every 25 HP below maximum
 
----
+
 
 ### **RELIABILITY**
 **Cost**: 20p
@@ -903,7 +908,7 @@ Upgrade Options:
 * +50p **Condition Infliction** When unreliable roll fails, gain Stun condition
 * +Variable **Exhaustion** When unreliable roll fails, you must spend an effort or fall unconscious
 
----
+
 
 ### **SEQUENTIAL**
 **Cost**: 20p
@@ -939,7 +944,7 @@ Upgrade Options:
 * +40p **Perfect Set Up** Must have critically hit with specific special attack
 * +50p **Applied Condition** Must have applied condition with specific special attack
 
----
+
 
 ### **HEALTH STATE**
 **Cost**: 10p
@@ -1027,7 +1032,7 @@ Effect: Critical hits trigger attack against all enemies within 3 spaces of targ
 Restriction: Cannot apply to AOE attacks, secondary attacks cannot crit from Stun  
 Exclusion: Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical  
 
----
+
 
 ### DAMAGE BONUSES
 *Damage dice manipulation and enhancement effects*
@@ -1103,7 +1108,7 @@ Restriction: Cannot apply to AOE attacks
 Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead  
 Restriction: Cannot apply to AOE attacks  
 
----
+
 
 ### CONDITION BONUSES
 *Condition application and enhancement*
@@ -1134,7 +1139,7 @@ Effect: If 2×(Condition roll - Resistance) ≥ target's remaining HP, condition
 **40p - Overwhelming Affliction**  
 Effect: If Condition roll exceeds Resistance by 3×Tier, condition becomes permanent regardless of target HP  
 
----
+
 
 ### SPECIALIZED COMBAT
 *Unique attack patterns and combat techniques*
@@ -1235,7 +1240,7 @@ Effect: Critical hits allow choice of Grab, 3-space forced movement, or Prone co
 Effect: +Tier damage against targets you have Grabbed  
 Requirement: Must have Grab condition active on target  
 
----
+
 
 ### VARIABLE BONUSES
 *Situational and scaling enhancements*
@@ -1283,7 +1288,7 @@ Effect: Spend Primary Action + Movement on subsequent turns to repeat attack
 Scaling: +Tier to chosen roll for each consecutive turn focusing (maximum 5 turns)  
 Selection: Choose Accuracy, Damage, or Conditions when purchasing  
 
----
+
 
 ### BANNED COMBINATIONS
 
@@ -1737,7 +1742,7 @@ Make Awareness checks to follow trails by scent, even hours or days old.
 ### 3-Point Senses
 
 **Echolocation**
-Make Awareness checks to navigate and identify objects in complete darkness using sound reflection. Range: Tier × 10 meters.
+Make Awareness checks to navigate and identify objects in complete darkness using sound reflection. Range: Tier × 10 Sp.
 
 **Thermal Vision**
 Make Awareness checks to see heat signatures through walls and detect living creatures by their body temperature.
@@ -1746,7 +1751,7 @@ Make Awareness checks to see heat signatures through walls and detect living cre
 Make Awareness checks to see cellular-level detail, identify microscopic organisms, or examine fine craftsmanship.
 
 **Tremor Sense**
-Make Awareness checks to detect movement and identify creatures through ground vibrations. Range: Tier × 5 meters.
+Make Awareness checks to detect movement and identify creatures through ground vibrations. Range: Tier × 5 Sp.
 
 **Aura Sight**
 Make Awareness checks to perceive emotional states, health conditions, and supernatural auras around living beings.
@@ -1760,7 +1765,7 @@ Make Awareness checks to glimpse potential outcomes of immediate actions (next f
 ### 5-Point Senses
 
 **X-Ray Vision**
-Make Awareness checks to see through solid objects up to Tier × 2 meters thick, revealing hidden structures or concealed items.
+Make Awareness checks to see through solid objects up to Tier × 2 Sp thick, revealing hidden structures or concealed items.
 
 **Psychic Resonance**
 Make Awareness checks to detect psychic activity, mental powers in use, or lingering psychic imprints.
@@ -1769,7 +1774,7 @@ Make Awareness checks to detect psychic activity, mental powers in use, or linge
 Make Awareness checks to see into adjacent dimensions, detect dimensional rifts, or spot interdimensional travelers.
 
 **Life Detection**
-Make Awareness checks to sense all living creatures within Tier × 100 meters, regardless of concealment or barriers.
+Make Awareness checks to sense all living creatures within Tier × 100 Sp, regardless of concealment or barriers.
 
 **Energy Sight**
 Make Awareness checks to see all forms of energy (electrical, magical, radioactive) as visible spectrums.
@@ -1803,80 +1808,77 @@ Enhanced locomotion capabilities that enable Mobility checks for movement types 
 
 ### 1-Point Movement
 
-**Enhanced Climbing**
-Make Mobility checks to climb any surface at full speed, including smooth walls and overhangs.
+**Water Walking**
+You can to walk on any liquid surface as if it were solid ground.
 
-**Superior Swimming**
-Make Mobility checks to swim at full land speed and hold breath for extended periods underwater.
 
 **Perfect Balance**
-Make Mobility checks to walk across narrow surfaces, tightropes, or unstable terrain without falling.
+You can to walk across narrow surfaces, tightropes, or unstable terrain without falling.
 
 **Parkour Mastery**
-Make Mobility checks to navigate urban environments using walls, buildings, and obstacles as movement paths.
+You can to navigate urban environments using walls, buildings, and obstacles as movement paths.
 
-**Speed Burst**
-Make Mobility checks to move at double speed for short distances without fatigue.
+
 
 **Fall Protection**
-Half your falling damage taken after calculating Durability. You fall at half the speed.
+Half your falling damage taken after calculating Durability.
 
 **Aquatic**
 You can swim at your full speed and are unbothered by aquatic circumstances such as cold and depth pressure while swimming.
 
+
 ### 3-Point Movement
 
 **Wall Walking**
-Make Mobility checks to walk on walls and ceilings at normal speed, defying gravity on solid surfaces.
-
-**Water Walking**
-Make Mobility checks to walk on any liquid surface as if it were solid ground.
+You can to walk on walls and ceilings at normal speed, defying gravity on solid surfaces.
 
 **Limited Phasing**
-Make Mobility checks to selectively phase parts of your body through solid barriers (hand through wall, etc.).
+You can to selectively phase parts of your body through solid barriers (hand through wall, etc.).
 
-**Elastic Movement**
-Make Mobility checks to stretch your limbs to reach distant objects or compress your body to fit through small spaces.
 
-**Burrowing**
-Make Mobility checks to move through earth, sand, or loose rock at half speed, creating temporary tunnels.
-
-### 5-Point Movement
-
-**True Flight**
-Make Mobility checks to fly in any direction at full speed with perfect maneuverability.
-
-**Short-Range Teleportation**
-Make Mobility checks to instantly teleport to any visible location within Tier × 10 meters.
-
-**Dimensional Step**
-Make Mobility checks to step into pocket dimensions, becoming temporarily invisible and intangible.
-
-**Quantum Movement**
-Make Mobility checks to exist in multiple locations simultaneously for brief periods.
-
-**Gravity Control**
-Make Mobility checks to alter your personal gravity, walking on any surface or floating in mid-air.
 
 **Fall Proof**
 You don't take fall damage.
 
-### 10-Point Movement
+**Burrowing**
+You can to move through earth, sand, or loose rock at half speed, creating temporary tunnels.
+
+### 5-Point Movement
+
+
+**Elastic Movement**
+You can to stretch your limbs to reach distant objects or compress your body to fit through small spaces.
+
 
 **Long-Range Teleportation**
-Make Mobility checks to teleport to any location on Earth that you can clearly visualize or have visited.
+Make a Movility check, and spend 1 minute preparing, to move to teleport to any location on Earth that you can clearly visualize or have visited.
 
 **Interdimensional Travel**
-Make Mobility checks to travel between parallel dimensions or alternate realities.
+Make a Movility check to travel between parallel dimensions or alternate realities.
+
+**Gravity Control**
+Make a Movility check to alter your personal gravity, walking on any surface or floating in mid-air.
+
+
+
+### 10-Point Movement
+
+**Flight**
+Make Mobility checks to fly in any direction at full speed with perfect maneuverability.
+
+**Short-Range Teleportation**
+You can to move to instantly teleport to any visible location, within your movement.
+
+
 
 **Time Travel**
-Make Mobility checks to move forward or backward through time by up to Tier hours.
+Make a Movility check to move forward or backward through time.
 
 **Astral Travel**
-Make Mobility checks to project yourself across infinite distances as a incorporeal consciousness.
+Make an Awareness check to project yourself across infinite distances as a incorporeal consciousness.
 
 **Omnipresence**
-Make Mobility checks to exist simultaneously in up to Tier different locations for extended periods.
+Make an Awareness check to exist simultaneously in up to Tier different locations for brief periods.
 
 
 
@@ -2039,7 +2041,7 @@ Heroes living paycheck-to-paycheck or relying on makeshift solutions. Housing is
 Heroes with stable finances and reasonable housing, such as apartments or small homes with utilities and basic amenities.
 
 | **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
-|-|------------|-------------------------|-------------------------------|
+|-||-|-|
 | **Incidental** | $0-$200 | Effortless; no checks required. | Meals, taxi rides, affordable gadgets, costume repairs, minor tools. |
 | **Standard** | $200-$1,000 | 1 per session; no check required. | Decent laptops, multi-day travel, advanced smartphones, surveillance gear. |
 | **Unusual** | $1,000-$5,000 | Requires planning, narrative justification, a challenging skill check, and downtime. | Custom vehicles, specialized equipment, short-term lab access. |
@@ -2049,7 +2051,7 @@ Heroes with stable finances and reasonable housing, such as apartments or small 
 Heroes with high incomes or substantial financial backing. They live in large homes or luxury apartments with private security and premium services.
 
 | **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
-|-------------------|------------|-------------------------|-------------------------------|
+|-------|------------|-------------------------|-------------------------------|
 | **Incidental** | $0-$1,000 | Effortless; no checks required. | Personal vehicles, high-quality meals, routine gear maintenance. |
 | **Standard** | $1,000-$5,000 | 1 per session; no check required. | High-quality laptops, international travel, top-tier costumes. |
 | **Unusual** | $5,000-$25,000 | Requires planning, narrative justification, a challenging skill check, and downtime. | Advanced vehicles, custom surveillance drones, tailored weaponry. |
