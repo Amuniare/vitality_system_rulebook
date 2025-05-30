@@ -7,6 +7,8 @@ class AutoLinker {
 
     // Build dictionaries from the processed HTML content
     buildDictionaries(htmlContent) {
+        console.log('Building auto-link dictionaries...');
+        
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = htmlContent;
         
@@ -17,10 +19,17 @@ class AutoLinker {
         this.buildTermDictionary(tempDiv);
         
         this.processed = true;
+        
+        console.log('Dictionaries built:', {
+            sections: this.sectionMap.size,
+            terms: this.termDictionary.size
+        });
     }
 
     buildSectionMap(container) {
         const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        
+        console.log('Found headings:', headings.length);
         
         headings.forEach(heading => {
             if (heading.id) {
@@ -44,8 +53,12 @@ class AutoLinker {
                         });
                     }
                 });
+            } else {
+                console.warn('Heading without ID found:', heading.textContent);
             }
         });
+        
+        console.log('Section map entries:', Array.from(this.sectionMap.keys()).slice(0, 10));
     }
 
     generateSectionVariations(text) {
@@ -77,62 +90,62 @@ class AutoLinker {
         // Vitality System specific terms with their likely definition locations
         const gameTerms = {
             // Core Stats
-            'Focus': 'core stats',
-            'Mobility': 'core stats', 
-            'Power': 'core stats',
-            'Endurance': 'core stats',
-            'Awareness': 'core stats',
-            'Communication': 'core stats',
-            'Intelligence': 'core stats',
+            'Focus': ['focus', 'core stats', 'attributes'],
+            'Mobility': ['mobility', 'core stats', 'attributes'],
+            'Power': ['power', 'core stats', 'attributes'],
+            'Endurance': ['endurance', 'core stats', 'attributes'],
+            'Awareness': ['awareness', 'core stats', 'attributes'],
+            'Communication': ['communication', 'core stats', 'attributes'],
+            'Intelligence': ['intelligence', 'core stats', 'attributes'],
             
             // Defense Stats
-            'Avoidance': 'defense stats',
-            'Durability': 'defense stats',
-            'Resolve': 'defense stats',
-            'Stability': 'defense stats',
-            'Vitality': 'defense stats',
+            'Avoidance': ['avoidance', 'defense', 'defenses'],
+            'Durability': ['durability', 'defense', 'defenses'],
+            'Resolve': ['resolve', 'defense', 'defenses'],
+            'Stability': ['stability', 'defense', 'defenses'],
+            'Vitality': ['vitality', 'defense', 'defenses'],
             
             // Combat Stats
-            'Accuracy': 'combat stats',
-            'Damage': 'combat stats',
-            'Conditions': 'combat stats',
-            'Initiative': 'combat stats',
-            'Movement': 'combat stats',
+            'Accuracy': ['accuracy', 'combat', 'attack'],
+            'Damage': ['damage', 'combat', 'attack'],
+            'Conditions': ['conditions', 'combat', 'status effects'],
+            'Initiative': ['initiative', 'combat'],
+            'Movement': ['movement', 'combat'],
             
             // Game Concepts
-            'Primary Action': 'actions',
-            'Secondary Action': 'actions',
-            'Effort': 'effort system',
-            'Tier': 'character progression',
-            'Archetype': 'archetypes',
-            'Limit': 'limits system',
-            'Trait': 'traits',
-            'Boon': 'abilities',
-            'Flaw': 'abilities',
-            'Special Attack': 'special attacks',
-            'Upgrade': 'upgrades',
+            'Primary Action': ['actions', 'action economy'],
+            'Secondary Action': ['actions', 'action economy'],
+            'Effort': ['effort', 'effort system'],
+            'Tier': ['tier', 'character progression'],
+            'Archetype': ['archetype', 'archetypes'],
+            'Limit': ['limit', 'limits'],
+            'Trait': ['trait', 'traits'],
+            'Boon': ['boon', 'abilities'],
+            'Flaw': ['flaw', 'abilities'],
+            'Special Attack': ['special attack', 'attacks'],
+            'Upgrade': ['upgrade', 'upgrades'],
             
             // Status Effects
-            'Stun': 'conditions',
-            'Control': 'conditions',
-            'Weaken': 'conditions',
-            'Daze': 'conditions',
-            'Blind': 'conditions',
-            'Disarm': 'conditions',
-            'Grab': 'conditions',
-            'Shove': 'conditions',
+            'Stun': ['stun', 'conditions', 'status effects'],
+            'Control': ['control', 'conditions', 'status effects'],
+            'Weaken': ['weaken', 'conditions', 'status effects'],
+            'Daze': ['daze', 'conditions', 'status effects'],
+            'Blind': ['blind', 'conditions', 'status effects'],
+            'Disarm': ['disarm', 'conditions', 'status effects'],
+            'Grab': ['grab', 'conditions', 'status effects'],
+            'Shove': ['shove', 'conditions', 'status effects'],
             
             // Attack Types
-            'Melee': 'combat',
-            'Ranged': 'combat',
-            'Direct': 'combat',
-            'AOE': 'combat',
-            'Area of Effect': 'combat'
+            'Melee': ['melee', 'combat', 'attack types'],
+            'Ranged': ['ranged', 'combat', 'attack types'],
+            'Direct': ['direct', 'combat', 'attack types'],
+            'AOE': ['aoe', 'area of effect', 'combat'],
+            'Area of Effect': ['aoe', 'area of effect', 'combat']
         };
 
         // Find actual definition locations in the document
-        Object.entries(gameTerms).forEach(([term, fallbackSection]) => {
-            const definitionLocation = this.findDefinitionLocation(container, term, fallbackSection);
+        Object.entries(gameTerms).forEach(([term, fallbackSections]) => {
+            const definitionLocation = this.findDefinitionLocation(container, term, fallbackSections);
             if (definitionLocation) {
                 this.termDictionary.set(term.toLowerCase(), {
                     term: term,
@@ -141,9 +154,11 @@ class AutoLinker {
                 });
             }
         });
+        
+        console.log('Term dictionary entries:', Array.from(this.termDictionary.keys()).slice(0, 10));
     }
 
-    findDefinitionLocation(container, term, fallbackSection) {
+    findDefinitionLocation(container, term, fallbackSections) {
         // Look for the term in headings first (most authoritative)
         const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
         for (let heading of headings) {
@@ -152,13 +167,25 @@ class AutoLinker {
             }
         }
         
-        // Look for fallback section
-        const fallbackHeading = Array.from(headings).find(h => 
-            h.textContent.toLowerCase().includes(fallbackSection.toLowerCase())
-        );
+        // Look for fallback sections
+        for (let fallbackSection of fallbackSections) {
+            const fallbackHeading = Array.from(headings).find(h => 
+                h.textContent.toLowerCase().includes(fallbackSection.toLowerCase())
+            );
+            
+            if (fallbackHeading) {
+                return { id: fallbackHeading.id, text: fallbackHeading.textContent.trim() };
+            }
+        }
         
-        if (fallbackHeading) {
-            return { id: fallbackHeading.id, text: fallbackHeading.textContent.trim() };
+        // If no specific section found, try to find any section that mentions the term
+        const allText = container.textContent.toLowerCase();
+        if (allText.includes(term.toLowerCase())) {
+            // Find the first heading, as a last resort
+            const firstHeading = headings[0];
+            if (firstHeading && firstHeading.id) {
+                return { id: firstHeading.id, text: firstHeading.textContent.trim() };
+            }
         }
         
         return null;
@@ -170,13 +197,21 @@ class AutoLinker {
             this.buildDictionaries(htmlContent);
         }
 
+        console.log('Applying auto-linking to content...');
+
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = htmlContent;
 
         // Process text nodes for linking
         this.processTextNodes(tempDiv);
 
-        return tempDiv.innerHTML;
+        const result = tempDiv.innerHTML;
+        
+        // Count links created for debugging
+        const linkCount = (result.match(/class="auto-link"/g) || []).length;
+        console.log('Auto-links created:', linkCount);
+
+        return result;
     }
 
     processTextNodes(container) {
@@ -186,7 +221,7 @@ class AutoLinker {
             {
                 acceptNode: (node) => {
                     // Skip text inside links, code blocks, and other special elements
-                    const parent = node.parentElement;
+                    let parent = node.parentElement;
                     const skipTags = ['A', 'CODE', 'PRE', 'SCRIPT', 'STYLE'];
                     
                     while (parent && parent !== container) {
@@ -213,20 +248,12 @@ class AutoLinker {
             if (newContent !== textNode.textContent) {
                 const wrapper = document.createElement('span');
                 wrapper.innerHTML = newContent;
-                textNode.parentNode.replaceChild(wrapper, textNode);
                 
-                // Unwrap the span if it only contains one child
-                if (wrapper.children.length === 1 && !wrapper.textContent.trim()) {
-                    wrapper.parentNode.replaceChild(wrapper.firstChild, wrapper);
-                } else if (wrapper.childNodes.length === 1 && wrapper.firstChild.nodeType === Node.TEXT_NODE) {
-                    wrapper.parentNode.replaceChild(wrapper.firstChild, wrapper);
-                } else {
-                    // Replace span with its contents
-                    while (wrapper.firstChild) {
-                        wrapper.parentNode.insertBefore(wrapper.firstChild, wrapper);
-                    }
-                    wrapper.parentNode.removeChild(wrapper);
+                // Replace the text node with the wrapper's contents
+                while (wrapper.firstChild) {
+                    textNode.parentNode.insertBefore(wrapper.firstChild, textNode);
                 }
+                textNode.parentNode.removeChild(textNode);
             }
         });
     }
@@ -283,18 +310,19 @@ class AutoLinker {
             const term = termData.term;
             
             // Create regex that matches whole words only
-            const regex = new RegExp(`\\b${term}\\b`, 'gi');
+            const regex = new RegExp(`\\b${this.escapeRegex(term)}\\b`, 'gi');
             
             result = result.replace(regex, (match) => {
-                // Don't link if already inside a link or if it's possessive
-                if (match.toLowerCase() === term.toLowerCase()) {
-                    return `<a href="#${termData.id}" class="auto-link term-link" title="See ${term} in ${termData.section}">${match}</a>`;
-                }
-                return match;
+                // Don't link if already inside a link
+                return `<a href="#${termData.id}" class="auto-link term-link" title="See ${term} in ${termData.section}">${match}</a>`;
             });
         });
 
         return result;
+    }
+
+    escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
     // Get statistics about auto-linking
