@@ -51,7 +51,7 @@
 
 
 
-## **STACKING BONUSES & RULE INTERACTIONS**
+### **STACKING BONUSES & RULE INTERACTIONS**
 
 **Stacking Bonuses** - As you build your character, you will receive bonuses from different sources (Flaws + Traits + Special Attacks + Archetypes), these bonuses are additive, unless otherwise stated.
 
