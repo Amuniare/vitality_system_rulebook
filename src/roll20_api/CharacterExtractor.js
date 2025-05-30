@@ -659,7 +659,7 @@ function bulkUpdateFromHandout(requestor) {
 
 function parseCharacterDataFromHandout(handout, callback) {
     /**
-     * Parse character data from handout content - FIXED to handle HTML formatting
+     * Parse character data from handout content - FIXED to handle HTML formatting and entity encoding
      */
     try {
         // Use callback to get handout notes
@@ -671,19 +671,26 @@ function parseCharacterDataFromHandout(handout, callback) {
                     return;
                 }
                 
-                // SOLUTION: Strip HTML tags before processing
+                // SOLUTION: Strip HTML tags and decode entities before processing
                 let cleanContent = handoutNotes;
                 
                 // Remove common HTML tags that Roll20 adds
                 cleanContent = cleanContent.replace(/<p>/g, '');
                 cleanContent = cleanContent.replace(/<\/p>/g, '\n');
-                cleanContent = cleanContent.replace(/&nbsp;/g, ' ');
                 cleanContent = cleanContent.replace(/<br\s*\/?>/g, '\n');
                 cleanContent = cleanContent.replace(/<div>/g, '');
                 cleanContent = cleanContent.replace(/<\/div>/g, '\n');
                 
                 // Remove any remaining HTML tags
                 cleanContent = cleanContent.replace(/<[^>]*>/g, '');
+                
+                // CRITICAL: Decode HTML entities back to original symbols
+                cleanContent = cleanContent.replace(/&amp;/g, '&');
+                cleanContent = cleanContent.replace(/&lt;/g, '<');
+                cleanContent = cleanContent.replace(/&gt;/g, '>');
+                cleanContent = cleanContent.replace(/&quot;/g, '"');
+                cleanContent = cleanContent.replace(/&#39;/g, "'");
+                cleanContent = cleanContent.replace(/&nbsp;/g, ' ');
                 
                 // Clean up extra whitespace and newlines
                 cleanContent = cleanContent.replace(/\n\s*\n/g, '\n');

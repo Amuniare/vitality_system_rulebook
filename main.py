@@ -42,9 +42,7 @@ def handle_login(page):
         logger.error(f"Login handling failed: {e}")
         return False
 
-
-
-def extract_all_characters(auto_close=False):
+def extract_all_characters():
     """Extract all character data from Roll20"""
     connection = Roll20Connection()
     
@@ -67,7 +65,7 @@ def extract_all_characters(auto_close=False):
         logger.info("Waiting for Roll20 to fully load...")
         time.sleep(5)
         
-        # Create extractor - use the new API-based extractor
+        # Create extractor
         extractor = CharacterExtractor(chat, page)
         
         # Extract all character data
@@ -78,25 +76,18 @@ def extract_all_characters(auto_close=False):
             logger.error("No character data extracted!")
             return
         
-        if not all_characters:
-            logger.error("No character data extracted!")
-            return
+        # Save extracted data to characters\extracted
+        output_dir = Path("characters") / "extracted"
+        output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Save extracted data
-        char_dir = Path('characters')
-        char_dir.mkdir(exist_ok=True)
-
-        output_dir = Path("extracted")
-        output_dir.mkdir(exist_ok=True)
-        
-        logger.info(f"Saving extracted data to {char_dir} / {output_dir}")
+        logger.info(f"Saving extracted data to {output_dir}")
         
         for char_name, char_data in all_characters.items():
             # Create safe filename
             safe_name = char_name.replace(" ", "_").replace("/", "_").replace("*", "_")
             safe_name = "".join(c for c in safe_name if c.isalnum() or c in "._-")
             
-            output_file = char_dir / output_dir / f"{safe_name}.json"
+            output_file = output_dir / f"{safe_name}.json"
             save_json(char_data, output_file)
             logger.info(f"Saved {char_name} to {output_file}")
         
@@ -106,24 +97,16 @@ def extract_all_characters(auto_close=False):
         logger.info(f"Saved combined data to {combined_file}")
         
         logger.info(f"Extraction complete! Successfully extracted {len(all_characters)} characters")
-        
-        # Handle browser close
-        if auto_close:
-            logger.info("Auto-closing browser in 3 seconds...")
-            time.sleep(3)
-        else:
-            print(f"\nExtraction complete! Files saved to {output_dir}")
-            print("Press Enter to close browser...")
-            input()
 
     except Exception as e:
         logger.error(f"Extraction error: {e}")
         sys.exit(1)
     finally:
+        logger.info("Closing browser...")
         connection.disconnect()
 
-def update_character(auto_close=False):
-    """Update a character from template"""
+def sync_characters():
+    """Sync all characters from input directory - create new or update existing"""
     connection = Roll20Connection()
     
     try:
@@ -144,125 +127,72 @@ def update_character(auto_close=False):
         # Create updater
         updater = CharacterUpdater(chat)
         
-        char_dir = Path('characters')
-        input_dir = Path("input")
-        input_dir.mkdir(exist_ok=True)
-
-        # Example: Update a character from template
-        template_path = char_dir / input_dir / "Golden Sentinel.json"
-        if template_path.exists():
-            logger.info(f"Updating character from template: {template_path}")
-            success = updater.update_character_from_json(template_path)
-            
-            if success:
-                logger.info("Character update completed successfully!")
-            else:
-                logger.error("Character update failed!")
-        else:
-            logger.error(f"Template not found: {template_path}")
-        
-        # Handle browser close
-        if auto_close:
-            logger.info("Auto-closing browser in 3 seconds...")
-            time.sleep(3)
-        else:
-            print("Press Enter to close browser...")
-            input()
-        
-    except Exception as e:
-        logger.error(f"Application error: {e}")
-        sys.exit(1)
-    finally:
-        connection.disconnect()
-
-def create_character(auto_close=False):
-    """Create a new character from template"""
-    connection = Roll20Connection()
-    
-    try:
-        # Connect to Roll20
-        page = connection.connect()
-        
-        # Handle login
-        if not handle_login(page):
-            logger.error("Login failed")
+        # Get all JSON files from characters\input
+        input_dir = Path("characters") / "input"
+        if not input_dir.exists():
+            logger.error(f"Input directory not found: {input_dir}")
             return
         
-        # Create interfaces
-        chat = ChatInterface(page)
+        json_files = list(input_dir.glob("*.json"))
+        if not json_files:
+            logger.error(f"No JSON files found in {input_dir}")
+            return
         
-        # Navigate to chat
-        chat.navigate_to_chat()
+        logger.info(f"Found {len(json_files)} character files to process")
         
-        # Create updater
-        updater = CharacterUpdater(chat)
+        # Process each character file
+        successful = 0
+        failed = 0
         
-        char_dir = Path('characters')
-        input_dir = Path("input")
-        input_dir.mkdir(exist_ok=True)
-
-        # Example: Update a character from template
-        template_path = char_dir / input_dir / "Golden Sentinel.json"
-        if template_path.exists():
-            logger.info(f"Creating character from template: {template_path}")
-            success = updater.create_character_from_json(template_path)
-            
-            if success:
-                logger.info("Character creation completed successfully!")
-            else:
-                logger.error("Character creation failed!")
-        else:
-            logger.error(f"Template not found: {template_path}")
+        for json_file in json_files:
+            try:
+                logger.info(f"Processing: {json_file.name}")
+                
+                # The updater will automatically check if character exists
+                # and either create or update accordingly
+                success = updater.update_character_from_json(json_file)
+                
+                if success:
+                    successful += 1
+                    logger.info(f"Successfully synced: {json_file.name}")
+                else:
+                    failed += 1
+                    logger.error(f"Failed to sync: {json_file.name}")
+                    
+            except Exception as e:
+                failed += 1
+                logger.error(f"Error processing {json_file.name}: {e}")
         
-        # Handle browser close
-        if auto_close:
-            logger.info("Auto-closing browser in 3 seconds...")
-            time.sleep(3)
-        else:
-            print("Press Enter to close browser...")
-            input()
+        logger.info(f"Sync complete! {successful} successful, {failed} failed")
         
     except Exception as e:
-        logger.error(f"Application error: {e}")
+        logger.error(f"Sync error: {e}")
         sys.exit(1)
     finally:
+        logger.info("Closing browser...")
         connection.disconnect()
 
-def color_macros(auto_close=False):
+def color_macros():
     """Color macro buttons for characters"""
     logger.info("Macro coloring functionality will be implemented in Phase 3")
     print("Macro coloring system not yet implemented.")
     print("This will be available after Phase 2 completion.")
 
 def main():
-    """Main application entry with enhanced argument parsing"""
+    """Main application entry"""
     parser = argparse.ArgumentParser(description="Roll20 API Automation Tool")
-    parser.add_argument("action", choices=["extract", "update", "create", "color-macros"], 
-                       help="Action to perform: extract all characters, update from template, create from template, or color macro buttons")
-    parser.add_argument("--auto-close", action="store_true", 
-                       help="Automatically close browser after operation (default: manual close)")
-    parser.add_argument("--manual-close", action="store_true", 
-                       help="Manually close browser after operation (default behavior)")
+    parser.add_argument("action", choices=["extract", "sync", "color-macros"], 
+                       help="Action to perform: extract all characters, sync characters from input, or color macro buttons")
     
     args = parser.parse_args()
     
-    # Determine close behavior (default is manual close for backward compatibility)
-    auto_close = args.auto_close and not args.manual_close
-    
-    if auto_close:
-        logger.info("Browser will auto-close after operation")
-    else:
-        logger.info("Browser will require manual close after operation")
-    
     # Execute requested action
     if args.action == "extract":
-        extract_all_characters(auto_close=auto_close)
-    elif args.action == "update":
-        update_character(auto_close=auto_close)
-    elif args.action == "create":
-        create_character(auto_close=auto_close)
+        extract_all_characters()
+    elif args.action == "sync":
+        sync_characters()
     elif args.action == "color-macros":
-        color_macros(auto_close=auto_close)
+        color_macros()
 
 if __name__ == "__main__":
     main()
