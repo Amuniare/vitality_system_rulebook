@@ -8,3 +8,6 @@ can you create a nice homepage and make stuf the the rules has a nav back to the
 and lore campaign lore should also have one too
 
 
+
+
+when updating sheet, allow characters to delete expertises and attacks

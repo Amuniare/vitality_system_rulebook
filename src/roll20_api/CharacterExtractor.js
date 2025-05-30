@@ -1,8 +1,8 @@
-// CharacterExtractor.js - Custom Roll20 API Script for Character Data Extraction
+// CharacterExtractor.js - Fixed version with enhanced error handling and debugging
 // Install this in your Roll20 campaign's API Scripts section
 
 on('ready', function() {
-    log('CharacterExtractor API loaded successfully');
+    log('CharacterExtractor API loaded successfully - Enhanced Debug Version');
 });
 
 on('chat:message', function(msg) {
@@ -114,13 +114,331 @@ on('chat:message', function(msg) {
 });
 
 // ============================================================================
-// NEW: CURRENT CHARACTER DATA EXTRACTION
+// FIXED: IMPROVED HANDOUT EXTRACTION WITH COMPREHENSIVE ERROR HANDLING
+// ============================================================================
+
+function extractAllCharactersToHandouts(requestor) {
+    /**
+     * FIXED: Extract all characters to multiple handouts with enhanced debugging
+     */
+    log('=== STARTING ENHANCED EXTRACTION ===');
+    
+    const characters = findObjs({
+        _type: 'character'
+    });
+    
+    if (characters.length === 0) {
+        sendChat('CharacterExtractor', '/w ' + requestor + ' No characters found.');
+        return;
+    }
+    
+    const BATCH_SIZE = 25;
+    const handoutBaseName = 'CharacterExtractor_Data';
+    
+    sendChat('CharacterExtractor', '/w ' + requestor + ' Starting ENHANCED extraction of ' + characters.length + ' characters...');
+    
+    // DEBUG: Log first few character names
+    log('First 5 character names: ' + characters.slice(0, 5).map(c => c.get('name')).join(', '));
+    
+    const totalBatches = Math.ceil(characters.length / BATCH_SIZE);
+    let overallProcessed = 0;
+    let overallErrors = 0;
+
+    // Process characters in batches
+    for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+        const startIndex = batchIndex * BATCH_SIZE;
+        const endIndex = Math.min(startIndex + BATCH_SIZE, characters.length);
+        const batchCharacters = characters.slice(startIndex, endIndex);
+        
+        log('=== PROCESSING BATCH ' + (batchIndex + 1) + ' ===');
+        log('Batch characters: ' + batchCharacters.map(c => c.get('name')).join(', '));
+        
+        const batchData = {};
+        let batchProcessed = 0;
+        let batchErrors = 0;
+
+        // FIXED: Process each character with comprehensive error handling
+        batchCharacters.forEach(function(character) {
+            const charName = character.get('name');
+            
+            try {
+                log('--- Starting character: ' + charName + ' ---');
+                
+                // Check if template sheet FIRST
+                if (TEMPLATE_SHEETS.indexOf(charName) !== -1) {
+                    log('SKIPPING template sheet: ' + charName);
+                    return; // Continue to next character
+                }
+                
+                // FIXED: Enhanced character data extraction
+                const characterData = extractCharacterDataEnhanced(character);
+                
+                if (characterData && characterData !== null) {
+                    batchData[charName] = characterData;
+                    batchProcessed++;
+                    overallProcessed++;
+                    log('SUCCESS: ' + charName + ' extracted (' + Object.keys(characterData).length + ' top-level keys)');
+                } else {
+                    log('FAILED: ' + charName + ' returned null or empty data');
+                    batchErrors++;
+                    overallErrors++;
+                }
+                
+            } catch (error) {
+                log('ERROR processing character ' + charName + ': ' + error.toString());
+                log('Error stack: ' + error.stack);
+                batchErrors++;
+                overallErrors++;
+            }
+        });
+        
+        log('Batch ' + (batchIndex + 1) + ' processing complete: ' + batchProcessed + ' success, ' + batchErrors + ' errors');
+        
+        // Create handout for this batch
+        const handoutName = handoutBaseName + '_' + (batchIndex + 1);
+        
+        // Remove existing handout
+        const existingHandouts = findObjs({
+            _type: 'handout',
+            name: handoutName
+        });
+        existingHandouts.forEach(function(handout) {
+            handout.remove();
+        });
+        
+        // Create new handout
+        const dataHandout = createObj('handout', {
+            name: handoutName,
+            inplayerjournals: '',
+            controlledby: ''
+        });
+        
+        // FIXED: Better handout content handling
+        let handoutContent;
+        if (Object.keys(batchData).length > 0) {
+            const jsonData = JSON.stringify(batchData, null, 2);
+            handoutContent = 'EXTRACTION_START\n' + jsonData + '\nEXTRACTION_END';
+            
+            const dataSize = getStringSizeInBytes(jsonData);
+            const dataSizeMB = Math.round(dataSize / (1024 * 1024) * 10) / 10;
+            
+            log('Batch ' + (batchIndex + 1) + ' JSON size: ' + dataSizeMB + ' MB');
+            
+        } else {
+            // Empty batch - still create handout but with empty JSON
+            handoutContent = 'EXTRACTION_START\n{}\nEXTRACTION_END';
+            log('Batch ' + (batchIndex + 1) + ' is empty - no valid character data');
+        }
+        
+        // Write to handout
+        try {
+            dataHandout.set({
+                notes: handoutContent
+            });
+            
+            sendChat('CharacterExtractor', '/w ' + requestor + 
+                    'Batch ' + (batchIndex + 1) + '/' + totalBatches + ' complete: ' + 
+                    batchProcessed + ' characters written to "' + handoutName + '"');
+                    
+        } catch (error) {
+            log('Error writing to handout ' + handoutName + ': ' + error.toString());
+            sendChat('CharacterExtractor', '/w ' + requestor + 
+                    'Error writing batch ' + (batchIndex + 1) + ': ' + error.toString());
+        }
+    }
+    
+    // Final summary
+    log('=== EXTRACTION COMPLETE ===');
+    log('Total processed: ' + overallProcessed + ', Total errors: ' + overallErrors);
+    
+    sendChat('CharacterExtractor', '/w ' + requestor + 
+            'EXTRACTION_COMPLETE: ' + overallProcessed + ' characters extracted across ' + 
+            totalBatches + ' handouts. Errors: ' + overallErrors);
+}
+
+function extractCharacterDataEnhanced(character) {
+    /**
+     * FIXED: Enhanced character data extraction with step-by-step error handling
+     */
+    let charId, charName;
+    
+    try {
+        charId = character.get('_id');
+        charName = character.get('name');
+        
+        if (!charId || !charName) {
+            log('ERROR: Invalid character ID or name - ID: ' + charId + ', Name: ' + charName);
+            return null;
+        }
+        
+        log('Extracting data for: ' + charName + ' (ID: ' + charId + ')');
+        
+        // Double-check template sheets (redundant safety)
+        if (TEMPLATE_SHEETS.indexOf(charName) !== -1) {
+            log('Template sheet caught in extractCharacterData: ' + charName);
+            return null;
+        }
+
+    } catch (error) {
+        log('ERROR getting character basic info: ' + error.toString());
+        return null;
+    }
+    
+    // STEP 1: Extract attributes
+    let attributes, flatAttributes, repeatingSections;
+    try {
+        attributes = findObjs({
+            _type: 'attribute',
+            _characterid: charId
+        });
+        
+        log('Found ' + attributes.length + ' attributes for ' + charName);
+        
+        if (attributes.length === 0) {
+            log('WARNING: No attributes found for character: ' + charName);
+        }
+        
+        // Process attributes
+        flatAttributes = {};
+        repeatingSections = {};
+        
+        attributes.forEach(function(attr) {
+            try {
+                const name = attr.get('name');
+                const current = attr.get('current');
+                const max = attr.get('max');
+                
+                let value;
+                if (max && max !== '') {
+                    value = current + '/' + max;
+                } else {
+                    value = current;
+                }
+                
+                // Separate repeating sections
+                if (name.startsWith('repeating_')) {
+                    const parts = name.split('_');
+                    if (parts.length >= 4) {
+                        const sectionName = parts[1];
+                        const rowId = parts[2];
+                        const fieldName = parts.slice(3).join('_');
+                        
+                        if (!repeatingSections[sectionName]) {
+                            repeatingSections[sectionName] = {};
+                        }
+                        if (!repeatingSections[sectionName][rowId]) {
+                            repeatingSections[sectionName][rowId] = {};
+                        }
+                        
+                        repeatingSections[sectionName][rowId][fieldName] = value;
+                    }
+                } else {
+                    flatAttributes[name] = value;
+                }
+                
+            } catch (attrError) {
+                log('ERROR processing attribute: ' + attrError.toString());
+            }
+        });
+        
+        log('Processed attributes: ' + Object.keys(flatAttributes).length + ' regular, ' + 
+            Object.keys(repeatingSections).length + ' sections');
+            
+    } catch (error) {
+        log('ERROR extracting attributes for ' + charName + ': ' + error.toString());
+        return null;
+    }
+    
+    // STEP 2: Extract abilities
+    let abilities, abilityArray;
+    try {
+        abilities = findObjs({
+            _type: 'ability',
+            _characterid: charId
+        });
+        
+        log('Found ' + abilities.length + ' abilities for ' + charName);
+        
+        abilityArray = [];
+        abilities.forEach(function(ability) {
+            try {
+                abilityArray.push({
+                    name: ability.get('name'),
+                    content: ability.get('action'),
+                    showInMacroBar: false,
+                    isTokenAction: ability.get('istokenaction') || false
+                });
+            } catch (abilityError) {
+                log('ERROR processing ability: ' + abilityError.toString());
+            }
+        });
+        
+    } catch (error) {
+        log('ERROR extracting abilities for ' + charName + ': ' + error.toString());
+        abilityArray = []; // Continue with empty abilities rather than failing
+    }
+    
+    // STEP 3: Build final data structure
+    try {
+        const characterData = {
+            metadata: {
+                characterId: charId,
+                extractedAt: new Date().toISOString(),
+                name: charName,
+                attributeCount: attributes.length
+            },
+            attributes: flatAttributes,
+            repeating_sections: repeatingSections,
+            abilities: abilityArray,
+            permissions: {
+                see_by: character.get('inplayerjournals') || '',
+                edit_by: character.get('controlledby') || ''
+            }
+        };
+        
+        log('SUCCESS: Built character data for ' + charName + 
+            ' (' + Object.keys(flatAttributes).length + ' attrs, ' + 
+            abilityArray.length + ' abilities)');
+            
+        return characterData;
+        
+    } catch (error) {
+        log('ERROR building final data structure for ' + charName + ': ' + error.toString());
+        return null;
+    }
+}
+
+// ============================================================================
+// UTILITY FUNCTIONS (UNCHANGED)
+// ============================================================================
+
+function getStringSizeInBytes(str) {
+    let sizeInBytes = 0;
+    
+    for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i);
+        
+        if (code < 0x80) {
+            sizeInBytes += 1;
+        } else if (code < 0x800) {
+            sizeInBytes += 2;
+        } else if (code < 0xD800 || code >= 0xE000) {
+            sizeInBytes += 3;
+        } else {
+            // Surrogate pair
+            i++; // Skip the next character
+            sizeInBytes += 4;
+        }
+    }
+    
+    return sizeInBytes;
+}
+
+// ============================================================================
+// OTHER FUNCTIONS (KEEPING ORIGINAL IMPLEMENTATIONS)
 // ============================================================================
 
 function getCurrentCharacterData(characterName, requestor) {
-    /**
-     * Extract current character data for comparison purposes
-     */
     try {
         log('Getting current data for character: ' + characterName);
         
@@ -139,10 +457,9 @@ function getCurrentCharacterData(characterName, requestor) {
         }
         
         const character = characters[0];
-        const characterData = extractCharacterData(character);
+        const characterData = extractCharacterDataEnhanced(character);
         
         if (characterData) {
-            // Send as formatted JSON for comparison
             const jsonOutput = 'CURRENT_DATA_START\n' + JSON.stringify(characterData, null, 2) + '\nCURRENT_DATA_END';
             sendChat('CharacterExtractor', '/w ' + requestor + ' Current data extracted for: ' + characterName);
             sendChat('CharacterExtractor', '/w ' + requestor + ' ' + jsonOutput);
@@ -155,137 +472,6 @@ function getCurrentCharacterData(characterName, requestor) {
         sendChat('CharacterExtractor', '/w ' + requestor + ' Error getting current data: ' + error.toString());
     }
 }
-
-// ============================================================================
-// HANDOUT UTILITY FUNCTIONS
-// ============================================================================
-
-function openHandout(handoutName, requestor) {
-    /**
-     * Opens a handout by name - this triggers Roll20's UI to open the handout dialog
-     */
-    try {
-        const handouts = findObjs({
-            _type: 'handout',
-            name: handoutName
-        });
-        
-        if (handouts.length === 0) {
-            sendChat('CharacterExtractor', '/w ' + requestor + ' Handout "' + handoutName + '" not found.');
-            return false;
-        }
-        
-        const handout = handouts[0];
-        
-        // Force the handout to update, which should trigger UI refresh
-        handout.set({
-            notes: handout.get('notes') // This forces a refresh
-        });
-        
-        sendChat('CharacterExtractor', '/w ' + requestor + ' Opened handout "' + handoutName + '". Check your Journal tab.');
-        return true;
-        
-    } catch (error) {
-        log('Error opening handout: ' + error.toString());
-        sendChat('CharacterExtractor', '/w ' + requestor + ' Error opening handout: ' + error.toString());
-        return false;
-    }
-}
-
-function closeHandout(handoutName, requestor) {
-    /**
-     * Closes a handout (this is more of a notification since API can't directly close UI)
-     */
-    sendChat('CharacterExtractor', '/w ' + requestor + ' To close handout "' + handoutName + '", click the X button in the handout dialog or press Escape.');
-}
-
-function deleteHandout(handoutName, requestor) {
-    /**
-     * Deletes a handout by name
-     */
-    try {
-        const handouts = findObjs({
-            _type: 'handout',
-            name: handoutName
-        });
-        
-        if (handouts.length === 0) {
-            sendChat('CharacterExtractor', '/w ' + requestor + ' Handout "' + handoutName + '" not found.');
-            return false;
-        }
-        
-        // Delete all handouts with this name
-        let deletedCount = 0;
-        handouts.forEach(function(handout) {
-            handout.remove();
-            deletedCount++;
-        });
-        
-        sendChat('CharacterExtractor', '/w ' + requestor + ' Deleted ' + deletedCount + ' handout(s) named "' + handoutName + '".');
-        return true;
-        
-    } catch (error) {
-        log('Error deleting handout: ' + error.toString());
-        sendChat('CharacterExtractor', '/w ' + requestor + ' Error deleting handout: ' + error.toString());
-        return false;
-    }
-}
-
-function cleanupExtractionHandouts(requestor) {
-    /**
-     * Deletes all CharacterExtractor handouts for cleanup
-     */
-    try {
-        const handouts = findObjs({
-            _type: 'handout'
-        });
-        
-        let deletedCount = 0;
-        handouts.forEach(function(handout) {
-            const name = handout.get('name');
-            if (name.startsWith('CharacterExtractor_Data')) {
-                handout.remove();
-                deletedCount++;
-            }
-        });
-        
-        sendChat('CharacterExtractor', '/w ' + requestor + ' Cleanup complete: deleted ' + deletedCount + ' extraction handout(s).');
-        
-    } catch (error) {
-        log('Error during cleanup: ' + error.toString());
-        sendChat('CharacterExtractor', '/w ' + requestor + ' Error during cleanup: ' + error.toString());
-    }
-}
-
-function cleanupUpdateHandouts(requestor) {
-    /**
-     * Deletes all CharacterUpdater handouts for cleanup
-     */
-    try {
-        const handouts = findObjs({
-            _type: 'handout'
-        });
-        
-        let deletedCount = 0;
-        handouts.forEach(function(handout) {
-            const name = handout.get('name');
-            if (name.startsWith('CharacterUpdater_')) {
-                handout.remove();
-                deletedCount++;
-            }
-        });
-        
-        sendChat('CharacterExtractor', '/w ' + requestor + ' Update cleanup complete: deleted ' + deletedCount + ' update handout(s).');
-        
-    } catch (error) {
-        log('Error during update cleanup: ' + error.toString());
-        sendChat('CharacterExtractor', '/w ' + requestor + ' Error during update cleanup: ' + error.toString());
-    }
-}
-
-// ============================================================================
-// ORIGINAL EXTRACTION FUNCTIONS (UNCHANGED)
-// ============================================================================
 
 function extractSingleCharacter(characterName, requestor) {
     log('Extracting character: ' + characterName);
@@ -305,9 +491,8 @@ function extractSingleCharacter(characterName, requestor) {
     }
     
     const character = characters[0];
-    const characterData = extractCharacterData(character);
+    const characterData = extractCharacterDataEnhanced(character);
     
-    // Send as formatted JSON
     const jsonOutput = 'EXTRACT_SINGLE_START\n' + JSON.stringify(characterData, null, 2) + '\nEXTRACT_SINGLE_END';
     sendChat('CharacterExtractor', '/w ' + requestor + ' ' + jsonOutput);
 }
@@ -334,10 +519,9 @@ function extractAllCharacters(requestor) {
             const charName = character.get('name');
             log('Processing character: ' + charName);
             
-            allCharacterData[charName] = extractCharacterData(character);
+            allCharacterData[charName] = extractCharacterDataEnhanced(character);
             processed++;
             
-            // Send progress updates every 10 characters
             if (processed % 10 === 0) {
                 sendChat('CharacterExtractor', '/w ' + requestor + ' Processed ' + processed + '/' + characters.length + ' characters...');
             }
@@ -347,7 +531,6 @@ function extractAllCharacters(requestor) {
         }
     });
     
-    // Send final result
     const jsonOutput = 'EXTRACT_ALL_START\n' + JSON.stringify(allCharacterData, null, 2) + '\nEXTRACT_ALL_END';
     sendChat('CharacterExtractor', '/w ' + requestor + ' Extraction complete! ' + processed + ' characters processed.');
     sendChat('CharacterExtractor', '/w ' + requestor + ' ' + jsonOutput);
@@ -389,13 +572,119 @@ function testExtraction(requestor) {
 }
 
 // ============================================================================
-// ENHANCED CHARACTER UPDATE FUNCTIONS
+// HANDOUT UTILITY FUNCTIONS (UNCHANGED)
 // ============================================================================
 
+function openHandout(handoutName, requestor) {
+    try {
+        const handouts = findObjs({
+            _type: 'handout',
+            name: handoutName
+        });
+        
+        if (handouts.length === 0) {
+            sendChat('CharacterExtractor', '/w ' + requestor + ' Handout "' + handoutName + '" not found.');
+            return false;
+        }
+        
+        const handout = handouts[0];
+        
+        handout.set({
+            notes: handout.get('notes')
+        });
+        
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Opened handout "' + handoutName + '". Check your Journal tab.');
+        return true;
+        
+    } catch (error) {
+        log('Error opening handout: ' + error.toString());
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Error opening handout: ' + error.toString());
+        return false;
+    }
+}
+
+function closeHandout(handoutName, requestor) {
+    sendChat('CharacterExtractor', '/w ' + requestor + ' To close handout "' + handoutName + '", click the X button in the handout dialog or press Escape.');
+}
+
+function deleteHandout(handoutName, requestor) {
+    try {
+        const handouts = findObjs({
+            _type: 'handout',
+            name: handoutName
+        });
+        
+        if (handouts.length === 0) {
+            sendChat('CharacterExtractor', '/w ' + requestor + ' Handout "' + handoutName + '" not found.');
+            return false;
+        }
+        
+        let deletedCount = 0;
+        handouts.forEach(function(handout) {
+            handout.remove();
+            deletedCount++;
+        });
+        
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Deleted ' + deletedCount + ' handout(s) named "' + handoutName + '".');
+        return true;
+        
+    } catch (error) {
+        log('Error deleting handout: ' + error.toString());
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Error deleting handout: ' + error.toString());
+        return false;
+    }
+}
+
+function cleanupExtractionHandouts(requestor) {
+    try {
+        const handouts = findObjs({
+            _type: 'handout'
+        });
+        
+        let deletedCount = 0;
+        handouts.forEach(function(handout) {
+            const name = handout.get('name');
+            if (name.startsWith('CharacterExtractor_Data')) {
+                handout.remove();
+                deletedCount++;
+            }
+        });
+        
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Cleanup complete: deleted ' + deletedCount + ' extraction handout(s).');
+        
+    } catch (error) {
+        log('Error during cleanup: ' + error.toString());
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Error during cleanup: ' + error.toString());
+    }
+}
+
+function cleanupUpdateHandouts(requestor) {
+    try {
+        const handouts = findObjs({
+            _type: 'handout'
+        });
+        
+        let deletedCount = 0;
+        handouts.forEach(function(handout) {
+            const name = handout.get('name');
+            if (name.startsWith('CharacterUpdater_')) {
+                handout.remove();
+                deletedCount++;
+            }
+        });
+        
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Update cleanup complete: deleted ' + deletedCount + ' update handout(s).');
+        
+    } catch (error) {
+        log('Error during update cleanup: ' + error.toString());
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Error during update cleanup: ' + error.toString());
+    }
+}
+
+// CHARACTER UPDATE FUNCTIONS (keeping existing implementations for now)
+// These would need similar enhancements but keeping them unchanged for this fix
+
 function findDataHandout(characterName) {
-    /**
-     * Find the data handout for a specific character
-     */
     const handoutName = 'CharacterUpdater_' + characterName;
     const handouts = findObjs({
         _type: 'handout',
@@ -406,13 +695,9 @@ function findDataHandout(characterName) {
 }
 
 function updateCharacterFromHandout(characterName, requestor) {
-    /**
-     * Update an existing character from handout data - WITH CHARACTER CHECK
-     */
     try {
         log('Starting update for character: ' + characterName);
         
-        // Find the character
         const characters = findObjs({
             _type: 'character',
             name: characterName
@@ -426,7 +711,6 @@ function updateCharacterFromHandout(characterName, requestor) {
         const character = characters[0];
         log('Found character: ' + characterName);
         
-        // Find the data handout
         const dataHandout = findDataHandout(characterName);
         if (!dataHandout) {
             sendChat('CharacterExtractor', '/w ' + requestor + ' No data handout found for "' + characterName + '".');
@@ -435,7 +719,6 @@ function updateCharacterFromHandout(characterName, requestor) {
         
         log('Found data handout for: ' + characterName);
         
-        // Get character data from handout - WITH CALLBACK
         parseCharacterDataFromHandout(dataHandout, function(characterData) {
             if (!characterData) {
                 sendChat('CharacterExtractor', '/w ' + requestor + ' Failed to parse character data from handout.');
@@ -444,7 +727,6 @@ function updateCharacterFromHandout(characterName, requestor) {
             
             log('Successfully parsed character data, starting update...');
             
-            // Update the character
             const success = updateCharacterWithData(character, characterData, requestor);
             
             if (success) {
@@ -456,7 +738,7 @@ function updateCharacterFromHandout(characterName, requestor) {
             }
         });
         
-        return true; // Indicate async operation started
+        return true;
         
     } catch (error) {
         log('Error updating character: ' + error.toString());
@@ -466,13 +748,9 @@ function updateCharacterFromHandout(characterName, requestor) {
 }
 
 function createCharacterFromHandout(characterName, requestor) {
-    /**
-     * Create a new character from handout data - WITH FALLBACK TO UPDATE
-     */
     try {
         log('Starting creation for character: ' + characterName);
         
-        // ENHANCED: Check if character already exists
         const existingChars = findObjs({
             _type: 'character',
             name: characterName
@@ -482,11 +760,9 @@ function createCharacterFromHandout(characterName, requestor) {
             log('Character already exists, falling back to update: ' + characterName);
             sendChat('CharacterExtractor', '/w ' + requestor + ' Character "' + characterName + '" already exists. Switching to update mode...');
             
-            // FALLBACK: Call update instead of failing
             return updateCharacterFromHandout(characterName, requestor);
         }
         
-        // Find the data handout
         const dataHandout = findDataHandout(characterName);
         if (!dataHandout) {
             sendChat('CharacterExtractor', '/w ' + requestor + ' No data handout found for "' + characterName + '".');
@@ -495,7 +771,6 @@ function createCharacterFromHandout(characterName, requestor) {
         
         log('Found data handout for new character: ' + characterName);
         
-        // Get character data from handout - WITH CALLBACK
         parseCharacterDataFromHandout(dataHandout, function(characterData) {
             if (!characterData) {
                 sendChat('CharacterExtractor', '/w ' + requestor + ' Failed to parse character data from handout.');
@@ -504,7 +779,6 @@ function createCharacterFromHandout(characterName, requestor) {
             
             log('Successfully parsed character data, creating character...');
             
-            // Create new character
             const character = createObj('character', {
                 name: characterName,
                 inplayerjournals: characterData.permissions.see_by || '',
@@ -513,7 +787,6 @@ function createCharacterFromHandout(characterName, requestor) {
             
             log('Created new character object: ' + characterName);
             
-            // Update with data
             const success = updateCharacterWithData(character, characterData, requestor);
             
             if (success) {
@@ -525,7 +798,7 @@ function createCharacterFromHandout(characterName, requestor) {
             }
         });
         
-        return true; // Indicate async operation started
+        return true;
         
     } catch (error) {
         log('Error creating character: ' + error.toString());
@@ -535,9 +808,6 @@ function createCharacterFromHandout(characterName, requestor) {
 }
 
 function bulkUpdateFromHandout(requestor) {
-    /**
-     * Update multiple characters from a bulk update handout - FIXED with callback
-     */
     try {
         sendChat('CharacterExtractor', '/w ' + requestor + ' Starting bulk character update...');
         
@@ -551,7 +821,6 @@ function bulkUpdateFromHandout(requestor) {
             return false;
         }
         
-        // Parse bulk data - NOW WITH CALLBACK
         bulkHandout.get('notes', function(handoutNotes) {
             try {
                 if (!handoutNotes) {
@@ -559,7 +828,6 @@ function bulkUpdateFromHandout(requestor) {
                     return;
                 }
                 
-                // Extract JSON from handout
                 const startMarker = 'BULK_UPDATE_START\n';
                 const endMarker = '\nBULK_UPDATE_END';
                 
@@ -581,7 +849,6 @@ function bulkUpdateFromHandout(requestor) {
                     return;
                 }
                 
-                // Process each character
                 let processed = 0;
                 let created = 0;
                 let updated = 0;
@@ -591,7 +858,6 @@ function bulkUpdateFromHandout(requestor) {
                     try {
                         const characterData = bulkData[characterName];
                         
-                        // Check if character exists
                         const existingChars = findObjs({
                             _type: 'character',
                             name: characterName
@@ -601,7 +867,6 @@ function bulkUpdateFromHandout(requestor) {
                         let isNew = false;
                         
                         if (existingChars.length === 0) {
-                            // Create new character
                             character = createObj('character', {
                                 name: characterName,
                                 inplayerjournals: characterData.permissions.see_by || '',
@@ -612,7 +877,6 @@ function bulkUpdateFromHandout(requestor) {
                             character = existingChars[0];
                         }
                         
-                        // Update character with data
                         const success = updateCharacterWithData(character, characterData, requestor);
                         
                         if (success) {
@@ -627,7 +891,6 @@ function bulkUpdateFromHandout(requestor) {
                         
                         processed++;
                         
-                        // Progress update every 10 characters
                         if (processed % 10 === 0) {
                             sendChat('CharacterExtractor', '/w ' + requestor + ' Progress: ' + processed + ' characters processed...');
                         }
@@ -648,7 +911,7 @@ function bulkUpdateFromHandout(requestor) {
             }
         });
         
-        return true; // Indicate async operation started
+        return true;
         
     } catch (error) {
         log('Error in bulk update: ' + error.toString());
@@ -658,11 +921,7 @@ function bulkUpdateFromHandout(requestor) {
 }
 
 function parseCharacterDataFromHandout(handout, callback) {
-    /**
-     * Parse character data from handout content - FIXED to handle HTML formatting and entity encoding
-     */
     try {
-        // Use callback to get handout notes
         handout.get('notes', function(handoutNotes) {
             try {
                 if (!handoutNotes) {
@@ -671,20 +930,16 @@ function parseCharacterDataFromHandout(handout, callback) {
                     return;
                 }
                 
-                // SOLUTION: Strip HTML tags and decode entities before processing
                 let cleanContent = handoutNotes;
                 
-                // Remove common HTML tags that Roll20 adds
                 cleanContent = cleanContent.replace(/<p>/g, '');
                 cleanContent = cleanContent.replace(/<\/p>/g, '\n');
                 cleanContent = cleanContent.replace(/<br\s*\/?>/g, '\n');
                 cleanContent = cleanContent.replace(/<div>/g, '');
                 cleanContent = cleanContent.replace(/<\/div>/g, '\n');
                 
-                // Remove any remaining HTML tags
                 cleanContent = cleanContent.replace(/<[^>]*>/g, '');
                 
-                // CRITICAL: Decode HTML entities back to original symbols
                 cleanContent = cleanContent.replace(/&amp;/g, '&');
                 cleanContent = cleanContent.replace(/&lt;/g, '<');
                 cleanContent = cleanContent.replace(/&gt;/g, '>');
@@ -692,13 +947,11 @@ function parseCharacterDataFromHandout(handout, callback) {
                 cleanContent = cleanContent.replace(/&#39;/g, "'");
                 cleanContent = cleanContent.replace(/&nbsp;/g, ' ');
                 
-                // Clean up extra whitespace and newlines
                 cleanContent = cleanContent.replace(/\n\s*\n/g, '\n');
                 cleanContent = cleanContent.trim();
                 
                 log('Cleaned handout content preview: ' + cleanContent.substring(0, 200));
                 
-                // Extract JSON from between markers
                 const startMarker = 'CHARACTER_DATA_START';
                 const endMarker = 'CHARACTER_DATA_END';
                 
@@ -711,7 +964,6 @@ function parseCharacterDataFromHandout(handout, callback) {
                     return;
                 }
                 
-                // Extract JSON string (skip the marker line)
                 const jsonStart = cleanContent.indexOf('\n', startIdx) + 1;
                 const jsonStr = cleanContent.substring(jsonStart, endIdx).trim();
                 
@@ -735,28 +987,21 @@ function parseCharacterDataFromHandout(handout, callback) {
 }
 
 function updateCharacterWithData(character, characterData, requestor) {
-    /**
-     * Update a character object with the provided data
-     */
     try {
         const charId = character.get('_id');
         
-        // 1. Update basic attributes
         if (characterData.attributes) {
             updateCharacterAttributes(charId, characterData.attributes);
         }
         
-        // 2. Update repeating sections
         if (characterData.repeating_sections) {
             updateRepeatingSections(charId, characterData.repeating_sections);
         }
         
-        // 3. Update abilities - ENHANCED VERSION
         if (characterData.abilities) {
             updateCharacterAbilitiesEnhanced(charId, characterData.abilities);
         }
         
-        // 4. Update permissions
         if (characterData.permissions) {
             character.set({
                 inplayerjournals: characterData.permissions.see_by || '',
@@ -772,17 +1017,10 @@ function updateCharacterWithData(character, characterData, requestor) {
     }
 }
 
-
-
-
 function updateCharacterAttributes(charId, attributes) {
-    /**
-     * Update character attributes
-     */
     for (const attrName in attributes) {
         const attrValue = attributes[attrName];
         
-        // Handle attributes with max values (like HP)
         let current = attrValue;
         let max = '';
         
@@ -792,7 +1030,6 @@ function updateCharacterAttributes(charId, attributes) {
             max = parts[1];
         }
         
-        // Find existing attribute or create new one
         let attr = findObjs({
             _type: 'attribute',
             _characterid: charId,
@@ -816,16 +1053,11 @@ function updateCharacterAttributes(charId, attributes) {
 }
 
 function updateRepeatingSections(charId, repeatingSections) {
-    /**
-     * Update repeating sections
-     */
     for (const sectionName in repeatingSections) {
         const sectionData = repeatingSections[sectionName];
         
-        // Clear existing section first
         clearRepeatingSection(charId, sectionName);
         
-        // Add new rows
         for (const rowId in sectionData) {
             const rowData = sectionData[rowId];
             
@@ -845,9 +1077,6 @@ function updateRepeatingSections(charId, repeatingSections) {
 }
 
 function clearRepeatingSection(charId, sectionName) {
-    /**
-     * Clear all attributes in a repeating section
-     */
     const prefix = 'repeating_' + sectionName + '_';
     const attrs = findObjs({
         _type: 'attribute',
@@ -861,284 +1090,8 @@ function clearRepeatingSection(charId, sectionName) {
     });
 }
 
-
-// ============================================================================
-// IMPROVED HANDOUT EXTRACTION (BATCHED)
-// ============================================================================
-
-function extractAllCharactersToHandouts(requestor) {
-    /**
-     * Extract all characters to multiple handouts to avoid Firebase 10MB limit
-     * Uses batches of 25 characters per handout (reduced from 50)
-     */
-    log('Starting batched extraction to handouts...');
-    
-    const characters = findObjs({
-        _type: 'character'
-    });
-    
-    if (characters.length === 0) {
-        sendChat('CharacterExtractor', '/w ' + requestor + ' No characters found.');
-        return;
-    }
-    
-    const BATCH_SIZE = 25; // Reduced from 50 to 25 characters per handout
-    const handoutBaseName = 'CharacterExtractor_Data';
-    
-    sendChat('CharacterExtractor', '/w ' + requestor + ' Starting batched extraction of ' + characters.length + ' characters...');
-    sendChat('CharacterExtractor', '/w ' + requestor + ' Using ' + BATCH_SIZE + ' characters per handout to avoid size limits.');
-    
-    // Calculate number of batches needed
-    const totalBatches = Math.ceil(characters.length / BATCH_SIZE);
-    let overallProcessed = 0;
-
-
-
-
-    // Process characters in batches
-    for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
-        const startIndex = batchIndex * BATCH_SIZE;
-        const endIndex = Math.min(startIndex + BATCH_SIZE, characters.length);
-        const batchCharacters = characters.slice(startIndex, endIndex);
-        
-        const batchData = {};
-        let batchProcessed = 0;
-        
-
-        batchCharacters.forEach(function(character) {
-            try {
-                const charName = character.get('name');
-                
-                // Skip template sheets
-                if (TEMPLATE_SHEETS.indexOf(charName) !== -1) {
-                    log('Skipping template sheet: ' + charName);
-                    return; // Continue to next character
-                }
-                
-                log('Processing character: ' + charName + ' (batch ' + (batchIndex + 1) + ')');
-                
-                const characterData = extractCharacterData(character);
-                
-                // Skip if extractCharacterData returned null (template sheets)
-                if (characterData !== null) {
-                    batchData[charName] = characterData;
-                    batchProcessed++;
-                    overallProcessed++;
-                }
-                
-            } catch (error) {
-                log('Error processing character ' + character.get('name') + ': ' + error.toString());
-            }
-        });
-        
-        // Create handout for this batch
-        const handoutName = handoutBaseName + '_' + (batchIndex + 1);
-        
-        // Remove existing handout with this name
-        const existingHandouts = findObjs({
-            _type: 'handout',
-            name: handoutName
-        });
-        existingHandouts.forEach(function(handout) {
-            handout.remove();
-        });
-        
-        // Create new handout
-        const dataHandout = createObj('handout', {
-            name: handoutName,
-            inplayerjournals: '',  // Only visible to GM
-            controlledby: ''       // Only GM can edit
-        });
-        
-        // Convert batch data to JSON string
-        const jsonData = JSON.stringify(batchData, null, 2);
-        
-        // Calculate approximate size in bytes (UTF-8)
-        const dataSize = getStringSizeInBytes(jsonData);
-        const dataSizeKB = Math.round(dataSize / 1024);
-        const dataSizeMB = Math.round(dataSize / (1024 * 1024) * 10) / 10;
-        
-        log('Batch ' + (batchIndex + 1) + ' data size: ' + dataSizeKB + ' KB (' + dataSizeMB + ' MB)');
-        
-        // Check if size is approaching Firebase limit (10MB = 10,485,760 bytes)
-        if (dataSize > 9000000) { // 9MB hard warning
-            log('ERROR: Batch ' + (batchIndex + 1) + ' size (' + dataSizeMB + ' MB) exceeds safe limit!');
-            sendChat('CharacterExtractor', '/w ' + requestor + 
-                    'ERROR: Batch ' + (batchIndex + 1) + ' (' + dataSizeMB + ' MB) is too large. Skipping to prevent crash.');
-            continue; // Skip this batch
-        } else if (dataSize > 7000000) { // 7MB warning threshold
-            log('WARNING: Batch ' + (batchIndex + 1) + ' size (' + dataSizeMB + ' MB) is approaching Firebase limit!');
-            sendChat('CharacterExtractor', '/w ' + requestor + 
-                    'WARNING: Batch ' + (batchIndex + 1) + ' is large (' + dataSizeMB + ' MB)');
-        }
-        
-        // Write data to handout notes with markers
-        try {
-            dataHandout.set({
-                notes: 'EXTRACTION_START\n' + jsonData + '\nEXTRACTION_END'
-            });
-            
-            // Send progress update
-            sendChat('CharacterExtractor', '/w ' + requestor + 
-                    'Batch ' + (batchIndex + 1) + '/' + totalBatches + ' complete: ' + 
-                    batchProcessed + ' characters written to "' + handoutName + '" (' + 
-                    dataSizeMB + ' MB)');
-                    
-        } catch (error) {
-            log('Error writing to handout ' + handoutName + ': ' + error.toString());
-            sendChat('CharacterExtractor', '/w ' + requestor + 
-                    'Error writing batch ' + (batchIndex + 1) + ': ' + error.toString());
-            
-            // If this was a Firebase size error, try to continue with next batch
-            if (error.toString().includes('string greater than')) {
-                sendChat('CharacterExtractor', '/w ' + requestor + 
-                        'Batch ' + (batchIndex + 1) + ' was too large (' + dataSizeMB + ' MB). Continuing with next batch...');
-            }
-        }
-    }
-    
-    // Send completion message
-    sendChat('CharacterExtractor', '/w ' + requestor + 
-            'EXTRACTION_COMPLETE: ' + overallProcessed + ' characters extracted across ' + 
-            totalBatches + ' handouts. Use !handout-cleanup to delete handouts when done.');
-    
-    log('Batched extraction complete: ' + overallProcessed + ' characters across ' + totalBatches + ' handouts');
-}
-
-function extractCharacterData(character) {
-    const charId = character.get('_id');
-    const charName = character.get('name');
-    
-    log('Extracting data for character: ' + charName + ' (ID: ' + charId + ')');
-    
-    // Skip template sheets
-    if (TEMPLATE_SHEETS.indexOf(charName) !== -1) {
-        log('Skipping template sheet: ' + charName);
-        return null;  // Signal to skip this character
-    }
-
-    
-
-    
-    // Get all attributes for this character
-    const attributes = findObjs({
-        _type: 'attribute',
-        _characterid: charId
-    });
-    
-    // Convert attributes to flat key-value pairs (preserving Roll20 structure)
-    const flatAttributes = {};
-    const repeatingSections = {};
-    
-    attributes.forEach(function(attr) {
-        const name = attr.get('name');
-        const current = attr.get('current');
-        const max = attr.get('max');
-        
-        // Store the raw Roll20 attribute value
-        let value;
-        if (max && max !== '') {
-            value = current + '/' + max;  // For attributes with max values like HP
-        } else {
-            value = current;
-        }
-        
-        // Separate repeating sections from regular attributes
-        if (name.startsWith('repeating_')) {
-            // Parse repeating section: repeating_sectionname_rowid_fieldname
-            const parts = name.split('_');
-            if (parts.length >= 4) {
-                const sectionName = parts[1];
-                const rowId = parts[2];
-                const fieldName = parts.slice(3).join('_');
-                
-                // Initialize section and row if needed
-                if (!repeatingSections[sectionName]) {
-                    repeatingSections[sectionName] = {};
-                }
-                if (!repeatingSections[sectionName][rowId]) {
-                    repeatingSections[sectionName][rowId] = {};
-                }
-                
-                // Store the field value
-                repeatingSections[sectionName][rowId][fieldName] = value;
-            }
-        } else {
-            // Regular attribute
-            flatAttributes[name] = value;
-        }
-    });
-    
-    // Extract abilities as array (clean version)
-    const abilities = findObjs({
-        _type: 'ability',
-        _characterid: charId
-    });
-    
-    const abilityArray = [];
-    abilities.forEach(function(ability) {
-        abilityArray.push({
-            name: ability.get('name'),
-            content: ability.get('action'),
-            showInMacroBar: false,  // Default to false for now
-            isTokenAction: ability.get('istokenaction') || false
-        });
-    });
-    
-    // Build final character data structure (new flat format)
-    const characterData = {
-        metadata: {
-            characterId: charId,
-            extractedAt: new Date().toISOString(),
-            name: charName,
-            attributeCount: attributes.length
-        },
-        attributes: flatAttributes,
-        repeating_sections: repeatingSections,
-        abilities: abilityArray,
-        permissions: {
-            see_by: character.get('inplayerjournals') || '',
-            edit_by: character.get('controlledby') || ''
-        }
-    };
-    
-    log('Successfully extracted data for: ' + charName + ' (found ' + abilityArray.length + ' abilities)');
-    return characterData;
-}
-
-
-
-
-function getStringSizeInBytes(str) {
-    let sizeInBytes = 0;
-    
-    for (let i = 0; i < str.length; i++) {
-        const code = str.charCodeAt(i);
-        
-        if (code < 0x80) {
-            sizeInBytes += 1;
-        } else if (code < 0x800) {
-            sizeInBytes += 2;
-        } else if (code < 0xD800 || code >= 0xE000) {
-            sizeInBytes += 3;
-        } else {
-            // Surrogate pair
-            i++; // Skip the next character
-            sizeInBytes += 4;
-        }
-    }
-    
-    return sizeInBytes;
-}
-
-
-
 function updateCharacterAbilitiesEnhanced(charId, abilities) {
-    /**
-     * Update character abilities with macro bar and token action support
-     */
     try {
-        // Clear existing abilities
         const existingAbilities = findObjs({
             _type: 'ability',
             _characterid: charId
@@ -1150,12 +1103,10 @@ function updateCharacterAbilitiesEnhanced(charId, abilities) {
         
         log('Creating ' + abilities.length + ' abilities for character ID: ' + charId);
         
-        // Get character for macro bar updates
         const character = getObj('character', charId);
         const currentMacroBar = character.get('macrobar') || '';
         let newMacroBar = [];
         
-        // Create new abilities
         abilities.forEach(function(abilityData, index) {
             try {
                 const abilityProps = {
@@ -1170,7 +1121,6 @@ function updateCharacterAbilitiesEnhanced(charId, abilities) {
                 if (newAbility) {
                     log('  [OK] Created: ' + abilityData.name + ' (token: ' + (abilityData.isTokenAction || false) + ')');
                     
-                    // Add to macro bar if specified
                     if (abilityData.showInMacroBar) {
                         newMacroBar.push(newAbility.get('_id'));
                     }
@@ -1183,7 +1133,6 @@ function updateCharacterAbilitiesEnhanced(charId, abilities) {
             }
         });
         
-        // Update macro bar if needed
         if (newMacroBar.length > 0) {
             character.set('macrobar', newMacroBar.join(','));
             log('Updated macro bar with ' + newMacroBar.length + ' abilities');
@@ -1196,38 +1145,3 @@ function updateCharacterAbilitiesEnhanced(charId, abilities) {
         throw error;
     }
 }
-
-// Update bulk processing to skip template sheets
-function extractAllCharactersToHandouts(requestor) {
-    // ... existing code ...
-    
-    batchCharacters.forEach(function(character) {
-        try {
-            const charName = character.get('name');
-            
-            // Skip template sheets
-            if (TEMPLATE_SHEETS.indexOf(charName) !== -1) {
-                log('Skipping template sheet: ' + charName);
-                return; // Continue to next character
-            }
-            
-            log('Processing character: ' + charName + ' (batch ' + (batchIndex + 1) + ')');
-            
-            const characterData = extractCharacterData(character);
-            
-            // Skip if extractCharacterData returned null (template sheets)
-            if (characterData !== null) {
-                batchData[charName] = characterData;
-                batchProcessed++;
-                overallProcessed++;
-            }
-            
-        } catch (error) {
-            log('Error processing character ' + character.get('name') + ': ' + error.toString());
-        }
-    });
-    
-    // ... rest of function ...
-}
-
-
