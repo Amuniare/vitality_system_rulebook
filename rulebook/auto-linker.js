@@ -253,42 +253,43 @@ class AutoLinker {
 
 
 
-
     processTextNodesWithContext(container) {
+        console.log('=== DEBUGGING processTextNodesWithContext ===');
+        console.log('Container:', container);
+        console.log('Container children:', container.children.length);
+        
         const walker = document.createTreeWalker(
             container,
             NodeFilter.SHOW_TEXT,
             {
                 acceptNode: (node) => {
+                    console.log('TreeWalker examining node:', node.textContent?.substring(0, 50));
+                    
                     // Skip empty or very short text nodes
                     if (!node.textContent || node.textContent.trim().length < 3) {
+                        console.log('  -> REJECTED: too short');
                         return NodeFilter.FILTER_REJECT;
                     }
                     
                     // Check immediate parent and ancestors
                     let parent = node.parentElement;
                     const skipTags = [
-                        'A',           // Links (existing and auto-generated)
-                        'CODE', 'PRE', // Code blocks
-                        'SCRIPT', 'STYLE', // Scripts and styles
-                        'H1', 'H2', 'H3', 'H4', 'H5', 'H6', // All headings
-                        'STRONG', 'B', // Bold text
-                        'EM', 'I',     // Italic text
-                        'TITLE'        // Title attributes
+                        'A', 'CODE', 'PRE', 'SCRIPT', 'STYLE', 
+                        'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 
+                        'STRONG', 'B', 'EM', 'I', 'TITLE'
                     ];
                     
-                    // Check up to 3 levels of parents (prevents infinite loops)
+                    // Check up to 3 levels of parents
                     let levelCount = 0;
                     while (parent && parent !== container && levelCount < 3) {
+                        console.log(`  -> Checking parent level ${levelCount}: ${parent.tagName}`);
+                        
                         if (skipTags.includes(parent.tagName)) {
+                            console.log(`  -> REJECTED: parent is ${parent.tagName}`);
                             return NodeFilter.FILTER_REJECT;
                         }
                         if (parent.classList && parent.classList.contains('auto-link')) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        // Check if parent is styled as bold
-                        if (this.isBoldStyled(parent)) {
+                            console.log('  -> REJECTED: parent has auto-link class');
                             return NodeFilter.FILTER_REJECT;
                         }
                         
@@ -296,11 +297,7 @@ class AutoLinker {
                         levelCount++;
                     }
                     
-                    // Additional check: don't link text that matches nearby headings
-                    if (this.isTextSameAsNearbyHeading(node, container)) {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-                    
+                    console.log('  -> ACCEPTED');
                     return NodeFilter.FILTER_ACCEPT;
                 }
             }
@@ -312,19 +309,33 @@ class AutoLinker {
             textNodes.push(node);
         }
     
-        console.log(`Processing ${textNodes.length} text nodes for auto-linking`);
+        console.log(`=== FOUND ${textNodes.length} text nodes ===`);
+        
+        if (textNodes.length === 0) {
+            console.log('=== NO TEXT NODES FOUND - DEBUGGING CONTAINER CONTENT ===');
+            console.log('First 500 chars of container HTML:', container.innerHTML.substring(0, 500));
+            console.log('Container has paragraphs:', container.querySelectorAll('p').length);
+            console.log('Container has text content:', container.textContent.length);
+            return;
+        }
     
-        // Process each text node with context awareness
-        textNodes.forEach(textNode => {
+        // Process each text node
+        textNodes.forEach((textNode, index) => {
+            console.log(`Processing text node ${index + 1}:`, textNode.textContent.substring(0, 100));
+            
             const currentSection = this.findCurrentSection(textNode, container);
             const originalContent = textNode.textContent;
             const newContent = this.linkifyTextWithContext(originalContent, currentSection);
+            
+            console.log(`  Original: "${originalContent.substring(0, 50)}"`);
+            console.log(`  New: "${newContent.substring(0, 50)}"`);
+            console.log(`  Changed: ${newContent !== originalContent}`);
+            console.log(`  Has auto-link: ${newContent.includes('auto-link')}`);
             
             if (newContent !== originalContent && newContent.includes('auto-link')) {
                 const wrapper = document.createElement('span');
                 wrapper.innerHTML = newContent;
                 
-                // Replace the text node with the wrapper's contents
                 while (wrapper.firstChild) {
                     textNode.parentNode.insertBefore(wrapper.firstChild, textNode);
                 }
@@ -332,7 +343,7 @@ class AutoLinker {
             }
         });
     }
-    
+
 
     
     // Add these helper methods to your AutoLinker class:

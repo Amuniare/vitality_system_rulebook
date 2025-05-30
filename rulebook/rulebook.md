@@ -1335,7 +1335,7 @@ These abilities represent your character's capabilities outside of combat. The V
 - Utility Points: 5 × (Tier - 1)
 - Can be spent on Expertises, Features, Senses, or Descriptors
 
----
+
 
 ## Expertises
 
@@ -1442,7 +1442,7 @@ When or where you excel beyond normal capability. Only applies when the context 
 - **Collaborative Projects** – Team research, group problem-solving, or multi-expert consultation
 
 
----
+
 
 ## Features
 
@@ -1452,7 +1452,7 @@ Abilities that enable entirely new categories of actions and checks impossible t
 
 **Cost Structure:** 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
 
----
+
 
 ### Mental/Psychic Powers
 
@@ -1516,7 +1516,7 @@ Make Communication checks to link multiple minds into a temporary collective con
 **Quantum Consciousness**
 Make Awareness checks to exist in multiple probable states simultaneously, experiencing different possible realities.
 
----
+
 
 ### Physical Enhancements
 
@@ -1582,7 +1582,7 @@ You are immortal, you can be killed but you will return to life after 24 hours. 
 **Self-Sacrifice**
 As you activate this feature, increase your Tier by 4, for 6 rounds. At the end of the 6 rounds, you die. May change the penalty and/or bonus for something equivalent, discuss with GM. Cannot use if you have abilities that prevent death.
 
----
+
 
 ### Crafting/Creation Abilities
 
@@ -1639,7 +1639,7 @@ Make Intelligence checks to create small amounts of any non-living matter from q
 **Universal Translation**
 Make Communication checks to understand and communicate in any language, including alien or interdimensional tongues.
 
----
+
 
 ### Social/Network Features
 
@@ -1665,7 +1665,7 @@ Once per session, if you say, "I Know a Guy," workshop with the GM to create an 
 **Social Network**
 You have extensive connections with various influential individuals. These connections can provide critical assistance, such as opening doors to exclusive events, securing resources, or obtaining valuable information.
 
----
+
 
 ### Unique/Specialized Features
 
@@ -1728,7 +1728,7 @@ Make Mobility checks to open portals to alternate dimensions, parallel Earths, o
 **Reality Programming**
 Make Intelligence checks to temporarily alter the fundamental laws of physics in a small area around yourself. Work with GM to determine scope and limitations.
 
----
+
 
 ## Senses
 
@@ -1821,7 +1821,7 @@ Make Awareness checks to sense any specific type of phenomenon anywhere within a
 **Unique Sense (Variable)**
 Gain a supernatural sense for a specific phenomenon within 10 spaces at Tier 1, doubling each additional Tier. You automatically detect obvious manifestations; subtle ones require opposed Awareness checks. Examples include effects from a Descriptor (Electricity, Space, Time, Magic), a type of being (Human, divine beings, eldritch horror, powered person), or usage of an ability (Teleporting, Burrowing, specific Feature usage).
 
----
+
 
 ## Movement
 
@@ -1906,7 +1906,7 @@ Make Mobility checks to project yourself across infinite distances as a incorpor
 **Omnipresence**
 Make Mobility checks to exist simultaneously in up to Tier different locations for extended periods.
 
----
+
 
 ## Descriptors
 
@@ -2037,7 +2037,7 @@ Make Mobility checks to exist simultaneously in up to Tier different locations f
 - **Energy Mastery**: Make Intelligence checks to manipulate cosmic forces and stellar energies
 - **Advanced Applications**: You can infuse other beings with Cosmic energy and power. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign
 
----
+
 
 ## Wealth System
 
@@ -2057,7 +2057,7 @@ Represents your character's financial resources. The GM will set a wealth level 
 Heroes living paycheck-to-paycheck or relying on makeshift solutions. Housing is often cramped, unstable, or shared, with few luxuries.
 
 | **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
-|-------------------|------------|-------------------------|-------------------------------|
+|-||-|-|
 | **Incidental** | $0-$50 | Effortless; no checks required. | Bus fare, cheap meals, second-hand clothes, basic tools, duct tape. |
 | **Standard** | $50-$200 | 1 per session; no check required. | Low-end laptops, plane tickets to nearby locations, burner phones. |
 | **Unusual** | $200-$1,000 | Requires planning, narrative justification, a challenging skill check, and downtime. | Used cars, custom gadgets, bribes, short-term rentals of gear. |
@@ -2067,7 +2067,7 @@ Heroes living paycheck-to-paycheck or relying on makeshift solutions. Housing is
 Heroes with stable finances and reasonable housing, such as apartments or small homes with utilities and basic amenities.
 
 | **Expense Level** | **Amount** | **Access Requirements** | **General Purchase Examples** |
-|-------------------|------------|-------------------------|-------------------------------|
+|-|------------|-------------------------|-------------------------------|
 | **Incidental** | $0-$200 | Effortless; no checks required. | Meals, taxi rides, affordable gadgets, costume repairs, minor tools. |
 | **Standard** | $200-$1,000 | 1 per session; no check required. | Decent laptops, multi-day travel, advanced smartphones, surveillance gear. |
 | **Unusual** | $1,000-$5,000 | Requires planning, narrative justification, a challenging skill check, and downtime. | Custom vehicles, specialized equipment, short-term lab access. |
