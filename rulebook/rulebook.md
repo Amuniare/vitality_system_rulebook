@@ -1476,7 +1476,7 @@ Make Intelligence checks to accurately predict weather patterns up to 24 hours i
 #### 3-Point Mental Features
 
 **Telepathy**
-Make Communication checks to read surface thoughts of conscious beings within line of sight. Range limited to visual contact and surface-level thoughts only.
+Make Communication checks to establish two-way mental communication with any intelligent being regardless of distance or barriers. No range limitations and allows deep mental contact.
 
 **Psychometry**
 Make Intelligence checks to perceive the recent history and emotional imprints of objects through touch.
@@ -1493,15 +1493,11 @@ Make Intelligence checks to interface directly with electronic devices and under
 **Psychic Link**
 You can share or transfer memories with a touch, or form a temporary psychic connection with another being. This connection can be used for strategic coordination, emotional support, or unique insight into the other's thoughts and intentions.
 
-**Mind Reading**
-Roll Awareness or Intelligence + Tier (choose which when taking this Feature) vs target's Resolve to attempt to read a target's mind that you can see. On a success, you gain whatever information you're looking for that the target knows, even subconsciously. On a failure, they know you tried to read their mind and are immune to this feature until you have completed a full rest.
-- **Variant (-1p): Just surface thoughts**
-- **Variant (-1p): Must touch the target; use Focus vs Avoidance if unwilling**
 
 #### 5-Point Mental Features
 
-**True Telepathy**
-Make Communication checks to establish two-way mental communication with any intelligent being regardless of distance or barriers. No range limitations and allows deep mental contact.
+**Mind-Reading**
+Make Communication checks to read surface thoughts of conscious beings within line of sight. Range limited to visual contact and surface-level thoughts only.
 
 **Memory Manipulation**
 Make Communication checks to view, modify, or implant memories in willing or unconscious subjects. Cannot be used on actively resisting targets.
