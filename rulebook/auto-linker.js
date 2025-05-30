@@ -252,6 +252,7 @@ class AutoLinker {
     }
 
 
+
     processTextNodesWithContext(container) {
         const walker = document.createTreeWalker(
             container,
@@ -271,36 +272,16 @@ class AutoLinker {
                     ];
                     
                     while (parent && parent !== container) {
-                        // Check tag name
                         if (skipTags.includes(parent.tagName)) {
                             return NodeFilter.FILTER_REJECT;
                         }
-                        
-                        // Check for auto-link class
                         if (parent.classList && parent.classList.contains('auto-link')) {
                             return NodeFilter.FILTER_REJECT;
                         }
-                        
-                        // Check for CSS-based bold styling
-                        if (this.isBoldStyled(parent)) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
-                        // Check if parent is a heading by role or class
-                        if (this.isHeadingElement(parent)) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                        
                         parent = parent.parentElement;
                     }
                     
-                    // Skip very short text nodes
                     if (node.textContent.trim().length < 3) {
-                        return NodeFilter.FILTER_REJECT;
-                    }
-                    
-                    // Additional check: skip if the text is the same as a heading
-                    if (this.isTextSameAsNearbyHeading(node, container)) {
                         return NodeFilter.FILTER_REJECT;
                     }
                     
@@ -309,8 +290,34 @@ class AutoLinker {
             }
         );
     
-        // ... rest of the method
+        const textNodes = [];
+        let node;
+        while (node = walker.nextNode()) {
+            textNodes.push(node);
+        }
+    
+        console.log(`Processing ${textNodes.length} text nodes for auto-linking`);
+    
+        // Process each text node with context awareness
+        textNodes.forEach(textNode => {
+            const currentSection = this.findCurrentSection(textNode, container);
+            const originalContent = textNode.textContent;
+            const newContent = this.linkifyTextWithContext(originalContent, currentSection);
+            
+            if (newContent !== originalContent && newContent.includes('auto-link')) {
+                const wrapper = document.createElement('span');
+                wrapper.innerHTML = newContent;
+                
+                // Replace the text node with the wrapper's contents
+                while (wrapper.firstChild) {
+                    textNode.parentNode.insertBefore(wrapper.firstChild, textNode);
+                }
+                textNode.parentNode.removeChild(textNode);
+            }
+        });
     }
+
+
     
     // Add these helper methods to your AutoLinker class:
     
@@ -461,11 +468,16 @@ class AutoLinker {
 
     linkGameTermsWithContext(text, currentSection) {
         let result = text;
-
+    
+        // Only process text that's likely to contain linkable terms
+        if (text.trim().length < 3) {
+            return result;
+        }
+    
         // Sort terms by length (descending) to handle longer terms first
         const sortedTerms = Array.from(this.termDictionary.keys())
             .sort((a, b) => b.length - a.length);
-
+    
         sortedTerms.forEach(termKey => {
             const termData = this.termDictionary.get(termKey);
             const term = termData.term;
@@ -478,13 +490,20 @@ class AutoLinker {
                 const regex = new RegExp(`\\b${this.escapeRegex(term)}\\b`, 'gi');
                 
                 result = result.replace(regex, (match) => {
+                    // Simple check: if the entire text is just this term (likely a heading), don't link
+                    if (text.trim().toLowerCase() === match.toLowerCase()) {
+                        return match;
+                    }
+                    
                     return `<a href="#${bestTarget.id}" class="auto-link term-link" title="See ${term} in ${bestTarget.text}">${match}</a>`;
                 });
             }
         });
-
+    
         return result;
     }
+
+
 
     findBestTarget(candidates, currentSection, term) {
         if (!candidates || candidates.length === 0) {
