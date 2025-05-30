@@ -1345,10 +1345,18 @@ Expertises add to rolls you can already make. They provide bonuses to existing c
 **Use Limitation**: You can only apply two levels of expertise to any skill check two levels per individual expertise.
 
 ### Expertise Mechanics
-- **Basic (2p)**: Add your Tier to relevant checks
-- **Mastered (6p)**: Add 2 × your Tier to relevant checks
 - **Stacking**: Maximum 2 × Tier bonus per roll from combined expertises
 - **Custom Expertises**: Players may propose custom expertises tied to a core stat with GM approval
+
+#### Activity-Based Expertises
+**Cost: Basic (2p) / Mastered (6p)**
+- **Basic**: Add your Tier to relevant checks
+- **Mastered**: Add 2 × your Tier to relevant checks
+
+#### Situational Expertises  
+**Cost: Basic (1p) / Mastered (3p)**
+- **Basic**: Add your Tier to relevant checks when context matches
+- **Mastered**: Add 2 × your Tier to relevant checks when context matches
 
 ### Activity-Based
 
@@ -1428,10 +1436,11 @@ When or where you excel beyond normal capability. Only applies when the context 
 - **Public Forums** – Rallies, stages, broadcasts, or press interactions
 
 #### Intelligence
-- **Data-Dense Environments** – Archives, control rooms, or multi-system interfaces
-- **Tech-Heavy Settings** – Laboratories, research centers, or digital spaces
-- **Unstable Systems** – Glitches, corrupted files, failing machines, or broken code
-- **Unknown Constructs** – Alien tech, forgotten ruins, or arcane machines
+- **Academic Environments** – Libraries, universities, conferences, or scholarly debates
+- **Time-Critical Situations** – Puzzles under pressure, quick analysis, or rapid decision-making
+- **Hostile Information** – Contested data, propaganda, misinformation, or adversarial intelligence
+- **Collaborative Projects** – Team research, group problem-solving, or multi-expert consultation
+
 
 ---
 
