@@ -533,7 +533,7 @@ class CharacterExtractor:
     def _save_extracted_data(self, all_character_data: Dict[str, Any]):
         """Save extracted character data to files"""
         try:
-            output_dir = Path("extracted_characters")
+            output_dir = Path("characters") / "extracted"  # Correct location
             output_dir.mkdir(exist_ok=True)
             
             saved_count = 0

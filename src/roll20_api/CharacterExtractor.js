@@ -1,5 +1,8 @@
-// CharacterExtractor.js - Fixed version with enhanced error handling and debugging
+// CharacterExtractor.js - Fixed scoping issue
 // Install this in your Roll20 campaign's API Scripts section
+
+// MOVED TO GLOBAL SCOPE - accessible from all functions
+const TEMPLATE_SHEETS = ['MacroMule', 'ScriptCards_TemplateMule'];
 
 on('ready', function() {
     log('CharacterExtractor API loaded successfully - Enhanced Debug Version');
@@ -10,8 +13,6 @@ on('chat:message', function(msg) {
     
     const args = msg.content.split(' ');
     const command = args[0];
-    const TEMPLATE_SHEETS = ['MacroMule', 'ScriptCards_TemplateMule'];  
-
     
     try {
         switch(command) {
@@ -273,7 +274,7 @@ function extractCharacterDataEnhanced(character) {
         
         log('Extracting data for: ' + charName + ' (ID: ' + charId + ')');
         
-        // Double-check template sheets (redundant safety)
+        // Double-check template sheets (redundant safety) - NOW ACCESSIBLE
         if (TEMPLATE_SHEETS.indexOf(charName) !== -1) {
             log('Template sheet caught in extractCharacterData: ' + charName);
             return null;
@@ -407,6 +408,7 @@ function extractCharacterDataEnhanced(character) {
         return null;
     }
 }
+
 
 // ============================================================================
 // UTILITY FUNCTIONS (UNCHANGED)
