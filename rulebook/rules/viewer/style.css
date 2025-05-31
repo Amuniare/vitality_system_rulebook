@@ -285,3 +285,52 @@ body {
         text-decoration: none !important;
     }
 }
+
+/* Enhanced Navigation Links */
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    background-color: rgba(52, 73, 94, 0.3);
+    border: 1px solid transparent;
+}
+
+.nav-link:hover {
+    background-color: #34495e;
+    border-color: #3498db;
+    color: #3498db;
+    transform: translateX(2px);
+}
+
+/* Replace the ugly arrow with a better one */
+.nav-link[href*="index.html"]::before {
+    content: "◀";
+    margin-right: 8px;
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+
+.nav-link[href*="index.html"]:hover::before {
+    transform: translateX(-2px);
+}
+
+/* Style the character builder link */
+.nav-link[href*="character-builder"]::before {
+    content: "⚙";
+    margin-right: 8px;
+    font-size: 0.9em;
+}
+
+
