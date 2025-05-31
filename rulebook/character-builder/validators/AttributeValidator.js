@@ -54,23 +54,12 @@ export class AttributeValidator {
             sum + (character.attributes[attr] || 0), 0);
         const combatAvailable = tier * 2;
 
-        if (combatSpent > combatAvailable) {
-            errors.push(`Combat attributes over budget: ${combatSpent}/${combatAvailable} points`);
-        } else if (combatSpent === combatAvailable) {
-            warnings.push('Combat attribute pool fully spent');
-        }
 
         // Utility attributes validation
         const utilityAttributes = ['awareness', 'communication', 'intelligence'];
         const utilitySpent = utilityAttributes.reduce((sum, attr) => 
             sum + (character.attributes[attr] || 0), 0);
         const utilityAvailable = tier;
-
-        if (utilitySpent > utilityAvailable) {
-            errors.push(`Utility attributes over budget: ${utilitySpent}/${utilityAvailable} points`);
-        } else if (utilitySpent === utilityAvailable) {
-            warnings.push('Utility attribute pool fully spent');
-        }
 
         return { errors, warnings };
     }

@@ -59,7 +59,7 @@ export class TierSystem {
     
     // Calculate base HP
     static calculateBaseHP(tier) {
-        return GameConstants.BASE_HP + (tier * 5);
+        return GameConstants.BASE_HP;
     }
     
     // Calculate limit scaling points
