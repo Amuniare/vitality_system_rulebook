@@ -1,4 +1,4 @@
-// character-builder.js
+// character-builder.js - Complete Rework
 class VitalityCharacterBuilder {
     constructor() {
         this.currentCharacter = null;
@@ -6,30 +6,22 @@ class VitalityCharacterBuilder {
         this.folders = this.loadFolders();
         this.gameData = {};
         this.validationEngine = null;
-        this.currentAttackIndex = 0;
+        this.currentAttackIndex = null;
+        this.stepValidation = new StepValidation();
         
         this.init();
     }
 
     async init() {
         try {
-            // Load all game data
             await this.loadGameData();
-            
-            // Initialize validation engine
             this.validationEngine = new ValidationEngine(this.gameData);
-            
-            // Initialize event listeners
             this.initializeEventListeners();
-            
-            // Initialize UI components
             this.initializeComponents();
-            
-            // Render initial state
             this.renderCharacterTree();
             this.updateAllDisplays();
             
-            console.log('Character Builder initialized successfully');
+            console.log('Character Builder v2.0 initialized successfully');
         } catch (error) {
             console.error('Failed to initialize Character Builder:', error);
             this.showError('Failed to load character builder. Please refresh the page.');
@@ -59,7 +51,7 @@ class VitalityCharacterBuilder {
         }
     }
 
-    // Save/Load System
+    // Character Management
     loadCharacters() {
         const saved = localStorage.getItem('vitality-characters-v2');
         return saved ? JSON.parse(saved) : {};
@@ -78,80 +70,9 @@ class VitalityCharacterBuilder {
         localStorage.setItem('vitality-folders-v2', JSON.stringify(this.folders));
     }
 
-    // Character Management
     createNewCharacter(name = "New Character", folderId = null) {
         const id = Date.now().toString();
-        const character = {
-            id: id,
-            name: name,
-            realName: "",
-            tier: 4,
-            folderId: folderId,
-            version: "2.0",
-            archetypes: {
-                movement: null,
-                attackType: null,
-                effectType: null,
-                uniqueAbility: null,
-                defensive: null,
-                specialAttack: null,
-                utility: null
-            },
-            attributes: {
-                focus: 0,
-                mobility: 0,
-                power: 0,
-                endurance: 0,
-                awareness: 0,
-                communication: 0,
-                intelligence: 0
-            },
-            limits: {
-                selected: [],
-                traitBonuses: {
-                    accuracy: 0,
-                    damage: 0,
-                    conditions: 0,
-                    avoidance: 0,
-                    durability: 0,
-                    resistance: 0,
-                    movement: 0
-                }
-            },
-            abilities: {
-                boons: [],
-                traits: [],
-                flaws: []
-            },
-            specialAttacks: [],
-            utility: {
-                expertise: {
-                    awareness: [],
-                    communication: [],
-                    intelligence: [],
-                    focus: [],
-                    mobility: [],
-                    endurance: [],
-                    power: []
-                },
-                features: [],
-                senses: [],
-                descriptors: []
-            },
-            pointsSpent: {
-                combat: 0,
-                utility: 0,
-                main: 0,
-                utilityPool: 0,
-                specialAttack: 0
-            },
-            calculatedStats: {},
-            validationResults: {
-                isValid: false,
-                errors: [],
-                warnings: []
-            }
-        };
+        const character = new VitalityCharacter(id, name, folderId);
         
         this.characters[id] = character;
         this.saveCharacters();
@@ -183,21 +104,13 @@ class VitalityCharacterBuilder {
     saveCurrentCharacter() {
         if (!this.currentCharacter) return;
         
-        // Gather data from form
         this.gatherFormData();
-        
-        // Calculate derived values
-        this.calculatePointsSpent();
-        this.calculateStats();
-        
-        // Validate build
+        this.calculateAllStats();
         this.validateCurrentBuild();
         
-        // Save to storage
         this.characters[this.currentCharacter.id] = this.currentCharacter;
         this.saveCharacters();
         
-        // Update displays
         this.renderCharacterTree();
         this.updateAllDisplays();
         
@@ -216,6 +129,7 @@ class VitalityCharacterBuilder {
         }
     }
 
+    // Data Gathering
     gatherFormData() {
         if (!this.currentCharacter) return;
         
@@ -233,7 +147,7 @@ class VitalityCharacterBuilder {
             }
         });
 
-        // Trait bonuses
+        // Trait bonuses from limits
         const traitBonuses = ['accuracy', 'damage', 'conditions', 'avoidance', 'durability', 'resistance', 'movement'];
         traitBonuses.forEach(bonus => {
             const element = document.getElementById(`trait-${bonus}`);
@@ -243,9 +157,9 @@ class VitalityCharacterBuilder {
         });
     }
 
-    // Point Pool Calculations
+    // Point Pool System - Core Implementation
     calculatePointPools() {
-        if (!this.currentCharacter) return { combat: 0, utility: 0, main: 0, utilityPool: 0, specialAttack: 0 };
+        if (!this.currentCharacter) return { combat: 0, utility: 0, main: 0, utilityPool: 0, specialAttack: 0, limits: 0 };
         
         const tier = this.currentCharacter.tier;
         const archetypes = this.currentCharacter.archetypes;
@@ -254,9 +168,9 @@ class VitalityCharacterBuilder {
             combat: tier * 2,
             utility: tier,
             main: Math.max(0, (tier - 2) * 15),
-            utilityPool: Math.max(0, 5 * (tier - 1)),
+            utilityPool: this.calculateUtilityPool(tier, archetypes.utility),
             specialAttack: this.calculateSpecialAttackPoints(),
-            limits: this.calculateLimitPoints()
+            limits: this.calculateTotalLimitPoints()
         };
 
         // Apply archetype modifiers
@@ -267,36 +181,75 @@ class VitalityCharacterBuilder {
         return pools;
     }
 
+    calculateUtilityPool(tier, utilityArchetype) {
+        switch(utilityArchetype) {
+            case 'specialized':
+            case 'jackOfAllTrades':
+                return Math.max(1, 5 * (tier - 2));
+            case 'practical':
+            default:
+                return Math.max(1, 5 * (tier - 1));
+        }
+    }
+
     calculateSpecialAttackPoints() {
         if (!this.currentCharacter) return 0;
         
         const archetype = this.currentCharacter.archetypes.specialAttack;
         const tier = this.currentCharacter.tier;
-        const limitPoints = this.calculateLimitPoints();
+        const totalLimitPoints = this.calculateTotalLimitPoints();
         
         switch (archetype) {
-            case 'normal': return limitPoints;
-            case 'specialist': return Math.floor(limitPoints * 1.5);
-            case 'paragon': return tier * 10;
-            case 'oneTrick': return tier * 20;
-            case 'straightforward': return limitPoints * 2;
-            case 'sharedUses': return limitPoints;
-            case 'dualNatured': return tier * 15 * 2;
-            case 'basic': return tier * 10;
-            default: return limitPoints;
+            case 'normal':
+                return this.applyLimitScaling(totalLimitPoints, tier) * (tier / 6);
+            case 'specialist':
+                return this.applyLimitScaling(totalLimitPoints, tier) * (tier / 3);
+            case 'paragon':
+                return tier * 10;
+            case 'oneTrick':
+                return tier * 20;
+            case 'straightforward':
+                return this.applyLimitScaling(totalLimitPoints, tier) * (tier / 2);
+            case 'sharedUses':
+                return this.applyLimitScaling(totalLimitPoints, tier);
+            case 'dualNatured':
+                return tier * 15; // Per attack, character gets 2 attacks
+            case 'basic':
+                return tier * 10; // For base attack enhancement only
+            default:
+                return this.applyLimitScaling(totalLimitPoints, tier);
         }
     }
 
-    calculateLimitPoints() {
-        if (!this.currentCharacter || !this.gameData.limits) return 0;
+    applyLimitScaling(limitPoints, tier) {
+        // Implement proper limit point scaling from rulebook
+        let upgradePoints = 0;
+        const firstTier = tier * 10;
+        const secondTier = tier * 20;
+        
+        if (limitPoints <= firstTier) {
+            upgradePoints = limitPoints;
+        } else if (limitPoints <= firstTier + secondTier) {
+            upgradePoints = firstTier + (limitPoints - firstTier) * 0.5;
+        } else {
+            upgradePoints = firstTier + secondTier * 0.5 + (limitPoints - firstTier - secondTier) * 0.25;
+        }
+        
+        return Math.floor(upgradePoints);
+    }
+
+    calculateTotalLimitPoints() {
+        if (!this.currentCharacter) return 0;
         
         let total = 0;
-        const selectedLimits = this.currentCharacter.limits.selected || [];
-        
-        selectedLimits.forEach(limitId => {
-            const limit = this.findLimitById(limitId);
-            if (limit) {
-                total += limit.points;
+        this.currentCharacter.specialAttacks.forEach(attack => {
+            if (attack.limits) {
+                attack.limits.forEach(limitId => {
+                    const limit = this.findLimitById(limitId);
+                    if (limit) {
+                        total += limit.points;
+                    }
+                });
             }
         });
         
@@ -333,37 +286,34 @@ class VitalityCharacterBuilder {
                        this.currentCharacter.attributes.communication + 
                        this.currentCharacter.attributes.intelligence;
         
-        // Main pool (abilities)
-        spent.main = this.calculateAbilityCosts();
+        // Main pool (abilities) - properly distinguish traits from boons/flaws
+        spent.main = this.calculateMainPoolSpent();
         
         // Utility pool
-        spent.utilityPool = this.calculateUtilityCosts();
+        spent.utilityPool = this.calculateUtilityPoolSpent();
         
-        // Special attacks
-        spent.specialAttack = this.calculateSpecialAttackCosts();
+        // Special attacks - sum of all attack costs
+        spent.specialAttack = this.calculateSpecialAttackSpent();
         
         this.currentCharacter.pointsSpent = spent;
     }
 
-    calculateAbilityCosts() {
+    calculateMainPoolSpent() {
         if (!this.currentCharacter) return 0;
         
         let total = 0;
         const abilities = this.currentCharacter.abilities;
         
-        // Boons
+        // Boons - variable costs
         abilities.boons.forEach(boonId => {
             const boon = this.gameData.abilities.boons.find(b => b.id === boonId);
             if (boon) total += boon.cost;
         });
         
-        // Traits
-        abilities.traits.forEach(traitId => {
-            const trait = this.gameData.abilities.traits.find(t => t.id === traitId);
-            if (trait) total += trait.cost;
-        });
+        // Traits - 30p each (NOT trait bonuses from limits)
+        total += abilities.traits.length * 30;
         
-        // Flaws (negative cost)
+        // Flaws - negative costs (give points back)
         abilities.flaws.forEach(flawId => {
             const flaw = this.gameData.abilities.flaws.find(f => f.id === flawId);
             if (flaw) total += flaw.cost; // Flaws have negative costs
@@ -372,58 +322,58 @@ class VitalityCharacterBuilder {
         return total;
     }
 
-    calculateUtilityCosts() {
+    calculateUtilityPoolSpent() {
         if (!this.currentCharacter) return 0;
         
         let total = 0;
         const utility = this.currentCharacter.utility;
+        const tier = this.currentCharacter.tier;
         
-        // Expertise (each costs 1 point per tier)
+        // Expertise - costs tier points per skill
         Object.values(utility.expertise).forEach(expertiseList => {
-            total += expertiseList.length * this.currentCharacter.tier;
+            total += expertiseList.length * tier;
         });
         
-        // Features
-        utility.features.forEach(featureId => {
-            const feature = this.gameData.abilities.features.find(f => f.id === featureId);
-            if (feature) total += feature.cost;
-        });
-        
-        // Senses
-        utility.senses.forEach(senseId => {
-            const sense = this.gameData.abilities.senses.find(s => s.id === senseId);
-            if (sense) total += sense.cost;
-        });
-        
-        // Descriptors
-        utility.descriptors.forEach(descriptorId => {
-            const descriptor = this.gameData.abilities.descriptors.find(d => d.id === descriptorId);
-            if (descriptor) total += descriptor.cost;
+        // Features, Senses, Descriptors - variable costs
+        ['features', 'senses', 'descriptors'].forEach(category => {
+            utility[category].forEach(itemId => {
+                const item = this.gameData.abilities[category]?.find(i => i.id === itemId);
+                if (item) total += item.cost;
+            });
         });
         
         return total;
     }
 
-    calculateSpecialAttackCosts() {
+    calculateSpecialAttackSpent() {
         if (!this.currentCharacter) return 0;
         
         return this.currentCharacter.specialAttacks.reduce((total, attack) => {
-            return total + (attack.totalCost || 0);
+            return total + (attack.upgradePointsSpent || 0);
         }, 0);
     }
 
-    calculateStats() {
+    // Character Stats Calculation
+    calculateAllStats() {
+        if (!this.currentCharacter) return;
+        
+        this.calculatePointsSpent();
+        this.calculateDerivedStats();
+        this.applyArchetypeBonuses();
+    }
+
+    calculateDerivedStats() {
         if (!this.currentCharacter) return;
         
         const tier = this.currentCharacter.tier;
         const attrs = this.currentCharacter.attributes;
         const traitBonuses = this.currentCharacter.limits.traitBonuses;
         
-        // Calculate derived statistics
+        // Calculate base derived statistics according to rulebook
         const stats = {
             // Defense Stats
             avoidance: 10 + tier + attrs.mobility + traitBonuses.avoidance,
-            durability: Math.ceil((tier + attrs.endurance + traitBonuses.durability) * 1.5),
+            durability: Math.ceil((tier + attrs.endurance) * 1.5) + traitBonuses.durability,
             resolve: 10 + tier + attrs.focus + traitBonuses.resistance,
             stability: 10 + tier + attrs.power + traitBonuses.resistance,
             vitality: 10 + tier + attrs.endurance + traitBonuses.resistance,
@@ -440,47 +390,524 @@ class VitalityCharacterBuilder {
             currentHP: 100 + (tier * 5)
         };
         
-        // Apply archetype bonuses
-        this.applyArchetypeBonuses(stats);
-        
         this.currentCharacter.calculatedStats = stats;
     }
 
-    applyArchetypeBonuses(stats) {
+    applyArchetypeBonuses(stats = null) {
         if (!this.currentCharacter) return;
         
+        const targetStats = stats || this.currentCharacter.calculatedStats;
         const archetypes = this.currentCharacter.archetypes;
         const tier = this.currentCharacter.tier;
         
-        // Apply specific archetype bonuses
+        // Movement archetype bonuses
         if (archetypes.movement === 'swift') {
-            stats.movement += Math.ceil(tier / 2);
+            targetStats.movement += Math.ceil(tier / 2);
         }
         
+        // Defensive archetype bonuses
         if (archetypes.defensive === 'resilient') {
-            stats.durability += tier;
+            targetStats.durability += tier;
         }
         
         if (archetypes.defensive === 'fortress') {
-            stats.resolve += tier;
-            stats.stability += tier;
-            stats.vitality += tier;
+            targetStats.resolve += tier;
+            targetStats.stability += tier;
+            targetStats.vitality += tier;
+        }
+        
+        if (archetypes.defensive === 'stalwart') {
+            targetStats.avoidance -= tier; // Penalty
+            // Note: Damage resistance is handled separately
         }
         
         if (archetypes.defensive === 'juggernaut') {
-            stats.maxHP += tier * 5;
-            stats.currentHP += tier * 5;
+            targetStats.maxHP += tier * 5;
+            targetStats.currentHP += tier * 5;
         }
         
+        // Unique ability bonuses
         if (archetypes.uniqueAbility === 'cutAbove') {
             const bonus = tier <= 3 ? 1 : tier <= 6 ? 2 : 3;
-            Object.keys(this.currentCharacter.attributes).forEach(attr => {
-                this.currentCharacter.attributes[attr] += bonus;
-            });
+            // Add to all core stats
+            targetStats.accuracy += bonus;
+            targetStats.damage += bonus;
+            targetStats.conditions += bonus;
+            targetStats.avoidance += bonus;
+            targetStats.durability += bonus;
+            targetStats.resolve += bonus;
+            targetStats.stability += bonus;
+            targetStats.vitality += bonus;
+            targetStats.initiative += bonus;
+            targetStats.movement += bonus;
         }
     }
 
+    // Archetype Selection with Proper Order Enforcement
+    selectArchetype(category, archetypeId) {
+        if (!this.currentCharacter) return;
+        
+        // Validate archetype compatibility
+        if (!this.validateArchetypeSelection(category, archetypeId)) {
+            this.showError('Invalid archetype selection');
+            return;
+        }
+        
+        this.currentCharacter.archetypes[category] = archetypeId;
+        
+        // Recalculate everything that depends on archetypes
+        this.calculateAllStats();
+        this.updateAllDisplays();
+        this.validateCurrentBuild();
+        this.updateProgressIndicator();
+        this.saveCurrentCharacter();
+        
+        // Update archetype display
+        this.updateArchetypeDisplay(category);
+    }
+
+    validateArchetypeSelection(category, archetypeId) {
+        const archetype = this.findArchetypeById(category, archetypeId);
+        if (!archetype) return false;
+        
+        // Check for conflicts with existing selections
+        if (category === 'movement' && archetypeId === 'behemoth') {
+            // Behemoth cannot have movement-restricting limits
+            const hasMovementLimits = this.currentCharacter.specialAttacks.some(attack => 
+                attack.limits && attack.limits.some(limitId => {
+                    const limit = this.findLimitById(limitId);
+                    return limit && limit.restrictions && limit.restrictions.includes('behemoth');
+                })
+            );
+            if (hasMovementLimits) {
+                this.showError('Behemoth archetype conflicts with existing movement-restricting limits');
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    findArchetypeById(category, archetypeId) {
+        if (!this.gameData.archetypes || !this.gameData.archetypes[category]) return null;
+        return this.gameData.archetypes[category].find(arch => arch.id === archetypeId);
+    }
+
+    updateArchetypeDisplay(category) {
+        const container = document.getElementById(`${category.replace(/([A-Z])/g, '-$1').toLowerCase()}-archetypes`);
+        if (!container) return;
+        
+        container.querySelectorAll('.archetype-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        const selectedId = this.currentCharacter.archetypes[category];
+        if (selectedId) {
+            const selectedCard = Array.from(container.children).find(card => {
+                const archetype = this.findArchetypeByName(category, card.querySelector('h4').textContent);
+                return archetype && archetype.id === selectedId;
+            });
+            if (selectedCard) selectedCard.classList.add('selected');
+        }
+    }
+
+    findArchetypeByName(category, name) {
+        if (!this.gameData.archetypes || !this.gameData.archetypes[category]) return null;
+        return this.gameData.archetypes[category].find(arch => arch.name === name);
+    }
+
+    // Special Attack System - Per-Attack Limits
+    createSpecialAttack() {
+        if (!this.currentCharacter) return;
+        
+        const archetype = this.currentCharacter.archetypes.specialAttack;
+        
+        // Check archetype restrictions
+        if (archetype === 'basic') {
+            this.showError('Basic archetype cannot create special attacks');
+            return;
+        }
+        
+        if (archetype === 'oneTrick' && this.currentCharacter.specialAttacks.length >= 1) {
+            this.showError('One Trick archetype allows only one special attack');
+            return;
+        }
+        
+        if (archetype === 'dualNatured' && this.currentCharacter.specialAttacks.length >= 2) {
+            this.showError('Dual-Natured archetype allows only two special attacks');
+            return;
+        }
+        
+        const attack = {
+            id: Date.now().toString(),
+            name: "",
+            type: "melee",
+            description: "",
+            limits: [], // Per-attack limits
+            upgrades: [], // Purchased upgrades
+            condition: null,
+            attackTypes: [], // Purchased attack types
+            upgradePointsAvailable: 0,
+            upgradePointsSpent: 0,
+            limitPointsTotal: 0
+        };
+        
+        this.currentCharacter.specialAttacks.push(attack);
+        this.renderSpecialAttacks();
+        this.calculateAllStats();
+        this.updateAllDisplays();
+    }
+
+    addLimitToAttack(attackIndex, limitId) {
+        if (!this.currentCharacter || !this.currentCharacter.specialAttacks[attackIndex]) return;
+        
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        const archetype = this.currentCharacter.archetypes.specialAttack;
+        
+        // Check if archetype allows limits
+        if (['paragon', 'oneTrick', 'dualNatured', 'basic'].includes(archetype)) {
+            this.showError('This archetype cannot use limits');
+            return;
+        }
+        
+        const limit = this.findLimitById(limitId);
+        if (!limit) return;
+        
+        // Check for conflicts
+        if (limit.restrictions) {
+            const movementArchetype = this.currentCharacter.archetypes.movement;
+            if (limit.restrictions.includes('behemoth') && movementArchetype === 'behemoth') {
+                this.showError('This limit conflicts with Behemoth archetype');
+                return;
+            }
+        }
+        
+        // Add limit to this specific attack
+        if (!attack.limits.includes(limitId)) {
+            attack.limits.push(limitId);
+            this.recalculateAttackPoints(attackIndex);
+            this.saveCurrentCharacter();
+        }
+    }
+
+    removeLimitFromAttack(attackIndex, limitId) {
+        if (!this.currentCharacter || !this.currentCharacter.specialAttacks[attackIndex]) return;
+        
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        const index = attack.limits.indexOf(limitId);
+        
+        if (index > -1) {
+            attack.limits.splice(index, 1);
+            this.recalculateAttackPoints(attackIndex);
+            this.saveCurrentCharacter();
+        }
+    }
+
+    recalculateAttackPoints(attackIndex) {
+        if (!this.currentCharacter || !this.currentCharacter.specialAttacks[attackIndex]) return;
+        
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        const tier = this.currentCharacter.tier;
+        const archetype = this.currentCharacter.archetypes.specialAttack;
+        
+        // Calculate limit points for this attack
+        let limitPoints = 0;
+        attack.limits.forEach(limitId => {
+            const limit = this.findLimitById(limitId);
+            if (limit) limitPoints += limit.points;
+        });
+        
+        attack.limitPointsTotal = limitPoints;
+        
+        // Calculate available upgrade points based on archetype
+        switch (archetype) {
+            case 'normal':
+                attack.upgradePointsAvailable = this.applyLimitScaling(limitPoints, tier) * (tier / 6);
+                break;
+            case 'specialist':
+                attack.upgradePointsAvailable = this.applyLimitScaling(limitPoints, tier) * (tier / 3);
+                break;
+            case 'straightforward':
+                attack.upgradePointsAvailable = this.applyLimitScaling(limitPoints, tier) * (tier / 2);
+                break;
+            case 'paragon':
+                attack.upgradePointsAvailable = tier * 10;
+                break;
+            case 'oneTrick':
+                attack.upgradePointsAvailable = tier * 20;
+                break;
+            case 'dualNatured':
+                attack.upgradePointsAvailable = tier * 15;
+                break;
+            case 'basic':
+                attack.upgradePointsAvailable = tier * 10;
+                break;
+            default:
+                attack.upgradePointsAvailable = this.applyLimitScaling(limitPoints, tier);
+        }
+        
+        attack.upgradePointsAvailable = Math.floor(attack.upgradePointsAvailable);
+        
+        // Recalculate total spent points
+        this.calculateAllStats();
+        this.updateAllDisplays();
+    }
+
+    deleteAttack(index) {
+        if (!this.currentCharacter) return;
+        
+        if (confirm('Are you sure you want to delete this attack?')) {
+            this.currentCharacter.specialAttacks.splice(index, 1);
+            this.renderSpecialAttacks();
+            this.calculateAllStats();
+            this.updateAllDisplays();
+            this.validateCurrentBuild();
+            this.saveCurrentCharacter();
+        }
+    }
+
+    // Limits Selection for Specific Attack
+    toggleLimitForAttack(attackIndex, limitId) {
+        if (!this.currentCharacter) return;
+        
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        if (!attack) return;
+        
+        const index = attack.limits.indexOf(limitId);
+        if (index > -1) {
+            this.removeLimitFromAttack(attackIndex, limitId);
+        } else {
+            this.addLimitToAttack(attackIndex, limitId);
+        }
+        
+        this.updateLimitDisplaysForAttack(attackIndex);
+    }
+
+    updateLimitDisplaysForAttack(attackIndex) {
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        if (!attack) return;
+        
+        // Update limit cards to show selection state for this attack
+        document.querySelectorAll('.limit-card').forEach(card => {
+            card.classList.remove('selected');
+            const limitId = card.dataset.limitId;
+            
+            if (attack.limits.includes(limitId)) {
+                card.classList.add('selected');
+            }
+        });
+    }
+
+    // Ability Selection (Traits, Boons, Flaws)
+    toggleAbility(category, abilityId) {
+        if (!this.currentCharacter) return;
+        
+        const selected = this.currentCharacter.abilities[category];
+        const index = selected.indexOf(abilityId);
+        
+        if (index > -1) {
+            selected.splice(index, 1);
+        } else {
+            // Check if we can afford this ability
+            if (category !== 'flaws' && !this.canAffordAbility(category, abilityId)) {
+                this.showError('Not enough points for this ability');
+                return;
+            }
+            
+            selected.push(abilityId);
+        }
+        
+        this.updateAbilityDisplay(category);
+        this.calculateAllStats();
+        this.updateAllDisplays();
+        this.validateCurrentBuild();
+        this.saveCurrentCharacter();
+    }
+
+    canAffordAbility(category, abilityId) {
+        const pools = this.calculatePointPools();
+        const spent = this.currentCharacter.pointsSpent;
+        const available = pools.main - spent.main;
+        
+        if (category === 'traits') {
+            return available >= 30; // Traits cost 30p each
+        }
+        
+        if (category === 'boons') {
+            const boon = this.gameData.abilities.boons.find(b => b.id === abilityId);
+            return boon && available >= boon.cost;
+        }
+        
+        return true; // Flaws give points
+    }
+
+    updateAbilityDisplay(category) {
+        const selected = this.currentCharacter.abilities[category];
+        
+        document.querySelectorAll(`#${category}-list .ability-item`).forEach(item => {
+            item.classList.remove('selected');
+            const checkbox = item.querySelector('.ability-checkbox');
+            const abilityId = item.dataset.abilityId;
+            
+            if (selected.includes(abilityId)) {
+                item.classList.add('selected');
+                if (checkbox) checkbox.checked = true;
+            } else {
+                if (checkbox) checkbox.checked = false;
+            }
+        });
+    }
+
+    // Utility Selection
+    toggleUtility(category, itemId) {
+        if (!this.currentCharacter) return;
+        
+        const selected = this.currentCharacter.utility[category];
+        const index = selected.indexOf(itemId);
+        
+        if (index > -1) {
+            selected.splice(index, 1);
+        } else {
+            if (!this.canAffordUtility(category, itemId)) {
+                this.showError('Not enough utility points for this item');
+                return;
+            }
+            
+            selected.push(itemId);
+        }
+        
+        this.updateUtilityDisplay(category);
+        this.calculateAllStats();
+        this.updateAllDisplays();
+        this.validateCurrentBuild();
+        this.saveCurrentCharacter();
+    }
+
+    canAffordUtility(category, itemId) {
+        const pools = this.calculatePointPools();
+        const spent = this.currentCharacter.pointsSpent;
+        const available = pools.utilityPool - spent.utilityPool;
+        
+        if (category === 'expertise') {
+            return available >= this.currentCharacter.tier;
+        }
+        
+        const item = this.gameData.abilities[category]?.find(i => i.id === itemId);
+        return item && available >= item.cost;
+    }
+
+    updateUtilityDisplay(category) {
+        const selected = this.currentCharacter.utility[category];
+        
+        document.querySelectorAll(`#${category}-list .utility-item`).forEach(item => {
+            item.classList.remove('selected');
+            const checkbox = item.querySelector('.utility-checkbox');
+            const itemId = item.dataset.itemId;
+            
+            if (selected.includes(itemId)) {
+                item.classList.add('selected');
+                if (checkbox) checkbox.checked = true;
+            } else {
+                if (checkbox) checkbox.checked = false;
+            }
+        });
+    }
+
+    toggleExpertise(attribute, skill) {
+        if (!this.currentCharacter) return;
+        
+        const expertise = this.currentCharacter.utility.expertise[attribute];
+        const index = expertise.indexOf(skill);
+        
+        if (index > -1) {
+            expertise.splice(index, 1);
+        } else {
+            if (!this.canAffordUtility('expertise', null)) {
+                this.showError('Not enough utility points for this expertise');
+                return;
+            }
+            
+            expertise.push(skill);
+        }
+        
+        this.updateExpertiseDisplay();
+        this.calculateAllStats();
+        this.updateAllDisplays();
+        this.validateCurrentBuild();
+        this.saveCurrentCharacter();
+    }
+
+    updateExpertiseDisplay() {
+        Object.entries(this.currentCharacter.utility.expertise).forEach(([attr, skills]) => {
+            const container = document.querySelector(`#expertise-${attr}`);
+            if (!container) return;
+            
+            container.querySelectorAll('.expertise-item').forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                const skillName = item.querySelector('label').textContent;
+                
+                if (skills.includes(skillName)) {
+                    checkbox.checked = true;
+                    item.classList.add('selected');
+                } else {
+                    checkbox.checked = false;
+                    item.classList.remove('selected');
+                }
+            });
+        });
+    }
+
     // UI Updates
+    updateAllDisplays() {
+        if (!this.currentCharacter) return;
+        
+        // Basic info
+        document.getElementById('character-name').value = this.currentCharacter.name;
+        document.getElementById('real-name').value = this.currentCharacter.realName;
+        document.getElementById('tier-select').value = this.currentCharacter.tier;
+        
+        // Attributes
+        Object.entries(this.currentCharacter.attributes).forEach(([attr, value]) => {
+            const element = document.getElementById(`attr-${attr}`);
+            if (element) element.value = value;
+        });
+        
+        // Trait bonuses
+        Object.entries(this.currentCharacter.limits.traitBonuses).forEach(([bonus, value]) => {
+            const element = document.getElementById(`trait-${bonus}`);
+            if (element) element.value = value;
+        });
+        
+        // Update all selections
+        this.updateArchetypeDisplays();
+        this.updateAbilityDisplays();
+        this.updateUtilityDisplays();
+        
+        // Calculate and update points
+        this.calculateAllStats();
+        this.updatePointPools();
+    }
+
+    updateArchetypeDisplays() {
+        Object.entries(this.currentCharacter.archetypes).forEach(([category, selectedId]) => {
+            this.updateArchetypeDisplay(category);
+        });
+    }
+
+    updateAbilityDisplays() {
+        ['boons', 'traits', 'flaws'].forEach(category => {
+            this.updateAbilityDisplay(category);
+        });
+        this.updateUtilityDisplays();
+    }
+
+    updateUtilityDisplays() {
+        ['features', 'senses', 'descriptors'].forEach(category => {
+            this.updateUtilityDisplay(category);
+        });
+        this.updateExpertiseDisplay();
+    }
+
     updatePointPools() {
         if (!this.currentCharacter) return;
         
@@ -507,10 +934,10 @@ class VitalityCharacterBuilder {
         
         // Update trait bonuses
         const totalTraitBonuses = Object.values(this.currentCharacter.limits.traitBonuses).reduce((sum, val) => sum + val, 0);
-        const availableTraitBonuses = this.currentCharacter.limits.selected.length * 2;
-        document.getElementById('available-trait-bonuses').textContent = availableTraitBonuses;
+        const availableTraitBonuses = pools.limits / 15; // Each 15 points of limits gives 2 trait bonuses
+        document.getElementById('available-trait-bonuses').textContent = Math.floor(availableTraitBonuses * 2);
         document.getElementById('bonuses-allocated').textContent = totalTraitBonuses;
-        document.getElementById('bonuses-available').textContent = availableTraitBonuses;
+        document.getElementById('bonuses-available').textContent = Math.floor(availableTraitBonuses * 2);
     }
 
     updatePoolDisplay(elementId, spent, available) {
@@ -529,190 +956,106 @@ class VitalityCharacterBuilder {
         }
     }
 
-    updateAllDisplays() {
-        if (!this.currentCharacter) return;
+    // Progress and Validation
+    updateProgressIndicator() {
+        const steps = document.querySelectorAll('.progress-step');
         
-        // Basic info
-        document.getElementById('character-name').value = this.currentCharacter.name;
-        document.getElementById('real-name').value = this.currentCharacter.realName;
-        document.getElementById('tier-select').value = this.currentCharacter.tier;
-        
-        // Attributes
-        Object.entries(this.currentCharacter.attributes).forEach(([attr, value]) => {
-            const element = document.getElementById(`attr-${attr}`);
-            if (element) element.value = value;
-        });
-        
-        // Trait bonuses
-        Object.entries(this.currentCharacter.limits.traitBonuses).forEach(([bonus, value]) => {
-            const element = document.getElementById(`trait-${bonus}`);
-            if (element) element.value = value;
-        });
-        
-        // Update selections
-        this.updateArchetypeDisplays();
-        this.updateLimitDisplays();
-        this.updateAbilityDisplays();
-        
-        // Calculate and update points
-        this.calculatePointsSpent();
-        this.updatePointPools();
-    }
-
-    updateArchetypeDisplays() {
-        Object.entries(this.currentCharacter.archetypes).forEach(([category, selectedId]) => {
-            const container = document.getElementById(`${category.replace(/([A-Z])/g, '-$1').toLowerCase()}-archetypes`);
-            if (!container) return;
+        steps.forEach((step, index) => {
+            step.classList.remove('active', 'completed');
             
-            container.querySelectorAll('.archetype-card').forEach(card => {
-                card.classList.remove('selected');
-                const archetype = this.findArchetypeByName(category, card.querySelector('h4').textContent);
-                if (archetype && archetype.id === selectedId) {
-                    card.classList.add('selected');
-                }
-            });
-        });
-    }
-
-    updateLimitDisplays() {
-        const selectedLimits = this.currentCharacter.limits.selected;
-        
-        document.querySelectorAll('.limit-card').forEach(card => {
-            card.classList.remove('selected');
-            const limitId = card.dataset.limitId;
-            if (selectedLimits.includes(limitId)) {
-                card.classList.add('selected');
+            if (this.isStepCompleted(index + 1)) {
+                step.classList.add('completed');
             }
         });
-    }
-
-    updateAbilityDisplays() {
-        // Update boons
-        this.updateAbilityCategory('boons');
-        this.updateAbilityCategory('traits');
-        this.updateAbilityCategory('flaws');
         
-        // Update utility items
-        this.updateUtilityDisplays();
-    }
-
-    updateAbilityCategory(category) {
-        const selected = this.currentCharacter.abilities[category];
-        
-        document.querySelectorAll(`#${category}-list .ability-item`).forEach(item => {
-            item.classList.remove('selected');
-            const checkbox = item.querySelector('.ability-checkbox');
-            const abilityId = item.dataset.abilityId;
-            
-            if (selected.includes(abilityId)) {
-                item.classList.add('selected');
-                if (checkbox) checkbox.checked = true;
-            } else {
-                if (checkbox) checkbox.checked = false;
+        // Mark current active step
+        const activeTab = document.querySelector('.tab-btn.active');
+        if (activeTab) {
+            const tabIndex = Array.from(document.querySelectorAll('.tab-btn')).indexOf(activeTab);
+            if (steps[tabIndex]) {
+                steps[tabIndex].classList.add('active');
             }
-        });
+        }
     }
 
-    updateUtilityDisplays() {
-        // Update expertise
-        Object.entries(this.currentCharacter.utility.expertise).forEach(([attr, skills]) => {
-            const container = document.querySelector(`#expertise-${attr}`);
-            if (!container) return;
-            
-            container.querySelectorAll('.expertise-item').forEach(item => {
-                const checkbox = item.querySelector('input[type="checkbox"]');
-                const skillName = item.querySelector('label').textContent;
-                
-                if (skills.includes(skillName)) {
-                    checkbox.checked = true;
-                    item.classList.add('selected');
-                } else {
-                    checkbox.checked = false;
-                    item.classList.remove('selected');
+    isStepCompleted(stepNumber) {
+        if (!this.currentCharacter) return false;
+        
+        switch (stepNumber) {
+            case 1: // Archetypes
+                return Object.values(this.currentCharacter.archetypes).every(arch => arch !== null);
+            case 2: // Attributes  
+                const totalCombat = Object.values(this.currentCharacter.attributes)
+                    .slice(0, 4).reduce((sum, val) => sum + val, 0);
+                const totalUtility = Object.values(this.currentCharacter.attributes)
+                    .slice(4).reduce((sum, val) => sum + val, 0);
+                return totalCombat > 0 && totalUtility > 0;
+            case 3: // Limits (check if any attacks have limits OR archetype doesn't use limits)
+                const archetype = this.currentCharacter.archetypes.specialAttack;
+                if (['paragon', 'oneTrick', 'dualNatured', 'basic'].includes(archetype)) {
+                    return true; // These don't use limits
                 }
-            });
+                return this.currentCharacter.specialAttacks.some(attack => attack.limits.length > 0);
+            case 4: // Abilities
+                return this.currentCharacter.abilities.boons.length > 0 ||
+                       this.currentCharacter.abilities.traits.length > 0 ||
+                       this.currentCharacter.abilities.flaws.length > 0;
+            case 5: // Special Attacks
+                const specialArchetype = this.currentCharacter.archetypes.specialAttack;
+                if (specialArchetype === 'basic') return true; // Basic doesn't create special attacks
+                return this.currentCharacter.specialAttacks.length > 0;
+            case 6: // Utility
+                return Object.values(this.currentCharacter.utility.expertise).some(arr => arr.length > 0) ||
+                       this.currentCharacter.utility.features.length > 0 ||
+                       this.currentCharacter.utility.senses.length > 0 ||
+                       this.currentCharacter.utility.descriptors.length > 0;
+            case 7: // Summary
+                return this.currentCharacter.validationResults?.isValid || false;
+            default:
+                return false;
+        }
+    }
+
+    validateCurrentBuild() {
+        if (!this.currentCharacter || !this.validationEngine) return;
+        
+        const results = this.validationEngine.validateCharacter(this.currentCharacter);
+        this.currentCharacter.validationResults = results;
+        
+        this.displayValidationResults(results);
+        this.updateProgressIndicator();
+    }
+
+    displayValidationResults(results) {
+        const container = document.getElementById('validation-messages');
+        container.innerHTML = '';
+        
+        // Show errors
+        results.errors.forEach(error => {
+            const div = document.createElement('div');
+            div.className = 'validation-message error';
+            div.textContent = error;
+            container.appendChild(div);
         });
         
-        // Update features, senses, descriptors
-        ['features', 'senses', 'descriptors'].forEach(category => {
-            const selected = this.currentCharacter.utility[category];
-            
-            document.querySelectorAll(`#${category}-list .utility-item`).forEach(item => {
-                item.classList.remove('selected');
-                const checkbox = item.querySelector('.utility-checkbox');
-                const itemId = item.dataset.itemId;
-                
-                if (selected.includes(itemId)) {
-                    item.classList.add('selected');
-                    if (checkbox) checkbox.checked = true;
-                } else {
-                    if (checkbox) checkbox.checked = false;
-                }
-            });
-        });
-    }
-
-    findArchetypeByName(category, name) {
-        if (!this.gameData.archetypes || !this.gameData.archetypes[category]) return null;
-        return this.gameData.archetypes[category].find(arch => arch.name === name);
-    }
-
-    renderCharacterBuilder() {
-        document.getElementById('welcome-screen').classList.add('hidden');
-        document.getElementById('character-builder').classList.remove('hidden');
-    }
-
-    showWelcomeScreen() {
-        document.getElementById('welcome-screen').classList.remove('hidden');
-        document.getElementById('character-builder').classList.add('hidden');
-    }
-
-    renderCharacterTree() {
-        const tree = document.getElementById('character-tree');
-        tree.innerHTML = '';
-        
-        // Render folders and characters
-        Object.values(this.folders).forEach(folder => {
-            const folderDiv = document.createElement('div');
-            folderDiv.className = `folder-item ${folder.expanded ? 'expanded' : ''}`;
-            folderDiv.innerHTML = `
-                <div class="folder-header">📁 ${folder.name}</div>
-                <div class="folder-contents" style="display: ${folder.expanded ? 'block' : 'none'}"></div>
-            `;
-            
-            const folderContents = folderDiv.querySelector('.folder-contents');
-            Object.values(this.characters)
-                .filter(char => char.folderId === folder.id)
-                .forEach(char => {
-                    const charDiv = document.createElement('div');
-                    charDiv.className = `character-item ${this.currentCharacter?.id === char.id ? 'active' : ''}`;
-                    charDiv.textContent = char.name;
-                    charDiv.onclick = () => this.loadCharacter(char.id);
-                    folderContents.appendChild(charDiv);
-                });
-            
-            folderDiv.querySelector('.folder-header').onclick = () => {
-                folder.expanded = !folder.expanded;
-                this.saveFolders();
-                this.renderCharacterTree();
-            };
-            
-            tree.appendChild(folderDiv);
+        // Show warnings
+        results.warnings.forEach(warning => {
+            const div = document.createElement('div');
+            div.className = 'validation-message warning';
+            div.textContent = warning;
+            container.appendChild(div);
         });
         
-        // Render characters without folders
-        Object.values(this.characters)
-            .filter(char => !char.folderId)
-            .forEach(char => {
-                const charDiv = document.createElement('div');
-                charDiv.className = `character-item ${this.currentCharacter?.id === char.id ? 'active' : ''}`;
-                charDiv.textContent = char.name;
-                charDiv.onclick = () => this.loadCharacter(char.id);
-                tree.appendChild(charDiv);
-            });
+        // Show success message if valid
+        if (results.isValid) {
+            const div = document.createElement('div');
+            div.className = 'validation-message success';
+            div.textContent = 'Character build is valid!';
+            container.appendChild(div);
+        }
     }
 
-    // Initialize Components
+    // UI Components Initialization
     initializeComponents() {
         this.initializeArchetypes();
         this.initializeLimits();
@@ -761,7 +1104,7 @@ class VitalityCharacterBuilder {
                     </div>
                     <div class="limit-description">${limit.description}</div>
                 `;
-                card.onclick = () => this.toggleLimit(limit.id);
+                // Limit selection is handled per-attack in the attack builder
                 container.appendChild(card);
             });
         });
@@ -781,11 +1124,12 @@ class VitalityCharacterBuilder {
                 item.dataset.abilityId = ability.id;
                 
                 const costClass = ability.cost < 0 ? 'negative' : '';
+                const displayCost = category === 'traits' ? '30' : ability.cost; // Traits always cost 30p
                 
                 item.innerHTML = `
                     <div class="ability-header">
                         <span class="ability-name">${ability.name}</span>
-                        <span class="ability-cost ${costClass}">${ability.cost}p</span>
+                        <span class="ability-cost ${costClass}">${displayCost}p</span>
                     </div>
                     <div class="ability-description">${ability.description}</div>
                     <div class="ability-controls">
@@ -883,308 +1227,181 @@ class VitalityCharacterBuilder {
         });
     }
 
-    // Selection Methods
-    selectArchetype(category, archetypeId) {
-        if (!this.currentCharacter) return;
-        
-        this.currentCharacter.archetypes[category] = archetypeId;
-        this.updateArchetypeDisplay(category);
-        this.gatherFormData();
-        this.calculatePointsSpent();
-        this.updatePointPools();
-        this.validateCurrentBuild();
-        this.updateProgressIndicator();
-        this.saveCurrentCharacter();
-    }
-
-    updateArchetypeDisplay(category) {
-        const container = document.getElementById(`${category.replace(/([A-Z])/g, '-$1').toLowerCase()}-archetypes`);
-        if (!container) return;
-        
-        container.querySelectorAll('.archetype-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        
-        const selectedId = this.currentCharacter.archetypes[category];
-        if (selectedId) {
-            const selectedCard = Array.from(container.children).find(card => {
-                const archetype = this.findArchetypeByName(category, card.querySelector('h4').textContent);
-                return archetype && archetype.id === selectedId;
-            });
-            if (selectedCard) selectedCard.classList.add('selected');
-        }
-    }
-
-    toggleLimit(limitId) {
-        if (!this.currentCharacter) return;
-        
-        const selected = this.currentCharacter.limits.selected;
-        const index = selected.indexOf(limitId);
-        
-        if (index > -1) {
-            selected.splice(index, 1);
-        } else {
-            selected.push(limitId);
-        }
-        
-        this.updateLimitDisplays();
-        this.gatherFormData();
-        this.calculatePointsSpent();
-        this.updatePointPools();
-        this.validateCurrentBuild();
-        this.saveCurrentCharacter();
-    }
-
-    toggleAbility(category, abilityId) {
-        if (!this.currentCharacter) return;
-        
-        const selected = this.currentCharacter.abilities[category];
-        const index = selected.indexOf(abilityId);
-        
-        if (index > -1) {
-            selected.splice(index, 1);
-        } else {
-            selected.push(abilityId);
-        }
-        
-        this.updateAbilityCategory(category);
-        this.gatherFormData();
-        this.calculatePointsSpent();
-        this.updatePointPools();
-        this.validateCurrentBuild();
-        this.saveCurrentCharacter();
-    }
-
-    toggleExpertise(attribute, skill) {
-        if (!this.currentCharacter) return;
-        
-        const expertise = this.currentCharacter.utility.expertise[attribute];
-        const index = expertise.indexOf(skill);
-        
-        if (index > -1) {
-            expertise.splice(index, 1);
-        } else {
-            expertise.push(skill);
-        }
-        
-        this.updateUtilityDisplays();
-        this.gatherFormData();
-        this.calculatePointsSpent();
-        this.updatePointPools();
-        this.validateCurrentBuild();
-        this.saveCurrentCharacter();
-    }
-
-    toggleUtility(category, itemId) {
-        if (!this.currentCharacter) return;
-        
-        const selected = this.currentCharacter.utility[category];
-        const index = selected.indexOf(itemId);
-        
-        if (index > -1) {
-            selected.splice(index, 1);
-        } else {
-            selected.push(itemId);
-        }
-        
-        this.updateUtilityDisplays();
-        this.gatherFormData();
-        this.calculatePointsSpent();
-        this.updatePointPools();
-        this.validateCurrentBuild();
-        this.saveCurrentCharacter();
-    }
-
-    // Special Attack Management
-    openAttackBuilder(attackIndex = null) {
-        this.currentAttackIndex = attackIndex;
-        const modal = document.getElementById('attack-builder-modal');
-        modal.classList.remove('hidden');
-        
-        if (attackIndex !== null) {
-            this.loadAttackIntoBuilder(this.currentCharacter.specialAttacks[attackIndex]);
-        } else {
-            this.resetAttackBuilder();
-        }
-        
-        this.updateAttackBuilderDisplay();
-    }
-
-    closeAttackBuilder() {
-        document.getElementById('attack-builder-modal').classList.add('hidden');
-        this.currentAttackIndex = null;
-    }
-
-    loadAttackIntoBuilder(attack) {
-        document.getElementById('attack-name').value = attack.name || '';
-        document.getElementById('attack-type').value = attack.type || 'melee';
-        document.getElementById('attack-description').value = attack.description || '';
-        
-        // Load selected upgrades
-        if (attack.upgrades) {
-            attack.upgrades.forEach(upgradeId => {
-                const upgradeElement = document.querySelector(`[data-upgrade-id="${upgradeId}"]`);
-                if (upgradeElement) {
-                    upgradeElement.classList.add('selected');
-                }
-            });
-        }
-        
-        // Load condition settings
-        if (attack.condition) {
-            document.getElementById('condition-type').value = attack.condition.type || 'none';
-            if (attack.condition.type === 'weaken') {
-                document.getElementById('weaken-target').value = attack.condition.target || 'accuracy';
-                document.getElementById('weaken-amount').value = attack.condition.amount || 1;
-                document.getElementById('weaken-options').classList.remove('hidden');
-            }
-        }
-    }
-
-    resetAttackBuilder() {
-        document.getElementById('attack-name').value = '';
-        document.getElementById('attack-type').value = 'melee';
-        document.getElementById('attack-description').value = '';
-        document.getElementById('condition-type').value = 'none';
-        document.getElementById('weaken-options').classList.add('hidden');
-        
-        // Clear all upgrade selections
-        document.querySelectorAll('.upgrade-option').forEach(option => {
-            option.classList.remove('selected');
-        });
-    }
-
-    updateAttackBuilderDisplay() {
-        const pools = this.calculatePointPools();
-        const spent = this.calculateSpecialAttackCosts();
-        const available = pools.specialAttack - spent;
-        
-        document.getElementById('attack-points-available').textContent = available;
-        
-        this.updateAttackCostBreakdown();
-        this.updateUpgradeConflicts();
-    }
-
-    updateAttackCostBreakdown() {
-        const breakdown = document.getElementById('attack-cost-breakdown');
-        breakdown.innerHTML = '';
-        
-        let totalCost = 0;
-        const selectedUpgrades = document.querySelectorAll('.upgrade-option.selected');
-        
-        selectedUpgrades.forEach(option => {
-            const upgradeId = option.dataset.upgradeId;
-            const category = option.dataset.category;
-            const upgrade = this.gameData.upgrades[category].find(u => u.id === upgradeId);
-            
-            if (upgrade) {
-                totalCost += upgrade.cost;
-                
-                const costItem = document.createElement('div');
-                costItem.className = 'cost-item';
-                costItem.innerHTML = `
-                    <span>${upgrade.name}</span>
-                    <span>${upgrade.cost}p</span>
-                `;
-                breakdown.appendChild(costItem);
-            }
-        });
-        
-        const totalItem = document.createElement('div');
-        totalItem.className = 'cost-item total';
-        totalItem.innerHTML = `
-            <span><strong>Total Cost</strong></span>
-            <span><strong>${totalCost}p</strong></span>
-        `;
-        breakdown.appendChild(totalItem);
-    }
-
-    updateUpgradeConflicts() {
-        const selectedUpgrades = Array.from(document.querySelectorAll('.upgrade-option.selected'))
-            .map(el => el.dataset.upgradeId);
-        
-        document.querySelectorAll('.upgrade-option').forEach(option => {
-            option.classList.remove('conflict', 'disabled');
-            
-            const upgradeId = option.dataset.upgradeId;
-            const category = option.dataset.category;
-            const upgrade = this.gameData.upgrades[category].find(u => u.id === upgradeId);
-            
-            if (upgrade && upgrade.conflicts) {
-                const hasConflict = upgrade.conflicts.some(conflictId => 
-                    selectedUpgrades.includes(conflictId)
-                );
-                
-                if (hasConflict && !selectedUpgrades.includes(upgradeId)) {
-                    option.classList.add('disabled');
-                } else if (hasConflict && selectedUpgrades.includes(upgradeId)) {
-                    option.classList.add('conflict');
-                }
-            }
-        });
-    }
-
-    toggleUpgrade(upgradeId, category) {
-        const option = document.querySelector(`[data-upgrade-id="${upgradeId}"]`);
-        if (!option || option.classList.contains('disabled')) return;
-        
-        option.classList.toggle('selected');
-        this.updateAttackBuilderDisplay();
-    }
-
-    saveAttack() {
-        if (!this.currentCharacter) return;
-        
-        const attack = {
-            name: document.getElementById('attack-name').value || 'Unnamed Attack',
-            type: document.getElementById('attack-type').value,
-            description: document.getElementById('attack-description').value || '',
-            upgrades: Array.from(document.querySelectorAll('.upgrade-option.selected'))
-                .map(el => el.dataset.upgradeId),
-            condition: this.getSelectedCondition(),
-            totalCost: this.calculateCurrentAttackCost()
+    // Event Listeners
+    initializeEventListeners() {
+        // Character management
+        document.getElementById('new-folder-btn').onclick = () => {
+            const name = prompt('Folder name:');
+            if (name) this.createNewFolder(name);
         };
         
-        if (this.currentAttackIndex !== null) {
-            this.currentCharacter.specialAttacks[this.currentAttackIndex] = attack;
-        } else {
-            this.currentCharacter.specialAttacks.push(attack);
-        }
+        document.getElementById('new-character-btn').onclick = () => {
+            const name = prompt('Character name:');
+            if (name) {
+                const character = this.createNewCharacter(name);
+                this.loadCharacter(character.id);
+                this.renderCharacterTree();
+            }
+        };
         
-        this.closeAttackBuilder();
-        this.renderSpecialAttacks();
-        this.gatherFormData();
-        this.calculatePointsSpent();
-        this.updatePointPools();
-        this.validateCurrentBuild();
-        this.saveCurrentCharacter();
+        document.getElementById('import-character-btn').onclick = () => this.importCharacterJSON();
+        
+        // Character actions
+        document.getElementById('save-character').onclick = () => this.saveCurrentCharacter();
+        document.getElementById('export-json').onclick = () => this.exportCharacterJSON();
+        document.getElementById('export-roll20').onclick = () => this.exportRoll20JSON();
+        document.getElementById('delete-character').onclick = () => this.deleteCurrentCharacter();
+        
+        // Tier changes trigger full recalculation
+        document.getElementById('tier-select').onchange = () => {
+            if (this.currentCharacter) {
+                this.gatherFormData();
+                this.calculateAllStats();
+                this.updateAllDisplays();
+                this.validateCurrentBuild();
+                this.saveCurrentCharacter();
+            }
+        };
+        
+        // Attribute changes
+        ['focus', 'mobility', 'power', 'endurance', 'awareness', 'communication', 'intelligence'].forEach(attr => {
+            const element = document.getElementById(`attr-${attr}`);
+            if (element) {
+                element.onchange = () => {
+                    if (this.currentCharacter) {
+                        this.gatherFormData();
+                        this.calculateAllStats();
+                        this.updateAllDisplays();
+                        this.validateCurrentBuild();
+                        this.saveCurrentCharacter();
+                    }
+                };
+            }
+        });
+        
+        // Trait bonus changes
+        ['accuracy', 'damage', 'conditions', 'avoidance', 'durability', 'resistance', 'movement'].forEach(bonus => {
+            const element = document.getElementById(`trait-${bonus}`);
+            if (element) {
+                element.onchange = () => {
+                    if (this.currentCharacter) {
+                        this.gatherFormData();
+                        this.calculateAllStats();
+                        this.updateAllDisplays();
+                        this.validateCurrentBuild();
+                        this.saveCurrentCharacter();
+                    }
+                };
+            }
+        });
+        
+        // Tab navigation
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => this.switchTab(btn.dataset.tab);
+        });
+        
+        // Progress indicator
+        document.querySelectorAll('.progress-step').forEach((step, index) => {
+            step.onclick = () => {
+                const tabBtns = document.querySelectorAll('.tab-btn');
+                if (tabBtns[index]) {
+                    this.switchTab(tabBtns[index].dataset.tab);
+                }
+            };
+        });
+        
+        // Special attack management
+        document.getElementById('add-special-attack').onclick = () => this.createSpecialAttack();
+        
+        // Summary actions
+        document.getElementById('calculate-stats').onclick = () => this.calculateFinalStats();
+        document.getElementById('validate-build').onclick = () => this.validateBuild();
+        document.getElementById('generate-sheet').onclick = () => this.generateCharacterSheet();
+        
+        // File import
+        document.getElementById('import-file-input').onchange = (e) => this.handleFileImport(e);
     }
 
-    getSelectedCondition() {
-        const conditionType = document.getElementById('condition-type').value;
+    switchTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
         
-        if (conditionType === 'none') {
-            return null;
+        // Show selected tab
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        
+        // Update progress indicator
+        this.updateProgressIndicator();
+        
+        // Render special attacks if on that tab
+        if (tabName === 'special-attacks' && this.currentCharacter) {
+            this.renderSpecialAttacks();
         }
         
-        const condition = { type: conditionType };
-        
-        if (conditionType === 'weaken') {
-            condition.target = document.getElementById('weaken-target').value;
-            condition.amount = parseInt(document.getElementById('weaken-amount').value) || 1;
+        // Render summary if on that tab
+        if (tabName === 'summary' && this.currentCharacter) {
+            this.renderCharacterSummary();
         }
-        
-        return condition;
     }
 
-    calculateCurrentAttackCost() {
-        return Array.from(document.querySelectorAll('.upgrade-option.selected'))
-            .reduce((total, option) => {
-                const upgradeId = option.dataset.upgradeId;
-                const category = option.dataset.category;
-                const upgrade = this.gameData.upgrades[category].find(u => u.id === upgradeId);
-                return total + (upgrade ? upgrade.cost : 0);
-            }, 0);
+    renderCharacterBuilder() {
+        document.getElementById('welcome-screen').classList.add('hidden');
+        document.getElementById('character-builder').classList.remove('hidden');
+    }
+
+    showWelcomeScreen() {
+        document.getElementById('welcome-screen').classList.remove('hidden');
+        document.getElementById('character-builder').classList.add('hidden');
+    }
+
+    renderCharacterTree() {
+        const tree = document.getElementById('character-tree');
+        tree.innerHTML = '';
+        
+        // Render folders and characters
+        Object.values(this.folders).forEach(folder => {
+            const folderDiv = document.createElement('div');
+            folderDiv.className = `folder-item ${folder.expanded ? 'expanded' : ''}`;
+            folderDiv.innerHTML = `
+                <div class="folder-header">📁 ${folder.name}</div>
+                <div class="folder-contents" style="display: ${folder.expanded ? 'block' : 'none'}"></div>
+            `;
+            
+            const folderContents = folderDiv.querySelector('.folder-contents');
+            Object.values(this.characters)
+                .filter(char => char.folderId === folder.id)
+                .forEach(char => {
+                    const charDiv = document.createElement('div');
+                    charDiv.className = `character-item ${this.currentCharacter?.id === char.id ? 'active' : ''}`;
+                    charDiv.textContent = char.name;
+                    charDiv.onclick = () => this.loadCharacter(char.id);
+                    folderContents.appendChild(charDiv);
+                });
+            
+            folderDiv.querySelector('.folder-header').onclick = () => {
+                folder.expanded = !folder.expanded;
+                this.saveFolders();
+                this.renderCharacterTree();
+            };
+            
+            tree.appendChild(folderDiv);
+        });
+        
+        // Render characters without folders
+        Object.values(this.characters)
+            .filter(char => !char.folderId)
+            .forEach(char => {
+                const charDiv = document.createElement('div');
+                charDiv.className = `character-item ${this.currentCharacter?.id === char.id ? 'active' : ''}`;
+                charDiv.textContent = char.name;
+                charDiv.onclick = () => this.loadCharacter(char.id);
+                tree.appendChild(charDiv);
+            });
     }
 
     renderSpecialAttacks() {
@@ -1196,161 +1413,44 @@ class VitalityCharacterBuilder {
             card.className = 'special-attack-card';
             card.innerHTML = `
                 <div class="special-attack-header">
-                    <input type="text" class="special-attack-name" value="${attack.name}" readonly>
-                    <div class="special-attack-cost">${attack.totalCost}p</div>
+                    <input type="text" class="special-attack-name" value="${attack.name}" 
+                           onchange="builder.updateAttackName(${index}, this.value)">
+                    <div class="special-attack-cost">${attack.upgradePointsSpent || 0}/${attack.upgradePointsAvailable || 0}p</div>
                 </div>
                 <div class="attack-details">
                     <div class="attack-basic-info">
                         <div><strong>Type:</strong> ${attack.type}</div>
                         <div><strong>Description:</strong> ${attack.description}</div>
-                        ${attack.condition ? `<div><strong>Condition:</strong> ${this.formatCondition(attack.condition)}</div>` : ''}
+                        <div><strong>Limits:</strong> ${attack.limits.length} (${attack.limitPointsTotal || 0}p total)</div>
                     </div>
-                    <div class="attack-upgrades">
-                        <h5>Upgrades:</h5>
-                        <div class="upgrade-list">
-                            ${attack.upgrades.map(upgradeId => {
-                                const upgrade = this.findUpgradeById(upgradeId);
-                                return upgrade ? `<span class="upgrade-tag">${upgrade.name}</span>` : '';
-                            }).join('')}
-                        </div>
+                    <div class="attack-actions">
+                        <button onclick="builder.editAttack(${index})" class="btn-secondary">Edit Attack</button>
+                        <button onclick="builder.deleteAttack(${index})" class="btn-danger">Delete</button>
                     </div>
-                </div>
-                <div class="attack-actions">
-                    <button onclick="builder.openAttackBuilder(${index})" class="btn-secondary">Edit</button>
-                    <button onclick="builder.deleteAttack(${index})" class="btn-danger">Delete</button>
                 </div>
             `;
             container.appendChild(card);
         });
     }
 
-    findUpgradeById(upgradeId) {
-        for (const category of Object.values(this.gameData.upgrades)) {
-            const upgrade = category.find(u => u.id === upgradeId);
-            if (upgrade) return upgrade;
-        }
-        return null;
-    }
-
-    formatCondition(condition) {
-        if (condition.type === 'weaken') {
-            return `Weaken ${condition.target} by ${condition.amount}`;
-        }
-        return condition.type.charAt(0).toUpperCase() + condition.type.slice(1);
-    }
-
-    deleteAttack(index) {
-        if (confirm('Are you sure you want to delete this attack?')) {
-            this.currentCharacter.specialAttacks.splice(index, 1);
-            this.renderSpecialAttacks();
-            this.gatherFormData();
-            this.calculatePointsSpent();
-            this.updatePointPools();
-            this.validateCurrentBuild();
+    updateAttackName(index, name) {
+        if (this.currentCharacter && this.currentCharacter.specialAttacks[index]) {
+            this.currentCharacter.specialAttacks[index].name = name;
             this.saveCurrentCharacter();
         }
     }
 
-    // Validation System
-    validateCurrentBuild() {
-        if (!this.currentCharacter || !this.validationEngine) return;
-        
-        const results = this.validationEngine.validateCharacter(this.currentCharacter);
-        this.currentCharacter.validationResults = results;
-        
-        this.displayValidationResults(results);
-        this.updateProgressIndicator();
+    editAttack(index) {
+        // TODO: Implement attack editing modal
+        this.showInfo('Attack editing modal not yet implemented');
     }
 
-    displayValidationResults(results) {
-        const container = document.getElementById('validation-messages');
-        container.innerHTML = '';
-        
-        // Show errors
-        results.errors.forEach(error => {
-            const div = document.createElement('div');
-            div.className = 'validation-message error';
-            div.textContent = error;
-            container.appendChild(div);
-        });
-        
-        // Show warnings
-        results.warnings.forEach(warning => {
-            const div = document.createElement('div');
-            div.className = 'validation-message warning';
-            div.textContent = warning;
-            container.appendChild(div);
-        });
-        
-        // Show success message if valid
-        if (results.isValid) {
-            const div = document.createElement('div');
-            div.className = 'validation-message success';
-            div.textContent = 'Character build is valid!';
-            container.appendChild(div);
-        }
-    }
-
-    updateProgressIndicator() {
-        const steps = document.querySelectorAll('.progress-step');
-        
-        steps.forEach((step, index) => {
-            step.classList.remove('active', 'completed');
-            
-            // Mark as completed based on character data
-            if (this.isStepCompleted(index + 1)) {
-                step.classList.add('completed');
-            }
-        });
-        
-        // Mark current active step
-        const activeTab = document.querySelector('.tab-btn.active');
-        if (activeTab) {
-            const tabIndex = Array.from(document.querySelectorAll('.tab-btn')).indexOf(activeTab);
-            if (steps[tabIndex]) {
-                steps[tabIndex].classList.add('active');
-            }
-        }
-    }
-
-    isStepCompleted(stepNumber) {
-        if (!this.currentCharacter) return false;
-        
-        switch (stepNumber) {
-            case 1: // Archetypes
-                return Object.values(this.currentCharacter.archetypes).every(arch => arch !== null);
-            case 2: // Attributes
-                const totalCombat = Object.values(this.currentCharacter.attributes)
-                    .slice(0, 4).reduce((sum, val) => sum + val, 0);
-                const totalUtility = Object.values(this.currentCharacter.attributes)
-                    .slice(4).reduce((sum, val) => sum + val, 0);
-                return totalCombat > 0 && totalUtility > 0;
-            case 3: // Limits
-                return this.currentCharacter.limits.selected.length > 0;
-            case 4: // Abilities
-                return this.currentCharacter.abilities.boons.length > 0 ||
-                       this.currentCharacter.abilities.traits.length > 0 ||
-                       this.currentCharacter.abilities.flaws.length > 0;
-            case 5: // Special Attacks
-                return this.currentCharacter.specialAttacks.length > 0;
-            case 6: // Utility
-                return Object.values(this.currentCharacter.utility.expertise).some(arr => arr.length > 0) ||
-                       this.currentCharacter.utility.features.length > 0 ||
-                       this.currentCharacter.utility.senses.length > 0 ||
-                       this.currentCharacter.utility.descriptors.length > 0;
-            case 7: // Summary
-                return this.currentCharacter.validationResults?.isValid || false;
-            default:
-                return false;
-        }
-    }
-
-    // Export Functions
+    // Export Functions (Simplified)
     exportCharacterJSON() {
         if (!this.currentCharacter) return;
         
         this.gatherFormData();
-        this.calculateStats();
+        this.calculateAllStats();
         
         const dataStr = JSON.stringify(this.currentCharacter, null, 2);
         const dataBlob = new Blob([dataStr], {type: 'application/json'});
@@ -1366,7 +1466,7 @@ class VitalityCharacterBuilder {
         if (!this.currentCharacter) return;
         
         this.gatherFormData();
-        this.calculateStats();
+        this.calculateAllStats();
         
         const roll20Data = this.convertToRoll20Format(this.currentCharacter);
         
@@ -1387,7 +1487,6 @@ class VitalityCharacterBuilder {
             character_name: character.name,
             character_realname: character.realName,
             char_tier: character.tier,
-            char_efforts: 2,
             
             // Core attributes
             char_focus: character.attributes.focus,
@@ -1415,78 +1514,16 @@ class VitalityCharacterBuilder {
             // Special attacks as abilities
             abilities: character.specialAttacks.map(attack => ({
                 name: attack.name,
-                content: this.generateScriptCardsTemplate(attack),
+                content: `Special Attack: ${attack.name}`,
                 showInMacroBar: true,
                 isTokenAction: true
-            })),
-            
-            // Repeating sections would be added here
-            repeating: {
-                traits: this.convertTraitsToRoll20(character),
-                uniqueAbilities: this.convertAbilitiesToRoll20(character),
-                features: this.convertFeaturesToRoll20(character)
-            }
+            }))
         };
     }
 
-    generateScriptCardsTemplate(attack) {
-        // Generate ScriptCards macro for the attack
-        let template = `!script {{ --#title|${attack.name} --#subtitle|@{character_name} `;
-        
-        // Add attack roll
-        template += `--=AttackRoll|1d20 + @{char_accuracy} `;
-        
-        // Add upgrades effects
-        attack.upgrades.forEach(upgradeId => {
-            const upgrade = this.findUpgradeById(upgradeId);
-            if (upgrade) {
-                template += `--#${upgrade.effect}|${upgrade.value} `;
-            }
-        });
-        
-        template += `}}`;
-        
-        return template;
-    }
-
-    convertTraitsToRoll20(character) {
-        return character.abilities.traits.map(traitId => {
-            const trait = this.gameData.abilities.traits.find(t => t.id === traitId);
-            return {
-                traitActive: 1,
-                traitName: trait?.name || traitId,
-                traitAcBonus: 0, // Would need to be calculated based on trait bonuses
-                traitDgBonus: 0,
-                traitCnBonus: 0,
-                // ... other bonuses
-            };
-        });
-    }
-
-    convertAbilitiesToRoll20(character) {
-        return character.abilities.boons.map(boonId => {
-            const boon = this.gameData.abilities.boons.find(b => b.id === boonId);
-            return {
-                char_uniqueAbilities: boon?.name || boonId,
-                uniqueAbilitiesDesc: boon?.description || ''
-            };
-        });
-    }
-
-    convertFeaturesToRoll20(character) {
-        return character.utility.features.map(featureId => {
-            const feature = this.gameData.abilities.features.find(f => f.id === featureId);
-            return {
-                char_features: feature?.name || featureId,
-                featuresDesc: feature?.description || ''
-            };
-        });
-    }
-
-    // Import Functions
+    // Import Functions (Simplified)
     importCharacterJSON() {
-        const input = document.getElementById('import-file-input');
-        input.click();
+        document.getElementById('import-file-input').click();
     }
 
     handleFileImport(event) {
@@ -1498,14 +1535,11 @@ class VitalityCharacterBuilder {
             try {
                 const character = JSON.parse(e.target.result);
                 
-                // Validate imported character
                 if (this.validateImportedCharacter(character)) {
-                    // Generate new ID and add to characters
                     character.id = Date.now().toString();
                     this.characters[character.id] = character;
                     this.saveCharacters();
                     
-                    // Load the imported character
                     this.loadCharacter(character.id);
                     this.renderCharacterTree();
                     
@@ -1525,21 +1559,19 @@ class VitalityCharacterBuilder {
     }
 
     validateImportedCharacter(character) {
-        // Basic validation of imported character structure
         return character &&
                typeof character.name === 'string' &&
                typeof character.tier === 'number' &&
                character.attributes &&
-               character.archetypes &&
-               character.abilities;
+               character.archetypes;
     }
 
-    // Summary Tab Functions
+    // Summary Functions
     calculateFinalStats() {
         if (!this.currentCharacter) return;
         
         this.gatherFormData();
-        this.calculateStats();
+        this.calculateAllStats();
         this.renderCharacterSummary();
         this.showSuccess('Final stats calculated!');
     }
@@ -1553,9 +1585,8 @@ class VitalityCharacterBuilder {
         if (!this.currentCharacter) return;
         
         this.gatherFormData();
-        this.calculateStats();
+        this.calculateAllStats();
         
-        // Open a new window with a printable character sheet
         const newWindow = window.open('', '_blank');
         newWindow.document.write(this.generatePrintableSheet());
         newWindow.document.close();
@@ -1575,8 +1606,6 @@ class VitalityCharacterBuilder {
                 .header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
                 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
                 .stat-section { border: 1px solid #000; padding: 10px; }
-                .special-attacks { margin-top: 20px; }
-                .attack { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
                 @media print { body { margin: 0; } }
             </style>
         </head>
@@ -1617,18 +1646,6 @@ class VitalityCharacterBuilder {
                     <p>Initiative: ${stats.initiative}</p>
                     <p>Hit Points: ${stats.maxHP}</p>
                 </div>
-            </div>
-            
-            <div class="special-attacks">
-                <h3>Special Attacks</h3>
-                ${character.specialAttacks.map(attack => `
-                    <div class="attack">
-                        <h4>${attack.name}</h4>
-                        <p><strong>Type:</strong> ${attack.type}</p>
-                        <p><strong>Description:</strong> ${attack.description}</p>
-                        <p><strong>Upgrades:</strong> ${attack.upgrades.map(id => this.findUpgradeById(id)?.name || id).join(', ')}</p>
-                    </div>
-                `).join('')}
             </div>
         </body>
         </html>
@@ -1702,18 +1719,6 @@ class VitalityCharacterBuilder {
                             <div class="stat-value">${stats.durability || 0}</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-name">Resolve</div>
-                            <div class="stat-value">${stats.resolve || 0}</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-name">Stability</div>
-                            <div class="stat-value">${stats.stability || 0}</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-name">Vitality</div>
-                            <div class="stat-value">${stats.vitality || 0}</div>
-                        </div>
-                        <div class="stat-item">
                             <div class="stat-name">Movement</div>
                             <div class="stat-value">${stats.movement || 0}</div>
                         </div>
@@ -1726,201 +1731,13 @@ class VitalityCharacterBuilder {
                             <div class="stat-value">${stats.damage || 0}</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-name">Conditions</div>
-                            <div class="stat-value">${stats.conditions || 0}</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-name">Initiative</div>
-                            <div class="stat-value">${stats.initiative || 0}</div>
-                        </div>
-                        <div class="stat-item">
                             <div class="stat-name">Hit Points</div>
                             <div class="stat-value">${stats.maxHP || 100}</div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="summary-section">
-                <h3>Archetypes</h3>
-                ${Object.entries(character.archetypes).map(([category, archetypeId]) => {
-                    const archetype = this.findArchetypeById(category, archetypeId);
-                    return `
-                        <div class="summary-item">
-                            <span class="label">${this.capitalizeWords(category)}:</span>
-                            <span class="value">${archetype?.name || 'None'}</span>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-            
-            <div class="summary-section">
-                <h3>Special Attacks (${character.specialAttacks.length})</h3>
-                ${character.specialAttacks.map(attack => `
-                    <div class="summary-item">
-                        <span class="label">${attack.name}:</span>
-                        <span class="value">${attack.totalCost}p</span>
-                    </div>
-                `).join('') || '<p>No special attacks created.</p>'}
-            </div>
         `;
-    }
-
-    findArchetypeById(category, archetypeId) {
-        if (!this.gameData.archetypes || !this.gameData.archetypes[category]) return null;
-        return this.gameData.archetypes[category].find(arch => arch.id === archetypeId);
-    }
-
-    capitalizeWords(str) {
-        return str.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-    }
-
-    // Event Listeners
-    initializeEventListeners() {
-        // Character management
-        document.getElementById('new-folder-btn').onclick = () => {
-            const name = prompt('Folder name:');
-            if (name) this.createNewFolder(name);
-        };
-        
-        document.getElementById('new-character-btn').onclick = () => {
-            const name = prompt('Character name:');
-            if (name) {
-                const character = this.createNewCharacter(name);
-                this.loadCharacter(character.id);
-                this.renderCharacterTree();
-            }
-        };
-        
-        document.getElementById('import-character-btn').onclick = () => this.importCharacterJSON();
-        
-        // Character actions
-        document.getElementById('save-character').onclick = () => this.saveCurrentCharacter();
-        document.getElementById('export-json').onclick = () => this.exportCharacterJSON();
-        document.getElementById('export-roll20').onclick = () => this.exportRoll20JSON();
-        document.getElementById('delete-character').onclick = () => this.deleteCurrentCharacter();
-        
-        // Tier changes
-        document.getElementById('tier-select').onchange = () => {
-            if (this.currentCharacter) {
-                this.gatherFormData();
-                this.calculatePointsSpent();
-                this.updatePointPools();
-                this.validateCurrentBuild();
-                this.saveCurrentCharacter();
-            }
-        };
-        
-        // Attribute changes
-        ['focus', 'mobility', 'power', 'endurance', 'awareness', 'communication', 'intelligence'].forEach(attr => {
-            const element = document.getElementById(`attr-${attr}`);
-            if (element) {
-                element.onchange = () => {
-                    if (this.currentCharacter) {
-                        this.gatherFormData();
-                        this.calculatePointsSpent();
-                        this.updatePointPools();
-                        this.validateCurrentBuild();
-                        this.saveCurrentCharacter();
-                    }
-                };
-            }
-        });
-        
-        // Trait bonus changes
-        ['accuracy', 'damage', 'conditions', 'avoidance', 'durability', 'resistance', 'movement'].forEach(bonus => {
-            const element = document.getElementById(`trait-${bonus}`);
-            if (element) {
-                element.onchange = () => {
-                    if (this.currentCharacter) {
-                        this.gatherFormData();
-                        this.calculatePointsSpent();
-                        this.updatePointPools();
-                        this.validateCurrentBuild();
-                        this.saveCurrentCharacter();
-                    }
-                };
-            }
-        });
-        
-        // Tab navigation
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.onclick = () => this.switchTab(btn.dataset.tab);
-        });
-        
-        // Progress indicator
-        document.querySelectorAll('.progress-step').forEach((step, index) => {
-            step.onclick = () => {
-                const tabBtns = document.querySelectorAll('.tab-btn');
-                if (tabBtns[index]) {
-                    this.switchTab(tabBtns[index].dataset.tab);
-                }
-            };
-        });
-        
-        // Special attack builder
-        document.getElementById('add-special-attack').onclick = () => this.openAttackBuilder();
-        document.getElementById('save-attack').onclick = () => this.saveAttack();
-        document.getElementById('cancel-attack').onclick = () => this.closeAttackBuilder();
-        
-        // Modal close
-        document.querySelectorAll('.modal-close').forEach(btn => {
-            btn.onclick = () => {
-                btn.closest('.modal').classList.add('hidden');
-            };
-        });
-        
-        // Condition type change
-        document.getElementById('condition-type').onchange = (e) => {
-            const weakenOptions = document.getElementById('weaken-options');
-            if (e.target.value === 'weaken') {
-                weakenOptions.classList.remove('hidden');
-            } else {
-                weakenOptions.classList.add('hidden');
-            }
-        };
-        
-        // Summary actions
-        document.getElementById('calculate-stats').onclick = () => this.calculateFinalStats();
-        document.getElementById('validate-build').onclick = () => this.validateBuild();
-        document.getElementById('generate-sheet').onclick = () => this.generateCharacterSheet();
-        
-        // File import
-        document.getElementById('import-file-input').onchange = (e) => this.handleFileImport(e);
-        
-        // Click outside modal to close
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal')) {
-                e.target.classList.add('hidden');
-            }
-        });
-    }
-
-    switchTab(tabName) {
-        // Hide all tabs
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Show selected tab
-        document.getElementById(`tab-${tabName}`).classList.add('active');
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        
-        // Update progress indicator
-        this.updateProgressIndicator();
-        
-        // Render special attacks if on that tab
-        if (tabName === 'special-attacks' && this.currentCharacter) {
-            this.renderSpecialAttacks();
-        }
-        
-        // Render summary if on that tab
-        if (tabName === 'summary' && this.currentCharacter) {
-            this.renderCharacterSummary();
-        }
     }
 
     // Utility Methods
@@ -1968,7 +1785,97 @@ class VitalityCharacterBuilder {
     }
 }
 
-// Validation Engine Class
+// Proper Character Data Structure
+class VitalityCharacter {
+    constructor(id, name, folderId = null) {
+        this.id = id;
+        this.name = name;
+        this.realName = "";
+        this.tier = 4;
+        this.folderId = folderId;
+        this.version = "2.0";
+        
+        // Archetypes must be selected first
+        this.archetypes = {
+            movement: null,
+            attackType: null,
+            effectType: null,
+            uniqueAbility: null,
+            defensive: null,
+            specialAttack: null,
+            utility: null
+        };
+        
+        // Attributes
+        this.attributes = {
+            focus: 0,
+            mobility: 0,
+            power: 0,
+            endurance: 0,
+            awareness: 0,
+            communication: 0,
+            intelligence: 0
+        };
+        
+        // Limits system - properly tracks trait bonuses from limits
+        this.limits = {
+            traitBonuses: {
+                accuracy: 0,
+                damage: 0,
+                conditions: 0,
+                avoidance: 0,
+                durability: 0,
+                resistance: 0,
+                movement: 0
+            }
+        };
+        
+        // Main pool purchases - distinguish traits (30p abilities) from trait bonuses
+        this.abilities = {
+            boons: [],      // Variable costs
+            traits: [],     // 30p each (NOT trait bonuses from limits)
+            flaws: []       // Negative costs (give points)
+        };
+        
+        // Special attacks with per-attack limits
+        this.specialAttacks = [];
+        
+        // Utility purchases
+        this.utility = {
+            expertise: {
+                awareness: [],
+                communication: [],
+                intelligence: [],
+                focus: [],
+                mobility: [],
+                endurance: [],
+                power: []
+            },
+            features: [],
+            senses: [],
+            descriptors: []
+        };
+        
+        // Calculated values
+        this.pointsSpent = {
+            combat: 0,
+            utility: 0,
+            main: 0,
+            utilityPool: 0,
+            specialAttack: 0
+        };
+        
+        this.calculatedStats = {};
+        
+        this.validationResults = {
+            isValid: false,
+            errors: [],
+            warnings: []
+        };
+    }
+}
+
+// Enhanced Validation Engine
 class ValidationEngine {
     constructor(gameData) {
         this.gameData = gameData;
@@ -1987,22 +1894,19 @@ class ValidationEngine {
             errors.push('Character tier must be between 1 and 10');
         }
         
+        // Validate archetype completion
+        this.validateArchetypes(character, errors, warnings);
+        
         // Validate point allocations
         this.validatePointAllocations(character, errors, warnings);
         
-        // Validate archetype selections
-        this.validateArchetypes(character, errors, warnings);
-        
-        // Validate upgrade conflicts
-        this.validateUpgradeConflicts(character, errors, warnings);
+        // Validate archetype-specific restrictions
+        this.validateArchetypeRestrictions(character, errors, warnings);
         
         // Validate trait bonus allocation
         this.validateTraitBonuses(character, errors, warnings);
         
-        // Validate ability requirements
-        this.validateAbilityRequirements(character, errors, warnings);
-        
-        // Validate special attack archetype restrictions
+        // Validate special attack restrictions
         this.validateSpecialAttackRestrictions(character, errors, warnings);
         
         return {
@@ -2012,141 +1916,59 @@ class ValidationEngine {
         };
     }
 
-    validatePointAllocations(character, errors, warnings) {
-        const pools = this.calculatePointPools(character);
-        const spent = this.calculatePointsSpent(character);
-        
-        // Combat attributes
-        if (spent.combat > pools.combat) {
-            errors.push(`Combat attributes over budget: ${spent.combat}/${pools.combat}`);
-        }
-        
-        // Utility attributes
-        if (spent.utility > pools.utility) {
-            errors.push(`Utility attributes over budget: ${spent.utility}/${pools.utility}`);
-        }
-        
-        // Main pool
-        if (spent.main > pools.main) {
-            errors.push(`Main pool over budget: ${spent.main}/${pools.main}`);
-        }
-        
-        // Utility pool
-        if (spent.utilityPool > pools.utilityPool) {
-            errors.push(`Utility pool over budget: ${spent.utilityPool}/${pools.utilityPool}`);
-        }
-        
-        // Special attacks
-        if (spent.specialAttack > pools.specialAttack) {
-            errors.push(`Special attack points over budget: ${spent.specialAttack}/${pools.specialAttack}`);
-        }
-        
-        // Check for unspent points (warnings)
-        if (pools.combat - spent.combat > 0) {
-            warnings.push(`${pools.combat - spent.combat} unspent combat attribute points`);
-        }
-        if (pools.utility - spent.utility > 0) {
-            warnings.push(`${pools.utility - spent.utility} unspent utility attribute points`);
-        }
-    }
-
     validateArchetypes(character, errors, warnings) {
         const archetypes = character.archetypes;
-        
-        // Check required archetypes
         const requiredArchetypes = ['movement', 'attackType', 'effectType', 'uniqueAbility', 'defensive', 'specialAttack', 'utility'];
+        
         requiredArchetypes.forEach(type => {
             if (!archetypes[type]) {
                 errors.push(`${this.capitalizeWords(type)} archetype is required`);
             }
         });
-        
-        // Check archetype-specific restrictions
-        if (archetypes.movement === 'behemoth') {
-            // Behemoth can't take movement-related limits
-            const movementLimits = ['immobilized'];
-            character.limits.selected.forEach(limitId => {
-                if (movementLimits.includes(limitId)) {
-                    errors.push('Behemoth archetype cannot take movement-restricting limits');
-                }
-            });
-        }
-        
-        // Check for archetype combinations that don't make sense
-        if (archetypes.defensive === 'stalwart' && archetypes.movement === 'swift') {
-            warnings.push('Stalwart and Swift archetypes may conflict (-Avoidance vs +Movement)');
-        }
     }
 
-    validateUpgradeConflicts(character, errors, warnings) {
-        const conflictRules = this.gameData.validation_rules?.upgrade_conflicts || [];
+    validatePointAllocations(character, errors, warnings) {
+        const pools = this.calculatePointPools(character);
+        const spent = this.calculatePointsSpent(character);
         
-        character.specialAttacks.forEach((attack, attackIndex) => {
-            const selectedUpgrades = attack.upgrades || [];
-            
-            conflictRules.forEach(([upgrade1, upgrade2]) => {
-                if (selectedUpgrades.includes(upgrade1) && selectedUpgrades.includes(upgrade2)) {
-                    errors.push(`Attack "${attack.name}" has conflicting upgrades: ${upgrade1} and ${upgrade2}`);
-                }
-            });
-        });
-    }
-
-    validateTraitBonuses(character, errors, warnings) {
-        const totalLimits = character.limits.selected.length;
-        const availableBonuses = totalLimits * 2;
-        const allocatedBonuses = Object.values(character.limits.traitBonuses).reduce((sum, val) => sum + val, 0);
-        
-        if (allocatedBonuses > availableBonuses) {
-            errors.push(`Too many trait bonuses allocated: ${allocatedBonuses}/${availableBonuses}`);
+        // Check for over-budget spending
+        if (spent.combat > pools.combat) {
+            errors.push(`Combat attributes over budget: ${spent.combat}/${pools.combat}`);
         }
         
-        if (allocatedBonuses < availableBonuses && totalLimits > 0) {
-            warnings.push(`${availableBonuses - allocatedBonuses} unallocated trait bonuses`);
+        if (spent.utility > pools.utility) {
+            errors.push(`Utility attributes over budget: ${spent.utility}/${pools.utility}`);
         }
-    }
-
-    validateAbilityRequirements(character, errors, warnings) {
-        // Check trait requirements
-        character.abilities.traits.forEach(traitId => {
-            const trait = this.gameData.abilities.traits.find(t => t.id === traitId);
-            if (trait && trait.requirements) {
-                if (trait.requirements.includes('limit_required') && character.limits.selected.length === 0) {
-                    errors.push(`Trait "${trait.name}" requires at least one limit`);
-                }
-            }
-        });
         
-        // Check flaw restrictions
-        character.abilities.flaws.forEach(flawId => {
-            const flaw = this.gameData.abilities.flaws.find(f => f.id === flawId);
-            if (flaw && flaw.id === 'balanced') {
-                // Balanced flaw requires half tier in each combat attribute
-                const requiredMin = Math.floor(character.tier / 2);
-                const combatAttrs = ['focus', 'mobility', 'power', 'endurance'];
-                combatAttrs.forEach(attr => {
-                    if (character.attributes[attr] < requiredMin) {
-                        errors.push(`Balanced flaw requires at least ${requiredMin} in ${attr}`);
-                    }
-                });
-            }
-            if (flaw && flaw.id === 'slow') {
-                // Slow flaw forbids movement archetypes
-                if (character.archetypes.movement && character.archetypes.movement !== 'none') {
-                    errors.push('Slow flaw forbids movement archetypes');
-                }
+        if (spent.main > pools.main) {
+            errors.push(`Main pool over budget: ${spent.main}/${pools.main}`);
+        }
+        
+        if (spent.utilityPool > pools.utilityPool) {
+            errors.push(`Utility pool over budget: ${spent.utilityPool}/${pools.utilityPool}`);
+        }
+        
+        if (spent.specialAttack > pools.specialAttack) {
+            errors.push(`Special attack points over budget: ${spent.specialAttack}/${pools.specialAttack}`);
+        }
+        
+        // Check attribute maximums
+        Object.entries(character.attributes).forEach(([attr, value]) => {
+            if (value > character.tier) {
+                errors.push(`${this.capitalizeWords(attr)} cannot exceed tier (${character.tier})`);
             }
         });
     }
 
-    validateSpecialAttackRestrictions(character, errors, warnings) {
-        const specialAttackArchetype = character.archetypes.specialAttack;
+    validateArchetypeRestrictions(character, errors, warnings) {
+        const archetypes = character.archetypes;
         
-        if (specialAttackArchetype === 'oneTrick' && character.specialAttacks.length > 1) {
+        // Special Attack archetype restrictions
+        if (archetypes.specialAttack === 'oneTrick' && character.specialAttacks.length > 1) {
             errors.push('One Trick archetype allows only one special attack');
         }
         
-        if (specialAttackArchetype === 'dualNatured' && character.specialAttacks.length !== 2) {
+        if (archetypes.specialAttack === 'dualNatured' && character.specialAttacks.length !== 2) {
             if (character.specialAttacks.length < 2) {
                 warnings.push('Dual-Natured archetype should have exactly 2 special attacks');
             } else {
@@ -2154,66 +1976,102 @@ class ValidationEngine {
             }
         }
         
-        if (specialAttackArchetype === 'paragon' && character.limits.selected.length > 0) {
-            warnings.push('Paragon archetype typically does not use limits');
+        if (archetypes.specialAttack === 'basic' && character.specialAttacks.length > 0) {
+            errors.push('Basic archetype cannot create special attacks');
+        }
+        
+        // Movement archetype restrictions
+        if (archetypes.movement === 'behemoth') {
+            // Check for conflicting limits
+            character.specialAttacks.forEach(attack => {
+                attack.limits.forEach(limitId => {
+                    const limit = this.findLimitById(limitId);
+                    if (limit && limit.restrictions && limit.restrictions.includes('behemoth')) {
+                        errors.push('Behemoth archetype conflicts with movement-restricting limits');
+                    }
+                });
+            });
         }
     }
 
-    calculatePointPools(character) {
-        // Simplified calculation - would use the main builder's logic
-        const tier = character.tier;
-        const limitPoints = character.limits.selected.length * 30; // Simplified
+    validateTraitBonuses(character, errors, warnings) {
+        const totalLimitPoints = this.calculateTotalLimitPoints(character);
+        const availableBonuses = Math.floor(totalLimitPoints / 15) * 2; // 2 bonuses per 15 points of limits
+        const allocatedBonuses = Object.values(character.limits.traitBonuses).reduce((sum, val) => sum + val, 0);
         
-        let pools = {
+        if (allocatedBonuses > availableBonuses) {
+            errors.push(`Too many trait bonuses allocated: ${allocatedBonuses}/${availableBonuses}`);
+        }
+        
+        if (allocatedBonuses < availableBonuses && totalLimitPoints > 0) {
+            warnings.push(`${availableBonuses - allocatedBonuses} unallocated trait bonuses`);
+        }
+    }
+
+    validateSpecialAttackRestrictions(character, errors, warnings) {
+        const archetype = character.archetypes.specialAttack;
+        
+        // Validate that limit-using archetypes have limits
+        if (['normal', 'specialist', 'straightforward', 'sharedUses'].includes(archetype)) {
+            const hasLimits = character.specialAttacks.some(attack => attack.limits && attack.limits.length > 0);
+            if (!hasLimits && character.specialAttacks.length > 0) {
+                warnings.push('This archetype typically uses limits to generate points for special attacks');
+            }
+        }
+        
+        // Validate that non-limit archetypes don't have limits
+        if (['paragon', 'oneTrick', 'dualNatured', 'basic'].includes(archetype)) {
+            const hasLimits = character.specialAttacks.some(attack => attack.limits && attack.limits.length > 0);
+            if (hasLimits) {
+                errors.push('This archetype cannot use limits');
+            }
+        }
+    }
+
+    findLimitById(limitId) {
+        for (const category of Object.values(this.gameData.limits)) {
+            const limit = category.find(l => l.id === limitId);
+            if (limit) return limit;
+        }
+        return null;
+    }
+
+    calculatePointPools(character) {
+        // Simplified version for validation
+        const tier = character.tier;
+        return {
             combat: tier * 2,
             utility: tier,
             main: Math.max(0, (tier - 2) * 15),
             utilityPool: Math.max(0, 5 * (tier - 1)),
-            specialAttack: limitPoints
+            specialAttack: this.calculateTotalLimitPoints(character)
         };
-
-        // Apply archetype modifiers
-        if (character.archetypes.uniqueAbility === 'extraordinary') {
-            pools.main += Math.max(0, (tier - 2) * 15);
-        }
-
-        return pools;
     }
 
     calculatePointsSpent(character) {
-        const spent = {
+        return {
             combat: character.attributes.focus + character.attributes.mobility + 
-                    character.attributes.power + character.attributes.endurance,
+                   character.attributes.power + character.attributes.endurance,
             utility: character.attributes.awareness + character.attributes.communication + 
                     character.attributes.intelligence,
-            main: 0,
-            utilityPool: 0,
-            specialAttack: 0
+            main: character.abilities.boons.length * 15 + character.abilities.traits.length * 30 - 
+                  character.abilities.flaws.length * 20,
+            utilityPool: Object.values(character.utility.expertise).reduce((sum, arr) => sum + arr.length, 0) * character.tier,
+            specialAttack: character.specialAttacks.reduce((sum, attack) => sum + (attack.upgradePointsSpent || 0), 0)
         };
-        
-        // Calculate main pool spending (simplified)
-        spent.main += character.abilities.boons.length * 15; // Simplified
-        spent.main += character.abilities.traits.length * 30; // Simplified
-        spent.main += character.abilities.flaws.reduce((sum, flawId) => {
-            if (flawId === 'balanced') return sum - 30;
-            if (flawId === 'slow') return sum - 30;
-            return sum - 20; // Average flaw cost
-        }, 0);
-        
-        // Calculate utility pool spending
-        Object.values(character.utility.expertise).forEach(skills => {
-            spent.utilityPool += skills.length * character.tier;
+    }
+
+    calculateTotalLimitPoints(character) {
+        let total = 0;
+        character.specialAttacks.forEach(attack => {
+            if (attack.limits) {
+                attack.limits.forEach(limitId => {
+                    const limit = this.findLimitById(limitId);
+                    if (limit) total += limit.points;
+                });
+            }
         });
-        spent.utilityPool += character.utility.features.length * 10; // Simplified
-        spent.utilityPool += character.utility.senses.length * 15; // Simplified
-        spent.utilityPool += character.utility.descriptors.length * 5; // Simplified
-        
-        // Calculate special attack spending
-        spent.specialAttack = character.specialAttacks.reduce((sum, attack) => {
-            return sum + (attack.totalCost || 0);
-        }, 0);
-        
-        return spent;
+        return total;
     }
 
     capitalizeWords(str) {
@@ -2221,361 +2079,54 @@ class ValidationEngine {
     }
 }
 
-// Auto-save functionality
-class AutoSaveManager {
-    constructor(characterBuilder) {
-        this.builder = characterBuilder;
-        this.saveTimeout = null;
-        this.autoSaveEnabled = true;
-        this.autoSaveDelay = 2000; // 2 seconds
-        
-        this.initializeAutoSave();
-    }
-
-    initializeAutoSave() {
-        // Set up auto-save for form inputs
-        const formInputs = document.querySelectorAll('input, select, textarea');
-        formInputs.forEach(input => {
-            input.addEventListener('input', () => this.scheduleAutoSave());
-            input.addEventListener('change', () => this.scheduleAutoSave());
-        });
-    }
-
-    scheduleAutoSave() {
-        if (!this.autoSaveEnabled || !this.builder.currentCharacter) return;
-        
-        // Clear existing timeout
-        if (this.saveTimeout) {
-            clearTimeout(this.saveTimeout);
-        }
-        
-        // Schedule new save
-        this.saveTimeout = setTimeout(() => {
-            this.performAutoSave();
-        }, this.autoSaveDelay);
-    }
-
-    performAutoSave() {
-        try {
-            this.builder.gatherFormData();
-            this.builder.calculatePointsSpent();
-            this.builder.characters[this.builder.currentCharacter.id] = this.builder.currentCharacter;
-            this.builder.saveCharacters();
-            
-            // Visual feedback
-            this.showAutoSaveIndicator();
-        } catch (error) {
-            console.error('Auto-save failed:', error);
-        }
-    }
-
-    showAutoSaveIndicator() {
-        const indicator = document.createElement('div');
-        indicator.textContent = 'Auto-saved';
-        indicator.style.cssText = `
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: var(--accent-secondary);
-            color: var(--text-light);
-            padding: 0.5rem 1rem;
-            font-size: 0.8em;
-            border-radius: 4px;
-            z-index: 10001;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        `;
-        
-        document.body.appendChild(indicator);
-        
-        // Animate in
-        setTimeout(() => {
-            indicator.style.opacity = '1';
-        }, 10);
-        
-        // Animate out and remove
-        setTimeout(() => {
-            indicator.style.opacity = '0';
-            setTimeout(() => {
-                indicator.remove();
-            }, 300);
-        }, 2000);
-    }
-
-    disable() {
-        this.autoSaveEnabled = false;
-    }
-
-    enable() {
-        this.autoSaveEnabled = true;
-    }
-}
-
-// Keyboard shortcuts
-class KeyboardShortcuts {
-    constructor(characterBuilder) {
-        this.builder = characterBuilder;
-        this.initializeShortcuts();
-    }
-
-    initializeShortcuts() {
-        document.addEventListener('keydown', (e) => {
-            // Ctrl+S - Save character
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                this.builder.saveCurrentCharacter();
-                this.builder.showSuccess('Character saved! (Ctrl+S)');
-            }
-            
-            // Ctrl+E - Export JSON
-            if (e.ctrlKey && e.key === 'e') {
-                e.preventDefault();
-                this.builder.exportCharacterJSON();
-            }
-            
-            // Ctrl+I - Import character
-            if (e.ctrlKey && e.key === 'i') {
-                e.preventDefault();
-                this.builder.importCharacterJSON();
-            }
-            
-            // Ctrl+N - New character
-            if (e.ctrlKey && e.key === 'n') {
-                e.preventDefault();
-                const name = prompt('Character name:');
-                if (name) {
-                    const character = this.builder.createNewCharacter(name);
-                    this.builder.loadCharacter(character.id);
-                    this.builder.renderCharacterTree();
-                }
-            }
-            
-            // Ctrl+1-7 - Switch tabs
-            if (e.ctrlKey && e.key >= '1' && e.key <= '7') {
-                e.preventDefault();
-                const tabIndex = parseInt(e.key) - 1;
-                const tabBtns = document.querySelectorAll('.tab-btn');
-                if (tabBtns[tabIndex]) {
-                    this.builder.switchTab(tabBtns[tabIndex].dataset.tab);
-                }
-            }
-            
-            // Escape - Close modals
-            if (e.key === 'Escape') {
-                const openModal = document.querySelector('.modal:not(.hidden)');
-                if (openModal) {
-                    e.preventDefault();
-                    openModal.classList.add('hidden');
-                }
-            }
-        });
-    }
-}
-
-// Theme manager for additional customization
-class ThemeManager {
+// Step Validation Helper
+class StepValidation {
     constructor() {
-        this.currentTheme = localStorage.getItem('vitality-theme') || 'neonoir';
-        this.initializeTheme();
-    }
-
-    initializeTheme() {
-        this.applyTheme(this.currentTheme);
-        
-        // Add theme switcher if needed
-        this.createThemeSwitcher();
-    }
-
-    createThemeSwitcher() {
-        const themeSwitcher = document.createElement('div');
-        themeSwitcher.className = 'theme-switcher';
-        themeSwitcher.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 1000;
-            display: flex;
-            gap: 0.5rem;
-        `;
-        
-        const themes = [
-            { id: 'neonoir', name: 'Neo Noir', colors: { primary: '#00ffff', secondary: '#007a7a' } },
-            { id: 'synthwave', name: 'Synthwave', colors: { primary: '#ff0080', secondary: '#800040' } },
-            { id: 'matrix', name: 'Matrix', colors: { primary: '#00ff00', secondary: '#008000' } }
-        ];
-        
-        themes.forEach(theme => {
-            const btn = document.createElement('button');
-            btn.textContent = theme.name;
-            btn.className = 'theme-btn';
-            btn.style.cssText = `
-                background: var(--bg-primary);
-                border: 1px solid ${theme.colors.primary};
-                color: ${theme.colors.primary};
-                padding: 0.5rem;
-                cursor: pointer;
-                font-size: 0.8em;
-            `;
-            
-            if (theme.id === this.currentTheme) {
-                btn.style.background = theme.colors.primary;
-                btn.style.color = 'var(--bg-primary)';
-            }
-            
-            btn.onclick = () => this.switchTheme(theme.id);
-            themeSwitcher.appendChild(btn);
-        });
-        
-        document.body.appendChild(themeSwitcher);
-    }
-
-    switchTheme(themeId) {
-        this.currentTheme = themeId;
-        localStorage.setItem('vitality-theme', themeId);
-        this.applyTheme(themeId);
-        
-        // Update theme switcher buttons
-        document.querySelectorAll('.theme-btn').forEach(btn => {
-            btn.style.background = 'var(--bg-primary)';
-            btn.style.color = btn.style.borderColor;
-        });
-        
-        const activeBtn = Array.from(document.querySelectorAll('.theme-btn'))
-            .find(btn => btn.textContent.toLowerCase().includes(themeId));
-        if (activeBtn) {
-            activeBtn.style.background = activeBtn.style.borderColor;
-            activeBtn.style.color = 'var(--bg-primary)';
-        }
-    }
-
-    applyTheme(themeId) {
-        const root = document.documentElement;
-        
-        switch (themeId) {
-            case 'synthwave':
-                root.style.setProperty('--accent-primary', '#ff0080');
-                root.style.setProperty('--accent-secondary', '#800040');
-                root.style.setProperty('--accent-highlight', '#ff80c0');
-                break;
-            case 'matrix':
-                root.style.setProperty('--accent-primary', '#00ff00');
-                root.style.setProperty('--accent-secondary', '#008000');
-                root.style.setProperty('--accent-highlight', '#80ff80');
-                break;
-            default: // neonoir
-                root.style.setProperty('--accent-primary', '#00ffff');
-                root.style.setProperty('--accent-secondary', '#007a7a');
-                root.style.setProperty('--accent-highlight', '#80ffff');
-                break;
-        }
-    }
-}
-
-// Performance monitoring for large character builds
-class PerformanceMonitor {
-    constructor() {
-        this.metrics = {
-            renderTime: [],
-            calculateTime: [],
-            saveTime: []
+        this.stepRequirements = {
+            1: 'archetypes', // Must complete before moving to step 2
+            2: 'attributes', // Must complete before moving to step 3
+            3: 'limits',     // Can work on in parallel with others
+            4: 'abilities',  // Can work on in parallel with others  
+            5: 'specialAttacks', // Can work on in parallel with others
+            6: 'utility',    // Can work on in parallel with others
+            7: 'summary'     // Final validation
         };
-        this.isMonitoring = false;
     }
 
-    startMonitoring() {
-        this.isMonitoring = true;
-        console.log('Performance monitoring started');
+    canAccessStep(stepNumber, character) {
+        if (!character) return stepNumber === 1;
+        
+        switch (stepNumber) {
+            case 1:
+                return true; // Always can access archetypes
+            case 2:
+                return this.isArchetypesComplete(character);
+            default:
+                return this.isArchetypesComplete(character) && this.isAttributesStarted(character);
+        }
     }
 
-    stopMonitoring() {
-        this.isMonitoring = false;
-        this.logMetrics();
+    isArchetypesComplete(character) {
+        return Object.values(character.archetypes).every(arch => arch !== null);
     }
 
-    measureRender(callback) {
-        if (!this.isMonitoring) return callback();
-        
-        const start = performance.now();
-        const result = callback();
-        const end = performance.now();
-        
-        this.metrics.renderTime.push(end - start);
-        return result;
-    }
-
-    measureCalculation(callback) {
-        if (!this.isMonitoring) return callback();
-        
-        const start = performance.now();
-        const result = callback();
-        const end = performance.now();
-        
-        this.metrics.calculateTime.push(end - start);
-        return result;
-    }
-
-    measureSave(callback) {
-        if (!this.isMonitoring) return callback();
-        
-        const start = performance.now();
-        const result = callback();
-        const end = performance.now();
-        
-        this.metrics.saveTime.push(end - start);
-        return result;
-    }
-
-    logMetrics() {
-        Object.entries(this.metrics).forEach(([metric, times]) => {
-            if (times.length > 0) {
-                const avg = times.reduce((sum, time) => sum + time, 0) / times.length;
-                const max = Math.max(...times);
-                console.log(`${metric}: avg ${avg.toFixed(2)}ms, max ${max.toFixed(2)}ms, samples ${times.length}`);
-            }
-        });
+    isAttributesStarted(character) {
+        const totalAttributes = Object.values(character.attributes).reduce((sum, val) => sum + val, 0);
+        return totalAttributes > 0;
     }
 }
 
 // Initialize the application
 let builder;
-let autoSaveManager;
-let keyboardShortcuts;
-let themeManager;
-let performanceMonitor;
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Initialize performance monitoring
-        performanceMonitor = new PerformanceMonitor();
-        
-        // Initialize theme manager
-        themeManager = new ThemeManager();
-        
-        // Initialize main character builder
         builder = new VitalityCharacterBuilder();
-        
-        // Initialize auto-save
-        autoSaveManager = new AutoSaveManager(builder);
-        
-        // Initialize keyboard shortcuts
-        keyboardShortcuts = new KeyboardShortcuts(builder);
         
         // Add global error handling
         window.addEventListener('error', (e) => {
             console.error('Global error:', e.error);
             builder?.showError('An unexpected error occurred. Please refresh the page.');
-        });
-        
-        // Add unload warning for unsaved changes
-        window.addEventListener('beforeunload', (e) => {
-            if (builder?.currentCharacter && autoSaveManager?.autoSaveEnabled) {
-                // Auto-save is enabled, no warning needed
-                return;
-            }
-            
-            // Warn about unsaved changes
-            e.preventDefault();
-            e.returnValue = '';
         });
         
         console.log('Vitality Character Builder v2.0 initialized successfully');
@@ -2594,15 +2145,3 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Make builder globally accessible for HTML onclick handlers
 window.builder = builder;
-
-// Export classes for potential module use
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        VitalityCharacterBuilder,
-        ValidationEngine,
-        AutoSaveManager,
-        KeyboardShortcuts,
-        ThemeManager,
-        PerformanceMonitor
-    };
-}
