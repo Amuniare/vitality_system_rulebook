@@ -7,22 +7,76 @@ export class CharacterTree {
     render() {
         const container = document.getElementById('character-tree');
         if (!container) return;
-
+    
         const characters = Object.values(this.builder.characters);
         
-        if (characters.length === 0) {
-            this.renderEmpty();
-            return;
-        }
-
         container.innerHTML = `
             <div class="character-list">
-                ${characters.map(character => this.renderCharacterItem(character)).join('')}
+                <!-- File upload for loading characters -->
+                <div class="load-character-section">
+                    <input type="file" 
+                           id="load-character-file" 
+                           accept=".json"
+                           style="display: none;">
+                    <button id="load-character-btn" class="btn-secondary">Load Character File</button>
+                    <small>Load .json files from characters_data/web_exports/</small>
+                </div>
+                
+                ${characters.length === 0 ? this.renderEmpty() : 
+                  characters.map(character => this.renderCharacterItem(character)).join('')}
             </div>
         `;
-
+    
         this.setupEventListeners();
     }
+    
+    setupEventListeners() {
+        // Existing listeners...
+        
+        // Load character file
+        const loadBtn = document.getElementById('load-character-btn');
+        const fileInput = document.getElementById('load-character-file');
+        
+        if (loadBtn && fileInput) {
+            loadBtn.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    this.loadCharacterFromFile(file);
+                }
+            });
+        }
+        
+        // Rest of existing listeners...
+    }
+    
+    loadCharacterFromFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const characterData = JSON.parse(e.target.result);
+                
+                // Validate it's a valid character
+                if (!characterData.id || !characterData.name || !characterData.tier) {
+                    throw new Error('Invalid character file format');
+                }
+                
+                // Add to builder
+                this.builder.characters[characterData.id] = characterData;
+                this.builder.loadCharacter(characterData.id);
+                this.render();
+                
+                this.builder.showNotification(`Loaded ${characterData.name}!`, 'success');
+                
+            } catch (error) {
+                this.builder.showNotification(`Failed to load character: ${error.message}`, 'error');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+
 
     renderCharacterItem(character) {
         const isActive = this.builder.currentCharacter?.id === character.id;

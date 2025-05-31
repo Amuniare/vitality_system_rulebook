@@ -129,17 +129,38 @@ export class CharacterBuilder {
             this.switchTab('basicInfo');
         }
     }
-
+    
+    // CHARACTER MANAGEMENT
     saveCurrentCharacter() {
         if (!this.currentCharacter) return;
         
         this.currentCharacter.touch();
-        this.characters[this.currentCharacter.id] = this.currentCharacter;
-        this.saveCharacters();
         
-        this.updateAllDisplays();
-        this.showNotification('Character saved successfully!', 'success');
+        // Generate filename for characters_data/web_exports/
+        const safeName = this.currentCharacter.name.replace(/[^a-z0-9]/gi, '_');
+        const filename = `${safeName}_tier${this.currentCharacter.tier}_${this.currentCharacter.id}.json`;
+        
+        // Create download
+        const dataStr = JSON.stringify(this.currentCharacter, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        this.showNotification(`Character saved as ${filename}! Place in characters_data/web_exports/`, 'success');
     }
+
+    // Remove localStorage methods - replace with in-memory only
+    loadCharacters() {
+        return {}; // Start with empty character list
+    }
+
+    saveCharacters() {
+        // No-op - we only download individual files now
+}
 
     deleteCurrentCharacter() {
         if (!this.currentCharacter) return;
