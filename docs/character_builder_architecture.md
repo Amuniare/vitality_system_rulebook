@@ -624,3 +624,269 @@ class CharacterBuilderFlow {
    - Attack/Effect types from archetypes vs purchased
 
 Would you like me to detail any specific part of this architecture or help implement the validation rules?
+
+
+
+
+## COMPLETE REFACTOR PLAN - VITALITY SYSTEM CHARACTER BUILDER
+
+After reviewing the entire rulebook, here's a comprehensive refactor plan that follows EVERY rule to the letter:
+
+### FILE STRUCTURE BREAKDOWN
+
+```
+character-builder/
+├── core/
+│   ├── VitalityCharacter.js        # Character data model
+│   ├── GameConstants.js            # All constants from rulebook
+│   ├── DiceSystem.js               # Section 1: Dice mechanics
+│   └── TierSystem.js               # Section 1: Tier calculations
+│
+├── systems/
+│   ├── AttributeSystem.js          # Section 1: Attributes & Defenses
+│   ├── ActionSystem.js             # Section 2: Action Economy
+│   ├── ArchetypeSystem.js          # Section 3: All 7 archetype categories
+│   ├── AttackTypeSystem.js         # Section 4: Attack & Effect Types
+│   ├── TraitFlawSystem.js          # Section 5: Traits & Flaws
+│   ├── UniqueAbilitySystem.js      # Section 6: Boons & Unique Abilities
+│   ├── SpecialAttackSystem.js      # Section 7: Special Attacks & Limits
+│   ├── UtilitySystem.js            # Section 8: Expertise/Features/Senses
+│   └── WealthSystem.js             # Section 8: Wealth tiers
+│
+├── calculators/
+│   ├── PointPoolCalculator.js      # All point pool calculations
+│   ├── LimitCalculator.js          # Limit scaling formulas
+│   ├── StatCalculator.js           # Derived stat calculations
+│   └── CombatCalculator.js         # Combat formulas
+│
+├── validators/
+│   ├── CharacterValidator.js       # Master validation
+│   ├── ArchetypeValidator.js       # Archetype conflicts
+│   ├── AttributeValidator.js       # Attribute maximums
+│   ├── SpecialAttackValidator.js   # Attack restrictions
+│   └── BuildOrderValidator.js      # Enforce creation order
+│
+├── ui/
+│   ├── CharacterBuilder.js         # Main UI controller
+│   ├── tabs/
+│   │   ├── BasicInfoTab.js         # Name, Tier
+│   │   ├── ArchetypeTab.js         # 7 archetype selections
+│   │   ├── AttributeTab.js         # Attribute assignment
+│   │   ├── MainPoolTab.js          # Boons, Traits, Flaws
+│   │   ├── SpecialAttackTab.js     # Attack builder
+│   │   ├── UtilityTab.js           # Expertise, Features, etc
+│   │   └── SummaryTab.js           # Final character sheet
+│   └── components/
+│       ├── PointPoolDisplay.js     # Point tracking
+│       ├── ValidationDisplay.js     # Error/warning display
+│       └── CharacterTree.js         # Character list
+│
+└── app.js                          # Main application entry
+```
+
+### DETAILED FILE RESPONSIBILITIES
+
+#### **Core Files**
+
+**VitalityCharacter.js**
+- Character data model matching EXACT rulebook structure
+- NO calculations, just data storage
+- Version tracking for migrations
+
+**GameConstants.js**
+- EVERY constant from rulebook (Tier ranges, point costs, etc.)
+- Attack type costs, upgrade costs, archetype restrictions
+- Status effect durations, condition resistances
+
+**DiceSystem.js**
+- D20 rolls for Accuracy/Conditions/Skills
+- 3D6 rolls for Damage
+- Natural 20 handling (+Tier to damage/condition)
+- Exploding 6s on damage dice
+
+**TierSystem.js**
+- Tier 0-10 validation
+- Starting tier 4 enforcement
+- Tier-based bonuses to all actions
+
+#### **System Files**
+
+**AttributeSystem.js**
+- Combat Attributes: Focus, Mobility, Power, Endurance
+- Utility Attributes: Awareness, Communication, Intelligence
+- Point allocation: Combat (Tier × 2), Utility (Tier)
+- Maximum per attribute = Tier
+- Defense calculations:
+  - Avoidance: 10 + Tier + Mobility
+  - Durability: Tier + (Endurance × 1.5)
+  - Resolve: 10 + Tier + Focus
+  - Stability: 10 + Tier + Power
+  - Vitality: 10 + Tier + Endurance
+
+**ActionSystem.js**
+- Primary/Quick/Free/Movement/Reaction tracking
+- Base movement: (Mobility + 6) or (Mobility + Tier), whichever higher
+- All primary actions from Section 2
+- 30p upgrade to make any Primary → Quick
+
+**ArchetypeSystem.js**
+- ENFORCE selection order (must be before attributes)
+- Movement: Swift, Skirmisher, Behemoth, Bulwark, Vanguard, Mole, Flight, Teleportation, Portal, Swinging, Super Jump
+- Attack Type: AOE Specialist, Direct Specialist, Single Target
+- Effect Type: Damage Specialist, Hybrid Specialist, Crowd Control
+- Unique Ability: Versatile Master, Extraordinary, Cut Above
+- Defensive: Stalwart, Resilient, Fortress, Immutable, Juggernaut
+- Special Attack: Normal, Specialist, Paragon, One Trick, Straightforward, Shared Uses, Dual-Natured, Basic
+- Utility: Specialized, Practical, Jack of All Trades
+
+**AttackTypeSystem.js**
+- Melee: Adjacent, +Tier to Accuracy OR Damage
+- Ranged: 15 spaces, -Tier if adjacent to hostile
+- Direct: 30 spaces, auto-hit, Condition only, -Tier to rolls
+- Area: 3sp Radius/6sp Cone/12sp Line, -Tier to rolls
+- Hybrid: Damage AND Condition, -Tier to rolls
+- Basic Conditions: Disarm, Grab, Shove, Prone, Blind, Daze, Misdirect, Setup, Taunt
+- Advanced Conditions: Control, Capture, Stun, Weaken, Disable Specials, Frighten, Enthrall, Frenzy
+
+**TraitFlawSystem.js**
+- Flaws: 30p each, +Tier to ONE stat, stacking reduces by 1
+- Available Flaws: Balanced, Slow, Combat Focused, Sickly, Unresponsive, Peaked, Weak, Power Loss, Single Target Specialist, Equipment Dependent, Stubborn
+- Traits: 30p each, +Tier to TWO stats when conditions met
+- Trait Conditions: Tier 1-3 conditions, up to 3 tiers total
+
+**UniqueAbilitySystem.js**
+- Boons: Variable costs from main pool
+- Psychic (0p), Robot (30p), Telekinetic (0p), Biohacker (0p), Utilitarian (15p), Speed of Thought (15p), Perfectionist (15p), Combat Reflexes (15p)
+- Aura (30p + upgrades)
+- Barrier (30p + upgrades)
+- Create Wall (30p + upgrades)
+- Shield (30p + upgrades)
+- Backlash (30p + upgrades)
+- Boost (60p)
+- Summon (10p per + upgrades)
+- Invisibility (30p)
+- Regeneration (60p)
+- Heal (30p + upgrades)
+- Counter (varies)
+
+**SpecialAttackSystem.js**
+- Points from Archetype OR Limits
+- Limit scaling: First Tier×10 = full, Next Tier×20 = half, Rest = quarter
+- Archetype modifiers:
+  - Normal: Points × (Tier ÷ 6)
+  - Specialist: Points × (Tier ÷ 3)
+  - Paragon: Tier × 10 (NO limits)
+  - One Trick: Tier × 20 (NO limits, ONE attack)
+  - Straightforward: Points × (Tier ÷ 2)
+  - Shared Uses: 10 uses, Tier×5 discount per use
+  - Dual-Natured: Tier × 15 per attack (TWO attacks)
+  - Basic: Tier × 10 (base attack only)
+- Attack Type costs: Melee/Ranged (20p), Direct/Area (30p)
+- All upgrades from Section 7
+
+**UtilitySystem.js**
+- Points: 5 × (Tier - 1), modified by archetype
+- Expertise: Activity (2p/6p), Situational (1p/3p)
+- Features: 1p/3p/5p/10p tiers
+- Senses: 1p/3p/5p/10p tiers
+- Movement: 5p/10p options
+- Descriptors: 5p/10p options
+
+#### **Calculator Files**
+
+**PointPoolCalculator.js**
+- Combat Attributes: Tier × 2
+- Utility Attributes: Tier
+- Main Pool: (Tier - 2) × 15
+- Utility Pool: 5 × (Tier - 1) OR 5 × (Tier - 2) based on archetype
+- Extraordinary doubles main pool
+- Special Attack points per archetype
+
+**LimitCalculator.js**
+- EXACT scaling from rulebook:
+  - First Tier×10 points = 100% value
+  - Next Tier×20 points = 50% value
+  - Remaining = 25% value
+- Apply archetype multipliers AFTER scaling
+- Trait bonuses: 2 per 15 limit points
+
+**StatCalculator.js**
+- Movement: Tier + Mobility (+ archetype bonuses)
+- Accuracy: Tier + Focus
+- Damage: Tier + (Power × 1.5)
+- Conditions: Tier × 2
+- Initiative: Tier + Mobility + Focus + Awareness
+- HP: 100 + (Tier × 5)
+- All archetype bonuses applied
+
+#### **Validator Files**
+
+**CharacterValidator.js**
+- Master validation orchestrator
+- Checks all subsystems
+- Generates error/warning lists
+
+**ArchetypeValidator.js**
+- Behemoth can't have movement-restricting limits
+- One Trick = 1 attack only
+- Dual-Natured = 2 attacks only
+- Basic = no special attacks
+- Paragon/One Trick/Dual-Natured = no limits
+
+**AttributeValidator.js**
+- No attribute > Tier
+- Combat pool spent ≤ Tier × 2
+- Utility pool spent ≤ Tier
+- Balanced flaw enforcement
+
+**SpecialAttackValidator.js**
+- Banned combinations (Brutal + Heavy Strike, etc.)
+- Limit restrictions by archetype
+- Point spending validation
+- Attack type requirements
+
+**BuildOrderValidator.js**
+- ENFORCE: Archetypes → Attributes → Main Pool → Special Attacks → Utility
+- Lock tabs until prerequisites met
+- Clear error messages for order violations
+
+### CRITICAL RULES TO ENFORCE
+
+1. **Character Creation Order IS MANDATORY**
+   - Cannot assign attributes without archetypes
+   - Cannot buy abilities without attributes
+   - Lock UI elements until prerequisites met
+
+2. **Point Pools Are SEPARATE**
+   - Combat attributes ONLY from combat pool
+   - Utility attributes ONLY from utility pool
+   - Main pool for Boons/Traits/Flaws ONLY
+   - Special attack points ONLY for that attack
+
+3. **Limit System**
+   - Limits are PER ATTACK, not global
+   - Scaling formula MUST be exact
+   - Some archetypes CANNOT use limits
+
+4. **Trait vs Trait Bonus**
+   - Traits cost 30p from main pool
+   - Trait bonuses come from limits (2 per 15 points)
+   - These are DIFFERENT systems
+
+5. **Archetype Restrictions**
+   - Behemoth + movement limits = INVALID
+   - One Trick = EXACTLY 1 attack
+   - Basic = NO special attacks
+   - Specialized/Jack of All Trades = different utility pools
+
+6. **Combat Formulas**
+   - Accuracy: 1d20 + Tier + Focus
+   - Damage: 3d6 + Tier + (Power × 1.5) - Durability
+   - Conditions: 1d20 + Tier + Power vs Resistance
+
+7. **Stacking Rules**
+   - Multiple bonuses to same stat reduce by 1
+   - Specific > General
+   - Most restrictive applies
+
+This refactor ensures EVERY SINGLE RULE from the rulebook is properly implemented and enforced. Each file has a specific responsibility, making it easier to maintain and debug.
