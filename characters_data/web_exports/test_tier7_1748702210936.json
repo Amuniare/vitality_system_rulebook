@@ -1,0 +1,86 @@
+{
+  "id": "1748702210936",
+  "name": "test",
+  "realName": "",
+  "tier": 7,
+  "folderId": null,
+  "version": "2.0",
+  "created": "2025-05-31T14:36:50.936Z",
+  "lastModified": "2025-05-31T14:37:12.420Z",
+  "archetypes": {
+    "movement": "swift",
+    "attackType": "aoeSpecialist",
+    "effectType": "damageSpecialist",
+    "uniqueAbility": "cutAbove",
+    "defensive": "stalwart",
+    "specialAttack": "dualNatured",
+    "utility": "specialized"
+  },
+  "attributes": {
+    "focus": 0,
+    "mobility": 0,
+    "power": 0,
+    "endurance": 0,
+    "awareness": 0,
+    "communication": 0,
+    "intelligence": 0
+  },
+  "mainPoolPurchases": {
+    "boons": [],
+    "traits": [],
+    "flaws": [],
+    "primaryActionUpgrades": []
+  },
+  "specialAttacks": [],
+  "utilityPurchases": {
+    "expertise": {
+      "awareness": {
+        "basic": [],
+        "mastered": []
+      },
+      "communication": {
+        "basic": [],
+        "mastered": []
+      },
+      "intelligence": {
+        "basic": [],
+        "mastered": []
+      },
+      "focus": {
+        "basic": [],
+        "mastered": []
+      },
+      "mobility": {
+        "basic": [],
+        "mastered": []
+      },
+      "endurance": {
+        "basic": [],
+        "mastered": []
+      },
+      "power": {
+        "basic": [],
+        "mastered": []
+      }
+    },
+    "features": [],
+    "senses": [],
+    "movement": [],
+    "descriptors": []
+  },
+  "calculatedStats": {},
+  "pointPools": {},
+  "validationResults": {
+    "isValid": false,
+    "errors": [],
+    "warnings": [],
+    "completionStatus": {}
+  },
+  "buildState": {
+    "archetypesComplete": false,
+    "attributesComplete": false,
+    "mainPoolComplete": false,
+    "specialAttacksComplete": false,
+    "utilityComplete": false
+  }
+}
