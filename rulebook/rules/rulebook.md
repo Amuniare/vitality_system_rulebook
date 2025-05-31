@@ -2,6 +2,7 @@
 
 ### **DICE SYSTEM**
 **D20 Rolls**
+doodypoody
 - Used For: Accuracy, Conditions, Skill Checks vs NPCs
 - Natural 20: Auto-success + add Tier again to Damage/Condition rolls
 
