@@ -136,16 +136,66 @@
     --=EliteSlayer| [*R:EliteSlayer]
     --=BossSlayer| [*R:BossSlayer]
 
-    --=CriticalCondition| [*R:CondidtionCriticalRange]
+    --=CriticalCondition| [*R:ConditionCriticalRange]
     --=LastingCondition| [*R:LastingCondition]
     --=Cursed| [*R:Cursed]
     --=OverwhelmingAffliction| [*R:OverwhelmingAffliction]
     --=MassEffect| [*R:MassEffect]
     --=EnhancedCondition| [*R:EnhancedCondition]
 
+    --/| ==========NEW ACCURACY BONUSES==========
+    --=AccurateAttack| [*R:AccurateAttack]
+    --=Blitz| [*R:Blitz]
+    --=Ricochet| [*R:Ricochet]
+    --=DoubleTap| [*R:DoubleTap]
+    --=ExplosiveCritical| [*R:ExplosiveCritical]
+
+    --/| ==========NEW DAMAGE BONUSES==========
+    --=PowerAttack| [*R:PowerAttack]
+    --=Shatter| [*R:Shatter]
+    --=EnhancedEffect| [*R:EnhancedEffect]
+    --=Leech| [*R:Leech]
+
+    --/| ==========NEW CONDITION BONUSES==========
+    --=CollateralCondition| [*R:CollateralCondition]
+    --=Contagious| [*R:Contagious]
+
+    --/| ==========NEW SPECIALIZED COMBAT==========
+    --=HeavyStrike| [*R:HeavyStrike]
+    --=QuickStrikes| [*R:QuickStrikes]
+    --=WhirlwindStrike| [*R:WhirlwindStrike]
+    --=Barrage| [*R:Barrage]
+    --=Headshot| [*R:Headshot]
+    --=FlurryOfBlows| [*R:FlurryOfBlows]
+    --=Pounce| [*R:Pounce]
+    --=Splinter| [*R:Splinter]
+    --=Menacing| [*R:Menacing]
+    --=Environmental| [*R:Environmental]
+    --=AnalyzingStrike| [*R:AnalyzingStrike]
+    --=FollowUpStrike| [*R:FollowUpStrike]
+    --=Counterattack| [*R:Counterattack]
+    --=Exploit| [*R:Exploit]
+    --=PriorityTarget| [*R:PriorityTarget]
+    --=Bully| [*R:Bully]
+    --=MartialArtist| [*R:MartialArtist]
+    --=Grappler| [*R:Grappler]
+
+    --/| ==========NEW VARIABLE BONUSES==========
+    --=LuckyStrike| [*R:LuckyStrike]
+    --=CompressedRelease| [*R:CompressedRelease]
+    --=Domain| [*R:Domain]
+    --=TowerDefense| [*R:TowerDefense]
+    --=Channeled| [*R:Channeled]
+    --=Focused| [*R:Focused]
+    --=Disengage| [*R:Disengage]
+    --=ExtraAttack| [*R:ExtraAttack]
+
     --&AccuracyStringModifiers| [*R:AccuracyStringModifiers]
+    --&AccuracyStringModifiers|[&AccuracyStringModifiers:NoNull]
     --&DamageStringModifiers| [*R:DamageStringModifiers]
+    --&DamageStringModifiers|[&DamageStringModifiers:NoNull]
     --&ConditionsStringModifiers| [*R:ConditionsStringModifiers]
+    --&ConditionsStringModifiers|[&ConditionsStringModifiers:NoNull]
 
 
 
@@ -183,10 +233,10 @@
     --?[$Hybrid] -eq 0 -and [$RollCN] -ge 1|=RollDG; 0
 
     --=AccuracyCriticalRange| 20
-    --=CondidtionCriticalRange| 20
+    --=ConditionCriticalRange| 20
 
     --?[$CriticalAccuracy] -eq 1|=AccuracyCriticalRange; 15
-    --?[$CriticalCondition] -eq 1|=CondidtionCriticalRange; 15
+    --?[$CriticalCondition] -eq 1|=ConditionCriticalRange; 15
 
 
 
@@ -194,14 +244,21 @@
   --/| ==========Roll Modifiers==========
     --?[$ReliableAccuracy] -eq 1|&AccuracyDice; 2d20kh1 - 4
 
+
     --?[$ReliableEffect] -eq 1|&DamageDice; 4d6kh3
     --?[$ReliableEffect] -eq 2|&DamageDice; 5d6kh3
     --?[$ReliableEffect] -eq 3|&DamageDice; 6d6kh3
+    --?[$EnhancedEffect] -eq 1 -and [$ReliableEffect] -eq 1|&DamageDice; 5d6kh4
+
     --?[$ConsistentEffect] -eq 1|&DamageDice;+r<1
     --&DamageDice|+!
     --?[$CriticalEffect] -eq 1|&DamageDice;+>5
 
-    --?[$HighImpact] -eq 1|&DamageDice;+ {MIN:10}
+    --?[$HighImpact] -eq 1|&DamageDice;+ {MIN:15}
+
+    --/| ==========NEW DAMAGE DICE MODIFIERS==========
+
+
 
     --=DamageDice| [&DamageDice]
 
@@ -210,21 +267,53 @@
     --?[$AttackType] -eq 0|&AccuracyStringModifiers;+ + [*S:char_tier] [Melee]
     --?[$AttackType] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Melee]
     --?[$AttackType] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Melee]
-    --?[$AttackType] -eq 3|&DamageStringModifiers;+ - [*S:char_tier] [Direct]
-    --?[$AttackType] -eq 3|&ConditionsStringModifiers;+ - [*S:char_tier] [Direct]
-    --?[$AttackType] -eq 4|&AccuracyStringModifiers;+ - [*S:char_tier] [AOE]
-    --?[$AttackType] -eq 5|&DamageStringModifiers;+ - [*S:char_tier] [AOE Direct]
-    --?[$AttackType] -eq 5|&ConditionsStringModifiers;+ - [*S:char_tier] [AOE Direct]
 
-    --?[$Hybrid] -ge 1|&DamageStringModifiers;+ - [*S:char_tier] [Hybrid]
-    --?[$Hybrid] -ge 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Hybrid]
+    --/| ==========FIXED AOE/DIRECT/HYBRID PENALTIES - APPLY ONCE ONLY==========
+    --=EffectPenaltyApplied| 0
+    
+    --?[$AttackType] -eq 3 -and [$EffectPenaltyApplied] -eq 0|&DamageStringModifiers;+ - [*S:char_tier] [Direct]
+    --?[$AttackType] -eq 3 -and [$EffectPenaltyApplied] -eq 0|&ConditionsStringModifiers;+ - [*S:char_tier] [Direct]
+    --?[$AttackType] -eq 3|=EffectPenaltyApplied; 1
+
+    --?[$AttackType] -eq 4 -and [$EffectPenaltyApplied] -eq 0|&DamageStringModifiers;+ - [*S:char_tier] [AOE]
+    --?[$AttackType] -eq 4 -and [$EffectPenaltyApplied] -eq 0|&ConditionsStringModifiers;+ - [*S:char_tier] [AOE]
+    --?[$AttackType] -eq 4|=EffectPenaltyApplied; 1
+
+    --?[$AttackType] -eq 5 -and [$EffectPenaltyApplied] -eq 0|&DamageStringModifiers;+ - [*S:char_tier] [AOE Direct]
+    --?[$AttackType] -eq 5 -and [$EffectPenaltyApplied] -eq 0|&ConditionsStringModifiers;+ - [*S:char_tier] [AOE Direct]
+    --?[$AttackType] -eq 5|=EffectPenaltyApplied; 1
+
+    --?[$Hybrid] -ge 1 -and [$EffectPenaltyApplied] -eq 0|&DamageStringModifiers;+ - [*S:char_tier] [Hybrid]
+    --?[$Hybrid] -ge 1 -and [$EffectPenaltyApplied] -eq 0|&ConditionsStringModifiers;+ - [*S:char_tier] [Hybrid]
+    --?[$Hybrid] -ge 1|=EffectPenaltyApplied; 1
+
+    --/| ==========NEW UPGRADE MODIFIERS - FIXED MATH==========
+    --?[$AccurateAttack] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Accurate Attack]
+    --?[$AccurateAttack] -eq 1|&DamageStringModifiers;+ - [*S:char_tier] [Accurate Attack]
+    --?[$AccurateAttack] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Accurate Attack]
+
+    --?[$PowerAttack] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Power Attack]
+    --?[$PowerAttack] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Power Attack]
+
+    --/| HEAVY STRIKE - FIXED WITH SEPARATE CALCULATION
+    --=HeavyStrikeBonus| [*S:char_tier]*3
+    --?[$HeavyStrike] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Heavy Strike]
+    --?[$HeavyStrike] -eq 1|&DamageStringModifiers;+ + [$HeavyStrikeBonus] [Heavy Strike]
+    --?[$HeavyStrike] -eq 1|&ConditionsStringModifiers;+ + [$HeavyStrikeBonus] [Heavy Strike]
+
+    --/| HEADSHOT - FIXED WITH SEPARATE CALCULATION
+    --=HeadshotBonus| [*S:char_tier]*3
+    --?[$Headshot] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Headshot]
+    --?[$Headshot] -eq 1|&DamageStringModifiers;+ + [$HeadshotBonus] [Headshot]
+    --?[$Headshot] -eq 1|&ConditionsStringModifiers;+ + [$HeadshotBonus] [Headshot]
+
+    --?[$WhirlwindStrike] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Whirlwind Strike]
+    --?[$FlurryOfBlows] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
+    --?[$FlurryOfBlows] -eq 1|&DamageStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
+    --?[$FlurryOfBlows] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
 
     --?[$ArmorPiercing] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Armor Piercing]
-    --?[$Whirlwind] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Whirlwind]
     --?[$ScatterShot] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Scatter Shot]
-    --?[$Flurry] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Flurry]
-    --?[$Flurry] -eq 1|&DamageStringModifiers;+ - [*S:char_tier] [Flurry]
-    --?[$Flurry] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Flurry]
     --?[$MassEffect] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Mass Effect]
 
 
@@ -246,9 +335,9 @@
     --+| [c][b] Attack Against [*[&testvar]:character_name] [/b] [/c]
 
 
-    --&AccuracyRollString| [$AccuracyDice] [Base Dice] + [*S:char_accuracy] [Accuracy Bonus] + [&AccuracyStringModifiers]
-    --&DamageRollString| [$DamageDice]  [Base Dice] + [*S:char_damage] [Damage Bonus] + [&DamageStringModifiers]
-    --&ConditionsRollString| [$ConditionsDice]  [Base Dice] + [*S:char_conditions] [Conditions Bonus] + [&ConditionsStringModifiers]
+    --&AccuracyRollString| [$AccuracyDice] [Base Dice] + [*S:char_accuracy] [Accuracy Bonus][&AccuracyStringModifiers]
+    --&DamageRollString| [$DamageDice]  [Base Dice] + [*S:char_damage] [Damage Bonus][&DamageStringModifiers]
+    --&ConditionsRollString| [$ConditionsDice]  [Base Dice] + [*S:char_conditions] [Conditions Bonus][&ConditionsStringModifiers]
 
 
     --/| SLAYER UPGRADES
@@ -273,6 +362,13 @@
       --?[$BossSlayer] -eq 2 -and [$MaxHP] -eq 100|&DamageRollString;+ + [*S:char_tier] [Boss Slayer]
       --?[$BossSlayer] -eq 3 -and [$MaxHP] -eq 100|&ConditionsRollString;+ + [*S:char_tier] [Boss Slayer]
 
+      --/| ==========NEW TARGET-SPECIFIC BONUSES - FIXED BLITZ CALCULATION==========
+      --=BlitzBonus| [*S:char_mobility]/6 {CEIL}
+      --?[$Blitz] -eq 1|&AccuracyRollString;+ + [$BlitzBonus] [Blitz]
+      --?[$Exploit] -eq 1|&DamageRollString;+ + [*S:char_tier] [Exploit]
+      --?[$Exploit] -eq 1|&ConditionsRollString;+ + [*S:char_tier] [Exploit]
+      --?[$Grappler] -eq 1|&DamageRollString;+ + [*S:char_tier] [Grappler]
+
 
 
   --/| ==========ENEMY DEFENSES SECTION==========
@@ -287,6 +383,10 @@
     --/| ARMOR PIERCING
       --?[$ArmorPiercing] -eq 1|=EnemyDR;  [*[&testvar]:char_endurance]*1.5 {CEIL} {NEGATE} + [*[&testvar]:char_durability]
       --?[$ArmorPiercing] -eq 1|&AttackNotes;+ Armor Piercing Applied,
+
+    --/| ==========NEW DEFENSE MODIFIERS==========
+    --?[$Shatter] -eq 1|=EnemyDR; [$EnemyDR]/2 {CEIL}
+    --?[$Shatter] -eq 1|&AttackNotes;+ Shatter Applied,
 
 
   --/| ==========Enemy Conditions Modifiers==========
@@ -314,33 +414,40 @@
     --=AccuracyRoll| [&AccuracyRollString]
 
     --/| CRITICAL
-      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&AttackNotes;+ Critical Hit,
-      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&DamageRollString;+  +[*S:char_tier] [CRITICAL HIT]
-      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL HIT]
+      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&AttackNotes;+ Critical Hit,
+      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&DamageRollString;+  +[*S:char_tier] [CRITICAL HIT]
+      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL HIT]
 
     --/| POWERFUL CRITICAL
-      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&AttackNotes;+ Powerful Critical Applied,
-      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&DamageRollString;+  +[*S:char_tier] [Powerful Critical]
-      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [Powerful Critical]
+      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&AttackNotes;+ Powerful Critical Applied,
+      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&DamageRollString;+  +[*S:char_tier] [Powerful Critical]
+      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [Powerful Critical]
 
+    --/| ==========NEW CRITICAL EFFECTS==========
+    --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$Ricochet] -eq 1|&AttackNotes;+ Ricochet Triggered,
+    --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$DoubleTap] -eq 1|&AttackNotes;+ Double-Tap Triggered,
+    --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$ExplosiveCritical] -eq 1|&AttackNotes;+ Explosive Critical Triggered,
 
     --/| OVERHIT
       --=OverhitAmount| [$AccuracyRoll] - [$EnemyAV]
       --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|&AttackNotes;+ Overhit Applied,
       --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|=OverhitDamage;  [$OverhitAmount]/2 {CEIL}
       --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|&DamageRollString;+  +[$OverhitDamage] [Overhit]
+      --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|&ConditionsRollString;+  +[$OverhitDamage] [Overhit]
 
     --=DamageRoll| [&DamageRollString]
 
-
+    --/| ==========NEW DAMAGE EFFECTS==========
+    --?[$Leech] -eq 1|=LeechAmount; [$DamageRoll]/2 {CEIL}
+    --?[$Leech] -eq 1|&AttackNotes;+ Leech [$LeechAmount] HP,
 
 
 
   --/| ==========Condition Roll==========
 
     --/| CRITICAL
-      --?[$ConditionsDice] -ge [$CondidtionCriticalRange] -and [$RollCN] -ge 1|&AttackNotes;+ Critical Condition,
-      --?[$ConditionsDice] -ge [$CondidtionCriticalRange] -and [$RollCN] -ge 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL CN]
+      --?[$ConditionsDice] -ge [$ConditionCriticalRange] -and [$RollCN] -ge 1|&AttackNotes;+ Critical Condition,
+      --?[$ConditionsDice] -ge [$ConditionCriticalRange] -and [$RollCN] -ge 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL CN]
 
 
     --=ConditionsRoll| [&ConditionsRollString]
@@ -385,7 +492,7 @@
 
   --/| ========== EFFECTS SECTION ==========
 
-  --?[$RollAC] -eq 1 -and [$AccuracyRoll] -lt [$EnemyAV] -or [$AccuracyDice.KeptDice(1)] -eq 1|PassAutomaticEffectSection
+  --?[$RollAC] -eq 1 -and [$AccuracyRoll] -lt [$EnemyAV] -or [$AccuracyRoll.KeptDice(1)] -eq 1|PassAutomaticEffectSection
   --?[$Hybrid] -eq 1 -and [$DamageRoll] -lt [$EnemyDR] |PassAutomaticEffectSection
   --?[$Hybrid] -eq 2 -and [$EnemyCnFailAmount] -lt 0|PassAutomaticEffectSection
 
@@ -401,7 +508,9 @@
 
       --/| BRUTAL
         --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|&AttackNotes;+ Brutal Applied,
-        --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=DamageAmount;  [$DamageAmount]*1.5 {CEIL}
+        --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=BrutalBonus; [$DamageAmount] - 10
+        --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=BrutalBonus; [$BrutalBonus]/2 {CEIL}
+        --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=DamageAmount; [$DamageAmount] + [$BrutalBonus]
 
 
       --?[$Bleed] -eq 0|PassBleed
@@ -411,6 +520,14 @@
         -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];red
         --+Applying| Bleed to [*[&testvar]:character_name]
       --:PassBleed|
+
+      --/| ==========NEW DAMAGE EFFECTS==========
+      --?[$Leech] -eq 1|-->LibSN_APPLY_DAMAGE_OR_HEALING|@{character_id};3;[$LeechAmount];1;0;1
+      --?[$Leech] -eq 1|&AttackNotes;+ [&CharacterName] recovers [$LeechAmount] HP,
+
+      --?[$Environmental] -eq 1|&AttackNotes;+ Area becomes hazardous terrain,
+
+      --?[$Splinter] -eq 1 -and [$DamageAmount] -ge [$MaxHP]|&AttackNotes;+ Splinter triggered - additional attack available,
 
 
 
@@ -596,6 +713,10 @@
         --+Applying| Overwhelming Affliction to [*[&testvar]:character_name]
     --:PassOverwhelmingAffliction|
 
+    --/| ==========NEW CONDITION EFFECTS==========
+    --?[$CollateralCondition] -eq 1 -and [$EnemyCnFailAmount] -ge 0|&AttackNotes;+ Collateral Condition triggered - 3-space burst,
+    --?[$Contagious] -eq 1 -and [$EnemyCnFailAmount] -ge 0|&AttackNotes;+ Contagious triggered - spreads to nearest enemy,
+
 
   --/| ==========END OF FOR LOOP ==========
 
@@ -615,10 +736,18 @@
       --=SplashAmount| 1d6! + [*S:char_tier]
       --?[$SplashDamage] -eq 1|&AttackNotes;+ [$SplashAmount] Splash Damage to All Adjacent Targets,
 
+    --/| ==========NEW SECONDARY EFFECTS==========
+    --?[$Pounce] -eq 1|&AttackNotes;+ Pounce - Move 6 spaces toward target,
+    --?[$Disengage] -eq 1|&AttackNotes;+ Disengage - No opportunity attacks from hit targets,
+    --?[$ExtraAttack] -eq 1|&AttackNotes;+ Extra Attack available on successful hit and effect,
+    --?[$Menacing] -eq 1|&AttackNotes;+ Menacing - Intimidation attempt available,
+    --?[$PriorityTarget] -eq 1|&AttackNotes;+ Priority Target marked for allies,
+    --?[$Bully] -eq 1|&AttackNotes;+ Bully - 1-space forced movement available,
+    --?[$MartialArtist] -eq 1|&AttackNotes;+ Martial Artist effects available on critical,
 
     --+|[br]
     --+Attack Notes| [&AttackNotes] [br]
-    --+Attack Notes| [&AttackDetails]
+    --+Attack Details| [&AttackDetails]
 
 
   --/| ==========BUTTONS SECTION ==========
@@ -640,20 +769,13 @@
     --?[&EffectType] -eq 10 |+[sheetbutton]Apply Weaken::MacroMule::Weaken[/sheetbutton]
     --?[$EffectType] -eq 11 |+[sheetbutton]Apply DisableSpecials::MacroMule::DisableSpecialSense[/sheetbutton]
 
+    --/| ==========NEW SECONDARY EFFECT BUTTONS==========
+    --?[$Ricochet] -eq 1|+[sheetbutton]Ricochet Attack::MacroMule::RicochetAttack[/sheetbutton]
+    --?[$DoubleTap] -eq 1|+[sheetbutton]Double-Tap Attack::MacroMule::DoubleTapAttack[/sheetbutton]
+    --?[$ExplosiveCritical] -eq 1|+[sheetbutton]Explosive Critical::MacroMule::ExplosiveCritical[/sheetbutton]
+    --?[$ExtraAttack] -eq 1|+[sheetbutton]Extra Attack::MacroMule::ExtraAttack[/sheetbutton]
+    --?[$Splinter] -eq 1|+[sheetbutton]Splinter Attack::MacroMule::SplinterAttack[/sheetbutton]
 
 
   --<|
 }}
-
-
-
-
-
-
-
-
-
-
-
-
-

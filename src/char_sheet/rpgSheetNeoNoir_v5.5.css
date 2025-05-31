@@ -466,6 +466,67 @@ select {
 }
 
 
+/* Compact Attacks Grid - 4 Column Horizontal Layout */
+.attacks-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    padding: 0.75rem;
+    margin: 0.25rem;
+    border: 1px solid var(--accent-primary);
+    background: var(--bg-secondary);
+}
+
+/* Horizontal label + input layout */
+.attacks-grid-compact label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-light);
+    font-size: 1rem;
+    font-family: 'Syncopate', sans-serif;
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin: 0;
+    padding: 0.25rem;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+/* Input styling for horizontal layout */
+.attacks-grid-compact input[type="number"] {
+    width: 3rem;
+    height: 1.8rem;
+    padding: 0;
+    margin-left: 0.5rem;
+    text-align: center;
+    background: var(--bg-primary);
+    border: 1px solid var(--accent-primary);
+    color: var(--text-light);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    flex-shrink: 0;
+}
+
+/* Remove spinner buttons */
+.attacks-grid-compact input[type="number"]::-webkit-inner-spin-button,
+.attacks-grid-compact input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Interactive states */
+.attacks-grid-compact input[type="number"]:hover,
+.attacks-grid-compact input[type="number"]:focus {
+    border-color: var(--accent-highlight);
+    box-shadow: 0 0 8px var(--accent-primary);
+    outline: none;
+}
+
 /* Expertise Grid */
 .expertises-grid {
     display: grid;

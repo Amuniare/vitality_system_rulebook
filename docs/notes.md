@@ -1,23 +1,25 @@
-aoes subtract from accuracy but should they maybe instead subtract from effect, would also hurt av users in those situations too
-
 power change
 
 
 
-can you create a nice homepage and make stuf the the rules has a nav back to the homepage
-and lore campaign lore should also have one too
+
+
 
 
 
 
 when updating sheet, allow characters to delete expertises and attacks
 
+add upgrades
 
 
 
-html is hybrid and aoe affecting
 
 
 
 crit auto hit isn't working correctly
 
+rules changes
+aoes subtract from accuracy but should instead subtract from effect
+when an attack has hybrid, aoe, or direct, it receives a penalty to effect rolls, that should only apply once.
+add all missing upgrades
