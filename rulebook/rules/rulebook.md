@@ -1,6 +1,6 @@
 # SECTION 1: BASIC RULES
 
-### **DICE SYSTEM**
+### **DICE SYSTEM** 
 **D20 Rolls**
 - Used For: Accuracy, Conditions, Skill Checks vs NPCs
 - Natural 20: Auto-success + add Tier again to Damage/Condition rolls
