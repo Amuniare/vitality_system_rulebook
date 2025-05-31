@@ -129,7 +129,8 @@ export class CharacterBuilder {
             this.switchTab('basicInfo');
         }
     }
-    
+
+
     // CHARACTER MANAGEMENT
     saveCurrentCharacter() {
         if (!this.currentCharacter) return;
@@ -150,17 +151,21 @@ export class CharacterBuilder {
         link.click();
         URL.revokeObjectURL(url);
         
+        this.updateAllDisplays();
         this.showNotification(`Character saved as ${filename}! Place in characters_data/web_exports/`, 'success');
     }
 
-    // Remove localStorage methods - replace with in-memory only
+    // STORAGE - Replace localStorage with in-memory only
     loadCharacters() {
-        return {}; // Start with empty character list
+        return {}; // Start with empty character list - users load files manually
     }
 
     saveCharacters() {
         // No-op - we only download individual files now
-}
+        // Characters persist in memory until page refresh
+    }
+
+
 
     deleteCurrentCharacter() {
         if (!this.currentCharacter) return;

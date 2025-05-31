@@ -4,36 +4,48 @@ export class CharacterTree {
         this.builder = characterBuilder;
     }
 
+    
     render() {
         const container = document.getElementById('character-tree');
         if (!container) return;
     
         const characters = Object.values(this.builder.characters);
         
-        container.innerHTML = `
-            <div class="character-list">
-                <!-- File upload for loading characters -->
-                <div class="load-character-section">
-                    <input type="file" 
-                           id="load-character-file" 
-                           accept=".json"
-                           style="display: none;">
-                    <button id="load-character-btn" class="btn-secondary">Load Character File</button>
-                    <small>Load .json files from characters_data/web_exports/</small>
+        if (characters.length === 0) {
+            container.innerHTML = `
+                <div class="character-list">
+                    <div class="load-character-section" style="margin-bottom: 1rem;">
+                        <input type="file" 
+                               id="load-character-file" 
+                               accept=".json"
+                               style="display: none;">
+                        <button id="load-character-btn" class="btn-secondary" style="width: 100%; margin-bottom: 0.5rem;">Load Character File</button>
+                        <small style="color: var(--text-muted); font-size: 0.8em;">Load .json files from characters_data/web_exports/</small>
+                    </div>
+                    ${this.renderEmpty()}
                 </div>
-                
-                ${characters.length === 0 ? this.renderEmpty() : 
-                  characters.map(character => this.renderCharacterItem(character)).join('')}
-            </div>
-        `;
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="character-list">
+                    <div class="load-character-section" style="margin-bottom: 1rem;">
+                        <input type="file" 
+                               id="load-character-file" 
+                               accept=".json"
+                               style="display: none;">
+                        <button id="load-character-btn" class="btn-secondary" style="width: 100%; margin-bottom: 0.5rem;">Load Character File</button>
+                        <small style="color: var(--text-muted); font-size: 0.8em;">Load .json files from characters_data/web_exports/</small>
+                    </div>
+                    ${characters.map(character => this.renderCharacterItem(character)).join('')}
+                </div>
+            `;
+        }
     
         this.setupEventListeners();
     }
-    
+
     setupEventListeners() {
-        // Existing listeners...
-        
-        // Load character file
+        // Load character file functionality
         const loadBtn = document.getElementById('load-character-btn');
         const fileInput = document.getElementById('load-character-file');
         
@@ -45,34 +57,77 @@ export class CharacterTree {
                 if (file) {
                     this.loadCharacterFromFile(file);
                 }
+                // Reset input so same file can be loaded again
+                e.target.value = '';
             });
         }
-        
-        // Rest of existing listeners...
-    }
     
+        // Character selection
+        document.querySelectorAll('.character-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Don't trigger if clicking action buttons
+                if (e.target.classList.contains('btn-small')) return;
+                
+                const characterId = item.dataset.characterId;
+                this.builder.loadCharacter(characterId);
+            });
+        });
+    
+        // Character actions
+        document.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                const action = btn.dataset.action;
+                const characterId = btn.dataset.characterId;
+                
+                if (action === 'duplicate') {
+                    this.duplicateCharacter(characterId);
+                } else if (action === 'delete') {
+                    this.deleteCharacter(characterId);
+                }
+            });
+        });
+    }
+
     loadCharacterFromFile(file) {
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
                 const characterData = JSON.parse(e.target.result);
                 
-                // Validate it's a valid character
-                if (!characterData.id || !characterData.name || !characterData.tier) {
-                    throw new Error('Invalid character file format');
+                // Validate it's a valid character file
+                if (!characterData.id || !characterData.name || typeof characterData.tier !== 'number') {
+                    throw new Error('Invalid character file format - missing required fields');
                 }
                 
-                // Add to builder
+                // Validate tier range
+                if (characterData.tier < 1 || characterData.tier > 10) {
+                    throw new Error('Invalid tier value - must be between 1 and 10');
+                }
+                
+                // Ensure required structure exists
+                if (!characterData.archetypes || !characterData.attributes) {
+                    throw new Error('Invalid character file format - missing archetypes or attributes');
+                }
+                
+                // Add to builder characters
                 this.builder.characters[characterData.id] = characterData;
                 this.builder.loadCharacter(characterData.id);
                 this.render();
                 
-                this.builder.showNotification(`Loaded ${characterData.name}!`, 'success');
+                this.builder.showNotification(`Loaded ${characterData.name} (Tier ${characterData.tier})!`, 'success');
                 
             } catch (error) {
+                console.error('Failed to load character file:', error);
                 this.builder.showNotification(`Failed to load character: ${error.message}`, 'error');
             }
         };
+        
+        reader.onerror = () => {
+            this.builder.showNotification('Failed to read file', 'error');
+        };
+        
         reader.readAsText(file);
     }
 
