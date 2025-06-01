@@ -312,7 +312,11 @@
     --?[$FlurryOfBlows] -eq 1|&DamageStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
     --?[$FlurryOfBlows] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
 
+    --?[$ArmorPiercing] -ne 1|PassArmorPiercingNote
+      --&AttackNotes|+ Armor Piercing Applied,
+    --:PassArmorPiercingNote|
     --?[$ArmorPiercing] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Armor Piercing]
+
     --?[$ScatterShot] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Scatter Shot]
     --?[$MassEffect] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Mass Effect]
 
@@ -342,22 +346,30 @@
 
     --/| SLAYER UPGRADES
       --=MaxHP| [*[&testvar]:t-bar3_max]
-      --?[$MinionSlayer] -ge 1 -and [$MaxHP] -eq 10|&AttackNotes;+ Minion Slayer Applied,
+      --?[$MinionSlayer] -lt 1 -or [$MaxHP] -ne 10|PassMinionSlayerNote
+        --&AttackNotes|+ Minion Slayer Applied,
+      --:PassMinionSlayerNote|
       --?[$MinionSlayer] -eq 1 -and [$MaxHP] -eq 10|&AccuracyRollString;+ + [*S:char_tier] [Minion Slayer]
       --?[$MinionSlayer] -eq 2 -and [$MaxHP] -eq 10|&DamageRollString;+ + [*S:char_tier] [Minion Slayer]
       --?[$MinionSlayer] -eq 3 -and [$MaxHP] -eq 10|&ConditionsRollString;+ + [*S:char_tier] [Minion Slayer]
 
-      --?[$CaptainSlayer] -ge 1 -and [$MaxHP] -eq 25|&AttackNotes;+ Captain Slayer Applied,
+      --?[$CaptainSlayer] -lt 1 -or [$MaxHP] -ne 25|PassCaptainSlayerNote
+        --&AttackNotes|+ Captain Slayer Applied,
+      --:PassCaptainSlayerNote|
       --?[$CaptainSlayer] -eq 1 -and [$MaxHP] -eq 25|&AccuracyRollString;+ + [*S:char_tier] [Captain Slayer]
       --?[$CaptainSlayer] -eq 2 -and [$MaxHP] -eq 25|&DamageRollString;+ + [*S:char_tier] [Captain Slayer]
       --?[$CaptainSlayer] -eq 3 -and [$MaxHP] -eq 25|&ConditionsRollString;+ + [*S:char_tier] [Captain Slayer]
 
-      --?[$EliteSlayer] -ge 1 -and [$MaxHP] -eq 50|&AttackNotes;+ Elite Slayer Applied,
+      --?[$EliteSlayer] -lt 1 -or [$MaxHP] -ne 50|PassEliteSlayerNote
+        --&AttackNotes|+ Elite Slayer Applied,
+      --:PassEliteSlayerNote|
       --?[$EliteSlayer] -eq 1 -and [$MaxHP] -eq 50|&AccuracyRollString;+ + [*S:char_tier] [Elite Slayer]
       --?[$EliteSlayer] -eq 2 -and [$MaxHP] -eq 50|&DamageRollString;+ + [*S:char_tier] [Elite Slayer]
       --?[$EliteSlayer] -eq 3 -and [$MaxHP] -eq 50|&ConditionsRollString;+ + [*S:char_tier] [Elite Slayer]
 
-      --?[$BossSlayer] -ge 1 -and [$MaxHP] -eq 100|&AttackNotes;+ Boss Slayer Applied,
+      --?[$BossSlayer] -lt 1 -or [$MaxHP] -ne 100|PassBossSlayerNote
+        --&AttackNotes|+ Boss Slayer Applied,
+      --:PassBossSlayerNote|
       --?[$BossSlayer] -eq 1 -and [$MaxHP] -eq 100|&AccuracyRollString;+ + [*S:char_tier] [Boss Slayer]
       --?[$BossSlayer] -eq 2 -and [$MaxHP] -eq 100|&DamageRollString;+ + [*S:char_tier] [Boss Slayer]
       --?[$BossSlayer] -eq 3 -and [$MaxHP] -eq 100|&ConditionsRollString;+ + [*S:char_tier] [Boss Slayer]
@@ -382,11 +394,12 @@
 
     --/| ARMOR PIERCING
       --?[$ArmorPiercing] -eq 1|=EnemyDR;  [*[&testvar]:char_endurance]*1.5 {CEIL} {NEGATE} + [*[&testvar]:char_durability]
-      --?[$ArmorPiercing] -eq 1|&AttackNotes;+ Armor Piercing Applied,
 
     --/| ==========NEW DEFENSE MODIFIERS==========
+    --?[$Shatter] -ne 1|PassShatterNote
+      --&AttackNotes|+ Shatter Applied,
+    --:PassShatterNote|
     --?[$Shatter] -eq 1|=EnemyDR; [$EnemyDR]/2 {CEIL}
-    --?[$Shatter] -eq 1|&AttackNotes;+ Shatter Applied,
 
 
   --/| ==========Enemy Conditions Modifiers==========
@@ -402,11 +415,15 @@
       --&AttackNotes|+ Bonus from Setup Enemy,
     --:PassSetupDefenses|
 
-    --?[&MarkerStunnedExists] -eq 1|&AttackNotes;+ Bonus from Stunned Enemy,
+    --?[&MarkerStunnedExists] -ne 1|PassStunnedBonus
+      --&AttackNotes|+ Bonus from Stunned Enemy,
+    --:PassStunnedBonus|
     --?[&MarkerStunnedExists] -eq 1|=EnemyAV; 0
     --?[&MarkerStunnedExists] -eq 1|=AccuracyCriticalRange; 2
 
-    --?[&MarkerProneExists] -eq 1|&AttackNotes;+ Bonus from Prone Enemy,
+    --?[&MarkerProneExists] -ne 1|PassProneBonus
+      --&AttackNotes|+ Bonus from Prone Enemy,
+    --:PassProneBonus|
     --?[&MarkerProneExists] -eq 1|&AccuracyRollString;+ +5 [Prone]
 
 
@@ -414,23 +431,35 @@
     --=AccuracyRoll| [&AccuracyRollString]
 
     --/| CRITICAL
-      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&AttackNotes;+ Critical Hit,
+      --?[$AccuracyRoll.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1|PassCriticalHit
+        --&AttackNotes|+ Critical Hit,
+      --:PassCriticalHit|
       --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&DamageRollString;+  +[*S:char_tier] [CRITICAL HIT]
       --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL HIT]
 
     --/| POWERFUL CRITICAL
-      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&AttackNotes;+ Powerful Critical Applied,
+      --?[$AccuracyRoll.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1 -or [$PowerfulCritical] -ne 1|PassPowerfulCritical
+        --&AttackNotes|+ Powerful Critical Applied,
+      --:PassPowerfulCritical|
       --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&DamageRollString;+  +[*S:char_tier] [Powerful Critical]
       --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [Powerful Critical]
 
     --/| ==========NEW CRITICAL EFFECTS==========
-    --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$Ricochet] -eq 1|&AttackNotes;+ Ricochet Triggered,
-    --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$DoubleTap] -eq 1|&AttackNotes;+ Double-Tap Triggered,
-    --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$ExplosiveCritical] -eq 1|&AttackNotes;+ Explosive Critical Triggered,
+    --?[$AccuracyRoll.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1 -or [$Ricochet] -ne 1|PassRicochetNote
+      --&AttackNotes|+ Ricochet Triggered,
+    --:PassRicochetNote|
+    --?[$AccuracyRoll.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1 -or [$DoubleTap] -ne 1|PassDoubleTapNote
+      --&AttackNotes|+ Double-Tap Triggered,
+    --:PassDoubleTapNote|
+    --?[$AccuracyRoll.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1 -or [$ExplosiveCritical] -ne 1|PassExplosiveCriticalNote
+      --&AttackNotes|+ Explosive Critical Triggered,
+    --:PassExplosiveCriticalNote|
 
     --/| OVERHIT
       --=OverhitAmount| [$AccuracyRoll] - [$EnemyAV]
-      --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|&AttackNotes;+ Overhit Applied,
+      --?[$Overhit] -ne 1 -or [$OverhitAmount] -lt 5|PassOverhitNote
+        --&AttackNotes|+ Overhit Applied,
+      --:PassOverhitNote|
       --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|=OverhitDamage;  [$OverhitAmount]/2 {CEIL}
       --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|&DamageRollString;+  +[$OverhitDamage] [Overhit]
       --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|&ConditionsRollString;+  +[$OverhitDamage] [Overhit]
@@ -439,14 +468,18 @@
 
     --/| ==========NEW DAMAGE EFFECTS==========
     --?[$Leech] -eq 1|=LeechAmount; [$DamageRoll]/2 {CEIL}
-    --?[$Leech] -eq 1|&AttackNotes;+ Leech [$LeechAmount] HP,
+    --?[$Leech] -ne 1|PassLeechNote
+      --&AttackNotes|+ Leech [$LeechAmount] HP,
+    --:PassLeechNote|
 
 
 
   --/| ==========Condition Roll==========
 
     --/| CRITICAL
-      --?[$ConditionsDice] -ge [$ConditionCriticalRange] -and [$RollCN] -ge 1|&AttackNotes;+ Critical Condition,
+      --?[$ConditionsDice] -lt [$ConditionCriticalRange] -or [$RollCN] -lt 1|PassCriticalCondition
+        --&AttackNotes|+ Critical Condition,
+      --:PassCriticalCondition|
       --?[$ConditionsDice] -ge [$ConditionCriticalRange] -and [$RollCN] -ge 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL CN]
 
 
@@ -507,7 +540,9 @@
       --?[$DamageAmount] -lt 0|PassDamageAuto
 
       --/| BRUTAL
-        --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|&AttackNotes;+ Brutal Applied,
+        --?[$Brutal] -ne 1 -or [$DamageAmount] -lt 10|PassBrutalNote
+          --&AttackNotes|+ Brutal Applied,
+        --:PassBrutalNote|
         --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=BrutalBonus; [$DamageAmount] - 10
         --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=BrutalBonus; [$BrutalBonus]/2 {CEIL}
         --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=DamageAmount; [$DamageAmount] + [$BrutalBonus]
@@ -523,11 +558,15 @@
 
       --/| ==========NEW DAMAGE EFFECTS==========
       --?[$Leech] -eq 1|-->LibSN_APPLY_DAMAGE_OR_HEALING|@{character_id};3;[$LeechAmount];1;0;1
-      --?[$Leech] -eq 1|&AttackNotes;+ [&CharacterName] recovers [$LeechAmount] HP,
+      --&AttackNotes|+ [&CharacterName] recovers [$LeechAmount] HP,
 
-      --?[$Environmental] -eq 1|&AttackNotes;+ Area becomes hazardous terrain,
+      --?[$Environmental] -ne 1|PassEnvironmentalNote
+        --&AttackNotes|+ Area becomes hazardous terrain,
+      --:PassEnvironmentalNote|
 
-      --?[$Splinter] -eq 1 -and [$DamageAmount] -ge [$MaxHP]|&AttackNotes;+ Splinter triggered - additional attack available,
+      --?[$Splinter] -ne 1 -or [$DamageAmount] -lt [$MaxHP]|PassSplinterNote
+        --&AttackNotes|+ Splinter triggered - additional attack available,
+      --:PassSplinterNote|
 
 
 
@@ -547,17 +586,17 @@
 
     --?[$RemainingHP] -ge 6 -or [$FinishingBlow] -ne 1|PassDeadFinishingAuto1
     -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
-    --&AttackNotes|+ Finishing Blow Applied,
+    --?[$FinishingBlow] -eq 1|&AttackNotes|+ Finishing Blow Applied,
     --:PassDeadFinishingAuto1|
 
     --?[$RemainingHP] -ge 11 -or [$FinishingBlow] -ne 2|PassDeadFinishingAuto2
     -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
-    --&AttackNotes|+ Finishing Blow Applied,
+    --?[$FinishingBlow] -eq 2|&AttackNotes|+ Finishing Blow Applied,
     --:PassDeadFinishingAuto2|
 
     --?[$RemainingHP] -ge 16 -or [$FinishingBlow] -ne 3|PassDeadFinishingAuto3
     -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
-    --&AttackNotes|+ Finishing Blow Applied,
+    --?[$FinishingBlow] -eq 3|&AttackNotes|+ Finishing Blow Applied,
     --:PassDeadFinishingAuto3|
 
 
@@ -714,8 +753,12 @@
     --:PassOverwhelmingAffliction|
 
     --/| ==========NEW CONDITION EFFECTS==========
-    --?[$CollateralCondition] -eq 1 -and [$EnemyCnFailAmount] -ge 0|&AttackNotes;+ Collateral Condition triggered - 3-space burst,
-    --?[$Contagious] -eq 1 -and [$EnemyCnFailAmount] -ge 0|&AttackNotes;+ Contagious triggered - spreads to nearest enemy,
+    --?[$CollateralCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 0|PassCollateralConditionNote
+      --&AttackNotes|+ Collateral Condition triggered - 3-space burst,
+    --:PassCollateralConditionNote|
+    --?[$Contagious] -ne 1 -or [$EnemyCnFailAmount] -lt 0|PassContagiousNote
+      --&AttackNotes|+ Contagious triggered - spreads to nearest enemy,
+    --:PassContagiousNote|
 
 
   --/| ==========END OF FOR LOOP ==========
@@ -734,48 +777,41 @@
 
     --/| SPLASH DAMAGE
       --=SplashAmount| 1d6! + [*S:char_tier]
-      --?[$SplashDamage] -eq 1|&AttackNotes;+ [$SplashAmount] Splash Damage to All Adjacent Targets,
+      --?[$SplashDamage] -ne 1|PassSplashNote
+        --&AttackNotes|+ [$SplashAmount] Splash Damage to All Adjacent Targets,
+      --:PassSplashNote|
 
     --/| ==========NEW SECONDARY EFFECTS==========
-    --?[$Pounce] -eq 1|&AttackNotes;+ Pounce - Move 6 spaces toward target,
-    --?[$Disengage] -eq 1|&AttackNotes;+ Disengage - No opportunity attacks from hit targets,
-    --?[$ExtraAttack] -eq 1|&AttackNotes;+ Extra Attack available on successful hit and effect,
-    --?[$Menacing] -eq 1|&AttackNotes;+ Menacing - Intimidation attempt available,
-    --?[$PriorityTarget] -eq 1|&AttackNotes;+ Priority Target marked for allies,
-    --?[$Bully] -eq 1|&AttackNotes;+ Bully - 1-space forced movement available,
-    --?[$MartialArtist] -eq 1|&AttackNotes;+ Martial Artist effects available on critical,
+    --?[$Pounce] -ne 1|PassPounceNote
+      --&AttackNotes|+ Pounce - Move 6 spaces toward target,
+    --:PassPounceNote|
+    --?[$Disengage] -ne 1|PassDisengageNote
+      --&AttackNotes|+ Disengage - No opportunity attacks from hit targets,
+    --:PassDisengageNote|
+    --?[$ExtraAttack] -ne 1|PassExtraAttackNote
+      --&AttackNotes|+ Extra Attack available on successful hit and effect,
+    --:PassExtraAttackNote|
+    --?[$Menacing] -ne 1|PassMenacingNote
+      --&AttackNotes|+ Menacing - Intimidation attempt available,
+    --:PassMenacingNote|
+    --?[$PriorityTarget] -ne 1|PassPriorityTargetNote
+      --&AttackNotes|+ Priority Target marked for allies,
+    --:PassPriorityTargetNote|
+    --?[$Bully] -ne 1|PassBullyNote
+      --&AttackNotes|+ Bully - 1-space forced movement available,
+    --:PassBullyNote|
+    --?[$MartialArtist] -ne 1|PassMartialArtistNote
+      --&AttackNotes|+ Martial Artist effects available on critical,
+    --:PassMartialArtistNote|
 
     --+|[br]
     --+Attack Notes| [&AttackNotes] [br]
     --+Attack Details| [&AttackDetails]
 
 
-  --/| ==========BUTTONS SECTION ==========
-
-    --/| allows the macro mule to be called for some reason, breaks for players otherwise
-    --+|%{MacroMule|Refresh}
 
 
-    --?[$EffectType] -eq 0 -or [$Hybrid] -eq 1 |+[sheetbutton]Apply Damage::MacroMule::Damage[/sheetbutton]
-    --?[$EffectType] -eq 1 |+[sheetbutton]Apply Disarm::MacroMule::Disarm[/sheetbutton]
-    --?[$EffectType] -eq 2 |+[sheetbutton]Apply Hold::MacroMule::Hold[/sheetbutton]
-    --?[$EffectType] -eq 3 |+[sheetbutton]Apply Prone::MacroMule::Prone[/sheetbutton]
-    --?[$EffectType] -eq 4 |+[sheetbutton]Apply Daze::MacroMule::Daze[/sheetbutton]
-    --?[$EffectType] -eq 5 |+[sheetbutton]Apply Blind::MacroMule::Blind[/sheetbutton]
-    --?[$EffectType] -eq 6 |+[sheetbutton]Apply Taunt::MacroMule::Hypnotized[/sheetbutton]
-    --?[$EffectType] -eq 7 |+[sheetbutton]Apply Setup::MacroMule::Setup[/sheetbutton]
-    --?[$EffectType] -eq 8 |+[sheetbutton]Apply FullControl::MacroMule::FullControl[/sheetbutton]
-    --?[$EffectType] -eq 9 |+[sheetbutton]Apply Stun::MacroMule::Stun[/sheetbutton]
-    --?[&EffectType] -eq 10 |+[sheetbutton]Apply Weaken::MacroMule::Weaken[/sheetbutton]
-    --?[$EffectType] -eq 11 |+[sheetbutton]Apply DisableSpecials::MacroMule::DisableSpecialSense[/sheetbutton]
-
-    --/| ==========NEW SECONDARY EFFECT BUTTONS==========
-    --?[$Ricochet] -eq 1|+[sheetbutton]Ricochet Attack::MacroMule::RicochetAttack[/sheetbutton]
-    --?[$DoubleTap] -eq 1|+[sheetbutton]Double-Tap Attack::MacroMule::DoubleTapAttack[/sheetbutton]
-    --?[$ExplosiveCritical] -eq 1|+[sheetbutton]Explosive Critical::MacroMule::ExplosiveCritical[/sheetbutton]
-    --?[$ExtraAttack] -eq 1|+[sheetbutton]Extra Attack::MacroMule::ExtraAttack[/sheetbutton]
-    --?[$Splinter] -eq 1|+[sheetbutton]Splinter Attack::MacroMule::SplinterAttack[/sheetbutton]
 
 
-  --<|
-}}
+
+  --<|}}

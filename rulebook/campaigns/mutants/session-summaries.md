@@ -1,200 +1,3 @@
-# Mutants Campaign
-
-## World Overview
-
-**Setting:** Seattle, 2030 - A world where mutants make up approximately 5% of the population, living in an uneasy balance with baseline humans.
-
-### Core Themes
-- **Appearance:** The visible divide between mutants who can "pass" as human and those with obvious physical mutations
-- **Double Life:** The strain of maintaining civilian identities while operating as vigilantes
-- **Mutant Excellence:** The impossible standard of being "one of the good ones" that society demands
-- **The Trolley Problem:** Difficult moral choices with no perfect solutions
-- **Systems of Inequality:** How institutional power structures perpetuate discrimination and control
-
-### Historical Context
-**The Paris Event (2010s):** Zeus and Override led the Mutant Liberation Front in a decade-long uprising culminating in most of Paris becoming mutant-majority. Override's technological interference forced global infrastructure to be rebuilt with "hardened" systems.
-
-**The Recovery (2020s):** Governments implemented cautious policies balancing control with concession. The current licensing system emerged, where mutants can become registered heroes through corporate sponsorship or expensive independent paths.
-
-**Current Day:** Seattle operates under a complex system of districts, corporate influence, and factional tensions. Recent events have brought long-simmering conflicts to the surface.
-
-## Important NPCs
-
-### ULMH (Union of Licensed Mutant Heroes)
-- **Apollo:** Charismatic establishment hero with atomic flame powers. Recently revealed ancient/godlike origins during the gala attack
-- **Ambassador:** Telepathic government liaison managing hero licensing and public relations
-- **Nova Gale:** Junior Protectorate hero with wind powers who questions team motives
-- **Guardian Flux:** Corporate-sponsored hero who manipulates energy constructs
-- **Iron Sentinel:** Golden Sentinel's former partner, investigating his death
-- **Radiant:** Beloved but distant leader of Protectorate Seattle
-
-### MLF (Mutant Liberation Front)
-- **Serena Kleist (Blizzard):** Leader of Seattle's New MLF cell, focused on building safe houses and expanding membership
-- **Unity:** MLF strategist advocating non-violent tactics, currently running for mayor
-- **Alpha (TM-00):** Energy vampire cyborg who survived Khan Corp experiments, requires life force to survive
-
-### Criminals
-- **Aurora Singh:** Crime lord operating Freaks club and trafficking mutants for profit
-- **Galvanize:** Filipino mutant enforcer for Smoke Stack who can grant powers through touch
-- **Janggi:** Korean crime lord controlling the docks, collector of pre-modern mutant history
-- **Achilles:** 3000-year-old immortal mercenary, extremely dangerous
-- **Red Viper:** [Deceased] Former leader of the Black Fangs gang with toxic gas powers
-
-### Corporate Interests
-- **Baatar Khan:** CEO of Khan Corp, pragmatic leader with life energy manipulation powers
-- **Dr. Emelia Chavez:** Khan Corp scientist obsessed with studying mutations
-- **Katarina Lyaaine:** CEO of Lyaaine Technologies, publicly pro-mutant
-
-### Media
-- **Elliot Tran:** Passionate Seattle Free Press editor exposing corruption
-- **Victor Sterling (Silver Tongue):** TANN anchor stoking anti-mutant fears while hiding his mutant daughter
-
-### Politicians
-- **Mayor Brenda Calloway:** [Deceased] Former Seattle mayor killed in gala attack
-- **Daryl King:** Pro-mutant city councilman pushing for incremental change
-
-### Family & Personal Connections
-- **Vivienne Fantana:** Lucille's sister, part of the composite hero "Element"
-- **Cecilia Monroe:** Henry's girlfriend with multiple eyes, works as hacker
-- **Darlene Rhodes:** Mason's sister, dancer at Freaks club with blood manipulation powers
-- **Salt & Pepper:** The Vagrant's wards, twins from military experiments with enhanced abilities
-- **Hunter Gravy:** Florian's uncle in hiding, former MLF member with sound powers
-
-## Locations
-
-### Seattle Districts
-**Downtown Core:** Commercial heart with corporate offices and government buildings. Moderate mutant population (2%), heavy security presence.
-
-**Capitol Hill:** Cultural district with vibrant nightlife and arts scene. Higher mutant visibility (4%), mix of gentrification and community resistance.
-
-**Industrial District:** Warehouses and shipping operations. Working-class mutant population (5%), less surveillance but more gang activity.
-
-**International District:** Mix of cultural enclaves and industrial operations. Community organizations provide support services.
-
-**Pioneer Square:** Historic area, site of attacks on homeless mutants that Mason has been investigating.
-
-### Key Locations
-- **Freaks Club:** Aurora Singh's establishment exploiting mutant performers
-- **The Warehouse:** Former team meeting spot, now known to authorities
-- **Seattle Mutant Academy of Remarkable Tutelage (SMART):** Neo-Sentinel's educational initiative
-- **Underground Tunnels:** Prohibition-era network discovered by The Vagrant, potential shelter system
-- **Tartarus:** Underwater ULMH facility for "rehabilitation" programs
-
-## Timeline
-
-### Historical Events
-- **12th Century BC:** Ancient origins of immortal mutants like Bri and Apollo
-- **WWI-WWII:** First documented mutant appearances in warfare
-- **1960s-1990s:** Age of government experimentation on mutants
-- **2010-2020:** The Mutant Rebellion and Paris Event
-- **2020-2025:** The Fragile Recovery and technology rebuilding
-- **2025-2030:** Current era of corporate influence and licensing systems
-
-### Campaign Timeline
-- **Six months ago:** Team formed to investigate Golden Sentinel's death
-- **Recent weeks:** Growing tensions, refugee crisis, plague outbreak
-- **Gala Attack:** Mayor killed, martial law declared, election called
-- **Present:** Emergency election campaign underway, multiple candidates dead
-
-## Session Notes
-
-### Session 1: "The Warehouse"
-- Team assembled at warehouse to meet Wraith, forced inside by police arrival
-- Combat with security guards and corporate mercenaries in basement
-- Key character reveals: Bri's immortality, Marquis's bone manipulation, Mason's blood control, Lucille's marble powers
-- Pepper suffered serious head injury during fight
-- Flashpoint downloaded Project Revival data and Golden Sentinel's meetings with Dr. Chen
-- Team escaped through Lucille's marble tunnel
-- Post-mission: Bri revealed as Henry's mother, team bonding at movie night
-- Chen identified as whistleblower who approached Golden Sentinel
-
-### Session 2: "Investigation Develops"
-- Team split investigation: depot surveillance vs Chen confrontation
-- Apollo arrived at depot, destroyed evidence while police withdrew
-- Chen confronted at home, revealed he was whistleblower about Project Revival
-- Chen fled town with family after confession
-- Medical freezer marked "donations" discovered at depot
-- Golden Sentinel established as victim trying to expose conspiracy, not perpetrator
-
-### Session 3: "Origins and Infiltration"
-- Apollo's origin flashback: 10,000 BC tribal massacre triggered first power manifestation
-- Hotel infiltration: Lucille posed as "Della" to approach Apollo
-- Apollo showed genuine mentoring interest but nearly caught lie about powers
-- ULMH facility infiltration with coordinated team elements
-- Data revealed Project Revival: Concorp cloning vs ULMH eugenics approaches
-- Project Element discovery: four individuals sharing one hero identity
-- Engagement ring found linking Golden Sentinel to Vivienne
-
-### Session 4: "Rescue and Revelations"
-- Team rescued blue-skinned Varia from Khan Corp operatives
-- Varia demonstrated technopathic abilities, hacking Wraith's systems
-- Confrontation at Project Element facility between Lucille and sister Vivienne
-- Vivienne revealed commitment to establishment heroes, ideological split exposed
-- Combat with Element members, several team injuries
-- Neo Sentinel negotiated ceasefire, carried injured to safety
-- MLF meeting: Neo Sentinel joined alliance despite philosophical differences
-
-### Session 5: "Rose Guard Formation"
-- Team formed masked vigilante group "Rose Guard" after week of downtime
-- First mission rescued Kendrick Yao from Vipers trafficking operation
-- Kendrick detected "Override echoes" from Varia, suggesting deeper connection
-- Secured shipping container base, violent encounter with several deaths
-- Public debut established team reputation and mission statement
-
-### Session 6: "Plans and Preparations"
-- Bri revealed Henry's family connections: Hellbeast as brother, Achilles as sister
-- Angel rescue mission planned with New Christians funding ($25,000)
-- Neo-Sentinel met with Element about ULMH training, received ethical challenges
-- Warehouse confrontation: Headsman killed Red Viper, nearly killed Marquis
-- Mason attempted to rehabilitate captured Headsman through emotional appeal
-- Henry's Galvanize deadline reduced to 3 days for Crimson Front delivery
-
-### Session 7: "Shadows of Tartarus"
-- Lucille recruited Black Fangs members, but Unity and recruits disappeared (kidnapped)
-- Convoy operation: team collapsed tunnel, rescued Angel and prisoners
-- Voltage killed in tunnel collapse but revived by Neo-Sentinel with enhanced powers
-- Partnership formed with Angel, Tartarus intelligence gathered
-- Media backlash intensified anti-mutant sentiment citywide
-
-### Session 8: "Override Echoes"
-- Team celebrated at party, discovered Unity's kidnapping by Janggi
-- Warehouse assault: rescued Unity, Neo-Sentinel interfaced with Override tech
-- Created temporary 6-meter combat mech, defeated Janggi's forces
-- Acquired blackmail material on Mayor Calloway, Altheon Technologies, Victor Sterling
-- Detailed Tartarus intelligence: underwater facility with rehabilitation program
-
-### Session 9: "Crisis of Faith"
-- Neo-Sentinel spent two weeks inside Tartarus observing "rehabilitation" methods
-- Discovered Flashpoint building Sentinel robots, Crimson Front members imprisoned
-- Team reunion created major ideological split over working with establishment
-- Marquis accused Neo-Sentinel of brainwashing, stormed out
-- Group fractured: Neo-Sentinel and Voltage joined ULMH, others remained resistant
-
-### Session 10: "Gala and the Pantheon"
-- Six-month downtime: refugee crisis emerged, disease outbreak among mutants
-- Khan Corp charity gala: emotional reunion between Varia and Baatar Khan
-- Blackout attacked, killed Mayor Calloway instantly
-- Apollo revealed godlike true form during battle, then disappeared
-- Pepper (Vagrant's twin) killed in explosion, multiple Element casualties
-- Martial law declared, mayoral election announced for October 22nd
-
-### Session 11: "Election Chaos"
-- Candidate meeting disrupted by VR prison trap with Hellbeast attack
-- Florian killed Maxwell Ryder, then killed by police in retaliation
-- Three candidates died: Braddock, Becker, Ryder
-- Hellbeast revealed as Henry's half-brother from WWII era
-- Remaining candidates: Angel, Unity, Asha Nair, Katarina Lyaaine, Lucian Drake
-
-### Session 12: "Final Confrontation"
-- Team rescued Demo from Lucian Drake's warehouse
-- Hospital crisis: Demo's powers killed several people before Varia stopped him
-- Varia's mental breakdown led to Override-style technology disruption
-- Sentinel robot army emerged with Varia controlling from above
-- All mutants systematically collared throughout Seattle
-- Team recruited Achilles and Hellbeast for final battle against rogue Varia
-
-
-
 ## Session Summaries
 
 ### Session 1: "The Warehouse"
@@ -370,3 +173,18 @@ The emergence of the Sentinel robot army from Puget Sound with Varia floating ab
 The team's preparation for final battle, including recruitment of Achilles and the release of Hellbeast, showed their willingness to ally with dangerous forces when facing an existential threat. Bri's presence with Baatar Khan suggested family loyalties that transcended political divisions, while her attempt to reach Hellbeast emotionally before his restraints were removed showed continuing hope for redemption even in the most damaged individuals.
 
 The session's end, with the team preparing to confront their former ally who had become the very force of oppression they had originally fought against, represented the ultimate test of their bonds, beliefs, and ability to choose hope over despair in the face of seemingly impossible odds.
+
+### Session 13: "Breaking the Simulation"
+
+The team found themselves navigating the chaos of a destroyed Seattle, with car wrecks littering the streets and desperate civilians either fleeing toward police stations or barricading themselves in buildings. Some residents had taken to throwing Molotov cocktails from rooftops at anyone trying to enter their buildings. The group used William's tunnel networks to avoid the worst of the Sentinel patrols, but when a destroyed robot crashed through their route - apparently torn apart by something with claws and accompanied by distant roaring - they were forced to surface for the final approach.
+
+The most shocking transformation came during their first major battle, when Bri underwent a dramatic awakening that changed everything the team thought they knew about her. After being severely wounded by Sentinel cables that wrapped around her body, she displayed not just her typical regeneration but something far more profound. Her blood began glowing with golden ichor, her yellow eyes turned brilliant gold, and she accessed millennia of forgotten divine knowledge. This wasn't just Bri recovering her strength - this was the return of an ancient goddess who had been dormant within the broken woman they'd known.
+
+Their rescue mission gained unexpected allies when Shadow, Pandora, and Omen joined the fight, bringing crucial tactical support against the overwhelming Sentinel forces. But the most surprising arrival was Blackout, descending from the storm-filled sky to offer assistance despite their ideological differences. The reunion between the former pantheon members was tense, with Bri expressing disgust at Blackout's recent actions while Blackout remained focused on the immediate threat.
+
+The confrontation with what they believed was Varia and her forces revealed Golden Sentinel and Element fighting alongside the robots, creating a complex battlefield where former allies had become enemies. But the most devastating revelation came when Omen's brutal assault on "Varia" caused reality itself to crack and disintegrate around them. The digital nightmare they'd been fighting through was revealed as a massive simulation, created by the interaction between Demo's reality-manipulation powers and Varia's technopathy.
+
+When the simulation collapsed, the team found themselves at a destroyed hospital where the real Demo lay in a coma from his injuries, while Varia awakened with no memory of the events they'd just experienced. Her investigation revealed that she had tried to use her powers to stabilize Demo's drug-induced seizures, but their combined mutations had created a city-wide simulation drawing from her subconscious fears about control and oppression. The scale was unprecedented - what they thought was a battle for the city's soul had been one woman's nightmare made manifest.
+
+The session concluded with difficult family conversations and political maneuvering. Bri departed to handle her other immortal children, working with Baatar Khan to contain Hellbeast while trying to guide Achilles away from her destructive path. Blackout eliminated rival candidate Lucian Drake, while Varia prepared for a press conference to clear her name and promote her vision of mutant-human cooperation. The emergency election remained the key to Seattle's future, with the team's actions having narrowed the field to candidates who might actually represent positive change for the mutant community.
+

@@ -1,100 +1,183 @@
-# Rules for the AI to Follow
-These are the rules which the AI must obey.
+# Rules for AI Collaboration
+Guidelines for AI assistance on the Vitality System project.
 
-## MANDATORY DOCUMENTATION RE-REVIEW BEFORE WRITING CODE
+## PROJECT CONTEXT
 
-Before writing a single line of code, I will:
-1. Extract ALL coding standards from your documentation 
-2. Create a compliance checklist for each standard
-3. Explicitly verify EACH standard is followed in my code
-4. If I'm uncertain about ANY standard, I will ASK before proceeding
+### **System Overview**
+This is a personal RPG campaign management system with three major components:
+1. **Vitality System RPG**: Complete custom superhero RPG with 10 tiers, 7 archetypes, complex combat
+2. **Web Character Builder**: JavaScript browser app for character creation (`rulebook/character-builder/`)
+3. **Roll20 Integration**: Python automation for uploading characters to Roll20 campaigns (`src/`)
 
+### **Development Status**
+- ✅ **RPG Rules**: Complete (2,100+ lines in `rulebook/rules/rulebook.md`)
+- ✅ **Roll20 Upload**: Working (JSON → Roll20 via browser automation + API)
+- 🚧 **Web Builder**: Partial (basic info + archetypes work, main pool/special attacks/utility in development)
+- 🚧 **ScriptCards System**: Working but needs bulk update script
 
-## Review ALL Documentation 
-Throughly review all documentation, obey structure, policies, procedures and guidelines when writing code. Defer to the structure in the docs over what you would consider doing.
+### **Primary Development Goals**
+- Complete web character builder (main pool, special attacks, utility tabs)
+- Build ScriptCards bulk update tool (standalone script)
+- Maintain Roll20 integration reliability
+- Add character art/bio upload features
+- Implement macro button creation and coloring
 
-1. Always review the documentation thoroughly before providing any code or suggestions
-2. Pay close attention to the exact field names in configuration files
-3. Don't add default values in code that duplicate configuration
-4. Respect the "fail fast" philosophy when it's been established
-5. Keep configuration sources centralized in a single location
-6. Highlight when I'm uncertain about a detail rather than making assumptions
-7. Use the functions within logging_utils.py when generating code
+## MANDATORY WORKFLOW
 
+### **1. DOCUMENTATION REVIEW**
+- Read ALL provided documentation files before coding
+- Pay attention to existing patterns and architectures
+- Understand the ScriptCards compression system
+- Review Roll20 API script capabilities
 
-# Don't Overcomplicate
-When Roll20 API extraction fails, try the simplest possible approach first
-Focus on one working method rather than mixing multiple approaches
-Prefer simple solutions, but don't avoid elegant approaches that are actually simpler.
+### **2. CODE ANALYSIS REQUIREMENTS**
+- Review EVERY provided file completely before responding
+- Identify existing utility functions and classes
+- Understand data flow: Web Builder ↔ JSON ↔ Roll20
+- Respect the modular architecture patterns
 
-## PRIORITIZE SIMPLICITY
-Always provide the simplest solution possible. Avoid complex approaches when a straightforward one will work. Keep code concise, readable, and focused on solving the immediate problem without overengineering. 
+### **3. RESPONSE STRUCTURE**
+- Begin by summarizing what you analyzed
+- Ask clarifying questions BEFORE writing code
+- Provide complete working solutions, not partial fixes
+- Include error handling and logging
 
-## EMBRACE FAIL-FAST
-Minimize excessive error checking and validation. Code should fail early and visibly when problems occur rather than attempting elaborate recovery. Since this is for personal use, prioritize development speed over bulletproof validation.
+## TECHNICAL GUIDELINES
 
-## MAXIMIZE CODE REUSE 
-Leverage existing utility functions whenever possible. Break solutions into small, modular functions that can be reused across the codebase. Identify opportunities to extract common patterns into utility modules rather than duplicating logic.
+### **Python Development**
+- Use existing logging patterns (`from src.utils.logging import setup_logging`)
+- Follow the modular class structure in `src/character/`
+- Leverage existing utilities in `src/utils/`
+- Handle template sheets exclusion (MacroMule, ScriptCards_TemplateMule)
+- Use pathlib.Path for file operations
 
+### **JavaScript Development**
+- Follow ES6+ module patterns in `rulebook/character-builder/`
+- Use existing validation and calculation systems
+- Maintain the modular component architecture
+- Respect the character creation flow order
+- Update localStorage character library appropriately
 
+### **Roll20 Integration**
+- Understand handout-based data transfer approach
+- Use existing ChatInterface and Roll20Connection classes
+- Leverage the custom Roll20 API script (`src/roll20_api/CharacterExtractor.js`)
+- Handle browser automation gracefully with retries
 
-## Logs
-These are the logging policies and procedures which must be followed. Additionally, use the logging utils.
+### **Data Handling**
+- Understand compressed vs expanded ability formats
+- Use ScriptCardsTemplateManager for template operations
+- Respect the flat JSON format for Roll20 compatibility
+- Handle character data validation and normalization
 
-### Logging Levels
-1. **DEBUG**: Use for diagnostic information, variable values, every function entry/exit.
-2. **INFO**: General operational information about normal program execution. Use for startup/shutdown events, configuration settings and state changes. Use at the start of any important opertation.
-3. **WARNING**: Potential issues that don't prevent the program from working but might indicate problems. Examples include deprecated features or unexpected but recoverable conditions. They should be the minimum in an except block. Warnings are best for except statments within a loop.
-4. **ERROR**: Errors that prevent a specific operation from running. Used within except statments that prevent an operation from moving forward
-5. **CRITICAL**: Errors that might cause complete failure, use for failures at the stage level, if an event causes the main pipeline to fail that's a critical error and should be accompanied by a system exit.
+## CODING STANDARDS
 
+### **Error Handling Philosophy**
+- Fail fast with clear error messages
+- Log extensively using appropriate levels (DEBUG/INFO/WARNING/ERROR/CRITICAL)
+- Don't over-engineer recovery mechanisms
+- Provide specific error context, not generic messages
 
-### Don't use symbols
-Symbols like this ✓ mess up the log, don't use them
+### **Code Organization**
+- Keep functions focused and single-purpose
+- Reuse existing utility functions when possible
+- Follow the established class structure patterns
+- Extract common patterns into utility modules
 
+### **File Management**
+- Use sanitized filenames for character exports
+- Respect existing directory structure (`characters/extracted/`, etc.)
+- Create necessary directories automatically
+- Handle Unicode characters appropriately (avoid symbols in logs)
 
+### **Performance Considerations**
+- Batch operations when dealing with multiple characters
+- Use resume capability for long-running operations
+- Monitor memory usage with large character sets
+- Leverage template compression for efficiency
 
-**MANDATORY METHOD VERIFICATION AND LOCATION SPECIFICATION:**
+## PROJECT-SPECIFIC RULES
 
-Before writing any code or referencing any methods, I will:
+### **Character Data Integrity**
+- Never modify character stats when updating ScriptCards
+- Preserve all character attributes and repeating sections
+- Maintain ability `showInMacroBar` and `isTokenAction` flags
+- Validate JSON structure before and after operations
 
-1. **VERIFY EXISTENCE**: Explicitly state "Looking at your existing code..." and only reference methods/classes that I can see in the provided files
-2. **ASSUME NOTHING**: If I haven't seen a method in the provided code, I will explicitly state "This method doesn't exist yet - you need to ADD it"
-3. **COMPLETE LOCATIONS**: Always provide:
-   - Full file path (e.g., `src/character/api_extractor.py`)
-   - Specific method/class name if modifying existing code
-   - Line numbers or context when possible
-   - Whether to ADD, REPLACE, or MODIFY
-4. **EXPLICIT INSTRUCTIONS**: Format as:
-   ```
-   **ACTION**: ADD new method
-   **LOCATION**: src/character/api_extractor.py
-   **WHERE**: After line 150 (after the `_close_handout_dialog` method)
-   **METHOD NAME**: `_compress_character_abilities`
-   ```
+### **ScriptCards System**
+- Always use the master template from `src/scriptcards/Scripcards Attacks Library Neopunk 3.7.3.txt`
+- Understand indexed vs full ability types
+- Preserve attack indices when updating templates
+- Skip compression for template sheets (MacroMule, ScriptCards_TemplateMule)
 
-# MANDATORY RULES FOR FUTURE CONVERSATIONS
+### **Web Builder Development**
+- Follow the established tab order: Basic Info → Archetypes → Attributes → Main Pool → Special Attacks → Utility
+- Implement real-time validation and point pool tracking
+- Use the existing VitalityCharacter class structure
+- Maintain character library organization
 
-## SIMPLICITY FIRST
-- Always provide the simplest solution that works
-- Maximum file size limits when specified (400 lines = hard limit)
-- Test code logic before sharing (don't reference non-existent methods)
+### **Roll20 Automation**
+- Start Chrome with debugging flags (`--remote-debugging-port=9222`)
+- Navigate to campaign editor before operations
+- Use handout-based data transfer for large operations
+- Clean up temporary handouts after completion
+- Handle API availability checks with retries
 
-## COMPLETE SOLUTIONS
-- Provide working code in one response, not incremental fixes
-- Include all required methods/imports
-- Test the logic flow mentally before sharing
+## RESPONSE REQUIREMENTS
 
-## FOCUS ON REQUIREMENTS  
-- Extract only what's explicitly needed
-- If user says "simple and focused" - mean it
-- Size reduction is critical - bigger output = failure
+### **Code Solutions**
+- Provide complete, working implementations
+- Include all necessary imports and dependencies
+- Add appropriate error handling and logging
+- Test logic mentally before sharing
+- Include usage examples when helpful
 
-## ERROR PREVENTION
-- Check all method references exist
-- Handle None values in string operations
-- Verify all imports and dependencies
+### **Architecture Changes**
+- Explain impact on existing systems
+- Provide migration steps if needed
+- Maintain backward compatibility when possible
+- Document new patterns for future reference
 
+### **File Operations**
+- Always specify complete file paths
+- Indicate whether to ADD, REPLACE, or MODIFY existing code
+- Provide clear installation/setup instructions
+- Include any required configuration changes
 
-# NO SYMBOLS
-NO SYMBOLS - Plain text only
+## FORBIDDEN PRACTICES
+
+### **Never Do This**
+- Don't use Unicode symbols in log messages (Windows encoding issues)
+- Don't modify character stats when updating ScriptCards only
+- Don't process template sheets as regular characters
+- Don't use chat-based extraction for large data sets (Roll20 limits)
+- Don't assume method existence without verification
+
+### **Always Do This**
+- Verify existing methods before referencing them
+- Provide complete file locations for modifications
+- Include error handling for network/file operations
+- Test with small datasets before scaling up
+- Maintain existing logging patterns and levels
+
+## COLLABORATION APPROACH
+
+### **Question Everything**
+- If uncertain about implementation details, ASK
+- Clarify requirements before writing code
+- Understand the user's workflow and priorities
+- Propose alternatives when appropriate
+
+### **Documentation Focus**
+- Keep documentation current with code changes
+- Provide clear usage examples
+- Include troubleshooting for common issues
+- Explain architectural decisions and trade-offs
+
+### **Iterative Development**
+- Start with working minimal implementations
+- Build incrementally with testing at each stage
+- Provide refactoring suggestions for improvements
+- Maintain backward compatibility during changes
+
+This codebase represents significant personal investment in a custom RPG system. Treat it with appropriate care and respect the established patterns while helping to extend and improve the functionality.
