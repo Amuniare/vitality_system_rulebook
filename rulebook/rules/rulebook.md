@@ -2,34 +2,43 @@
 
 ### **DICE SYSTEM**
 **D20 Rolls**
-- Used For: Accuracy, Conditions, Skill Checks vs NPCs
-- Natural 20: Auto-success + add Tier again to Damage/Condition rolls
+- **Used For**: Accuracy Checks, Condition Checks, and rolls determined by random chance.
+
+- **Natural 20**: Auto-success for Accuracy and Condition checks. Additionally, a Natural 20 on an Accuracy Check adds your Tier to the Damage and/or Condition roll of the attack. A Natural 20 on the Condition Check also adds the Tier bonus again.
 
 **3D6 Rolls** 
-- Used For: Damage, Skill Checks
-- Roll 6: Roll additional d6 and add to total (exploding dice)
+- **Used For**: Damage Rolls and Skill Checks
+
+- **Rolling a 6**: When you roll a 6, roll an additional d6 and add it to the total. These additional dice can also allow you to roll an extra die if they land on a 6. Add all dice rolled to the total.
 
 ### **TIER SYSTEM**
-**Range:** 0-10  
-**Starting Tier:** 4 (all characters)  
-**Effects:** Bonus to all actions, max attribute ranks, point pools, reduces randomness
-
-### **COMBAT RESOLUTION SEQUENCE**
-1. **Declare Attack** → Type and target
-2. **Accuracy Check** → 1d20 + Tier + Focus vs Avoidance  
-3. **Effect Roll** → Damage or Condition
-4. **Calculate** → Apply reductions/resistances
-5. **Apply Results** → Reduce HP or apply condition
-
-### **CORE FORMULAS**
-**Accuracy:** 1d20 + Tier + Focus  
-**Damage:** 3d6 + Tier + (Power × 1.5) - Durability  
-**Conditions:** 1d20 + Tier + Power vs Resistance  
+- 0 - Untrained
+- 1 - Beginner
+- 2 - Novice
+- 3 - Developing
+- 4 - Competent (Standard Starting Tier)
+- 5 - Professional
+- 6 - Expert
+- 7 - Veteran
+- 8 - Elite
+- 9 - Master
+- 10 - Legendary
+ 
+Your Tier grants a bonus to most actions, your core stats, your avaiable character points, and determines your max attribute ranks. Anything that refers to your Tier is referencing this number.
 
 ### **ATTRIBUTES**
-**Combat AP:** Tier × 2 (Focus, Power, Mobility, Endurance)  
-**Utility AP:** Equal to Tier (Awareness, Communication, Intelligence)  
-**Maximum per Attribute:** Cannot exceed Tier
+Attributes represent what type of things your character is good at in combat and utility situations. 
+
+**Combat Attributes** - You have a number of Combat Attribute Points equal to your Tier x 2. Distribute those points among the 4 Combat Attributes below, you cannot exceed your Tier in any one Attribute.
+- **Focus** - Your character's prescision, fighting skill, and mental fortitude. Adds to your Accuracy Checks, Initiative Checks, and Resolve Score.  
+- **Power** - Your character's strength both physically and/or with their powers. Adds to your Damage Rolls, Condition Checks, Capacity Score, and Sttability Score.
+- **Mobility** - Your character's speed and reflexes. Adds to your Movement Speed, Initiative, and Avoidance Score.
+- **Endurance** - Your chracter's physical toughness and fortitude. Adds to your Vitality and Durability Scores.   
+
+**Utility Attributes** - You have a number of Utility Attribute Points equal to your Tier. Distribute those points among the 3 Utility Attributes below.
+- **Awareness** - Your character's ability to notice things in the world. Also adds to your Initiative. Awareness players will have an easier time picking up on things already set in the narrative such as finding hidden information.
+- **Communication** - Your character’s social skills. Communication players are able to better shape the narrative to their goals such as persuading a truce between two warring factions.
+- **Intelligence** - Your character’s knowledge and reasoning. Intelligence players are able to unlock paths previously inaccesible such as hacking into a database to add the party to the guest list.
 
 ### **DEFENSES**
 **Avoidance:** 10 + Tier + Mobility  
@@ -37,6 +46,11 @@
 **Resolve:** 10 + Tier + Focus  
 **Stability:** 10 + Tier + Power  
 **Vitality:** 10 + Tier + Endurance  
+
+### **CORE FORMULAS**
+**Accuracy Check:** 1d20 + Tier + Focus vs Target's Avoidance  
+**Damage Roll:** 3d6 + Tier + (Power × 1.5) - Target's Durability  
+**Condition Checks:** 1d20 + Tier + Power vs Target's Resistance  
 
 ### **HEALTH SYSTEM**
 **Base HP:** 100  
@@ -99,6 +113,13 @@ Upgrade Options:
 
 
 #### **FIGHTING ACTIONS**
+
+### **COMBAT RESOLUTION SEQUENCE**
+1. **Declare Attack** → Type and target
+2. **Accuracy Check** → 1d20 + Tier + Focus vs Avoidance  
+3. **Effect Roll** → Damage or Condition
+4. **Calculate** → Apply reductions/resistances
+5. **Apply Results** → Reduce HP or apply condition
 
 **Base Attack** → Default combat action available to everyone using character's base statistics
 
