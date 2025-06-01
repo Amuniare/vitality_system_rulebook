@@ -1,178 +1,96 @@
-# Session Notes and Summaries
+# Session Notes
 
-## Session 1: "The Warehouse"
-The campaign began with seven unlikely allies answering a cryptic call from the mysterious hacker known as Wraith. The meeting was meant to be a simple information exchange about Golden Sentinel's death, but when police sirens approached, the group was forced into their first real test as a team.
-
-**Key Events:**
-- Team assembled at warehouse, forced inside by police arrival
-- Combat with security guards and corporate mercenaries in basement
-- Pepper suffered serious head injury during fight
-- Flashpoint downloaded Project Revival data
-- Team escaped through Lucille's marble tunnel
-- Bri revealed as Henry's mother during post-mission bonding
-
-**Revelations:**
-- Golden Sentinel established as victim trying to expose conspiracy
-- Project Revival involves both Concorp and ULMH factions
-- Team members' powers and personalities established under pressure
+## Session 1: "The Warehouse Meeting"
+- Seven individuals answered Wraith's call about Golden Sentinel's death
+- Police arrival forced team inside warehouse with corporate mercenaries
+- Combat in basement, Pepper suffered head injury, Flashpoint downloaded Project Revival data
+- Escaped through Lucille's marble tunnel
+- Post-mission: Bri revealed as Henry's mother
 
 ## Session 2: "Investigation Develops"
-The aftermath brought the team together for movie night while pursuing separate investigation leads about the conspiracy Golden Sentinel had discovered.
-
-**Key Events:**
-- Team split investigation: depot surveillance vs Chen confrontation
-- Apollo destroyed evidence while police withdrew
-- Dr. Chen revealed as whistleblower who approached Golden Sentinel
+- Team split investigation between depot surveillance and Chen confrontation
+- Apollo destroyed evidence at depot while police withdrew on his command
+- Dr. Chen revealed he approached Golden Sentinel as whistleblower about Project Revival
 - Chen fled town with family after confession
-- Medical freezer marked "donations" discovered
-
-**Revelations:**
-- Apollo's involvement in evidence destruction
-- Golden Sentinel as legitimate whistleblower, not rogue hero
-- Deeper medical conspiracy involving organ trafficking
+- Golden Sentinel reframed as victim rather than rogue hero
 
 ## Session 3: "Origins and Infiltration"
-Apollo's ancient origins were revealed through flashback while the team conducted their most sophisticated operation yet.
-
-**Key Events:**
-- Apollo's origin flashback: 10,000 BC tribal massacre
-- Hotel infiltration with Lucille posing as "Della"
-- ULMH facility infiltration with coordinated elements
-- Project Element discovery: composite hero identity
-- Engagement ring found linking Golden Sentinel to Vivienne
-
-**Revelations:**
-- Apollo's godlike nature and ancient trauma
-- ULMH's eugenics approach to mutant management
-- Personal stakes through Vivienne connection
+- Apollo origin flashback: 10,000 BC tribal massacre, first power manifestation
+- Lucille infiltrated hotel event posing as "Della" seeking hero mentorship
+- Coordinated ULMH facility operation with multiple team elements
+- Discovered Project Element: four mutants sharing one hero identity
+- Found Golden Sentinel's engagement ring inscribed for Vivienne
 
 ## Session 4: "Rescue and Revelations"
-The rescue of Varia became a turning point that added their most powerful and controversial member.
-
-**Key Events:**
-- Team rescued Varia from Khan Corp operatives
-- Confrontation at Project Element facility
-- Combat with Element members, several injuries
-- Neo Sentinel joined MLF alliance
-- Ideological split between Lucille and sister Vivienne
-
-**Revelations:**
-- Varia's Override-level technological abilities
-- Family divisions reflecting broader mutant community schisms
-- Neo-Sentinel's evolution from refugee to resistance member
+- Rescued Varia from Khan Corp operatives, she joined the team
+- Confronted Project Element at facility, fought multiple Element members
+- Lucille discovered sister Vivienne willingly joined composite hero program
+- Ideological split between sisters over cooperation vs resistance
+- Neo-Sentinel joined MLF alliance despite philosophical differences
 
 ## Session 5: "Rose Guard Formation"
-The team evolved from investigators to public vigilantes with their first official mission.
-
-**Key Events:**
 - Team formed "Rose Guard" masked vigilante identity
-- Rescued Kendrick Yao from trafficking operation
-- Secured shipping container base
-- Public debut established reputation
-
-**Revelations:**
-- Kendrick detected "Override echoes" in Varia
-- Team committed to proactive heroism over reactive investigation
-- Media attention brought both validation and danger
+- First major operation against human trafficking, rescued Kendrick Yao
+- Kendrick detected "Override echoes" in Varia, mentioned "second coming"
+- Acquired shipping container base, MLF took over facility
+- Public debut through media coverage
 
 ## Session 6: "Plans and Preparations"
-Family revelations and dangerous alliances shaped the team's approach to larger conflicts.
-
-**Key Events:**
-- Bri revealed Henry's immortal family connections
-- Angel rescue mission planned with New Christians
-- Warehouse confrontation with Headsman
-- Red Viper killed, Marquis nearly died from poison
-
-**Revelations:**
-- Henry's connection to ancient immortal lineage
-- Headsman as both threat and potential asset
-- Growing danger from multiple criminal factions
+- Bri revealed Henry's immortal family connections (Hellbeast, Achillas, Baatar Khan)
+- Alliance formed with New Christians, $25,000 for Angel rescue mission
+- Planned convoy operation to free Angel from transport
+- Warehouse confrontation with Headsman, Red Viper killed Henry nearly died from poison
+- Mason attempted to rehabilitate Headsman through emotional appeal
 
 ## Session 7: "Shadows of Tartarus"
-The team's most ambitious operation revealed the scope of establishment control methods.
-
-**Key Events:**
-- Unity kidnapped by Janggi's organization
-- Convoy operation collapsed tunnel, killed Voltage
-- Neo-Sentinel revived Voltage with enhanced powers
-- Partnership formed with Angel
-- Detailed Tartarus intelligence gathered
-
-**Revelations:**
-- Override technology in criminal hands
-- Neo-Sentinel's growing connection to Override systems
-- ULMH's "rehabilitation" programs at underwater facility
+- Unity and MLF recruits kidnapped by Janggi's organization
+- Convoy operation: collapsed tunnel, freed Angel and other prisoners
+- Lucille's decision killed Voltage, Neo-Sentinel revived him with enhanced powers
+- Discovered Override technology in criminal hands
+- Gathered detailed Tartarus intelligence about underwater rehabilitation facility
 
 ## Session 8: "Override Echoes"
-Team celebration turned to crisis as they confronted their most complex enemy yet.
-
-**Key Events:**
-- Party interrupted by Unity's disappearance
-- Warehouse assault against Janggi's forces
-- Neo-Sentinel created temporary combat mech
+- Celebration party revealed growing team tensions
+- Investigated Unity's disappearance, led to Janggi's warehouse
+- Neo-Sentinel showed fixation on Override tech, created temporary combat mech
+- Rescued Unity, defeated Janggi's forces
 - Acquired blackmail material on city officials
 
-**Revelations:**
-- Neo-Sentinel's involuntary compulsion toward Override tech
-- Political corruption reaching highest levels
-- Growing sophistication of criminal mutant operations
-
 ## Session 9: "Crisis of Faith"
-Fundamental disagreements about methods and philosophy fractured the team.
-
-**Key Events:**
-- Neo-Sentinel spent two weeks inside Tartarus
-- Team reunion created ideological split
-- Marquis accused Neo-Sentinel of brainwashing
-- Group fractured over establishment cooperation
-
-**Revelations:**
-- Insider view of ULMH rehabilitation methods
-- Irreconcilable differences about reform vs revolution
-- Neo-Sentinel's psychological changes from establishment exposure
+- Strategic disagreements about Tartarus approach revealed philosophical divisions
+- Neo-Sentinel spent two weeks inside Tartarus observing rehabilitation methods
+- Henry faced Achilles at gallery, lost shipment, deadline reduced to 3 days
+- Team reunion: Neo-Sentinel argued for ULMH licensing, Marquis accused her of brainwashing
+- Physical confrontation marked complete team fracture over ideological differences
 
 ## Session 10: "Gala and the Pantheon"
-The charity gala attack fundamentally altered Seattle's political landscape.
-
-**Key Events:**
-- Six-month refugee crisis and plague outbreak
-- Blackout killed Mayor Calloway at charity gala
+- Six-month time jump: refugee crisis, plague outbreak affecting mutants
+- Charity gala attack: Blackout killed Mayor Calloway
 - Apollo revealed godlike true form, then disappeared
-- Pepper killed in explosion
-- Martial law declared, emergency election announced
-
-**Revelations:**
-- Apollo's true nature as energy being
-- Varia's emotional reunion with Baatar Khan
-- Complete breakdown of existing political order
+- Pepper killed in explosion, devastating the Vagrant
+- Martial law declared, emergency election announced for October 22nd
 
 ## Session 11: "Election Chaos"
-The emergency election became a battlefield that eliminated multiple candidates.
-
-**Key Events:**
-- VR prison trap during candidate meeting
-- Florian killed Maxwell Ryder and other candidates
+- Candidate meeting trapped in VR prison with Hellbeast as enemy
+- Florian killed Maxwell Ryder and other candidates using sound powers
 - Florian subsequently killed by police
-- Hellbeast revealed as Henry's half-brother
-
-**Revelations:**
-- Florian's complete moral transformation
-- Henry's family connections to current threats
-- Election field narrowed through violence
+- Hellbeast revealed as Henry's half-brother from WWII era
+- Three candidates eliminated, election field narrowed
 
 ## Session 12: "Final Confrontation"
-The team's former ally became their greatest threat, requiring desperate alliances.
-
-**Key Events:**
 - Rescued Demo from Lucian Drake's operation
-- Hospital crisis with Demo's deadly simulation powers
-- Varia killed Demo to stop mass casualties
-- Varia's mental breakdown and Override-style city takeover
-- Sentinel robot army collared all mutants
-- Team recruited Achilles and Hellbeast for final battle
+- Hospital crisis: Demo's powers threatened mass casualties, Varia killed him to stop it
+- Varia's psychological breakdown, supremacist ideology emerged
+- Override-style technology failure affected all Seattle systems
+- Sentinel robot army emerged, collared all mutants in city
+- Team preparing final battle against corrupted former ally
 
-**Revelations:**
-- Varia's complete ideological transformation
-- Override-level threat to entire city
-- Ultimate test of team bonds and beliefs under extreme pressure
+## Session 13: "Breaking the Simulation"
+- Team navigated destroyed Seattle streets, forced to surface when tunnel collapsed from Hellbeast's rampage
+- Bri underwent divine transformation during battle, accessing ancient goddess powers and golden healing abilities
+- Recruited Shadow, Pandora, and Omen as allies; Blackout arrived offering assistance despite past conflicts
+- Omen's attack on Varia shattered reality, revealing entire conflict was Demo's simulation overlaying the city
+- Found real Demo comatose and Varia unconscious at hospital; her technopathy amplified his drug-induced nightmare
+- Bri departed to handle immortal children while Blackout eliminated candidate Lucian Drake from prison
+
+
