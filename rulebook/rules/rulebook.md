@@ -33,34 +33,43 @@ Attributes represent what type of things your character is good at in combat and
 - **Focus** - Your character's prescision, fighting skill, and mental fortitude. Adds to your Accuracy Checks, Initiative Checks, and Resolve Score.  
 - **Power** - Your character's strength both physically and/or with their powers. Adds to your Damage Rolls, Condition Checks, Capacity Score, and Sttability Score.
 - **Mobility** - Your character's speed and reflexes. Adds to your Movement Speed, Initiative, and Avoidance Score.
-- **Endurance** - Your chracter's physical toughness and fortitude. Adds to your Vitality and Durability Scores.   
+- **Endurance** - Your chracter's physical toughness and fortitude. Adds to your Survival Checks, Vitality Score, and Durability Score.   
 
 **Utility Attributes** - You have a number of Utility Attribute Points equal to your Tier. Distribute those points among the 3 Utility Attributes below.
 - **Awareness** - Your character's ability to notice things in the world. Also adds to your Initiative. Awareness players will have an easier time picking up on things already set in the narrative such as finding hidden information.
 - **Communication** - Your character’s social skills. Communication players are able to better shape the narrative to their goals such as persuading a truce between two warring factions.
 - **Intelligence** - Your character’s knowledge and reasoning. Intelligence players are able to unlock paths previously inaccesible such as hacking into a database to add the party to the guest list.
 
-### **DEFENSES**
-**Avoidance:** 10 + Tier + Mobility  
-**Durability:** Tier + (Endurance × 1.5)  
-**Resolve:** 10 + Tier + Focus  
-**Stability:** 10 + Tier + Power  
-**Vitality:** 10 + Tier + Endurance  
-
-### **CORE FORMULAS**
+ 
+### **COMBAT FORMULAS**
+**Attacks**  
 **Accuracy Check:** 1d20 + Tier + Focus vs Target's Avoidance  
 **Damage Roll:** 3d6 + Tier + (Power × 1.5) - Target's Durability  
-**Condition Checks:** 1d20 + Tier + Power vs Target's Resistance  
+**Condition Check:** 1d20 + Tier + Power vs Target's Resistance 
+
+**Defenses**  
+**Avoidance Score:** 10 + Tier + Mobility  
+**Durability Score:** Tier + (Endurance × 1.5)  
+**Resolve Score:** 10 + Tier + Focus  
+**Stability Score:** 10 + Tier + Power  
+**Vitality Score:** 10 + Tier + Endurance 
 
 ### **HEALTH SYSTEM**
-**Base HP:** 100  
+**Player HP:** 100  
 **Rest Recovery:**
-- Gritty: 50 HP per day
-- Grounded: 20 HP per hour  
-- Heroic: 5 HP per minute
+- Gritty Setting: Regain 50 HP per day
+- Grounded Setting: Regain 20 HP per hour  
+- Heroic Setting: Regain 5 HP per minute
 
-**Survival Check:** 1d20 vs excess damage when reaching 0 HP  
-**Death:** Fail survival check by 20+ points
+**Survival Check:** When you reach 0 HP roll 1d20 + Endurance vs however many HP you are below 0. 
+- If you beat that number you may choose to remain concious. 
+- If you fail, you fall unconcious.
+- If you fail by 20 or more, you die.
+- Rolling a Natural 20 returns you to 1 HP.
+- Rolling a Nautral 1 gives an additional -5 to your result.
+
+
+Any damage taken while at or below 0 HP forces you to make another Survival Check. 
 
 
 
@@ -78,21 +87,21 @@ Attributes represent what type of things your character is good at in combat and
 ### **ACTION ECONOMY**
 **Turn Structure:** Primary Action + Quick Action + Free Action + Movement + Reaction
 
-**Primary Actions (P)** 
+**Primary Actions** 
 - Main part of your turn
 - Most complex tasks consume this
 - Examples: Attacking, complex interactions
 
-**Quick Actions (Q)**
+**Quick Actions**
 - Easy tasks performed alongside Primary Action
 - All Quick Actions can be done as Primary Actions
 - Examples: Simple interactions, short movements
 
-**Free Actions (F)** 
+**Free Actions** 
 - Near-passive motions
 - Examples: Speaking, activating certain abilities
 
-**Movement (M)**
+**Movement**
 - **Base:** (Mobility + 6) or (Mobility + Tier), whichever is higher
 - You can move a number of Spaces (Sp) equal to your movement
 - Can be split before/after actions
