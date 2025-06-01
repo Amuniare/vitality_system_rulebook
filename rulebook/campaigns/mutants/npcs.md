@@ -196,7 +196,10 @@
 - **Methods:** Ambush interviews, selective editing, spreading fear
 - **Issues:** Growing prescription medication addiction affecting work
 
-## Current Threat: Blackout
+## Group X
+
+
+### Blackout
 - **Powers:** Energy beams, connection to Apollo as "brother"
 - **Status:** At large after killing mayor
 - **Background:** Possibly pantheon-level entity like Apollo
