@@ -19,3 +19,4 @@ characters
 *.sqlite3
 *.log
 codebase.txt
+backups
