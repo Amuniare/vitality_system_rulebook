@@ -174,7 +174,7 @@ The team's preparation for final battle, including recruitment of Achilles and t
 
 The session's end, with the team preparing to confront their former ally who had become the very force of oppression they had originally fought against, represented the ultimate test of their bonds, beliefs, and ability to choose hope over despair in the face of seemingly impossible odds.
 
-# Session 13: "Breaking the Simulation"
+### Session 13: "Breaking the Simulation"
 
 The team found themselves navigating the chaos of a destroyed Seattle, with car wrecks littering the streets and desperate civilians either fleeing toward police stations or barricading themselves in buildings. Some residents had taken to throwing Molotov cocktails from rooftops at anyone trying to enter their buildings. The group used William's tunnel networks to avoid the worst of the Sentinel patrols, but when a destroyed robot crashed through their route - apparently torn apart by something with claws and accompanied by distant roaring - they were forced to surface for the final approach.
 

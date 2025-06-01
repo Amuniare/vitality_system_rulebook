@@ -153,7 +153,7 @@
 
 ### Salt and Pepper (The Twins)
 - **Powers:** Enhanced physical abilities, no aging since experiments
-- **Status:** Salt active with Vagrant, Pepper deceased in gala explosion
+- **Status:** Pepper active with Vagrant, Salt deceased in gala explosion
 - **Background:** Vietnam-era military experiments, limited cognitive function
 - **Family:** Younger siblings to Alpha (TM-00)
 - **Trauma:** Pepper's death devastated both Vagrant and Salt
