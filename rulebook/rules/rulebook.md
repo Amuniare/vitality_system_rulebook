@@ -1,6 +1,6 @@
 # SECTION 1: BASIC RULES
 
-### **DICE SYSTEM**
+### **DICE SYSTEM** 
 **D20 Rolls**
 - **Used For**: Accuracy Checks, Condition Checks, and rolls determined by random chance.
 
