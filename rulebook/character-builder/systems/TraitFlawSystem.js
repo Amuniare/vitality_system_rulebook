@@ -459,11 +459,10 @@ export class TraitFlawSystem {
     // Calculate available main pool points considering flaws
     static calculateAvailableMainPoolPoints(character) {
         const basePools = character.tier > 2 ? (character.tier - 2) * 15 : 0;
-        const flawBonus = character.mainPoolPurchases.flaws.length * GameConstants.FLAW_BONUS;
         const extraordinaryBonus = character.archetypes.uniqueAbility === 'extraordinary' ? 
             Math.max(0, (character.tier - 2) * 15) : 0;
         
-        const totalAvailable = basePools + flawBonus + extraordinaryBonus;
+        const totalAvailable = basePools + extraordinaryBonus;
         
         // Calculate spent
         const spentOnTraits = character.mainPoolPurchases.traits.reduce((total, trait) => total + trait.cost, 0);
