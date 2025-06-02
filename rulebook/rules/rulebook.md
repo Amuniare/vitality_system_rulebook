@@ -71,8 +71,36 @@ Attributes represent what type of things your character is good at in combat and
 
 Any damage taken while at or below 0 HP forces you to make another Survival Check. 
 
+### **Capacity Score**
+- Determines how much weight you can lift, push, and carry. 
+- You can move anything thats weight is equal to or less than your Capacity Score without need for a check. 
+- With a Power Check you can move something with a weight above your Capacity Score. DC 20 for 1 rank higher and +10 to DC for each rank after that.
+- What each weightclass represents varies depending on the setting. 
 
+0. Weightless
+1. Up to 100 lbs
+2. Up to 200 lbs
+3. Up to 400 lbs
+4. Up to 600 lbs
+5. Up to 1000 lbs
+6. Up to 2000 lbs
+7. Up to 4000 lbs
+8. Up to 6000 lbs
+9. Up to 8000 lbs
+10. Up to 10000 lbs → +2000 lbs per additional rank
 
+0. Weightless
+1. Up to 200 lbs
+2. Up to 500 lbs
+3. Up to 1000 lbs
+4. Up to 2500 lbs
+5. Up to 5000 lbs
+6. Up to 10000 lbs
+7. Up to 25000 lbs
+8. Up to 50000 lbs
+9. Up to 100000 lbs
+10. Up to 250000 lbs
+ 
 
 ### **STACKING BONUSES & RULE INTERACTIONS**
 
@@ -84,69 +112,77 @@ Any damage taken while at or below 0 HP forces you to make another Survival Chec
 
 # SECTION 2: CHARACTER BASICS 
 
-### **ACTION ECONOMY**
+### **ACTION TYPES**
 **Turn Structure:** Primary Action + Quick Action + Free Action + Movement + Reaction
 
 **Primary Actions** 
 - Main part of your turn
-- Most complex tasks consume this
-- Examples: Attacking, complex interactions
+- Attacks, Special Actions, Complex Task
 
 **Quick Actions**
-- Easy tasks performed alongside Primary Action
+- Easy tasks that can be performed alongside a Primary Action
 - All Quick Actions can be done as Primary Actions
-- Examples: Simple interactions, short movements
 
 **Free Actions** 
 - Near-passive motions
-- Examples: Speaking, activating certain abilities
+- Speaking, gesturing, activating something with a thought
 
 **Movement**
 - **Base:** (Mobility + 6) or (Mobility + Tier), whichever is higher
-- You can move a number of Spaces (Sp) equal to your movement
-- Can be split before/after actions
+- You can move a number of Spaces (sp) equal to your movement
+- Can be split up before/after actions
 - Difficult terrain costs extra movement
 
 **Reactions**
 - Occur outside your turn
-- Base reaction: Punish (base attack when enemy moves away)
+- Abilities marked as Reactions
+- **Base Reaction** - **Punish**: You can make a Base Attack when an opponent within your melee reach takes a Vulnerable Action.
+
+  <br>
+
+  *Vulnerable Actions*:
+- Moving out of an enemy's melee range.
+- Attempting to use a complex device within an enemy's melee range.
+- Other complex actions that a character would not be able to defend themselves while doing left to GM discretion.
 
 
 
 ### PRIMARY ACTIONS
-All characters can take these actions at base - no special training required
+All characters can take these actions at base, no special training or abilities required.
 
 Upgrade Options:
-- **30p:** Any Standard Primary Action becomes Quick Action
-
+- **30p Quick Action:** Any Standard Primary Action becomes a Quick Action.
 
 
 #### **FIGHTING ACTIONS**
 
-### **COMBAT RESOLUTION SEQUENCE**
-1. **Declare Attack** → Type and target
-2. **Accuracy Check** → 1d20 + Tier + Focus vs Avoidance  
-3. **Effect Roll** → Damage or Condition
-4. **Calculate** → Apply reductions/resistances
-5. **Apply Results** → Reduce HP or apply condition
 
-**Base Attack** → Default combat action available to everyone using character's base statistics
 
-**Defensive Actions (Available to All):**
-- **Dodge:** +Tier to Avoidance until next turn
-- **Brace:** +Tier to Durability until next turn  
-- **Fortify:** +Tier to all Resistances until next turn
+**Base Attack Action** → Default combat action available to everyone using their character's base attributes and Tier.
 
-**Offensive Actions (Available to All):**
-- **Aim:** +Tier to next Accuracy roll until end of next turn
-- **Empower:** +Tier to next Damage roll until end of next turn
-- **Refine:** +Tier to next Condition roll until end of next turn
+***ATTACK RESOLUTION***
+1. **Declare Attack** → Attack Type and target/s
+2. **Accuracy Check** → 1d20 + Tier + Focus vs target's Avoidance Score  
+3. **Effect Check** → Damage Roll vs target's Durability Score or Condition Check vs target's Resistance Score.
+- *Damage Roll:* 3d6 + Tier + (Power × 1.5) - Target's Durability  
+- *Condition Check:* 1d20 + Tier + Power vs Target's Resistance 
+4. **Apply Results** → Reduce HP by damage taken or apply condition effect
+
+**Defensive Actions**
+- **Dodge Action:** Add your Tier to your Avoidance until the start of your next turn. Does not stack with itself.
+- **Brace Action:** Add your Tier to your Durability until the start of your next turn. Does not stack with itself.
+- **Fortify Action:** Add your Tier to all of your Resistances until the start of your next turn. Does not stack with itself.
+
+**Offensive Actions**
+- **Aim Action:** Add your Tier to your next Accuracy Check before the end of your next turn. Does not stack with itself.
+- **Empower Action:** Add your Tier to your next Damage Roll before the end of your next turn. Does not stack with itself.
+- **Refine Action:** Add your Tier to your next Condition Check before the end of your next turn. Does not stack with itself.
 
 #### **SUPPORT ACTIONS** 
 
 **Assist Action**
-- **Base:** Give Aim/Empower/Refine to adjacent ally
-- **30p Upgrade:** Range increases to 15 spaces, can target multiple allies equal to Communication score
+- **Base:** An adjacent ally can add your Tier to their next Accuracy Check, Damage Roll, or Condition Check before the end of their next turn.
+- **30p Upgrade:** Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.
 
 **Carry Action**
 - **Base:** Make a Power check to move a willing character, a character you have grappled, or a heavy object (speed based on Power check vs weight, GM determines DC)
