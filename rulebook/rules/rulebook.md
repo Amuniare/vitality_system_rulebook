@@ -89,6 +89,8 @@ Any damage taken while at or below 0 HP forces you to make another Survival Chec
 9. Up to 8000 lbs
 10. Up to 10000 lbs → +2000 lbs per additional rank
 
+<br>
+
 0. Weightless
 1. Up to 200 lbs
 2. Up to 500 lbs
@@ -99,7 +101,7 @@ Any damage taken while at or below 0 HP forces you to make another Survival Chec
 7. Up to 25000 lbs
 8. Up to 50000 lbs
 9. Up to 100000 lbs
-10. Up to 250000 lbs
+10. Up to 1 million lbs
  
 
 ### **STACKING BONUSES & RULE INTERACTIONS**
