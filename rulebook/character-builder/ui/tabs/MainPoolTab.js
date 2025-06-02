@@ -1,14 +1,14 @@
 // MainPoolTab.js - Main pool purchases (traits, flaws, boons, upgrades)
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
 import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
+import { GameConstants } from '../../core/GameConstants.js';
 
 export class MainPoolTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.selectedTraitConditions = [];
-        this.selectedTraitStats = [];
-        this.selectedFlawStats = '';
-        this.selectedBoonUpgrades = {};
+        this.currentFlawId = null;
+        this.currentBoonId = null;
+        this.selectedBoonUpgrades = [];
     }
 
     render() {
@@ -16,7 +16,10 @@ export class MainPoolTab {
         if (!tabContent) return;
 
         const character = this.builder.currentCharacter;
-        if (!character) return;
+        if (!character) {
+            tabContent.innerHTML = '<div class="empty-state">No character selected</div>';
+            return;
+        }
 
         const pointInfo = this.calculatePointInfo(character);
 
@@ -30,14 +33,58 @@ export class MainPoolTab {
                 </p>
                 
                 ${this.renderPointPoolStatus(pointInfo)}
-                ${this.renderTraitsSection(character)}
-                ${this.renderFlawsSection(character)}
-                ${this.renderBoonsSection(character)}
-                ${this.renderUpgradesSection(character)}
+                ${this.renderFlawsSection(character, pointInfo)}
+                ${this.renderTraitsSection(character, pointInfo)}
+                ${this.renderBoonsSection(character, pointInfo)}
+                ${this.renderUpgradesSection(character, pointInfo)}
                 
                 <div class="next-step">
                     <p><strong>Next Step:</strong> Create your special attacks based on your archetype.</p>
                     <button id="continue-to-special-attacks" class="btn-primary">Continue to Special Attacks →</button>
+                </div>
+            </div>
+            
+            <!-- Flaw Purchase Modal -->
+            <div id="flaw-modal" class="purchase-modal hidden">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Purchase Flaw</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="flaw-details"></div>
+                        <div class="stat-selection">
+                            <h4>Choose Stat Bonus</h4>
+                            <div id="flaw-stat-options"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="confirm-flaw" class="btn-primary" disabled>Purchase Flaw (+30p)</button>
+                        <button id="cancel-flaw" class="btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Complex Boon Modal -->
+            <div id="boon-modal" class="purchase-modal hidden">
+                <div class="modal-backdrop"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Configure Boon</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="boon-details"></div>
+                        <div id="boon-upgrades" class="upgrade-section"></div>
+                        <div class="cost-summary">
+                            <strong>Total Cost: <span id="boon-total-cost">0</span>p</strong>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="confirm-boon" class="btn-primary">Purchase Boon</button>
+                        <button id="cancel-boon" class="btn-secondary">Cancel</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -47,28 +94,31 @@ export class MainPoolTab {
 
     calculatePointInfo(character) {
         const tier = character.tier;
-        let available = Math.max(0, (tier - 2) * 15);
+        let available = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
         
         // Extraordinary archetype doubles main pool
         if (character.archetypes.uniqueAbility === 'extraordinary') {
-            available += Math.max(0, (tier - 2) * 15);
+            available += Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
         }
         
-        // Calculate spent
-        const spentOnTraits = character.mainPoolPurchases.traits.reduce((total, trait) => total + (trait.cost || 30), 0);
-        const spentOnFlaws = character.mainPoolPurchases.flaws.reduce((total, flaw) => total + (flaw.cost || 30), 0);
-        const spentOnBoons = character.mainPoolPurchases.boons.reduce((total, boon) => total + (boon.cost || 0), 0);
-        const spentOnUpgrades = character.mainPoolPurchases.primaryActionUpgrades.length * 30;
+        // Add flaw bonuses
+        const flawBonus = character.mainPoolPurchases.flaws.length * GameConstants.FLAW_BONUS;
+        available += flawBonus;
         
-        const totalSpent = spentOnTraits + spentOnFlaws + spentOnBoons + spentOnUpgrades;
+        // Calculate spent
+        const spentOnTraits = character.mainPoolPurchases.traits.reduce((total, trait) => total + (trait.cost || GameConstants.TRAIT_COST), 0);
+        const spentOnBoons = character.mainPoolPurchases.boons.reduce((total, boon) => total + (boon.cost || 0), 0);
+        const spentOnUpgrades = character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
+        
+        const totalSpent = spentOnTraits + spentOnBoons + spentOnUpgrades;
         
         return {
             available,
             spent: totalSpent,
             remaining: available - totalSpent,
+            flawBonus,
             breakdown: {
                 traits: spentOnTraits,
-                flaws: spentOnFlaws,
                 boons: spentOnBoons,
                 upgrades: spentOnUpgrades
             }
@@ -83,15 +133,23 @@ export class MainPoolTab {
             <div class="main-pool-status ${status}">
                 <h3>Main Pool Points</h3>
                 <div class="pool-summary">
-                    <div class="pool-total">
-                        <span class="pool-label">Available:</span>
+                    <div class="pool-item">
+                        <span class="pool-label">Base Pool:</span>
+                        <span class="pool-value">${pointInfo.available - pointInfo.flawBonus}</span>
+                    </div>
+                    <div class="pool-item">
+                        <span class="pool-label">Flaw Bonus:</span>
+                        <span class="pool-value">+${pointInfo.flawBonus}</span>
+                    </div>
+                    <div class="pool-item">
+                        <span class="pool-label">Total Available:</span>
                         <span class="pool-value">${pointInfo.available}</span>
                     </div>
-                    <div class="pool-spent">
+                    <div class="pool-item">
                         <span class="pool-label">Spent:</span>
                         <span class="pool-value">${pointInfo.spent}</span>
                     </div>
-                    <div class="pool-remaining">
+                    <div class="pool-item">
                         <span class="pool-label">Remaining:</span>
                         <span class="pool-value ${pointInfo.remaining < 0 ? 'over-budget' : ''}">${pointInfo.remaining}</span>
                     </div>
@@ -99,7 +157,6 @@ export class MainPoolTab {
                 
                 <div class="spending-breakdown">
                     <div class="breakdown-item">Traits: ${pointInfo.breakdown.traits}p</div>
-                    <div class="breakdown-item">Flaws: ${pointInfo.breakdown.flaws}p</div>
                     <div class="breakdown-item">Boons: ${pointInfo.breakdown.boons}p</div>
                     <div class="breakdown-item">Upgrades: ${pointInfo.breakdown.upgrades}p</div>
                 </div>
@@ -107,166 +164,31 @@ export class MainPoolTab {
         `;
     }
 
-    renderTraitsSection(character) {
-        const availableTraits = TraitFlawSystem.getAvailableTraits();
-        const purchasedTraits = character.mainPoolPurchases.traits;
-        
-        return `
-            <div class="main-pool-category">
-                <h3>Traits (30p each)</h3>
-                <p class="category-description">
-                    Conditional bonuses activated by circumstances. Choose 2 stat bonuses and conditions totaling up to 3 tiers.
-                    Multiple bonuses to the same stat stack with -1 reduction per additional bonus.
-                </p>
-                
-                <div class="purchased-items">
-                    <h4>Purchased Traits (${purchasedTraits.length})</h4>
-                    ${purchasedTraits.length > 0 ? `
-                        <div class="trait-list">
-                            ${purchasedTraits.map((trait, index) => this.renderPurchasedTrait(trait, index)).join('')}
-                        </div>
-                    ` : '<p class="empty-state">No traits purchased yet</p>'}
-                </div>
-                
-                <div class="purchase-interface">
-                    <h4>Purchase New Trait</h4>
-                    <button id="open-trait-builder" class="btn-secondary">Build Custom Trait</button>
-                </div>
-                
-                <div id="trait-builder" class="trait-builder hidden">
-                    ${this.renderTraitBuilder(character)}
-                </div>
-            </div>
-        `;
-    }
-
-    renderPurchasedTrait(trait, index) {
-        return `
-            <div class="purchased-trait">
-                <div class="trait-header">
-                    <span class="trait-name">${trait.name}</span>
-                    <span class="trait-cost">30p</span>
-                    <button class="btn-small btn-danger" data-action="remove-trait" data-index="${index}">Remove</button>
-                </div>
-                <div class="trait-details">
-                    <div class="trait-conditions">Conditions: ${trait.conditionNames?.join(', ') || 'Custom'}</div>
-                    <div class="trait-bonuses">Bonuses: +${trait.tier || 'Tier'} to ${trait.statBonuses.join(', ')}</div>
-                </div>
-            </div>
-        `;
-    }
-
-    renderTraitBuilder(character) {
-        const conditionCategories = this.getTraitConditionCategories();
-        const statTargets = TraitFlawSystem.getStatBonusTargets();
-        
-        return `
-            <div class="trait-builder-interface">
-                <h5>Custom Trait Builder</h5>
-                
-                <div class="trait-form">
-                    <div class="form-group">
-                        <label for="trait-name">Trait Name</label>
-                        <input type="text" id="trait-name" placeholder="Enter trait name" value="">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Conditions (Total up to 3 tiers)</label>
-                        <div class="condition-budget">
-                            Tier Budget Used: <span id="condition-tier-used">0</span>/3
-                        </div>
-                        <div class="condition-categories">
-                            ${Object.entries(conditionCategories).map(([tier, conditions]) => `
-                                <div class="condition-tier">
-                                    <h6>Tier ${tier} Conditions</h6>
-                                    <div class="condition-options">
-                                        ${conditions.map(condition => `
-                                            <label class="condition-option">
-                                                <input type="checkbox" 
-                                                       value="${condition.id}" 
-                                                       data-tier="${tier}"
-                                                       class="condition-checkbox">
-                                                <span class="condition-name">${condition.name}</span>
-                                                <span class="condition-description">${condition.description}</span>
-                                            </label>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Stat Bonuses (Choose exactly 2)</label>
-                        <div class="stat-bonus-count">
-                            Selected: <span id="stat-bonus-count">0</span>/2
-                        </div>
-                        <div class="stat-options">
-                            ${statTargets.map(stat => `
-                                <label class="stat-option">
-                                    <input type="checkbox" value="${stat.id}" class="stat-checkbox">
-                                    <span class="stat-name">${stat.name}</span>
-                                    <span class="stat-description">${stat.description}</span>
-                                </label>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="trait-builder-actions">
-                        <button id="purchase-trait" class="btn-primary" disabled>Purchase Trait (30p)</button>
-                        <button id="cancel-trait" class="btn-secondary">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    renderFlawsSection(character) {
+    renderFlawsSection(character, pointInfo) {
         const availableFlaws = TraitFlawSystem.getAvailableFlaws();
         const purchasedFlaws = character.mainPoolPurchases.flaws;
-        const statTargets = TraitFlawSystem.getStatBonusTargets();
         
         return `
             <div class="main-pool-category">
-                <h3>Flaws (30p each)</h3>
+                <h3>Flaws (+${GameConstants.FLAW_BONUS}p each)</h3>
                 <p class="category-description">
-                    Permanent disadvantages that provide +Tier bonus to one stat. Each flaw costs 30p and gives you a restriction.
-                    Multiple bonuses to the same stat stack with -1 reduction per additional bonus.
+                    Permanent disadvantages that give you +${GameConstants.FLAW_BONUS} main pool points and +Tier bonus to one stat.
+                    Each flaw imposes restrictions on your character.
                 </p>
                 
                 <div class="purchased-items">
                     <h4>Purchased Flaws (${purchasedFlaws.length})</h4>
                     ${purchasedFlaws.length > 0 ? `
-                        <div class="flaw-list">
+                        <div class="item-list">
                             ${purchasedFlaws.map((flaw, index) => this.renderPurchasedFlaw(flaw, index)).join('')}
                         </div>
                     ` : '<p class="empty-state">No flaws purchased yet</p>'}
                 </div>
                 
-                <div class="purchase-interface">
-                    <h4>Purchase Flaw</h4>
-                    <div class="flaw-grid">
-                        ${availableFlaws.map(flaw => this.renderFlawOption(flaw, character)).join('')}
-                    </div>
-                </div>
-                
-                <div id="flaw-purchase-modal" class="flaw-modal hidden">
-                    <div class="modal-content">
-                        <h4>Select Stat Bonus</h4>
-                        <p id="selected-flaw-description"></p>
-                        <div class="stat-selection">
-                            ${statTargets.map(stat => `
-                                <label class="stat-option">
-                                    <input type="radio" name="flaw-stat" value="${stat.id}">
-                                    <span class="stat-name">${stat.name}</span>
-                                    <span class="stat-description">${stat.description}</span>
-                                </label>
-                            `).join('')}
-                        </div>
-                        <div class="modal-actions">
-                            <button id="confirm-flaw-purchase" class="btn-primary" disabled>Purchase Flaw (30p)</button>
-                            <button id="cancel-flaw-purchase" class="btn-secondary">Cancel</button>
-                        </div>
+                <div class="available-items">
+                    <h4>Available Flaws</h4>
+                    <div class="item-grid">
+                        ${availableFlaws.map(flaw => this.renderFlawOption(flaw, character, pointInfo)).join('')}
                     </div>
                 </div>
             </div>
@@ -275,38 +197,100 @@ export class MainPoolTab {
 
     renderPurchasedFlaw(flaw, index) {
         return `
-            <div class="purchased-flaw">
-                <div class="flaw-header">
-                    <span class="flaw-name">${flaw.name}</span>
-                    <span class="flaw-cost">30p</span>
-                    <button class="btn-small btn-danger" data-action="remove-flaw" data-index="${index}">Remove</button>
+            <div class="purchased-item flaw-item">
+                <div class="item-header">
+                    <span class="item-name">${flaw.name}</span>
+                    <span class="item-cost">+${GameConstants.FLAW_BONUS}p</span>
+                    <button class="btn-small btn-danger remove-flaw" data-index="${index}">Remove</button>
                 </div>
-                <div class="flaw-details">
-                    <div class="flaw-restriction">Restriction: ${this.getFlawDescription(flaw.flawId)}</div>
-                    <div class="flaw-bonus">Bonus: +Tier to ${flaw.statBonus || 'None selected'}</div>
+                <div class="item-details">
+                    <div class="item-effect">${flaw.restriction || flaw.effect}</div>
+                    <div class="item-bonus">Bonus: +Tier to ${flaw.statBonus || 'None selected'}</div>
                 </div>
             </div>
         `;
     }
 
-    renderFlawOption(flaw, character) {
-        const canAfford = this.calculatePointInfo(character).remaining >= 30;
+    renderFlawOption(flaw, character, pointInfo) {
         const alreadyPurchased = character.mainPoolPurchases.flaws.some(f => f.flawId === flaw.id);
         
         return `
-            <div class="flaw-card ${!canAfford || alreadyPurchased ? 'disabled' : ''}" 
+            <div class="item-card flaw-card ${alreadyPurchased ? 'disabled' : ''}" 
                  data-flaw-id="${flaw.id}">
                 <h5>${flaw.name}</h5>
-                <p class="flaw-cost">Cost: 30p</p>
-                <p class="flaw-description">${flaw.description}</p>
-                <div class="flaw-effect">Effect: ${flaw.effect}</div>
-                ${alreadyPurchased ? '<div class="already-purchased">Already Purchased</div>' : ''}
-                ${!canAfford && !alreadyPurchased ? '<div class="cannot-afford">Cannot Afford</div>' : ''}
+                <p class="item-cost">Gives: +${GameConstants.FLAW_BONUS}p</p>
+                <p class="item-description">${flaw.description}</p>
+                <div class="item-effect">Effect: ${flaw.effect}</div>
+                ${alreadyPurchased ? '<div class="status-badge">Already Purchased</div>' : ''}
             </div>
         `;
     }
 
-    renderBoonsSection(character) {
+    renderTraitsSection(character, pointInfo) {
+        const availableTraits = TraitFlawSystem.getAvailableTraits();
+        const purchasedTraits = character.mainPoolPurchases.traits;
+        
+        return `
+            <div class="main-pool-category">
+                <h3>Traits (${GameConstants.TRAIT_COST}p each)</h3>
+                <p class="category-description">
+                    Conditional bonuses activated by circumstances. Each trait provides +Tier bonus to 
+                    ${availableTraits[0]?.bonusCount || 2} stats when conditions are met.
+                </p>
+                
+                <div class="purchased-items">
+                    <h4>Purchased Traits (${purchasedTraits.length})</h4>
+                    ${purchasedTraits.length > 0 ? `
+                        <div class="item-list">
+                            ${purchasedTraits.map((trait, index) => this.renderPurchasedTrait(trait, index)).join('')}
+                        </div>
+                    ` : '<p class="empty-state">No traits purchased yet</p>'}
+                </div>
+                
+                <div class="available-items">
+                    <h4>Available Traits</h4>
+                    <div class="item-grid">
+                        ${availableTraits.map(trait => this.renderTraitOption(trait, character, pointInfo)).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderPurchasedTrait(trait, index) {
+        return `
+            <div class="purchased-item trait-item">
+                <div class="item-header">
+                    <span class="item-name">${trait.name}</span>
+                    <span class="item-cost">${trait.cost || GameConstants.TRAIT_COST}p</span>
+                    <button class="btn-small btn-danger remove-trait" data-index="${index}">Remove</button>
+                </div>
+                <div class="item-details">
+                    <div class="item-condition">${trait.description || trait.condition}</div>
+                    <div class="item-bonus">Bonuses: ${trait.statBonuses ? trait.statBonuses.join(', ') : 'To be selected'}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderTraitOption(trait, character, pointInfo) {
+        const canAfford = pointInfo.remaining >= GameConstants.TRAIT_COST;
+        const alreadyPurchased = character.mainPoolPurchases.traits.some(t => t.traitId === trait.id);
+        
+        return `
+            <div class="item-card trait-card ${!canAfford || alreadyPurchased ? 'disabled' : ''}" 
+                 data-trait-id="${trait.id}">
+                <h5>${trait.name}</h5>
+                <p class="item-cost">Cost: ${GameConstants.TRAIT_COST}p</p>
+                <p class="item-description">${trait.description}</p>
+                <div class="item-tier">Tier ${trait.tier} (${trait.bonusCount} stat bonuses)</div>
+                ${alreadyPurchased ? '<div class="status-badge">Already Purchased</div>' : ''}
+                ${!canAfford && !alreadyPurchased ? '<div class="status-badge error">Cannot Afford</div>' : ''}
+            </div>
+        `;
+    }
+
+    renderBoonsSection(character, pointInfo) {
         const simpleBoons = UniqueAbilitySystem.getAvailableBoons();
         const complexBoons = UniqueAbilitySystem.getComplexUniqueAbilities();
         const purchasedBoons = character.mainPoolPurchases.boons;
@@ -322,7 +306,7 @@ export class MainPoolTab {
                 <div class="purchased-items">
                     <h4>Purchased Boons (${purchasedBoons.length})</h4>
                     ${purchasedBoons.length > 0 ? `
-                        <div class="boon-list">
+                        <div class="item-list">
                             ${purchasedBoons.map((boon, index) => this.renderPurchasedBoon(boon, index)).join('')}
                         </div>
                     ` : '<p class="empty-state">No boons purchased yet</p>'}
@@ -331,15 +315,15 @@ export class MainPoolTab {
                 <div class="boon-categories">
                     <div class="simple-boons">
                         <h4>Simple Boons</h4>
-                        <div class="boon-grid">
-                            ${simpleBoons.map(boon => this.renderSimpleBoonOption(boon, character)).join('')}
+                        <div class="item-grid">
+                            ${simpleBoons.map(boon => this.renderSimpleBoonOption(boon, character, pointInfo)).join('')}
                         </div>
                     </div>
                     
                     <div class="complex-boons">
                         <h4>Complex Boons</h4>
-                        <div class="boon-grid">
-                            ${complexBoons.map(boon => this.renderComplexBoonOption(boon, character)).join('')}
+                        <div class="item-grid">
+                            ${complexBoons.map(boon => this.renderComplexBoonOption(boon, character, pointInfo)).join('')}
                         </div>
                     </div>
                 </div>
@@ -349,66 +333,66 @@ export class MainPoolTab {
 
     renderPurchasedBoon(boon, index) {
         return `
-            <div class="purchased-boon">
-                <div class="boon-header">
-                    <span class="boon-name">${boon.name}</span>
-                    <span class="boon-cost">${boon.cost}p</span>
-                    <button class="btn-small btn-danger" data-action="remove-boon" data-index="${index}">Remove</button>
+            <div class="purchased-item boon-item">
+                <div class="item-header">
+                    <span class="item-name">${boon.name}</span>
+                    <span class="item-cost">${boon.cost}p</span>
+                    <button class="btn-small btn-danger remove-boon" data-index="${index}">Remove</button>
                 </div>
-                <div class="boon-details">
-                    <div class="boon-effect">${this.getBoonDescription(boon.boonId)}</div>
+                <div class="item-details">
+                    <div class="item-effect">${boon.effect || boon.description}</div>
                     ${boon.upgrades && boon.upgrades.length > 0 ? `
-                        <div class="boon-upgrades">Upgrades: ${boon.upgrades.length}</div>
+                        <div class="item-upgrades">Upgrades: ${boon.upgrades.length}</div>
                     ` : ''}
                 </div>
             </div>
         `;
     }
 
-    renderSimpleBoonOption(boon, character) {
-        const canAfford = this.calculatePointInfo(character).remaining >= boon.cost;
+    renderSimpleBoonOption(boon, character, pointInfo) {
+        const canAfford = pointInfo.remaining >= boon.cost;
         const alreadyPurchased = character.mainPoolPurchases.boons.some(b => b.boonId === boon.id);
         
         return `
-            <div class="boon-card simple ${!canAfford || alreadyPurchased ? 'disabled' : ''}" 
+            <div class="item-card boon-card simple ${!canAfford || alreadyPurchased ? 'disabled' : ''}" 
                  data-boon-id="${boon.id}" 
                  data-boon-type="simple">
                 <h5>${boon.name}</h5>
-                <p class="boon-cost">Cost: ${boon.cost}p</p>
-                <p class="boon-description">${boon.description}</p>
-                <div class="boon-category">Category: ${boon.category}</div>
-                ${alreadyPurchased ? '<div class="already-purchased">Already Purchased</div>' : ''}
-                ${!canAfford && !alreadyPurchased ? '<div class="cannot-afford">Cannot Afford</div>' : ''}
+                <p class="item-cost">Cost: ${boon.cost}p</p>
+                <p class="item-description">${boon.description}</p>
+                <div class="item-category">Category: ${boon.category}</div>
+                ${alreadyPurchased ? '<div class="status-badge">Already Purchased</div>' : ''}
+                ${!canAfford && !alreadyPurchased ? '<div class="status-badge error">Cannot Afford</div>' : ''}
             </div>
         `;
     }
 
-    renderComplexBoonOption(boon, character) {
-        const canAfford = this.calculatePointInfo(character).remaining >= boon.baseCost;
+    renderComplexBoonOption(boon, character, pointInfo) {
+        const canAfford = pointInfo.remaining >= boon.baseCost;
         const alreadyPurchased = character.mainPoolPurchases.boons.some(b => b.boonId === boon.id);
         
         return `
-            <div class="boon-card complex ${!canAfford || alreadyPurchased ? 'disabled' : ''}" 
+            <div class="item-card boon-card complex ${!canAfford || alreadyPurchased ? 'disabled' : ''}" 
                  data-boon-id="${boon.id}" 
                  data-boon-type="complex">
                 <h5>${boon.name}</h5>
-                <p class="boon-cost">Base Cost: ${boon.baseCost}p</p>
-                <p class="boon-description">${boon.description}</p>
-                <div class="boon-category">Category: ${boon.category}</div>
+                <p class="item-cost">Base Cost: ${boon.baseCost}p</p>
+                <p class="item-description">${boon.description}</p>
+                <div class="item-category">Category: ${boon.category}</div>
                 ${boon.upgrades ? `<div class="upgrade-count">${boon.upgrades.length} upgrades available</div>` : ''}
-                ${alreadyPurchased ? '<div class="already-purchased">Already Purchased</div>' : ''}
-                ${!canAfford && !alreadyPurchased ? '<div class="cannot-afford">Cannot Afford</div>' : ''}
+                ${alreadyPurchased ? '<div class="status-badge">Already Purchased</div>' : ''}
+                ${!canAfford && !alreadyPurchased ? '<div class="status-badge error">Cannot Afford</div>' : ''}
             </div>
         `;
     }
 
-    renderUpgradesSection(character) {
+    renderUpgradesSection(character, pointInfo) {
         const purchasedUpgrades = character.mainPoolPurchases.primaryActionUpgrades;
-        const availableActions = this.getAvailablePrimaryActions(character);
+        const availableActions = this.getAvailablePrimaryActions();
         
         return `
             <div class="main-pool-category">
-                <h3>Primary Action Upgrades (30p each)</h3>
+                <h3>Primary Action Upgrades (${GameConstants.PRIMARY_TO_QUICK_COST}p each)</h3>
                 <p class="category-description">
                     Convert any Primary Action to a Quick Action. This allows you to perform the action 
                     as part of your Quick Action instead of using your Primary Action.
@@ -417,41 +401,50 @@ export class MainPoolTab {
                 <div class="purchased-items">
                     <h4>Purchased Upgrades (${purchasedUpgrades.length})</h4>
                     ${purchasedUpgrades.length > 0 ? `
-                        <div class="upgrade-list">
-                            ${purchasedUpgrades.map((upgrade, index) => `
-                                <div class="purchased-upgrade">
-                                    <span class="upgrade-name">${upgrade.actionName} → Quick Action</span>
-                                    <span class="upgrade-cost">30p</span>
-                                    <button class="btn-small btn-danger" data-action="remove-upgrade" data-index="${index}">Remove</button>
-                                </div>
-                            `).join('')}
+                        <div class="item-list">
+                            ${purchasedUpgrades.map((upgrade, index) => this.renderPurchasedUpgrade(upgrade, index)).join('')}
                         </div>
                     ` : '<p class="empty-state">No upgrades purchased yet</p>'}
                 </div>
                 
-                <div class="purchase-interface">
-                    <h4>Purchase Action Upgrade</h4>
-                    <div class="action-grid">
-                        ${availableActions.map(action => this.renderActionUpgradeOption(action, character)).join('')}
+                <div class="available-items">
+                    <h4>Available Actions</h4>
+                    <div class="item-grid">
+                        ${availableActions.map(action => this.renderActionOption(action, character, pointInfo)).join('')}
                     </div>
                 </div>
             </div>
         `;
     }
 
-    renderActionUpgradeOption(action, character) {
-        const canAfford = this.calculatePointInfo(character).remaining >= 30;
+    renderPurchasedUpgrade(upgrade, index) {
+        return `
+            <div class="purchased-item upgrade-item">
+                <div class="item-header">
+                    <span class="item-name">${upgrade.actionName} → Quick Action</span>
+                    <span class="item-cost">${GameConstants.PRIMARY_TO_QUICK_COST}p</span>
+                    <button class="btn-small btn-danger remove-upgrade" data-index="${index}">Remove</button>
+                </div>
+                <div class="item-details">
+                    <div class="item-effect">Can use ${upgrade.actionName} as Quick Action</div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderActionOption(action, character, pointInfo) {
+        const canAfford = pointInfo.remaining >= GameConstants.PRIMARY_TO_QUICK_COST;
         const alreadyPurchased = character.mainPoolPurchases.primaryActionUpgrades.some(u => u.actionId === action.id);
         
         return `
-            <div class="action-card ${!canAfford || alreadyPurchased ? 'disabled' : ''}" 
+            <div class="item-card action-card ${!canAfford || alreadyPurchased ? 'disabled' : ''}" 
                  data-action-id="${action.id}">
                 <h5>${action.name}</h5>
-                <p class="action-cost">Cost: 30p</p>
-                <p class="action-description">${action.description}</p>
-                <div class="upgrade-effect">Effect: Can use as Quick Action</div>
-                ${alreadyPurchased ? '<div class="already-purchased">Already Purchased</div>' : ''}
-                ${!canAfford && !alreadyPurchased ? '<div class="cannot-afford">Cannot Afford</div>' : ''}
+                <p class="item-cost">Cost: ${GameConstants.PRIMARY_TO_QUICK_COST}p</p>
+                <p class="item-description">${action.description}</p>
+                <div class="upgrade-effect">Upgrade: Use as Quick Action</div>
+                ${alreadyPurchased ? '<div class="status-badge">Already Purchased</div>' : ''}
+                ${!canAfford && !alreadyPurchased ? '<div class="status-badge error">Cannot Afford</div>' : ''}
             </div>
         `;
     }
@@ -465,319 +458,216 @@ export class MainPoolTab {
             });
         }
 
-        // Trait builder
-        const traitBuilderBtn = document.getElementById('open-trait-builder');
-        if (traitBuilderBtn) {
-            traitBuilderBtn.addEventListener('click', () => {
-                this.toggleTraitBuilder();
-            });
-        }
-
-        // Trait builder form
-        this.setupTraitBuilderListeners();
-        
-        // Flaw selection
-        this.setupFlawListeners();
-        
-        // Boon selection
-        this.setupBoonListeners();
-        
-        // Action upgrades
-        this.setupUpgradeListeners();
-        
-        // Remove buttons
-        this.setupRemoveListeners();
-    }
-
-    setupTraitBuilderListeners() {
-        // Condition checkboxes
-        document.querySelectorAll('.condition-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                this.updateConditionBudget();
-                this.validateTraitBuilder();
-            });
-        });
-
-        // Stat checkboxes
-        document.querySelectorAll('.stat-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                this.updateStatBonusCount();
-                this.validateTraitBuilder();
-            });
-        });
-
-        // Purchase and cancel buttons
-        const purchaseBtn = document.getElementById('purchase-trait');
-        const cancelBtn = document.getElementById('cancel-trait');
-        
-        if (purchaseBtn) {
-            purchaseBtn.addEventListener('click', () => {
-                this.purchaseTrait();
-            });
-        }
-        
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', () => {
-                this.cancelTraitBuilder();
-            });
-        }
-    }
-
-    setupFlawListeners() {
+        // Flaw cards
         document.querySelectorAll('.flaw-card:not(.disabled)').forEach(card => {
             card.addEventListener('click', () => {
                 const flawId = card.dataset.flawId;
-                this.openFlawPurchaseModal(flawId);
+                this.openFlawModal(flawId);
             });
         });
 
-        // Modal listeners
-        const confirmBtn = document.getElementById('confirm-flaw-purchase');
-        const cancelBtn = document.getElementById('cancel-flaw-purchase');
-        
-        if (confirmBtn) {
-            confirmBtn.addEventListener('click', () => {
-                this.confirmFlawPurchase();
-            });
-        }
-        
-        if (cancelBtn) {
-            cancelBtn.addEventListener('click', () => {
-                this.closeFlawPurchaseModal();
-            });
-        }
-
-        // Stat radio buttons
-        document.querySelectorAll('input[name="flaw-stat"]').forEach(radio => {
-            radio.addEventListener('change', () => {
-                const confirmBtn = document.getElementById('confirm-flaw-purchase');
-                if (confirmBtn) {
-                    confirmBtn.disabled = false;
-                }
+        // Trait cards - simplified purchase
+        document.querySelectorAll('.trait-card:not(.disabled)').forEach(card => {
+            card.addEventListener('click', () => {
+                const traitId = card.dataset.traitId;
+                this.purchaseTraitSimple(traitId);
             });
         });
-    }
 
-    setupBoonListeners() {
-        document.querySelectorAll('.boon-card:not(.disabled)').forEach(card => {
+        // Simple boon cards
+        document.querySelectorAll('.boon-card.simple:not(.disabled)').forEach(card => {
             card.addEventListener('click', () => {
                 const boonId = card.dataset.boonId;
-                const boonType = card.dataset.boonType;
-                
-                if (boonType === 'simple') {
-                    this.purchaseSimpleBoon(boonId);
-                } else {
-                    this.openComplexBoonModal(boonId);
-                }
+                this.purchaseSimpleBoon(boonId);
             });
         });
-    }
 
-    setupUpgradeListeners() {
+        // Complex boon cards
+        document.querySelectorAll('.boon-card.complex:not(.disabled)').forEach(card => {
+            card.addEventListener('click', () => {
+                const boonId = card.dataset.boonId;
+                this.openBoonModal(boonId);
+            });
+        });
+
+        // Action upgrade cards
         document.querySelectorAll('.action-card:not(.disabled)').forEach(card => {
             card.addEventListener('click', () => {
                 const actionId = card.dataset.actionId;
                 this.purchaseActionUpgrade(actionId);
             });
         });
+
+        // Remove buttons
+        this.setupRemoveListeners();
+
+        // Modal listeners
+        this.setupModalListeners();
     }
 
     setupRemoveListeners() {
-        // Remove buttons for all item types
-        document.querySelectorAll('[data-action^="remove-"]').forEach(btn => {
+        document.querySelectorAll('.remove-flaw').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const action = btn.dataset.action;
                 const index = parseInt(btn.dataset.index);
-                
-                switch(action) {
-                    case 'remove-trait':
-                        this.removeTrait(index);
-                        break;
-                    case 'remove-flaw':
-                        this.removeFlaw(index);
-                        break;
-                    case 'remove-boon':
-                        this.removeBoon(index);
-                        break;
-                    case 'remove-upgrade':
-                        this.removeUpgrade(index);
-                        break;
-                }
+                this.removeFlaw(index);
+            });
+        });
+
+        document.querySelectorAll('.remove-trait').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const index = parseInt(btn.dataset.index);
+                this.removeTrait(index);
+            });
+        });
+
+        document.querySelectorAll('.remove-boon').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const index = parseInt(btn.dataset.index);
+                this.removeBoon(index);
+            });
+        });
+
+        document.querySelectorAll('.remove-upgrade').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const index = parseInt(btn.dataset.index);
+                this.removeUpgrade(index);
             });
         });
     }
 
-    // Trait Builder Methods
-    toggleTraitBuilder() {
-        const builder = document.getElementById('trait-builder');
-        if (builder) {
-            builder.classList.toggle('hidden');
-            if (!builder.classList.contains('hidden')) {
-                this.resetTraitBuilder();
-            }
+    setupModalListeners() {
+        // Flaw modal
+        const flawModal = document.getElementById('flaw-modal');
+        if (flawModal) {
+            flawModal.querySelector('.modal-close').addEventListener('click', () => this.closeFlawModal());
+            flawModal.querySelector('.modal-backdrop').addEventListener('click', () => this.closeFlawModal());
+            flawModal.querySelector('#cancel-flaw').addEventListener('click', () => this.closeFlawModal());
+            flawModal.querySelector('#confirm-flaw').addEventListener('click', () => this.confirmFlawPurchase());
+        }
+
+        // Boon modal
+        const boonModal = document.getElementById('boon-modal');
+        if (boonModal) {
+            boonModal.querySelector('.modal-close').addEventListener('click', () => this.closeBoonModal());
+            boonModal.querySelector('.modal-backdrop').addEventListener('click', () => this.closeBoonModal());
+            boonModal.querySelector('#cancel-boon').addEventListener('click', () => this.closeBoonModal());
+            boonModal.querySelector('#confirm-boon').addEventListener('click', () => this.confirmBoonPurchase());
         }
     }
 
-    resetTraitBuilder() {
-        document.getElementById('trait-name').value = '';
-        document.querySelectorAll('.condition-checkbox').forEach(cb => cb.checked = false);
-        document.querySelectorAll('.stat-checkbox').forEach(cb => cb.checked = false);
-        this.updateConditionBudget();
-        this.updateStatBonusCount();
-        this.validateTraitBuilder();
-    }
-
-    updateConditionBudget() {
-        const checkedConditions = document.querySelectorAll('.condition-checkbox:checked');
-        let totalTiers = 0;
-        
-        checkedConditions.forEach(checkbox => {
-            totalTiers += parseInt(checkbox.dataset.tier);
-        });
-        
-        const budgetDisplay = document.getElementById('condition-tier-used');
-        if (budgetDisplay) {
-            budgetDisplay.textContent = totalTiers;
-            budgetDisplay.className = totalTiers > 3 ? 'over-budget' : '';
-        }
-    }
-
-    updateStatBonusCount() {
-        const checkedStats = document.querySelectorAll('.stat-checkbox:checked');
-        const countDisplay = document.getElementById('stat-bonus-count');
-        
-        if (countDisplay) {
-            countDisplay.textContent = checkedStats.length;
-            countDisplay.className = checkedStats.length > 2 ? 'over-budget' : '';
-        }
-    }
-
-    validateTraitBuilder() {
-        const name = document.getElementById('trait-name').value.trim();
-        const conditionTiers = this.getSelectedConditionTiers();
-        const statCount = document.querySelectorAll('.stat-checkbox:checked').length;
-        const purchaseBtn = document.getElementById('purchase-trait');
-        
-        const isValid = name.length > 0 && 
-                       conditionTiers > 0 && conditionTiers <= 3 &&
-                       statCount === 2;
-        
-        if (purchaseBtn) {
-            purchaseBtn.disabled = !isValid;
-        }
-    }
-
-    getSelectedConditionTiers() {
-        const checkedConditions = document.querySelectorAll('.condition-checkbox:checked');
-        let totalTiers = 0;
-        
-        checkedConditions.forEach(checkbox => {
-            totalTiers += parseInt(checkbox.dataset.tier);
-        });
-        
-        return totalTiers;
-    }
-
-    purchaseTrait() {
-        const character = this.builder.currentCharacter;
-        const name = document.getElementById('trait-name').value.trim();
-        const selectedConditions = Array.from(document.querySelectorAll('.condition-checkbox:checked')).map(cb => cb.value);
-        const selectedStats = Array.from(document.querySelectorAll('.stat-checkbox:checked')).map(cb => cb.value);
-        
-        try {
-            const trait = {
-                traitId: `custom_${Date.now()}`,
-                name: name,
-                cost: 30,
-                tier: character.tier,
-                conditions: selectedConditions,
-                statBonuses: selectedStats,
-                purchased: new Date().toISOString()
-            };
-            
-            character.mainPoolPurchases.traits.push(trait);
-            this.builder.updateCharacter();
-            this.cancelTraitBuilder();
-            this.render(); // Re-render to show new trait
-            
-        } catch (error) {
-            this.builder.showNotification(`Failed to purchase trait: ${error.message}`, 'error');
-        }
-    }
-
-    cancelTraitBuilder() {
-        const builder = document.getElementById('trait-builder');
-        if (builder) {
-            builder.classList.add('hidden');
-        }
-    }
-
-    // Flaw Methods
-    openFlawPurchaseModal(flawId) {
-        const modal = document.getElementById('flaw-purchase-modal');
-        const description = document.getElementById('selected-flaw-description');
+    // FLAW METHODS
+    openFlawModal(flawId) {
         const flaw = TraitFlawSystem.getAvailableFlaws().find(f => f.id === flawId);
-        
-        if (modal && description && flaw) {
-            description.textContent = flaw.description;
-            modal.classList.remove('hidden');
-            modal.dataset.flawId = flawId;
-            
-            // Reset radio buttons
-            document.querySelectorAll('input[name="flaw-stat"]').forEach(radio => {
-                radio.checked = false;
+        if (!flaw) return;
+
+        this.currentFlawId = flawId;
+        const statTargets = TraitFlawSystem.getStatBonusTargets();
+
+        document.getElementById('flaw-details').innerHTML = `
+            <h4>${flaw.name}</h4>
+            <p>${flaw.description}</p>
+            <div class="flaw-effect"><strong>Effect:</strong> ${flaw.effect}</div>
+        `;
+
+        document.getElementById('flaw-stat-options').innerHTML = statTargets.map(stat => `
+            <label class="stat-option">
+                <input type="radio" name="flaw-stat" value="${stat.id}">
+                <span class="stat-name">${stat.name}</span>
+                <span class="stat-description">${stat.description}</span>
+            </label>
+        `).join('');
+
+        // Add event listeners for radio buttons
+        document.querySelectorAll('input[name="flaw-stat"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('confirm-flaw').disabled = false;
             });
-            
-            const confirmBtn = document.getElementById('confirm-flaw-purchase');
-            if (confirmBtn) {
-                confirmBtn.disabled = true;
-            }
-        }
+        });
+
+        document.getElementById('flaw-modal').classList.remove('hidden');
+        document.getElementById('confirm-flaw').disabled = true;
     }
 
-    closeFlawPurchaseModal() {
-        const modal = document.getElementById('flaw-purchase-modal');
-        if (modal) {
-            modal.classList.add('hidden');
-        }
+    closeFlawModal() {
+        document.getElementById('flaw-modal').classList.add('hidden');
+        this.currentFlawId = null;
     }
 
     confirmFlawPurchase() {
         const character = this.builder.currentCharacter;
-        const modal = document.getElementById('flaw-purchase-modal');
-        const flawId = modal.dataset.flawId;
-        const selectedStat = document.querySelector('input[name="flaw-stat"]:checked').value;
+        const selectedStat = document.querySelector('input[name="flaw-stat"]:checked');
         
+        if (!selectedStat || !this.currentFlawId) return;
+
         try {
-            const flaw = TraitFlawSystem.getAvailableFlaws().find(f => f.id === flawId);
+            const flaw = TraitFlawSystem.getAvailableFlaws().find(f => f.id === this.currentFlawId);
             
             const flawPurchase = {
-                flawId: flawId,
+                flawId: this.currentFlawId,
                 name: flaw.name,
-                cost: 30,
+                bonus: GameConstants.FLAW_BONUS,
                 effect: flaw.effect,
                 restriction: flaw.restriction,
-                statBonus: selectedStat,
+                statBonus: selectedStat.value,
                 purchased: new Date().toISOString()
             };
             
             character.mainPoolPurchases.flaws.push(flawPurchase);
             this.builder.updateCharacter();
-            this.closeFlawPurchaseModal();
+            this.closeFlawModal();
             this.render();
+            
+            this.builder.showNotification(`Purchased ${flaw.name} for +${GameConstants.FLAW_BONUS}p!`, 'success');
             
         } catch (error) {
             this.builder.showNotification(`Failed to purchase flaw: ${error.message}`, 'error');
         }
     }
 
-    // Boon Methods
+    // TRAIT METHODS
+    purchaseTraitSimple(traitId) {
+        const character = this.builder.currentCharacter;
+        
+        try {
+            const trait = TraitFlawSystem.getAvailableTraits().find(t => t.id === traitId);
+            if (!trait) throw new Error('Trait not found');
+            
+            // For simplicity, auto-assign stat bonuses (user can customize later)
+            const defaultStats = ['accuracy', 'damage']; // Default selection
+            
+            const traitPurchase = {
+                traitId: traitId,
+                name: trait.name,
+                cost: GameConstants.TRAIT_COST,
+                tier: trait.tier,
+                condition: trait.condition,
+                description: trait.description,
+                statBonuses: defaultStats.slice(0, trait.bonusCount),
+                purchased: new Date().toISOString()
+            };
+            
+            character.mainPoolPurchases.traits.push(traitPurchase);
+            this.builder.updateCharacter();
+            this.render();
+            
+            this.builder.showNotification(`Purchased ${trait.name} for ${GameConstants.TRAIT_COST}p!`, 'success');
+            
+        } catch (error) {
+            this.builder.showNotification(`Failed to purchase trait: ${error.message}`, 'error');
+        }
+    }
+
+    // BOON METHODS
     purchaseSimpleBoon(boonId) {
         const character = this.builder.currentCharacter;
         
         try {
             const boon = UniqueAbilitySystem.getAvailableBoons().find(b => b.id === boonId);
+            if (!boon) throw new Error('Boon not found');
             
             const boonPurchase = {
                 boonId: boonId,
@@ -785,6 +675,7 @@ export class MainPoolTab {
                 cost: boon.cost,
                 category: boon.category,
                 effect: boon.effect,
+                description: boon.description,
                 purchased: new Date().toISOString()
             };
             
@@ -792,28 +683,123 @@ export class MainPoolTab {
             this.builder.updateCharacter();
             this.render();
             
+            this.builder.showNotification(`Purchased ${boon.name} for ${boon.cost}p!`, 'success');
+            
         } catch (error) {
             this.builder.showNotification(`Failed to purchase boon: ${error.message}`, 'error');
         }
     }
 
-    openComplexBoonModal(boonId) {
-        // For now, just purchase the base boon
-        // TODO: Implement upgrade selection modal for complex boons
-        this.purchaseSimpleBoon(boonId);
+    openBoonModal(boonId) {
+        const boon = UniqueAbilitySystem.getComplexUniqueAbilities().find(b => b.id === boonId);
+        if (!boon) return;
+
+        this.currentBoonId = boonId;
+        this.selectedBoonUpgrades = [];
+
+        document.getElementById('boon-details').innerHTML = `
+            <h4>${boon.name}</h4>
+            <p>${boon.description}</p>
+            <div class="boon-base-cost"><strong>Base Cost:</strong> ${boon.baseCost}p</div>
+        `;
+
+        if (boon.upgrades && boon.upgrades.length > 0) {
+            document.getElementById('boon-upgrades').innerHTML = `
+                <h5>Available Upgrades</h5>
+                <div class="upgrade-list">
+                    ${boon.upgrades.map((upgrade, index) => `
+                        <label class="upgrade-option">
+                            <input type="checkbox" value="${upgrade.id}" data-cost="${upgrade.cost}" data-index="${index}">
+                            <span class="upgrade-name">${upgrade.name}</span>
+                            <span class="upgrade-cost">${upgrade.cost}p</span>
+                            <span class="upgrade-description">${upgrade.description}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+
+            // Add upgrade selection listeners
+            document.querySelectorAll('#boon-upgrades input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    this.updateBoonCost();
+                });
+            });
+        }
+
+        this.updateBoonCost();
+        document.getElementById('boon-modal').classList.remove('hidden');
     }
 
-    // Action Upgrade Methods
+    closeBoonModal() {
+        document.getElementById('boon-modal').classList.add('hidden');
+        this.currentBoonId = null;
+        this.selectedBoonUpgrades = [];
+    }
+
+    updateBoonCost() {
+        const boon = UniqueAbilitySystem.getComplexUniqueAbilities().find(b => b.id === this.currentBoonId);
+        if (!boon) return;
+
+        let totalCost = boon.baseCost;
+        const selectedUpgrades = document.querySelectorAll('#boon-upgrades input[type="checkbox"]:checked');
+        
+        selectedUpgrades.forEach(checkbox => {
+            totalCost += parseInt(checkbox.dataset.cost);
+        });
+
+        document.getElementById('boon-total-cost').textContent = totalCost;
+    }
+
+    confirmBoonPurchase() {
+        const character = this.builder.currentCharacter;
+        
+        try {
+            const boon = UniqueAbilitySystem.getComplexUniqueAbilities().find(b => b.id === this.currentBoonId);
+            if (!boon) throw new Error('Boon not found');
+
+            const selectedUpgrades = Array.from(document.querySelectorAll('#boon-upgrades input[type="checkbox"]:checked'))
+                .map(checkbox => ({
+                    id: checkbox.value,
+                    cost: parseInt(checkbox.dataset.cost)
+                }));
+
+            const totalCost = boon.baseCost + selectedUpgrades.reduce((sum, upgrade) => sum + upgrade.cost, 0);
+            
+            const boonPurchase = {
+                boonId: this.currentBoonId,
+                name: boon.name,
+                cost: totalCost,
+                category: boon.category,
+                effect: boon.effect,
+                description: boon.description,
+                upgrades: selectedUpgrades,
+                purchased: new Date().toISOString()
+            };
+            
+            character.mainPoolPurchases.boons.push(boonPurchase);
+            this.builder.updateCharacter();
+            this.closeBoonModal();
+            this.render();
+            
+            this.builder.showNotification(`Purchased ${boon.name} for ${totalCost}p!`, 'success');
+            
+        } catch (error) {
+            this.builder.showNotification(`Failed to purchase boon: ${error.message}`, 'error');
+        }
+    }
+
+    // ACTION UPGRADE METHODS
     purchaseActionUpgrade(actionId) {
         const character = this.builder.currentCharacter;
         
         try {
-            const action = this.getAvailablePrimaryActions(character).find(a => a.id === actionId);
+            const action = this.getAvailablePrimaryActions().find(a => a.id === actionId);
+            if (!action) throw new Error('Action not found');
             
             const upgrade = {
                 actionId: actionId,
                 actionName: action.name,
-                cost: 30,
+                cost: GameConstants.PRIMARY_TO_QUICK_COST,
                 purchased: new Date().toISOString()
             };
             
@@ -821,76 +807,65 @@ export class MainPoolTab {
             this.builder.updateCharacter();
             this.render();
             
+            this.builder.showNotification(`Purchased ${action.name} upgrade for ${GameConstants.PRIMARY_TO_QUICK_COST}p!`, 'success');
+            
         } catch (error) {
             this.builder.showNotification(`Failed to purchase upgrade: ${error.message}`, 'error');
         }
     }
 
-    // Remove Methods
-    removeTrait(index) {
-        const character = this.builder.currentCharacter;
-        if (index >= 0 && index < character.mainPoolPurchases.traits.length) {
-            character.mainPoolPurchases.traits.splice(index, 1);
-            this.builder.updateCharacter();
-            this.render();
-        }
-    }
-
+    // REMOVE METHODS
     removeFlaw(index) {
         const character = this.builder.currentCharacter;
         if (index >= 0 && index < character.mainPoolPurchases.flaws.length) {
+            const flaw = character.mainPoolPurchases.flaws[index];
             character.mainPoolPurchases.flaws.splice(index, 1);
             this.builder.updateCharacter();
             this.render();
+            this.builder.showNotification(`Removed ${flaw.name}`, 'info');
+        }
+    }
+
+    removeTrait(index) {
+        const character = this.builder.currentCharacter;
+        if (index >= 0 && index < character.mainPoolPurchases.traits.length) {
+            const trait = character.mainPoolPurchases.traits[index];
+            character.mainPoolPurchases.traits.splice(index, 1);
+            this.builder.updateCharacter();
+            this.render();
+            this.builder.showNotification(`Removed ${trait.name}`, 'info');
         }
     }
 
     removeBoon(index) {
         const character = this.builder.currentCharacter;
         if (index >= 0 && index < character.mainPoolPurchases.boons.length) {
+            const boon = character.mainPoolPurchases.boons[index];
             character.mainPoolPurchases.boons.splice(index, 1);
             this.builder.updateCharacter();
             this.render();
+            this.builder.showNotification(`Removed ${boon.name}`, 'info');
         }
     }
 
     removeUpgrade(index) {
         const character = this.builder.currentCharacter;
         if (index >= 0 && index < character.mainPoolPurchases.primaryActionUpgrades.length) {
+            const upgrade = character.mainPoolPurchases.primaryActionUpgrades[index];
             character.mainPoolPurchases.primaryActionUpgrades.splice(index, 1);
             this.builder.updateCharacter();
             this.render();
+            this.builder.showNotification(`Removed ${upgrade.actionName} upgrade`, 'info');
         }
     }
 
-    // Helper Methods
-    getTraitConditionCategories() {
-        return {
-            1: [
-                { id: 'rooted', name: 'Rooted', description: 'Cannot move this turn' },
-                { id: 'vengeful', name: 'Vengeful', description: 'Must have been hit since last turn' },
-                { id: 'focused', name: 'Focused', description: 'Targeting same enemy as last turn' },
-                { id: 'overwhelmed', name: 'Overwhelmed', description: 'Outnumbered 2:1 or more' },
-                { id: 'elevated', name: 'Elevated', description: 'Higher ground than target' },
-                { id: 'charging', name: 'Charging', description: 'Moved at least 2 spaces this turn' }
-            ],
-            2: [
-                { id: 'bloodied', name: 'Bloodied', description: 'Below half health' },
-                { id: 'protected', name: 'Protected', description: 'Ally is adjacent' },
-                { id: 'isolated', name: 'Isolated', description: 'No allies within 2 spaces' }
-            ],
-            3: [
-                { id: 'desperate', name: 'Desperate', description: 'Below quarter health' }
-            ]
-        };
-    }
-
-    getAvailablePrimaryActions(character) {
+    // HELPER METHODS
+    getAvailablePrimaryActions() {
         return [
             { id: 'base_attack', name: 'Base Attack', description: 'Your basic attack action' },
-            { id: 'dodge', name: 'Dodge Action', description: 'Add Tier to Avoidance' },
-            { id: 'brace', name: 'Brace Action', description: 'Add Tier to Durability' },
-            { id: 'fortify', name: 'Fortify Action', description: 'Add Tier to all Resistances' },
+            { id: 'dodge', name: 'Dodge Action', description: 'Add Tier to Avoidance for one turn' },
+            { id: 'brace', name: 'Brace Action', description: 'Add Tier to Durability for one turn' },
+            { id: 'fortify', name: 'Fortify Action', description: 'Add Tier to all Resistances for one turn' },
             { id: 'aim', name: 'Aim Action', description: 'Add Tier to next Accuracy Check' },
             { id: 'empower', name: 'Empower Action', description: 'Add Tier to next Damage Roll' },
             { id: 'refine', name: 'Refine Action', description: 'Add Tier to next Condition Check' },
@@ -902,18 +877,5 @@ export class MainPoolTab {
             { id: 'hide', name: 'Hide Action', description: 'Attempt to conceal yourself' },
             { id: 'prepare', name: 'Prepare Action', description: 'Delay action until trigger' }
         ];
-    }
-
-    getFlawDescription(flawId) {
-        const flaw = TraitFlawSystem.getAvailableFlaws().find(f => f.id === flawId);
-        return flaw ? flaw.description : 'Unknown flaw';
-    }
-
-    getBoonDescription(boonId) {
-        const simpleBoon = UniqueAbilitySystem.getAvailableBoons().find(b => b.id === boonId);
-        if (simpleBoon) return simpleBoon.description;
-        
-        const complexBoon = UniqueAbilitySystem.getComplexUniqueAbilities().find(b => b.id === boonId);
-        return complexBoon ? complexBoon.description : 'Unknown boon';
     }
 }
