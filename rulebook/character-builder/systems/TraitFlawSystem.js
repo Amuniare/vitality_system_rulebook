@@ -205,6 +205,18 @@ export class TraitFlawSystem {
         ];
     }
     
+    // Add this method to the existing TraitFlawSystem class
+    static purchaseTraitSimple(character, traitId) {
+        const trait = this.getAvailableTraits().find(t => t.id === traitId);
+        if (!trait) throw new Error('Trait not found');
+        
+        // Auto-assign default stat bonuses for simplicity
+        const defaultStats = ['accuracy', 'damage'];
+        const statBonuses = defaultStats.slice(0, trait.bonusCount || 2);
+        
+        return this.purchaseTrait(character, traitId, statBonuses);
+    }
+
     // Validate trait purchase
     static validateTraitPurchase(character, traitId, statBonuses) {
         const errors = [];
