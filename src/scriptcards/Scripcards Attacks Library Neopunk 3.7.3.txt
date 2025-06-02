@@ -557,8 +557,7 @@
       --:PassBleed|
 
       --/| ==========NEW DAMAGE EFFECTS==========
-      --?[$Leech] -eq 1|-->LibSN_APPLY_DAMAGE_OR_HEALING|@{character_id};3;[$LeechAmount];1;0;1
-      --&AttackNotes|+ [&CharacterName] recovers [$LeechAmount] HP,
+
 
       --?[$Environmental] -ne 1|PassEnvironmentalNote
         --&AttackNotes|+ Area becomes hazardous terrain,
