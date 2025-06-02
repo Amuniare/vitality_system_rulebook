@@ -5,3 +5,7 @@ and i can't select flaws to purchase
 i can't purchase primary actions as quick actions, or buy the upgrades
 can't purchase boons
 can't purchase unique abilities
+
+
+move to wide thin cards
+code for traits doesn't work
