@@ -1,127 +1,290 @@
-// TraitPurchaseSection.js - Trait purchase UI component
+// TraitPurchaseSection.js - Trait purchase with tier condition system
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
-import { GameConstants } from '../../core/GameConstants.js';
 
 export class TraitPurchaseSection {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
+        this.currentTraitData = {
+            conditions: [],
+            statBonuses: [],
+            tierCost: 0
+        };
     }
 
-    render(character, pointInfo) {
-        const availableTraits = TraitFlawSystem.getAvailableTraits();
-        const purchasedTraits = character.mainPoolPurchases.traits;
+    render() {
+        const character = this.builder.currentCharacter;
+        if (!character) return '';
 
-        const containerHtml = `
-            <div class="main-pool-category">
-                <h3>Traits (${GameConstants.TRAIT_COST}p each)</h3>
-                <p class="category-description">
-                    Conditional bonuses activated when specific circumstances are met.
-                    Each trait provides +Tier bonus to 2 stats when conditions are met.
-                </p>
-                
-                <div class="purchased-items">
-                    <h4>Purchased Traits (${purchasedTraits.length})</h4>
-                    ${purchasedTraits.length > 0 ? `
-                        <div class="item-list">
-                            ${purchasedTraits.map((trait, index) => this.renderPurchasedTrait(trait, index)).join('')}
-                        </div>
-                    ` : '<p class="empty-state">No traits purchased</p>'}
-                </div>
-                
-                <div class="available-items">
-                    <h4>Available Traits</h4>
-                    <div class="trait-grid">
-                        ${availableTraits.map(trait => this.renderTraitOption(trait, character, pointInfo)).join('')}
+        const conditionTiers = TraitFlawSystem.getTraitConditionTiers();
+        const statOptions = TraitFlawSystem.getTraitStatOptions();
+        const mainPoolAvailable = TraitFlawSystem.calculateMainPoolAvailable(character);
+        const mainPoolSpent = TraitFlawSystem.calculateMainPoolSpent(character);
+        const remainingPoints = mainPoolAvailable - mainPoolSpent;
+
+        return `
+            <div class="trait-purchase-section">
+                <div class="section-header">
+                    <h4>Traits</h4>
+                    <div class="points-remaining">
+                        Remaining Points: <span class="${remainingPoints < 0 ? 'over-budget' : ''}">${remainingPoints}</span>
                     </div>
                 </div>
-            </div>
-        `;
-
-        return containerHtml;
-    }
-
-    renderPurchasedTrait(trait, index) {
-        return `
-            <div class="purchased-item">
-                <div class="item-info">
-                    <span class="item-name">${trait.name}</span>
-                    <span class="item-details">${GameConstants.TRAIT_COST}p - ${trait.condition || trait.description}</span>
+                
+                <div class="section-description">
+                    Traits cost 30 points and provide +Tier bonus to TWO stats when conditions are met.
+                    Choose conditions totaling up to 3 tiers. Same stacking penalties apply.
                 </div>
-                <button class="btn-danger btn-small remove-trait" data-index="${index}">Remove</button>
+                
+                <div class="purchased-traits">
+                    <h5>Purchased Traits (${character.mainPoolPurchases.traits.length})</h5>
+                    ${this.renderPurchasedTraits(character)}
+                </div>
+                
+                <div class="trait-builder">
+                    <h5>Create New Trait</h5>
+                    ${this.renderTraitBuilder(conditionTiers, statOptions, remainingPoints)}
+                </div>
             </div>
         `;
     }
 
-    renderTraitOption(trait, character, pointInfo) {
-        const canAfford = pointInfo.remaining >= GameConstants.TRAIT_COST;
-        const alreadyPurchased = character.mainPoolPurchases.traits.some(t => t.traitId === trait.id);
-        const canPurchase = canAfford && !alreadyPurchased;
+    renderPurchasedTraits(character) {
+        if (character.mainPoolPurchases.traits.length === 0) {
+            return '<div class="empty-state">No traits purchased yet</div>';
+        }
 
         return `
-            <div class="trait-card ${canPurchase ? 'clickable' : 'disabled'}" data-trait-id="${trait.id}">
-                <h5>${trait.name}</h5>
-                <p class="item-cost"><strong>Cost: ${GameConstants.TRAIT_COST}p</strong></p>
-                <p class="item-description">${trait.description}</p>
-                <div class="trait-tier">Tier ${trait.tier} (${trait.bonusCount} stat bonuses)</div>
-                ${alreadyPurchased ? 
-                    '<div class="status-badge">Already Purchased</div>' : 
-                    canAfford ? '<div class="status-badge success">Click to Purchase</div>' :
-                    '<div class="status-badge error">Cannot Afford</div>'
-                }
+            <div class="purchased-list">
+                ${character.mainPoolPurchases.traits.map((trait, index) => `
+                    <div class="purchased-trait-card">
+                        <div class="trait-info">
+                            <div class="trait-stats">
+                                <strong>Bonuses:</strong> +${character.tier} ${trait.statBonuses.join(`, +${character.tier} `)}
+                            </div>
+                            <div class="trait-conditions">
+                                <strong>When:</strong> ${this.getConditionNames(trait.conditions).join(' AND ')}
+                            </div>
+                            <span class="trait-cost">-30p</span>
+                        </div>
+                        <button class="btn-small btn-danger" data-action="remove-trait" data-index="${index}">Remove</button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    renderTraitBuilder(conditionTiers, statOptions, remainingPoints) {
+        const canAfford = remainingPoints >= 30;
+        const tierCostRemaining = 3 - this.currentTraitData.tierCost;
+        const canPurchase = canAfford && 
+                           this.currentTraitData.statBonuses.length === 2 && 
+                           this.currentTraitData.conditions.length > 0 &&
+                           this.currentTraitData.tierCost <= 3;
+
+        return `
+            <div class="trait-builder-content ${!canAfford ? 'disabled' : ''}">
+                <div class="builder-step">
+                    <h6>Step 1: Choose Stat Bonuses (2 required)</h6>
+                    <div class="stat-selection">
+                        ${statOptions.map(stat => `
+                            <div class="stat-option">
+                                <label>
+                                    <input type="checkbox" 
+                                           class="stat-checkbox" 
+                                           data-stat-id="${stat.id}"
+                                           ${this.currentTraitData.statBonuses.includes(stat.id) ? 'checked' : ''}
+                                           ${this.currentTraitData.statBonuses.length >= 2 && !this.currentTraitData.statBonuses.includes(stat.id) ? 'disabled' : ''}>
+                                    ${stat.name}
+                                </label>
+                                <small>${stat.description}</small>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="selection-summary">
+                        Selected: ${this.currentTraitData.statBonuses.join(', ') || 'None'} 
+                        (${this.currentTraitData.statBonuses.length}/2)
+                    </div>
+                </div>
+                
+                <div class="builder-step">
+                    <h6>Step 2: Choose Conditions (max 3 tier points)</h6>
+                    <div class="tier-budget">
+                        Tier points used: ${this.currentTraitData.tierCost}/3
+                        ${tierCostRemaining > 0 ? `(${tierCostRemaining} remaining)` : ''}
+                    </div>
+                    
+                    ${Object.entries(conditionTiers).map(([tierKey, tier]) => `
+                        <div class="condition-tier">
+                            <h7>${tier.name} (${tier.cost} point${tier.cost > 1 ? 's' : ''} each)</h7>
+                            <div class="condition-grid">
+                                ${tier.conditions.map(condition => `
+                                    <div class="condition-option">
+                                        <label>
+                                            <input type="checkbox" 
+                                                   class="condition-checkbox" 
+                                                   data-condition-id="${condition.id}"
+                                                   data-tier-cost="${tier.cost}"
+                                                   ${this.currentTraitData.conditions.includes(condition.id) ? 'checked' : ''}
+                                                   ${this.currentTraitData.tierCost + tier.cost > 3 && !this.currentTraitData.conditions.includes(condition.id) ? 'disabled' : ''}>
+                                            ${condition.name}
+                                        </label>
+                                        <small>${condition.description}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="builder-actions">
+                    <button class="btn-secondary" id="clear-trait-builder">Clear All</button>
+                    <button class="btn-primary" 
+                            id="purchase-trait-btn" 
+                            ${!canPurchase ? 'disabled' : ''}>
+                        Purchase Trait (30p)
+                    </button>
+                </div>
+                
+                ${!canAfford ? '<div class="cannot-afford">Insufficient points to purchase trait</div>' : ''}
             </div>
         `;
     }
 
     setupEventListeners() {
-        // Trait card clicks
-        document.querySelectorAll('.trait-card.clickable').forEach(card => {
-            card.addEventListener('click', () => {
-                const traitId = card.dataset.traitId;
-                this.purchaseTrait(traitId);
+        // Stat selection
+        document.querySelectorAll('.stat-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const statId = e.target.dataset.statId;
+                
+                if (e.target.checked) {
+                    if (this.currentTraitData.statBonuses.length < 2) {
+                        this.currentTraitData.statBonuses.push(statId);
+                    } else {
+                        e.target.checked = false;
+                        this.builder.showNotification('Maximum 2 stat bonuses allowed', 'warning');
+                    }
+                } else {
+                    this.currentTraitData.statBonuses = this.currentTraitData.statBonuses.filter(s => s !== statId);
+                }
+                
+                this.updateTraitBuilder();
             });
         });
 
-        // Remove trait buttons
-        document.querySelectorAll('.remove-trait').forEach(btn => {
+        // Condition selection
+        document.querySelectorAll('.condition-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const conditionId = e.target.dataset.conditionId;
+                const tierCost = parseInt(e.target.dataset.tierCost);
+                
+                if (e.target.checked) {
+                    if (this.currentTraitData.tierCost + tierCost <= 3) {
+                        this.currentTraitData.conditions.push(conditionId);
+                        this.currentTraitData.tierCost += tierCost;
+                    } else {
+                        e.target.checked = false;
+                        this.builder.showNotification('Would exceed 3 tier point limit', 'warning');
+                    }
+                } else {
+                    this.currentTraitData.conditions = this.currentTraitData.conditions.filter(c => c !== conditionId);
+                    this.currentTraitData.tierCost -= tierCost;
+                }
+                
+                this.updateTraitBuilder();
+            });
+        });
+
+        // Clear builder
+        const clearBtn = document.getElementById('clear-trait-builder');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                this.clearTraitBuilder();
+            });
+        }
+
+        // Purchase trait
+        const purchaseBtn = document.getElementById('purchase-trait-btn');
+        if (purchaseBtn) {
+            purchaseBtn.addEventListener('click', () => {
+                this.purchaseTrait();
+            });
+        }
+
+        // Remove trait
+        document.querySelectorAll('[data-action="remove-trait"]').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const index = parseInt(btn.dataset.index);
+                const index = parseInt(e.target.dataset.index);
                 this.removeTrait(index);
             });
         });
     }
 
-    purchaseTrait(traitId) {
-        const character = this.builder.currentCharacter;
-        
+    updateTraitBuilder() {
+        // Re-render the trait builder section
+        const builderElement = document.querySelector('.trait-builder');
+        if (builderElement) {
+            const conditionTiers = TraitFlawSystem.getTraitConditionTiers();
+            const statOptions = TraitFlawSystem.getTraitStatOptions();
+            const character = this.builder.currentCharacter;
+            const mainPoolAvailable = TraitFlawSystem.calculateMainPoolAvailable(character);
+            const mainPoolSpent = TraitFlawSystem.calculateMainPoolSpent(character);
+            const remainingPoints = mainPoolAvailable - mainPoolSpent;
+            
+            builderElement.innerHTML = `
+                <h5>Create New Trait</h5>
+                ${this.renderTraitBuilder(conditionTiers, statOptions, remainingPoints)}
+            `;
+            
+            this.setupEventListeners();
+        }
+    }
+
+    clearTraitBuilder() {
+        this.currentTraitData = {
+            conditions: [],
+            statBonuses: [],
+            tierCost: 0
+        };
+        this.updateTraitBuilder();
+    }
+
+    purchaseTrait() {
         try {
-            // Use default stat bonuses (accuracy, damage) for simplicity
-            const defaultStats = ['accuracy', 'damage'];
-            
-            // Use system to handle purchase
-            TraitFlawSystem.purchaseTrait(character, traitId, defaultStats);
-            
+            const character = this.builder.currentCharacter;
+            TraitFlawSystem.purchaseTrait(character, this.currentTraitData);
+            this.clearTraitBuilder();
             this.builder.updateCharacter();
-            this.builder.showNotification(`Purchased trait for ${GameConstants.TRAIT_COST}p!`, 'success');
-            
+            this.builder.showNotification('Trait purchased successfully', 'success');
         } catch (error) {
-            this.builder.showNotification(`Failed to purchase trait: ${error.message}`, 'error');
+            this.builder.showNotification(error.message, 'error');
         }
     }
 
     removeTrait(index) {
         const character = this.builder.currentCharacter;
+        const trait = character.mainPoolPurchases.traits[index];
         
-        try {
-            if (index >= 0 && index < character.mainPoolPurchases.traits.length) {
-                const trait = character.mainPoolPurchases.traits[index];
-                character.mainPoolPurchases.traits.splice(index, 1);
-                
-                this.builder.updateCharacter();
-                this.builder.showNotification(`Removed ${trait.name}`, 'info');
-            }
-        } catch (error) {
-            this.builder.showNotification(`Failed to remove trait: ${error.message}`, 'error');
+        if (confirm('Remove this trait? This will refund 30 points.')) {
+            TraitFlawSystem.removeTrait(character, index);
+            this.builder.updateCharacter();
+            this.builder.showNotification('Trait removed', 'success');
         }
+    }
+
+    getConditionNames(conditionIds) {
+        const conditionTiers = TraitFlawSystem.getTraitConditionTiers();
+        const names = [];
+        
+        conditionIds.forEach(id => {
+            for (const tier of Object.values(conditionTiers)) {
+                const condition = tier.conditions.find(c => c.id === id);
+                if (condition) {
+                    names.push(condition.name);
+                    break;
+                }
+            }
+        });
+        
+        return names;
     }
 }

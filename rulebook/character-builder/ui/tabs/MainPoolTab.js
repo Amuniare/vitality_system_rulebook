@@ -1,19 +1,22 @@
-// MainPoolTab.js - Main pool coordinator (simplified)
-import { GameConstants } from '../../core/GameConstants.js';
-import { FlawPurchaseSection } from '../components/FlawPurchaseSection.js';
-import { TraitPurchaseSection } from '../components/TraitPurchaseSection.js';
-import { BoonPurchaseSection } from '../components/BoonPurchaseSection.js';
-import { ActionUpgradeSection } from '../components/ActionUpgradeSection.js';
+// MainPoolTab.js - Main pool purchases with corrected flaw economics
+import { TraitFlawSystem } from '../systems/TraitFlawSystem.js';
+import { UniqueAbilitySystem } from '../systems/UniqueAbilitySystem.js';
+import { ActionSystem } from '../systems/ActionSystem.js';
+import { FlawPurchaseSection } from './components/FlawPurchaseSection.js';
+import { TraitPurchaseSection } from './components/TraitPurchaseSection.js';
+import { BoonPurchaseSection } from './components/BoonPurchaseSection.js';
+import { ActionUpgradeSection } from './components/ActionUpgradeSection.js';
 
 export class MainPoolTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        
-        // Initialize sections
-        this.flawSection = new FlawPurchaseSection(characterBuilder);
-        this.traitSection = new TraitPurchaseSection(characterBuilder);
-        this.boonSection = new BoonPurchaseSection(characterBuilder);
-        this.actionSection = new ActionUpgradeSection(characterBuilder);
+        this.sections = {
+            flaws: new FlawPurchaseSection(characterBuilder),
+            traits: new TraitPurchaseSection(characterBuilder),
+            boons: new BoonPurchaseSection(characterBuilder),
+            actions: new ActionUpgradeSection(characterBuilder)
+        };
+        this.activeSection = 'flaws';
     }
 
     render() {
@@ -21,41 +24,22 @@ export class MainPoolTab {
         if (!tabContent) return;
 
         const character = this.builder.currentCharacter;
-        if (!character) {
-            tabContent.innerHTML = '<div class="empty-state">No character selected</div>';
-            return;
-        }
-
-        const pointInfo = this.calculatePointInfo(character);
+        if (!character) return;
 
         tabContent.innerHTML = `
             <div class="main-pool-section">
                 <h2>Main Pool Purchases</h2>
                 <p class="section-description">
-                    Purchase traits, flaws, boons, and action upgrades using your main pool points.
-                    Flaws give you extra points, traits provide conditional bonuses, and boons grant unique abilities.
+                    Use your main pool points to purchase flaws (which now COST points but provide bonuses), 
+                    traits, boons, and action upgrades. Note: Flaws have reversed economics - they cost points but provide benefits.
                 </p>
                 
-                ${this.renderPointPoolStatus(pointInfo)}
-                
-                <div id="flaw-section">
-                    ${this.flawSection.render(character, pointInfo)}
-                </div>
-                
-                <div id="trait-section">
-                    ${this.traitSection.render(character, pointInfo)}
-                </div>
-                
-                <div id="boon-section">
-                    ${this.boonSection.render(character, pointInfo)}
-                </div>
-                
-                <div id="action-section">
-                    ${this.actionSection.render(character, pointInfo)}
-                </div>
+                ${this.renderPointPoolDisplay(character)}
+                ${this.renderSectionTabs()}
+                ${this.renderActiveSection(character)}
                 
                 <div class="next-step">
-                    <p><strong>Next Step:</strong> Create your special attacks based on your archetype.</p>
+                    <p><strong>Next Step:</strong> Create your special attacks using limits and upgrades.</p>
                     <button id="continue-to-special-attacks" class="btn-primary">Continue to Special Attacks →</button>
                 </div>
             </div>
@@ -64,77 +48,127 @@ export class MainPoolTab {
         this.setupEventListeners();
     }
 
-    calculatePointInfo(character) {
-        const tier = character.tier;
+    renderPointPoolDisplay(character) {
+        const mainPoolAvailable = TraitFlawSystem.calculateMainPoolAvailable(character);
+        const mainPoolSpent = TraitFlawSystem.calculateMainPoolSpent(character);
+        const remaining = mainPoolAvailable - mainPoolSpent;
         
-        // Base main pool
-        let basePool = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        
-        // Extraordinary archetype doubles main pool
-        if (character.archetypes.uniqueAbility === 'extraordinary') {
-            basePool += Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        }
-        
-        // Flaw bonuses
-        const flawBonus = character.mainPoolPurchases.flaws.length * GameConstants.FLAW_BONUS;
-        const totalAvailable = basePool + flawBonus;
-        
-        // Calculate spent
-        const spentOnTraits = character.mainPoolPurchases.traits.reduce((total, trait) => total + (trait.cost || GameConstants.TRAIT_COST), 0);
-        const spentOnBoons = character.mainPoolPurchases.boons.reduce((total, boon) => total + (boon.cost || 0), 0);
-        const spentOnUpgrades = character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
-        
-        const totalSpent = spentOnTraits + spentOnBoons + spentOnUpgrades;
-        
-        return {
-            basePool,
-            flawBonus,
-            totalAvailable,
-            spent: totalSpent,
-            remaining: totalAvailable - totalSpent,
-            breakdown: {
-                traits: spentOnTraits,
-                boons: spentOnBoons,
-                upgrades: spentOnUpgrades
-            }
-        };
-    }
-
-    renderPointPoolStatus(pointInfo) {
-        const status = pointInfo.remaining < 0 ? 'over-budget' : 
-                      pointInfo.remaining === 0 ? 'fully-used' : '';
+        const breakdown = this.calculatePointBreakdown(character);
 
         return `
-            <div class="main-pool-status ${status}">
-                <h3>Main Pool Points</h3>
-                <div class="pool-summary">
-                    <div class="pool-item">
-                        <span>Base Pool: ${pointInfo.basePool}p</span>
-                    </div>
-                    <div class="pool-item">
-                        <span>Flaw Bonus: +${pointInfo.flawBonus}p</span>
-                    </div>
-                    <div class="pool-item">
-                        <span><strong>Total Available: ${pointInfo.totalAvailable}p</strong></span>
-                    </div>
-                    <div class="pool-item">
-                        <span>Spent: ${pointInfo.spent}p</span>
-                    </div>
-                    <div class="pool-item ${pointInfo.remaining < 0 ? 'over-budget' : ''}">
-                        <span><strong>Remaining: ${pointInfo.remaining}p</strong></span>
+            <div class="point-pool-display">
+                <div class="pool-summary ${remaining < 0 ? 'over-budget' : remaining === 0 ? 'fully-used' : ''}">
+                    <h3>Main Pool</h3>
+                    <div class="pool-main">
+                        <span>Available: ${mainPoolAvailable}</span>
+                        <span>Spent: ${mainPoolSpent}</span>
+                        <span class="remaining">Remaining: ${remaining}</span>
                     </div>
                 </div>
                 
-                <div class="spending-breakdown">
-                    <div class="breakdown-item">Traits: ${pointInfo.breakdown.traits}p</div>
-                    <div class="breakdown-item">Boons: ${pointInfo.breakdown.boons}p</div>
-                    <div class="breakdown-item">Upgrades: ${pointInfo.breakdown.upgrades}p</div>
+                <div class="pool-breakdown">
+                    <h4>Point Sources</h4>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-item">
+                            <span>Base (Tier-2)×15:</span>
+                            <span>${Math.max(0, (character.tier - 2) * 15)}</span>
+                        </div>
+                        ${character.archetypes.uniqueAbility === 'extraordinary' ? `
+                            <div class="breakdown-item">
+                                <span>Extraordinary Bonus:</span>
+                                <span>+${Math.max(0, (character.tier - 2) * 15)}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <div class="pool-spending">
+                    <h4>Point Usage</h4>
+                    <div class="spending-grid">
+                        ${breakdown.boons > 0 ? `
+                            <div class="spending-item">
+                                <span>Boons:</span>
+                                <span>-${breakdown.boons}</span>
+                            </div>
+                        ` : ''}
+                        ${breakdown.traits > 0 ? `
+                            <div class="spending-item">
+                                <span>Traits:</span>
+                                <span>-${breakdown.traits}</span>
+                            </div>
+                        ` : ''}
+                        ${breakdown.flaws > 0 ? `
+                            <div class="spending-item flaw-cost">
+                                <span>Flaws (NEW: Cost Points):</span>
+                                <span>-${breakdown.flaws}</span>
+                            </div>
+                        ` : ''}
+                        ${breakdown.actions > 0 ? `
+                            <div class="spending-item">
+                                <span>Action Upgrades:</span>
+                                <span>-${breakdown.actions}</span>
+                            </div>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
         `;
     }
 
+    calculatePointBreakdown(character) {
+        return {
+            boons: character.mainPoolPurchases.boons.reduce((sum, boon) => sum + (boon.cost || 0), 0),
+            traits: character.mainPoolPurchases.traits.reduce((sum, trait) => sum + (trait.cost || 0), 0),
+            flaws: character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 0), 0), // Now costs points
+            actions: character.mainPoolPurchases.primaryActionUpgrades.length * 30
+        };
+    }
+
+    renderSectionTabs() {
+        return `
+            <div class="section-tabs">
+                <button class="section-tab ${this.activeSection === 'flaws' ? 'active' : ''}" data-section="flaws">
+                    Flaws (COST Points)
+                </button>
+                <button class="section-tab ${this.activeSection === 'traits' ? 'active' : ''}" data-section="traits">
+                    Traits
+                </button>
+                <button class="section-tab ${this.activeSection === 'boons' ? 'active' : ''}" data-section="boons">
+                    Boons
+                </button>
+                <button class="section-tab ${this.activeSection === 'actions' ? 'active' : ''}" data-section="actions">
+                    Action Upgrades
+                </button>
+            </div>
+        `;
+    }
+
+    renderActiveSection(character) {
+        const section = this.sections[this.activeSection];
+        if (!section) return '';
+
+        return `
+            <div class="section-content">
+                ${section.render()}
+            </div>
+        `;
+    }
+
     setupEventListeners() {
+        // Section tabs
+        document.querySelectorAll('.section-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                this.activeSection = e.target.dataset.section;
+                this.render();
+            });
+        });
+
+        // Setup section-specific event listeners
+        const activeSection = this.sections[this.activeSection];
+        if (activeSection && activeSection.setupEventListeners) {
+            activeSection.setupEventListeners();
+        }
+
         // Continue button
         const continueBtn = document.getElementById('continue-to-special-attacks');
         if (continueBtn) {
@@ -142,11 +176,5 @@ export class MainPoolTab {
                 this.builder.switchTab('specialAttacks');
             });
         }
-
-        // Setup event listeners for each section
-        this.flawSection.setupEventListeners();
-        this.traitSection.setupEventListeners();
-        this.boonSection.setupEventListeners();
-        this.actionSection.setupEventListeners();
     }
 }
