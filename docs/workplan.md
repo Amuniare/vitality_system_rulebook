@@ -28,7 +28,7 @@
 
 #### 1.1 Web Character Builder Completion
 - [✅] **Main Pool Tab**: Traits, flaws, boons purchasing system
-- [ ] **Special Attacks Tab**: Limits system and upgrade selection  
+- [✅] **Special Attacks Tab**: Limits system and upgrade selection  
 - [ ] **Utility Tab**: Expertise, features, senses, descriptors
 - [ ] **Validation System**: Complete build order enforcement
 - [ ] **Character Export**: JSON download for Roll20 upload
