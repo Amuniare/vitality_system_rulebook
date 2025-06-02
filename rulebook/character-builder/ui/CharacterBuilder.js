@@ -160,7 +160,7 @@ export class CharacterBuilder {
 
     saveCharacters() {
         // No-op - we only download individual files now
-}
+    }
 
     deleteCurrentCharacter() {
         if (!this.currentCharacter) return;
@@ -316,16 +316,6 @@ export class CharacterBuilder {
     calculateStats() {
         if (!this.currentCharacter) return {};
         return StatCalculator.calculateAllStats(this.currentCharacter);
-    }
-
-    // STORAGE
-    loadCharacters() {
-        const saved = localStorage.getItem('vitality-characters-v2');
-        return saved ? JSON.parse(saved) : {};
-    }
-
-    saveCharacters() {
-        localStorage.setItem('vitality-characters-v2', JSON.stringify(this.characters));
     }
 
     // NOTIFICATIONS
