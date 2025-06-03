@@ -1,251 +1,87 @@
 // AttackTypeSystem.js - Attack and Effect Type management
 import { GameConstants } from '../core/GameConstants.js';
+import { gameDataManager } from '../core/GameDataManager.js'; // ADDED
+import { ArchetypeSystem } from './ArchetypeSystem.js'; // For getFreeAttackTypesFromArchetype
 
 export class AttackTypeSystem {
-    // Get all attack type definitions
-    static getAttackTypeDefinitions() {
+    static getAttackTypeDefinition(typeId) {
+        const definitions = gameDataManager.getAttackTypeDefinitions() || {};
+        const def = definitions[typeId];
+        if (!def) return null;
+        // Resolve keys from GameConstants
         return {
-            melee: {
-                id: 'melee',
-                name: 'Melee Attack',
-                range: GameConstants.MELEE_RANGE,
-                description: 'Adjacent targets only',
-                benefit: 'Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls',
-                cost: GameConstants.ATTACK_TYPE_COSTS.melee,
-                restrictions: [],
-                bonuses: { tierToAccuracyOrDamage: true }
-            },
-            ranged: {
-                id: 'ranged',
-                name: 'Ranged Attack',
-                range: GameConstants.RANGED_RANGE,
-                description: '15 spaces base range',
-                benefit: 'Standard ranged combat',
-                penalty: '-Tier to Accuracy if adjacent to hostile character',
-                cost: GameConstants.ATTACK_TYPE_COSTS.ranged,
-                restrictions: ['adjacency_penalty'],
-                bonuses: {}
-            },
-            direct: {
-                id: 'direct',
-                name: 'Direct Attack',
-                range: GameConstants.DIRECT_RANGE,
-                description: '30 spaces, auto-hit (no Accuracy roll needed)',
-                benefit: 'Cannot be dodged',
-                penalty: '-Tier to all Damage and Condition rolls',
-                cost: GameConstants.ATTACK_TYPE_COSTS.direct,
-                restrictions: ['condition_only', 'accuracy_penalty'],
-                bonuses: { autoHit: true }
-            },
-            area: {
-                id: 'area',
-                name: 'Area Attack',
-                range: 'self',
-                description: 'Affects multiple targets in area',
-                areaOptions: [
-                    { type: 'radius', size: GameConstants.AOE_RADIUS, description: '3sp Radius Burst' },
-                    { type: 'cone', size: GameConstants.AOE_CONE, description: '6sp Cone' },
-                    { type: 'line', size: GameConstants.AOE_LINE, description: '12sp Line' }
-                ],
-                penalty: '-Tier to all Damage and Condition rolls',
-                cost: GameConstants.ATTACK_TYPE_COSTS.area,
-                restrictions: ['area_penalty'],
-                bonuses: { multiTarget: true }
-            }
+            ...def,
+            range: def.rangeKey ? GameConstants[def.rangeKey] : def.range,
+            cost: def.costKey ? GameConstants.ATTACK_TYPE_COSTS[def.costKey] : def.cost,
+            areaOptions: def.areaOptions ? def.areaOptions.map(opt => ({
+                ...opt,
+                size: opt.sizeKey ? GameConstants[opt.sizeKey] : opt.size
+            })) : undefined
         };
+    }
+
+    static getEffectTypeDefinition(typeId) {
+        const definitions = gameDataManager.getEffectTypeDefinitions() || {};
+        const def = definitions[typeId];
+        if (!def) return null;
+        return {
+            ...def,
+            cost: def.costKey ? GameConstants.ATTACK_TYPE_COSTS[def.costKey] : def.cost
+        };
+    }
+    
+    static getBasicConditionDefinition(conditionId) {
+        const conditions = gameDataManager.getBasicConditions() || [];
+        const cond = conditions.find(c => c.id === conditionId);
+        if (!cond) return null;
+        return {
+            ...cond,
+            duration: cond.durationKey ? GameConstants[cond.durationKey] : cond.duration
+        };
+    }
+
+    static getAdvancedConditionDefinition(conditionId) {
+        const conditions = gameDataManager.getAdvancedConditions() || [];
+        const cond = conditions.find(c => c.id === conditionId);
+        if (!cond) return null;
+        return {
+            ...cond,
+            duration: cond.durationKey ? GameConstants[cond.durationKey] : cond.duration,
+            cost: cond.costKey ? GameConstants.ADVANCED_CONDITION_COSTS[cond.costKey] : cond.cost
+        };
+    }
+
+
+    // Get all attack type definitions
+    static getAttackTypeDefinitions() { // Now returns resolved definitions
+        const definitions = gameDataManager.getAttackTypeDefinitions() || {};
+        const resolved = {};
+        for (const key in definitions) {
+            resolved[key] = this.getAttackTypeDefinition(key);
+        }
+        return resolved;
     }
     
     // Get effect type definitions
-    static getEffectTypeDefinitions() {
-        return {
-            damage: {
-                id: 'damage',
-                name: 'Damage Only',
-                description: 'Pure damage dealing',
-                benefit: 'Maximum damage potential',
-                cost: 0,
-                restrictions: [],
-                bonuses: { maxDamage: true }
-            },
-            condition: {
-                id: 'condition',
-                name: 'Condition Only',
-                description: 'Status effect application',
-                benefit: 'Apply conditions without damage',
-                cost: 0,
-                restrictions: [],
-                bonuses: { conditionFocus: true }
-            },
-            hybrid: {
-                id: 'hybrid',
-                name: 'Hybrid (Damage + Condition)',
-                description: 'Both damage and condition in single attack',
-                benefit: 'Versatile attack combining effects',
-                penalty: '-Tier to ALL Damage and Condition rolls',
-                cost: GameConstants.ATTACK_TYPE_COSTS.hybrid,
-                restrictions: ['hybrid_penalty'],
-                bonuses: { bothEffects: true }
-            }
-        };
+    static getEffectTypeDefinitions() { // Now returns resolved definitions
+        const definitions = gameDataManager.getEffectTypeDefinitions() || {};
+        const resolved = {};
+        for (const key in definitions) {
+            resolved[key] = this.getEffectTypeDefinition(key);
+        }
+        return resolved;
     }
     
     // Get basic conditions available to all characters
-    static getBasicConditions() {
-        return [
-            {
-                id: 'disarm',
-                name: 'Disarm',
-                resistance: 'stability',
-                duration: 'end_of_your_next_turn',
-                description: 'Drop held item, launch (Condition roll - Resistance) spaces',
-                cost: 0
-            },
-            {
-                id: 'grab',
-                name: 'Grab',
-                resistance: 'stability',
-                duration: 'until_broken',
-                description: 'Cannot move unless dragging grabber, contested Capacity to break free',
-                cost: 0
-            },
-            {
-                id: 'shove',
-                name: 'Shove',
-                resistance: 'stability',
-                duration: 'instant',
-                description: 'Push/pull (Condition roll - Resistance) spaces, 5 spaces = Prone',
-                cost: 0
-            },
-            {
-                id: 'prone',
-                name: 'Prone',
-                resistance: 'stability',
-                duration: 'until_stood_up',
-                description: 'Adjacent attacks +5 Accuracy, Ranged attacks -5 Accuracy, costs 3 Movement to stand',
-                cost: 0
-            },
-            {
-                id: 'blind',
-                name: 'Blind',
-                resistance: 'vitality',
-                duration: 'end_of_your_next_turn',
-                description: 'Treat all others as Hidden, attackers ignore base Tier Avoidance bonus',
-                cost: 0
-            },
-            {
-                id: 'daze',
-                name: 'Daze',
-                resistance: 'vitality',
-                duration: 'end_of_your_next_turn',
-                description: 'Lose Quick Actions and Reactions',
-                cost: 0
-            },
-            {
-                id: 'misdirect',
-                name: 'Misdirect',
-                resistance: 'resolve',
-                duration: 'end_of_your_next_turn',
-                description: 'Cannot attack the caster',
-                cost: 0
-            },
-            {
-                id: 'setup',
-                name: 'Setup',
-                resistance: 'resolve',
-                duration: 'next_attack',
-                description: 'Next Accuracy roll vs target gains double Tier bonus',
-                cost: 0
-            },
-            {
-                id: 'taunt',
-                name: 'Taunt',
-                resistance: 'resolve',
-                duration: 'end_of_your_next_turn',
-                description: '-2×Tier Accuracy against anyone except caster',
-                cost: 0
-            }
-        ];
+    static getBasicConditions() { // Now returns resolved definitions
+        const conditions = gameDataManager.getBasicConditions() || [];
+        return conditions.map(c => this.getBasicConditionDefinition(c.id)).filter(Boolean);
     }
     
     // Get advanced conditions (require special purchase)
-    static getAdvancedConditions() {
-        return [
-            {
-                id: 'control',
-                name: 'Control',
-                resistance: 'resolve',
-                duration: 'start_of_your_next_turn',
-                description: 'Take over target\'s next turn completely',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.control
-            },
-            {
-                id: 'capture',
-                name: 'Capture',
-                resistance: 'stability',
-                duration: 'start_of_your_next_turn',
-                description: 'Prevent all movement, Avoidance reduced to 10',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.capture
-            },
-            {
-                id: 'stun',
-                name: 'Stun',
-                resistance: 'resolve_or_vitality',
-                duration: 'start_of_your_next_turn',
-                description: 'No actions, Avoidance = 0, all attacks auto-hit and crit',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.stun
-            },
-            {
-                id: 'weaken',
-                name: 'Weaken',
-                resistance: 'vitality',
-                duration: 'permanent',
-                description: 'Reduce chosen stat by Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.weaken,
-                requiresChoice: true,
-                choices: ['accuracy', 'damage', 'conditions', 'avoidance', 'durability', 'allResistances']
-            },
-            {
-                id: 'disableSpecials',
-                name: 'Disable Specials',
-                resistance: 'resolve_or_vitality',
-                duration: 'start_of_your_next_turn',
-                description: 'Cannot use Special Attacks',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.disableSpecials
-            },
-            {
-                id: 'mimic',
-                name: 'Mimic',
-                resistance: 'resolve_or_vitality',
-                duration: 'start_of_your_next_turn',
-                description: 'Gain use of disabled Special Attacks',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.mimic,
-                requires: 'disableSpecials'
-            },
-            {
-                id: 'frighten',
-                name: 'Frighten',
-                resistance: 'resolve',
-                duration: 'start_of_your_next_turn',
-                description: 'Move away, defensive actions only',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.frighten
-            },
-            {
-                id: 'enthrall',
-                name: 'Enthrall',
-                resistance: 'resolve',
-                duration: 'start_of_your_next_turn',
-                description: 'Must defend caster',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.enthrall
-            },
-            {
-                id: 'frenzy',
-                name: 'Frenzy',
-                resistance: 'resolve',
-                duration: 'start_of_your_next_turn',
-                description: 'Attack nearest character randomly',
-                cost: GameConstants.ADVANCED_CONDITION_COSTS.frenzy
-            }
-        ];
+    static getAdvancedConditions() { // Now returns resolved definitions
+        const conditions = gameDataManager.getAdvancedConditions() || [];
+        return conditions.map(c => this.getAdvancedConditionDefinition(c.id)).filter(Boolean);
     }
     
     // Validate attack type selection for special attack
@@ -253,7 +89,7 @@ export class AttackTypeSystem {
         const errors = [];
         const warnings = [];
         
-        const attackType = this.getAttackTypeDefinitions()[attackTypeId];
+        const attackType = this.getAttackTypeDefinition(attackTypeId); // MODIFIED
         if (!attackType) {
             errors.push(`Invalid attack type: ${attackTypeId}`);
             return { isValid: false, errors, warnings };
@@ -265,7 +101,7 @@ export class AttackTypeSystem {
         }
         
         // Check if free from archetype
-        const freeTypes = this.getFreeAttackTypesFromArchetype(character);
+        const freeTypes = ArchetypeSystem.getFreeAttackTypes(character); // Using ArchetypeSystem
         const cost = freeTypes.includes(attackTypeId) ? 0 : attackType.cost;
         
         // Check if can afford
@@ -287,23 +123,9 @@ export class AttackTypeSystem {
         };
     }
     
-    // Get free attack types from character's archetypes
+    // Get free attack types from character's archetypes (moved to ArchetypeSystem but can be proxied or re-imported)
     static getFreeAttackTypesFromArchetype(character) {
-        const free = [];
-        
-        switch(character.archetypes.attackType) {
-            case 'aoeSpecialist':
-                free.push('area');
-                break;
-            case 'directSpecialist':
-                free.push('direct');
-                break;
-            case 'singleTarget':
-                free.push('melee', 'ranged');
-                break;
-        }
-        
-        return free;
+        return ArchetypeSystem.getFreeAttackTypes(character); // DELEGATE
     }
     
     // Validate attack type restrictions
@@ -313,8 +135,9 @@ export class AttackTypeSystem {
         
         // Direct attacks must be condition only
         if (attackTypeId === 'direct') {
+            // Check the effect types chosen for the *current* attack object
             if (attack.effectTypes.includes('damage') || attack.effectTypes.includes('hybrid')) {
-                errors.push('Direct attacks must be condition only');
+                errors.push('Direct attacks must be condition only (cannot have "damage" or "hybrid" effect types)');
             }
         }
         
@@ -352,8 +175,10 @@ export class AttackTypeSystem {
         // Refund cost
         const freeTypes = this.getFreeAttackTypesFromArchetype(character);
         if (!freeTypes.includes(attackTypeId)) {
-            const attackType = this.getAttackTypeDefinitions()[attackTypeId];
-            attack.upgradePointsSpent -= attackType.cost;
+            const attackTypeDef = this.getAttackTypeDefinition(attackTypeId); // MODIFIED
+            if (attackTypeDef) { // Check if def exists
+                 attack.upgradePointsSpent -= attackTypeDef.cost;
+            }
         }
         
         return attack;
@@ -361,7 +186,7 @@ export class AttackTypeSystem {
     
     // Add effect type to special attack
     static addEffectTypeToAttack(character, attack, effectTypeId) {
-        const effectType = this.getEffectTypeDefinitions()[effectTypeId];
+        const effectType = this.getEffectTypeDefinition(effectTypeId); // MODIFIED
         if (!effectType) {
             throw new Error(`Invalid effect type: ${effectTypeId}`);
         }
@@ -391,8 +216,8 @@ export class AttackTypeSystem {
     // Add condition to special attack
     static addConditionToAttack(character, attack, conditionId, isAdvanced = false) {
         const condition = isAdvanced ? 
-            this.getAdvancedConditions().find(c => c.id === conditionId) :
-            this.getBasicConditions().find(c => c.id === conditionId);
+            this.getAdvancedConditionDefinition(conditionId) : // MODIFIED
+            this.getBasicConditionDefinition(conditionId);      // MODIFIED
             
         if (!condition) {
             throw new Error(`Invalid condition: ${conditionId}`);
@@ -425,14 +250,14 @@ export class AttackTypeSystem {
         
         attack.attackTypes.forEach(typeId => {
             if (!freeTypes.includes(typeId)) {
-                const attackType = this.getAttackTypeDefinitions()[typeId];
-                totalCost += attackType.cost;
+                const attackTypeDef = this.getAttackTypeDefinition(typeId); // MODIFIED
+                if (attackTypeDef) totalCost += attackTypeDef.cost;
             }
         });
         
         attack.effectTypes.forEach(typeId => {
-            const effectType = this.getEffectTypeDefinitions()[typeId];
-            totalCost += effectType.cost;
+            const effectTypeDef = this.getEffectTypeDefinition(typeId); // MODIFIED
+            if (effectTypeDef) totalCost += effectTypeDef.cost;
         });
         
         return totalCost;
@@ -441,32 +266,32 @@ export class AttackTypeSystem {
     // Get attack summary with all types and modifiers
     static getAttackSummary(character, attack) {
         const attackTypes = attack.attackTypes.map(id => {
-            const def = this.getAttackTypeDefinitions()[id];
-            return {
+            const def = this.getAttackTypeDefinition(id); // MODIFIED
+            return def ? {
                 id,
                 name: def.name,
                 range: def.range,
                 penalties: def.penalty || null
-            };
+            } : {id, name: id, range: 'N/A', penalties: null}; // Fallback
         });
         
         const effectTypes = attack.effectTypes.map(id => {
-            const def = this.getEffectTypeDefinitions()[id];
-            return {
+            const def = this.getEffectTypeDefinition(id); // MODIFIED
+            return def ? {
                 id,
                 name: def.name,
                 penalties: def.penalty || null
-            };
+            } : {id, name: id, penalties: null}; // Fallback
         });
         
         const basicConditions = attack.basicConditions.map(id => {
-            const def = this.getBasicConditions().find(c => c.id === id);
-            return { id, name: def.name };
+            const def = this.getBasicConditionDefinition(id); // MODIFIED
+            return def ? { id, name: def.name } : {id, name: id}; // Fallback
         });
         
         const advancedConditions = attack.advancedConditions.map(id => {
-            const def = this.getAdvancedConditions().find(c => c.id === id);
-            return { id, name: def.name };
+            const def = this.getAdvancedConditionDefinition(id); // MODIFIED
+            return def ? { id, name: def.name } : {id, name: id}; // Fallback
         });
         
         return {
@@ -475,14 +300,14 @@ export class AttackTypeSystem {
             basicConditions,
             advancedConditions,
             isHybrid: attack.isHybrid,
-            totalPenalty: this.calculateTotalPenalty(attack)
+            totalPenalty: this.calculateTotalPenalty(character, attack) // Pass character for tier
         };
     }
     
     // Calculate total penalty from all attack/effect types
-    static calculateTotalPenalty(attack) {
+    static calculateTotalPenalty(character, attack) { // Added character parameter
         let totalPenalty = 0;
-        const tier = 1; // Will be passed from character
+        const tier = character.tier; // Get tier from character
         
         // Direct and Area attacks have -Tier penalty
         if (attack.attackTypes.includes('direct') || attack.attackTypes.includes('area')) {
@@ -491,11 +316,18 @@ export class AttackTypeSystem {
         
         // Hybrid attacks have -Tier penalty
         if (attack.isHybrid) {
-            totalPenalty += tier;
+            // Check if already penalized by direct/area to avoid double penalty from tier
+            if (!(attack.attackTypes.includes('direct') || attack.attackTypes.includes('area'))) {
+                totalPenalty += tier;
+            }
         }
-        
-        // Note: Penalties don't stack from multiple sources of same type
-        // Most restrictive rule applies
+        //This logic might need refinement. The rule usually is "most restrictive applies" or a single -Tier for these.
+        // If it's a single -Tier if ANY of these are true:
+        if (attack.attackTypes.includes('direct') || attack.attackTypes.includes('area') || attack.isHybrid) {
+            totalPenalty = tier; // Simplified: a single -Tier penalty if any apply
+        } else {
+            totalPenalty = 0;
+        }
         
         return totalPenalty;
     }

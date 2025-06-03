@@ -1,0 +1,53 @@
+{
+    "tier1": {
+        "cost": 1,
+        "senses": [
+            {"id": "infraredVision", "name": "Infrared Vision", "description": "See heat signatures through barriers up to 10cm thick"},
+            {"id": "darkvision", "name": "Darkvision", "description": "Make Awareness checks to see clearly in complete darkness"},
+            {"id": "enhancedHearing", "name": "Enhanced Hearing", "description": "Make Awareness checks to hear beyond normal frequency/distance"},
+            {"id": "scentEnhancement", "name": "Scent Enhancement", "description": "Make Awareness checks to identify individuals/substances by smell"},
+            {"id": "tactileSensitivity", "name": "Tactile Sensitivity", "description": "Make Awareness checks to detect minute textures/vibrations/temperature"},
+            {"id": "magneticSense", "name": "Magnetic Sense", "description": "Make Awareness checks to determine directions and detect metal"},
+            {"id": "lieDetection", "name": "Lie Detection", "description": "Make Awareness checks to detect deliberate lies"},
+            {"id": "scentTracking", "name": "Scent Tracking", "description": "Make Awareness checks to follow trails by scent"}
+        ]
+    },
+    "tier3": {
+        "cost": 3,
+        "senses": [
+            {"id": "echolocation", "name": "Echolocation", "description": "Make Awareness checks to navigate in darkness using sound, range Tier×10 Sp"},
+            {"id": "thermalVision", "name": "Thermal Vision", "description": "Make Awareness checks to see heat signatures through walls"},
+            {"id": "microscopicVision", "name": "Microscopic Vision", "description": "Make Awareness checks to see cellular-level detail"},
+            {"id": "tremorSense", "name": "Tremor Sense", "description": "Make Awareness checks to detect movement through vibrations, range Tier×5 Sp"},
+            {"id": "auraSight", "name": "Aura Sight", "description": "Make Awareness checks to perceive emotional states and supernatural auras"},
+            {"id": "timeSense", "name": "Time Sense", "description": "Make Awareness checks to perceive temporal distortions"},
+            {"id": "precognitiveFlashes", "name": "Precognitive Flashes", "description": "Make Awareness checks to glimpse potential outcomes of immediate actions"}
+        ]
+    },
+    "tier5": {
+        "cost": 5,
+        "senses": [
+            {"id": "xrayVision", "name": "X-Ray Vision", "description": "Make Awareness checks to see through solid objects up to Tier×2 Sp thick"},
+            {"id": "psychicResonance", "name": "Psychic Resonance", "description": "Make Awareness checks to detect psychic activity and mental powers"},
+            {"id": "dimensionalSight", "name": "Dimensional Sight", "description": "Make Awareness checks to see into adjacent dimensions"},
+            {"id": "lifeDetection", "name": "Life Detection", "description": "Make Awareness checks to sense all living creatures within Tier×100 Sp"},
+            {"id": "energySight", "name": "Energy Sight", "description": "Make Awareness checks to see all forms of energy as visible spectrums"}
+        ]
+    },
+    "tier10": {
+        "cost": 10,
+        "senses": [
+            {"id": "omniscientSight", "name": "Omniscient Sight", "description": "Make Awareness checks to perceive events anywhere on Earth you can visualize"},
+            {"id": "temporalVision", "name": "Temporal Vision", "description": "Make Awareness checks to see past or future states with perfect clarity"},
+            {"id": "quantumPerception", "name": "Quantum Perception", "description": "Make Awareness checks to perceive probability clouds and quantum states"},
+            {"id": "universalDetection", "name": "Universal Detection", "description": "Make Awareness checks to sense any phenomenon within city-sized area"}
+        ]
+    },
+    "unique": {
+        "cost": "variable",
+        "senses": [
+            {"id": "uniqueSense", "name": "Unique Sense", "description": "Supernatural sense for specific phenomenon, cost based on scope", "customizable": true}
+        ]
+    }
+}
+

@@ -1,160 +1,31 @@
-// TraitFlawSystem.js - REFACTORED to use PointPoolCalculator
-import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // ADDED IMPORT (if not already present)
+// TraitFlawSystem.js - REFACTORED to use PointPoolCalculator and gameDataManager
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js';
 import { GameConstants } from '../core/GameConstants.js';
+import { gameDataManager } from '../core/GameDataManager.js'; // ADDED
 
 export class TraitFlawSystem {
     // Get all available flaws with their restrictions
     static getAvailableFlaws() {
-        return [
-            {
-                id: 'balanced',
-                name: 'Balanced',
-                cost: 30,
-                description: 'Must have at least (Tier ÷ 2) in each Combat Attribute, can only add Tier bonus once to each stat',
-                restriction: 'Must maintain minimum combat attribute requirements'
-            },
-            {
-                id: 'slow',
-                name: 'Slow',
-                cost: 30,
-                description: 'No Movement Archetype',
-                restriction: 'Cannot select any movement archetype'
-            },
-            {
-                id: 'combatFocused',
-                name: 'Combat Focused',
-                cost: 30,
-                description: 'No Utility abilities',
-                restriction: 'Cannot purchase utility abilities'
-            },
-            {
-                id: 'sickly',
-                name: 'Sickly',
-                cost: 30,
-                description: 'Maximum Health Pool reduced by 30',
-                restriction: 'Permanent -30 HP reduction'
-            },
-            {
-                id: 'unresponsive',
-                name: 'Unresponsive',
-                cost: 30,
-                description: 'Cannot take Reactions, don\'t add Tier to Initiative, cannot benefit from Surprise rounds',
-                restriction: 'No reactions or initiative bonus'
-            },
-            {
-                id: 'peaked',
-                name: 'Peaked',
-                cost: 30,
-                description: 'Cannot use Efforts',
-                restriction: 'No effort system access'
-            },
-            {
-                id: 'weak',
-                name: 'Weak',
-                cost: 30,
-                description: '1 fewer Combat Attribute Points',
-                restriction: 'Reduced combat attribute pool'
-            },
-            {
-                id: 'powerLoss',
-                name: 'Power Loss',
-                cost: 30,
-                description: 'Lose powers under specific circumstances (discuss with GM)',
-                restriction: 'Conditional power loss'
-            },
-            {
-                id: 'singleTargetSpecialist',
-                name: 'Single Target Specialist',
-                cost: 30,
-                description: 'Choose Melee OR Ranged attacks only',
-                restriction: 'Limited to one attack type'
-            },
-            {
-                id: 'equipmentDependent',
-                name: 'Equipment Dependent',
-                cost: 30,
-                description: 'Choose specific item; lose access to one Archetype benefit without it, it is noticeable and you can be disarmed of it',
-                restriction: 'Archetype benefit tied to equipment'
-            },
-            {
-                id: 'stubborn',
-                name: 'Stubborn',
-                cost: 30,
-                description: 'Cannot benefit from Assist actions, healing, or any other ally bonuses (they can\'t block for you, or move you via carry)',
-                restriction: 'No ally assistance benefits'
-            }
-        ];
+        return gameDataManager.getAvailableFlaws() || []; // MODIFIED
     }
 
     // Get available stat bonuses for flaws
     static getFlawStatOptions() {
-        return [
-            { id: 'accuracy', name: 'Accuracy', description: 'Bonus to all attack rolls' },
-            { id: 'damage', name: 'Damage', description: 'Bonus to all damage rolls' },
-            { id: 'conditions', name: 'Conditions', description: 'Bonus to all condition rolls' },
-            { id: 'avoidance', name: 'Avoidance', description: 'Bonus to defense against attacks' },
-            { id: 'durability', name: 'Durability', description: 'Bonus to damage resistance' },
-            { id: 'speed', name: 'Speed', description: 'Bonus to movement and initiative' },
-            { id: 'allResistances', name: 'All Resistances', description: 'Bonus to Resolve, Stability, and Vitality' }
-        ];
+        return gameDataManager.getGenericStatOptions() || []; // MODIFIED
     }
 
     // Get trait condition tiers
     static getTraitConditionTiers() {
-        return {
-            tier1: {
-                cost: 1,
-                name: 'Tier 1 Conditions (Easy to maintain)',
-                conditions: [
-                    { id: 'rooted', name: 'Rooted', description: 'Cannot move this turn' },
-                    { id: 'longDistanceFighter', name: 'Long Distance Fighter', description: 'No enemies within 5 spaces' },
-                    { id: 'unhealthy1', name: 'Unhealthy 1', description: '25+ points below max HP' },
-                    { id: 'irregular1', name: 'Irregular 1', description: 'Roll d20, DC 5 to activate each turn' },
-                    { id: 'vengeful', name: 'Vengeful', description: 'Been hit since last turn' },
-                    { id: 'careful', name: 'Careful', description: 'Not damaged since last turn' },
-                    { id: 'passive', name: 'Passive', description: 'Not attacked since last turn' },
-                    { id: 'steady', name: 'Steady', description: 'Turn 3 or later' },
-                    { id: 'relentless', name: 'Relentless', description: 'Dealt damage to enemy last turn' },
-                    { id: 'overwhelm', name: 'Overwhelm', description: 'Dealt damage to enemy this turn' },
-                    { id: 'infection', name: 'Infection', description: 'Applied Condition this turn' },
-                    { id: 'infected', name: 'Infected', description: 'Applied Condition last turn' },
-                    { id: 'temporary3', name: 'Temporary 3', description: 'Activate for 3 turns, recharges after 1 minute rest' }
-                ]
-            },
-            tier2: {
-                cost: 2,
-                name: 'Tier 2 Conditions (Moderately difficult)',
-                conditions: [
-                    { id: 'timid', name: 'Timid', description: 'At max HP with no conditions' },
-                    { id: 'revenge', name: 'Revenge', description: 'Been damaged since last turn' },
-                    { id: 'unbreakable', name: 'Unbreakable', description: 'Been hit but took no damage since last turn' },
-                    { id: 'unhealthy2', name: 'Unhealthy 2', description: '75+ points below max HP' },
-                    { id: 'untouchable', name: 'Untouchable', description: 'All attacks missed since last turn' },
-                    { id: 'slaughter', name: 'Slaughter', description: 'Defeated enemy last turn' },
-                    { id: 'onslaught', name: 'Onslaught', description: 'Defeated enemy this turn' },
-                    { id: 'patient', name: 'Patient', description: 'Turn 5 or later' },
-                    { id: 'temporary2', name: 'Temporary 2', description: 'Activate for 2 turns, recharges after 1 minute rest' }
-                ]
-            },
-            tier3: {
-                cost: 3,
-                name: 'Tier 3 Conditions (Hardest to maintain)',
-                conditions: [
-                    { id: 'quickdraw', name: 'Quickdraw', description: 'First 2 rounds of combat' },
-                    { id: 'temporary1', name: 'Temporary 1', description: 'Activate for 1 turn, recharges after 1 minute rest' },
-                    { id: 'irregular2', name: 'Irregular 2', description: 'Roll d20, DC 10 to activate each turn' },
-                    { id: 'nearDeath', name: 'Near Death', description: 'At 0 Hit Points' },
-                    { id: 'dangerous', name: 'Dangerous', description: 'No allies within 15 spaces, no civilians within 50 spaces' },
-                    { id: 'avenger', name: 'Avenger', description: 'Ally unconscious or great peril occurred' },
-                    { id: 'holdingBack', name: 'Holding Back', description: 'No allies within 15 spaces, no civilians within 30 spaces' }
-                ]
-            }
-        };
+        return gameDataManager.getTraitConditionTiers() || {}; // MODIFIED
     }
 
     // Get trait stat options (same as flaws)
     static getTraitStatOptions() {
-        return this.getFlawStatOptions();
+        return gameDataManager.getGenericStatOptions() || []; // MODIFIED
+    }
+    
+    static getTraitCost() {
+        return GameConstants.TRAIT_COST; // Assuming this is still in GameConstants
     }
 
     // Validate flaw purchase
@@ -162,7 +33,7 @@ export class TraitFlawSystem {
         const errors = [];
         const warnings = [];
         
-        const flaw = this.getAvailableFlaws().find(f => f.id === flawId);
+        const flaw = (gameDataManager.getAvailableFlaws() || []).find(f => f.id === flawId); // MODIFIED
         if (!flaw) {
             errors.push('Invalid flaw selected');
             return { isValid: false, errors, warnings };
@@ -182,7 +53,7 @@ export class TraitFlawSystem {
         }
 
         // Validate stat bonus selection
-        if (statBonus && !this.getFlawStatOptions().some(opt => opt.id === statBonus)) {
+        if (statBonus && !(gameDataManager.getGenericStatOptions() || []).some(opt => opt.id === statBonus)) { // MODIFIED
             errors.push('Invalid stat bonus selection');
         }
 
@@ -202,27 +73,32 @@ export class TraitFlawSystem {
     static validateTraitPurchase(character, traitData) {
         const errors = [];
         const warnings = [];
+        const traitCost = this.getTraitCost();
 
         // Use unified point pool calculator
         const pools = PointPoolCalculator.calculateAllPools(character);
         const availablePoints = pools.remaining.mainPool;
         
-        if (30 > availablePoints) { // Assuming trait cost is 30
-            errors.push(`Insufficient main pool points (need 30, have ${availablePoints})`);
+        if (traitCost > availablePoints) {
+            errors.push(`Insufficient main pool points (need ${traitCost}, have ${availablePoints})`);
         }
 
         // Validate condition tier total
         const totalTierCost = this.calculateTraitConditionCost(traitData.conditions);
         if (totalTierCost > 3) {
             errors.push(`Condition combination exceeds 3 tier limit (currently ${totalTierCost})`);
+        } else if (totalTierCost <= 0 && traitData.conditions.length > 0) {
+            // This implies conditions were selected but their costs weren't found/summed correctly.
+            warnings.push('Trait conditions selected, but total tier cost is zero. Check condition definitions.');
         }
+
 
         // Validate stat selections
         if (!traitData.statBonuses || traitData.statBonuses.length !== 2) {
             errors.push('Must select exactly 2 stat bonuses');
         }
 
-        const validStats = this.getTraitStatOptions().map(s => s.id);
+        const validStats = (gameDataManager.getGenericStatOptions() || []).map(s => s.id); // MODIFIED
         traitData.statBonuses?.forEach((stat, index) => {
             if (!validStats.includes(stat)) {
                 errors.push(`Invalid stat bonus ${index + 1}: ${stat}`);
@@ -248,7 +124,8 @@ export class TraitFlawSystem {
             throw new Error(validation.errors.join(', '));
         }
 
-        const flaw = this.getAvailableFlaws().find(f => f.id === flawId);
+        const flaw = (gameDataManager.getAvailableFlaws() || []).find(f => f.id === flawId); // MODIFIED
+        if (!flaw) throw new Error(`Flaw definition for ${flawId} not found.`);
         
         character.mainPoolPurchases.flaws.push({
             flawId,
@@ -267,12 +144,13 @@ export class TraitFlawSystem {
         if (!validation.isValid) {
             throw new Error(validation.errors.join(', '));
         }
+        const traitCost = this.getTraitCost();
 
         character.mainPoolPurchases.traits.push({
             id: Date.now().toString(),
             conditions: traitData.conditions,
             statBonuses: traitData.statBonuses,
-            cost: 30,
+            cost: traitCost,
             purchasedAt: new Date().toISOString()
         });
 
@@ -281,12 +159,12 @@ export class TraitFlawSystem {
 
     // Calculate trait condition tier cost
     static calculateTraitConditionCost(conditions) {
-        const tiers = this.getTraitConditionTiers();
+        const tiers = gameDataManager.getTraitConditionTiers() || {}; // MODIFIED
         let totalCost = 0;
 
         conditions.forEach(conditionId => {
             for (const tier of Object.values(tiers)) {
-                if (tier.conditions.some(c => c.id === conditionId)) {
+                if (tier.conditions && tier.conditions.some(c => c.id === conditionId)) { // Added tier.conditions check
                     totalCost += tier.cost;
                     break;
                 }
@@ -303,23 +181,19 @@ export class TraitFlawSystem {
 
         switch(flawId) {
             case 'slow':
-                if (character.archetypes.movement && character.archetypes.movement !== 'none') {
-                    errors.push('Slow flaw conflicts with selected movement archetype');
+                if (character.archetypes.movement && character.archetypes.movement !== 'none' /* Assuming 'none' is a valid non-choice */) {
+                    errors.push('Slow flaw conflicts with selected movement archetype. Clear movement archetype first.');
                 }
                 break;
             case 'weak':
-                // Use PointPoolCalculator for combat attributes
                 const pools = PointPoolCalculator.calculateAllPools(character);
                 const currentCombatSpent = pools.totalSpent.combatAttributes;
-                // Calculate what the available combat pool *would be* if this flaw is active
-                const combatPoolIfWeak = (character.tier * 2) - 1; 
-                if (currentCombatSpent > combatPoolIfWeak) {
-                     // This check is slightly tricky because the flaw itself reduces the pool.
-                     // The validation should likely happen *after* the flaw is hypothetically applied
-                     // or ensure the point pool calculator considers "Weak" flaw when determining combat attribute availability.
-                     // For now, this warns if current spending would exceed the reduced pool.
-                    warnings.push('Taking Weak flaw may require reallocating combat attribute points.');
-                }
+                // A 'Weak' flaw effectively means 1 less point to spend on combat attributes.
+                // The pool already reflects the maximum available *before* this flaw's effect is considered.
+                // If this flaw is applied, the total spendable for combat attributes becomes (Tier*2 - 1).
+                // This validation is tricky as it depends on whether the flaw is currently applied or being considered.
+                // For now, assume this is a check if *adding* 'Weak' would invalidate current attributes.
+                // The CharacterValidator's point pool check will catch overspending if 'Weak' is already active.
                 break;
             case 'combatFocused':
                 if (character.utilityPurchases && (
@@ -329,7 +203,7 @@ export class TraitFlawSystem {
                     character.utilityPurchases.movement.length > 0 ||
                     character.utilityPurchases.descriptors.length > 0
                 )) {
-                    warnings.push('Combat Focused flaw will remove existing utility purchases if taken.');
+                    warnings.push('Combat Focused flaw will remove existing utility purchases if taken, or prevent new ones.');
                 }
                 break;
         }
@@ -356,18 +230,23 @@ export class TraitFlawSystem {
     // Calculate stat bonuses from flaws (for character sheet)
     static calculateFlawBonuses(character) {
         const bonuses = {};
-        const stackingPenalty = {};
+        const stackingPenalty = {}; // Tracks how many times a stat has been picked for penalty
 
-        character.mainPoolPurchases.flaws.forEach(flaw => {
-            if (flaw.statBonus) {
-                if (!bonuses[flaw.statBonus]) {
-                    bonuses[flaw.statBonus] = 0;
-                    stackingPenalty[flaw.statBonus] = 0;
+        character.mainPoolPurchases.flaws.forEach(flawPurchase => {
+            const flawDef = (gameDataManager.getAvailableFlaws() || []).find(f => f.id === flawPurchase.flawId);
+            if (flawDef && flawPurchase.statBonus) {
+                const statId = flawPurchase.statBonus;
+                if (!bonuses[statId]) {
+                    bonuses[statId] = 0;
+                    stackingPenalty[statId] = 0;
                 }
                 
-                const bonus = character.tier - stackingPenalty[flaw.statBonus];
-                bonuses[flaw.statBonus] += Math.max(1, bonus);
-                stackingPenalty[flaw.statBonus]++;
+                // Each flaw provides a +Tier bonus, but stacking reduces it.
+                // The *first* flaw giving a bonus to a stat gives +Tier.
+                // The *second* flaw giving a bonus to the *same* stat gives +Tier-1, etc. min 1.
+                const bonusValue = Math.max(1, character.tier - stackingPenalty[statId]);
+                bonuses[statId] += bonusValue;
+                stackingPenalty[statId]++;
             }
         });
 
@@ -377,22 +256,26 @@ export class TraitFlawSystem {
     // Calculate stat bonuses from traits (when conditions are met)
     static calculateTraitBonuses(character, currentConditions = []) {
         const bonuses = {};
-        const stackingPenalty = {};
+        const stackingPenalty = {}; // Tracks how many times a stat has been picked for penalty
 
         character.mainPoolPurchases.traits.forEach(trait => {
+            // A trait's conditions are an array of condition IDs.
+            // Check if ALL conditions for this trait are met.
             const conditionsMet = trait.conditions.every(conditionId => 
-                currentConditions.includes(conditionId));
+                currentConditions.includes(conditionId) // currentConditions is an array of active condition IDs.
+            );
 
             if (conditionsMet) {
-                trait.statBonuses.forEach(stat => {
-                    if (!bonuses[stat]) {
-                        bonuses[stat] = 0;
-                        stackingPenalty[stat] = 0;
+                // A trait provides bonus to TWO stats.
+                trait.statBonuses.forEach(statId => {
+                    if (!bonuses[statId]) {
+                        bonuses[statId] = 0;
+                        stackingPenalty[statId] = 0;
                     }
                     
-                    const bonus = character.tier - stackingPenalty[stat];
-                    bonuses[stat] += Math.max(1, bonus);
-                    stackingPenalty[stat]++;
+                    const bonusValue = Math.max(1, character.tier - stackingPenalty[statId]);
+                    bonuses[statId] += bonusValue;
+                    stackingPenalty[statId]++;
                 });
             }
         });

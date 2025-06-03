@@ -1,0 +1,74 @@
+[
+    {
+        "id": "disarm",
+        "name": "Disarm",
+        "resistance": "stability",
+        "durationKey": "BASIC_CONDITION_DURATION",
+        "description": "Drop held item, launch (Condition roll - Resistance) spaces",
+        "cost": 0
+    },
+    {
+        "id": "grab",
+        "name": "Grab",
+        "resistance": "stability",
+        "duration": "until_broken",
+        "description": "Cannot move unless dragging grabber, contested Capacity to break free",
+        "cost": 0
+    },
+    {
+        "id": "shove",
+        "name": "Shove",
+        "resistance": "stability",
+        "duration": "instant",
+        "description": "Push/pull (Condition roll - Resistance) spaces, 5 spaces = Prone",
+        "cost": 0
+    },
+    {
+        "id": "prone",
+        "name": "Prone",
+        "resistance": "stability",
+        "duration": "until_stood_up",
+        "description": "Adjacent attacks +5 Accuracy, Ranged attacks -5 Accuracy, costs 3 Movement to stand",
+        "cost": 0
+    },
+    {
+        "id": "blind",
+        "name": "Blind",
+        "resistance": "vitality",
+        "durationKey": "BASIC_CONDITION_DURATION",
+        "description": "Treat all others as Hidden, attackers ignore base Tier Avoidance bonus",
+        "cost": 0
+    },
+    {
+        "id": "daze",
+        "name": "Daze",
+        "resistance": "vitality",
+        "durationKey": "BASIC_CONDITION_DURATION",
+        "description": "Lose Quick Actions and Reactions",
+        "cost": 0
+    },
+    {
+        "id": "misdirect",
+        "name": "Misdirect",
+        "resistance": "resolve",
+        "durationKey": "BASIC_CONDITION_DURATION",
+        "description": "Cannot attack the caster",
+        "cost": 0
+    },
+    {
+        "id": "setup",
+        "name": "Setup",
+        "resistance": "resolve",
+        "duration": "next_attack",
+        "description": "Next Accuracy roll vs target gains double Tier bonus",
+        "cost": 0
+    },
+    {
+        "id": "taunt",
+        "name": "Taunt",
+        "resistance": "resolve",
+        "durationKey": "BASIC_CONDITION_DURATION",
+        "description": "-2×Tier Accuracy against anyone except caster",
+        "cost": 0
+    }
+]

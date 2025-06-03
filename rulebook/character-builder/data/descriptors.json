@@ -1,0 +1,29 @@
+{
+    "tier5": {
+        "cost": 5,
+        "descriptors": [
+            {"id": "fire", "name": "Fire", "description": "Elemental mastery of flame and heat", "applications": ["forging", "temperature_control", "heat_detection", "crafting", "immunity"]},
+            {"id": "water", "name": "Water", "description": "Elemental mastery of water and ice", "applications": ["purification", "fog_creation", "moisture_detection", "life_support", "immunity"]},
+            {"id": "earth", "name": "Earth", "description": "Elemental mastery of stone and soil", "applications": ["mineral_location", "construction", "vibration_detection", "shaping", "immunity"]},
+            {"id": "air", "name": "Air", "description": "Elemental mastery of wind and atmosphere", "applications": ["weather_control", "sound_manipulation", "scent_tracking", "navigation", "immunity"]},
+            {"id": "lightning", "name": "Lightning", "description": "Elemental mastery of electricity", "applications": ["power_devices", "electromagnetic_fields", "electrical_detection", "communication", "immunity"]},
+            {"id": "ice", "name": "Ice", "description": "Elemental mastery of cold and freezing", "applications": ["preservation", "construction", "temperature_detection", "barriers", "immunity"]},
+            {"id": "kinetic", "name": "Kinetic", "description": "Energy mastery of motion and force", "applications": ["enhanced_projectiles", "momentum_maintenance", "impact_absorption", "gravity_defiance", "immunity"]},
+            {"id": "plasma", "name": "Plasma", "description": "Energy mastery of superheated matter", "applications": ["luminous_aura", "plasma_detection", "material_manipulation", "energy_generation", "immunity"]},
+            {"id": "biological", "name": "Biological", "description": "Mastery of living systems", "applications": ["regeneration", "toxin_mastery", "animal_connection", "plant_revival", "immunity"]},
+            {"id": "technology", "name": "Technology", "description": "Mastery of mechanical and electronic systems", "applications": ["machine_communication", "decryption", "remote_control", "system_override", "immunity"]},
+            {"id": "mental", "name": "Mental", "description": "Mastery of psychic and cognitive forces", "applications": ["memory_sharing", "emotion_amplification", "psychic_defense", "memory_recovery", "immunity"]},
+            {"id": "arcane", "name": "Arcane", "description": "Mastery of magical forces", "applications": ["magic_detection", "glyph_mastery", "magical_marking", "artifact_sense", "immunity"]}
+        ]
+    },
+    "tier10": {
+        "cost": 10,
+        "descriptors": [
+            {"id": "time", "name": "Time", "description": "Reality mastery of temporal forces", "applications": ["temporal_perception", "chronological_analysis", "temporal_crafting", "historical_investigation", "advanced_time_manipulation"]},
+            {"id": "space", "name": "Space", "description": "Reality mastery of spatial dimensions", "applications": ["dimensional_analysis", "spatial_navigation", "geometric_construction", "distance_manipulation", "advanced_teleportation"]},
+            {"id": "probability", "name": "Probability", "description": "Reality mastery of chance and outcomes", "applications": ["outcome_analysis", "pattern_recognition", "luck_adjustment", "chaos_detection", "advanced_probability_alteration"]},
+            {"id": "atomic", "name": "Atomic", "description": "Reality mastery of fundamental matter", "applications": ["atomic_perception", "density_alteration", "atomic_manipulation", "environmental_immunity", "advanced_matter_control"]},
+            {"id": "cosmic", "name": "Cosmic", "description": "Reality mastery of universal forces", "applications": ["universal_knowledge", "cosmic_presence", "environmental_immunity", "energy_mastery", "advanced_cosmic_infusion"]}
+        ]
+    }
+}

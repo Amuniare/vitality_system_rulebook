@@ -1,6 +1,7 @@
 // app.js - Main application entry point
 import { CharacterBuilder } from './ui/CharacterBuilder.js';
 import { VitalityCharacter } from './core/VitalityCharacter.js';
+import { gameDataManager } from './core/GameDataManager.js'; // ADDED
 
 class VitalityCharacterBuilderApp {
     constructor() {
@@ -9,7 +10,7 @@ class VitalityCharacterBuilderApp {
     }
 
     async init() {
-        console.log('Initializing Vitality Character Builder...');
+        console.log('Initializing Vitality Character Builder App...');
         
         try {
             // Wait for DOM to be ready
@@ -19,15 +20,21 @@ class VitalityCharacterBuilderApp {
                 });
             }
 
+            // Initialize GameDataManager first and wait for data to load
+            console.log('🔵 Initializing GameDataManager...');
+            await gameDataManager.init(); // ADDED
+            console.log('🟢 GameDataManager initialized.');
+
+
             // Initialize character builder
             this.characterBuilder = new CharacterBuilder();
             await this.characterBuilder.init();
             
             this.initialized = true;
-            console.log('✅ Character Builder initialized successfully');
+            console.log('✅ Character Builder App initialized successfully');
             
         } catch (error) {
-            console.error('❌ Failed to initialize Character Builder:', error);
+            console.error('❌ Failed to initialize Character Builder App:', error);
             this.showInitializationError(error);
         }
     }
@@ -38,7 +45,7 @@ class VitalityCharacterBuilderApp {
             content.innerHTML = `
                 <div class="error-screen">
                     <h1>Initialization Error</h1>
-                    <p>Failed to load the Character Builder. Please refresh the page.</p>
+                    <p>Failed to load the Character Builder. Please check the console for details.</p>
                     <p class="error-details">Error: ${error.message}</p>
                     <button onclick="location.reload()" class="btn-primary">Refresh Page</button>
                 </div>
@@ -51,5 +58,6 @@ class VitalityCharacterBuilderApp {
 const app = new VitalityCharacterBuilderApp();
 app.init();
 
-// Make globally accessible
+// Make globally accessible for debugging
 window.vitalityApp = app;
+window.gameDataManager = gameDataManager; // For debugging access

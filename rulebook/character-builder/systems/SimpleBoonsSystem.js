@@ -1,77 +1,12 @@
 // SimpleBoonsSystem.js - Simple boon purchases (split from UniqueAbilitySystem)
-import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // ADDED IMPORT
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js';
 import { GameConstants } from '../core/GameConstants.js';
+import { gameDataManager } from '../core/GameDataManager.js'; // ADDED
 
 export class SimpleBoonsSystem {
     // Get simple boons (one-time purchases with fixed effects)
     static getAvailableBoons() {
-        return [
-            {
-                id: 'psychic',
-                name: 'Psychic',
-                cost: 0,
-                description: 'All conditions you inflict target Resolve resistance',
-                effect: 'condition_targeting_resolve',
-                category: 'supernatural'
-            },
-            {
-                id: 'robot',
-                name: 'Robot',
-                cost: 30,
-                description: 'Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity',
-                effect: 'condition_immunity_tech_vulnerability',
-                category: 'construct'
-            },
-            {
-                id: 'telekinetic',
-                name: 'Telekinetic',
-                cost: 0,
-                description: 'All conditions you inflict target Stability resistance',
-                effect: 'condition_targeting_stability',
-                category: 'supernatural'
-            },
-            {
-                id: 'biohacker',
-                name: 'Biohacker',
-                cost: 0,
-                description: 'All conditions you inflict target Vitality resistance',
-                effect: 'condition_targeting_vitality',
-                category: 'supernatural'
-            },
-            {
-                id: 'utilitarian',
-                name: 'Utilitarian',
-                cost: 15,
-                description: 'Gain 10 extra points for Expertise, Features, Senses, and Descriptors',
-                effect: 'utility_point_bonus',
-                category: 'enhancement',
-                bonus: { utilityPoints: 10 }
-            },
-            {
-                id: 'speedOfThought',
-                name: 'Speed of Thought',
-                cost: 15,
-                description: 'Use 2 × Intelligence instead of Awareness for Initiative',
-                effect: 'initiative_intelligence',
-                category: 'enhancement'
-            },
-            {
-                id: 'perfectionist',
-                name: 'Perfectionist',
-                cost: 15,
-                description: 'Reroll any natural 1s on d20 rolls',
-                effect: 'reroll_ones',
-                category: 'enhancement'
-            },
-            {
-                id: 'combatReflexes',
-                name: 'Combat Reflexes',
-                cost: 15,
-                description: 'Gain additional Reaction per turn',
-                effect: 'extra_reaction',
-                category: 'enhancement'
-            }
-        ];
+        return gameDataManager.getSimpleBoons() || []; // MODIFIED
     }
 
     // Validate simple boon purchase
@@ -79,7 +14,7 @@ export class SimpleBoonsSystem {
         const errors = [];
         const warnings = [];
         
-        const boon = this.getAvailableBoons().find(b => b.id === boonId);
+        const boon = (gameDataManager.getSimpleBoons() || []).find(b => b.id === boonId); // MODIFIED
         if (!boon) {
             errors.push(`Invalid boon: ${boonId}`);
             return { isValid: false, errors, warnings };
@@ -91,8 +26,8 @@ export class SimpleBoonsSystem {
         }
         
         // Check point cost
-        const pools = PointPoolCalculator.calculateAllPools(character); // CORRECTED
-        const availablePoints = pools.remaining.mainPool; // CORRECTED
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const availablePoints = pools.remaining.mainPool;
         
         if (boon.cost > availablePoints) {
             errors.push(`Insufficient main pool points (need ${boon.cost}, have ${availablePoints})`);
@@ -117,11 +52,16 @@ export class SimpleBoonsSystem {
         
         // Robot conflicts with biological healing
         if (boonId === 'robot') {
-            const hasHeal = character.mainPoolPurchases.boons.some(b => b.boonId === 'heal');
-            const hasRegeneration = character.mainPoolPurchases.boons.some(b => b.boonId === 'regeneration');
+            // Check against complex unique abilities (Heal, Regeneration)
+            const complexAbilities = gameDataManager.getComplexUniqueAbilities() || [];
+            const healAbility = complexAbilities.find(ab => ab.id === 'heal');
+            const regenerationAbility = complexAbilities.find(ab => ab.id === 'regeneration'); // Assuming 'regeneration' is an ID
+
+            const hasHeal = character.mainPoolPurchases.boons.some(b => b.boonId === healAbility?.id && b.type === 'unique');
+            const hasRegeneration = character.mainPoolPurchases.boons.some(b => b.boonId === regenerationAbility?.id && b.type === 'unique');
             
             if (hasHeal || hasRegeneration) {
-                warnings.push('Robot status affects how healing works');
+                warnings.push('Robot status affects how healing and regeneration works');
             }
         }
         
@@ -135,7 +75,7 @@ export class SimpleBoonsSystem {
             throw new Error(validation.errors.join(', '));
         }
         
-        const boon = this.getAvailableBoons().find(b => b.id === boonId);
+        const boon = (gameDataManager.getSimpleBoons() || []).find(b => b.id === boonId); // MODIFIED
         
         character.mainPoolPurchases.boons.push({
             boonId: boonId,
@@ -143,7 +83,7 @@ export class SimpleBoonsSystem {
             cost: boon.cost,
             category: boon.category,
             effect: boon.effect,
-            type: 'simple',
+            type: 'simple', // Ensure type is marked as simple
             purchased: new Date().toISOString()
         });
         
@@ -152,9 +92,9 @@ export class SimpleBoonsSystem {
 
     // Remove simple boon
     static removeBoon(character, boonId) {
-        const index = character.mainPoolPurchases.boons.findIndex(b => b.boonId === boonId);
+        const index = character.mainPoolPurchases.boons.findIndex(b => b.boonId === boonId && (b.type === 'simple' || !b.type)); // MODIFIED check for simple
         if (index === -1) {
-            throw new Error('Boon not found');
+            throw new Error('Simple boon not found');
         }
         
         character.mainPoolPurchases.boons.splice(index, 1);
@@ -173,10 +113,13 @@ export class SimpleBoonsSystem {
             vulnerabilities: []
         };
         
-        character.mainPoolPurchases.boons.forEach(boon => {
-            if (boon.type !== 'simple') return; // Only process simple boons
+        character.mainPoolPurchases.boons.forEach(boonPurchase => {
+            if (boonPurchase.type !== 'simple' && boonPurchase.type !== undefined) return; // Only process simple boons (or untyped assumed simple)
             
-            switch(boon.boonId) {
+            const boonDef = (gameDataManager.getSimpleBoons() || []).find(b => b.id === boonPurchase.boonId); // Get definition
+            if (!boonDef) return;
+
+            switch(boonDef.id) { // Use ID from definition
                 case 'psychic':
                     effects.conditionTargeting = 'resolve';
                     break;
@@ -187,7 +130,7 @@ export class SimpleBoonsSystem {
                     effects.conditionTargeting = 'vitality';
                     break;
                 case 'utilitarian':
-                    effects.utilityPointBonus += 10;
+                    effects.utilityPointBonus += (boonDef.bonus?.utilityPoints || 10); // Use bonus from definition
                     break;
                 case 'speedOfThought':
                     effects.initiativeModification = 'intelligence_double';
