@@ -104,26 +104,44 @@ export class ArchetypeTab {
         // No direct querySelectors needed here if using data-action attributes.
     }
 
-    selectArchetype(category, archetypeId) { // Called by CharacterBuilder's EventManager
+    selectArchetype(category, archetypeId) { 
+        console.log('🎯 ArchetypeTab.selectArchetype called with:', { category, archetypeId });
+        
         const character = this.builder.currentCharacter;
-        if (!character) return;
-
+        if (!character) {
+            console.error('❌ No current character');
+            return;
+        }
+    
+        console.log('🔍 Current character archetypes:', character.archetypes);
+        console.log('🔍 Validating archetype selection...');
+        
         const validation = ArchetypeSystem.validateArchetypeSelection(character, category, archetypeId);
+        console.log('🔍 Validation result:', validation);
+        
         if (!validation.isValid) {
+            console.error('❌ Validation failed:', validation.errors);
             this.builder.showNotification(validation.errors.join(', '), 'error');
             return;
         }
+        
         if (validation.warnings.length > 0) {
+            console.warn('⚠️ Validation warnings:', validation.warnings);
             if (!confirm(`${validation.warnings.join(', ')}\n\nThis may require re-evaluating later choices. Continue?`)) {
                 return;
             }
         }
-
+    
+        console.log('✅ Setting archetype:', { category, archetypeId });
         character.archetypes[category] = archetypeId;
-        this.updateArchetypeSelectionUI(category, archetypeId); // Update UI for this specific selection
-        this.updateProgress(); // Update overall progress
-        this.builder.updateCharacter(); // Notify CharacterBuilder of change for broader updates
+        
+        this.updateArchetypeSelectionUI(category, archetypeId);
+        this.updateProgress();
+        this.builder.updateCharacter();
+        
+        console.log('✅ Archetype selection complete');
     }
+
 
     updateArchetypeSelectionUI(category, archetypeId) {
         const categoryElement = document.querySelector(`.archetype-category[data-category="${category}"]`);

@@ -9,11 +9,15 @@ export class EventManager {
             customHandlers = {}
         } = config;
         
+        console.log('🔍 Setting up standard listeners, clickHandlers:', Object.keys(clickHandlers));
+        
         // Click events with data attribute delegation
         Object.entries(clickHandlers).forEach(([selector, handler]) => {
             const elements = container.querySelectorAll(selector);
+            console.log(`🔍 Found ${elements.length} elements for selector: ${selector}`);
             elements.forEach(element => {
                 element.addEventListener('click', (e) => {
+                    console.log(`🎯 Click detected on selector: ${selector}`, element);
                     try {
                         handler.call(this, e, element);
                     } catch (error) {
@@ -22,6 +26,8 @@ export class EventManager {
                 });
             });
         });
+        
+
         
         // Change events (selects, checkboxes, etc.)
         Object.entries(changeHandlers).forEach(([selector, handler]) => {

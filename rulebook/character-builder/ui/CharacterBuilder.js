@@ -126,7 +126,6 @@ export class CharacterBuilder {
     setupEventListeners() {
         console.log('setupEventListeners started');
         
-        // Use EventManager for consistent event handling
         const container = document.body;
         
         EventManager.setupStandardListeners(container, {
@@ -137,17 +136,26 @@ export class CharacterBuilder {
                 '#export-json': this.exportCharacterJSON.bind(this),
                 '#delete-character': this.deleteCharacter.bind(this),
                 '[data-action="select-archetype"]': (e, element) => {
+                    console.log('🎯 Archetype selection clicked!', element.dataset);
                     const category = element.dataset.category;
                     const archetypeId = element.dataset.archetype;
                     if (this.tabs.archetypes && category && archetypeId) {
+                        console.log(`🎯 Calling selectArchetype(${category}, ${archetypeId})`);
                         this.tabs.archetypes.selectArchetype(category, archetypeId);
+                    } else {
+                        console.error('❌ Missing data for archetype selection:', { category, archetypeId, hasArchetypeTab: !!this.tabs.archetypes });
                     }
+                },
+                '[data-action="continue-to-archetypes"]': (e, element) => {
+                    console.log('🎯 Continue to archetypes clicked!');
+                    this.switchTab('archetypes');
                 }
             }
         });
         
         console.log('setupEventListeners completed');
     }
+        
 
     createNewCharacter() {
         console.log('createNewCharacter called');
