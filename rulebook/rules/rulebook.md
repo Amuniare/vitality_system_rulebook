@@ -55,11 +55,7 @@ Attributes represent what type of things your character is good at in combat and
 **Vitality Score:** 10 + Tier + Endurance 
 
 ### **HEALTH SYSTEM**
-**Player HP:** 100  
-**Rest Recovery:**
-- Gritty Setting: Regain 50 HP per day
-- Grounded Setting: Regain 20 HP per hour  
-- Heroic Setting: Regain 5 HP per minute
+**Player HP:** All players have 100 total HP at default.
 
 **Survival Check:** When you reach 0 HP roll 1d20 + Endurance vs however many HP you are below 0. 
 - If you beat that number you may choose to remain concious. 
@@ -71,11 +67,38 @@ Attributes represent what type of things your character is good at in combat and
 
 Any damage taken while at or below 0 HP forces you to make another Survival Check. 
 
+**Resting and HP Recovery:** After a period of time of little to no activity based on the setting you recover HP, Efforts, and the uses of certain abilities.
+
+- **Gritty Setting**: A rest occurs after 8 hours of inactivity, during which you regain 10 HP per hour.
+- **Grounded Setting**: A rest occurs after 4 hours of inactivity, during which you regain 25 HP per hour.
+- **Heroic Setting**: A rest occurs after 1 hour of inactivity, during which you regain 25 HP per 15 minutes. 
+
+
+
+### **Effort** 
+
+Effort represents both player agency and a character's ability to push themselves beyond their normal limits.  
+
+Effort can be used at any time for the following benefits: 
+- Reroll or add an extra Tier to any Accuracy, Damage, or Condition check or any Avoidance, Durability, or Resistance Score.  
+- End all conditions on yourself. 
+- Take an extra Primary Action or Reaction. 
+- Move your up to your full Movement speed again. 
+- Increase your Capacity by 2.
+- Perform a special action or ability at the GMs discretion. 
+
+After using an Effort, at the start of your next turn, reduced your Tier by 1 for each Effort used until you complete a rest. 
+
+You can only use 2 Efforts per rest, a 3rd one can be used but will knock you unconcious at the start of your next turn instead.
+
+
 ### **Capacity Score**
 - Determines how much weight you can lift, push, and carry. 
 - You can move anything thats weight is equal to or less than your Capacity Score without need for a check. 
 - With a Power Check you can move something with a weight above your Capacity Score. DC 20 for 1 rank higher and +10 to DC for each rank after that.
 - What each weightclass represents varies depending on the setting. 
+
+**Gritty and Grounded Settings** 
 
 0. Weightless
 1. Up to 100 lbs
@@ -91,17 +114,20 @@ Any damage taken while at or below 0 HP forces you to make another Survival Chec
 
 <br>
 
+**Heroic Setting**
+<br>
+
 0. Weightless
-1. Up to 200 lbs
-2. Up to 500 lbs
-3. Up to 1000 lbs
-4. Up to 2500 lbs
-5. Up to 5000 lbs
-6. Up to 10000 lbs
-7. Up to 25000 lbs
-8. Up to 50000 lbs
-9. Up to 100000 lbs
-10. Up to 1 million lbs
+1. Up to 500 lbs
+2. Up to 1000 lbs
+3. Up to 5000 lbs
+4. Up to 10000 lbs
+5. Up to 25000 lbs
+6. Up to 50000 lbs
+7. Up to 100000 lbs
+8. Up to 250000 lbs
+9. Up to 500000 lbs
+10. Up to 1 million lbs → each additional rank doubles the weight
  
 
 ### **STACKING BONUSES & RULE INTERACTIONS**
