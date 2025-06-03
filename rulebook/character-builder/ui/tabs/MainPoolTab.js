@@ -1,5 +1,5 @@
-// MainPoolTab.js - Main pool purchases with 5 sections (UPDATED)
-import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
+// MainPoolTab.js - Main pool purchases with 5 sections (FIXED for Phase 2)
+import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js'; // ✅ FIXED IMPORT
 import { FlawPurchaseSection } from '../components/FlawPurchaseSection.js';
 import { TraitPurchaseSection } from '../components/TraitPurchaseSection.js';
 import { SimpleBoonSection } from '../components/SimpleBoonSection.js';
@@ -48,19 +48,19 @@ export class MainPoolTab {
     }
 
     renderPointPoolDisplay(character) {
-        const mainPoolAvailable = TraitFlawSystem.calculateMainPoolAvailable(character);
-        const mainPoolSpent = TraitFlawSystem.calculateMainPoolSpent(character);
-        const remaining = mainPoolAvailable - mainPoolSpent;
+        // ✅ FIXED: Use PointPoolCalculator instead of removed TraitFlawSystem methods
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remaining = pools.remaining.mainPool;
         
-        const breakdown = this.calculatePointBreakdown(character);
+        const breakdown = this.calculatePointBreakdown(character, pools);
 
         return `
             <div class="point-pool-display">
                 <div class="pool-summary ${remaining < 0 ? 'over-budget' : remaining === 0 ? 'fully-used' : ''}">
                     <h3>Main Pool</h3>
                     <div class="pool-main">
-                        <span>Available: ${mainPoolAvailable}</span>
-                        <span>Spent: ${mainPoolSpent}</span>
+                        <span>Available: ${pools.totalAvailable.mainPool}</span>
+                        <span>Spent: ${pools.totalSpent.mainPool}</span>
                         <span class="remaining">Remaining: ${remaining}</span>
                     </div>
                 </div>
@@ -120,7 +120,7 @@ export class MainPoolTab {
         `;
     }
 
-    calculatePointBreakdown(character) {
+    calculatePointBreakdown(character, pools) {
         const simpleBoons = character.mainPoolPurchases.boons
             .filter(b => b.type === 'simple' || !b.type)
             .reduce((sum, boon) => sum + (boon.cost || 0), 0);
@@ -164,10 +164,12 @@ export class MainPoolTab {
         const section = this.sections[this.activeSection];
         if (!section) return '';
 
+        // ✅ FIXED: Use PointPoolCalculator instead of removed TraitFlawSystem methods
+        const pools = PointPoolCalculator.calculateAllPools(character);
         const pointInfo = {
-            available: TraitFlawSystem.calculateMainPoolAvailable(character),
-            spent: TraitFlawSystem.calculateMainPoolSpent(character),
-            remaining: TraitFlawSystem.calculateMainPoolAvailable(character) - TraitFlawSystem.calculateMainPoolSpent(character)
+            available: pools.totalAvailable.mainPool,
+            spent: pools.totalSpent.mainPool,
+            remaining: pools.remaining.mainPool
         };
 
         return `
