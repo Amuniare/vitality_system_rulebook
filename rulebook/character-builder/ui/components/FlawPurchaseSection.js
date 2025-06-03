@@ -77,9 +77,9 @@ export class FlawPurchaseSection {
         const isAlreadyPurchased = character.mainPoolPurchases.flaws.some(f => f.flawId === flaw.id);
         const canAfford = remainingPoints >= flaw.cost;
         const isDisabled = isAlreadyPurchased || !canAfford;
-    
+
         return `
-            <div class="flaw-card ${isDisabled ? 'disabled' : 'clickable'}" data-flaw-id="${flaw.id}">
+            <div class="flaw-card compact ${isDisabled ? 'disabled' : 'clickable'}" data-flaw-id="${flaw.id}">
                 <div class="flaw-header">
                     <h5 class="flaw-name">${flaw.name}</h5>
                     <span class="flaw-cost ${!canAfford && !isAlreadyPurchased ? 'unaffordable' : ''}">${flaw.cost}p</span>
@@ -92,24 +92,21 @@ export class FlawPurchaseSection {
                 </div>
                 
                 ${!isDisabled ? `
-                    <div class="flaw-purchase-options">
-                        <div class="stat-bonus-selection">
-                            <label>Choose stat bonus (+${character.tier}):</label>
-                            <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
-                                <option value="">Choose stat for +${character.tier} bonus...</option>
-                                ${statOptions.map(stat => `
-                                    <option value="${stat.id}">${stat.name} - ${stat.description}</option>
-                                `).join('')}
-                            </select>
-                        </div>
-                        <button class="btn-primary purchase-flaw-btn" data-flaw-id="${flaw.id}" disabled>
-                            Purchase Flaw
+                    <div class="flaw-purchase-compact">
+                        <select class="stat-bonus-select-compact" data-flaw-id="${flaw.id}">
+                            <option value="">Choose +${character.tier} stat bonus...</option>
+                            ${statOptions.map(stat => `
+                                <option value="${stat.id}">${stat.name}</option>
+                            `).join('')}
+                        </select>
+                        <button class="btn-primary purchase-flaw-btn-compact" data-flaw-id="${flaw.id}" disabled>
+                            Buy
                         </button>
                     </div>
                 ` : ''}
                 
-                ${isAlreadyPurchased ? '<div class="already-purchased">✓ Purchased</div>' : ''}
-                ${!canAfford && !isAlreadyPurchased ? '<div class="cannot-afford">Insufficient Points</div>' : ''}
+                ${isAlreadyPurchased ? '<div class="status-indicator purchased">✓ Owned</div>' : ''}
+                ${!canAfford && !isAlreadyPurchased ? '<div class="status-indicator unaffordable">Can\'t Afford</div>' : ''}
             </div>
         `;
     }
