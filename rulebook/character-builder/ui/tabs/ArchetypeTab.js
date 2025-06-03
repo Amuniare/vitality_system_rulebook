@@ -162,6 +162,16 @@ export class ArchetypeTab {
         }
     
         console.log('🔍 Current character archetypes:', character.archetypes);
+        
+        // Check if this archetype exists
+        const archetypes = ArchetypeSystem.getArchetypesForCategory(category);
+        const archetypeExists = archetypes.find(arch => arch.id === archetypeId);
+        console.log(`🔍 Archetype exists check for ${category}.${archetypeId}:`, !!archetypeExists);
+        if (!archetypeExists) {
+            console.error(`❌ Archetype ${archetypeId} not found in category ${category}`);
+            return;
+        }
+        
         console.log('🔍 Validating archetype selection...');
         
         const validation = ArchetypeSystem.validateArchetypeSelection(character, category, archetypeId);
@@ -181,25 +191,40 @@ export class ArchetypeTab {
         }
     
         console.log('✅ Setting archetype:', { category, archetypeId });
+        const oldValue = character.archetypes[category];
         character.archetypes[category] = archetypeId;
+        console.log(`🔍 Changed ${category} from ${oldValue} to ${archetypeId}`);
         
         this.updateArchetypeSelectionUI(category, archetypeId);
         this.updateProgress();
         this.builder.updateCharacter();
         
         console.log('✅ Archetype selection complete');
+        console.log('🔍 Final character archetypes:', character.archetypes);
     }
 
 
     updateArchetypeSelectionUI(category, archetypeId) {
+        console.log(`🔍 Updating UI for ${category} = ${archetypeId}`);
+        
         const categoryElement = document.querySelector(`.archetype-category[data-category="${category}"]`);
+        console.log(`🔍 Found category element for ${category}:`, !!categoryElement);
+        
         if (!categoryElement) return;
-
-        categoryElement.querySelectorAll('.card.archetype-card').forEach(card => {
+    
+        const cards = categoryElement.querySelectorAll('.card.archetype-card');
+        console.log(`🔍 Found ${cards.length} cards in category ${category}`);
+        
+        cards.forEach((card, index) => {
+            const wasSelected = card.classList.contains('selected');
             card.classList.remove('selected');
+            
             if (card.dataset.archetype === archetypeId) {
                 card.classList.add('selected');
+                console.log(`🔍 Selected card ${index} (${card.dataset.archetype}) in ${category}`);
             }
+            
+            console.log(`🔍 Card ${index}: ${card.dataset.archetype}, selected: ${wasSelected} -> ${card.classList.contains('selected')}`);
         });
     }
 

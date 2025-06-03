@@ -649,3 +649,11 @@ input:focus, select:focus, textarea:focus {
     .pool-main { flex-direction: column; gap: var(--gap-small); align-items: stretch; }
     .section-tabs { flex-direction: column; }
 }
+
+.archetype-card * {
+    pointer-events: none;
+}
+
+.archetype-card {
+    pointer-events: auto;
+}
