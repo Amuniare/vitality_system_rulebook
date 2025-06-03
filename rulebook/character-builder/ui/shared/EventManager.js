@@ -78,6 +78,10 @@ export class EventManager {
     
     // Event delegation for dynamic content
     static delegateEvents(container, eventMap) {
+        if (!container || !container.addEventListener) {
+            console.error('Invalid container for event delegation:', container);
+            return;
+        }
         Object.entries(eventMap).forEach(([eventType, handlers]) => {
             container.addEventListener(eventType, (e) => {
                 Object.entries(handlers).forEach(([selector, handler]) => {

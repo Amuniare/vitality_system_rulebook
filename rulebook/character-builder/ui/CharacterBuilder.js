@@ -57,6 +57,13 @@ export class CharacterBuilder {
     }
 
     async initAfterDOM() {
+        // Add explicit DOM element checks before listener attachment
+        const requiredElements = ['#content', '.tab-navigation', '#sidebar'];
+        const missing = requiredElements.filter(sel => !document.querySelector(sel));
+        if (missing.length > 0) {
+            console.error('Required DOM elements missing:', missing);
+            throw new Error('DOM not ready for initialization');
+        }
         console.log('initAfterDOM started');
         
         try {

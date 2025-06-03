@@ -133,3 +133,45 @@ Archetype selection is **fully functional**. Users can:
 - Using `EventManager.setupStandardListeners()` for dynamically generated content
 - Static event listener attachment during app initialization for tab content
 - Assuming `e.target` is the element with data attributes in delegated events (use `e.target.closest(selector)` result instead)
+
+
+## SESSION SUMMARY - Character Builder State Management & Validation Issues
+
+**ATTEMPTED:**
+- Reduce validation strictness (flaw-archetype conflicts) → **Partial** (addressed symptoms, not root cause)
+- Fix attribute persistence with detailed event handlers → **Failed** (added more complexity instead of fixing architecture)
+- Add individual debug logging and onCharacterUpdate methods → **Failed** (created more bloat, didn't solve core issue)
+
+**KEY FINDINGS:**
+- **Root problem is architectural**: Inconsistent state management across the entire system
+- **Multiple competing update patterns**: UpdateManager, direct DOM manipulation, full re-renders, and manual event handling all coexisting
+- **No single source of truth**: Character state gets modified in tabs, systems, and builders without coordination
+- **Event handling is fragmented**: Mix of EventManager delegation, direct listeners, and manual setup creating conflicts
+- **Update cascading is broken**: Changes in one area don't properly propagate to others
+
+**CURRENT STATE:**
+- Archetype selection works (as shown in debug output)
+- Attribute persistence fails because of conflicting update patterns
+- Validation is overly restrictive but fixing individual rules won't solve the broader UX flow issues
+- System has grown organically with multiple approaches instead of unified architecture
+
+**NEXT STEPS:**
+1. **Identify the single update pattern** to standardize on (likely UpdateManager-based)
+2. **Create unified state mutation methods** that all components must use
+3. **Consolidate event handling** to one consistent pattern
+4. **Implement proper state persistence** at the CharacterBuilder level, not individual tabs
+
+**AVOID:**
+- Adding more individual fixes to specific components
+- Creating more onCharacterUpdate() methods
+- Adding more event handlers to CharacterBuilder
+- Piecemeal validation changes
+- Component-specific persistence logic
+
+**ARCHITECTURAL ISSUES TO ADDRESS:**
+1. **State Management**: No consistent pattern for modifying character data
+2. **Update Propagation**: Changes don't reliably cascade to dependent components  
+3. **Event Coordination**: Multiple systems handling the same events differently
+4. **Re-render Strategy**: Mix of partial updates and full re-renders causing inconsistency
+
+The real solution requires **consolidating the update architecture**, not fixing individual symptoms.
