@@ -1,5 +1,5 @@
-// UniqueAbilitySystem.js - REFACTORED to remove duplicate point calculations  
-import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // USE UNIFIED CALCULATOR
+// UniqueAbilitySystem.js - REFACTORED to use PointPoolCalculator
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // ADDED IMPORT
 import { GameConstants } from '../core/GameConstants.js';
 
 export class UniqueAbilitySystem {
@@ -170,9 +170,9 @@ export class UniqueAbilitySystem {
             errors.push('Unique ability already purchased');
         }
         
-        // REMOVED DUPLICATE: Use unified point pool calculator
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
+        // Use unified point pool calculator
+        const pools = PointPoolCalculator.calculateAllPools(character); // CORRECTED
+        const availablePoints = pools.remaining.mainPool; // CORRECTED
         
         const totalCost = this.calculateUniqueAbilityTotalCost(ability, upgrades);
         
@@ -270,9 +270,6 @@ export class UniqueAbilitySystem {
         
         return character;
     }
-
-    // REMOVED DUPLICATE METHOD: calculateAvailableMainPoolPoints()
-    // Now use: PointPoolCalculator.calculateAllPools(character).remaining.mainPool
 
     // Remove unique ability
     static removeUniqueAbility(character, abilityId) {
