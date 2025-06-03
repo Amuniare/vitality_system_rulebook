@@ -1,4 +1,5 @@
-// UniqueAbilitySystem.js - Complex unique abilities with upgrade systems (cleaned up)
+// UniqueAbilitySystem.js - REFACTORED to remove duplicate point calculations  
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // USE UNIFIED CALCULATOR
 import { GameConstants } from '../core/GameConstants.js';
 
 export class UniqueAbilitySystem {
@@ -79,7 +80,7 @@ export class UniqueAbilitySystem {
         ];
     }
     
-    // Upgrade definitions remain the same as before...
+    // Upgrade definitions (keeping existing implementations)
     static getAuraUpgrades() {
         return [
             { id: 'increasedRadius', name: 'Increased Radius', cost: 5, per: 'space', description: '+X radius' },
@@ -169,9 +170,11 @@ export class UniqueAbilitySystem {
             errors.push('Unique ability already purchased');
         }
         
-        // Check point cost
+        // REMOVED DUPLICATE: Use unified point pool calculator
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const availablePoints = pools.remaining.mainPool;
+        
         const totalCost = this.calculateUniqueAbilityTotalCost(ability, upgrades);
-        const availablePoints = this.calculateAvailableMainPoolPoints(character);
         
         if (totalCost > availablePoints) {
             errors.push(`Insufficient main pool points (need ${totalCost}, have ${availablePoints})`);
@@ -268,25 +271,8 @@ export class UniqueAbilitySystem {
         return character;
     }
 
-    // Calculate available main pool points (same as SimpleBoonsSystem)
-    static calculateAvailableMainPoolPoints(character) {
-        const basePools = character.tier > 2 ? (character.tier - 2) * 15 : 0;
-        const flawBonus = character.mainPoolPurchases.flaws.length * GameConstants.FLAW_BONUS;
-        const extraordinaryBonus = character.archetypes.uniqueAbility === 'extraordinary' ? 
-            Math.max(0, (character.tier - 2) * 15) : 0;
-        
-        const totalAvailable = basePools + flawBonus + extraordinaryBonus;
-        
-        // Calculate spent
-        const spentOnBoons = character.mainPoolPurchases.boons.reduce((total, boon) => total + boon.cost, 0);
-        const spentOnTraits = character.mainPoolPurchases.traits.reduce((total, trait) => total + trait.cost, 0);
-        const spentOnFlaws = character.mainPoolPurchases.flaws.reduce((total, flaw) => total + flaw.cost, 0);
-        const spentOnUpgrades = character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
-        
-        const totalSpent = spentOnBoons + spentOnTraits + spentOnFlaws + spentOnUpgrades;
-        
-        return totalAvailable - totalSpent;
-    }
+    // REMOVED DUPLICATE METHOD: calculateAvailableMainPoolPoints()
+    // Now use: PointPoolCalculator.calculateAllPools(character).remaining.mainPool
 
     // Remove unique ability
     static removeUniqueAbility(character, abilityId) {

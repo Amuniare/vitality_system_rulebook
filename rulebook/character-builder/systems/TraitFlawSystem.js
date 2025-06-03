@@ -1,4 +1,5 @@
-// TraitFlawSystem.js - Traits and Flaws purchase system with proper economics
+// TraitFlawSystem.js - REFACTORED to remove duplicate point calculations
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // USE UNIFIED CALCULATOR
 import { GameConstants } from '../core/GameConstants.js';
 
 export class TraitFlawSystem {
@@ -172,10 +173,9 @@ export class TraitFlawSystem {
             errors.push('Flaw already purchased');
         }
 
-        // Check if can afford (flaws COST points)
-        const mainPoolAvailable = this.calculateMainPoolAvailable(character);
-        const mainPoolSpent = this.calculateMainPoolSpent(character);
-        const remainingPoints = mainPoolAvailable - mainPoolSpent;
+        // REMOVED DUPLICATE: Use unified point pool calculator
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.mainPool;
         
         if (flaw.cost > remainingPoints) {
             errors.push(`Insufficient main pool points (need ${flaw.cost}, have ${remainingPoints})`);
@@ -203,10 +203,9 @@ export class TraitFlawSystem {
         const errors = [];
         const warnings = [];
 
-        // Check cost
-        const mainPoolAvailable = this.calculateMainPoolAvailable(character);
-        const mainPoolSpent = this.calculateMainPoolSpent(character);
-        const remainingPoints = mainPoolAvailable - mainPoolSpent;
+        // REMOVED DUPLICATE: Use unified point pool calculator
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.mainPool;
         
         if (30 > remainingPoints) {
             errors.push(`Insufficient main pool points (need 30, have ${remainingPoints})`);
@@ -241,9 +240,6 @@ export class TraitFlawSystem {
             warnings
         };
     }
-
-
-    
 
     // Purchase flaw with corrected economics
     static purchaseFlaw(character, flawId, statBonus) {
@@ -312,10 +308,10 @@ export class TraitFlawSystem {
                 }
                 break;
             case 'weak':
-                // Check if combat attributes would go over limit with reduced pool
-                const currentCombatSpent = ['focus', 'mobility', 'power', 'endurance']
-                    .reduce((sum, attr) => sum + (character.attributes[attr] || 0), 0);
-                const reducedPool = (character.tier * 2) - 1;
+                // REMOVED DUPLICATE: Use PointPoolCalculator for combat attributes
+                const pools = PointPoolCalculator.calculateAllPools(character);
+                const currentCombatSpent = pools.totalSpent.combatAttributes;
+                const reducedPool = pools.totalAvailable.combatAttributes - 1; // Weak reduces by 1
                 if (currentCombatSpent > reducedPool) {
                     errors.push('Current combat attributes exceed reduced pool from Weak flaw');
                 }
@@ -331,37 +327,9 @@ export class TraitFlawSystem {
         return { errors, warnings };
     }
 
-    // Calculate main pool points available
-    static calculateMainPoolAvailable(character) {
-        const tier = character.tier;
-        let available = Math.max(0, (tier - 2) * 15);
-        
-        // Extraordinary archetype doubles main pool
-        if (character.archetypes.uniqueAbility === 'extraordinary') {
-            available += Math.max(0, (tier - 2) * 15);
-        }
-        
-        return available;
-    }
-
-    // Calculate main pool points spent (flaws now COST points)
-    static calculateMainPoolSpent(character) {
-        let spent = 0;
-        
-        // Boons cost points
-        spent += character.mainPoolPurchases.boons.reduce((sum, boon) => sum + (boon.cost || 0), 0);
-        
-        // Traits cost points
-        spent += character.mainPoolPurchases.traits.reduce((sum, trait) => sum + (trait.cost || 0), 0);
-        
-        // Flaws now COST points (major change from previous economics)
-        spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 30), 0);
-        
-        // Primary action upgrades cost points
-        spent += character.mainPoolPurchases.primaryActionUpgrades.length * 30;
-        
-        return spent;
-    }
+    // REMOVED DUPLICATE METHODS - Now use PointPoolCalculator:
+    // - calculateMainPoolAvailable() -> Use PointPoolCalculator.calculateMainPoolAvailable()
+    // - calculateMainPoolSpent() -> Use PointPoolCalculator.calculateMainPoolSpent()
 
     // Remove flaw
     static removeFlaw(character, flawIndex) {

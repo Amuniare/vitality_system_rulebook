@@ -1,4 +1,5 @@
-// ActionSystem.js - Primary action upgrade management
+// ActionSystem.js - REFACTORED to remove duplicate point calculations
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // USE UNIFIED CALCULATOR
 import { GameConstants } from '../core/GameConstants.js';
 
 export class ActionSystem {
@@ -38,8 +39,10 @@ export class ActionSystem {
             errors.push('Action upgrade already purchased');
         }
 
-        // Check point cost
-        const availablePoints = this.calculateAvailableMainPoolPoints(character);
+        // REMOVED DUPLICATE: Use unified point pool calculator
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const availablePoints = pools.remaining.mainPool;
+        
         if (GameConstants.PRIMARY_TO_QUICK_COST > availablePoints) {
             errors.push(`Insufficient main pool points (need ${GameConstants.PRIMARY_TO_QUICK_COST}, have ${availablePoints})`);
         }
@@ -82,28 +85,8 @@ export class ActionSystem {
         return character;
     }
 
-    // Calculate available main pool points
-    static calculateAvailableMainPoolPoints(character) {
-        const tier = character.tier;
-        let basePool = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        
-        // Extraordinary archetype doubles main pool
-        if (character.archetypes.uniqueAbility === 'extraordinary') {
-            basePool += Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        }
-        
-        // Add flaw bonuses
-        const flawBonus = character.mainPoolPurchases.flaws.length * GameConstants.FLAW_BONUS;
-        const totalAvailable = basePool + flawBonus;
-
-        // Calculate spent
-        const spentOnTraits = character.mainPoolPurchases.traits.reduce((total, trait) => total + (trait.cost || GameConstants.TRAIT_COST), 0);
-        const spentOnBoons = character.mainPoolPurchases.boons.reduce((total, boon) => total + (boon.cost || 0), 0);
-        const spentOnUpgrades = character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
-
-        const totalSpent = spentOnTraits + spentOnBoons + spentOnUpgrades;
-        return totalAvailable - totalSpent;
-    }
+    // REMOVED DUPLICATE METHOD: calculateAvailableMainPoolPoints()
+    // Now use: PointPoolCalculator.calculateAllPools(character).remaining.mainPool
 
     // Get action upgrade summary
     static getActionUpgradeSummary(character) {
