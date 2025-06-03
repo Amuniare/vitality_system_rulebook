@@ -213,23 +213,23 @@ Upgrade Options:
 - **30p Upgrade:** Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.
 
 **Carry Action**
-- **Base:** Make a Power check to move a willing character, a character you have grappled, or a heavy object (speed based on Power check vs weight, GM determines DC)
-- **15p Upgrade:** Move at full speed regardless of weight, can carry additional characters equal to half your Tier
+- **Base:** Pick up and move willing characters or objects with you during your movement. If the target's total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
+- **15p Upgrade:** Move at full speed regardless of weight.
 
 **Protect Action**
-- **Base:** You can use a reaction to make any non-direct attack vs adjacent ally, that would hit, now hits you instead
-- **30p Upgrade:** Can protect all adjacent allies simultaneously, you gain extra reactions equal to half your Tier (rounded up), to use the protect action
+- **Base:** You can use a reaction to make the next non-direct attack that would hit an adjacent ally hit you instead.
+- **30p Upgrade:** You can protect all adjacent allies simultaneously, you gain extra reactions equal to half your Tier (rounded up), to use the Protect Action.
 
 
 ####  **PERSONAL ACTIONS**
 
-**Use Action:** Interact with complex environmental objects (cars, computers, heavy machinery)
+**Use Action:** Interact with complex environmental objects (cars, computers, heavy machinery).
 
-**Hasten Action:** Move your full Movement Speed again
+**Hasten Action:** Move up to your full Movement Speed again.
 
 **Hide Action:** 
-- Conceal presence with Stealth vs Perception while outside Direct Perception
-- **Stealth Attack:** Ignore target's base Tier Avoidance bonus
+- Conceal your presence with a Stealth Check vs searchers Perception while outside their direct perception.
+- **Stealth Attack:** While Hidden from a target you ignore their base Tier Avoidance bonus.
 - **Stealth Defense:** Failed Perception vs Stealth = automatic miss
 
 **Prepare Action:** Delay action until specified trigger (GM determines if specific enough)
@@ -272,20 +272,21 @@ Upgrade Options:
 *Choose one to define core movement capabilities*
 
 **Swift**
-- Movement speed increased by half Tier (rounded up)
-- Tier 1-2: +1 space | Tier 3-4: +2 spaces | Tier 5-6: +3 spaces | Tier 7-8: +4 spaces | Tier 9-10: +5 spaces
+- Movement speed increased by half your Tier (rounded up)
+- Traverse the battlefield quicker
 
 **Skirmisher** 
-- Immune to opportunity attacks
-- +1 space attack reach
+- Does not trigger Punish Attacks for moving
+- +1 space melee attack reach
 - Maneuver through enemy lines freely
 
-**Behemoth**
+**Juggernaut**
 - Cannot be Grabbed, Moved, knocked Prone, or Stunned
 - Consistent positioning regardless of enemy interference
 
-**Bulwark**
-- Enemies starting turn adjacent have half movement speed
+**Sentinel**
+- Enemies that start their turn next to your have their movement speed halved until the start of their next turn.
+- As part of a reaction Punish attack you may move up to your full movement speed towards the target until the end of their turn.
 - Enhanced zone control and battlefield presence
 
 **Vanguard**
