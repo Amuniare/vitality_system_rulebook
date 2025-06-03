@@ -104,7 +104,7 @@ export class MainPoolTab {
                         ` : ''}
                         ${breakdown.flaws > 0 ? `
                             <div class="spending-item flaw-cost">
-                                <span>Flaws (NEW: Cost Points):</span>
+                                <span>Flaws:</span>
                                 <span>-${breakdown.flaws}</span>
                             </div>
                         ` : ''}

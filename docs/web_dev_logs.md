@@ -33,7 +33,7 @@
 
 
 
-## SESSION SUMMARY - Main Pool Economics Fix (December 17, 2024)
+## SESSION SUMMARY - Main Pool Economics Fix (June 2, 2024)
 
 **ATTEMPTED:**
 - Fixed flaw system economics (reversed point flow: flaws now COST 30p, provide +Tier stat bonus) → **SUCCESS**
@@ -133,3 +133,41 @@
 - Providing large code changes without implementation/testing
 - Making assumptions about CSS effectiveness without browser testing
 - Suggesting solutions without confirming current file state and conflicts
+
+
+## SESSION SUMMARY - Main Pool System Architectural Split (June 3rd, 2024 / 9:30 AM)
+
+**ATTEMPTED:**
+- Split boon system into Simple Boons vs Unique Abilities with upgrade interface → **SUCCESS** (basic functionality working)
+- Fixed flaw display layout issues (redundant text, cramped spacing) → **SUCCESS** (improved layout achieved)
+- Created 5-section MainPool tab (Flaws, Traits, Simple Boons, Unique Abilities, Action Upgrades) → **SUCCESS** (all sections implemented)
+- Separated business logic between SimpleBoonsSystem and UniqueAbilitySystem → **SUCCESS** (clean architectural separation)
+
+**KEY FINDINGS:**
+- **Architectural separation was correct**: Simple boons (fixed cost, immediate effect) vs Complex abilities (base + upgrades) needed different systems
+- **Upgrade interface works but incomplete**: Can select upgrades during purchase but doesn't display purchased upgrades clearly
+- **UI responsiveness issues**: Interface doesn't update properly after purchases, feels sluggish
+- **Code efficiency concerns**: Codebase growing large with potential duplication and waste
+- **Missing purchased upgrade display**: Users can't see what upgrades they bought with unique abilities
+
+**CURRENT STATE:**
+- Complete 5-section MainPool tab implemented and functional
+- Simple boons and unique abilities properly separated with different purchase flows
+- Basic upgrade selection works during purchase phase
+- Flaw display layout significantly improved (separate rows, no redundant text)
+- All business logic properly delegated to systems layer
+
+**NEXT STEPS:**
+- **Priority 1**: Fix UI responsiveness (immediate re-rendering after purchases)
+- **Priority 2**: Implement purchased upgrade display in unique abilities section
+- **Priority 3**: Code efficiency audit - identify duplication and optimization opportunities
+- **Priority 4**: Consider refactoring for maintainability as codebase scales
+- Review component update lifecycle and event listener patterns
+
+**AVOID:**
+- Adding more features before fixing current UI responsiveness issues
+- Optimizing code structure before addressing user experience problems
+- Creating more complex interfaces without first ensuring existing ones work smoothly
+- Ignoring the upgrade display gap in purchased unique abilities section
+
+
