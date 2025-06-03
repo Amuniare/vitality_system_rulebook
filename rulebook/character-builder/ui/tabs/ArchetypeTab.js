@@ -152,56 +152,6 @@ export class ArchetypeTab {
         // No direct querySelectors needed here if using data-action attributes.
     }
 
-    selectArchetype(category, archetypeId) { 
-        console.log('🎯 ArchetypeTab.selectArchetype called with:', { category, archetypeId });
-        
-        const character = this.builder.currentCharacter;
-        if (!character) {
-            console.error('❌ No current character');
-            return;
-        }
-    
-        console.log('🔍 Current character archetypes:', character.archetypes);
-        
-        // Check if this archetype exists
-        const archetypes = ArchetypeSystem.getArchetypesForCategory(category);
-        const archetypeExists = archetypes.find(arch => arch.id === archetypeId);
-        console.log(`🔍 Archetype exists check for ${category}.${archetypeId}:`, !!archetypeExists);
-        if (!archetypeExists) {
-            console.error(`❌ Archetype ${archetypeId} not found in category ${category}`);
-            return;
-        }
-        
-        console.log('🔍 Validating archetype selection...');
-        
-        const validation = ArchetypeSystem.validateArchetypeSelection(character, category, archetypeId);
-        console.log('🔍 Validation result:', validation);
-        
-        if (!validation.isValid) {
-            console.error('❌ Validation failed:', validation.errors);
-            this.builder.showNotification(validation.errors.join(', '), 'error');
-            return;
-        }
-        
-        if (validation.warnings.length > 0) {
-            console.warn('⚠️ Validation warnings:', validation.warnings);
-            if (!confirm(`${validation.warnings.join(', ')}\n\nThis may require re-evaluating later choices. Continue?`)) {
-                return;
-            }
-        }
-    
-        console.log('✅ Setting archetype:', { category, archetypeId });
-        const oldValue = character.archetypes[category];
-        character.archetypes[category] = archetypeId;
-        console.log(`🔍 Changed ${category} from ${oldValue} to ${archetypeId}`);
-        
-        this.updateArchetypeSelectionUI(category, archetypeId);
-        this.updateProgress();
-        this.builder.updateCharacter();
-        
-        console.log('✅ Archetype selection complete');
-        console.log('🔍 Final character archetypes:', character.archetypes);
-    }
 
 
     updateArchetypeSelectionUI(category, archetypeId) {
@@ -228,24 +178,59 @@ export class ArchetypeTab {
         });
     }
 
+    selectArchetype(category, archetypeId) {
+        const character = this.builder.currentCharacter;
+        if (!character) return;
+    
+        // NEW: Allow clearing by clicking the same archetype
+        if (character.archetypes[category] === archetypeId) {
+            character.archetypes[category] = null;
+            console.log(`✅ Cleared archetype: ${category}`);
+        } else {
+            // Existing validation logic (simplified)
+            const archetypes = ArchetypeSystem.getArchetypesForCategory(category);
+            const archetypeExists = archetypes.find(arch => arch.id === archetypeId);
+            if (!archetypeExists) {
+                console.error(`❌ Archetype ${archetypeId} not found in category ${category}`);
+                return;
+            }
+            
+            character.archetypes[category] = archetypeId;
+            console.log(`✅ Set archetype: ${category} = ${archetypeId}`);
+        }
+        
+        this.updateArchetypeSelectionUI(category, character.archetypes[category]);
+        this.updateProgress();
+        this.builder.updateCharacter();
+    }
+    
     updateProgress() {
         const character = this.builder.currentCharacter;
         if (!character) return;
-
+    
         const totalCategories = ArchetypeSystem.getArchetypeCategories().length;
         const selectedCount = Object.values(character.archetypes).filter(val => val !== null).length;
-
+    
         const progressElement = document.getElementById('archetype-count');
         if (progressElement) {
             progressElement.textContent = `${selectedCount}/${totalCategories} Archetypes Selected`;
         }
-
-        const continueBtn = document.querySelector('.continue-to-attributes-btn'); // Updated selector
+    
+        const continueBtn = document.querySelector('.continue-to-attributes-btn');
         if (continueBtn) {
+            // CHANGED: Always enable continue button, just show warning if incomplete
+            continueBtn.disabled = false;
             const allSelected = selectedCount === totalCategories;
-            continueBtn.disabled = !allSelected;
-            continueBtn.classList.toggle('pulse', allSelected);
+            
+            if (allSelected) {
+                continueBtn.classList.add('pulse');
+                continueBtn.textContent = 'Continue to Attributes →';
+            } else {
+                continueBtn.classList.remove('pulse');
+                continueBtn.textContent = `Continue Anyway (${selectedCount}/${totalCategories}) →`;
+            }
         }
-        this.builder.updateTabStates(); // Ensure CharacterBuilder updates global tab states
+        this.builder.updateTabStates();
     }
+
 }

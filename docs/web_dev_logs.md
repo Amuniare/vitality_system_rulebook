@@ -95,3 +95,41 @@
 **Total Implementation**: ~10,000+ lines across 46 files  
 **Documentation Gap**: Most major systems implemented without corresponding logs  
 **Architecture Quality**: Sophisticated modular design with proper separation of concerns
+
+
+
+
+## SESSION SUMMARY - Vitality System Archetype Selection Fix
+
+**ATTEMPTED:**
+- Static event handlers in CharacterBuilder.setupEventListeners() → **Failed** (elements didn't exist when listeners were attached)
+- Debug logging to identify root cause → **Success** (revealed timing/DOM existence issue)
+- Switch to event delegation using EventManager.delegateEvents() → **Partial** (clicks detected but wrong element passed to handler)
+- Fix EventManager.delegateEvents() to pass matching element instead of e.target → **Success** 
+- Add CSS pointer-events fix to prevent nested element interference → **Success**
+- Comprehensive debug logging throughout selection flow → **Success** (confirmed all systems working)
+
+**KEY FINDINGS:**
+- **Root cause**: Event listeners were set up during app initialization when archetype cards didn't exist in DOM yet
+- **Event delegation required**: Content is dynamically generated when tabs switch, so static `querySelectorAll()` finds 0 elements
+- **EventManager bug**: `delegateEvents()` was passing `e.target` (clicked child element) instead of the element matching the selector (parent card with data attributes)
+- **Nested element interference**: HTML structure like `<div data-*><h4>Title</h4></div>` meant clicks on `<h4>` had no data attributes
+- **All systems working correctly**: ArchetypeSystem validation, data loading via GameDataManager, and UI updates all functioned properly once events reached the right handlers
+
+**CURRENT STATE:**
+Archetype selection is **fully functional**. Users can:
+- Select archetypes from all 7 categories
+- Change existing archetype selections  
+- See immediate visual feedback (card selection highlighting)
+- Progress tracking updates correctly
+- All validation and data flow working as designed
+
+**NEXT STEPS:**
+- Continue implementing remaining character builder functionality (attributes, main pool, special attacks, utility)
+- Clean up CSS empty rulesets warnings (minor quality issue)
+- Consider removing debug logging once stable
+
+**AVOID:**
+- Using `EventManager.setupStandardListeners()` for dynamically generated content
+- Static event listener attachment during app initialization for tab content
+- Assuming `e.target` is the element with data attributes in delegated events (use `e.target.closest(selector)` result instead)

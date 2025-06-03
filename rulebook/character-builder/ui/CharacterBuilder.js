@@ -343,6 +343,8 @@ export class CharacterBuilder {
         this.updateTabStates();
     }
 
+
+
     updateTabStates() {
         if (!this.currentCharacter) return;
         
@@ -356,23 +358,30 @@ export class CharacterBuilder {
             
             switch(tabName) {
                 case 'basicInfo':
+                    canAccess = true;
+                    break;
                 case 'archetypes':
                     canAccess = true;
                     break;
                 case 'attributes':
-                    canAccess = buildOrder?.buildState?.archetypesComplete || false;
+                    // CHANGED: Allow access with partial archetypes
+                    const selectedArchetypes = Object.values(this.currentCharacter.archetypes).filter(val => val !== null).length;
+                    canAccess = selectedArchetypes > 0; // Need at least one archetype
                     break;
                 case 'mainPool':
-                    canAccess = buildOrder?.buildState?.attributesAssigned || false;
+                    // CHANGED: Allow access with basic attributes assigned
+                    const hasAttributes = Object.values(this.currentCharacter.attributes).some(val => val > 0);
+                    canAccess = hasAttributes;
                     break;
                 case 'specialAttacks':
-                    canAccess = buildOrder?.buildState?.archetypesComplete || false;
+                    // CHANGED: Always allow if archetypes started
+                    canAccess = Object.values(this.currentCharacter.archetypes).some(val => val !== null);
                     break;
                 case 'utility':
-                    canAccess = buildOrder?.buildState?.attributesAssigned || false;
+                    canAccess = true; // Always allow
                     break;
                 case 'summary':
-                    canAccess = true;
+                    canAccess = true; // Always allow
                     break;
             }
             

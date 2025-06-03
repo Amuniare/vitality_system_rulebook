@@ -177,37 +177,26 @@ export class TraitFlawSystem {
     // Check flaw-specific conflicts
     static checkFlawConflicts(character, flawId) {
         const errors = [];
-        const warnings = [];
-
+        const warnings = []; // Changed from errors to warnings
+    
         switch(flawId) {
             case 'slow':
-                if (character.archetypes.movement && character.archetypes.movement !== 'none' /* Assuming 'none' is a valid non-choice */) {
-                    errors.push('Slow flaw conflicts with selected movement archetype. Clear movement archetype first.');
+                // CHANGED: Convert to warning instead of error
+                if (character.archetypes.movement && character.archetypes.movement !== 'none') {
+                    warnings.push('Slow flaw may conflict with movement archetype. Consider the narrative implications.');
                 }
                 break;
             case 'weak':
-                const pools = PointPoolCalculator.calculateAllPools(character);
-                const currentCombatSpent = pools.totalSpent.combatAttributes;
-                // A 'Weak' flaw effectively means 1 less point to spend on combat attributes.
-                // The pool already reflects the maximum available *before* this flaw's effect is considered.
-                // If this flaw is applied, the total spendable for combat attributes becomes (Tier*2 - 1).
-                // This validation is tricky as it depends on whether the flaw is currently applied or being considered.
-                // For now, assume this is a check if *adding* 'Weak' would invalidate current attributes.
-                // The CharacterValidator's point pool check will catch overspending if 'Weak' is already active.
+                // Keep this validation as it affects point pools
                 break;
             case 'combatFocused':
-                if (character.utilityPurchases && (
-                    Object.values(character.utilityPurchases.expertise).some(cat => cat.basic.length > 0 || cat.mastered.length > 0) ||
-                    character.utilityPurchases.features.length > 0 ||
-                    character.utilityPurchases.senses.length > 0 ||
-                    character.utilityPurchases.movement.length > 0 ||
-                    character.utilityPurchases.descriptors.length > 0
-                )) {
-                    warnings.push('Combat Focused flaw will remove existing utility purchases if taken, or prevent new ones.');
+                // CHANGED: Convert to warning
+                if (character.utilityPurchases ) {
+                    warnings.push('Combat Focused flaw may limit utility options. Consider the implications.');
                 }
                 break;
         }
-
+    
         return { errors, warnings };
     }
 

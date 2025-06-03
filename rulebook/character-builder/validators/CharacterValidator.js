@@ -147,6 +147,8 @@ export class CharacterValidator {
         return available;
     }
 
+
+    
     // Quick validation for UI feedback
     static validateSection(character, sectionName) {
         switch(sectionName) {
