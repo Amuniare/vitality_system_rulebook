@@ -191,6 +191,28 @@ localStorage.removeItem('vitality-character-library-v2');
 location.reload();
 ```
 
+
+
+## External Data Management
+
+### Data File Structure
+The character builder loads game data from `rulebook/character-builder/data/*.json`:
+- Files are loaded asynchronously during app initialization
+- GameDataManager provides centralized access to all game data
+- Missing files are handled gracefully with fallbacks
+
+### Adding New Game Data
+1. Create/edit JSON file in `data/` directory
+2. Add file path to GameDataManager.dataFiles
+3. Create getter method in GameDataManager
+4. Update relevant system to use gameDataManager.getXxx()
+
+### Local Development
+- No build process required - direct JSON file editing
+- Changes take effect on browser refresh
+- Validate JSON syntax before testing
+
+
 ## Contributing Guidelines
 
 ### **Code Style**
@@ -203,9 +225,4 @@ location.reload();
 - Verify web builder functionality after changes
 - Check Roll20 integration with small character sets first
 
-### **Git Workflow** (if using version control)
-```bash
-git add .
-git commit -m "Description of changes"
-git push origin main
-```
+
