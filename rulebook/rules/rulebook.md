@@ -303,7 +303,12 @@ Upgrade Options:
 - **Super Jump:** You can jump up to your full movement speed in one leap. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+.
 
 ### **ATTACK TYPE ARCHETYPES**
-*Defines how you deliver attacks and engage enemies*
+*Defines how you attack and engage enemies*
+
+**Single Target**
+- Gain Melee AND Ranged attack types for 0p
+- Specializes in single-target elimination
+- Most versatile combat approach
 
 **AOE Specialist**
 - Gain AOE attack type for 0p
@@ -315,10 +320,7 @@ Upgrade Options:
 - Reliable effect delivery that cannot be dodged
 - Perfect for consistent results
 
-**Single Target**
-- Gain Melee AND Ranged attack types for 0p
-- Specializes in single-target elimination
-- Most versatile combat approach
+
 
 ### **EFFECT TYPE ARCHETYPES**
 *Determines the impact of successful attacks*
@@ -330,7 +332,7 @@ Upgrade Options:
 
 **Hybrid Specialist**
 - All attacks MUST combine damage and conditions
-- Mandatory hybrid approach
+- Mandatory Hybrid Attacks
 - Versatile but less powerful in each aspect
 
 **Crowd Control**
@@ -344,18 +346,18 @@ Upgrade Options:
 
 **Versatile Master**
 - Gain 2 Quick Actions per turn
-- Receive (Tier ÷ 2, rounded up) Primary Actions as Quick Actions
-- At Tier 8: Gain third Quick Action
+- When you select this archetype or advance Tiers, select a number of Primary Actions equal to half your Tier rounded up. You can use each of those Primary Actions as Quick Actions.
+- At Tier 8: Gain a third Quick Action
 
 **Extraordinary**
 - Additional points: (Tier - 2) × 15 added to main pool
-- Cannot use extra points for Flaws or Traits
-- For mechanically complex characters
+- Can only spend up to (Tier - 2) × 15 points on Flaws or Traits
+- For characters seeking to specialize in Unique Abilities
 
 **Cut Above**
-- Universal stat bonuses to all core stats:
+- Universal stat bonuses to all core stats: Accuracy, Damage, Conditions, Avoidance, Durability, Resistances, Initiative, Movement
 - Tiers 1-4: +1 to all | Tiers 5-7: +2 to all | Tiers 8+: +3 to all
-- Affects: Accuracy, Damage, Conditions, Avoidance, Durability, Resistances, Initiative, Movement
+- For straightforward characters
 
 ### **DEFENSIVE ARCHETYPES** 
 *Choose one to define core defensive capabilities*
