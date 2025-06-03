@@ -100,4 +100,36 @@
 - Complex debugging without first checking if the basic script loads properly
 
 
+## SESSION SUMMARY - Flaw Section Formatting Fix (June 2, 2025)
 
+**ATTEMPTED:**
+- Analyzed FlawPurchaseSection.js and identified formatting issues → **IDENTIFIED PROBLEMS**
+- Provided complete rewrite of FlawPurchaseSection.js with improved HTML structure → **NOT IMPLEMENTED/TESTED**
+- Initially suggested adding CSS inline to HTML → **FAILED** (Wrong approach)
+- Corrected to suggest adding CSS to character-builder.css file → **NOT TESTED**
+
+**KEY FINDINGS:**
+- The flaw cards have poor visual organization, cramped spacing, and inconsistent layout
+- Current grid layout shows empty/poorly structured cards 
+- CSS file organization is correct (should use character-builder.css, not inline styles)
+- Large code rewrites without implementation/testing don't validate if solutions work
+- User feedback shows formatting is still "awful" despite proposed solutions
+
+**CURRENT STATE:**
+- Flaw section formatting remains broken/poor
+- Cards appear to have minimal content and poor spacing
+- Proposed FlawPurchaseSection.js changes not implemented
+- Proposed CSS additions not added to character-builder.css
+
+**NEXT STEPS:**
+- Actually implement the FlawPurchaseSection.js changes and test them
+- Add the CSS to character-builder.css and verify it takes effect
+- Check for existing CSS conflicts that might override new styles
+- Take a more targeted approach to fix immediate visual issues first
+- Test changes incrementally rather than large rewrites
+
+**AVOID:**
+- Adding inline styles to HTML files
+- Providing large code changes without implementation/testing
+- Making assumptions about CSS effectiveness without browser testing
+- Suggesting solutions without confirming current file state and conflicts

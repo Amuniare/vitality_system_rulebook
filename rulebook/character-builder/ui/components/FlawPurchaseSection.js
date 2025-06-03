@@ -72,64 +72,48 @@ export class FlawPurchaseSection {
         `;
     }
 
+
     renderFlawCard(flaw, character, statOptions, remainingPoints) {
         const isAlreadyPurchased = character.mainPoolPurchases.flaws.some(f => f.flawId === flaw.id);
         const canAfford = remainingPoints >= flaw.cost;
         const isDisabled = isAlreadyPurchased || !canAfford;
-
+    
         return `
-            <div class="flaw-card ${isDisabled ? 'disabled' : 'available'}" data-flaw-id="${flaw.id}">
-                <div class="flaw-card-header">
-                    <div class="flaw-title-section">
-                        <h6 class="flaw-name">${flaw.name}</h6>
-                        <span class="flaw-cost-badge ${!canAfford && !isAlreadyPurchased ? 'unaffordable' : ''}">
-                            Cost: ${flaw.cost}p
-                        </span>
-                    </div>
+            <div class="flaw-card ${isDisabled ? 'disabled' : 'clickable'}" data-flaw-id="${flaw.id}">
+                <div class="flaw-header">
+                    <h5 class="flaw-name">${flaw.name}</h5>
+                    <span class="flaw-cost ${!canAfford && !isAlreadyPurchased ? 'unaffordable' : ''}">${flaw.cost}p</span>
                 </div>
                 
-                <div class="flaw-card-body">
-                    <div class="flaw-description-section">
-                        <p class="flaw-description">${flaw.description}</p>
-                    </div>
-                    
-                    <div class="flaw-restriction-section">
-                        <label class="restriction-label">Restriction:</label>
-                        <p class="restriction-text">${flaw.restriction}</p>
-                    </div>
-                    
-                    ${!isDisabled ? `
-                        <div class="flaw-purchase-section">
-                            <div class="stat-selection-group">
-                                <label class="stat-selection-label">
-                                    Choose stat bonus (+${character.tier}):
-                                </label>
-                                <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
-                                    <option value="">Select stat...</option>
-                                    ${statOptions.map(stat => `
-                                        <option value="${stat.id}">${stat.name} - ${stat.description}</option>
-                                    `).join('')}
-                                </select>
-                            </div>
-                            
-                            <div class="purchase-button-section">
-                                <button class="btn-primary purchase-flaw-btn" data-flaw-id="${flaw.id}" disabled>
-                                    Purchase Flaw (${flaw.cost}p)
-                                </button>
-                            </div>
-                        </div>
-                    ` : ''}
-                    
-                    <div class="flaw-status-section">
-                        ${isAlreadyPurchased ? 
-                            '<div class="status-indicator purchased">Already Purchased</div>' : 
-                            !canAfford ? '<div class="status-indicator unaffordable">Insufficient Points</div>' : ''
-                        }
-                    </div>
+                <div class="flaw-description">${flaw.description}</div>
+                
+                <div class="flaw-restriction">
+                    <strong>Restriction:</strong> ${flaw.restriction}
                 </div>
+                
+                ${!isDisabled ? `
+                    <div class="flaw-purchase-options">
+                        <div class="stat-bonus-selection">
+                            <label>Choose stat bonus (+${character.tier}):</label>
+                            <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
+                                <option value="">Select stat...</option>
+                                ${statOptions.map(stat => `
+                                    <option value="${stat.id}">${stat.name} - ${stat.description}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        <button class="btn-primary purchase-flaw-btn" data-flaw-id="${flaw.id}" disabled>
+                            Purchase Flaw
+                        </button>
+                    </div>
+                ` : ''}
+                
+                ${isAlreadyPurchased ? '<div class="already-purchased">✓ Purchased</div>' : ''}
+                ${!canAfford && !isAlreadyPurchased ? '<div class="cannot-afford">Insufficient Points</div>' : ''}
             </div>
         `;
     }
+
 
     setupEventListeners() {
         // Stat bonus selection enables purchase button
