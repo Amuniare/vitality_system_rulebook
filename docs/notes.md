@@ -18,3 +18,4 @@ need to switch tabs in order to update ui
 
 make screen wider? or flexible?
 
+weird
