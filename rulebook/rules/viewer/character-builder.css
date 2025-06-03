@@ -732,3 +732,190 @@
     border: 1px dashed var(--accent-secondary);
     border-radius: 4px;
 }
+
+
+/* Flaw Section Improvements */
+.flaw-purchase-section {
+    padding: 1rem;
+}
+
+.flaw-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.flaw-card {
+    background: var(--bg-primary);
+    border: 2px solid var(--accent-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.flaw-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+}
+
+.flaw-card.clickable {
+    cursor: pointer;
+}
+
+.flaw-card.disabled {
+    opacity: 0.6;
+    border-color: #555;
+}
+
+.flaw-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.flaw-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--accent-primary);
+    margin: 0;
+}
+
+.flaw-cost {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.flaw-cost.unaffordable {
+    background: var(--error-color);
+    color: white;
+}
+
+.flaw-description {
+    font-size: 0.95em;
+    line-height: 1.4;
+    margin: 1rem 0;
+    flex-grow: 1;
+}
+
+.flaw-restriction {
+    background: rgba(255, 170, 0, 0.1);
+    border-left: 3px solid var(--warning-color);
+    padding: 0.75rem;
+    margin: 1rem 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.9em;
+}
+
+.flaw-purchase-options {
+    border-top: 1px solid var(--accent-secondary);
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-bonus-selection {
+    margin-bottom: 1rem;
+}
+
+.stat-bonus-selection label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--accent-primary);
+}
+
+.stat-bonus-select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.purchase-flaw-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: bold;
+}
+
+.already-purchased, .cannot-afford {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+.already-purchased {
+    background: rgba(0, 255, 0, 0.1);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+.cannot-afford {
+    background: rgba(255, 68, 68, 0.1);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+
+/* Purchased flaws styling */
+.purchased-flaw-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--success-color);
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flaw-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.flaw-info .flaw-name {
+    font-size: 1em;
+    margin: 0;
+}
+
+.stat-bonus {
+    color: var(--success-color);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+/* Section headers */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+.section-header h4 {
+    margin: 0;
+    color: var(--accent-primary);
+}
+
+.points-remaining {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.points-remaining .over-budget {
+    color: var(--error-color);
+}
+
