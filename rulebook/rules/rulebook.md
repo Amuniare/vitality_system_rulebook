@@ -280,31 +280,27 @@ Upgrade Options:
 - +1 space melee attack reach
 - Maneuver through enemy lines freely
 
-**Juggernaut**
+**Behemoth**
 - Cannot be Grabbed, Moved, knocked Prone, or Stunned
 - Consistent positioning regardless of enemy interference
 
-**Sentinel**
+**Vanguard**
 - Enemies that start their turn next to your have their movement speed halved until the start of their next turn.
-- As part of a reaction Punish attack you may move up to your full movement speed towards the target until the end of their turn.
+- As part of a reaction Punish attack, you may move up to your full movement speed towards the target until the end of their turn.
 - Enhanced zone control and battlefield presence
 
-**Vanguard**
-- Add Endurance to movement speed
-- Mobile tank - reach allies and enemies faster while absorbing damage
-
 **Mole**
-- Full speed through soft materials (dirt, clay, loose rock)
-- Half speed through hard materials (concrete, granite, packed rock)
+- Move your full speed through soft materials (dirt, clay, loose rock)
+- Move half your speed through hard materials (concrete, granite, packed rock)
 - Choose: Create permanent tunnels OR temporary paths
 - Cannot end turn underground without tunnel creation
 
-**Alternative Locomotion** *(Choose one instead of standard archetype)*
-- **Flight:** Move in any direction, ignore ground obstacles, no terrain penalties
-- **Teleportation:** Instant movement to visible locations, -2 Sp movement penalty
-- **Portal:** Create linked portals within movement range, team can use, persist until next turn
-- **Swinging:** Requires anchor points, +1 Sp (Tiers 1-6) or +2 Sp (Tiers 7+), full speed on any surface
-- **Super Jump:** Jump distance equals full movement, +1 Sp (Tiers 1-6) or +2 Sp (Tiers 7+)
+**Alternative Movement** *(Choose one instead of a standard movement archetype)*
+- **Flight:** Move in any direction, ignore ground obstacles, no terrain penalties.
+- **Teleportation:** Instant movement to visible locations. -2 sp movement penalty.
+- **Portal:** Create a pair of linked portals within your movement range, anyone can move and act through them, they persist until the start of your next turn.
+- **Swinging:** Move to any point that has a stable surface you can connect to and you can move your full speed on any solid surface. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+.
+- **Super Jump:** You can jump up to your full movement speed in one leap. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+.
 
 ### **ATTACK TYPE ARCHETYPES**
 *Defines how you deliver attacks and engage enemies*
