@@ -1,5 +1,7 @@
-// FlawPurchaseSection.js - Flaw purchase interface with improved formatting (FIXED)
+// FlawPurchaseSection.js - REFACTORED to use EventManager and RenderUtils
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
+import { EventManager } from '../shared/EventManager.js';
+import { RenderUtils } from '../shared/RenderUtils.js';
 
 export class FlawPurchaseSection {
     constructor(characterBuilder) {
@@ -9,164 +11,193 @@ export class FlawPurchaseSection {
     render(character, pointInfo) {
         const flaws = TraitFlawSystem.getAvailableFlaws();
         const statOptions = TraitFlawSystem.getFlawStatOptions();
-        const remainingPoints = pointInfo.remaining;
 
-        return `
+        const containerHtml = `
             <div class="flaw-purchase-section">
-                <div class="section-header">
-                    <h4>Flaws (Cost 30p Each)</h4>
-                    <div class="points-remaining">
-                        Remaining Points: <span class="${remainingPoints < 0 ? 'over-budget' : ''}">${remainingPoints}</span>
-                    </div>
-                </div>
-                
-                <div class="section-description">
-                    <div class="economics-notice">
-                        Flaws 30 points each but provide +Tier bonus to one chosen stat.
-                    </div>
-                </div>
-                
-                <div class="purchased-flaws">
-                    <h5>Purchased Flaws (${character.mainPoolPurchases.flaws.length})</h5>
-                    ${this.renderPurchasedFlaws(character)}
-                </div>
-                
-                <div class="available-flaws">
-                    <h5>Available Flaws</h5>
-                    <div class="flaw-grid">
-                        ${flaws.map(flaw => this.renderFlawCard(flaw, character, statOptions, remainingPoints)).join('')}
-                    </div>
-                </div>
+                ${this.renderSectionHeader(pointInfo)}
+                ${this.renderEconomicsNotice()}
+                ${RenderUtils.renderPurchasedList(
+                    character.mainPoolPurchases.flaws,
+                    (flaw, index) => this.renderPurchasedFlaw(flaw, index, character),
+                    { title: 'Purchased Flaws', emptyMessage: 'No flaws purchased yet' }
+                )}
+                ${this.renderAvailableFlaws(flaws, character, statOptions, pointInfo)}
             </div>
         `;
+
+        return containerHtml;
     }
 
-    renderPurchasedFlaws(character) {
-        if (character.mainPoolPurchases.flaws.length === 0) {
-            return '<div class="empty-state">No flaws purchased yet</div>';
-        }
-
+    renderSectionHeader(pointInfo) {
         return `
-            <div class="purchased-list">
-                ${character.mainPoolPurchases.flaws.map((flaw, index) => `
-                    <div class="purchased-flaw-item">
-                        <div class="purchased-flaw-content">
-                            <div class="flaw-name-cost">
-                                <span class="flaw-name">${flaw.name}</span>
-                                <span class="flaw-cost">-${flaw.cost}p</span>
-                            </div>
-                            ${flaw.statBonus ? `
-                                <div class="stat-bonus-display">
-                                    <span class="bonus-label">Bonus:</span>
-                                    <span class="bonus-value">+${character.tier} ${flaw.statBonus}</span>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <button class="btn-small btn-danger remove-flaw-btn" data-action="remove-flaw" data-index="${index}">
-                            Remove
-                        </button>
-                    </div>
-                `).join('')}
+            <div class="section-header">
+                <h4>Flaws (Cost 30p Each)</h4>
+                ${RenderUtils.renderPointDisplay(
+                    pointInfo.spent, 
+                    pointInfo.available, 
+                    'Main Pool Points',
+                    { showRemaining: true }
+                )}
             </div>
         `;
     }
 
-    renderFlawCard(flaw, character, statOptions, remainingPoints) {
+    renderEconomicsNotice() {
+        return `
+            <div class="economics-notice">
+                Flaws cost 30 points each but provide +Tier bonus to one chosen stat.
+            </div>
+        `;
+    }
+
+    renderPurchasedFlaw(flaw, index, character) {
+        return `
+            <div class="purchased-flaw-item">
+                <div class="purchased-flaw-content">
+                    <div class="flaw-name-cost">
+                        <span class="flaw-name">${flaw.name}</span>
+                        <span class="flaw-cost">-${flaw.cost}p</span>
+                    </div>
+                    ${flaw.statBonus ? `
+                        <div class="stat-bonus-display">
+                            <span class="bonus-label">Bonus:</span>
+                            <span class="bonus-value">+${character.tier} ${flaw.statBonus}</span>
+                        </div>
+                    ` : ''}
+                </div>
+                ${RenderUtils.renderButton({
+                    text: 'Remove',
+                    variant: 'danger',
+                    classes: ['btn-small'],
+                    dataAttributes: { action: 'remove-flaw', index: index }
+                })}
+            </div>
+        `;
+    }
+
+    renderAvailableFlaws(flaws, character, statOptions, pointInfo) {
+        return `
+            <div class="available-flaws">
+                <h5>Available Flaws</h5>
+                ${RenderUtils.renderGrid(
+                    flaws,
+                    (flaw) => this.renderFlawCard(flaw, character, statOptions, pointInfo),
+                    { gridClass: 'flaw-grid', emptyMessage: 'No flaws available' }
+                )}
+            </div>
+        `;
+    }
+
+    renderFlawCard(flaw, character, statOptions, pointInfo) {
         const isAlreadyPurchased = character.mainPoolPurchases.flaws.some(f => f.flawId === flaw.id);
-        const canAfford = remainingPoints >= flaw.cost;
+        const canAfford = pointInfo.remaining >= flaw.cost;
         const isDisabled = isAlreadyPurchased || !canAfford;
 
+        let status = 'available';
+        if (isAlreadyPurchased) status = 'purchased';
+        else if (!canAfford) status = 'unaffordable';
+
+        return RenderUtils.renderCard({
+            title: flaw.name,
+            cost: flaw.cost,
+            description: flaw.description,
+            status: status,
+            clickable: false,
+            disabled: isDisabled,
+            dataAttributes: { flawId: flaw.id },
+            additionalContent: isDisabled ? '' : this.renderFlawPurchaseOptions(flaw, statOptions)
+        }, { cardClass: 'flaw-card improved' });
+    }
+
+    renderFlawPurchaseOptions(flaw, statOptions) {
         return `
-            <div class="flaw-card improved ${isDisabled ? 'disabled' : 'clickable'}" data-flaw-id="${flaw.id}">
-                <div class="flaw-header">
-                    <h5 class="flaw-name">${flaw.name}</h5>
-                    <span class="flaw-cost ${!canAfford && !isAlreadyPurchased ? 'unaffordable' : ''}">${flaw.cost}p</span>
+            <div class="flaw-purchase-section">
+                <div class="stat-bonus-row">
+                    <label class="stat-bonus-label">Choose stat bonus:</label>
+                    ${RenderUtils.renderSelect({
+                        id: `stat-select-${flaw.id}`,
+                        options: statOptions.map(opt => ({ value: opt.id, label: opt.name })),
+                        placeholder: 'Select stat...',
+                        dataAttributes: { flawId: flaw.id },
+                        classes: ['stat-bonus-select']
+                    })}
                 </div>
-                
-                <div class="flaw-description">${flaw.description}</div>
-                
-                ${!isDisabled ? `
-                    <div class="flaw-purchase-section">
-                        <div class="stat-bonus-row">
-                            <label class="stat-bonus-label">Choose +${character.tier} stat bonus:</label>
-                            <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
-                                <option value="">Select stat...</option>
-                                ${statOptions.map(stat => `
-                                    <option value="${stat.id}">${stat.name}</option>
-                                `).join('')}
-                            </select>
-                        </div>
-                        <div class="purchase-button-row">
-                            <button class="btn-primary purchase-flaw-btn" data-flaw-id="${flaw.id}" disabled>
-                                Purchase Flaw
-                            </button>
-                        </div>
-                    </div>
-                ` : ''}
-                
-                ${isAlreadyPurchased ? '<div class="status-indicator purchased">✓ Owned</div>' : ''}
-                ${!canAfford && !isAlreadyPurchased ? '<div class="status-indicator unaffordable">Can\'t Afford</div>' : ''}
+                <div class="purchase-button-row">
+                    ${RenderUtils.renderButton({
+                        text: 'Purchase Flaw',
+                        variant: 'primary',
+                        disabled: true,
+                        dataAttributes: { action: 'purchase-flaw', flawId: flaw.id },
+                        classes: ['purchase-flaw-btn']
+                    })}
+                </div>
             </div>
         `;
     }
 
     setupEventListeners() {
-        // Stat bonus selection enables purchase button
-        document.querySelectorAll('.stat-bonus-select').forEach(select => {
-            select.addEventListener('change', (e) => {
-                const flawId = e.target.dataset.flawId;
-                const purchaseBtn = document.querySelector(`.purchase-flaw-btn[data-flaw-id="${flawId}"]`);
-                if (purchaseBtn) {
-                    purchaseBtn.disabled = !e.target.value;
-                    purchaseBtn.classList.toggle('enabled', !!e.target.value);
-                }
-            });
-        });
+        const container = document.querySelector('.flaw-purchase-section');
+        if (!container) {
+            console.error('Flaw purchase section container not found');
+            return;
+        }
 
-        // Purchase flaw
-        document.querySelectorAll('.purchase-flaw-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const flawId = e.target.dataset.flawId;
-                const statSelect = document.querySelector(`.stat-bonus-select[data-flaw-id="${flawId}"]`);
-                const statBonus = statSelect?.value;
-                
-                if (!statBonus) {
-                    this.builder.showNotification('Please select a stat bonus', 'error');
-                    return;
-                }
-                
-                this.purchaseFlaw(flawId, statBonus);
-            });
-        });
-
-        // Remove flaw
-        document.querySelectorAll('[data-action="remove-flaw"]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const index = parseInt(e.target.dataset.index);
-                this.removeFlaw(index);
-            });
+        EventManager.setupStandardListeners(container, {
+            changeHandlers: {
+                '.stat-bonus-select': this.handleStatBonusChange.bind(this)
+            },
+            clickHandlers: {
+                '.purchase-flaw-btn': this.handleFlawPurchase.bind(this),
+                '[data-action="remove-flaw"]': this.handleFlawRemoval.bind(this)
+            }
         });
     }
 
-    purchaseFlaw(flawId, statBonus) {
+    handleStatBonusChange(e, element) {
+        const flawId = element.dataset.flawId;
+        const purchaseBtn = document.querySelector(`[data-flaw-id="${flawId}"].purchase-flaw-btn`);
+        
+        if (purchaseBtn) {
+            purchaseBtn.disabled = !element.value;
+            purchaseBtn.classList.toggle('enabled', !!element.value);
+        }
+    }
+
+    handleFlawPurchase(e, element) {
+        const flawId = element.dataset.flawId;
+        const statSelect = document.querySelector(`[data-flaw-id="${flawId}"].stat-bonus-select`);
+        const statBonus = statSelect?.value;
+        
+        if (!statBonus) {
+            this.builder.showNotification('Please select a stat bonus', 'error');
+            return;
+        }
+        
         try {
             const character = this.builder.currentCharacter;
             TraitFlawSystem.purchaseFlaw(character, flawId, statBonus);
             this.builder.updateCharacter();
             this.builder.showNotification('Flaw purchased successfully', 'success');
         } catch (error) {
+            console.error('Failed to purchase flaw:', error);
             this.builder.showNotification(error.message, 'error');
         }
     }
 
-    removeFlaw(index) {
+    handleFlawRemoval(e, element) {
+        const index = parseInt(element.dataset.index);
         const character = this.builder.currentCharacter;
         const flaw = character.mainPoolPurchases.flaws[index];
         
         if (confirm(`Remove flaw "${flaw.name}"? This will refund ${flaw.cost} points.`)) {
-            TraitFlawSystem.removeFlaw(character, index);
-            this.builder.updateCharacter();
-            this.builder.showNotification('Flaw removed', 'success');
+            try {
+                TraitFlawSystem.removeFlaw(character, index);
+                this.builder.updateCharacter();
+                this.builder.showNotification('Flaw removed', 'success');
+            } catch (error) {
+                console.error('Failed to remove flaw:', error);
+                this.builder.showNotification('Failed to remove flaw', 'error');
+            }
         }
     }
 }

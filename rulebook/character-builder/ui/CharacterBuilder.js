@@ -1,4 +1,4 @@
-// CharacterBuilder.js - Main character builder with real components
+// CharacterBuilder.js - REFACTORED to use UpdateManager for central update management
 import { VitalityCharacter } from '../core/VitalityCharacter.js';
 import { CharacterLibrary } from './components/CharacterLibrary.js';
 import { CharacterTree } from './components/CharacterTree.js';
@@ -18,81 +18,84 @@ import { SummaryTab } from './tabs/SummaryTab.js';
 import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js';
 import { StatCalculator } from '../calculators/StatCalculator.js';
 import { CharacterValidator } from '../validators/CharacterValidator.js';
+import { UpdateManager } from './shared/UpdateManager.js';
+import { EventManager } from './shared/EventManager.js';
 
 export class CharacterBuilder {
     constructor() {
-        console.log('🟡 CharacterBuilder constructor started');
+        console.log('CharacterBuilder constructor started');
         this.currentCharacter = null;
         this.library = new CharacterLibrary();
         this.currentTab = 'basicInfo';
         this.initialized = false;
-        console.log('✅ CharacterBuilder constructor completed');
+        this.lastCharacterHash = null;
+        console.log('CharacterBuilder constructor completed');
     }
 
     async init() {
         try {
-            console.log('🟡 CharacterBuilder.init() started');
+            console.log('CharacterBuilder.init() started');
             
             // Check if DOM is ready
             if (document.readyState === 'loading') {
-                console.log('⚠️ DOM still loading, waiting for DOMContentLoaded');
+                console.log('DOM still loading, waiting for DOMContentLoaded');
                 return new Promise(resolve => {
                     document.addEventListener('DOMContentLoaded', () => {
-                        console.log('✅ DOMContentLoaded fired, continuing init');
+                        console.log('DOMContentLoaded fired, continuing init');
                         this.initAfterDOM().then(resolve);
                     });
                 });
             } else {
-                console.log('✅ DOM already ready, continuing init');
+                console.log('DOM already ready, continuing init');
                 await this.initAfterDOM();
             }
             
         } catch (error) {
-            console.error('❌ CharacterBuilder initialization failed:', error);
+            console.error('CharacterBuilder initialization failed:', error);
             throw error;
         }
     }
 
     async initAfterDOM() {
-        console.log('🟡 initAfterDOM started');
+        console.log('initAfterDOM started');
         
         try {
             // Initialize character library first
-            console.log('🟡 Initializing character library...');
+            console.log('Initializing character library...');
             await this.library.init();
-            console.log('✅ Character library initialized');
+            console.log('Character library initialized');
 
             // Initialize components
-            console.log('🟡 Initializing components...');
+            console.log('Initializing components...');
             this.initializeComponents();
-            console.log('✅ Components initialized');
+            console.log('Components initialized');
 
             // Initialize tabs
-            console.log('🟡 Initializing tabs...');
+            console.log('Initializing tabs...');
             this.initializeTabs();
-            console.log('✅ Tabs initialized');
+            console.log('Tabs initialized');
             
             // Set up event listeners
-            console.log('🟡 Setting up event listeners...');
+            console.log('Setting up event listeners...');
             this.setupEventListeners();
-            console.log('✅ Event listeners setup completed');
+            console.log('Event listeners setup completed');
             
             // Show welcome screen
-            console.log('🟡 Showing welcome screen...');
+            console.log('Showing welcome screen...');
             this.showWelcomeScreen();
-            console.log('✅ Welcome screen shown');
+            console.log('Welcome screen shown');
             
             this.initialized = true;
-            console.log('✅ CharacterBuilder fully initialized');
+            console.log('CharacterBuilder fully initialized');
             
         } catch (error) {
-            console.error('❌ Error in initAfterDOM:', error);
+            console.error('Error in initAfterDOM:', error);
             throw error;
         }
     }
 
     initializeComponents() {
-        console.log('🟡 Initializing UI components...');
+        console.log('Initializing UI components...');
         
         this.characterTree = new CharacterTree(this);
         this.pointPoolDisplay = new PointPoolDisplay(this);
@@ -101,11 +104,11 @@ export class CharacterBuilder {
         // Initialize character tree with library
         this.characterTree.library = this.library;
         
-        console.log('✅ Real components created');
+        console.log('Real components created');
     }
 
     initializeTabs() {
-        console.log('🟡 Creating tabs...');
+        console.log('Creating tabs...');
         
         this.tabs = {
             basicInfo: new BasicInfoTab(this),
@@ -117,43 +120,30 @@ export class CharacterBuilder {
             summary: new SummaryTab(this)
         };
         
-        console.log('✅ All tabs created');
+        console.log('All tabs created');
     }
 
     setupEventListeners() {
-        console.log('🟡 setupEventListeners started');
+        console.log('setupEventListeners started');
         
-        // New character button - wait for characterTree to be ready
-        setTimeout(() => {
-            const newCharacterBtn = document.getElementById('new-character-btn');
-            if (newCharacterBtn) {
-                console.log('✅ Found new-character-btn, adding listener');
-                newCharacterBtn.addEventListener('click', (e) => {
-                    console.log('🎉 NEW CHARACTER BUTTON CLICKED!');
-                    try {
-                        this.createNewCharacter();
-                    } catch (error) {
-                        console.error('❌ Error in createNewCharacter:', error);
-                    }
-                });
-            } else {
-                console.warn('⚠️ new-character-btn not found in setupEventListeners');
-            }
-        }, 100);
-
-        // Tab navigation
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('tab-btn')) {
-                const tabName = e.target.dataset.tab;
-                this.switchTab(tabName);
+        // Use EventManager for consistent event handling
+        const container = document.body;
+        
+        EventManager.setupStandardListeners(container, {
+            clickHandlers: {
+                '#new-character-btn': this.createNewCharacter.bind(this),
+                '.tab-btn': this.handleTabSwitch.bind(this),
+                '#save-character': this.saveCharacter.bind(this),
+                '#export-json': this.exportCharacterJSON.bind(this),
+                '#delete-character': this.deleteCharacter.bind(this)
             }
         });
         
-        console.log('✅ setupEventListeners completed');
+        console.log('setupEventListeners completed');
     }
 
     createNewCharacter() {
-        console.log('🟡 createNewCharacter called');
+        console.log('createNewCharacter called');
         
         try {
             const name = prompt('Character name:') || 'New Character';
@@ -171,30 +161,43 @@ export class CharacterBuilder {
             this.switchTab('basicInfo');
             console.log('Switched to basic info tab');
             
-            this.updateAllDisplays();
+            // Use UpdateManager for initial display update
+            this.scheduleFullUpdate('character_created');
             console.log('Displays updated');
             
-            console.log('✅ createNewCharacter completed successfully');
+            console.log('createNewCharacter completed successfully');
             
         } catch (error) {
-            console.error('❌ Error in createNewCharacter:', error);
+            console.error('Error in createNewCharacter:', error);
             this.showNotification('Error creating character: ' + error.message, 'error');
         }
     }
 
+    handleTabSwitch(e, element) {
+        const tabName = element.dataset.tab;
+        if (tabName) {
+            this.switchTab(tabName);
+        }
+    }
+
     loadCharacter(characterId) {
-        console.log('🟡 loadCharacter called with ID:', characterId);
-        // For now, this would need library integration
-        // this.currentCharacter = this.library.getCharacter(characterId);
-        if (this.currentCharacter) {
-            this.showCharacterBuilder();
-            this.updateAllDisplays();
-            this.switchTab('basicInfo');
+        console.log('loadCharacter called with ID:', characterId);
+        
+        try {
+            this.currentCharacter = this.library.getCharacter(characterId);
+            if (this.currentCharacter) {
+                this.showCharacterBuilder();
+                this.scheduleFullUpdate('character_loaded');
+                this.switchTab('basicInfo');
+            }
+        } catch (error) {
+            console.error('Error loading character:', error);
+            this.showNotification('Error loading character', 'error');
         }
     }
 
     showWelcomeScreen() {
-        console.log('🟡 showWelcomeScreen called');
+        console.log('showWelcomeScreen called');
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
         
@@ -208,7 +211,7 @@ export class CharacterBuilder {
     }
 
     showCharacterBuilder() {
-        console.log('🟡 showCharacterBuilder called');
+        console.log('showCharacterBuilder called');
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
         
@@ -230,7 +233,7 @@ export class CharacterBuilder {
     }
 
     switchTab(tabName) {
-        console.log('🟡 switchTab called with:', tabName);
+        console.log('switchTab called with:', tabName);
         
         if (!this.tabs[tabName]) {
             console.error('Tab not found:', tabName);
@@ -283,8 +286,6 @@ export class CharacterBuilder {
             
             switch(tabName) {
                 case 'basicInfo':
-                    canAccess = true;
-                    break;
                 case 'archetypes':
                     canAccess = true;
                     break;
@@ -310,24 +311,87 @@ export class CharacterBuilder {
         });
     }
 
-    updateAllDisplays() {
-        console.log('🟡 updateAllDisplays called');
-        if (!this.currentCharacter) return;
-        
-        this.pointPoolDisplay.update();
-        this.validationDisplay.update();
-        if (this.characterTree && this.characterTree.refresh) {
-            this.characterTree.refresh();
-        }
-        this.updateCharacterHeader();
-    }
-
+    // OPTIMIZED UPDATE SYSTEM using UpdateManager
     updateCharacter() {
-        console.log('🟡 updateCharacter called');
+        console.log('updateCharacter called');
         if (!this.currentCharacter) return;
         
         this.currentCharacter.touch();
-        this.updateAllDisplays();
+        
+        // Detect what changed and update only relevant components
+        const changes = this.detectCharacterChanges();
+        this.scheduleSelectiveUpdate(changes);
+    }
+
+    detectCharacterChanges() {
+        const currentHash = this.getCharacterHash();
+        const changes = [];
+        
+        if (this.lastCharacterHash !== currentHash) {
+            // For now, assume all components might need updates
+            // In future, could implement more granular change detection
+            changes.push('points', 'validation', 'stats', 'basicInfo');
+            this.lastCharacterHash = currentHash;
+        }
+        
+        return changes;
+    }
+
+    getCharacterHash() {
+        if (!this.currentCharacter) return null;
+        
+        // Simple hash of character state for change detection
+        return JSON.stringify({
+            tier: this.currentCharacter.tier,
+            name: this.currentCharacter.name,
+            archetypes: this.currentCharacter.archetypes,
+            attributes: this.currentCharacter.attributes,
+            mainPoolPurchases: this.currentCharacter.mainPoolPurchases,
+            specialAttacks: this.currentCharacter.specialAttacks.length,
+            lastModified: this.currentCharacter.lastModified
+        });
+    }
+
+    scheduleSelectiveUpdate(changes) {
+        const updates = [];
+        
+        if (changes.includes('points')) {
+            updates.push({ component: this.pointPoolDisplay, method: 'update', priority: 'high' });
+        }
+        
+        if (changes.includes('validation')) {
+            updates.push({ component: this.validationDisplay, method: 'update', priority: 'normal' });
+        }
+        
+        if (changes.includes('basicInfo')) {
+            updates.push({ component: this, method: 'updateCharacterHeader', priority: 'high' });
+        }
+        
+        if (changes.includes('stats')) {
+            // Notify current tab that stats may have changed
+            const currentTabComponent = this.tabs[this.currentTab];
+            if (currentTabComponent && currentTabComponent.onCharacterUpdate) {
+                updates.push({ component: currentTabComponent, method: 'onCharacterUpdate', priority: 'normal' });
+            }
+        }
+        
+        // Only update character tree on save, not every change
+        // if (changes.includes('save')) {
+        //     updates.push({ component: this.characterTree, method: 'refresh', priority: 'low' });
+        // }
+        
+        UpdateManager.batchUpdates(updates);
+    }
+
+    scheduleFullUpdate(reason) {
+        console.log(`Scheduling full update: ${reason}`);
+        
+        UpdateManager.batchUpdates([
+            { component: this.pointPoolDisplay, method: 'update', priority: 'high' },
+            { component: this.validationDisplay, method: 'update', priority: 'normal' },
+            { component: this, method: 'updateCharacterHeader', priority: 'high' },
+            { component: this.characterTree, method: 'refresh', priority: 'low' }
+        ]);
     }
 
     // Point pool calculations
@@ -379,17 +443,41 @@ export class CharacterBuilder {
         this.showNotification('Character exported successfully!', 'success');
     }
 
-    // Storage methods (simplified for now)
-    saveCharacters() {
-        console.log('🟡 saveCharacters called');
-        // This would integrate with the character library
+    // Storage methods
+    saveCharacter() {
+        console.log('saveCharacter called');
         if (this.currentCharacter && this.library) {
-            this.library.saveCharacter(this.currentCharacter);
+            try {
+                this.library.saveCharacter(this.currentCharacter);
+                this.showNotification('Character saved successfully!', 'success');
+                
+                // Update character tree
+                UpdateManager.scheduleUpdate(this.characterTree, 'refresh', 'normal');
+            } catch (error) {
+                console.error('Error saving character:', error);
+                this.showNotification('Error saving character', 'error');
+            }
+        }
+    }
+
+    deleteCharacter() {
+        if (!this.currentCharacter) return;
+        
+        if (confirm(`Delete character "${this.currentCharacter.name}"? This cannot be undone.`)) {
+            try {
+                this.library.deleteCharacter(this.currentCharacter.id);
+                this.currentCharacter = null;
+                this.showWelcomeScreen();
+                this.showNotification('Character deleted', 'info');
+            } catch (error) {
+                console.error('Error deleting character:', error);
+                this.showNotification('Error deleting character', 'error');
+            }
         }
     }
 
     showNotification(message, type = 'info') {
-        console.log(`📢 Notification (${type}):`, message);
+        console.log(`Notification (${type}): ${message}`);
         
         // Create notification element
         const notification = document.createElement('div');

@@ -171,3 +171,36 @@
 - Ignoring the upgrade display gap in purchased unique abilities section
 
 
+
+
+
+## SESSION SUMMARY - MainPoolTab Fix & Phase 3/4 Planning
+
+**ATTEMPTED:**
+- Diagnosed MainPoolTab empty issue → **FAILED** initially (misdiagnosed as missing import files), then **SUCCESS** (found real cause: calling removed methods)
+- Fixed MainPoolTab.js to use PointPoolCalculator instead of removed TraitFlawSystem methods → **SUCCESS** 
+- Identified other broken method calls in FlawPurchaseSection.js → **FAILED** (file was actually correct, overcorrected)
+
+**KEY FINDINGS:**
+- **Real issue**: MainPoolTab was calling `TraitFlawSystem.calculateMainPoolAvailable()` and `calculateMainPoolSpent()` methods that were removed in Phase 2
+- **Phase 2 migration incomplete**: UI components weren't updated when backend methods were consolidated into PointPoolCalculator
+- **FlawPurchaseSection was correctly implemented**: Uses `pointInfo` parameter instead of direct method calls, so no changes needed
+- **Silent import failures weren't the problem**: Method call mismatches from incomplete migration were the actual cause
+
+**CURRENT STATE:**
+- MainPoolTab now displays properly using PointPoolCalculator for all point calculations
+- Phase 1/2 backend refactoring is solid and working correctly
+- All existing components use proper point calculation patterns
+- Ready to proceed with Phase 3 (consistency/standardization) and Phase 4 (completion)
+
+**NEXT STEPS:**
+- Verify current state of missing tabs/components (BasicInfoTab, SpecialAttackTab, SummaryTab, UtilityTab, CharacterLibrary, CharacterTree, PointPoolDisplay, ValidationDisplay)
+- Determine if they need full implementation or just refinement
+- Execute Phase 3: standardize event patterns, create shared utilities (RenderUtils, EventManager, UpdateManager)
+- Execute Phase 4: complete missing features and optimize update lifecycle
+
+**AVOID:**
+- Assuming files don't exist without carefully checking directory structure and imports
+- Over-diagnosing working files (like FlawPurchaseSection) that follow correct patterns
+- Making assumptions about what needs fixing without reviewing actual code implementation
+- Forgetting to update UI components when backend method signatures change during refactoring
