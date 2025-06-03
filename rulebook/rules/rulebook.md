@@ -55,11 +55,7 @@ Attributes represent what type of things your character is good at in combat and
 **Vitality Score:** 10 + Tier + Endurance 
 
 ### **HEALTH SYSTEM**
-**Player HP:** 100  
-**Rest Recovery:**
-- Gritty Setting: Regain 50 HP per day
-- Grounded Setting: Regain 20 HP per hour  
-- Heroic Setting: Regain 5 HP per minute
+**Player HP:** All players have 100 total HP at default.
 
 **Survival Check:** When you reach 0 HP roll 1d20 + Endurance vs however many HP you are below 0. 
 - If you beat that number you may choose to remain concious. 
@@ -71,11 +67,38 @@ Attributes represent what type of things your character is good at in combat and
 
 Any damage taken while at or below 0 HP forces you to make another Survival Check. 
 
+**Resting and HP Recovery:** After a period of time of little to no activity based on the setting you recover HP, Efforts, and the uses of certain abilities.
+
+- **Gritty Setting**: A rest occurs after 8 hours of inactivity, during which you regain 10 HP per hour.
+- **Grounded Setting**: A rest occurs after 4 hours of inactivity, during which you regain 25 HP per hour.
+- **Heroic Setting**: A rest occurs after 1 hour of inactivity, during which you regain 25 HP per 15 minutes. 
+
+
+
+### **Effort** 
+
+Effort represents both player agency and a character's ability to push themselves beyond their normal limits.  
+
+Effort can be used at any time for the following benefits: 
+- Reroll or add an extra Tier to any Accuracy, Damage, or Condition check or any Avoidance, Durability, or Resistance Score.  
+- End all conditions on yourself. 
+- Take an extra Primary Action or Reaction. 
+- Move your up to your full Movement speed again. 
+- Increase your Capacity by 2.
+- Perform a special action or ability at the GMs discretion. 
+
+After using an Effort, at the start of your next turn, reduced your Tier by 1 for each Effort used until you complete a rest. 
+
+You can only use 2 Efforts per rest, a 3rd one can be used but will knock you unconcious at the start of your next turn instead.
+
+
 ### **Capacity Score**
 - Determines how much weight you can lift, push, and carry. 
 - You can move anything thats weight is equal to or less than your Capacity Score without need for a check. 
 - With a Power Check you can move something with a weight above your Capacity Score. DC 20 for 1 rank higher and +10 to DC for each rank after that.
 - What each weightclass represents varies depending on the setting. 
+
+**Gritty and Grounded Settings** 
 
 0. Weightless
 1. Up to 100 lbs
@@ -91,17 +114,20 @@ Any damage taken while at or below 0 HP forces you to make another Survival Chec
 
 <br>
 
+**Heroic Setting**
+<br>
+
 0. Weightless
-1. Up to 200 lbs
-2. Up to 500 lbs
-3. Up to 1000 lbs
-4. Up to 2500 lbs
-5. Up to 5000 lbs
-6. Up to 10000 lbs
-7. Up to 25000 lbs
-8. Up to 50000 lbs
-9. Up to 100000 lbs
-10. Up to 1 million lbs
+1. Up to 500 lbs
+2. Up to 1000 lbs
+3. Up to 5000 lbs
+4. Up to 10000 lbs
+5. Up to 25000 lbs
+6. Up to 50000 lbs
+7. Up to 100000 lbs
+8. Up to 250000 lbs
+9. Up to 500000 lbs
+10. Up to 1 million lbs → each additional rank doubles the weight
  
 
 ### **STACKING BONUSES & RULE INTERACTIONS**
@@ -187,23 +213,23 @@ Upgrade Options:
 - **30p Upgrade:** Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.
 
 **Carry Action**
-- **Base:** Make a Power check to move a willing character, a character you have grappled, or a heavy object (speed based on Power check vs weight, GM determines DC)
-- **15p Upgrade:** Move at full speed regardless of weight, can carry additional characters equal to half your Tier
+- **Base:** Pick up and move willing characters or objects with you during your movement. If the target's total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
+- **15p Upgrade:** Move at full speed regardless of weight.
 
 **Protect Action**
-- **Base:** You can use a reaction to make any non-direct attack vs adjacent ally, that would hit, now hits you instead
-- **30p Upgrade:** Can protect all adjacent allies simultaneously, you gain extra reactions equal to half your Tier (rounded up), to use the protect action
+- **Base:** You can use a reaction to make the next non-direct attack that would hit an adjacent ally hit you instead.
+- **30p Upgrade:** You can protect all adjacent allies simultaneously, you gain extra reactions equal to half your Tier (rounded up), to use the Protect Action.
 
 
 ####  **PERSONAL ACTIONS**
 
-**Use Action:** Interact with complex environmental objects (cars, computers, heavy machinery)
+**Use Action:** Interact with complex environmental objects (cars, computers, heavy machinery).
 
-**Hasten Action:** Move your full Movement Speed again
+**Hasten Action:** Move up to your full Movement Speed again.
 
 **Hide Action:** 
-- Conceal presence with Stealth vs Perception while outside Direct Perception
-- **Stealth Attack:** Ignore target's base Tier Avoidance bonus
+- Conceal your presence with a Stealth Check vs searchers Perception while outside their direct perception.
+- **Stealth Attack:** While Hidden from a target you ignore their base Tier Avoidance bonus.
 - **Stealth Defense:** Failed Perception vs Stealth = automatic miss
 
 **Prepare Action:** Delay action until specified trigger (GM determines if specific enough)
@@ -246,20 +272,21 @@ Upgrade Options:
 *Choose one to define core movement capabilities*
 
 **Swift**
-- Movement speed increased by half Tier (rounded up)
-- Tier 1-2: +1 space | Tier 3-4: +2 spaces | Tier 5-6: +3 spaces | Tier 7-8: +4 spaces | Tier 9-10: +5 spaces
+- Movement speed increased by half your Tier (rounded up)
+- Traverse the battlefield quicker
 
 **Skirmisher** 
-- Immune to opportunity attacks
-- +1 space attack reach
+- Does not trigger Punish Attacks for moving
+- +1 space melee attack reach
 - Maneuver through enemy lines freely
 
-**Behemoth**
+**Juggernaut**
 - Cannot be Grabbed, Moved, knocked Prone, or Stunned
 - Consistent positioning regardless of enemy interference
 
-**Bulwark**
-- Enemies starting turn adjacent have half movement speed
+**Sentinel**
+- Enemies that start their turn next to your have their movement speed halved until the start of their next turn.
+- As part of a reaction Punish attack you may move up to your full movement speed towards the target until the end of their turn.
 - Enhanced zone control and battlefield presence
 
 **Vanguard**
