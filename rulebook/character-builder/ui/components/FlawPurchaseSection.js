@@ -96,7 +96,7 @@ export class FlawPurchaseSection {
                         <div class="stat-bonus-selection">
                             <label>Choose stat bonus (+${character.tier}):</label>
                             <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
-                                <option value="">Select stat...</option>
+                                <option value="">Choose stat for +${character.tier} bonus...</option>
                                 ${statOptions.map(stat => `
                                     <option value="${stat.id}">${stat.name} - ${stat.description}</option>
                                 `).join('')}
