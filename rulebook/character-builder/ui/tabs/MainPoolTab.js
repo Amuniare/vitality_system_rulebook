@@ -1,10 +1,9 @@
-// MainPoolTab.js - Main pool purchases with corrected imports and economics
+// MainPoolTab.js - Main pool purchases with 5 sections (UPDATED)
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
-import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
-import { ActionSystem } from '../../systems/ActionSystem.js';
 import { FlawPurchaseSection } from '../components/FlawPurchaseSection.js';
 import { TraitPurchaseSection } from '../components/TraitPurchaseSection.js';
-import { BoonPurchaseSection } from '../components/BoonPurchaseSection.js';
+import { SimpleBoonSection } from '../components/SimpleBoonSection.js';
+import { UniqueAbilitySection } from '../components/UniqueAbilitySection.js';
 import { ActionUpgradeSection } from '../components/ActionUpgradeSection.js';
 
 export class MainPoolTab {
@@ -13,7 +12,8 @@ export class MainPoolTab {
         this.sections = {
             flaws: new FlawPurchaseSection(characterBuilder),
             traits: new TraitPurchaseSection(characterBuilder),
-            boons: new BoonPurchaseSection(characterBuilder),
+            simpleBoons: new SimpleBoonSection(characterBuilder),
+            uniqueAbilities: new UniqueAbilitySection(characterBuilder),
             actions: new ActionUpgradeSection(characterBuilder)
         };
         this.activeSection = 'flaws';
@@ -30,8 +30,7 @@ export class MainPoolTab {
             <div class="main-pool-section">
                 <h2>Main Pool Purchases</h2>
                 <p class="section-description">
-                    Use your main pool points to purchase flaws (which now COST points but provide bonuses), 
-                    traits, boons, and action upgrades. Note: Flaws have reversed economics - they cost points but provide benefits.
+                    Use your main pool points to purchase flaws, traits, simple boons, unique abilities, and action upgrades. 
                 </p>
                 
                 ${this.renderPointPoolDisplay(character)}
@@ -85,10 +84,16 @@ export class MainPoolTab {
                 <div class="pool-spending">
                     <h4>Point Usage</h4>
                     <div class="spending-grid">
-                        ${breakdown.boons > 0 ? `
+                        ${breakdown.simpleBoons > 0 ? `
                             <div class="spending-item">
-                                <span>Boons:</span>
-                                <span>-${breakdown.boons}</span>
+                                <span>Simple Boons:</span>
+                                <span>-${breakdown.simpleBoons}</span>
+                            </div>
+                        ` : ''}
+                        ${breakdown.uniqueAbilities > 0 ? `
+                            <div class="spending-item">
+                                <span>Unique Abilities:</span>
+                                <span>-${breakdown.uniqueAbilities}</span>
                             </div>
                         ` : ''}
                         ${breakdown.traits > 0 ? `
@@ -116,10 +121,19 @@ export class MainPoolTab {
     }
 
     calculatePointBreakdown(character) {
+        const simpleBoons = character.mainPoolPurchases.boons
+            .filter(b => b.type === 'simple' || !b.type)
+            .reduce((sum, boon) => sum + (boon.cost || 0), 0);
+            
+        const uniqueAbilities = character.mainPoolPurchases.boons
+            .filter(b => b.type === 'unique')
+            .reduce((sum, boon) => sum + (boon.cost || 0), 0);
+
         return {
-            boons: character.mainPoolPurchases.boons.reduce((sum, boon) => sum + (boon.cost || 0), 0),
+            simpleBoons,
+            uniqueAbilities,
             traits: character.mainPoolPurchases.traits.reduce((sum, trait) => sum + (trait.cost || 0), 0),
-            flaws: character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 0), 0), // Now costs points
+            flaws: character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 0), 0),
             actions: character.mainPoolPurchases.primaryActionUpgrades.length * 30
         };
     }
@@ -133,8 +147,11 @@ export class MainPoolTab {
                 <button class="section-tab ${this.activeSection === 'traits' ? 'active' : ''}" data-section="traits">
                     Traits
                 </button>
-                <button class="section-tab ${this.activeSection === 'boons' ? 'active' : ''}" data-section="boons">
-                    Boons
+                <button class="section-tab ${this.activeSection === 'simpleBoons' ? 'active' : ''}" data-section="simpleBoons">
+                    Simple Boons
+                </button>
+                <button class="section-tab ${this.activeSection === 'uniqueAbilities' ? 'active' : ''}" data-section="uniqueAbilities">
+                    Unique Abilities
                 </button>
                 <button class="section-tab ${this.activeSection === 'actions' ? 'active' : ''}" data-section="actions">
                     Action Upgrades

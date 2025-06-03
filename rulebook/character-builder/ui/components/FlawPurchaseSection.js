@@ -1,4 +1,4 @@
-// FlawPurchaseSection.js - Flaw purchase interface with improved formatting
+// FlawPurchaseSection.js - Flaw purchase interface with improved formatting (FIXED)
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
 
 export class FlawPurchaseSection {
@@ -22,8 +22,7 @@ export class FlawPurchaseSection {
                 
                 <div class="section-description">
                     <div class="economics-notice">
-                        <strong>NEW ECONOMICS:</strong> Flaws now COST 30 points each but provide +Tier bonus to one chosen stat.
-                        Each additional bonus to the same stat has stacking penalty (reduces by 1 per stack).
+                        Flaws 30 points each but provide +Tier bonus to one chosen stat.
                     </div>
                 </div>
                 
@@ -72,14 +71,13 @@ export class FlawPurchaseSection {
         `;
     }
 
-
     renderFlawCard(flaw, character, statOptions, remainingPoints) {
         const isAlreadyPurchased = character.mainPoolPurchases.flaws.some(f => f.flawId === flaw.id);
         const canAfford = remainingPoints >= flaw.cost;
         const isDisabled = isAlreadyPurchased || !canAfford;
 
         return `
-            <div class="flaw-card compact ${isDisabled ? 'disabled' : 'clickable'}" data-flaw-id="${flaw.id}">
+            <div class="flaw-card improved ${isDisabled ? 'disabled' : 'clickable'}" data-flaw-id="${flaw.id}">
                 <div class="flaw-header">
                     <h5 class="flaw-name">${flaw.name}</h5>
                     <span class="flaw-cost ${!canAfford && !isAlreadyPurchased ? 'unaffordable' : ''}">${flaw.cost}p</span>
@@ -87,21 +85,22 @@ export class FlawPurchaseSection {
                 
                 <div class="flaw-description">${flaw.description}</div>
                 
-                <div class="flaw-restriction">
-                    <strong>Restriction:</strong> ${flaw.restriction}
-                </div>
-                
                 ${!isDisabled ? `
-                    <div class="flaw-purchase-compact">
-                        <select class="stat-bonus-select-compact" data-flaw-id="${flaw.id}">
-                            <option value="">Choose +${character.tier} stat bonus...</option>
-                            ${statOptions.map(stat => `
-                                <option value="${stat.id}">${stat.name}</option>
-                            `).join('')}
-                        </select>
-                        <button class="btn-primary purchase-flaw-btn-compact" data-flaw-id="${flaw.id}" disabled>
-                            Buy
-                        </button>
+                    <div class="flaw-purchase-section">
+                        <div class="stat-bonus-row">
+                            <label class="stat-bonus-label">Choose +${character.tier} stat bonus:</label>
+                            <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
+                                <option value="">Select stat...</option>
+                                ${statOptions.map(stat => `
+                                    <option value="${stat.id}">${stat.name}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        <div class="purchase-button-row">
+                            <button class="btn-primary purchase-flaw-btn" data-flaw-id="${flaw.id}" disabled>
+                                Purchase Flaw
+                            </button>
+                        </div>
                     </div>
                 ` : ''}
                 
@@ -110,7 +109,6 @@ export class FlawPurchaseSection {
             </div>
         `;
     }
-
 
     setupEventListeners() {
         // Stat bonus selection enables purchase button

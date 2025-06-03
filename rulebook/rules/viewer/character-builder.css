@@ -1057,3 +1057,79 @@
 .flaw-card.clickable:hover .flaw-cost {
     box-shadow: 0 3px 6px rgba(0, 255, 255, 0.5);
 }
+
+/* Improved Flaw Card Layout */
+.flaw-card.improved {
+    padding: 1.5rem;
+    min-height: auto;
+}
+
+.flaw-purchase-section {
+    margin-top: 1rem;
+    border-top: 1px solid var(--accent-secondary);
+    padding-top: 1rem;
+}
+
+.stat-bonus-row {
+    margin-bottom: 1rem;
+}
+
+.stat-bonus-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--accent-primary);
+}
+
+.stat-bonus-select {
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.purchase-button-row {
+    text-align: center;
+}
+
+.purchase-flaw-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Unique Ability Upgrade Interface */
+.upgrade-preview {
+    margin-top: 1rem;
+    border-top: 1px solid var(--accent-secondary);
+    padding-top: 1rem;
+}
+
+.upgrade-option {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--accent-secondary);
+    border-radius: 4px;
+}
+
+.upgrade-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.upgrade-quantity {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upgrade-qty {
+    width: 60px;
+}
+
+.total-cost {
+    margin-top: 1rem;
+    font-weight: bold;
+    text-align: center;
+    color: var(--accent-primary);
+}

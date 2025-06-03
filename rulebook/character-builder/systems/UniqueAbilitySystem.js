@@ -1,79 +1,8 @@
-// UniqueAbilitySystem.js - Boons and unique abilities management
+// UniqueAbilitySystem.js - Complex unique abilities with upgrade systems (cleaned up)
 import { GameConstants } from '../core/GameConstants.js';
 
 export class UniqueAbilitySystem {
-    // Get all available boons
-    static getAvailableBoons() {
-        return [
-            {
-                id: 'psychic',
-                name: 'Psychic',
-                cost: 0,
-                description: 'All conditions you inflict target Resolve resistance',
-                effect: 'condition_targeting_resolve',
-                category: 'supernatural'
-            },
-            {
-                id: 'robot',
-                name: 'Robot',
-                cost: 30,
-                description: 'Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity',
-                effect: 'condition_immunity_tech_vulnerability',
-                category: 'construct'
-            },
-            {
-                id: 'telekinetic',
-                name: 'Telekinetic',
-                cost: 0,
-                description: 'All conditions you inflict target Stability resistance',
-                effect: 'condition_targeting_stability',
-                category: 'supernatural'
-            },
-            {
-                id: 'biohacker',
-                name: 'Biohacker',
-                cost: 0,
-                description: 'All conditions you inflict target Vitality resistance',
-                effect: 'condition_targeting_vitality',
-                category: 'supernatural'
-            },
-            {
-                id: 'utilitarian',
-                name: 'Utilitarian',
-                cost: 15,
-                description: 'Gain 10 extra points for Expertise, Features, Senses, and Descriptors',
-                effect: 'utility_point_bonus',
-                category: 'enhancement',
-                bonus: { utilityPoints: 10 }
-            },
-            {
-                id: 'speedOfThought',
-                name: 'Speed of Thought',
-                cost: 15,
-                description: 'Use 2 × Intelligence instead of Awareness for Initiative',
-                effect: 'initiative_intelligence',
-                category: 'enhancement'
-            },
-            {
-                id: 'perfectionist',
-                name: 'Perfectionist',
-                cost: 15,
-                description: 'Reroll any natural 1s on d20 rolls',
-                effect: 'reroll_ones',
-                category: 'enhancement'
-            },
-            {
-                id: 'combatReflexes',
-                name: 'Combat Reflexes',
-                cost: 15,
-                description: 'Gain additional Reaction per turn',
-                effect: 'extra_reaction',
-                category: 'enhancement'
-            }
-        ];
-    }
-    
-    // Get complex unique abilities (Aura, Barrier, etc.)
+    // Get complex unique abilities (multi-stage purchases with upgrades)
     static getComplexUniqueAbilities() {
         return [
             {
@@ -106,21 +35,6 @@ export class UniqueAbilitySystem {
                 upgrades: this.getBarrierUpgrades()
             },
             {
-                id: 'createWall',
-                name: 'Create Wall',
-                baseCost: 30,
-                description: 'Temporary battlefield structure creation',
-                category: 'battlefield_control',
-                baseProperties: {
-                    size: '10 Sp long × 4 Sp high',
-                    hp: 50,
-                    durability: '10 + tier',
-                    uses: 2,
-                    activation: 'quick_action'
-                },
-                upgrades: this.getWallUpgrades()
-            },
-            {
                 id: 'shield',
                 name: 'Shield',
                 baseCost: 30,
@@ -132,32 +46,6 @@ export class UniqueAbilitySystem {
                     restriction: 'cannot_buy_avoidance_durability_bonuses'
                 },
                 upgrades: this.getShieldUpgrades()
-            },
-            {
-                id: 'backlash',
-                name: 'Backlash',
-                baseCost: 30,
-                description: 'Automatic counterattack system',
-                category: 'reactive',
-                baseProperties: {
-                    trigger: 'hit_by_melee_attack',
-                    effect: 'base_attack_against_attacker',
-                    uses: 'tier_uses_per_turn'
-                },
-                upgrades: this.getBacklashUpgrades()
-            },
-            {
-                id: 'boost',
-                name: 'Boost',
-                baseCost: 60,
-                description: 'Temporary power enhancement',
-                category: 'enhancement',
-                baseProperties: {
-                    effect: 'increase_tier_by_half',
-                    activation: 'free_action',
-                    duration: '3_turns_once_per_fight'
-                },
-                upgrades: this.getBoostUpgrades()
             },
             {
                 id: 'summon',
@@ -175,29 +63,6 @@ export class UniqueAbilitySystem {
                 upgrades: this.getSummonUpgrades()
             },
             {
-                id: 'invisibility',
-                name: 'Invisibility',
-                baseCost: 30,
-                description: 'Advanced concealment ability',
-                category: 'stealth',
-                baseProperties: {
-                    effect: 'hide_action_in_line_of_sight',
-                    immunity: 'sight_based_abilities'
-                }
-            },
-            {
-                id: 'regeneration',
-                name: 'Regeneration',
-                baseCost: 60,
-                description: 'Rapid healing ability',
-                category: 'healing',
-                baseProperties: {
-                    healing: 'tier_based_hp_per_turn',
-                    unconscious: 'wake_up_at_full_hp',
-                    restriction: 'cannot_buy_avoidance_durability_bonuses'
-                }
-            },
-            {
                 id: 'heal',
                 name: 'Heal',
                 baseCost: 30,
@@ -210,25 +75,11 @@ export class UniqueAbilitySystem {
                     action: 'action'
                 },
                 upgrades: this.getHealUpgrades()
-            },
-            {
-                id: 'counter',
-                name: 'Counter',
-                baseCost: 'variable',
-                description: 'Nullify enemy actions',
-                category: 'control',
-                baseProperties: {
-                    range: 30,
-                    targeting: 'declare_on_your_turn',
-                    roll: 'focus_or_power_vs_resistance',
-                    cost: 'consumes_reaction'
-                },
-                upgrades: this.getCounterUpgrades()
             }
         ];
     }
     
-    // Upgrade definitions for complex abilities
+    // Upgrade definitions remain the same as before...
     static getAuraUpgrades() {
         return [
             { id: 'increasedRadius', name: 'Increased Radius', cost: 5, per: 'space', description: '+X radius' },
@@ -259,40 +110,12 @@ export class UniqueAbilitySystem {
         ];
     }
     
-    static getWallUpgrades() {
-        return [
-            { id: 'increasedSize', name: 'Increased Size', cost: 10, per: 'segment', description: '+10 Sp length OR +4 Sp height' },
-            { id: 'shapeable', name: 'Shapeable', cost: 10, per: 'bend', description: 'Add X 90-degree bends' },
-            { id: 'damaging', name: 'Damaging', cost: 30, description: 'Touching triggers Direct base attack' },
-            { id: 'tough', name: 'Tough', cost: 30, description: '100 HP instead of 50 HP' },
-            { id: 'heavilyArmored', name: 'Heavily Armored', cost: 30, per: 'tier', description: '+Tier DR per purchase' },
-            { id: 'moveable', name: 'Moveable', cost: 20, description: 'Move wall Tier spaces per turn' },
-            { id: 'transparent', name: 'Transparent', cost: 10, description: 'Wall is see-through' },
-            { id: 'variableSize', name: 'Variable Size', cost: 20, description: 'Change size each activation' },
-            { id: 'rapidSummon', name: 'Rapid Summon', cost: 20, description: 'Add Tier twice to placement roll' }
-        ];
-    }
-    
     static getShieldUpgrades() {
         return [
             { id: 'increasedShielding', name: 'Increased Shielding', cost: 15, per: 'tier', description: '+Tier×3 max shield HP' },
             { id: 'quickRecovery', name: 'Quick Recovery', cost: 15, per: 'tier', description: 'Recover additional Tier×3 HP per turn' },
             { id: 'heavyShield', name: 'Heavy Shield', cost: -15, description: 'Only recover Tier HP per turn' },
             { id: 'areaShield', name: 'Area Shield', cost: 30, description: 'Ranged/AOE vs adjacent hit your shield instead' }
-        ];
-    }
-    
-    static getBacklashUpgrades() {
-        return [
-            { id: 'passive', name: 'Passive', cost: 30, description: 'Doesn\'t consume Reaction, unlimited times' },
-            { id: 'distantResponse', name: 'Distant Response', cost: 30, description: 'Triggered by any attack type' },
-            { id: 'explosiveResponse', name: 'Explosive Response', cost: 30, description: 'Base attack becomes 3sp AOE Burst' }
-        ];
-    }
-    
-    static getBoostUpgrades() {
-        return [
-            { id: 'affectsOthers', name: 'Affects Others', cost: 15, description: 'Can target other creatures instead' }
         ];
     }
     
@@ -329,36 +152,25 @@ export class UniqueAbilitySystem {
             { id: 'quickHealing', name: 'Quick Healing', cost: 30, description: 'Heal as Quick Action' }
         ];
     }
-    
-    static getCounterUpgrades() {
-        return [
-            { id: 'stunningCounter', name: 'Stunning Counter', cost: 15, description: 'Success stuns target until end of turn' },
-            { id: 'disablingCounter', name: 'Disabling Counter', cost: 15, description: 'Target cannot use attempted action until next turn' },
-            { id: 'extraCounter', name: 'Extra Counter', cost: 15, per: 'target', description: 'Target X additional enemies' },
-            { id: 'source', name: 'Source', cost: 'negative', description: 'Can only disable specific power types' }
-        ];
-    }
-    
-    // Validate boon purchase
-    static validateBoonPurchase(character, boonId, upgrades = []) {
+
+    // Validate unique ability purchase
+    static validateUniqueAbilityPurchase(character, abilityId, upgrades = []) {
         const errors = [];
         const warnings = [];
         
-        const boon = this.getAvailableBoons().find(b => b.id === boonId) || 
-                    this.getComplexUniqueAbilities().find(b => b.id === boonId);
-                    
-        if (!boon) {
-            errors.push(`Invalid boon: ${boonId}`);
+        const ability = this.getComplexUniqueAbilities().find(a => a.id === abilityId);
+        if (!ability) {
+            errors.push(`Invalid unique ability: ${abilityId}`);
             return { isValid: false, errors, warnings };
         }
         
         // Check if already purchased
-        if (character.mainPoolPurchases.boons.some(b => b.boonId === boonId)) {
-            errors.push('Boon already purchased');
+        if (character.mainPoolPurchases.boons.some(b => b.boonId === abilityId && b.type === 'unique')) {
+            errors.push('Unique ability already purchased');
         }
         
         // Check point cost
-        const totalCost = this.calculateBoonTotalCost(boon, upgrades);
+        const totalCost = this.calculateUniqueAbilityTotalCost(ability, upgrades);
         const availablePoints = this.calculateAvailableMainPoolPoints(character);
         
         if (totalCost > availablePoints) {
@@ -367,15 +179,10 @@ export class UniqueAbilitySystem {
         
         // Check upgrade validity
         if (upgrades.length > 0) {
-            const upgradeValidation = this.validateBoonUpgrades(boon, upgrades);
+            const upgradeValidation = this.validateUniqueAbilityUpgrades(ability, upgrades);
             errors.push(...upgradeValidation.errors);
             warnings.push(...upgradeValidation.warnings);
         }
-        
-        // Check conflicts with other abilities
-        const conflictCheck = this.checkBoonConflicts(character, boonId);
-        errors.push(...conflictCheck.errors);
-        warnings.push(...conflictCheck.warnings);
         
         return {
             isValid: errors.length === 0,
@@ -383,14 +190,14 @@ export class UniqueAbilitySystem {
             warnings
         };
     }
-    
+
     // Calculate total cost including upgrades
-    static calculateBoonTotalCost(boon, upgrades = []) {
-        let totalCost = boon.baseCost || boon.cost;
+    static calculateUniqueAbilityTotalCost(ability, upgrades = []) {
+        let totalCost = ability.baseCost;
         
-        if (upgrades.length > 0 && boon.upgrades) {
+        if (upgrades.length > 0 && ability.upgrades) {
             upgrades.forEach(upgradeSelection => {
-                const upgrade = boon.upgrades.find(u => u.id === upgradeSelection.id);
+                const upgrade = ability.upgrades.find(u => u.id === upgradeSelection.id);
                 if (upgrade) {
                     if (upgrade.per) {
                         totalCost += upgrade.cost * (upgradeSelection.quantity || 1);
@@ -403,13 +210,13 @@ export class UniqueAbilitySystem {
         
         return totalCost;
     }
-    
-    // Validate upgrades for a boon
-    static validateBoonUpgrades(boon, upgrades) {
+
+    // Validate upgrades for unique ability
+    static validateUniqueAbilityUpgrades(ability, upgrades) {
         const errors = [];
         const warnings = [];
         
-        if (!boon.upgrades) {
+        if (!ability.upgrades) {
             if (upgrades.length > 0) {
                 errors.push('This ability does not support upgrades');
             }
@@ -417,7 +224,7 @@ export class UniqueAbilitySystem {
         }
         
         upgrades.forEach(upgradeSelection => {
-            const upgrade = boon.upgrades.find(u => u.id === upgradeSelection.id);
+            const upgrade = ability.upgrades.find(u => u.id === upgradeSelection.id);
             if (!upgrade) {
                 errors.push(`Invalid upgrade: ${upgradeSelection.id}`);
                 return;
@@ -436,58 +243,32 @@ export class UniqueAbilitySystem {
         
         return { errors, warnings };
     }
-    
-    // Check for conflicts with other abilities
-    static checkBoonConflicts(character, boonId) {
-        const errors = [];
-        const warnings = [];
-        
-        // Shield and Regeneration cannot buy Avoidance/Durability bonuses
-        if ((boonId === 'shield' || boonId === 'regeneration')) {
-            // This would be checked during attribute/upgrade purchases
-            warnings.push('This ability restricts purchasing Avoidance or Durability bonuses');
-        }
-        
-        // Robot conflicts with biological healing
-        if (boonId === 'robot') {
-            const hasHeal = character.mainPoolPurchases.boons.some(b => b.boonId === 'heal');
-            const hasRegeneration = character.mainPoolPurchases.boons.some(b => b.boonId === 'regeneration');
-            
-            if (hasHeal || hasRegeneration) {
-                warnings.push('Robot status affects how healing works');
-            }
-        }
-        
-        return { errors, warnings };
-    }
-    
-    // Purchase a boon
-    static purchaseBoon(character, boonId, upgrades = [], customizations = {}) {
-        const validation = this.validateBoonPurchase(character, boonId, upgrades);
+
+    // Purchase unique ability
+    static purchaseUniqueAbility(character, abilityId, upgrades = []) {
+        const validation = this.validateUniqueAbilityPurchase(character, abilityId, upgrades);
         if (!validation.isValid) {
             throw new Error(validation.errors.join(', '));
         }
         
-        const boon = this.getAvailableBoons().find(b => b.id === boonId) || 
-                    this.getComplexUniqueAbilities().find(b => b.id === boonId);
-        
-        const totalCost = this.calculateBoonTotalCost(boon, upgrades);
+        const ability = this.getComplexUniqueAbilities().find(a => a.id === abilityId);
+        const totalCost = this.calculateUniqueAbilityTotalCost(ability, upgrades);
         
         character.mainPoolPurchases.boons.push({
-            boonId: boonId,
-            name: boon.name,
+            boonId: abilityId,
+            name: ability.name,
             cost: totalCost,
-            category: boon.category,
-            effect: boon.effect,
+            category: ability.category,
+            type: 'unique',
+            baseCost: ability.baseCost,
             upgrades: upgrades,
-            customizations: customizations,
             purchased: new Date().toISOString()
         });
         
         return character;
     }
-    
-    // Calculate available main pool points
+
+    // Calculate available main pool points (same as SimpleBoonsSystem)
     static calculateAvailableMainPoolPoints(character) {
         const basePools = character.tier > 2 ? (character.tier - 2) * 15 : 0;
         const flawBonus = character.mainPoolPurchases.flaws.length * GameConstants.FLAW_BONUS;
@@ -499,77 +280,22 @@ export class UniqueAbilitySystem {
         // Calculate spent
         const spentOnBoons = character.mainPoolPurchases.boons.reduce((total, boon) => total + boon.cost, 0);
         const spentOnTraits = character.mainPoolPurchases.traits.reduce((total, trait) => total + trait.cost, 0);
+        const spentOnFlaws = character.mainPoolPurchases.flaws.reduce((total, flaw) => total + flaw.cost, 0);
         const spentOnUpgrades = character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
         
-        const totalSpent = spentOnBoons + spentOnTraits + spentOnUpgrades;
+        const totalSpent = spentOnBoons + spentOnTraits + spentOnFlaws + spentOnUpgrades;
         
         return totalAvailable - totalSpent;
     }
-    
-    // Remove boon
-    static removeBoon(character, boonId) {
-        const index = character.mainPoolPurchases.boons.findIndex(b => b.boonId === boonId);
+
+    // Remove unique ability
+    static removeUniqueAbility(character, abilityId) {
+        const index = character.mainPoolPurchases.boons.findIndex(b => b.boonId === abilityId && b.type === 'unique');
         if (index === -1) {
-            throw new Error('Boon not found');
+            throw new Error('Unique ability not found');
         }
         
         character.mainPoolPurchases.boons.splice(index, 1);
         return character;
-    }
-    
-    // Get boon effects for stat calculations
-    static getBoonEffects(character) {
-        const effects = {
-            conditionTargeting: null,
-            utilityPointBonus: 0,
-            initiativeModification: null,
-            rerollOnes: false,
-            extraReactions: 0,
-            immunities: [],
-            vulnerabilities: []
-        };
-        
-        character.mainPoolPurchases.boons.forEach(boon => {
-            switch(boon.boonId) {
-                case 'psychic':
-                    effects.conditionTargeting = 'resolve';
-                    break;
-                case 'telekinetic':
-                    effects.conditionTargeting = 'stability';
-                    break;
-                case 'biohacker':
-                    effects.conditionTargeting = 'vitality';
-                    break;
-                case 'utilitarian':
-                    effects.utilityPointBonus += 10;
-                    break;
-                case 'speedOfThought':
-                    effects.initiativeModification = 'intelligence_double';
-                    break;
-                case 'perfectionist':
-                    effects.rerollOnes = true;
-                    break;
-                case 'combatReflexes':
-                    effects.extraReactions += 1;
-                    break;
-                case 'robot':
-                    effects.immunities.push('vitality_conditions', 'resolve_conditions');
-                    effects.vulnerabilities.push('electricity', 'hacking');
-                    break;
-            }
-        });
-        
-        return effects;
-    }
-    
-    // Get summary of all purchased boons
-    static getBoonSummary(character) {
-        return character.mainPoolPurchases.boons.map(boon => ({
-            name: boon.name,
-            cost: boon.cost,
-            category: boon.category,
-            upgradeCount: boon.upgrades?.length || 0,
-            totalCost: boon.cost
-        }));
     }
 }
