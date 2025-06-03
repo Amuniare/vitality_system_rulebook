@@ -7,18 +7,22 @@ export class AttributeTab {
         this.builder = characterBuilder;
     }
 
+
     render() {
         const tabContent = document.getElementById('tab-attributes');
         if (!tabContent) return;
-
+    
         const character = this.builder.currentCharacter;
         if (!character) {
             tabContent.innerHTML = "<p>No character selected or archetypes incomplete.</p>";
             return;
         }
-
-        const pools = this.builder.calculatePointPools(); // Get fresh pool data
-
+    
+        // DEBUG: Log what attributes we're rendering
+        console.log('🔍 AttributeTab.render() - Current attributes:', JSON.stringify(character.attributes));
+    
+        const pools = this.builder.calculatePointPools();
+    
         tabContent.innerHTML = `
             <div class="attributes-section">
                 <h2>Assign Attributes</h2>
@@ -26,11 +30,11 @@ export class AttributeTab {
                     Allocate your attribute points across combat and utility attributes.
                     Each attribute cannot exceed your tier (${character.tier}).
                 </p>
-
+    
                 ${this.renderAttributePoolSection('Combat', 'combatAttributes', ['focus', 'mobility', 'power', 'endurance'], character, pools)}
                 ${this.renderAttributePoolSection('Utility', 'utilityAttributes', ['awareness', 'communication', 'intelligence'], character, pools)}
                 ${this.renderAttributeRecommendations(character)}
-
+    
                 <div class="next-step">
                     <p><strong>Next Step:</strong> Purchase abilities from your main pool.</p>
                     ${RenderUtils.renderButton({
@@ -42,6 +46,49 @@ export class AttributeTab {
             </div>
         `;
         this.setupEventListeners();
+    }
+
+    onCharacterUpdate() {
+        console.log('🔄 AttributeTab.onCharacterUpdate called');
+        
+        if (!this.builder.currentCharacter) {
+            console.log('⚪ No current character, skipping update');
+            return;
+        }
+        
+        console.log('🔍 Current attributes during update:', JSON.stringify(this.builder.currentCharacter.attributes));
+        
+        // Update all attribute displays without full re-render
+        const character = this.builder.currentCharacter;
+        
+        // Update attribute values in the UI
+        Object.keys(character.attributes).forEach(attrId => {
+            const value = character.attributes[attrId] || 0;
+            
+            // Update the displayed value
+            const valueDisplay = document.querySelector(`.attribute-item[data-attr="${attrId}"] .attribute-value`);
+            if (valueDisplay) {
+                valueDisplay.textContent = value;
+            }
+            
+            // Update the slider
+            const slider = document.getElementById(`slider-${attrId}`);
+            if (slider && slider.value != value) {
+                slider.value = value;
+            }
+            
+            // Update slider ticks
+            const ticks = document.querySelectorAll(`#slider-${attrId} + .slider-ticks .tick`);
+            ticks.forEach((tick, index) => {
+                tick.classList.toggle('filled', index <= value);
+            });
+            
+            // Update button states
+            const minusBtn = document.querySelector(`[data-attr="${attrId}"][data-change="-1"]`);
+            const plusBtn = document.querySelector(`[data-attr="${attrId}"][data-change="1"]`);
+            if (minusBtn) minusBtn.disabled = value <= 0;
+            if (plusBtn) plusBtn.disabled = value >= character.tier;
+        });
     }
 
     renderAttributePoolSection(title, poolKey, attributeIds, character, pools) {
@@ -141,23 +188,41 @@ export class AttributeTab {
         this.updateAttributeValue(attrId, parseInt(newValue));
     }
 
+
     updateAttributeValue(attrId, newValue) {
         const character = this.builder.currentCharacter;
-        const oldValue = character.attributes[attrId] || 0;
-
-        if (oldValue === newValue) return; // No change
-
-        const validation = AttributeSystem.validateAttributeAssignment(character, attrId, newValue);
-        if (!validation.isValid) {
-            this.builder.showNotification(validation.errors.join(', '), 'error');
-            // Re-render to show previous valid state (or current invalid state if it was already invalid)
-            this.render(); // This might be too broad, ideally just update the specific attribute UI
+        if (!character) {
+            console.error('❌ No current character in updateAttributeValue');
             return;
         }
-
+        
+        const oldValue = character.attributes[attrId] || 0;
+        console.log(`🔄 Updating ${attrId}: ${oldValue} → ${newValue}`);
+    
+        if (oldValue === newValue) {
+            console.log(`⚪ No change for ${attrId}`);
+            return; // No change
+        }
+    
+        const validation = AttributeSystem.validateAttributeAssignment(character, attrId, newValue);
+        if (!validation.isValid) {
+            console.error(`❌ Validation failed for ${attrId}:`, validation.errors);
+            this.builder.showNotification(validation.errors.join(', '), 'error');
+            // Re-render to show previous valid state
+            this.render();
+            return;
+        }
+    
+        // EXPLICITLY save the value
         character.attributes[attrId] = newValue;
-        this.builder.updateCharacter(); // Triggers re-render of this tab and PointPoolDisplay
+        character.touch(); // Ensure lastModified is updated
+        
+        console.log(`✅ Saved ${attrId} = ${newValue}`);
+        console.log('🔍 Current character attributes:', JSON.stringify(character.attributes));
+        
+        this.builder.updateCharacter(); // This triggers re-render and point pool updates
     }
+
 
     // onCharacterUpdate will be called by CharacterBuilder, triggering a re-render
     // of this tab if it's active, which will update all values.

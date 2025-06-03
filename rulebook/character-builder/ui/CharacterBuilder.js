@@ -136,70 +136,70 @@ export class CharacterBuilder {
                 '#save-character': this.saveCharacter.bind(this),
                 '#export-json': this.exportCharacterJSON.bind(this),
                 '#delete-character': this.deleteCharacter.bind(this),
+
+
+                // ARCHETYPE HANDLERS
                 '[data-action="select-archetype"]': (e, element) => {
-                    console.log('🎯 Archetype selection clicked!');
-                    console.log('🔍 Clicked element:', element);
-                    console.log('🔍 Element dataset:', element.dataset);
-                    console.log('🔍 Element tagName:', element.tagName);
-                    console.log('🔍 Element classes:', element.className);
-                    
                     const category = element.dataset.category;
                     const archetypeId = element.dataset.archetype;
-                    
                     if (this.tabs.archetypes && category && archetypeId) {
-                        console.log(`🎯 Calling selectArchetype(${category}, ${archetypeId})`);
                         this.tabs.archetypes.selectArchetype(category, archetypeId);
-                    } else {
-                        console.error('❌ Missing data for archetype selection:', { 
-                            category, 
-                            archetypeId, 
-                            hasArchetypeTab: !!this.tabs.archetypes,
-                            elementDataset: element.dataset 
-                        });
                     }
                 },
+
+                // ATTRIBUTE BUTTON HANDLERS - ADD THESE
+                '[data-action="change-attribute-btn"]': (e, element) => {
+                    const attrId = element.dataset.attr;
+                    const change = parseInt(element.dataset.change);
+                    if (this.tabs.attributes && attrId !== undefined && change !== undefined) {
+                        console.log(`🎯 Attribute button: ${attrId} ${change > 0 ? '+' : ''}${change}`);
+                        this.tabs.attributes.changeAttribute(attrId, change);
+                    }
+                },
+
                 '[data-action="continue-to-archetypes"]': (e, element) => {
-                    console.log('🎯 Continue to archetypes clicked!');
                     this.switchTab('archetypes');
                 },
                 '[data-action="continue-to-attributes"]': (e, element) => {
-                    console.log('🎯 Continue to attributes clicked!');
                     this.switchTab('attributes');
                 },
                 '[data-action="continue-to-mainpool"]': (e, element) => {
-                    console.log('🎯 Continue to mainpool clicked!');
                     this.switchTab('mainPool');
                 },
                 '[data-action="continue-to-special-attacks"]': (e, element) => {
-                    console.log('🎯 Continue to special attacks clicked!');
                     this.switchTab('specialAttacks');
                 },
                 '[data-action="continue-to-utility"]': (e, element) => {
-                    console.log('🎯 Continue to utility clicked!');
                     this.switchTab('utility');
                 },
                 '[data-action="continue-to-summary"]': (e, element) => {
-                    console.log('🎯 Continue to summary clicked!');
                     this.switchTab('summary');
                 }
             },
             input: {
                 '[data-action="update-char-name"]': (e, element) => {
-                    console.log('🎯 Character name changed!', element.value);
                     if (this.tabs.basicInfo) {
                         this.tabs.basicInfo.updateName(element.value);
                     }
                 },
                 '[data-action="update-real-name"]': (e, element) => {
-                    console.log('🎯 Real name changed!', element.value);
                     if (this.tabs.basicInfo) {
                         this.tabs.basicInfo.updateRealName(element.value);
+                    }
+                },
+                
+                // ATTRIBUTE SLIDER HANDLER - ADD THIS
+                '[data-action="change-attribute-slider"]': (e, element) => {
+                    const attrId = element.dataset.attr;
+                    const newValue = element.value;
+                    if (this.tabs.attributes && attrId !== undefined && newValue !== undefined) {
+                        console.log(`🎯 Attribute slider: ${attrId} = ${newValue}`);
+                        this.tabs.attributes.setAttributeViaSlider(attrId, newValue);
                     }
                 }
             },
             change: {
                 '[data-action="update-tier"]': (e, element) => {
-                    console.log('🎯 Tier changed!', element.value);
                     if (this.tabs.basicInfo) {
                         this.tabs.basicInfo.updateTier(element.value);
                     }
