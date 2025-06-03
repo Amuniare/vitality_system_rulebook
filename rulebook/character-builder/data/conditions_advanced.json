@@ -1,0 +1,77 @@
+[
+    {
+        "id": "control",
+        "name": "Control",
+        "resistance": "resolve",
+        "durationKey": "ADVANCED_CONDITION_DURATION",
+        "description": "Take over target's next turn completely",
+        "costKey": "control"
+    },
+    {
+        "id": "capture",
+        "name": "Capture",
+        "resistance": "stability",
+        "durationKey": "ADVANCED_CONDITION_DURATION",
+        "description": "Prevent all movement, Avoidance reduced to 10",
+        "costKey": "capture"
+    },
+    {
+        "id": "stun",
+        "name": "Stun",
+        "resistance": "resolve_or_vitality",
+        "durationKey": "ADVANCED_CONDITION_DURATION",
+        "description": "No actions, Avoidance = 0, all attacks auto-hit and crit",
+        "costKey": "stun"
+    },
+    {
+        "id": "weaken",
+        "name": "Weaken",
+        "resistance": "vitality",
+        "duration": "permanent",
+        "description": "Reduce chosen stat by Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances",
+        "costKey": "weaken",
+        "requiresChoice": true,
+        "choices": ["accuracy", "damage", "conditions", "avoidance", "durability", "allResistances"]
+    },
+    {
+        "id": "disableSpecials",
+        "name": "Disable Specials",
+        "resistance": "resolve_or_vitality",
+        "durationKey": "ADVANCED_CONDITION_DURATION",
+        "description": "Cannot use Special Attacks",
+        "costKey": "disableSpecials"
+    },
+    {
+        "id": "mimic",
+        "name": "Mimic",
+        "resistance": "resolve_or_vitality",
+        "durationKey": "ADVANCED_CONDITION_DURATION",
+        "description": "Gain use of disabled Special Attacks",
+        "costKey": "mimic",
+        "requires": "disableSpecials"
+    },
+    {
+        "id": "frighten",
+        "name": "Frighten",
+        "resistance": "resolve",
+        "durationKey": "ADVANCED_CONDITION_DURATION",
+        "description": "Move away, defensive actions only",
+        "costKey": "frighten"
+    },
+    {
+        "id": "enthrall",
+        "name": "Enthrall",
+        "resistance": "resolve",
+        "durationKey": "ADVANCED_CONDITION_DURATION",
+        "description": "Must defend caster",
+        "costKey": "enthrall"
+    },
+    {
+        "id": "frenzy",
+        "name": "Frenzy",
+        "resistance": "resolve",
+        "durationKey": "ADVANCED_CONDITION_DURATION",
+        "description": "Attack nearest character randomly",
+        "costKey": "frenzy"
+    }
+]

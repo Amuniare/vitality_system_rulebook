@@ -135,7 +135,14 @@ export class CharacterBuilder {
                 '.tab-btn': this.handleTabSwitch.bind(this),
                 '#save-character': this.saveCharacter.bind(this),
                 '#export-json': this.exportCharacterJSON.bind(this),
-                '#delete-character': this.deleteCharacter.bind(this)
+                '#delete-character': this.deleteCharacter.bind(this),
+                '[data-action="select-archetype"]': (e, element) => {
+                    const category = element.dataset.category;
+                    const archetypeId = element.dataset.archetype;
+                    if (this.tabs.archetypes && category && archetypeId) {
+                        this.tabs.archetypes.selectArchetype(category, archetypeId);
+                    }
+                }
             }
         });
         
