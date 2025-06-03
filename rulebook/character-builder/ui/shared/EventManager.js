@@ -81,9 +81,19 @@ export class EventManager {
         Object.entries(eventMap).forEach(([eventType, handlers]) => {
             container.addEventListener(eventType, (e) => {
                 Object.entries(handlers).forEach(([selector, handler]) => {
-                    if (e.target.matches(selector) || e.target.closest(selector)) {
+                    // Find the actual element that matches the selector
+                    let matchingElement = null;
+                    
+                    if (e.target.matches(selector)) {
+                        matchingElement = e.target;
+                    } else {
+                        matchingElement = e.target.closest(selector);
+                    }
+                    
+                    if (matchingElement) {
                         try {
-                            handler.call(this, e, e.target);
+                            // Pass the matching element, not e.target
+                            handler.call(this, e, matchingElement);
                         } catch (error) {
                             console.error(`❌ Delegated ${eventType} error for ${selector}:`, error);
                         }
