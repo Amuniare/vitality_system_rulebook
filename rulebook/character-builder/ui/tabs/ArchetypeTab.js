@@ -7,16 +7,17 @@ export class ArchetypeTab {
         this.builder = characterBuilder;
     }
 
+
     render() {
         const tabContent = document.getElementById('tab-archetypes');
         if (!tabContent) return;
-
+    
         const character = this.builder.currentCharacter;
         if (!character) {
             tabContent.innerHTML = "<p>No character selected.</p>";
             return;
         }
-
+    
         const categories = [
             { id: 'movement', name: 'Movement Archetype', description: 'How your character moves around the battlefield' },
             { id: 'attackType', name: 'Attack Type Archetype', description: 'What types of attacks your character specializes in' },
@@ -26,7 +27,17 @@ export class ArchetypeTab {
             { id: 'specialAttack', name: 'Special Attack Archetype', description: 'How you develop unique combat abilities' },
             { id: 'utility', name: 'Utility Archetype', description: 'Your non-combat capabilities and skills' }
         ];
-
+    
+        // DEBUG: Let's see what archetype data we're getting
+        console.log('🔍 Debug: Testing archetype data loading...');
+        categories.forEach(cat => {
+            const archetypes = ArchetypeSystem.getArchetypesForCategory(cat.id);
+            console.log(`🔍 Category ${cat.id}:`, archetypes);
+            if (archetypes.length > 0) {
+                console.log(`🔍 First archetype in ${cat.id}:`, archetypes[0]);
+            }
+        });
+    
         tabContent.innerHTML = `
             <div class="archetypes-section">
                 <h2>Choose Archetypes</h2>
@@ -35,48 +46,84 @@ export class ArchetypeTab {
                     fundamental approach and provide point modifiers and restrictions.
                     <strong>All archetypes must be selected before proceeding.</strong>
                 </p>
-
+    
                 <div class="archetype-progress">
                     <span id="archetype-count">0/7 Archetypes Selected</span>
                 </div>
-
+    
                 ${categories.map(cat => this.renderArchetypeCategory(cat.id, cat.name, cat.description, character)).join('')}
-
+    
                 <div class="next-step">
                     <p><strong>Next Step:</strong> Assign your attribute points across combat and utility stats.</p>
                     ${RenderUtils.renderButton({
                         text: 'Continue to Attributes →',
                         variant: 'primary',
-                        dataAttributes: { action: 'continue-to-attributes' }, // For EventManager
-                        classes: ['continue-to-attributes-btn'], // Added for specific styling/JS if needed
-                        disabled: true // Will be enabled by updateProgress
+                        dataAttributes: { action: 'continue-to-attributes' },
+                        classes: ['continue-to-attributes-btn'],
+                        disabled: true
                     })}
                 </div>
             </div>
         `;
-
-        this.setupEventListeners(); // For Archetype Cards
-        this.updateProgress(); // Initial progress update
+    
+        // DEBUG: Let's see what HTML was actually generated
+        setTimeout(() => {
+            const archetypeCards = document.querySelectorAll('.archetype-card');
+            console.log(`🔍 Generated ${archetypeCards.length} archetype cards`);
+            archetypeCards.forEach((card, index) => {
+                console.log(`🔍 Card ${index} dataset:`, card.dataset);
+                console.log(`🔍 Card ${index} HTML:`, card.outerHTML.substring(0, 200) + '...');
+            });
+        }, 100);
+    
+        this.setupEventListeners();
+        this.updateProgress();
     }
+
 
     renderArchetypeCategory(categoryId, categoryName, description, character) {
         const archetypes = ArchetypeSystem.getArchetypesForCategory(categoryId);
         const selectedId = character.archetypes[categoryId];
-
+    
+        console.log(`🔍 Rendering category ${categoryId}:`, { archetypes, selectedId });
+    
+        // DEBUG: Let's see what each archetype card will generate
+        const cardHtml = archetypes.map((archetype, index) => {
+            console.log(`🔍 Generating card for ${categoryId}[${index}]:`, archetype);
+            const cardData = {
+                title: archetype.name,
+                titleTag: 'h4',
+                description: archetype.description,
+                additionalContent: this.renderArchetypeDetails(archetype),
+                clickable: true,
+                selected: selectedId === archetype.id,
+                dataAttributes: { category: categoryId, archetype: archetype.id, action: 'select-archetype' }
+            };
+            console.log(`🔍 Card data for ${categoryId}[${index}]:`, cardData);
+            
+            const html = RenderUtils.renderCard(cardData, { 
+                cardClass: `archetype-card ${selectedId === archetype.id ? 'selected' : ''}`, 
+                showCost: false, 
+                showStatus: false 
+            });
+            console.log(`🔍 Generated HTML for ${categoryId}[${index}]:`, html.substring(0, 200) + '...');
+            return html;
+        });
+    
         return `
             <div class="archetype-category" data-category="${categoryId}">
                 <h3>${categoryName}</h3>
                 <p class="category-description">${description}</p>
-
+    
                 ${RenderUtils.renderGrid(
                     archetypes,
                     (archetype) => RenderUtils.renderCard({
                         title: archetype.name,
-                        titleTag: 'h4', // Use h4 for card titles within this section
+                        titleTag: 'h4',
                         description: archetype.description,
                         additionalContent: this.renderArchetypeDetails(archetype),
                         clickable: true,
-                        selected: selectedId === archetype.id, // RenderUtils would need to handle 'selected' class
+                        selected: selectedId === archetype.id,
                         dataAttributes: { category: categoryId, archetype: archetype.id, action: 'select-archetype' }
                     }, { cardClass: `archetype-card ${selectedId === archetype.id ? 'selected' : ''}`, showCost: false, showStatus: false }),
                     { gridContainerClass: 'grid-layout archetype-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
@@ -84,6 +131,7 @@ export class ArchetypeTab {
             </div>
         `;
     }
+
 
     renderArchetypeDetails(archetype) {
         let details = '';
