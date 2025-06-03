@@ -128,8 +128,9 @@ export class CharacterBuilder {
         
         const container = document.body;
         
-        EventManager.setupStandardListeners(container, {
-            clickHandlers: {
+        // Use event delegation instead of static listeners
+        EventManager.delegateEvents(container, {
+            click: {
                 '#new-character-btn': this.createNewCharacter.bind(this),
                 '.tab-btn': this.handleTabSwitch.bind(this),
                 '#save-character': this.saveCharacter.bind(this),
@@ -149,12 +150,55 @@ export class CharacterBuilder {
                 '[data-action="continue-to-archetypes"]': (e, element) => {
                     console.log('🎯 Continue to archetypes clicked!');
                     this.switchTab('archetypes');
+                },
+                '[data-action="continue-to-attributes"]': (e, element) => {
+                    console.log('🎯 Continue to attributes clicked!');
+                    this.switchTab('attributes');
+                },
+                '[data-action="continue-to-mainpool"]': (e, element) => {
+                    console.log('🎯 Continue to mainpool clicked!');
+                    this.switchTab('mainPool');
+                },
+                '[data-action="continue-to-special-attacks"]': (e, element) => {
+                    console.log('🎯 Continue to special attacks clicked!');
+                    this.switchTab('specialAttacks');
+                },
+                '[data-action="continue-to-utility"]': (e, element) => {
+                    console.log('🎯 Continue to utility clicked!');
+                    this.switchTab('utility');
+                },
+                '[data-action="continue-to-summary"]': (e, element) => {
+                    console.log('🎯 Continue to summary clicked!');
+                    this.switchTab('summary');
+                }
+            },
+            input: {
+                '[data-action="update-char-name"]': (e, element) => {
+                    console.log('🎯 Character name changed!', element.value);
+                    if (this.tabs.basicInfo) {
+                        this.tabs.basicInfo.updateName(element.value);
+                    }
+                },
+                '[data-action="update-real-name"]': (e, element) => {
+                    console.log('🎯 Real name changed!', element.value);
+                    if (this.tabs.basicInfo) {
+                        this.tabs.basicInfo.updateRealName(element.value);
+                    }
+                }
+            },
+            change: {
+                '[data-action="update-tier"]': (e, element) => {
+                    console.log('🎯 Tier changed!', element.value);
+                    if (this.tabs.basicInfo) {
+                        this.tabs.basicInfo.updateTier(element.value);
+                    }
                 }
             }
         });
         
-        console.log('setupEventListeners completed');
+        console.log('setupEventListeners completed with delegation');
     }
+        
         
 
     createNewCharacter() {
