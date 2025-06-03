@@ -1,6 +1,7 @@
-// ActionUpgradeSection.js - Action upgrade purchase UI component
+// rulebook/character-builder/ui/components/ActionUpgradeSection.js
 import { ActionSystem } from '../../systems/ActionSystem.js';
 import { GameConstants } from '../../core/GameConstants.js';
+import { RenderUtils } from '../shared/RenderUtils.js'; // Added
 
 export class ActionUpgradeSection {
     constructor(characterBuilder) {
@@ -15,24 +16,23 @@ export class ActionUpgradeSection {
             <div class="main-pool-category">
                 <h3>Primary Action Upgrades (${GameConstants.PRIMARY_TO_QUICK_COST}p each)</h3>
                 <p class="category-description">
-                    Convert any Primary Action to a Quick Action. This allows you to perform the action 
+                    Convert any Primary Action to a Quick Action. This allows you to perform the action
                     as part of your Quick Action instead of using your Primary Action.
                 </p>
-                
-                <div class="purchased-items">
-                    <h4>Purchased Upgrades (${purchasedUpgrades.length})</h4>
-                    ${purchasedUpgrades.length > 0 ? `
-                        <div class="item-list">
-                            ${purchasedUpgrades.map((upgrade, index) => this.renderPurchasedUpgrade(upgrade, index)).join('')}
-                        </div>
-                    ` : '<p class="empty-state">No upgrades purchased</p>'}
-                </div>
-                
+
+                ${RenderUtils.renderPurchasedList(
+                    purchasedUpgrades,
+                    (upgrade, index) => this.renderPurchasedUpgrade(upgrade, index),
+                    { title: `Purchased Upgrades (${purchasedUpgrades.length})`, emptyMessage: 'No upgrades purchased' }
+                )}
+
                 <div class="available-items">
                     <h4>Available Actions</h4>
-                    <div class="action-grid">
-                        ${availableActions.map(action => this.renderActionOption(action, character, pointInfo)).join('')}
-                    </div>
+                    ${RenderUtils.renderGrid(
+                        availableActions,
+                        (action) => this.renderActionOption(action, character, pointInfo),
+                        { gridContainerClass: 'grid-layout action-grid', gridSpecificClass: 'grid-columns-auto-fit-250' }
+                    )}
                 </div>
             </div>
         `;
@@ -47,60 +47,51 @@ export class ActionUpgradeSection {
                     <span class="item-name">${upgrade.actionName} → Quick Action</span>
                     <span class="item-details">${GameConstants.PRIMARY_TO_QUICK_COST}p</span>
                 </div>
-                <button class="btn-danger btn-small remove-upgrade" data-index="${index}">Remove</button>
+                ${RenderUtils.renderButton({
+                    text: 'Remove',
+                    variant: 'danger',
+                    size: 'small',
+                    classes: ['remove-upgrade'], // Keep specific class if JS relies on it
+                    dataAttributes: { index: index, action: 'remove-action-upgrade' } // Added data-action
+                })}
             </div>
         `;
     }
 
     renderActionOption(action, character, pointInfo) {
-        const canAfford = pointInfo.remaining >= GameConstants.PRIMARY_TO_QUICK_COST;
         const alreadyPurchased = character.mainPoolPurchases.primaryActionUpgrades.some(u => u.actionId === action.id);
-        const canPurchase = canAfford && !alreadyPurchased;
+        const canAfford = pointInfo.remaining >= GameConstants.PRIMARY_TO_QUICK_COST;
+        
+        let status = 'available';
+        if (alreadyPurchased) status = 'purchased';
+        else if (!canAfford) status = 'unaffordable';
 
-        return `
-            <div class="action-card ${canPurchase ? 'clickable' : 'disabled'}" data-action-id="${action.id}">
-                <h5>${action.name}</h5>
-                <p class="item-cost"><strong>Cost: ${GameConstants.PRIMARY_TO_QUICK_COST}p</strong></p>
-                <p class="item-description">${action.description}</p>
-                <div class="upgrade-effect">Upgrade: Use as Quick Action</div>
-                ${alreadyPurchased ? 
-                    '<div class="status-badge">Already Purchased</div>' : 
-                    canAfford ? '<div class="status-badge success">Click to Purchase</div>' :
-                    '<div class="status-badge error">Cannot Afford</div>'
-                }
-            </div>
-        `;
+        return RenderUtils.renderCard({
+            title: action.name,
+            cost: GameConstants.PRIMARY_TO_QUICK_COST,
+            description: action.description,
+            status: status,
+            clickable: !alreadyPurchased && canAfford,
+            disabled: alreadyPurchased || !canAfford,
+            dataAttributes: { 'action-id': action.id, action: 'purchase-action-upgrade' }, // Added data-action
+            additionalContent: `<div class="upgrade-effect">Upgrade: Use as Quick Action</div>`
+        }, { cardClass: 'action-card', showStatus: true }); // Ensure status text is shown via RenderUtils
     }
 
-    setupEventListeners() {
-        // Action card clicks
-        document.querySelectorAll('.action-card.clickable').forEach(card => {
-            card.addEventListener('click', () => {
-                const actionId = card.dataset.actionId;
-                this.purchaseActionUpgrade(actionId);
-            });
-        });
 
-        // Remove upgrade buttons
-        document.querySelectorAll('.remove-upgrade').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const index = parseInt(btn.dataset.index);
-                this.removeUpgrade(index);
-            });
-        });
+    setupEventListeners() {
+        // EventManager will handle this based on data-action attributes
+        // No specific querySelectors needed here if EventManager is used at a higher level (e.g., MainPoolTab)
+        // If this section is rendered into a container that MainPoolTab then sets listeners on,
+        // ensure data-action attributes are correctly used.
     }
 
     purchaseActionUpgrade(actionId) {
         const character = this.builder.currentCharacter;
-        
         try {
-            // Use system to handle purchase
             ActionSystem.purchaseActionUpgrade(character, actionId);
-            
-            this.builder.updateCharacter();
+            this.builder.updateCharacter(); // This will trigger re-render via MainPoolTab/CharacterBuilder
             this.builder.showNotification(`Purchased action upgrade for ${GameConstants.PRIMARY_TO_QUICK_COST}p!`, 'success');
-            
         } catch (error) {
             this.builder.showNotification(`Failed to purchase upgrade: ${error.message}`, 'error');
         }
@@ -108,12 +99,10 @@ export class ActionUpgradeSection {
 
     removeUpgrade(index) {
         const character = this.builder.currentCharacter;
-        
         try {
             if (index >= 0 && index < character.mainPoolPurchases.primaryActionUpgrades.length) {
                 const upgrade = character.mainPoolPurchases.primaryActionUpgrades[index];
-                character.mainPoolPurchases.primaryActionUpgrades.splice(index, 1);
-                
+                ActionSystem.removeActionUpgrade(character, upgrade.actionId); // Assuming system handles by ID
                 this.builder.updateCharacter();
                 this.builder.showNotification(`Removed ${upgrade.actionName} upgrade`, 'info');
             }

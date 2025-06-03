@@ -1,133 +1,129 @@
-// ValidationDisplay.js - Character validation and error display
-import { RenderUtils } from '../shared/RenderUtils.js';
+// rulebook/character-builder/ui/components/ValidationDisplay.js
+import { RenderUtils } from '../shared/RenderUtils.js'; // Keep if used for icons/status
 import { CharacterValidator } from '../../validators/CharacterValidator.js';
 
 export class ValidationDisplay {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.lastValidation = null;
+        this.lastValidationResultString = null; // Store stringified result for comparison
     }
-    
+
     update() {
         const container = document.getElementById('validation-panel');
         if (!container) return;
-        
+
         const character = this.builder.currentCharacter;
         if (!character) {
             container.innerHTML = this.renderEmptyState();
+            this.lastValidationResultString = null;
             return;
         }
-        
-        const validation = CharacterValidator.validateCharacter(character);
-        
-        // Only update if validation changed
-        if (JSON.stringify(validation) === JSON.stringify(this.lastValidation)) {
-            return;
+
+        const validationResult = CharacterValidator.validateCharacter(character);
+        const currentResultString = JSON.stringify(validationResult);
+
+        if (currentResultString === this.lastValidationResultString) {
+            return; // No change in validation, no re-render
         }
-        
-        this.lastValidation = validation;
-        container.innerHTML = this.renderValidation(validation);
-        
-        console.log(`🔄 Validation updated: ${validation.errors.length} errors, ${validation.warnings.length} warnings`);
+        this.lastValidationResultString = currentResultString;
+
+        container.innerHTML = this.renderValidation(validationResult);
+        // console.log(`🔄 Validation display updated: ${validationResult.errors.length} errors, ${validationResult.warnings.length} warnings`);
     }
-    
-    renderValidation(validation) {
+
+    renderValidation(validationResult) {
         return `
             <div class="validation-section">
                 <h3>Character Status</h3>
-                
-                ${this.renderOverallStatus(validation)}
-                ${this.renderBuildOrder(validation)}
-                ${this.renderSectionValidation(validation)}
-                ${this.renderIssuesList(validation)}
+                ${this.renderOverallStatus(validationResult)}
+                ${this.renderBuildOrder(validationResult.sections?.buildOrder)}
+                ${this.renderSectionValidation(validationResult.sections)}
+                ${this.renderIssuesList(validationResult.errors, validationResult.warnings)}
             </div>
         `;
     }
-    
-    renderOverallStatus(validation) {
-        const statusClass = validation.isValid ? 'valid' : 'invalid';
-        const statusIcon = validation.isValid ? '✅' : '❌';
-        const statusText = validation.isValid ? 'Character Valid' : 'Issues Found';
-        
+
+    renderOverallStatus(validationResult) {
+        const isValid = validationResult.isValid;
+        const statusType = isValid ? 'success' : 'error'; // 'error' if any errors, 'warning' if only warnings
+        if (!isValid && validationResult.errors.length === 0 && validationResult.warnings.length > 0) {
+           // statusType = 'warning'; // Could refine this logic
+        }
+
+        const icon = isValid ? '✅' : (validationResult.errors.length > 0 ? '❌' : '⚠️');
+        const titleText = isValid ? 'Character Valid' : (validationResult.errors.length > 0 ? 'Errors Found' : 'Warnings Found');
+        const summaryText = `${validationResult.errors.length} errors, ${validationResult.warnings.length} warnings.`;
+
         return `
-            <div class="validation-status ${statusClass}">
-                <div class="status-icon">${statusIcon}</div>
+            <div class="validation-status ${statusType}">
+                <div class="status-icon">${icon}</div>
                 <div class="status-text">
-                    <div class="status-title">${statusText}</div>
-                    <div class="status-summary">
-                        ${validation.errors.length} errors, ${validation.warnings.length} warnings
-                    </div>
+                    <div class="status-title">${titleText}</div>
+                    <div class="status-summary">${summaryText}</div>
                 </div>
             </div>
         `;
     }
-    
-    renderBuildOrder(validation) {
-        const buildOrder = validation.sections?.buildOrder;
-        if (!buildOrder) return '';
-        
+
+    renderBuildOrder(buildOrderValidation) {
+        if (!buildOrderValidation || !buildOrderValidation.buildState) return '';
+        const buildState = buildOrderValidation.buildState;
+
         const steps = [
-            { id: 'archetypes', name: 'Archetypes', completed: buildOrder.buildState?.archetypesComplete },
-            { id: 'attributes', name: 'Attributes', completed: buildOrder.buildState?.attributesAssigned },
-            { id: 'mainPool', name: 'Main Pool', completed: buildOrder.buildState?.mainPoolPurchases },
-            { id: 'specialAttacks', name: 'Special Attacks', completed: buildOrder.buildState?.hasSpecialAttacks }
+            { id: 'archetypes', name: 'Archetypes Complete', completed: buildState.archetypesComplete },
+            { id: 'attributes', name: 'Attributes Assigned', completed: buildState.attributesAssigned },
+            { id: 'mainPool', name: 'Main Pool Touched', completed: buildState.mainPoolPurchases }, // Assuming "touched"
+            { id: 'specialAttacks', name: 'Special Attacks Exist', completed: buildState.hasSpecialAttacks }
         ];
-        
+
         return `
-            <div class="build-order">
+            <div class="build-order-progress">
                 <h4>Build Progress</h4>
-                <div class="build-steps">
+                <div class="build-steps-list">
                     ${steps.map((step, index) => {
-                        const isCompleted = step.completed;
                         const isAccessible = index === 0 || steps[index - 1].completed;
-                        
                         return `
-                            <div class="build-step ${isCompleted ? 'completed' : ''} ${isAccessible ? 'accessible' : 'locked'}">
-                                <div class="step-icon">
-                                    ${isCompleted ? '✅' : isAccessible ? '⭕' : '🔒'}
-                                </div>
-                                <div class="step-name">${step.name}</div>
+                            <div class="build-step-item ${step.completed ? 'completed' : (isAccessible ? 'pending' : 'locked')}">
+                                <span class="step-icon">${step.completed ? '✅' : (isAccessible ? '⭕' : '🔒')}</span>
+                                <span class="step-name">${step.name}</span>
                             </div>
                         `;
                     }).join('')}
                 </div>
+                ${buildOrderValidation.errors.length > 0 ? `<div class="error-text small-text">${buildOrderValidation.errors.join('<br>')}</div>` : ''}
+                ${buildOrderValidation.warnings.length > 0 && buildOrderValidation.errors.length === 0 ? `<div class="warning-text small-text">${buildOrderValidation.warnings.join('<br>')}</div>` : ''}
             </div>
         `;
     }
-    
-    renderSectionValidation(validation) {
-        const sections = validation.sections || {};
-        const sectionNames = {
+
+    renderSectionValidation(sectionsValidation) {
+        if (!sectionsValidation) return '';
+        const sectionNamesMap = {
+            buildOrder: 'Build Order',
             archetypes: 'Archetypes',
             attributes: 'Attributes',
             specialAttacks: 'Special Attacks',
-            pointPools: 'Point Pools'
+            pointPools: 'Point Pools',
+            // Add more user-friendly names if CharacterValidator returns more sections
         };
-        
+
         return `
-            <div class="section-validation">
+            <div class="section-validation-details">
                 <h4>Section Status</h4>
-                <div class="section-list">
-                    ${Object.entries(sections).map(([sectionId, sectionValidation]) => {
-                        if (sectionId === 'buildOrder') return ''; // Skip build order
-                        
-                        const name = sectionNames[sectionId] || sectionId;
-                        const isValid = sectionValidation.isValid;
-                        const errorCount = sectionValidation.errors?.length || 0;
-                        const warningCount = sectionValidation.warnings?.length || 0;
+                <div class="section-status-list">
+                    ${Object.entries(sectionsValidation).map(([sectionKey, valResult]) => {
+                        if (sectionKey === 'buildOrder') return ''; // Handled separately
+                        const sectionName = sectionNamesMap[sectionKey] || sectionKey.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
+                        const icon = valResult.isValid ? '✅' : (valResult.errors.length > 0 ? '❌' : '⚠️');
+                        const issueSummary = [];
+                        if (valResult.errors.length > 0) issueSummary.push(`${valResult.errors.length} err`);
+                        if (valResult.warnings.length > 0) issueSummary.push(`${valResult.warnings.length} warn`);
                         
                         return `
-                            <div class="section-status ${isValid ? 'valid' : 'invalid'}">
-                                <div class="section-icon">${isValid ? '✅' : '❌'}</div>
-                                <div class="section-info">
-                                    <div class="section-name">${name}</div>
-                                    <div class="section-summary">
-                                        ${errorCount > 0 ? `${errorCount} errors` : ''}
-                                        ${errorCount > 0 && warningCount > 0 ? ', ' : ''}
-                                        ${warningCount > 0 ? `${warningCount} warnings` : ''}
-                                        ${errorCount === 0 && warningCount === 0 ? 'All good' : ''}
-                                    </div>
-                                </div>
+                            <div class="section-status-item ${valResult.isValid ? 'valid' : (valResult.errors.length > 0 ? 'invalid' : 'has-warnings')}">
+                                <span class="section-icon">${icon}</span>
+                                <span class="section-name">${sectionName}</span>
+                                <span class="section-issue-summary">${issueSummary.join(', ') || 'OK'}</span>
                             </div>
                         `;
                     }).join('')}
@@ -135,90 +131,40 @@ export class ValidationDisplay {
             </div>
         `;
     }
-    
-    renderIssuesList(validation) {
-        const hasIssues = validation.errors.length > 0 || validation.warnings.length > 0;
-        
-        if (!hasIssues) {
-            return `
-                <div class="issues-list">
-                    <div class="no-issues">
-                        🎉 No issues found! Character is ready for play.
-                    </div>
-                </div>
-            `;
+
+    renderIssuesList(errors, warnings) {
+        if (errors.length === 0 && warnings.length === 0) {
+            return `<div class="no-issues-found status-indicator status-indicator-success">🎉 No validation issues found! Character is ready.</div>`;
         }
-        
         return `
-            <div class="issues-list">
-                ${validation.errors.length > 0 ? `
+            <div class="issues-list-container">
+                ${errors.length > 0 ? `
                     <div class="errors-section">
-                        <h5>Errors (${validation.errors.length})</h5>
-                        <ul class="issue-items">
-                            ${validation.errors.map(error => `
-                                <li class="error-item">❌ ${error}</li>
-                            `).join('')}
+                        <h5>Errors (${errors.length})</h5>
+                        <ul class="issue-items error-items">
+                            ${errors.map(err => `<li>❌ ${err}</li>`).join('')}
                         </ul>
                     </div>
                 ` : ''}
-                
-                ${validation.warnings.length > 0 ? `
+                ${warnings.length > 0 ? `
                     <div class="warnings-section">
-                        <h5>Warnings (${validation.warnings.length})</h5>
-                        <ul class="issue-items">
-                            ${validation.warnings.map(warning => `
-                                <li class="warning-item">⚠️ ${warning}</li>
-                            `).join('')}
+                        <h5>Warnings (${warnings.length})</h5>
+                        <ul class="issue-items warning-items">
+                            ${warnings.map(warn => `<li>⚠️ ${warn}</li>`).join('')}
                         </ul>
                     </div>
                 ` : ''}
             </div>
         `;
     }
-    
+
     renderEmptyState() {
         return `
             <div class="validation-section">
                 <h3>Character Status</h3>
-                <div class="empty-state">
-                    Create or select a character to see validation status
-                </div>
+                <div class="empty-state">Create or select a character to see validation status.</div>
             </div>
         `;
     }
-    
-    // Get validation for specific tab
-    getTabValidation(tabName) {
-        const character = this.builder.currentCharacter;
-        if (!character) return { isValid: true, errors: [], warnings: [] };
-        
-        return CharacterValidator.validateSection(character, tabName);
-    }
-    
-    // Check if tab should be enabled
-    isTabEnabled(tabName) {
-        const character = this.builder.currentCharacter;
-        if (!character) return false;
-        
-        const validation = CharacterValidator.validateCharacter(character);
-        const buildOrder = validation.sections?.buildOrder?.buildState;
-        
-        switch(tabName) {
-            case 'basicInfo':
-            case 'archetypes':
-                return true;
-            case 'attributes':
-                return buildOrder?.archetypesComplete;
-            case 'mainPool':
-                return buildOrder?.attributesAssigned;
-            case 'specialAttacks':
-                return buildOrder?.archetypesComplete;
-            case 'utility':
-                return buildOrder?.attributesAssigned;
-            case 'summary':
-                return true;
-            default:
-                return false;
-        }
-    }
 }
+

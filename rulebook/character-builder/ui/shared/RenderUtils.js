@@ -1,4 +1,4 @@
-// RenderUtils.js - Shared HTML rendering utilities
+// rulebook/character-builder/ui/shared/RenderUtils.js
 export class RenderUtils {
     // Render a standard card with consistent styling
     static renderCard(data, options = {}) {
@@ -6,239 +6,268 @@ export class RenderUtils {
             title,
             cost,
             description,
-            status,
+            status, // e.g., 'purchased', 'unaffordable', 'available', or custom
             clickable = false,
             disabled = false,
             dataAttributes = {},
             additionalContent = ''
         } = data;
-        
+
         const {
-            cardClass = '',
+            cardClass = '', // Modifier class like 'flaw-card', 'archetype-card'
             showCost = true,
-            showStatus = true
+            showStatus = true,
+            titleTag = 'h5' // Allow customizing title tag, e.g. h4, h5
         } = options;
-        
+
         const dataAttrs = Object.entries(dataAttributes)
             .map(([key, value]) => `data-${key}="${value}"`)
             .join(' ');
-            
+
+        const baseCardClass = 'card';
+        const statusClass = status ? `status-${status}` : ''; // Used for specific status styling if needed
+
         const classes = [
-            'card',
+            baseCardClass,
             cardClass,
-            clickable ? 'clickable' : '',
+            clickable && !disabled ? 'clickable' : '', // Clickable only if not disabled
             disabled ? 'disabled' : '',
-            status ? `status-${status}` : ''
+            statusClass
         ].filter(Boolean).join(' ');
+
+        let costHtml = '';
+        if (showCost && cost !== undefined) {
+            let costBadgeClass = '';
+            if (status === 'unaffordable') costBadgeClass = 'unaffordable';
+            else if (cost === 0) costBadgeClass = 'free';
+            costHtml = `<span class="card-cost ${costBadgeClass}">${cost > 0 ? cost + 'p' : 'Free'}</span>`;
+        }
         
+        let statusIndicatorHtml = '';
+        if (showStatus && status) {
+            statusIndicatorHtml = this.renderStatusIndicator(status, this.getStatusText(status), { absolutePosition: false });
+        }
+
+
         return `
             <div class="${classes}" ${dataAttrs}>
-                <div class="card-header">
-                    <h5 class="card-title">${title}</h5>
-                    ${showCost && cost !== undefined ? `<span class="card-cost ${!cost ? 'free' : ''}">${cost > 0 ? cost + 'p' : 'Free'}</span>` : ''}
-                </div>
+                ${title || costHtml ? `
+                    <div class="card-header">
+                        ${title ? `<${titleTag} class="card-title">${title}</${titleTag}>` : ''}
+                        ${costHtml}
+                    </div>
+                ` : ''}
                 ${description ? `<div class="card-description">${description}</div>` : ''}
                 ${additionalContent}
-                ${showStatus && status ? `<div class="status-badge ${status}">${this.getStatusText(status)}</div>` : ''}
+                ${statusIndicatorHtml}
             </div>
         `;
     }
-    
+
     // Render a grid of items
     static renderGrid(items, renderItem, options = {}) {
         const {
-            gridClass = 'item-grid',
-            emptyMessage = 'No items available',
-            columns = 'auto-fit',
-            minWidth = '250px'
+            gridContainerClass = 'grid-layout', // Base class for grid display
+            gridSpecificClass = '', // For specific column configurations e.g., grid-columns-auto-fit-250
+            emptyMessage = 'No items available'
         } = options;
-        
+
         if (!items || items.length === 0) {
             return `<div class="empty-state">${emptyMessage}</div>`;
         }
-        
-        const gridStyle = `grid-template-columns: repeat(${columns}, minmax(${minWidth}, 1fr))`;
-        
+
+        const fullGridClass = [gridContainerClass, gridSpecificClass].filter(Boolean).join(' ');
+
         return `
-            <div class="${gridClass}" style="${gridStyle}">
+            <div class="${fullGridClass}">
                 ${items.map(renderItem).join('')}
             </div>
         `;
     }
-    
+
     // Render a standard button
     static renderButton(config) {
         const {
             text,
             type = 'button',
-            variant = 'primary',
+            variant = 'primary', // e.g., primary, secondary, danger
+            size = '', // e.g., 'small'
             disabled = false,
             dataAttributes = {},
-            classes = [],
-            onClick = ''
+            classes = [], // Additional custom classes
+            onClick = '' // For inline JS, though data-action is preferred
         } = config;
-        
+
         const dataAttrs = Object.entries(dataAttributes)
             .map(([key, value]) => `data-${key}="${value}"`)
             .join(' ');
-            
+
         const buttonClasses = [
+            'btn', // Base button class
             `btn-${variant}`,
+            size ? `btn-${size}` : '',
             ...classes,
             disabled ? 'disabled' : ''
         ].filter(Boolean).join(' ');
-        
+
         return `
-            <button type="${type}" 
-                    class="${buttonClasses}" 
-                    ${disabled ? 'disabled' : ''} 
+            <button type="${type}"
+                    class="${buttonClasses}"
+                    ${disabled ? 'disabled' : ''}
                     ${dataAttrs}
                     ${onClick ? `onclick="${onClick}"` : ''}>
                 ${text}
             </button>
         `;
     }
-    
-    // Render status badge
-    static renderStatusBadge(status, text) {
-        const statusClasses = {
-            success: 'success',
-            error: 'error',
-            warning: 'warning',
-            info: 'info',
-            purchased: 'success',
-            unaffordable: 'error',
-            available: 'success'
-        };
+
+    // Render status indicator (replaces status-badge)
+    static renderStatusIndicator(statusType, text, options = {}) {
+        const { absolutePosition = true, additionalClasses = [] } = options;
         
-        const badgeClass = statusClasses[status] || 'info';
-        
-        return `<div class="status-badge ${badgeClass}">${text || this.getStatusText(status)}</div>`;
+        const indicatorClasses = [
+            'status-indicator',
+            `status-indicator-${statusType}`, // e.g., status-indicator-success, status-indicator-error
+            absolutePosition ? 'absolute-badge' : '', // Optional class for positioning
+            ...additionalClasses
+        ].filter(Boolean).join(' ');
+
+        return `<div class="${indicatorClasses}">${text || this.getStatusText(statusType)}</div>`;
     }
-    
+
+
     // Render point display
     static renderPointDisplay(current, max, label, options = {}) {
         const {
             showRemaining = true,
             showPercentage = false,
-            variant = 'default'
+            variant = 'default' // e.g., 'error', 'warning', 'compact' for specific styling
         } = options;
-        
+
         const remaining = max - current;
-        const percentage = max > 0 ? (current / max * 100).toFixed(1) : 0;
-        
-        let statusClass = '';
-        if (remaining < 0) statusClass = 'over-budget';
-        else if (remaining === 0) statusClass = 'fully-used';
-        
+        const percentage = max > 0 ? ((current / max) * 100).toFixed(1) : 0;
+
+        let statusClass = variant; // Use variant for main class
+        if (variant === 'default') { // Apply specific status only if default
+            if (remaining < 0) statusClass = 'over-budget';
+            else if (remaining === 0 && current > 0) statusClass = 'fully-used'; // only if some points were spent
+        }
+
+
         return `
-            <div class="point-display ${statusClass} ${variant}">
+            <div class="point-display ${statusClass}">
                 <div class="point-label">${label}</div>
                 <div class="point-values">
                     <span class="current">${current}</span>
                     <span class="separator">/</span>
                     <span class="max">${max}</span>
-                    ${showRemaining ? `<span class="remaining">(${remaining >= 0 ? remaining : 'OVER'} remaining)</span>` : ''}
+                    ${showRemaining ? `<span class="remaining">(${remaining >= 0 ? remaining : 'OVER ' + Math.abs(remaining)})</span>` : ''}
                     ${showPercentage ? `<span class="percentage">${percentage}%</span>` : ''}
                 </div>
             </div>
         `;
     }
-    
+
     // Render form group
     static renderFormGroup(config) {
         const {
             label,
-            input,
+            inputId, // Added for linking label to input
+            inputHtml, // Changed from 'input' to avoid clash, expects full input HTML string
             description,
             error,
-            required = false
+            required = false,
+            formGroupClass = ''
         } = config;
-        
+
         return `
-            <div class="form-group ${error ? 'has-error' : ''}">
-                ${label ? `<label class="form-label ${required ? 'required' : ''}">${label}</label>` : ''}
-                ${input}
+            <div class="form-group ${error ? 'has-error' : ''} ${formGroupClass}">
+                ${label ? `<label class="form-label ${required ? 'required' : ''}" ${inputId ? `for="${inputId}"` : ''}>${label}</label>` : ''}
+                ${inputHtml}
                 ${description ? `<small class="form-description">${description}</small>` : ''}
                 ${error ? `<div class="form-error">${error}</div>` : ''}
             </div>
         `;
     }
-    
+
     // Render select dropdown
     static renderSelect(config) {
         const {
             id,
+            name, // Added for forms
             value = '',
-            options = [],
+            options = [], // Expected: [{value: 'val', label: 'Label', disabled: false}]
             placeholder = 'Select...',
             dataAttributes = {},
             classes = [],
             disabled = false
         } = config;
-        
+
         const dataAttrs = Object.entries(dataAttributes)
             .map(([key, val]) => `data-${key}="${val}"`)
             .join(' ');
-            
-        const selectClasses = ['form-select', ...classes].join(' ');
-        
+
+        const selectClasses = ['form-select', ...classes].filter(Boolean).join(' '); // form-select might be part of general input styling
+
         return `
-            <select id="${id}" class="${selectClasses}" ${disabled ? 'disabled' : ''} ${dataAttrs}>
-                <option value="">${placeholder}</option>
+            <select id="${id}" name="${name || id}" class="${selectClasses}" ${disabled ? 'disabled' : ''} ${dataAttrs}>
+                ${placeholder ? `<option value="">${placeholder}</option>` : ''}
                 ${options.map(opt => `
-                    <option value="${opt.value}" ${opt.value === value ? 'selected' : ''}>
+                    <option value="${opt.value}" ${opt.value === value ? 'selected' : ''} ${opt.disabled ? 'disabled' : ''}>
                         ${opt.label}
                     </option>
                 `).join('')}
             </select>
         `;
     }
-    
-    // Get status text for common statuses
+
     static getStatusText(status) {
         const statusTexts = {
-            success: '✓ Available',
-            error: '✗ Unavailable',
-            warning: '⚠ Warning',
-            info: 'ℹ Info',
-            purchased: '✓ Owned',
-            unaffordable: '✗ Can\'t Afford',
-            available: 'Click to Purchase'
+            success: 'Available',
+            error: 'Unavailable',
+            warning: 'Warning',
+            info: 'Info',
+            purchased: 'Owned',
+            unaffordable: "Can't Afford",
+            available: 'Purchase' // Default for clickable available items
         };
-        
-        return statusTexts[status] || status;
+        return statusTexts[status.toLowerCase()] || status;
     }
-    
+
     // Render purchased item list
-    static renderPurchasedList(items, renderItem, options = {}) {
+    static renderPurchasedList(items, renderItemFn, options = {}) {
         const {
             title = 'Purchased Items',
+            listContainerClass = 'purchased-list',
             emptyMessage = 'No items purchased',
-            showCount = true
+            showCount = true,
+            itemWrapperClass = '' // Class for each item's wrapper if needed
         } = options;
-        
+
         const count = items ? items.length : 0;
-        
+
         return `
             <div class="purchased-section">
                 <h4>${title} ${showCount ? `(${count})` : ''}</h4>
                 ${count > 0 ? `
-                    <div class="purchased-list">
-                        ${items.map(renderItem).join('')}
+                    <div class="${listContainerClass}">
+                        ${items.map((item, index) => 
+                            itemWrapperClass ? `<div class="${itemWrapperClass}">${renderItemFn(item, index)}</div>` : renderItemFn(item, index)
+                        ).join('')}
                     </div>
                 ` : `<div class="empty-state">${emptyMessage}</div>`}
             </div>
         `;
     }
-    
-    // Render tabs navigation
-    static renderTabs(tabs, activeTab) {
+
+    // Render tabs navigation (generic)
+    static renderTabs(tabsConfig, activeTabId, options = {}) {
+        const { navClass = 'tab-navigation', tabButtonClass = 'tab-btn' } = options;
         return `
-            <div class="tab-navigation">
-                ${tabs.map(tab => `
-                    <button class="tab-btn ${activeTab === tab.id ? 'active' : ''} ${tab.disabled ? 'disabled' : ''}" 
-                            data-tab="${tab.id}" 
+            <div class="${navClass}">
+                ${tabsConfig.map(tab => `
+                    <button class="${tabButtonClass} ${activeTabId === tab.id ? 'active' : ''} ${tab.disabled ? 'disabled' : ''}"
+                            data-tab="${tab.id}"
                             ${tab.disabled ? 'disabled' : ''}>
                         ${tab.label}
                     </button>

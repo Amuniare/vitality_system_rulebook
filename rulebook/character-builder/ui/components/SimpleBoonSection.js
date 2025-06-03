@@ -1,5 +1,6 @@
-// SimpleBoonSection.js - Simple boon purchase interface (split from BoonPurchaseSection)
+// rulebook/character-builder/ui/components/SimpleBoonSection.js
 import { SimpleBoonsSystem } from '../../systems/SimpleBoonsSystem.js';
+import { RenderUtils } from '../shared/RenderUtils.js'; // Added
 
 export class SimpleBoonSection {
     constructor(characterBuilder) {
@@ -8,34 +9,32 @@ export class SimpleBoonSection {
 
     render(character, pointInfo) {
         const simpleBoons = SimpleBoonsSystem.getAvailableBoons();
-        const purchasedBoons = character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type);
+        const purchasedBoons = character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type); // Assuming 'simple' or undefined type means simple
 
         const containerHtml = `
             <div class="main-pool-category">
-                <h3>Simple Boons (Variable Cost)</h3>
+                <h3>Simple Boons</h3>
                 <p class="category-description">
                     Permanent abilities that change how your character functions.
                     Simple boons have fixed costs and immediate effects.
                 </p>
-                
-                <div class="purchased-items">
-                    <h4>Purchased Simple Boons (${purchasedBoons.length})</h4>
-                    ${purchasedBoons.length > 0 ? `
-                        <div class="item-list">
-                            ${purchasedBoons.map((boon, index) => this.renderPurchasedBoon(boon, index)).join('')}
-                        </div>
-                    ` : '<p class="empty-state">No simple boons purchased</p>'}
-                </div>
-                
+
+                ${RenderUtils.renderPurchasedList(
+                    purchasedBoons,
+                    (boon, index) => this.renderPurchasedBoon(boon, index),
+                    { title: `Purchased Simple Boons (${purchasedBoons.length})`, emptyMessage: 'No simple boons purchased' }
+                )}
+
                 <div class="available-items">
                     <h4>Available Simple Boons</h4>
-                    <div class="boon-grid">
-                        ${simpleBoons.map(boon => this.renderSimpleBoonOption(boon, character, pointInfo)).join('')}
-                    </div>
+                    ${RenderUtils.renderGrid(
+                        simpleBoons,
+                        (boon) => this.renderSimpleBoonOption(boon, character, pointInfo),
+                        { gridContainerClass: 'grid-layout boon-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
+                    )}
                 </div>
             </div>
         `;
-
         return containerHtml;
     }
 
@@ -46,76 +45,62 @@ export class SimpleBoonSection {
                     <span class="item-name">${boon.name}</span>
                     <span class="item-details">${boon.cost}p - ${boon.category}</span>
                 </div>
-                <button class="btn-danger btn-small remove-boon" data-index="${index}">Remove</button>
+                ${RenderUtils.renderButton({
+                    text: 'Remove',
+                    variant: 'danger',
+                    size: 'small',
+                    classes: ['remove-boon'], // Keep specific class for JS if needed
+                    dataAttributes: { index: index, 'boon-id': boon.boonId, action: 'remove-simple-boon' } // Add boonId for removal logic
+                })}
             </div>
         `;
     }
 
     renderSimpleBoonOption(boon, character, pointInfo) {
-        const canAfford = pointInfo.remaining >= boon.cost;
         const alreadyPurchased = character.mainPoolPurchases.boons.some(b => b.boonId === boon.id && (b.type === 'simple' || !b.type));
-        const canPurchase = canAfford && !alreadyPurchased;
+        const canAfford = pointInfo.remaining >= boon.cost;
 
-        return `
-            <div class="boon-card simple ${canPurchase ? 'clickable' : 'disabled'}" 
-                 data-boon-id="${boon.id}">
-                <h5>${boon.name}</h5>
-                <p class="item-cost"><strong>Cost: ${boon.cost}p</strong></p>
-                <p class="item-description">${boon.description}</p>
-                <div class="item-category">Category: ${boon.category}</div>
-                ${alreadyPurchased ? 
-                    '<div class="status-badge">Already Purchased</div>' : 
-                    canAfford ? '<div class="status-badge success">Click to Purchase</div>' :
-                    '<div class="status-badge error">Cannot Afford</div>'
-                }
-            </div>
-        `;
+        let status = 'available';
+        if (alreadyPurchased) status = 'purchased';
+        else if (!canAfford) status = 'unaffordable';
+        
+        return RenderUtils.renderCard({
+            title: boon.name,
+            cost: boon.cost,
+            description: boon.description,
+            status: status,
+            clickable: !alreadyPurchased && canAfford,
+            disabled: alreadyPurchased || !canAfford,
+            dataAttributes: { 'boon-id': boon.id, action: 'purchase-simple-boon' },
+            additionalContent: `<div class="item-category">Category: ${boon.category}</div>`
+        }, { cardClass: 'boon-card simple', showStatus: true });
     }
 
     setupEventListeners() {
-        // Simple boon cards
-        document.querySelectorAll('.boon-card.simple.clickable').forEach(card => {
-            card.addEventListener('click', () => {
-                const boonId = card.dataset.boonId;
-                this.purchaseSimpleBoon(boonId);
-            });
-        });
-
-        // Remove boon buttons
-        document.querySelectorAll('.remove-boon').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const index = parseInt(btn.dataset.index);
-                this.removeBoon(index);
-            });
-        });
+        // Handled by MainPoolTab's EventManager using data-action
     }
 
     purchaseSimpleBoon(boonId) {
         const character = this.builder.currentCharacter;
-        
         try {
             SimpleBoonsSystem.purchaseBoon(character, boonId);
-            
             this.builder.updateCharacter();
             this.builder.showNotification(`Purchased simple boon!`, 'success');
-            
         } catch (error) {
             this.builder.showNotification(`Failed to purchase boon: ${error.message}`, 'error');
         }
     }
 
-    removeBoon(index) {
+    removeBoon(boonIdToRemove) { // Changed to use boonId for removal
         const character = this.builder.currentCharacter;
-        const simpleBoons = character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type);
-        
         try {
-            if (index >= 0 && index < simpleBoons.length) {
-                const boon = simpleBoons[index];
-                SimpleBoonsSystem.removeBoon(character, boon.boonId);
-                
+            const boon = character.mainPoolPurchases.boons.find(b => b.boonId === boonIdToRemove && (b.type === 'simple' || !b.type));
+            if (boon) {
+                SimpleBoonsSystem.removeBoon(character, boon.boonId); // System uses boonId
                 this.builder.updateCharacter();
                 this.builder.showNotification(`Removed ${boon.name}`, 'info');
+            } else {
+                 this.builder.showNotification(`Could not find boon to remove.`, 'error');
             }
         } catch (error) {
             this.builder.showNotification(`Failed to remove boon: ${error.message}`, 'error');

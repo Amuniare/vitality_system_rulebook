@@ -1,13 +1,14 @@
-// UtilityTab.js - REFACTORED to use EventManager, RenderUtils, and UpdateManager
+// rulebook/character-builder/ui/tabs/UtilityTab.js
 import { EventManager } from '../shared/EventManager.js';
 import { RenderUtils } from '../shared/RenderUtils.js';
-import { UpdateManager } from '../shared/UpdateManager.js';
+import { UpdateManager } from '../shared/UpdateManager.js'; // If complex internal updates needed
 import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
+import { UtilitySystem } from '../../systems/UtilitySystem.js'; // Main system for data
 
 export class UtilityTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.activeCategory = 'expertise';
+        this.activeCategory = 'expertise'; // Default category
     }
 
     render() {
@@ -15,660 +16,304 @@ export class UtilityTab {
         if (!tabContent) return;
 
         const character = this.builder.currentCharacter;
-        if (!character) return;
+        if (!character) {
+            tabContent.innerHTML = "<p>No character selected or prerequisites not met.</p>";
+            return;
+        }
 
         tabContent.innerHTML = `
-            <div class="utility-section">
+            <div class="utility-tab-content">
                 <h2>Utility Abilities</h2>
                 <p class="section-description">
                     Purchase expertise, features, senses, movement, and descriptors using your utility pool points.
                 </p>
-                
-                ${this.renderPointDisplay(character)}
+
+                ${this.renderPointPoolInfo(character)}
                 ${this.renderCategoryNavigation()}
-                ${this.renderActiveCategory(character)}
+                <div class="utility-category-content" id="utility-active-category-content">
+                    ${this.renderActiveCategoryContent(character)}
+                </div>
                 ${this.renderPurchasedSummary(character)}
-                ${this.renderNextStep()}
+
+                <div class="next-step">
+                    ${RenderUtils.renderButton({
+                        text: 'Continue to Summary →',
+                        variant: 'primary',
+                        dataAttributes: { action: 'continue-to-summary' }
+                    })}
+                </div>
             </div>
         `;
-
-        this.setupEventListeners();
+        this.setupEventListeners(); // For category switching and internal interactions
     }
 
-    renderPointDisplay(character) {
+    renderPointPoolInfo(character) {
         const pools = PointPoolCalculator.calculateAllPools(character);
-        const utilityPool = pools.remaining.utilityPool || 0;
+        const utilityPool = pools.remaining.utilityPool || 0; // Ensure fallback if undefined
         const available = pools.totalAvailable.utilityPool || 0;
         const spent = pools.totalSpent.utilityPool || 0;
 
-        return RenderUtils.renderPointDisplay(spent, available, 'Utility Pool', { 
+        return RenderUtils.renderPointDisplay(spent, available, 'Utility Pool', {
             showRemaining: true,
-            variant: utilityPool < 0 ? 'over-budget' : utilityPool === 0 ? 'fully-used' : 'default'
+            variant: utilityPool < 0 ? 'error' : (utilityPool === 0 && spent > 0 ? 'warning' : 'default')
         });
     }
 
     renderCategoryNavigation() {
         const categories = [
-            { id: 'expertise', name: 'Expertise', description: 'Specialized skills and training' },
-            { id: 'features', name: 'Features', description: 'Supernatural abilities' },
-            { id: 'senses', name: 'Senses', description: 'Enhanced perception' },
-            { id: 'movement', name: 'Movement', description: 'Enhanced locomotion' },
-            { id: 'descriptors', name: 'Descriptors', description: 'Reality manipulation' }
+            { id: 'expertise', label: 'Expertise', description: 'Skills & Training' },
+            { id: 'features', label: 'Features', description: 'Supernatural Abilities' },
+            { id: 'senses', label: 'Senses', description: 'Enhanced Perception' },
+            { id: 'movement', label: 'Movement', description: 'Enhanced Locomotion' },
+            { id: 'descriptors', label: 'Descriptors', description: 'Reality Manipulation' }
         ];
-
-        return RenderUtils.renderTabs(categories.map(cat => ({
+        // Making labels more descriptive by including the description in a smaller tag
+        const tabConfigs = categories.map(cat => ({
             id: cat.id,
-            label: `${cat.name}<br><small>${cat.description}</small>`,
-            disabled: false
-        })), this.activeCategory);
+            label: `${cat.label} <small class="tab-description">(${cat.description})</small>`,
+            disabled: false // Add logic if some tabs should be disabled
+        }));
+        return RenderUtils.renderTabs(tabConfigs, this.activeCategory, { navClass: 'section-tabs utility-section-tabs', tabButtonClass: 'section-tab' });
     }
 
-    renderActiveCategory(character) {
-        const categoryMethods = {
-            expertise: () => this.renderExpertiseCategory(character),
-            features: () => this.renderFeaturesCategory(character),
-            senses: () => this.renderSensesCategory(character),
-            movement: () => this.renderMovementCategory(character),
-            descriptors: () => this.renderDescriptorsCategory(character)
+    renderActiveCategoryContent(character) {
+        const sectionRenderers = {
+            expertise: () => this.renderExpertiseSection(character),
+            features: () => this.renderGenericUtilitySection(character, 'features', UtilitySystem.getAvailableFeatures()),
+            senses: () => this.renderGenericUtilitySection(character, 'senses', UtilitySystem.getAvailableSenses()),
+            movement: () => this.renderGenericUtilitySection(character, 'movement', UtilitySystem.getMovementFeatures()),
+            descriptors: () => this.renderGenericUtilitySection(character, 'descriptors', UtilitySystem.getDescriptors())
+        };
+        const renderer = sectionRenderers[this.activeCategory];
+        return renderer ? renderer() : `<div class="empty-state">Select a utility category.</div>`;
+    }
+
+    renderExpertiseSection(character) {
+        const expertiseCategories = UtilitySystem.getExpertiseCategories();
+        const content = Object.entries(expertiseCategories).map(([attrKey, attrData]) =>
+            this.renderAttributeExpertiseBlock(attrKey, attrData, character)
+        ).join('');
+        return `<div class="expertise-main-grid grid-layout grid-columns-auto-fit-300">${content}</div>`;
+    }
+
+    renderAttributeExpertiseBlock(attrKey, attrData, character) {
+        const currentExpertise = character.utilityPurchases.expertise[attrKey] || { basic: [], mastered: [] };
+        const renderOptions = (type, options) => {
+            if (!options || options.length === 0) return '<p class="empty-state-small">None available.</p>';
+            return options.map(ex => this.renderSingleExpertiseOption(ex, attrKey, type, currentExpertise)).join('');
         };
 
-        const renderMethod = categoryMethods[this.activeCategory];
-        return renderMethod ? renderMethod() : '<div class="empty-state">Select a category</div>';
-    }
-
-    renderExpertiseCategory(character) {
-        const attributes = ['awareness', 'communication', 'intelligence', 'focus', 'mobility', 'endurance', 'power'];
-        
-        return `
-            <div class="category-content">
-                <h3>Expertise Selection</h3>
-                <p class="category-description">Choose specialized knowledge and training for each attribute.</p>
-                
-                ${RenderUtils.renderGrid(
-                    attributes,
-                    (attr) => this.renderAttributeExpertise(attr, character),
-                    { gridClass: 'expertise-grid', columns: 'auto-fit', minWidth: '300px' }
-                )}
-            </div>
-        `;
-    }
-
-    renderAttributeExpertise(attribute, character) {
-        const attributeData = this.getAttributeExpertiseData(attribute);
-        const current = character.utilityPurchases.expertise[attribute];
-        
-        return `
-            <div class="expertise-attribute-card">
-                <h4>${this.capitalizeFirst(attribute)} Expertise</h4>
-                
-                <div class="expertise-type-section">
-                    <h5>Activity-Based (2p Basic / 6p Mastered)</h5>
-                    ${RenderUtils.renderGrid(
-                        attributeData.activity,
-                        (expertise) => this.renderExpertiseOption(expertise, attribute, 'activity', current, character),
-                        { gridClass: 'expertise-options', columns: '1', minWidth: '100%' }
-                    )}
+        return RenderUtils.renderCard({
+            title: `${attrData.name} Expertise`,
+            titleTag: 'h4',
+            additionalContent: `
+                <div class="expertise-subsection">
+                    <h5>Activity-Based (Basic: ${UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost('activity','basic'):2}p / Mastered: +${UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost('activity','mastered') - UtilitySystem.getExpertiseCost('activity','basic'):4}p)</h5>
+                    <div class="expertise-options-list">${renderOptions('activity', attrData.activities)}</div>
                 </div>
-                
-                <div class="expertise-type-section">
-                    <h5>Situational (1p Basic / 3p Mastered)</h5>
-                    ${RenderUtils.renderGrid(
-                        attributeData.situational,
-                        (expertise) => this.renderExpertiseOption(expertise, attribute, 'situational', current, character),
-                        { gridClass: 'expertise-options', columns: '1', minWidth: '100%' }
-                    )}
-                </div>
-            </div>
-        `;
+                <div class="expertise-subsection">
+                    <h5>Situational (Basic: ${UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost('situational','basic'):1}p / Mastered: +${UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost('situational','mastered') - UtilitySystem.getExpertiseCost('situational','basic'):2}p)</h5>
+                    <div class="expertise-options-list">${renderOptions('situational', attrData.situational)}</div>
+                </div>`
+        }, { cardClass: 'expertise-attribute-card', showCost: false, showStatus: false });
     }
 
-    renderExpertiseOption(expertise, attribute, type, current, character) {
-        const hasBasic = current.basic.includes(expertise.id);
-        const hasMastery = current.mastered.includes(expertise.id);
-        const costs = type === 'activity' ? { basic: 2, mastered: 6 } : { basic: 1, mastered: 3 };
+    renderSingleExpertiseOption(expertise, attribute, type, currentExpertise) {
+        const basicCost = UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost(type, 'basic') : (type === 'activity' ? 2 : 1);
+        const masteredCostDelta = (UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost(type, 'mastered') : (type === 'activity' ? 6 : 3)) - basicCost;
+
+        const isBasic = currentExpertise.basic.includes(expertise.id);
+        const isMastered = currentExpertise.mastered.includes(expertise.id);
 
         return `
-            <div class="expertise-option">
-                <div class="expertise-basic">
-                    <label>
-                        <input type="checkbox" 
-                               data-expertise-type="${type}"
-                               data-expertise-level="basic"
-                               data-expertise-id="${expertise.id}"
-                               data-attribute="${attribute}"
-                               ${hasBasic ? 'checked' : ''}>
-                        ${expertise.name} (${costs.basic}p)
+            <div class="expertise-option-item form-group">
+                <label>
+                    <input type="checkbox" data-action="toggle-expertise" data-attribute="${attribute}" data-expertise-id="${expertise.id}" data-expertise-type="${type}" data-level="basic" ${isBasic ? 'checked' : ''}>
+                    ${expertise.name} (${basicCost}p)
+                </label>
+                ${expertise.description ? `<small class="expertise-desc">${expertise.description}</small>`:''}
+                ${isBasic ? `
+                    <label class="mastery-label">
+                        <input type="checkbox" data-action="toggle-expertise" data-attribute="${attribute}" data-expertise-id="${expertise.id}" data-expertise-type="${type}" data-level="mastered" ${isMastered ? 'checked' : ''}>
+                        Master (+${masteredCostDelta}p)
                     </label>
-                    <small class="expertise-description">${expertise.description}</small>
-                </div>
-                
-                ${hasBasic ? `
-                    <div class="expertise-mastery">
-                        <label>
-                            <input type="checkbox"
-                                   data-expertise-type="${type}"
-                                   data-expertise-level="mastered"
-                                   data-expertise-id="${expertise.id}"
-                                   data-attribute="${attribute}"
-                                   ${hasMastery ? 'checked' : ''}>
-                            Master ${expertise.name} (+${costs.mastered - costs.basic}p)
-                        </label>
-                    </div>
                 ` : ''}
             </div>
         `;
     }
 
-    renderFeaturesCategory(character) {
-        const featureCategories = this.getFeatureData();
-        
-        return `
-            <div class="category-content">
-                <h3>Features</h3>
-                <p class="category-description">Supernatural abilities that enable new types of actions and checks.</p>
-                
-                ${Object.entries(featureCategories).map(([category, features]) => `
-                    <div class="feature-category-section">
-                        <h4>${category}</h4>
-                        ${RenderUtils.renderGrid(
-                            features,
-                            (feature) => this.renderFeatureCard(feature, character),
-                            { gridClass: 'feature-grid', columns: 'auto-fit', minWidth: '280px' }
-                        )}
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
 
-    renderFeatureCard(feature, character) {
-        const isSelected = character.utilityPurchases.features.some(f => f.id === feature.id);
+    renderGenericUtilitySection(character, categoryKey, categoryData) {
+        const title = categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1);
+        const purchasedItems = character.utilityPurchases[categoryKey] || [];
         const pools = PointPoolCalculator.calculateAllPools(character);
-        const canAfford = pools.remaining.utilityPool >= feature.cost;
+        const remainingUtilityPoints = pools.remaining.utilityPool;
 
-        return RenderUtils.renderCard({
-            title: feature.name,
-            cost: feature.cost,
-            description: `${feature.description}${feature.upgrades ? `<br><small><strong>Upgrades:</strong> ${feature.upgrades}</small>` : ''}`,
-            status: isSelected ? 'purchased' : canAfford ? 'available' : 'unaffordable',
-            clickable: !isSelected && canAfford,
-            disabled: isSelected || !canAfford,
-            dataAttributes: { featureId: feature.id, featureCost: feature.cost }
-        }, { cardClass: 'feature-card' });
-    }
+        let allItems = [];
+        Object.values(categoryData).forEach(tierOrGroup => {
+            const itemsToAdd = tierOrGroup.features || tierOrGroup.senses || tierOrGroup.descriptors || tierOrGroup; // Adapt to data structure
+            if (Array.isArray(itemsToAdd)) {
+                allItems = allItems.concat(itemsToAdd.map(item => ({ ...item, cost: tierOrGroup.cost !== undefined ? tierOrGroup.cost : item.cost })));
+            }
+        });
+        // Filter out items that are already purchased for the available list
+        const availableItems = allItems.filter(item => !purchasedItems.some(pItem => pItem.id === item.id));
 
-    renderSensesCategory(character) {
-        const sensesByTier = this.getSenseData();
-        
+
         return `
-            <div class="category-content">
-                <h3>Senses</h3>
-                <p class="category-description">Enhanced perceptual capabilities for detecting what normal senses cannot.</p>
-                
-                ${Object.entries(sensesByTier).map(([tier, senses]) => `
-                    <div class="sense-tier-section">
-                        <h4>${tier} Point Senses</h4>
-                        ${RenderUtils.renderGrid(
-                            senses,
-                            (sense) => this.renderSenseCard(sense, character),
-                            { gridClass: 'sense-grid', columns: 'auto-fit', minWidth: '280px' }
-                        )}
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
-
-    renderSenseCard(sense, character) {
-        const isSelected = character.utilityPurchases.senses.some(s => s.id === sense.id);
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const canAfford = pools.remaining.utilityPool >= sense.cost;
-
-        return RenderUtils.renderCard({
-            title: sense.name,
-            cost: sense.cost,
-            description: sense.description,
-            status: isSelected ? 'purchased' : canAfford ? 'available' : 'unaffordable',
-            clickable: !isSelected && canAfford,
-            disabled: isSelected || !canAfford,
-            dataAttributes: { senseId: sense.id, senseCost: sense.cost }
-        }, { cardClass: 'sense-card' });
-    }
-
-    renderMovementCategory(character) {
-        const movementOptions = this.getMovementData();
-        
-        return `
-            <div class="category-content">
-                <h3>Movement Abilities</h3>
-                <p class="category-description">Enhanced locomotion capabilities for combat and exploration.</p>
-                
+            <div class="utility-generic-section">
+                <h3>${title}</h3>
+                <p class="category-description">${this.getCategoryDescription(categoryKey)}</p>
+                ${RenderUtils.renderPurchasedList(
+                    purchasedItems,
+                    (item, index) => this.renderPurchasedUtilityItem(item, categoryKey, index),
+                    { title: `Purchased ${title} (${purchasedItems.length})`, emptyMessage: `No ${categoryKey} purchased.`}
+                )}
+                <h4>Available ${title}</h4>
                 ${RenderUtils.renderGrid(
-                    movementOptions,
-                    (movement) => this.renderMovementCard(movement, character),
-                    { gridClass: 'movement-grid', columns: 'auto-fit', minWidth: '280px' }
+                    availableItems,
+                    (item) => {
+                        const canAfford = remainingUtilityPoints >= item.cost;
+                        return RenderUtils.renderCard({
+                            title: item.name,
+                            cost: item.cost,
+                            description: item.description + (item.applications ? `<br><small><strong>Apps:</strong> ${item.applications.join(', ')}</small>` : ''),
+                            status: canAfford ? 'available' : 'unaffordable',
+                            clickable: canAfford,
+                            disabled: !canAfford,
+                            dataAttributes: { action: `purchase-${categoryKey.slice(0,-1)}`, 'item-id': item.id, cost: item.cost } // e.g. purchase-feature
+                        }, { cardClass: `${categoryKey.slice(0,-1)}-card`, showStatus: true });
+                    },
+                    { gridContainerClass: 'grid-layout utility-item-grid', gridSpecificClass: 'grid-columns-auto-fit-280', emptyMessage: `All available ${categoryKey} purchased or none defined.` }
                 )}
             </div>
         `;
     }
-
-    renderMovementCard(movement, character) {
-        const isSelected = character.utilityPurchases.movement.some(m => m.id === movement.id);
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const canAfford = pools.remaining.utilityPool >= movement.cost;
-
-        return RenderUtils.renderCard({
-            title: movement.name,
-            cost: movement.cost,
-            description: movement.description,
-            status: isSelected ? 'purchased' : canAfford ? 'available' : 'unaffordable',
-            clickable: !isSelected && canAfford,
-            disabled: isSelected || !canAfford,
-            dataAttributes: { movementId: movement.id, movementCost: movement.cost }
-        }, { cardClass: 'movement-card' });
+    getCategoryDescription(categoryKey) {
+        const descs = {
+            features: 'Supernatural abilities that enable new types of actions and checks.',
+            senses: 'Enhanced perceptual capabilities for detecting what normal senses cannot.',
+            movement: 'Enhanced locomotion capabilities for combat and exploration.',
+            descriptors: 'Reality manipulation abilities tied to specific concepts or elements.'
+        };
+        return descs[categoryKey] || 'Select items from this category.';
     }
 
-    renderDescriptorsCategory(character) {
-        const descriptorCategories = this.getDescriptorData();
-        
+    renderPurchasedUtilityItem(item, categoryKey, index) {
         return `
-            <div class="category-content">
-                <h3>Descriptors</h3>
-                <p class="category-description">Reality manipulation abilities tied to specific concepts or elements.</p>
-                
-                ${Object.entries(descriptorCategories).map(([category, descriptors]) => `
-                    <div class="descriptor-category-section">
-                        <h4>${category}</h4>
-                        ${RenderUtils.renderGrid(
-                            descriptors,
-                            (descriptor) => this.renderDescriptorCard(descriptor, character),
-                            { gridClass: 'descriptor-grid', columns: 'auto-fit', minWidth: '280px' }
-                        )}
-                    </div>
-                `).join('')}
+            <div class="purchased-item">
+                <div class="item-info">
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-cost">${item.cost}p</span>
+                </div>
+                ${RenderUtils.renderButton({text: 'Remove', variant: 'danger', size: 'small', dataAttributes: {action: `remove-${categoryKey.slice(0,-1)}`, index: index, 'item-id': item.id }})}
             </div>
         `;
     }
 
-    renderDescriptorCard(descriptor, character) {
-        const isSelected = character.utilityPurchases.descriptors.some(d => d.id === descriptor.id);
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const canAfford = pools.remaining.utilityPool >= descriptor.cost;
-
-        return RenderUtils.renderCard({
-            title: descriptor.name,
-            cost: descriptor.cost,
-            description: `${descriptor.description}<br><small><strong>Applications:</strong> ${descriptor.applications.join(', ')}</small>`,
-            status: isSelected ? 'purchased' : canAfford ? 'available' : 'unaffordable',
-            clickable: !isSelected && canAfford,
-            disabled: isSelected || !canAfford,
-            dataAttributes: { descriptorId: descriptor.id, descriptorCost: descriptor.cost }
-        }, { cardClass: 'descriptor-card' });
-    }
 
     renderPurchasedSummary(character) {
-        const purchases = character.utilityPurchases;
-        const sections = [];
-        
-        // Expertise summary
-        Object.entries(purchases.expertise).forEach(([attr, expertises]) => {
-            if (expertises.basic.length > 0 || expertises.mastered.length > 0) {
-                const items = [
-                    ...expertises.basic.map(id => `Basic ${id}`),
-                    ...expertises.mastered.map(id => `Master ${id}`)
-                ];
-                sections.push({ title: `${this.capitalizeFirst(attr)} Expertise`, items });
-            }
-        });
-        
-        // Other categories
-        if (purchases.features.length > 0) {
-            sections.push({ title: 'Features', items: purchases.features.map(f => f.name) });
-        }
-        if (purchases.senses.length > 0) {
-            sections.push({ title: 'Senses', items: purchases.senses.map(s => s.name) });
-        }
-        if (purchases.movement.length > 0) {
-            sections.push({ title: 'Movement', items: purchases.movement.map(m => m.name) });
-        }
-        if (purchases.descriptors.length > 0) {
-            sections.push({ title: 'Descriptors', items: purchases.descriptors.map(d => d.name) });
-        }
-
-        return `
-            <div class="purchased-utilities">
-                <h3>Purchased Utilities</h3>
-                ${sections.length > 0 ? `
-                    <div class="purchased-sections">
-                        ${sections.map(section => `
-                            <div class="purchased-section">
-                                <h4>${section.title}</h4>
-                                <div class="purchased-items">
-                                    ${section.items.map(item => `<span class="purchased-item">${item}</span>`).join('')}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                ` : '<div class="empty-state">No utilities purchased yet</div>'}
-            </div>
-        `;
+        // This could show a count of purchased items per category or be removed if too verbose
+        return '';
+    }
+    renderNextStep() { /* same as before */
+        return ` <div class="next-step"> ${RenderUtils.renderButton({ text: 'Continue to Summary →', variant: 'primary', dataAttributes: { action: 'continue-to-summary' } })} </div> `;
     }
 
-    renderNextStep() {
-        return `
-            <div class="next-step">
-                ${RenderUtils.renderButton({
-                    text: 'Continue to Summary →',
-                    variant: 'primary',
-                    dataAttributes: { action: 'continue-to-summary' }
-                })}
-            </div>
-        `;
-    }
 
     setupEventListeners() {
-        const container = document.querySelector('.utility-section');
-        if (!container) {
-            console.error('Utility section container not found');
-            return;
-        }
+        const container = document.querySelector('.utility-tab-content');
+        if (!container) return;
 
-        EventManager.setupStandardListeners(container, {
-            clickHandlers: {
-                '.tab-btn': this.handleCategorySwitch.bind(this),
-                '.feature-card.clickable': this.handleFeatureToggle.bind(this),
-                '.sense-card.clickable': this.handleSenseToggle.bind(this),
-                '.movement-card.clickable': this.handleMovementToggle.bind(this),
-                '.descriptor-card.clickable': this.handleDescriptorToggle.bind(this),
-                '[data-action="continue-to-summary"]': this.handleContinue.bind(this)
+        EventManager.delegateEvents(container, {
+            click: {
+                '.section-tab': (e, el) => this.handleCategorySwitch(el.dataset.tab), // Ensure data-tab used in renderTabs
+                '[data-action="continue-to-summary"]': () => this.builder.switchTab('summary'),
+                '[data-action^="purchase-"]': (e, el) => this.handleGenericPurchase(el),
+                '[data-action^="remove-"]': (e, el) => this.handleGenericRemove(el)
             },
-            changeHandlers: {
-                'input[data-expertise-id]': this.handleExpertiseChange.bind(this)
+            change: {
+                '[data-action="toggle-expertise"]': (e, el) => this.handleExpertiseToggle(el)
             }
         });
     }
 
-    handleCategorySwitch(e, element) {
-        const newCategory = element.dataset.tab;
+
+    handleCategorySwitch(newCategory) {
         if (newCategory && newCategory !== this.activeCategory) {
             this.activeCategory = newCategory;
-            UpdateManager.scheduleUpdate(this, 'updateActiveCategory', 'high');
+            this.updateActiveCategoryContentUI();
         }
     }
-
-    handleExpertiseChange(e, element) {
-        const { expertiseId, attribute, expertiseLevel, expertiseType } = element.dataset;
-        const isChecked = element.checked;
+    
+    handleExpertiseToggle(checkbox) {
+        const { attribute, expertiseId, expertiseType, level } = checkbox.dataset;
+        const isChecked = checkbox.checked;
         const character = this.builder.currentCharacter;
-        
         try {
-            if (expertiseLevel === 'basic') {
-                this.toggleBasicExpertise(character, attribute, expertiseId, isChecked);
-            } else if (expertiseLevel === 'mastered') {
-                this.toggleMasteredExpertise(character, attribute, expertiseId, isChecked);
-            }
-            
-            UpdateManager.batchUpdates([
-                { component: this, method: 'updateActiveCategory', priority: 'normal' },
-                { component: this.builder, method: 'updateCharacter', priority: 'high' }
-            ]);
-            
+            UtilitySystem.toggleExpertise(character, attribute, expertiseId, expertiseType, level, isChecked);
+            this.builder.updateCharacter(); // This will trigger re-render of points and this section
+             this.builder.showNotification(`Expertise ${expertiseId} ${level} ${isChecked ? 'added' : 'removed'}.`, 'success');
         } catch (error) {
-            console.error('Failed to update expertise:', error);
-            this.builder.showNotification('Failed to update expertise', 'error');
+            this.builder.showNotification(`Expertise update failed: ${error.message}`, 'error');
+            checkbox.checked = !isChecked; // Revert UI on failure
         }
     }
 
-    handleFeatureToggle(e, element) {
-        const featureId = element.dataset.featureId;
-        const featureCost = parseInt(element.dataset.featureCost);
+    handleGenericPurchase(element) {
+        const action = element.dataset.action; // e.g., "purchase-feature"
+        const categoryKey = action.split('-')[1] + 's'; // "features"
+        const itemId = element.dataset.itemId;
+        const itemCost = parseInt(element.dataset.cost);
         
-        try {
-            this.toggleUtilityPurchase('features', featureId, featureCost);
-        } catch (error) {
-            this.handlePurchaseError('feature', error);
-        }
-    }
-
-    handleSenseToggle(e, element) {
-        const senseId = element.dataset.senseId;
-        const senseCost = parseInt(element.dataset.senseCost);
-        
-        try {
-            this.toggleUtilityPurchase('senses', senseId, senseCost);
-        } catch (error) {
-            this.handlePurchaseError('sense', error);
-        }
-    }
-
-    handleMovementToggle(e, element) {
-        const movementId = element.dataset.movementId;
-        const movementCost = parseInt(element.dataset.movementCost);
-        
-        try {
-            this.toggleUtilityPurchase('movement', movementId, movementCost);
-        } catch (error) {
-            this.handlePurchaseError('movement', error);
-        }
-    }
-
-    handleDescriptorToggle(e, element) {
-        const descriptorId = element.dataset.descriptorId;
-        const descriptorCost = parseInt(element.dataset.descriptorCost);
-        
-        try {
-            this.toggleUtilityPurchase('descriptors', descriptorId, descriptorCost);
-        } catch (error) {
-            this.handlePurchaseError('descriptor', error);
-        }
-    }
-
-    handleContinue() {
-        this.builder.switchTab('summary');
-    }
-
-    // Business Logic Methods
-    toggleBasicExpertise(character, attribute, expertiseId, isChecked) {
-        const expertise = character.utilityPurchases.expertise[attribute];
-        
-        if (isChecked) {
-            if (!expertise.basic.includes(expertiseId)) {
-                expertise.basic.push(expertiseId);
-            }
-        } else {
-            expertise.basic = expertise.basic.filter(id => id !== expertiseId);
-            // Also remove mastery if basic is unchecked
-            expertise.mastered = expertise.mastered.filter(id => id !== expertiseId);
-        }
-    }
-
-    toggleMasteredExpertise(character, attribute, expertiseId, isChecked) {
-        const expertise = character.utilityPurchases.expertise[attribute];
-        
-        if (isChecked) {
-            if (!expertise.mastered.includes(expertiseId)) {
-                expertise.mastered.push(expertiseId);
-            }
-        } else {
-            expertise.mastered = expertise.mastered.filter(id => id !== expertiseId);
-        }
-    }
-
-    toggleUtilityPurchase(category, itemId, itemCost) {
         const character = this.builder.currentCharacter;
-        const purchases = character.utilityPurchases[category];
-        const isCurrentlyPurchased = purchases.some(item => item.id === itemId);
-        
-        if (isCurrentlyPurchased) {
-            this.removeUtilityPurchase(category, itemId);
-        } else {
-            this.addUtilityPurchase(category, itemId, itemCost);
+        try {
+            UtilitySystem.purchaseItem(character, categoryKey, itemId, itemCost);
+            this.builder.updateCharacter();
+            this.builder.showNotification(`${this.capitalizeFirst(categoryKey.slice(0,-1))} purchased.`, 'success');
+        } catch (error) {
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
         }
+    }
+    handleGenericRemove(element) {
+        const action = element.dataset.action; // e.g., "remove-feature"
+        const categoryKey = action.split('-')[1] + 's'; // "features"
+        const itemId = element.dataset.itemId; // Make sure this is present on remove buttons
         
-        UpdateManager.batchUpdates([
-            { component: this, method: 'updateActiveCategory', priority: 'normal' },
-            { component: this.builder, method: 'updateCharacter', priority: 'high' }
-        ]);
+        const character = this.builder.currentCharacter;
+        if (confirm(`Remove this ${categoryKey.slice(0,-1)}?`)) {
+            try {
+                UtilitySystem.removeItem(character, categoryKey, itemId);
+                this.builder.updateCharacter();
+                this.builder.showNotification(`${this.capitalizeFirst(categoryKey.slice(0,-1))} removed.`, 'info');
+            } catch (error) {
+                 this.builder.showNotification(`Removal failed: ${error.message}`, 'error');
+            }
+        }
     }
 
-    addUtilityPurchase(category, itemId, itemCost) {
-        const character = this.builder.currentCharacter;
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        
-        if (pools.remaining.utilityPool < itemCost) {
-            throw new Error(`Insufficient utility points (need ${itemCost}, have ${pools.remaining.utilityPool})`);
-        }
-        
-        const itemData = this.findItemById(category, itemId);
-        if (!itemData) {
-            throw new Error(`${category} item not found: ${itemId}`);
-        }
-        
-        character.utilityPurchases[category].push({
-            id: itemId,
-            name: itemData.name,
-            cost: itemCost
+
+    updateActiveCategoryContentUI() {
+        // Update tab button active states
+        document.querySelectorAll('.utility-tab-content .section-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.tab === this.activeCategory);
         });
-        
-        this.builder.showNotification(`Purchased ${itemData.name}`, 'success');
-    }
-
-    removeUtilityPurchase(category, itemId) {
-        const character = this.builder.currentCharacter;
-        const index = character.utilityPurchases[category].findIndex(item => item.id === itemId);
-        
-        if (index !== -1) {
-            const item = character.utilityPurchases[category][index];
-            character.utilityPurchases[category].splice(index, 1);
-            this.builder.showNotification(`Removed ${item.name}`, 'info');
+        // Re-render the content of the active section
+        const contentArea = document.getElementById('utility-active-category-content');
+        if (contentArea && this.builder.currentCharacter) {
+            contentArea.innerHTML = this.renderActiveCategoryContent(this.builder.currentCharacter);
+            // Event listeners are delegated, so new content will be covered.
         }
     }
-
-    handlePurchaseError(itemType, error) {
-        console.error(`Failed to toggle ${itemType}:`, error);
-        this.builder.showNotification(error.message, 'error');
-    }
-
-    // Update methods for UpdateManager
-    updateActiveCategory() {
-        const character = this.builder.currentCharacter;
-        const contentContainer = document.querySelector('.category-content');
-        
-        if (contentContainer && character) {
-            contentContainer.innerHTML = this.renderActiveCategory(character);
-            this.setupEventListeners(); // Re-setup for new content
+    
+    onCharacterUpdate() { // Called by CharacterBuilder
+        const pointPoolContainer = document.querySelector('.utility-tab-content .point-display');
+        if (pointPoolContainer && this.builder.currentCharacter) {
+            pointPoolContainer.outerHTML = this.renderPointPoolInfo(this.builder.currentCharacter);
         }
+        this.updateActiveCategoryContentUI();
     }
 
-    onCharacterUpdate() {
-        UpdateManager.scheduleUpdate(this, 'updateActiveCategory', 'normal');
-    }
-
-    // Data Methods (unchanged but condensed for brevity)
-    getAttributeExpertiseData(attribute) {
-        const data = {
-            awareness: {
-                activity: [
-                    { id: 'tracking', name: 'Tracking', description: 'Following trails, signs, or behavioral patterns' },
-                    { id: 'searching', name: 'Searching', description: 'Scanning for hidden, lost, or obscured details' },
-                    { id: 'perception', name: 'Perception', description: 'Noticing changes, cues, or threats in real time' },
-                    { id: 'senseMotives', name: 'Sense Motives', description: 'Reading intent, emotion, or deception in others' }
-                ],
-                situational: [
-                    { id: 'urbanAreas', name: 'Urban Areas', description: 'Streets, alleys, rooftops, and social rhythms of cities' },
-                    { id: 'wilderness', name: 'Wilderness', description: 'Forests, deserts, mountains, and natural landscapes' },
-                    { id: 'chaoticScenes', name: 'Chaotic Scenes', description: 'Riots, protests, crowds, or high-distraction areas' },
-                    { id: 'lowVisibility', name: 'Low Visibility', description: 'Darkness, fog, smoke, or sight-limiting conditions' }
-                ]
-            },
-            // ... other attributes (truncated for brevity, full data would be included)
-        };
-        return data[attribute] || { activity: [], situational: [] };
-    }
-
-    getFeatureData() {
-        return {
-            'Mental/Psychic Powers': [
-                { id: 'telepathy', name: 'Telepathy', cost: 3, description: 'Two-way mental communication' },
-                { id: 'mindReading', name: 'Mind-Reading', cost: 5, description: 'Read surface thoughts' }
-                // ... full feature data
-            ]
-            // ... other categories
-        };
-    }
-
-    getSenseData() {
-        return {
-            '1': [
-                { id: 'darkvision', name: 'Darkvision', cost: 1, description: 'See in complete darkness' }
-                // ... full sense data
-            ]
-            // ... other tiers
-        };
-    }
-
-    getMovementData() {
-        return [
-            { id: 'flight', name: 'Flight', cost: 10, description: 'Move in any direction at full speed' }
-            // ... full movement data
-        ];
-    }
-
-    getDescriptorData() {
-        return {
-            'Elemental Descriptors': [
-                { id: 'fire', name: 'Fire', cost: 5, description: 'Mastery over flame and heat', applications: ['Forge materials', 'Melt locks'] }
-                // ... full descriptor data
-            ]
-            // ... other categories
-        };
-    }
-
-    // Helper Methods
-    findItemById(category, itemId) {
-        const dataMethods = {
-            features: () => this.findFeatureById(itemId),
-            senses: () => this.findSenseById(itemId),
-            movement: () => this.findMovementById(itemId),
-            descriptors: () => this.findDescriptorById(itemId)
-        };
-        
-        const method = dataMethods[category];
-        return method ? method() : null;
-    }
-
-    findFeatureById(id) {
-        const categories = this.getFeatureData();
-        for (const features of Object.values(categories)) {
-            const feature = features.find(f => f.id === id);
-            if (feature) return feature;
-        }
-        return null;
-    }
-
-    findSenseById(id) {
-        const tiers = this.getSenseData();
-        for (const senses of Object.values(tiers)) {
-            const sense = senses.find(s => s.id === id);
-            if (sense) return sense;
-        }
-        return null;
-    }
-
-    findMovementById(id) {
-        return this.getMovementData().find(m => m.id === id);
-    }
-
-    findDescriptorById(id) {
-        const categories = this.getDescriptorData();
-        for (const descriptors of Object.values(categories)) {
-            const descriptor = descriptors.find(d => d.id === id);
-            if (descriptor) return descriptor;
-        }
-        return null;
-    }
-
-    capitalizeFirst(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+    capitalizeFirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 }
+

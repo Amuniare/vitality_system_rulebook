@@ -1,10 +1,11 @@
-// UniqueAbilitySection.js - Complex unique ability purchase with upgrade system
+// rulebook/character-builder/ui/components/UniqueAbilitySection.js
 import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
+import { RenderUtils } from '../shared/RenderUtils.js'; // Added
 
 export class UniqueAbilitySection {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.selectedUpgrades = {}; // Track upgrades for each ability
+        this.selectedUpgrades = {};
     }
 
     render(character, pointInfo) {
@@ -15,35 +16,33 @@ export class UniqueAbilitySection {
             <div class="main-pool-category">
                 <h3>Unique Abilities (Complex)</h3>
                 <p class="category-description">
-                    Powerful abilities with customizable upgrades. Purchase the base ability first, 
+                    Powerful abilities with customizable upgrades. Purchase the base ability first,
                     then add upgrades to customize its effects and power.
                 </p>
-                
-                <div class="purchased-items">
-                    <h4>Purchased Unique Abilities (${purchasedAbilities.length})</h4>
-                    ${purchasedAbilities.length > 0 ? `
-                        <div class="item-list">
-                            ${purchasedAbilities.map((ability, index) => this.renderPurchasedAbility(ability, index)).join('')}
-                        </div>
-                    ` : '<p class="empty-state">No unique abilities purchased</p>'}
-                </div>
-                
+
+                ${RenderUtils.renderPurchasedList(
+                    purchasedAbilities,
+                    (ability, index) => this.renderPurchasedAbility(ability, index),
+                    { title: `Purchased Unique Abilities (${purchasedAbilities.length})`, emptyMessage: 'No unique abilities purchased' }
+                )}
+
                 <div class="available-items">
                     <h4>Available Unique Abilities</h4>
-                    <div class="ability-grid">
-                        ${uniqueAbilities.map(ability => this.renderUniqueAbilityOption(ability, character, pointInfo)).join('')}
-                    </div>
+                    ${RenderUtils.renderGrid(
+                        uniqueAbilities,
+                        (ability) => this.renderUniqueAbilityOption(ability, character, pointInfo),
+                        { gridContainerClass: 'grid-layout ability-grid', gridSpecificClass: 'grid-columns-auto-fit-320' }
+                    )}
                 </div>
             </div>
         `;
-
         return containerHtml;
     }
 
     renderPurchasedAbility(ability, index) {
         const upgradeCount = ability.upgrades?.length || 0;
         const upgradeText = upgradeCount > 0 ? ` (${upgradeCount} upgrades)` : '';
-        
+
         return `
             <div class="purchased-item">
                 <div class="item-info">
@@ -51,62 +50,66 @@ export class UniqueAbilitySection {
                     <span class="item-details">${ability.cost}p - ${ability.category}</span>
                 </div>
                 <div class="item-actions">
-                    <button class="btn-secondary btn-small modify-ability" data-index="${index}">Modify</button>
-                    <button class="btn-danger btn-small remove-ability" data-index="${index}">Remove</button>
+                     ${RenderUtils.renderButton({ text: 'Modify', variant: 'secondary', size: 'small', classes: ['modify-ability'], dataAttributes: { index: index, 'boon-id': ability.boonId, action: 'modify-unique-ability' }})}
+                     ${RenderUtils.renderButton({ text: 'Remove', variant: 'danger', size: 'small', classes: ['remove-ability'], dataAttributes: { index: index, 'boon-id': ability.boonId, action: 'remove-unique-ability' }})}
                 </div>
             </div>
         `;
     }
 
     renderUniqueAbilityOption(ability, character, pointInfo) {
-        const canAfford = pointInfo.remaining >= ability.baseCost;
         const alreadyPurchased = character.mainPoolPurchases.boons.some(b => b.boonId === ability.id && b.type === 'unique');
-        const canPurchase = canAfford && !alreadyPurchased;
+        const canAffordBase = pointInfo.remaining >= ability.baseCost;
+
+        let status = 'available';
+        if (alreadyPurchased) status = 'purchased';
+        else if (!canAffordBase) status = 'unaffordable';
 
         const upgradeCount = ability.upgrades?.length || 0;
+        let additionalContent = `<div class="item-category">Category: ${ability.category}</div>`;
+        additionalContent += `<div class="upgrade-info">${upgradeCount} upgrades available</div>`;
 
-        return `
-            <div class="ability-card complex ${canPurchase ? 'clickable' : 'disabled'}" 
-                 data-ability-id="${ability.id}">
-                <h5>${ability.name}</h5>
-                <p class="item-cost"><strong>Base Cost: ${ability.baseCost}p</strong></p>
-                <p class="item-description">${ability.description}</p>
-                <div class="item-category">Category: ${ability.category}</div>
-                <div class="upgrade-info">${upgradeCount} upgrades available</div>
-                
-                ${!alreadyPurchased && canPurchase ? `
-                    <div class="upgrade-preview">
-                        <div class="upgrade-selector" data-ability-id="${ability.id}">
-                            <h6>Select Upgrades (Optional)</h6>
-                            <div class="upgrade-list">
-                                ${this.renderUpgradeOptions(ability, ability.id)}
-                            </div>
-                            <div class="total-cost">
-                                Total Cost: <span id="total-cost-${ability.id}">${ability.baseCost}</span>p
-                            </div>
+        if (!alreadyPurchased && canAffordBase) {
+            additionalContent += `
+                <div class="upgrade-preview">
+                    <div class="upgrade-selector" data-ability-id="${ability.id}">
+                        <h6>Select Upgrades (Optional)</h6>
+                        <div class="upgrade-list">
+                            ${this.renderUpgradeOptions(ability, ability.id)}
                         </div>
-                        <button class="btn-primary purchase-ability" data-ability-id="${ability.id}">
-                            Purchase Ability
-                        </button>
+                        <div class="total-cost">
+                            Total Cost: <span id="total-cost-${ability.id}">${ability.baseCost}</span>p
+                        </div>
                     </div>
-                ` : ''}
-                
-                ${alreadyPurchased ? 
-                    '<div class="status-badge">Already Purchased</div>' : 
-                    !canAfford ? '<div class="status-badge error">Cannot Afford</div>' : ''
-                }
-            </div>
-        `;
+                    ${RenderUtils.renderButton({
+                        text: 'Purchase Ability',
+                        variant: 'primary',
+                        classes: ['purchase-ability'], // Keep specific class if JS relies on it
+                        dataAttributes: { 'ability-id': ability.id, action: 'purchase-unique-ability' }
+                    })}
+                </div>
+            `;
+        }
+        
+        return RenderUtils.renderCard({
+            title: ability.name,
+            cost: ability.baseCost, // Base cost shown on card
+            description: ability.description,
+            status: status, // status for the base ability purchase
+            clickable: false, // Click handling is on the purchase button inside
+            disabled: alreadyPurchased || !canAffordBase, // Card disabled if purchased or can't afford base
+            dataAttributes: { 'ability-id': ability.id },
+            additionalContent: additionalContent
+        }, { cardClass: 'ability-card complex', showStatus: !(!alreadyPurchased && canAffordBase) }); // Only show card status if not showing purchase UI
     }
 
     renderUpgradeOptions(ability, abilityId) {
-        if (!ability.upgrades) return '';
-        
+        if (!ability.upgrades) return '<p class="empty-state">No upgrades for this ability.</p>';
         return ability.upgrades.map(upgrade => `
             <div class="upgrade-option">
                 <label class="upgrade-label">
-                    <input type="checkbox" 
-                           class="upgrade-checkbox" 
+                    <input type="checkbox"
+                           class="upgrade-checkbox"
                            data-ability-id="${abilityId}"
                            data-upgrade-id="${upgrade.id}"
                            data-upgrade-cost="${upgrade.cost}">
@@ -116,134 +119,125 @@ export class UniqueAbilitySection {
                 <div class="upgrade-description">${upgrade.description}</div>
                 ${upgrade.per ? `
                     <div class="upgrade-quantity">
-                        <label>Quantity:</label>
-                        <input type="number" 
-                               class="upgrade-qty" 
+                        <label for="qty-${abilityId}-${upgrade.id}">Quantity:</label>
+                        <input type="number"
+                               id="qty-${abilityId}-${upgrade.id}"
+                               class="upgrade-qty"
                                data-ability-id="${abilityId}"
                                data-upgrade-id="${upgrade.id}"
-                               min="1" 
-                               max="10" 
-                               value="1" 
-                               disabled>
+                               min="1" max="10" value="1" disabled>
                     </div>
                 ` : ''}
             </div>
         `).join('');
     }
 
+
     setupEventListeners() {
-        // Upgrade selection
-        document.querySelectorAll('.upgrade-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const abilityId = e.target.dataset.abilityId;
-                const upgradeId = e.target.dataset.upgradeId;
-                const isChecked = e.target.checked;
-                
-                // Enable/disable quantity input
-                const qtyInput = document.querySelector(`input.upgrade-qty[data-ability-id="${abilityId}"][data-upgrade-id="${upgradeId}"]`);
-                if (qtyInput) {
-                    qtyInput.disabled = !isChecked;
-                    if (!isChecked) qtyInput.value = 1;
-                }
-                
-                this.updateAbilityCost(abilityId);
+        // Handled by MainPoolTab's EventManager using data-action for purchase/remove
+        // Internal listeners for checkboxes and quantity need to be setup if this component manages its own re-render
+        // or if MainPoolTab delegates these specific input changes.
+        // For now, assuming MainPoolTab will re-render this section, which re-attaches.
+        // If this component re-renders itself on upgrade selection, then:
+        const container = document.querySelector('.unique-ability-section'); // This selector needs to be more specific if used
+        if (container) {
+             container.querySelectorAll('.upgrade-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => this.handleUpgradeSelectionChange(e.target));
             });
-        });
+            container.querySelectorAll('.upgrade-qty').forEach(input => {
+                input.addEventListener('input', (e) => this.handleUpgradeQuantityChange(e.target));
+            });
+        }
+    }
+    
+    handleUpgradeSelectionChange(checkboxElement) {
+        const abilityId = checkboxElement.dataset.abilityId;
+        const upgradeId = checkboxElement.dataset.upgradeId;
+        const isChecked = checkboxElement.checked;
 
-        // Quantity changes
-        document.querySelectorAll('.upgrade-qty').forEach(input => {
-            input.addEventListener('input', (e) => {
-                const abilityId = e.target.dataset.abilityId;
-                this.updateAbilityCost(abilityId);
-            });
-        });
-
-        // Purchase ability
-        document.querySelectorAll('.purchase-ability').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const abilityId = e.target.dataset.abilityId;
-                this.purchaseUniqueAbility(abilityId);
-            });
-        });
-
-        // Remove ability
-        document.querySelectorAll('.remove-ability').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const index = parseInt(btn.dataset.index);
-                this.removeAbility(index);
-            });
-        });
+        const qtyInput = document.querySelector(`input.upgrade-qty[data-ability-id="${abilityId}"][data-upgrade-id="${upgradeId}"]`);
+        if (qtyInput) {
+            qtyInput.disabled = !isChecked;
+            if (!isChecked) qtyInput.value = 1; // Reset quantity if unchecked
+        }
+        this.updateAbilityCostDisplay(abilityId);
     }
 
-    updateAbilityCost(abilityId) {
-        const ability = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === abilityId);
-        if (!ability) return;
+    handleUpgradeQuantityChange(quantityInputElement) {
+         const abilityId = quantityInputElement.dataset.abilityId;
+         this.updateAbilityCostDisplay(abilityId);
+    }
 
-        let totalCost = ability.baseCost;
-        const selectedUpgrades = [];
+
+    updateAbilityCostDisplay(abilityId) {
+        const abilityDef = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === abilityId);
+        if (!abilityDef) return;
+
+        let currentTotalCost = abilityDef.baseCost;
+        const currentSelectedUpgrades = [];
 
         document.querySelectorAll(`input.upgrade-checkbox[data-ability-id="${abilityId}"]:checked`).forEach(checkbox => {
             const upgradeId = checkbox.dataset.upgradeId;
-            const upgradeCost = parseInt(checkbox.dataset.upgradeCost);
-            
-            const upgrade = ability.upgrades.find(u => u.id === upgradeId);
-            const qtyInput = document.querySelector(`input.upgrade-qty[data-ability-id="${abilityId}"][data-upgrade-id="${upgradeId}"]`);
-            const quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
-            
-            if (upgrade) {
-                if (upgrade.per) {
-                    totalCost += upgradeCost * quantity;
+            const upgradeDef = abilityDef.upgrades.find(u => u.id === upgradeId);
+            if (upgradeDef) {
+                let quantity = 1;
+                if (upgradeDef.per) {
+                    const qtyInput = document.querySelector(`input.upgrade-qty[data-ability-id="${abilityId}"][data-upgrade-id="${upgradeId}"]`);
+                    quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+                    currentTotalCost += upgradeDef.cost * quantity;
                 } else {
-                    totalCost += upgradeCost;
+                    currentTotalCost += upgradeDef.cost;
                 }
-                
-                selectedUpgrades.push({ id: upgradeId, quantity: upgrade.per ? quantity : undefined });
+                currentSelectedUpgrades.push({ id: upgradeId, quantity: upgradeDef.per ? quantity : undefined });
             }
         });
 
-        // Update display
         const costElement = document.getElementById(`total-cost-${abilityId}`);
         if (costElement) {
-            costElement.textContent = totalCost;
+            costElement.textContent = currentTotalCost;
         }
-
-        // Store selected upgrades
-        this.selectedUpgrades[abilityId] = selectedUpgrades;
+        this.selectedUpgrades[abilityId] = currentSelectedUpgrades; // Store for purchase
     }
 
     purchaseUniqueAbility(abilityId) {
         const character = this.builder.currentCharacter;
-        const upgrades = this.selectedUpgrades[abilityId] || [];
-        
+        const upgradesToPurchase = this.selectedUpgrades[abilityId] || []; // Get the currently selected upgrades
         try {
-            UniqueAbilitySystem.purchaseUniqueAbility(character, abilityId, upgrades);
-            
+            UniqueAbilitySystem.purchaseUniqueAbility(character, abilityId, upgradesToPurchase);
             this.builder.updateCharacter();
             this.builder.showNotification(`Purchased unique ability!`, 'success');
-            
-            // Clear selected upgrades
-            delete this.selectedUpgrades[abilityId];
-            
+            delete this.selectedUpgrades[abilityId]; // Clear selection after purchase
+             // Force re-render of this section to update display
+            const mainPoolTab = this.builder.tabs.mainPool;
+            if(mainPoolTab && mainPoolTab.activeSection === 'uniqueAbilities') {
+                mainPoolTab.updateActiveSection();
+            }
+
         } catch (error) {
             this.builder.showNotification(`Failed to purchase ability: ${error.message}`, 'error');
         }
     }
 
-    removeAbility(index) {
+    removeAbility(abilityIdToRemove) { // Changed to use boonId
         const character = this.builder.currentCharacter;
-        const uniqueAbilities = character.mainPoolPurchases.boons.filter(b => b.type === 'unique');
-        
         try {
-            if (index >= 0 && index < uniqueAbilities.length) {
-                const ability = uniqueAbilities[index];
+            const ability = character.mainPoolPurchases.boons.find(b => b.boonId === abilityIdToRemove && b.type === 'unique');
+            if(ability){
                 UniqueAbilitySystem.removeUniqueAbility(character, ability.boonId);
-                
                 this.builder.updateCharacter();
                 this.builder.showNotification(`Removed ${ability.name}`, 'info');
+            } else {
+                this.builder.showNotification(`Could not find unique ability to remove.`, 'error');
             }
         } catch (error) {
             this.builder.showNotification(`Failed to remove ability: ${error.message}`, 'error');
         }
+    }
+
+    // Placeholder for modify ability - might open a modal or inline editor
+    modifyAbility(abilityIdToModify) {
+        this.builder.showNotification(`Modify functionality for ${abilityIdToModify} not yet implemented.`, 'info');
+        // This would involve pre-populating the upgrade selector with existing upgrades
+        // and then calling an update method instead of purchase.
     }
 }
