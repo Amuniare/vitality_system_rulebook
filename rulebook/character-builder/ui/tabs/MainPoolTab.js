@@ -1,11 +1,11 @@
-// MainPoolTab.js - Main pool purchases with corrected flaw economics
-import { TraitFlawSystem } from '../systems/TraitFlawSystem.js';
-import { UniqueAbilitySystem } from '../systems/UniqueAbilitySystem.js';
-import { ActionSystem } from '../systems/ActionSystem.js';
-import { FlawPurchaseSection } from './components/FlawPurchaseSection.js';
-import { TraitPurchaseSection } from './components/TraitPurchaseSection.js';
-import { BoonPurchaseSection } from './components/BoonPurchaseSection.js';
-import { ActionUpgradeSection } from './components/ActionUpgradeSection.js';
+// MainPoolTab.js - Main pool purchases with corrected imports and economics
+import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
+import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
+import { ActionSystem } from '../../systems/ActionSystem.js';
+import { FlawPurchaseSection } from '../components/FlawPurchaseSection.js';
+import { TraitPurchaseSection } from '../components/TraitPurchaseSection.js';
+import { BoonPurchaseSection } from '../components/BoonPurchaseSection.js';
+import { ActionUpgradeSection } from '../components/ActionUpgradeSection.js';
 
 export class MainPoolTab {
     constructor(characterBuilder) {
@@ -147,9 +147,15 @@ export class MainPoolTab {
         const section = this.sections[this.activeSection];
         if (!section) return '';
 
+        const pointInfo = {
+            available: TraitFlawSystem.calculateMainPoolAvailable(character),
+            spent: TraitFlawSystem.calculateMainPoolSpent(character),
+            remaining: TraitFlawSystem.calculateMainPoolAvailable(character) - TraitFlawSystem.calculateMainPoolSpent(character)
+        };
+
         return `
             <div class="section-content">
-                ${section.render()}
+                ${section.render(character, pointInfo)}
             </div>
         `;
     }

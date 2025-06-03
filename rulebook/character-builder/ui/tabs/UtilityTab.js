@@ -2,13 +2,17 @@
 export class UtilityTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.character = characterBuilder.character;
         this.activeCategory = 'expertise';
     }
 
     render() {
         const tabContent = document.getElementById('tab-utility');
         if (!tabContent) return;
+
+        const character = this.builder.currentCharacter;
+        if (!character) return;
+
+
 
         tabContent.innerHTML = `
             <div class="utility-section">

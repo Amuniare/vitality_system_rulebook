@@ -1,11 +1,29 @@
-// CharacterBuilder.js - DIAGNOSTIC VERSION
+// CharacterBuilder.js - Main character builder with real components
 import { VitalityCharacter } from '../core/VitalityCharacter.js';
+import { CharacterLibrary } from './components/CharacterLibrary.js';
+import { CharacterTree } from './components/CharacterTree.js';
+import { PointPoolDisplay } from './components/PointPoolDisplay.js';
+import { ValidationDisplay } from './components/ValidationDisplay.js';
+
+// Import all tabs
+import { BasicInfoTab } from './tabs/BasicInfoTab.js';
+import { ArchetypeTab } from './tabs/ArchetypeTab.js';
+import { AttributeTab } from './tabs/AttributeTab.js';
+import { MainPoolTab } from './tabs/MainPoolTab.js';
+import { SpecialAttackTab } from './tabs/SpecialAttackTab.js';
+import { UtilityTab } from './tabs/UtilityTab.js';
+import { SummaryTab } from './tabs/SummaryTab.js';
+
+// Import calculation systems
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js';
+import { StatCalculator } from '../calculators/StatCalculator.js';
+import { CharacterValidator } from '../validators/CharacterValidator.js';
 
 export class CharacterBuilder {
     constructor() {
         console.log('🟡 CharacterBuilder constructor started');
         this.currentCharacter = null;
-        this.characters = this.loadCharacters();
+        this.library = new CharacterLibrary();
         this.currentTab = 'basicInfo';
         this.initialized = false;
         console.log('✅ CharacterBuilder constructor completed');
@@ -38,119 +56,98 @@ export class CharacterBuilder {
     async initAfterDOM() {
         console.log('🟡 initAfterDOM started');
         
-        // Test if button exists BEFORE setting up listeners
-        this.testButtonExistence();
-        
-        // Initialize components with error handling
         try {
+            // Initialize character library first
+            console.log('🟡 Initializing character library...');
+            await this.library.init();
+            console.log('✅ Character library initialized');
+
+            // Initialize components
             console.log('🟡 Initializing components...');
             this.initializeComponents();
             console.log('✅ Components initialized');
-        } catch (error) {
-            console.error('❌ Component initialization failed:', error);
-            // Continue anyway for debugging
-        }
-        
-        // Initialize tabs with error handling  
-        try {
+
+            // Initialize tabs
             console.log('🟡 Initializing tabs...');
             this.initializeTabs();
             console.log('✅ Tabs initialized');
+            
+            // Set up event listeners
+            console.log('🟡 Setting up event listeners...');
+            this.setupEventListeners();
+            console.log('✅ Event listeners setup completed');
+            
+            // Show welcome screen
+            console.log('🟡 Showing welcome screen...');
+            this.showWelcomeScreen();
+            console.log('✅ Welcome screen shown');
+            
+            this.initialized = true;
+            console.log('✅ CharacterBuilder fully initialized');
+            
         } catch (error) {
-            console.error('❌ Tab initialization failed:', error);
-            // Continue anyway for debugging
-        }
-        
-        // Set up event listeners
-        console.log('🟡 Setting up event listeners...');
-        this.setupEventListeners();
-        console.log('✅ Event listeners setup completed');
-        
-        // Show welcome screen
-        console.log('🟡 Showing welcome screen...');
-        this.showWelcomeScreen();
-        console.log('✅ Welcome screen shown');
-        
-        this.initialized = true;
-        console.log('✅ CharacterBuilder fully initialized');
-    }
-
-    testButtonExistence() {
-        console.log('🔍 Testing button existence...');
-        const newCharacterBtn = document.getElementById('new-character-btn');
-        
-        if (newCharacterBtn) {
-            console.log('✅ new-character-btn found:', newCharacterBtn);
-            console.log('Button details:', {
-                id: newCharacterBtn.id,
-                className: newCharacterBtn.className,
-                textContent: newCharacterBtn.textContent,
-                disabled: newCharacterBtn.disabled
-            });
-        } else {
-            console.error('❌ new-character-btn NOT FOUND!');
-            console.log('Available elements with buttons:', document.querySelectorAll('button'));
-            console.log('Available elements with IDs:', 
-                Array.from(document.querySelectorAll('[id]')).map(el => el.id));
+            console.error('❌ Error in initAfterDOM:', error);
+            throw error;
         }
     }
 
     initializeComponents() {
         console.log('🟡 Initializing UI components...');
-        // Simplified - remove components that might be missing
-        this.characterTree = { render: () => console.log('CharacterTree.render() called') };
-        this.pointPoolDisplay = { update: () => console.log('PointPoolDisplay.update() called') };
-        this.validationDisplay = { update: () => console.log('ValidationDisplay.update() called') };
-        console.log('✅ Components created (mock versions)');
+        
+        this.characterTree = new CharacterTree(this);
+        this.pointPoolDisplay = new PointPoolDisplay(this);
+        this.validationDisplay = new ValidationDisplay(this);
+        
+        // Initialize character tree with library
+        this.characterTree.library = this.library;
+        
+        console.log('✅ Real components created');
     }
 
     initializeTabs() {
         console.log('🟡 Creating tabs...');
-        // Simplified - remove tabs that might be missing
+        
         this.tabs = {
-            basicInfo: { render: () => console.log('BasicInfoTab.render() called') }
+            basicInfo: new BasicInfoTab(this),
+            archetypes: new ArchetypeTab(this),
+            attributes: new AttributeTab(this),
+            mainPool: new MainPoolTab(this),
+            specialAttacks: new SpecialAttackTab(this),
+            utility: new UtilityTab(this),
+            summary: new SummaryTab(this)
         };
-        console.log('✅ Tabs created (mock versions)');
+        
+        console.log('✅ All tabs created');
     }
 
     setupEventListeners() {
         console.log('🟡 setupEventListeners started');
         
-        // Test button existence again
-        const newCharacterBtn = document.getElementById('new-character-btn');
-        console.log('Button found in setupEventListeners:', !!newCharacterBtn);
-        
-        if (newCharacterBtn) {
-            console.log('✅ Button found, adding event listener...');
-            
-            // Add listener with extensive logging
-            newCharacterBtn.addEventListener('click', (e) => {
-                console.log('🎉 NEW CHARACTER BUTTON CLICKED!', e);
-                console.log('Event details:', {
-                    type: e.type,
-                    target: e.target,
-                    currentTarget: e.currentTarget
+        // New character button - wait for characterTree to be ready
+        setTimeout(() => {
+            const newCharacterBtn = document.getElementById('new-character-btn');
+            if (newCharacterBtn) {
+                console.log('✅ Found new-character-btn, adding listener');
+                newCharacterBtn.addEventListener('click', (e) => {
+                    console.log('🎉 NEW CHARACTER BUTTON CLICKED!');
+                    try {
+                        this.createNewCharacter();
+                    } catch (error) {
+                        console.error('❌ Error in createNewCharacter:', error);
+                    }
                 });
-                
-                try {
-                    this.createNewCharacter();
-                } catch (error) {
-                    console.error('❌ Error in createNewCharacter:', error);
-                }
-            });
-            
-            console.log('✅ Event listener added successfully');
-            
-            // Test click programmatically
-            console.log('🧪 Testing programmatic click...');
-            setTimeout(() => {
-                console.log('Triggering test click...');
-                newCharacterBtn.click();
-            }, 1000);
-            
-        } else {
-            console.error('❌ Button not found in setupEventListeners!');
-        }
+            } else {
+                console.warn('⚠️ new-character-btn not found in setupEventListeners');
+            }
+        }, 100);
+
+        // Tab navigation
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-btn')) {
+                const tabName = e.target.dataset.tab;
+                this.switchTab(tabName);
+            }
+        });
         
         console.log('✅ setupEventListeners completed');
     }
@@ -165,29 +162,30 @@ export class CharacterBuilder {
             const character = new VitalityCharacter(null, name);
             console.log('VitalityCharacter created:', character);
             
-            this.characters[character.id] = character;
-            console.log('Character added to collection:', this.characters);
+            this.currentCharacter = character;
+            console.log('Character set as current');
             
-            this.saveCharacters();
-            console.log('Characters saved');
+            this.showCharacterBuilder();
+            console.log('Character builder shown');
             
-            this.loadCharacter(character.id);
-            console.log('Character loaded');
+            this.switchTab('basicInfo');
+            console.log('Switched to basic info tab');
             
-            this.characterTree.render();
-            console.log('Character tree rendered');
+            this.updateAllDisplays();
+            console.log('Displays updated');
             
             console.log('✅ createNewCharacter completed successfully');
             
         } catch (error) {
             console.error('❌ Error in createNewCharacter:', error);
-            alert('Error creating character: ' + error.message);
+            this.showNotification('Error creating character: ' + error.message, 'error');
         }
     }
 
     loadCharacter(characterId) {
         console.log('🟡 loadCharacter called with ID:', characterId);
-        this.currentCharacter = this.characters[characterId];
+        // For now, this would need library integration
+        // this.currentCharacter = this.library.getCharacter(characterId);
         if (this.currentCharacter) {
             this.showCharacterBuilder();
             this.updateAllDisplays();
@@ -200,13 +198,13 @@ export class CharacterBuilder {
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
         
-        console.log('Welcome screen element:', !!welcomeScreen);
-        console.log('Character builder element:', !!characterBuilder);
-        
         if (welcomeScreen) welcomeScreen.classList.remove('hidden');
         if (characterBuilder) characterBuilder.classList.add('hidden');
         
-        this.characterTree.render();
+        // Initialize character tree
+        if (this.characterTree && this.characterTree.init) {
+            this.characterTree.init();
+        }
     }
 
     showCharacterBuilder() {
@@ -216,6 +214,100 @@ export class CharacterBuilder {
         
         if (welcomeScreen) welcomeScreen.classList.add('hidden');
         if (characterBuilder) characterBuilder.classList.remove('hidden');
+        
+        // Update character header
+        this.updateCharacterHeader();
+    }
+
+    updateCharacterHeader() {
+        if (!this.currentCharacter) return;
+        
+        const nameDisplay = document.getElementById('character-name-display');
+        const tierDisplay = document.getElementById('character-tier-display');
+        
+        if (nameDisplay) nameDisplay.textContent = this.currentCharacter.name;
+        if (tierDisplay) tierDisplay.textContent = `Tier ${this.currentCharacter.tier}`;
+    }
+
+    switchTab(tabName) {
+        console.log('🟡 switchTab called with:', tabName);
+        
+        if (!this.tabs[tabName]) {
+            console.error('Tab not found:', tabName);
+            return;
+        }
+        
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+            content.style.display = 'none';
+        });
+        
+        // Remove active class from all tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show selected tab content
+        const tabContent = document.getElementById(`tab-${tabName}`);
+        if (tabContent) {
+            tabContent.classList.add('active');
+            tabContent.style.display = 'block';
+        }
+        
+        // Activate tab button
+        const tabBtn = document.querySelector(`[data-tab="${tabName}"]`);
+        if (tabBtn) {
+            tabBtn.classList.add('active');
+        }
+        
+        // Render the tab content
+        if (this.tabs[tabName] && this.tabs[tabName].render) {
+            this.tabs[tabName].render();
+        }
+        
+        this.currentTab = tabName;
+        this.updateTabStates();
+    }
+
+    updateTabStates() {
+        if (!this.currentCharacter) return;
+        
+        const validation = this.validateCharacter();
+        const buildOrder = validation.sections?.buildOrder;
+        
+        // Enable/disable tabs based on build order
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            const tabName = btn.dataset.tab;
+            let canAccess = true;
+            
+            switch(tabName) {
+                case 'basicInfo':
+                    canAccess = true;
+                    break;
+                case 'archetypes':
+                    canAccess = true;
+                    break;
+                case 'attributes':
+                    canAccess = buildOrder?.buildState?.archetypesComplete || false;
+                    break;
+                case 'mainPool':
+                    canAccess = buildOrder?.buildState?.attributesAssigned || false;
+                    break;
+                case 'specialAttacks':
+                    canAccess = buildOrder?.buildState?.archetypesComplete || false;
+                    break;
+                case 'utility':
+                    canAccess = buildOrder?.buildState?.attributesAssigned || false;
+                    break;
+                case 'summary':
+                    canAccess = true;
+                    break;
+            }
+            
+            btn.disabled = !canAccess;
+            btn.classList.toggle('disabled', !canAccess);
+        });
     }
 
     updateAllDisplays() {
@@ -224,12 +316,10 @@ export class CharacterBuilder {
         
         this.pointPoolDisplay.update();
         this.validationDisplay.update();
-        this.characterTree.render();
-    }
-
-    switchTab(tabName) {
-        console.log('🟡 switchTab called with:', tabName);
-        // Simplified implementation
+        if (this.characterTree && this.characterTree.refresh) {
+            this.characterTree.refresh();
+        }
+        this.updateCharacterHeader();
     }
 
     updateCharacter() {
@@ -240,19 +330,91 @@ export class CharacterBuilder {
         this.updateAllDisplays();
     }
 
-    // Storage methods
-    loadCharacters() {
-        console.log('🟡 loadCharacters called');
-        return {}; // Start with empty character list
+    // Point pool calculations
+    calculatePointPools() {
+        if (!this.currentCharacter) {
+            return {
+                totalAvailable: { combatAttributes: 0, utilityAttributes: 0, mainPool: 0, utilityPool: 0, specialAttacks: 0 },
+                totalSpent: { combatAttributes: 0, utilityAttributes: 0, mainPool: 0, utilityPool: 0, specialAttacks: 0 }
+            };
+        }
+        
+        return PointPoolCalculator.calculateAllPools(this.currentCharacter);
     }
 
+    // Character stats calculations
+    calculateStats() {
+        if (!this.currentCharacter) {
+            return { final: {}, breakdown: {} };
+        }
+        
+        return StatCalculator.calculateAllStats(this.currentCharacter);
+    }
+
+    // Character validation
+    validateCharacter() {
+        if (!this.currentCharacter) {
+            return { isValid: false, errors: ['No character loaded'], warnings: [], sections: {} };
+        }
+        
+        return CharacterValidator.validateCharacter(this.currentCharacter);
+    }
+
+    // Character export
+    exportCharacterJSON() {
+        if (!this.currentCharacter) {
+            this.showNotification('No character to export', 'error');
+            return;
+        }
+        
+        const dataStr = JSON.stringify(this.currentCharacter, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${this.currentCharacter.name.replace(/[^a-z0-9]/gi, '_')}_character.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Character exported successfully!', 'success');
+    }
+
+    // Storage methods (simplified for now)
     saveCharacters() {
-        console.log('🟡 saveCharacters called (no-op)');
-        // No-op - we only download individual files now
+        console.log('🟡 saveCharacters called');
+        // This would integrate with the character library
+        if (this.currentCharacter && this.library) {
+            this.library.saveCharacter(this.currentCharacter);
+        }
     }
 
     showNotification(message, type = 'info') {
         console.log(`📢 Notification (${type}):`, message);
-        alert(`${type.toUpperCase()}: ${message}`);
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            color: var(--text-light);
+            border: 1px solid var(--accent-primary);
+            padding: 1rem;
+            border-radius: 4px;
+            z-index: 1000;
+            max-width: 300px;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
     }
 }

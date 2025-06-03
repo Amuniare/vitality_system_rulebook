@@ -1,4 +1,4 @@
-// FlawPurchaseSection.js - Flaw purchase interface with proper economics
+// FlawPurchaseSection.js - Flaw purchase interface with corrected economics
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
 
 export class FlawPurchaseSection {
@@ -6,28 +6,23 @@ export class FlawPurchaseSection {
         this.builder = characterBuilder;
     }
 
-    render() {
-        const character = this.builder.currentCharacter;
-        if (!character) return '';
-
+    render(character, pointInfo) {
         const flaws = TraitFlawSystem.getAvailableFlaws();
         const statOptions = TraitFlawSystem.getFlawStatOptions();
-        const mainPoolAvailable = TraitFlawSystem.calculateMainPoolAvailable(character);
-        const mainPoolSpent = TraitFlawSystem.calculateMainPoolSpent(character);
-        const remainingPoints = mainPoolAvailable - mainPoolSpent;
+        const remainingPoints = pointInfo.remaining;
 
         return `
             <div class="flaw-purchase-section">
                 <div class="section-header">
-                    <h4>Flaws</h4>
+                    <h4>Flaws (Cost 30p Each)</h4>
                     <div class="points-remaining">
                         Remaining Points: <span class="${remainingPoints < 0 ? 'over-budget' : ''}">${remainingPoints}</span>
                     </div>
                 </div>
                 
                 <div class="section-description">
-                    Flaws are permanent disadvantages that COST 30 points each but provide +Tier bonus to one stat.
-                    Each additional bonus to the same stat reduces by 1 (stacking penalty).
+                    <strong>NEW ECONOMICS:</strong> Flaws now COST 30 points each but provide +Tier bonus to one chosen stat.
+                    Each additional bonus to the same stat has stacking penalty (reduces by 1 per stack).
                 </div>
                 
                 <div class="purchased-flaws">
@@ -56,7 +51,7 @@ export class FlawPurchaseSection {
                     <div class="purchased-flaw-card">
                         <div class="flaw-info">
                             <span class="flaw-name">${flaw.name}</span>
-                            <span class="flaw-cost">-${flaw.cost}p</span>
+                            <span class="flaw-cost">Cost: ${flaw.cost}p</span>
                             ${flaw.statBonus ? `<span class="stat-bonus">+${character.tier} ${flaw.statBonus}</span>` : ''}
                         </div>
                         <button class="btn-small btn-danger" data-action="remove-flaw" data-index="${index}">Remove</button>
@@ -72,10 +67,10 @@ export class FlawPurchaseSection {
         const isDisabled = isAlreadyPurchased || !canAfford;
 
         return `
-            <div class="flaw-card ${isDisabled ? 'disabled' : ''}" data-flaw-id="${flaw.id}">
+            <div class="flaw-card ${isDisabled ? 'disabled' : 'clickable'}" data-flaw-id="${flaw.id}">
                 <div class="flaw-header">
                     <span class="flaw-name">${flaw.name}</span>
-                    <span class="flaw-cost ${!canAfford ? 'unaffordable' : ''}">-${flaw.cost}p</span>
+                    <span class="flaw-cost ${!canAfford ? 'unaffordable' : ''}">Cost: ${flaw.cost}p</span>
                 </div>
                 <div class="flaw-description">${flaw.description}</div>
                 <div class="flaw-restriction">
@@ -85,7 +80,7 @@ export class FlawPurchaseSection {
                 ${!isDisabled ? `
                     <div class="flaw-purchase-options">
                         <div class="stat-bonus-selection">
-                            <label>Choose stat bonus (+Tier):</label>
+                            <label>Choose stat bonus (+${character.tier}):</label>
                             <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
                                 <option value="">Select stat...</option>
                                 ${statOptions.map(stat => `
@@ -94,7 +89,7 @@ export class FlawPurchaseSection {
                             </select>
                         </div>
                         <button class="btn-primary purchase-flaw-btn" data-flaw-id="${flaw.id}" disabled>
-                            Purchase Flaw
+                            Purchase Flaw (${flaw.cost}p)
                         </button>
                     </div>
                 ` : ''}
@@ -106,11 +101,11 @@ export class FlawPurchaseSection {
     }
 
     setupEventListeners() {
-        // Stat bonus selection
+        // Stat bonus selection enables purchase button
         document.querySelectorAll('.stat-bonus-select').forEach(select => {
             select.addEventListener('change', (e) => {
                 const flawId = e.target.dataset.flawId;
-                const purchaseBtn = document.querySelector(`[data-action="purchase-flaw"][data-flaw-id="${flawId}"]`);
+                const purchaseBtn = document.querySelector(`.purchase-flaw-btn[data-flaw-id="${flawId}"]`);
                 if (purchaseBtn) {
                     purchaseBtn.disabled = !e.target.value;
                 }

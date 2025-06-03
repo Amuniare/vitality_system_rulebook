@@ -242,7 +242,10 @@ export class TraitFlawSystem {
         };
     }
 
-    // Purchase flaw
+
+    
+
+    // Purchase flaw with corrected economics
     static purchaseFlaw(character, flawId, statBonus) {
         const validation = this.validateFlawPurchase(character, flawId, statBonus);
         if (!validation.isValid) {
@@ -254,7 +257,7 @@ export class TraitFlawSystem {
         character.mainPoolPurchases.flaws.push({
             flawId,
             name: flaw.name,
-            cost: flaw.cost,
+            cost: flaw.cost, // Flaws cost points now
             statBonus: statBonus || null,
             purchasedAt: new Date().toISOString()
         });
@@ -351,8 +354,8 @@ export class TraitFlawSystem {
         // Traits cost points
         spent += character.mainPoolPurchases.traits.reduce((sum, trait) => sum + (trait.cost || 0), 0);
         
-        // Flaws now COST points (major change)
-        spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 0), 0);
+        // Flaws now COST points (major change from previous economics)
+        spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 30), 0);
         
         // Primary action upgrades cost points
         spent += character.mainPoolPurchases.primaryActionUpgrades.length * 30;

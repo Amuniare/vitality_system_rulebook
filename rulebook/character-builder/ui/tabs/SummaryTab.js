@@ -282,4 +282,54 @@ export class SummaryTab {
         `;
     }
 
+
+    renderCalculatedStats(stats) {
+        if (!stats.final) return '';
+    
+        return `
+            <div class="summary-card">
+                <h3>Calculated Stats</h3>
+                <div class="stats-grid">
+                    <div class="combat-stats">
+                        <h4>Combat</h4>
+                        ${this.renderStatWithBreakdown('Accuracy', stats.final.accuracy, stats.breakdown?.accuracy)}
+                        ${this.renderStatWithBreakdown('Damage', stats.final.damage, stats.breakdown?.damage)}
+                        ${this.renderStatWithBreakdown('Conditions', stats.final.conditions, stats.breakdown?.conditions)}
+                        ${this.renderStatWithBreakdown('Initiative', stats.final.initiative, stats.breakdown?.initiative)}
+                        ${this.renderStatWithBreakdown('Movement', `${stats.final.movement} spaces`, stats.breakdown?.movement)}
+                        ${this.renderStatWithBreakdown('HP', stats.final.hp, stats.breakdown?.hp)}
+                    </div>
+                    <div class="defense-stats">
+                        <h4>Defenses</h4>
+                        ${this.renderStatWithBreakdown('Avoidance', stats.final.avoidance, stats.breakdown?.avoidance)}
+                        ${this.renderStatWithBreakdown('Durability', stats.final.durability, stats.breakdown?.durability)}
+                        ${this.renderStatWithBreakdown('Resolve', stats.final.resolve, stats.breakdown?.resolve)}
+                        ${this.renderStatWithBreakdown('Stability', stats.final.stability, stats.breakdown?.stability)}
+                        ${this.renderStatWithBreakdown('Vitality', stats.final.vitality, stats.breakdown?.vitality)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    renderStatWithBreakdown(name, value, breakdown) {
+        if (!breakdown) {
+            return `<div class="stat-item"><span>${name}:</span> <span>${value}</span></div>`;
+        }
+        
+        const sourcesText = breakdown.sources?.map(source => 
+            `${source.source}: ${source.value > 0 ? '+' : ''}${source.value}`
+        ).join(', ') || '';
+        
+        return `
+            <div class="stat-item expandable">
+                <div class="stat-header">
+                    <span>${name}:</span> 
+                    <span class="stat-value">${value}</span>
+                </div>
+                ${sourcesText ? `<div class="stat-breakdown" title="${sourcesText}">Base: ${breakdown.base}${breakdown.difference !== 0 ? `, Modifiers: ${breakdown.difference > 0 ? '+' : ''}${breakdown.difference}` : ''}</div>` : ''}
+            </div>
+        `;
+    }
+
 }
