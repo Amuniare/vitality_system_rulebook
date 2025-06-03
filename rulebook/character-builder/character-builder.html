@@ -67,13 +67,6 @@
             margin: 1rem 0;
         }
 
-        .folder-controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
         /* Character tree */
         .character-item {
             padding: 0.75rem;
@@ -615,7 +608,6 @@
             color: var(--accent-primary);
         }
 
-
         .clickable {
             cursor: pointer;
             transition: all 0.3s ease;
@@ -702,9 +694,7 @@
             <!-- Character Management -->
             <div class="character-management">
                 <h3>My Characters</h3>
-                <div class="folder-controls">
-                    <button id="new-character-btn" class="btn-primary">+ New Character</button>
-                </div>
+                <!-- Character management content will be populated by CharacterTree component -->
                 <div id="character-tree" class="character-tree"></div>
             </div>
             

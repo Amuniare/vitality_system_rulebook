@@ -42,6 +42,9 @@ export class CharacterTree {
     renderQuickActions() {
         return `
             <div class="quick-actions">
+                <button id="character-tree-new-btn" class="btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
+                    + New Character
+                </button>
                 <div class="action-buttons" style="display: flex; gap: 0.25rem;">
                     <button id="bulk-import-btn" class="btn-secondary" style="flex: 1; font-size: 0.8em;">
                         Import
@@ -223,10 +226,13 @@ export class CharacterTree {
     }
 
     setupEventListeners() {
-        // New character button
-        const newCharacterBtn = document.getElementById('new-character-btn');
+        // New character button with unique ID
+        const newCharacterBtn = document.getElementById('character-tree-new-btn');
         if (newCharacterBtn) {
-            newCharacterBtn.addEventListener('click', () => this.builder.createNewCharacter());
+            newCharacterBtn.addEventListener('click', () => {
+                console.log('🎉 CharacterTree new character button clicked!');
+                this.builder.createNewCharacter();
+            });
         }
 
         // Bulk import
