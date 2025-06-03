@@ -1,4 +1,4 @@
-// FlawPurchaseSection.js - Flaw purchase interface with corrected economics
+// FlawPurchaseSection.js - Flaw purchase interface with improved formatting
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
 
 export class FlawPurchaseSection {
@@ -21,8 +21,10 @@ export class FlawPurchaseSection {
                 </div>
                 
                 <div class="section-description">
-                    <strong>NEW ECONOMICS:</strong> Flaws now COST 30 points each but provide +Tier bonus to one chosen stat.
-                    Each additional bonus to the same stat has stacking penalty (reduces by 1 per stack).
+                    <div class="economics-notice">
+                        <strong>NEW ECONOMICS:</strong> Flaws now COST 30 points each but provide +Tier bonus to one chosen stat.
+                        Each additional bonus to the same stat has stacking penalty (reduces by 1 per stack).
+                    </div>
                 </div>
                 
                 <div class="purchased-flaws">
@@ -32,7 +34,7 @@ export class FlawPurchaseSection {
                 
                 <div class="available-flaws">
                     <h5>Available Flaws</h5>
-                    <div class="flaw-list">
+                    <div class="flaw-grid">
                         ${flaws.map(flaw => this.renderFlawCard(flaw, character, statOptions, remainingPoints)).join('')}
                     </div>
                 </div>
@@ -48,13 +50,22 @@ export class FlawPurchaseSection {
         return `
             <div class="purchased-list">
                 ${character.mainPoolPurchases.flaws.map((flaw, index) => `
-                    <div class="purchased-flaw-card">
-                        <div class="flaw-info">
-                            <span class="flaw-name">${flaw.name}</span>
-                            <span class="flaw-cost">Cost: ${flaw.cost}p</span>
-                            ${flaw.statBonus ? `<span class="stat-bonus">+${character.tier} ${flaw.statBonus}</span>` : ''}
+                    <div class="purchased-flaw-item">
+                        <div class="purchased-flaw-content">
+                            <div class="flaw-name-cost">
+                                <span class="flaw-name">${flaw.name}</span>
+                                <span class="flaw-cost">-${flaw.cost}p</span>
+                            </div>
+                            ${flaw.statBonus ? `
+                                <div class="stat-bonus-display">
+                                    <span class="bonus-label">Bonus:</span>
+                                    <span class="bonus-value">+${character.tier} ${flaw.statBonus}</span>
+                                </div>
+                            ` : ''}
                         </div>
-                        <button class="btn-small btn-danger" data-action="remove-flaw" data-index="${index}">Remove</button>
+                        <button class="btn-small btn-danger remove-flaw-btn" data-action="remove-flaw" data-index="${index}">
+                            Remove
+                        </button>
                     </div>
                 `).join('')}
             </div>
@@ -67,35 +78,55 @@ export class FlawPurchaseSection {
         const isDisabled = isAlreadyPurchased || !canAfford;
 
         return `
-            <div class="flaw-card ${isDisabled ? 'disabled' : 'clickable'}" data-flaw-id="${flaw.id}">
-                <div class="flaw-header">
-                    <span class="flaw-name">${flaw.name}</span>
-                    <span class="flaw-cost ${!canAfford ? 'unaffordable' : ''}">Cost: ${flaw.cost}p</span>
-                </div>
-                <div class="flaw-description">${flaw.description}</div>
-                <div class="flaw-restriction">
-                    <strong>Restriction:</strong> ${flaw.restriction}
-                </div>
-                
-                ${!isDisabled ? `
-                    <div class="flaw-purchase-options">
-                        <div class="stat-bonus-selection">
-                            <label>Choose stat bonus (+${character.tier}):</label>
-                            <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
-                                <option value="">Select stat...</option>
-                                ${statOptions.map(stat => `
-                                    <option value="${stat.id}">${stat.name} - ${stat.description}</option>
-                                `).join('')}
-                            </select>
-                        </div>
-                        <button class="btn-primary purchase-flaw-btn" data-flaw-id="${flaw.id}" disabled>
-                            Purchase Flaw (${flaw.cost}p)
-                        </button>
+            <div class="flaw-card ${isDisabled ? 'disabled' : 'available'}" data-flaw-id="${flaw.id}">
+                <div class="flaw-card-header">
+                    <div class="flaw-title-section">
+                        <h6 class="flaw-name">${flaw.name}</h6>
+                        <span class="flaw-cost-badge ${!canAfford && !isAlreadyPurchased ? 'unaffordable' : ''}">
+                            Cost: ${flaw.cost}p
+                        </span>
                     </div>
-                ` : ''}
+                </div>
                 
-                ${isAlreadyPurchased ? '<div class="already-purchased">Already Purchased</div>' : ''}
-                ${!canAfford && !isAlreadyPurchased ? '<div class="cannot-afford">Insufficient Points</div>' : ''}
+                <div class="flaw-card-body">
+                    <div class="flaw-description-section">
+                        <p class="flaw-description">${flaw.description}</p>
+                    </div>
+                    
+                    <div class="flaw-restriction-section">
+                        <label class="restriction-label">Restriction:</label>
+                        <p class="restriction-text">${flaw.restriction}</p>
+                    </div>
+                    
+                    ${!isDisabled ? `
+                        <div class="flaw-purchase-section">
+                            <div class="stat-selection-group">
+                                <label class="stat-selection-label">
+                                    Choose stat bonus (+${character.tier}):
+                                </label>
+                                <select class="stat-bonus-select" data-flaw-id="${flaw.id}">
+                                    <option value="">Select stat...</option>
+                                    ${statOptions.map(stat => `
+                                        <option value="${stat.id}">${stat.name} - ${stat.description}</option>
+                                    `).join('')}
+                                </select>
+                            </div>
+                            
+                            <div class="purchase-button-section">
+                                <button class="btn-primary purchase-flaw-btn" data-flaw-id="${flaw.id}" disabled>
+                                    Purchase Flaw (${flaw.cost}p)
+                                </button>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="flaw-status-section">
+                        ${isAlreadyPurchased ? 
+                            '<div class="status-indicator purchased">Already Purchased</div>' : 
+                            !canAfford ? '<div class="status-indicator unaffordable">Insufficient Points</div>' : ''
+                        }
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -108,6 +139,7 @@ export class FlawPurchaseSection {
                 const purchaseBtn = document.querySelector(`.purchase-flaw-btn[data-flaw-id="${flawId}"]`);
                 if (purchaseBtn) {
                     purchaseBtn.disabled = !e.target.value;
+                    purchaseBtn.classList.toggle('enabled', !!e.target.value);
                 }
             });
         });
