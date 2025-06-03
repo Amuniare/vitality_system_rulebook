@@ -42,9 +42,6 @@ export class CharacterTree {
     renderQuickActions() {
         return `
             <div class="quick-actions">
-                <button id="new-character-btn" class="btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
-                    + New Character
-                </button>
                 <div class="action-buttons" style="display: flex; gap: 0.25rem;">
                     <button id="bulk-import-btn" class="btn-secondary" style="flex: 1; font-size: 0.8em;">
                         Import
