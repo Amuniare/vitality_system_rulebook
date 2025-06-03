@@ -128,7 +128,7 @@ export class MainPoolTab {
         return `
             <div class="section-tabs">
                 <button class="section-tab ${this.activeSection === 'flaws' ? 'active' : ''}" data-section="flaws">
-                    Flaws (COST Points)
+                    Flaws
                 </button>
                 <button class="section-tab ${this.activeSection === 'traits' ? 'active' : ''}" data-section="traits">
                     Traits
