@@ -363,26 +363,26 @@ Upgrade Options:
 *Choose one to define core defensive capabilities*
 
 **Stalwart**
-- Subtract Tier from Avoidance
+- Subtract your Tier from your Avoidance Score
 - Choose Physical OR Non-Physical damage: take half damage from that type
 - Specialized damage resistance
 
-**Resilient** 
-- Add Tier to Durability
-- Consistent protection against all damage types
+**Fortress** 
+- Add your Tier again to Durability
+- Consistent protection against all damage
 
-**Fortress**
-- Add Tier to all three Secondary Resistances (Resolve, Stability, Vitality)
+**Resilient**
+- Add your Tier to all three Secondary Resistances (Resolve, Stability, Vitality)
 - Exceptional at resisting condition effects
 
 **Immutable**
 - Choose one Secondary Resistance type
-- Complete immunity to that resistance category
+- You gain complete immunity in that resistance type
 - Unshakeable defense against specific attacks
 
 **Juggernaut**
-- Increase maximum Health Pool by 5 × Tier
-- Massive health reserves for attrition warfare
+- Increase your maximum Health Pool by 5 × Tier
+- Extra health reserves for attrition warfare
 
 ### **SPECIAL ATTACK ARCHETYPES**
 *Defines development and use of unique combat abilities*
@@ -528,33 +528,33 @@ Upgrade Options:
 *Permanent disadvantages that grant stat bonuses*
 
 **Cost:** 30p each  
-**Benefit:** +Tier bonus to ONE chosen stat: Accuracy, Damage, Conditions, Avoidance, Durability, Speed, All Resistances  
-**Stacking Rule:** Multiple bonuses to same stat reduce by 1 cumulatively  
-**Alternative:** GM may allow taking Flaw for 30p instead of stat bonus
+**Benefit:** +Tier bonus to ONE chosen stat 
+**Stats:** Accuracy, Damage, Conditions, Avoidance, Durability, Speed, or All Resistances  
+**Limit:** You can only gain any specific stat bonus once from a Flaw
+
 
 **Available Flaws:**
 
-**Balanced** → Must have at least (Tier ÷ 2) in each Combat Attribute, can only add Tier bonus once to each stat
+- **Balanced** → Must have at least half your Tier rounded down in each Combat Attribute, can only add Tier bonus once to each stat across Flaws, Traits, and Primary Actions
 
-**Slow** → No Movement Archetype
+- **Slow** → No Movement Archetype
 
-**Combat Focused** → No Utility abilities
+- **Combat Focused** → No Utility abilities
 
-**Sickly** → Maximum Health Pool reduced by 30
+- **Sickly** → Maximum Health Pool reduced by 30
 
-**Unresponsive** → Cannot take Reactions, don't add Tier to Initiative, cannot benefit from Surprise rounds
+- **Unresponsive** → Cannot take Reactions, don't add Tier to Initiative, cannot benefit from Surprise rounds
 
-**Peaked** → Cannot use Efforts
+- **Peaked** → Cannot use Efforts
 
-**Weak** → 1 fewer Combat Attribute Points
+- **Weak** → 1 fewer Combat Attribute Points
 
-**Power Loss** → Lose powers under specific circumstances (discuss with GM)
+- **Power Loss** → Lose powers under specific circumstances (discuss with GM)
 
-**Single Target Specialist** → Choose Melee OR Ranged attacks only
+- **Single Target Specialist** → Choose Melee OR Ranged attacks only
 
-**Equipment Dependent** → Choose specific item; lose access to one Archetype benefit without it, it is noticable and you can be disarmed of it.
+- **Equipment Dependent** → Choose specific item; lose access to one Archetype benefit without it, it is noticable and you can be disarmed of it.
 
-**Stubborn** → Cannot benefit from Assist actions, healing, or other any other ally bonuses (they can't block for you, or move you via carry)
 
 
 
@@ -563,9 +563,9 @@ Upgrade Options:
 
 **Cost:** 30p per Trait  
 **Benefit:** +Tier bonus to TWO chosen stats when conditions met  
+**Stats:** Accuracy, Damage, Conditions, Avoidance, Durability, Speed, or All Resistances  
 **Selection:** Choose combination of conditions totaling up to 3 Tiers  
-**Stats:** Accuracy, Damage, Conditions, Avoidance, Durability, Speed, All Resistances  
-**Stacking Rule:** Multiple bonuses to same stat reduce by 1 cumulatively
+**Limit:** You can only gain any specific stat bonus once from a Trait
 
 ### **TRAIT CONDITIONS**
 
@@ -600,9 +600,8 @@ Upgrade Options:
 - **Temporary 1** → Activate for 1 turn, recharges after 1 minute rest
 - **Irregular 2** → Roll d20, DC 10 to activate each turn
 - **Near Death** → At 0 Hit Points
-- **Dangerous** → No allies within 15 spaces, no civilians within 50 spaces
+- **Dangerous** → No allies within 15 spaces, no civilians within 30 spaces
 - **Avenger** → Ally unconscious or great peril occurred
-- **Holding Back** → No allies within 15 spaces, no civilians within 30 spaces
 
 **VARIABLE CONDITIONS** *(Discuss with GM)*
 - **Environment** → Specific locations (electricity, water, urban, forest)
@@ -621,21 +620,22 @@ Upgrade Options:
 *Cost: Variable, drawn from main pool points*
 
 
-**Psychic (0p)** → All conditions you inflict target Resolve resistance
+**Psychic (0p)** → All conditions you inflict target Resolve resistance instead
 
-**Robot (30p)** → Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, no per-minute healing, count as object for healing purposes
 
-**Telekinetic (0p)** → All conditions you inflict target Stability resistance  
+**Telekinetic (0p)** → All conditions you inflict target Stability resistance instead
 
-**Biohacker (0p)** → All conditions you inflict target Vitality resistance
+**Biohacker (0p)** → All conditions you inflict target Vitality resistance instead
 
 **Utilitarian (15p)** → Gain 10 extra points for Expertise, Features, Senses, and Descriptors
 
-**Speed of Thought (15p)** → Use 2 × Intelligence instead of Awareness for Initiative
+
 
 **Perfectionist (15p)** → Reroll any natural 1s on d20 rolls
 
-**Combat Reflexes (15p)** → Gain additional Reaction per turn
+**Combat Reflexes (15p)** → You can take an additional Reaction each round.
+
+**Robot (30p)** → Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for healing purposes.
 
 ### **OTHER UNIQUE ABILITIES**
 *Specialized powers and abilities for character customization*
