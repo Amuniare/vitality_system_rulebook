@@ -1,5 +1,5 @@
-// TraitFlawSystem.js - REFACTORED to use PointPoolCalculator
-import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // ADDED IMPORT (if not already present)
+// TraitFlawSystem.js - REFACTORED to remove duplicate point calculations
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // USE UNIFIED CALCULATOR
 import { GameConstants } from '../core/GameConstants.js';
 
 export class TraitFlawSystem {
@@ -173,12 +173,12 @@ export class TraitFlawSystem {
             errors.push('Flaw already purchased');
         }
 
-        // Use unified point pool calculator
+        // REMOVED DUPLICATE: Use unified point pool calculator
         const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
+        const remainingPoints = pools.remaining.mainPool;
         
-        if (flaw.cost > availablePoints) {
-            errors.push(`Insufficient main pool points (need ${flaw.cost}, have ${availablePoints})`);
+        if (flaw.cost > remainingPoints) {
+            errors.push(`Insufficient main pool points (need ${flaw.cost}, have ${remainingPoints})`);
         }
 
         // Validate stat bonus selection
@@ -203,12 +203,12 @@ export class TraitFlawSystem {
         const errors = [];
         const warnings = [];
 
-        // Use unified point pool calculator
+        // REMOVED DUPLICATE: Use unified point pool calculator
         const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
+        const remainingPoints = pools.remaining.mainPool;
         
-        if (30 > availablePoints) { // Assuming trait cost is 30
-            errors.push(`Insufficient main pool points (need 30, have ${availablePoints})`);
+        if (30 > remainingPoints) {
+            errors.push(`Insufficient main pool points (need 30, have ${remainingPoints})`);
         }
 
         // Validate condition tier total
@@ -308,34 +308,28 @@ export class TraitFlawSystem {
                 }
                 break;
             case 'weak':
-                // Use PointPoolCalculator for combat attributes
+                // REMOVED DUPLICATE: Use PointPoolCalculator for combat attributes
                 const pools = PointPoolCalculator.calculateAllPools(character);
                 const currentCombatSpent = pools.totalSpent.combatAttributes;
-                // Calculate what the available combat pool *would be* if this flaw is active
-                const combatPoolIfWeak = (character.tier * 2) - 1; 
-                if (currentCombatSpent > combatPoolIfWeak) {
-                     // This check is slightly tricky because the flaw itself reduces the pool.
-                     // The validation should likely happen *after* the flaw is hypothetically applied
-                     // or ensure the point pool calculator considers "Weak" flaw when determining combat attribute availability.
-                     // For now, this warns if current spending would exceed the reduced pool.
-                    warnings.push('Taking Weak flaw may require reallocating combat attribute points.');
+                const reducedPool = pools.totalAvailable.combatAttributes - 1; // Weak reduces by 1
+                if (currentCombatSpent > reducedPool) {
+                    errors.push('Current combat attributes exceed reduced pool from Weak flaw');
                 }
                 break;
             case 'combatFocused':
-                if (character.utilityPurchases && (
-                    Object.values(character.utilityPurchases.expertise).some(cat => cat.basic.length > 0 || cat.mastered.length > 0) ||
-                    character.utilityPurchases.features.length > 0 ||
-                    character.utilityPurchases.senses.length > 0 ||
-                    character.utilityPurchases.movement.length > 0 ||
-                    character.utilityPurchases.descriptors.length > 0
-                )) {
-                    warnings.push('Combat Focused flaw will remove existing utility purchases if taken.');
+                if (character.utilityPurchases && Object.keys(character.utilityPurchases).some(key => 
+                    character.utilityPurchases[key].length > 0)) {
+                    warnings.push('Combat Focused flaw will remove existing utility purchases');
                 }
                 break;
         }
 
         return { errors, warnings };
     }
+
+    // REMOVED DUPLICATE METHODS - Now use PointPoolCalculator:
+    // - calculateMainPoolAvailable() -> Use PointPoolCalculator.calculateMainPoolAvailable()
+    // - calculateMainPoolSpent() -> Use PointPoolCalculator.calculateMainPoolSpent()
 
     // Remove flaw
     static removeFlaw(character, flawIndex) {
@@ -365,6 +359,7 @@ export class TraitFlawSystem {
                     stackingPenalty[flaw.statBonus] = 0;
                 }
                 
+                // Apply stacking penalty: each additional bonus to same stat reduces by 1
                 const bonus = character.tier - stackingPenalty[flaw.statBonus];
                 bonuses[flaw.statBonus] += Math.max(1, bonus);
                 stackingPenalty[flaw.statBonus]++;
@@ -380,6 +375,7 @@ export class TraitFlawSystem {
         const stackingPenalty = {};
 
         character.mainPoolPurchases.traits.forEach(trait => {
+            // Check if all trait conditions are met
             const conditionsMet = trait.conditions.every(conditionId => 
                 currentConditions.includes(conditionId));
 
@@ -390,6 +386,7 @@ export class TraitFlawSystem {
                         stackingPenalty[stat] = 0;
                     }
                     
+                    // Apply stacking penalty
                     const bonus = character.tier - stackingPenalty[stat];
                     bonuses[stat] += Math.max(1, bonus);
                     stackingPenalty[stat]++;

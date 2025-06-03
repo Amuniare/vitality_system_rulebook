@@ -1,5 +1,4 @@
 // SimpleBoonsSystem.js - Simple boon purchases (split from UniqueAbilitySystem)
-import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // ADDED IMPORT
 import { GameConstants } from '../core/GameConstants.js';
 
 export class SimpleBoonsSystem {
@@ -91,8 +90,7 @@ export class SimpleBoonsSystem {
         }
         
         // Check point cost
-        const pools = PointPoolCalculator.calculateAllPools(character); // CORRECTED
-        const availablePoints = pools.remaining.mainPool; // CORRECTED
+        const availablePoints = this.calculateAvailableMainPoolPoints(character);
         
         if (boon.cost > availablePoints) {
             errors.push(`Insufficient main pool points (need ${boon.cost}, have ${availablePoints})`);
@@ -148,6 +146,26 @@ export class SimpleBoonsSystem {
         });
         
         return character;
+    }
+
+    // Calculate available main pool points
+    static calculateAvailableMainPoolPoints(character) {
+        const basePools = character.tier > 2 ? (character.tier - 2) * 15 : 0;
+        const flawBonus = character.mainPoolPurchases.flaws.length * GameConstants.FLAW_BONUS;
+        const extraordinaryBonus = character.archetypes.uniqueAbility === 'extraordinary' ? 
+            Math.max(0, (character.tier - 2) * 15) : 0;
+        
+        const totalAvailable = basePools + flawBonus + extraordinaryBonus;
+        
+        // Calculate spent
+        const spentOnBoons = character.mainPoolPurchases.boons.reduce((total, boon) => total + boon.cost, 0);
+        const spentOnTraits = character.mainPoolPurchases.traits.reduce((total, trait) => total + trait.cost, 0);
+        const spentOnFlaws = character.mainPoolPurchases.flaws.reduce((total, flaw) => total + flaw.cost, 0);
+        const spentOnUpgrades = character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
+        
+        const totalSpent = spentOnBoons + spentOnTraits + spentOnFlaws + spentOnUpgrades;
+        
+        return totalAvailable - totalSpent;
     }
 
     // Remove simple boon

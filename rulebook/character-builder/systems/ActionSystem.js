@@ -1,4 +1,4 @@
-// ActionSystem.js - REFACTORED to use PointPoolCalculator
+// ActionSystem.js - REFACTORED to remove duplicate point calculations
 import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // USE UNIFIED CALCULATOR
 import { GameConstants } from '../core/GameConstants.js';
 
@@ -39,7 +39,7 @@ export class ActionSystem {
             errors.push('Action upgrade already purchased');
         }
 
-        // Use unified point pool calculator
+        // REMOVED DUPLICATE: Use unified point pool calculator
         const pools = PointPoolCalculator.calculateAllPools(character);
         const availablePoints = pools.remaining.mainPool;
         
@@ -84,6 +84,9 @@ export class ActionSystem {
         character.mainPoolPurchases.primaryActionUpgrades.splice(index, 1);
         return character;
     }
+
+    // REMOVED DUPLICATE METHOD: calculateAvailableMainPoolPoints()
+    // Now use: PointPoolCalculator.calculateAllPools(character).remaining.mainPool
 
     // Get action upgrade summary
     static getActionUpgradeSummary(character) {
