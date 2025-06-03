@@ -1,434 +1,420 @@
-// CharacterTree.js - Enhanced character list with library integration
-export class CharacterTree {
-    constructor(characterBuilder) {
-        this.builder = characterBuilder;
-        this.library = null; // Will be set from builder
-        this.currentFolder = 'all';
-        this.searchQuery = '';
-        this.isInitialized = false;
+// CharacterBuilder.js - Main character builder with real components
+import { VitalityCharacter } from '../core/VitalityCharacter.js';
+import { CharacterLibrary } from './components/CharacterLibrary.js';
+import { CharacterTree } from './components/CharacterTree.js';
+import { PointPoolDisplay } from './components/PointPoolDisplay.js';
+import { ValidationDisplay } from './components/ValidationDisplay.js';
+
+// Import all tabs
+import { BasicInfoTab } from './tabs/BasicInfoTab.js';
+import { ArchetypeTab } from './tabs/ArchetypeTab.js';
+import { AttributeTab } from './tabs/AttributeTab.js';
+import { MainPoolTab } from './tabs/MainPoolTab.js';
+import { SpecialAttackTab } from './tabs/SpecialAttackTab.js';
+import { UtilityTab } from './tabs/UtilityTab.js';
+import { SummaryTab } from './tabs/SummaryTab.js';
+
+// Import calculation systems
+import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js';
+import { StatCalculator } from '../calculators/StatCalculator.js';
+import { CharacterValidator } from '../validators/CharacterValidator.js';
+
+export class CharacterBuilder {
+    constructor() {
+        console.log('🟡 CharacterBuilder constructor started');
+        this.currentCharacter = null;
+        this.library = new CharacterLibrary();
+        this.currentTab = 'basicInfo';
+        this.initialized = false;
+        console.log('✅ CharacterBuilder constructor completed');
     }
 
     async init() {
-        this.library = this.builder.library;
-        this.isInitialized = true;
-        this.render();
-    }
-
-    render() {
-        const container = document.getElementById('character-tree');
-        if (!container) return;
-
-        if (!this.isInitialized || !this.library) {
-            container.innerHTML = '<div class="loading">Loading character library...</div>';
-            return;
+        try {
+            console.log('🟡 CharacterBuilder.init() started');
+            
+            // Check if DOM is ready
+            if (document.readyState === 'loading') {
+                console.log('⚠️ DOM still loading, waiting for DOMContentLoaded');
+                return new Promise(resolve => {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        console.log('✅ DOMContentLoaded fired, continuing init');
+                        this.initAfterDOM().then(resolve);
+                    });
+                });
+            } else {
+                console.log('✅ DOM already ready, continuing init');
+                await this.initAfterDOM();
+            }
+            
+        } catch (error) {
+            console.error('❌ CharacterBuilder initialization failed:', error);
+            throw error;
         }
-
-        const characters = this.getFilteredCharacters();
-        const stats = this.library.getLibraryStats();
-
-        container.innerHTML = `
-            <div class="character-library">
-                ${this.renderQuickActions()}
-                ${this.renderSearchAndFilter()}
-                ${this.renderFolderNavigation(stats)}
-                ${this.renderCharacterList(characters)}
-                ${this.renderLibraryStats(stats)}
-            </div>
-        `;
-
-        this.setupEventListeners();
     }
 
-    renderQuickActions() {
-        return `
-            <div class="quick-actions">
-                <button id="new-character-btn" class="btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
-                    + New Character
-                </button>
-                <div class="action-buttons" style="display: flex; gap: 0.25rem;">
-                    <button id="bulk-import-btn" class="btn-secondary" style="flex: 1; font-size: 0.8em;">
-                        Import
-                    </button>
-                    <button id="scan-library-btn" class="btn-secondary" style="flex: 1; font-size: 0.8em;">
-                        Scan
-                    </button>
-                    <button id="export-library-btn" class="btn-secondary" style="flex: 1; font-size: 0.8em;">
-                        Export
-                    </button>
-                </div>
-                <input type="file" id="bulk-import-input" multiple accept=".json" style="display: none;">
-            </div>
-        `;
-    }
-
-    renderSearchAndFilter() {
-        return `
-            <div class="search-filter">
-                <input type="text" 
-                       id="character-search" 
-                       placeholder="Search characters..." 
-                       value="${this.searchQuery}"
-                       style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; 
-                              background: var(--bg-primary); border: 1px solid var(--accent-secondary); 
-                              color: var(--text-light); border-radius: 4px;">
-            </div>
-        `;
-    }
-
-    renderFolderNavigation(stats) {
-        const folders = this.library.getFolders();
+    async initAfterDOM() {
+        console.log('🟡 initAfterDOM started');
         
-        return `
-            <div class="folder-navigation">
-                <h4 style="margin-bottom: 0.5rem;">Folders</h4>
-                <div class="folder-list">
-                    <div class="folder-item ${this.currentFolder === 'all' ? 'active' : ''}" 
-                         data-folder="all">
-                        <span class="folder-name">All Characters</span>
-                        <span class="folder-count">${stats.totalCharacters}</span>
-                    </div>
-                    ${folders.map(folder => `
-                        <div class="folder-item ${this.currentFolder === folder.id ? 'active' : ''}" 
-                             data-folder="${folder.id}">
-                            <span class="folder-name">${folder.name}</span>
-                            <span class="folder-count">${folder.count}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
+        try {
+            // Initialize character library first
+            console.log('🟡 Initializing character library...');
+            await this.library.init();
+            console.log('✅ Character library initialized');
 
-    renderCharacterList(characters) {
-        if (characters.length === 0) {
-            return this.renderEmptyState();
+            // Initialize components
+            console.log('🟡 Initializing components...');
+            this.initializeComponents();
+            console.log('✅ Components initialized');
+
+            // Initialize tabs
+            console.log('🟡 Initializing tabs...');
+            this.initializeTabs();
+            console.log('✅ Tabs initialized');
+            
+            // Set up event listeners
+            console.log('🟡 Setting up event listeners...');
+            this.setupEventListeners();
+            console.log('✅ Event listeners setup completed');
+            
+            // Show welcome screen
+            console.log('🟡 Showing welcome screen...');
+            this.showWelcomeScreen();
+            console.log('✅ Welcome screen shown');
+            
+            this.initialized = true;
+            console.log('✅ CharacterBuilder fully initialized');
+            
+        } catch (error) {
+            console.error('❌ Error in initAfterDOM:', error);
+            throw error;
         }
-
-        return `
-            <div class="character-list">
-                <h4 style="margin: 1rem 0 0.5rem 0;">
-                    Characters ${this.currentFolder !== 'all' ? `(${this.library.getFolderInfo(this.currentFolder)?.name})` : ''}
-                    <span class="character-count">(${characters.length})</span>
-                </h4>
-                ${characters.map(character => this.renderCharacterItem(character)).join('')}
-            </div>
-        `;
     }
 
-    renderCharacterItem(character) {
-        const isLoaded = this.builder.currentCharacter?.id === character.id;
-        const hasIssues = false; // We'll implement validation later
+    initializeComponents() {
+        console.log('🟡 Initializing UI components...');
         
-        return `
-            <div class="character-item ${isLoaded ? 'active' : ''} ${hasIssues ? 'has-issues' : ''}" 
-                 data-character-id="${character.id}">
-                <div class="character-info">
-                    <div class="character-name">${character.name}</div>
-                    <div class="character-details">
-                        <span class="character-tier">Tier ${character.tier}</span>
-                        ${character.realName ? `<span class="character-real-name">• ${character.realName}</span>` : ''}
-                        ${this.renderCharacterStatus(character)}
-                    </div>
-                    ${character.tags.length > 0 ? `
-                        <div class="character-tags">
-                            ${character.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            ${character.tags.length > 3 ? `<span class="tag-more">+${character.tags.length - 3}</span>` : ''}
-                        </div>
-                    ` : ''}
-                </div>
-                <div class="character-actions">
-                    <button class="btn-small btn-secondary" 
-                            data-action="duplicate" 
-                            data-character-id="${character.id}"
-                            title="Duplicate Character">⧉</button>
-                    <button class="btn-small btn-secondary" 
-                            data-action="move" 
-                            data-character-id="${character.id}"
-                            title="Move to Folder">📁</button>
-                    <button class="btn-small btn-danger" 
-                            data-action="delete" 
-                            data-character-id="${character.id}"
-                            title="Remove from Library">✕</button>
-                </div>
-            </div>
-        `;
+        this.characterTree = new CharacterTree(this);
+        this.pointPoolDisplay = new PointPoolDisplay(this);
+        this.validationDisplay = new ValidationDisplay(this);
+        
+        // Initialize character tree with library
+        this.characterTree.library = this.library;
+        
+        console.log('✅ Real components created');
     }
 
-    renderCharacterStatus(character) {
-        if (character.imported) {
-            return `<span class="status imported">Imported ${new Date(character.importDate).toLocaleDateString()}</span>`;
-        }
+    initializeTabs() {
+        console.log('🟡 Creating tabs...');
         
-        const modifiedDate = new Date(character.lastModified);
-        const isRecent = (Date.now() - modifiedDate.getTime()) < 7 * 24 * 60 * 60 * 1000; // 7 days
+        this.tabs = {
+            basicInfo: new BasicInfoTab(this),
+            archetypes: new ArchetypeTab(this),
+            attributes: new AttributeTab(this),
+            mainPool: new MainPoolTab(this),
+            specialAttacks: new SpecialAttackTab(this),
+            utility: new UtilityTab(this),
+            summary: new SummaryTab(this)
+        };
         
-        if (isRecent) {
-            return `<span class="status recent">Modified ${modifiedDate.toLocaleDateString()}</span>`;
-        }
-        
-        return `<span class="status ready">Ready</span>`;
-    }
-
-    renderEmptyState() {
-        const folderName = this.currentFolder === 'all' ? 'library' : this.library.getFolderInfo(this.currentFolder)?.name || 'folder';
-        
-        return `
-            <div class="empty-character-list">
-                <p>No characters in ${folderName}.</p>
-                ${this.currentFolder === 'all' ? `
-                    <p>Click "New Character" to create one, or "Import" to load existing characters.</p>
-                ` : `
-                    <p>Import characters or move existing ones to this folder.</p>
-                `}
-            </div>
-        `;
-    }
-
-    renderLibraryStats(stats) {
-        return `
-            <div class="library-stats">
-                <h5>Library Stats</h5>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span>Total:</span>
-                        <span>${stats.totalCharacters}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>Avg Tier:</span>
-                        <span>${this.calculateAverageTier(stats.byTier)}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    calculateAverageTier(tierStats) {
-        let total = 0;
-        let count = 0;
-        
-        Object.entries(tierStats).forEach(([tier, charCount]) => {
-            total += parseInt(tier) * charCount;
-            count += charCount;
-        });
-        
-        return count > 0 ? (total / count).toFixed(1) : '0';
-    }
-
-    getFilteredCharacters() {
-        let characters = this.library.getCharactersByFolder(this.currentFolder);
-        
-        if (this.searchQuery) {
-            characters = this.library.searchCharacters(this.searchQuery, this.currentFolder);
-        }
-        
-        // Sort by last modified (most recent first)
-        return characters.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
+        console.log('✅ All tabs created');
     }
 
     setupEventListeners() {
-        // New character button
-        const newCharacterBtn = document.getElementById('new-character-btn');
-        if (newCharacterBtn) {
-            newCharacterBtn.addEventListener('click', () => this.builder.createNewCharacter());
-        }
-
-        // Bulk import
-        const bulkImportBtn = document.getElementById('bulk-import-btn');
-        const fileInput = document.getElementById('bulk-import-input');
+        console.log('🟡 setupEventListeners started');
         
-        if (bulkImportBtn && fileInput) {
-            bulkImportBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', (e) => this.handleBulkImport(e.target.files));
-        }
+        // New character button - wait for characterTree to be ready
+        setTimeout(() => {
+            const newCharacterBtn = document.getElementById('new-character-btn');
+            if (newCharacterBtn) {
+                console.log('✅ Found new-character-btn, adding listener');
+                newCharacterBtn.addEventListener('click', (e) => {
+                    console.log('🎉 NEW CHARACTER BUTTON CLICKED!');
+                    try {
+                        this.createNewCharacter();
+                    } catch (error) {
+                        console.error('❌ Error in createNewCharacter:', error);
+                    }
+                });
+            } else {
+                console.warn('⚠️ new-character-btn not found in setupEventListeners');
+            }
+        }, 100);
 
-        // Export library
-        const exportBtn = document.getElementById('export-library-btn');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', () => this.library.exportLibrary());
-        }
-
-        // Search
-        const searchInput = document.getElementById('character-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                this.searchQuery = e.target.value;
-                this.render();
-            });
-        }
-
-        // Folder navigation
-        document.querySelectorAll('.folder-item').forEach(item => {
-            item.addEventListener('click', () => {
-                this.currentFolder = item.dataset.folder;
-                this.render();
-            });
+        // Tab navigation
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-btn')) {
+                const tabName = e.target.dataset.tab;
+                this.switchTab(tabName);
+            }
         });
-
-        // Character selection
-        document.querySelectorAll('.character-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                if (e.target.classList.contains('btn-small')) return;
-                
-                const characterId = item.dataset.characterId;
-                this.loadCharacterFromLibrary(characterId);
-            });
-        });
-
-        // Character actions
-        document.querySelectorAll('[data-action]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                
-                const action = btn.dataset.action;
-                const characterId = btn.dataset.characterId;
-                
-                this.handleCharacterAction(action, characterId);
-            });
-        });
+        
+        console.log('✅ setupEventListeners completed');
     }
 
-    async handleBulkImport(files) {
-        if (!files || files.length === 0) return;
-
-        const importBtn = document.getElementById('bulk-import-btn');
-        const originalText = importBtn.textContent;
+    createNewCharacter() {
+        console.log('🟡 createNewCharacter called');
         
-        importBtn.textContent = 'Importing...';
-        importBtn.disabled = true;
-
         try {
-            const results = await this.library.importCharacters(files, 'roll20_imports');
+            const name = prompt('Character name:') || 'New Character';
+            console.log('Character name entered:', name);
             
-            this.showImportResults(results);
-            this.render(); // Refresh the display
+            const character = new VitalityCharacter(null, name);
+            console.log('VitalityCharacter created:', character);
+            
+            this.currentCharacter = character;
+            console.log('Character set as current');
+            
+            this.showCharacterBuilder();
+            console.log('Character builder shown');
+            
+            this.switchTab('basicInfo');
+            console.log('Switched to basic info tab');
+            
+            this.updateAllDisplays();
+            console.log('Displays updated');
+            
+            console.log('✅ createNewCharacter completed successfully');
             
         } catch (error) {
-            this.builder.showNotification(`Import failed: ${error.message}`, 'error');
-        } finally {
-            importBtn.textContent = originalText;
-            importBtn.disabled = false;
+            console.error('❌ Error in createNewCharacter:', error);
+            this.showNotification('Error creating character: ' + error.message, 'error');
         }
     }
 
-    showImportResults(results) {
-        const total = results.total;
-        const successful = results.successful.length;
-        const failed = results.failed.length;
-        const duplicates = results.duplicates.length;
-
-        let message = `Import completed: ${successful}/${total} successful`;
-        if (duplicates > 0) message += `, ${duplicates} duplicates skipped`;
-        if (failed > 0) message += `, ${failed} failed`;
-
-        const type = failed > successful ? 'warning' : 'success';
-        this.builder.showNotification(message, type);
-
-        if (failed > 0) {
-            console.log('Failed imports:', results.failed);
+    loadCharacter(characterId) {
+        console.log('🟡 loadCharacter called with ID:', characterId);
+        // For now, this would need library integration
+        // this.currentCharacter = this.library.getCharacter(characterId);
+        if (this.currentCharacter) {
+            this.showCharacterBuilder();
+            this.updateAllDisplays();
+            this.switchTab('basicInfo');
         }
     }
 
-    async loadCharacterFromLibrary(characterId) {
-        const characterMeta = this.library.libraryIndex.characters[characterId];
-        if (!characterMeta) {
-            this.builder.showNotification('Character not found in library', 'error');
+    showWelcomeScreen() {
+        console.log('🟡 showWelcomeScreen called');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const characterBuilder = document.getElementById('character-builder');
+        
+        if (welcomeScreen) welcomeScreen.classList.remove('hidden');
+        if (characterBuilder) characterBuilder.classList.add('hidden');
+        
+        // Initialize character tree
+        if (this.characterTree && this.characterTree.init) {
+            this.characterTree.init();
+        }
+    }
+
+    showCharacterBuilder() {
+        console.log('🟡 showCharacterBuilder called');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const characterBuilder = document.getElementById('character-builder');
+        
+        if (welcomeScreen) welcomeScreen.classList.add('hidden');
+        if (characterBuilder) characterBuilder.classList.remove('hidden');
+        
+        // Update character header
+        this.updateCharacterHeader();
+    }
+
+    updateCharacterHeader() {
+        if (!this.currentCharacter) return;
+        
+        const nameDisplay = document.getElementById('character-name-display');
+        const tierDisplay = document.getElementById('character-tier-display');
+        
+        if (nameDisplay) nameDisplay.textContent = this.currentCharacter.name;
+        if (tierDisplay) tierDisplay.textContent = `Tier ${this.currentCharacter.tier}`;
+    }
+
+    switchTab(tabName) {
+        console.log('🟡 switchTab called with:', tabName);
+        
+        if (!this.tabs[tabName]) {
+            console.error('Tab not found:', tabName);
             return;
         }
-
-        // For now, we'll ask user to load the file manually
-        // Later this will be automatic with API integration
-        this.builder.showNotification(
-            `Please load the character file: ${characterMeta.filename} from characters_data/${characterMeta.folder}/`, 
-            'info'
-        );
         
-        // Trigger file picker for the specific character
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = '.json';
-        fileInput.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file && file.name === characterMeta.filename) {
-                await this.loadCharacterFromFile(file);
-            } else {
-                this.builder.showNotification('Selected file does not match expected character file', 'warning');
-            }
-        };
-        fileInput.click();
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+            content.style.display = 'none';
+        });
+        
+        // Remove active class from all tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show selected tab content
+        const tabContent = document.getElementById(`tab-${tabName}`);
+        if (tabContent) {
+            tabContent.classList.add('active');
+            tabContent.style.display = 'block';
+        }
+        
+        // Activate tab button
+        const tabBtn = document.querySelector(`[data-tab="${tabName}"]`);
+        if (tabBtn) {
+            tabBtn.classList.add('active');
+        }
+        
+        // Render the tab content
+        if (this.tabs[tabName] && this.tabs[tabName].render) {
+            this.tabs[tabName].render();
+        }
+        
+        this.currentTab = tabName;
+        this.updateTabStates();
     }
 
-    async loadCharacterFromFile(file) {
-        try {
-            const characterData = await this.library.readFileAsJSON(file);
+    updateTabStates() {
+        if (!this.currentCharacter) return;
+        
+        const validation = this.validateCharacter();
+        const buildOrder = validation.sections?.buildOrder;
+        
+        // Enable/disable tabs based on build order
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            const tabName = btn.dataset.tab;
+            let canAccess = true;
             
-            // Validate and normalize
-            if (!this.library.validateCharacterData(characterData)) {
-                throw new Error('Invalid character file format');
+            switch(tabName) {
+                case 'basicInfo':
+                    canAccess = true;
+                    break;
+                case 'archetypes':
+                    canAccess = true;
+                    break;
+                case 'attributes':
+                    canAccess = buildOrder?.buildState?.archetypesComplete || false;
+                    break;
+                case 'mainPool':
+                    canAccess = buildOrder?.buildState?.attributesAssigned || false;
+                    break;
+                case 'specialAttacks':
+                    canAccess = buildOrder?.buildState?.archetypesComplete || false;
+                    break;
+                case 'utility':
+                    canAccess = buildOrder?.buildState?.attributesAssigned || false;
+                    break;
+                case 'summary':
+                    canAccess = true;
+                    break;
             }
             
-            this.library.normalizeCharacterData(characterData);
-            
-            // Load into builder
-            this.builder.currentCharacter = characterData;
-            this.builder.loadCharacter(characterData.id);
-            
-            this.render(); // Refresh to show active character
-            this.builder.showNotification(`Loaded ${characterData.name}!`, 'success');
-            
-        } catch (error) {
-            this.builder.showNotification(`Failed to load character: ${error.message}`, 'error');
+            btn.disabled = !canAccess;
+            btn.classList.toggle('disabled', !canAccess);
+        });
+    }
+
+    updateAllDisplays() {
+        console.log('🟡 updateAllDisplays called');
+        if (!this.currentCharacter) return;
+        
+        this.pointPoolDisplay.update();
+        this.validationDisplay.update();
+        if (this.characterTree && this.characterTree.refresh) {
+            this.characterTree.refresh();
+        }
+        this.updateCharacterHeader();
+    }
+
+    updateCharacter() {
+        console.log('🟡 updateCharacter called');
+        if (!this.currentCharacter) return;
+        
+        this.currentCharacter.touch();
+        this.updateAllDisplays();
+    }
+
+    // Point pool calculations
+    calculatePointPools() {
+        if (!this.currentCharacter) {
+            return {
+                totalAvailable: { combatAttributes: 0, utilityAttributes: 0, mainPool: 0, utilityPool: 0, specialAttacks: 0 },
+                totalSpent: { combatAttributes: 0, utilityAttributes: 0, mainPool: 0, utilityPool: 0, specialAttacks: 0 }
+            };
+        }
+        
+        return PointPoolCalculator.calculateAllPools(this.currentCharacter);
+    }
+
+    // Character stats calculations
+    calculateStats() {
+        if (!this.currentCharacter) {
+            return { final: {}, breakdown: {} };
+        }
+        
+        return StatCalculator.calculateAllStats(this.currentCharacter);
+    }
+
+    // Character validation
+    validateCharacter() {
+        if (!this.currentCharacter) {
+            return { isValid: false, errors: ['No character loaded'], warnings: [], sections: {} };
+        }
+        
+        return CharacterValidator.validateCharacter(this.currentCharacter);
+    }
+
+    // Character export
+    exportCharacterJSON() {
+        if (!this.currentCharacter) {
+            this.showNotification('No character to export', 'error');
+            return;
+        }
+        
+        const dataStr = JSON.stringify(this.currentCharacter, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${this.currentCharacter.name.replace(/[^a-z0-9]/gi, '_')}_character.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Character exported successfully!', 'success');
+    }
+
+    // Storage methods (simplified for now)
+    saveCharacters() {
+        console.log('🟡 saveCharacters called');
+        // This would integrate with the character library
+        if (this.currentCharacter && this.library) {
+            this.library.saveCharacter(this.currentCharacter);
         }
     }
 
-    handleCharacterAction(action, characterId) {
-        switch(action) {
-            case 'duplicate':
-                this.duplicateCharacter(characterId);
-                break;
-            case 'move':
-                this.moveCharacterToFolder(characterId);
-                break;
-            case 'delete':
-                this.deleteCharacterFromLibrary(characterId);
-                break;
-        }
-    }
-
-    duplicateCharacter(characterId) {
-        this.builder.showNotification('Duplicate functionality coming soon!', 'info');
-    }
-
-    moveCharacterToFolder(characterId) {
-        this.builder.showNotification('Move to folder functionality coming soon!', 'info');
-    }
-
-    deleteCharacterFromLibrary(characterId) {
-        const character = this.library.libraryIndex.characters[characterId];
-        if (!character) return;
-
-        if (confirm(`Remove "${character.name}" from library? The file will remain in your folders.`)) {
-            delete this.library.libraryIndex.characters[characterId];
-            
-            // Update folder count
-            if (this.library.libraryIndex.folders[character.folder]) {
-                this.library.libraryIndex.folders[character.folder].count--;
+    showNotification(message, type = 'info') {
+        console.log(`📢 Notification (${type}):`, message);
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            color: var(--text-light);
+            border: 1px solid var(--accent-primary);
+            padding: 1rem;
+            border-radius: 4px;
+            z-index: 1000;
+            max-width: 300px;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
             }
-            
-            this.library.saveLibraryIndex();
-            
-            // If this was the current character, clear it
-            if (this.builder.currentCharacter?.id === characterId) {
-                this.builder.currentCharacter = null;
-                this.builder.showWelcomeScreen();
-            }
-            
-            this.render();
-            this.builder.showNotification('Character removed from library', 'info');
-        }
-    }
-
-    // Public method to refresh the display
-    refresh() {
-        this.render();
+        }, 3000);
     }
 }

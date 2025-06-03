@@ -27,20 +27,14 @@
 **Goal:** Make the system actually usable for campaign management
 
 #### 1.1 Web Character Builder Completion
-- [ ] **Main Pool Tab**: Traits, flaws, boons purchasing system
-- [ ] **Special Attacks Tab**: Limits system and upgrade selection  
+- [✅] **Main Pool Tab**: Traits, flaws, boons purchasing system
+- [✅] **Special Attacks Tab**: Limits system and upgrade selection  
 - [ ] **Utility Tab**: Expertise, features, senses, descriptors
 - [ ] **Validation System**: Complete build order enforcement
 - [ ] **Character Export**: JSON download for Roll20 upload
 
 #### 1.2 Essential Tools Development
-- [ ] **ScriptCards Update Script** (Standalone)
-  - Read master template from `src/scriptcards/Scripcards Attacks Library Neopunk 3.7.3.txt`
-  - Update all characters in `characters/extracted/` 
-  - Only modify abilities with `type: "indexed"`
-  - Preserve all character stats and attributes
-  - Dry-run mode and logging
-- [ ] **Documentation System** 
+- [✅] **Documentation System** 
   - Small main README + focused component docs
   - Development guide for common tasks
   - Data format documentation
