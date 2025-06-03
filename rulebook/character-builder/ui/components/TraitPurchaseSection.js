@@ -1,5 +1,6 @@
 // TraitPurchaseSection.js - Trait purchase with tier condition system
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
+import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
 
 export class TraitPurchaseSection {
     constructor(characterBuilder) {
@@ -17,8 +18,9 @@ export class TraitPurchaseSection {
 
         const conditionTiers = TraitFlawSystem.getTraitConditionTiers();
         const statOptions = TraitFlawSystem.getTraitStatOptions();
-        const mainPoolAvailable = TraitFlawSystem.calculateMainPoolAvailable(character);
-        const mainPoolSpent = TraitFlawSystem.calculateMainPoolSpent(character);
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const mainPoolAvailable = pools.totalAvailable.mainPool;
+        const mainPoolSpent = pools.totalSpent.mainPool;
         const remainingPoints = mainPoolAvailable - mainPoolSpent;
 
         return `
@@ -226,8 +228,9 @@ export class TraitPurchaseSection {
             const conditionTiers = TraitFlawSystem.getTraitConditionTiers();
             const statOptions = TraitFlawSystem.getTraitStatOptions();
             const character = this.builder.currentCharacter;
-            const mainPoolAvailable = TraitFlawSystem.calculateMainPoolAvailable(character);
-            const mainPoolSpent = TraitFlawSystem.calculateMainPoolSpent(character);
+            const pools = PointPoolCalculator.calculateAllPools(character);
+            const mainPoolAvailable = pools.totalAvailable.mainPool;
+            const mainPoolSpent = pools.totalSpent.mainPool;
             const remainingPoints = mainPoolAvailable - mainPoolSpent;
             
             builderElement.innerHTML = `
