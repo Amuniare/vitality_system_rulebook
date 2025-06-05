@@ -716,13 +716,13 @@ Upgrade Options:
 ### **BACKLASH**
 *Automatic counterattack system*
 - **Cost**: 30p
-- **Trigger:** When hit by melee attack
-- **Effect:** Make a base attack against the attacker
-- **Uses:** Tier uses per turn, all uses regain at start of your turn
+- **Trigger:** When hit by Melee Attack
+- **Effect:** Make a Base Attack against the attacker
+- **Uses:** You have 2 uses per round, reseting at the start of your turn. The first use each round consumes your Reaction.
 - **Upgrades:**
-  - **Passive (30p)** → Doesn't consume Reaction, occurs unlimited times
-  - **Distant Response (30p)** → Triggered by any attack type, can respond with Base Ranged/Direct attack
-  - **Explosive Response (30p)** → Base attack becomes 3sp AOE Burst
+  - **Additional Uses (15p/x)** → Additional uses per x
+  - **Distant Response (30p)** → Triggered by any attack type, you can now also respond with a Ranged or Direct Base Attack
+  - **Explosive Response (30p)** → The Base attack becomes a 3sp AOE Burst instead of any other options
 
 ### **BOOST**
 *Temporary power enhancement*
