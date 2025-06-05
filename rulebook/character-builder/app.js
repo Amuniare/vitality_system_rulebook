@@ -10,23 +10,18 @@ class VitalityCharacterBuilderApp {
     }
 
     async init() {
-        console.log('Initializing Vitality Character Builder App...');
-        
         try {
-            // Wait for DOM to be ready
+            // 1. Wait for DOM
             if (document.readyState === 'loading') {
                 await new Promise(resolve => {
                     document.addEventListener('DOMContentLoaded', resolve);
                 });
             }
-
-            // Initialize GameDataManager first and wait for data to load
-            console.log('🔵 Initializing GameDataManager...');
-            await gameDataManager.init(); // ADDED
-            console.log('🟢 GameDataManager initialized.');
-
-
-            // Initialize character builder
+    
+            // 2. Initialize GameDataManager first
+            await gameDataManager.init();
+    
+            // 3. Initialize character builder (which sets up events)
             this.characterBuilder = new CharacterBuilder();
             await this.characterBuilder.init();
             

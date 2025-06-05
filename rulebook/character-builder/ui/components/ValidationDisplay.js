@@ -1,6 +1,5 @@
 // rulebook/character-builder/ui/components/ValidationDisplay.js
 import { RenderUtils } from '../shared/RenderUtils.js'; // Keep if used for icons/status
-import { CharacterValidator } from '../../validators/CharacterValidator.js';
 
 export class ValidationDisplay {
     constructor(characterBuilder) {
@@ -8,18 +7,19 @@ export class ValidationDisplay {
         this.lastValidationResultString = null; // Store stringified result for comparison
     }
 
+
     update() {
         const container = document.getElementById('validation-panel');
         if (!container) return;
-
+    
         const character = this.builder.currentCharacter;
         if (!character) {
             container.innerHTML = this.renderEmptyState();
-            this.lastValidationResultString = null;
             return;
         }
-
-        const validationResult = CharacterValidator.validateCharacter(character);
+    
+        // Use builder's validation instead of CharacterValidator
+        const validationResult = this.builder.validateCharacter();
         const currentResultString = JSON.stringify(validationResult);
 
         if (currentResultString === this.lastValidationResultString) {
@@ -27,9 +27,9 @@ export class ValidationDisplay {
         }
         this.lastValidationResultString = currentResultString;
 
-        container.innerHTML = this.renderValidation(validationResult);
-        // console.log(`🔄 Validation display updated: ${validationResult.errors.length} errors, ${validationResult.warnings.length} warnings`);
-    }
+        container.innerHTML = this.renderValidation(validationResult);    }
+
+
 
     renderValidation(validationResult) {
         return `
