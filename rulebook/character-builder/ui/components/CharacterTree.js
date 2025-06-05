@@ -1,21 +1,20 @@
-// rulebook/character-builder/ui/components/CharacterTree.js
+// CharacterTree.js - COMPLETE REWRITE with fixed debounce
 import { RenderUtils } from '../shared/RenderUtils.js';
 import { EventManager } from '../shared/EventManager.js';
 
 export class CharacterTree {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.library = null; // Will be set by CharacterBuilder
+        this.library = null;
         this.expandedFolders = new Set();
         this.selectedCharacterId = null;
         this.searchTerm = '';
+        this.searchTimeout = null; // For manual debounce
     }
 
     init() {
         console.log('🟡 Initializing CharacterTree...');
-        // Library is expected to be initialized by CharacterBuilder before this
         this.render();
-        // Event listeners are setup once by CharacterBuilder, or need to be specific to this component's container
     }
 
     render() {
@@ -39,13 +38,13 @@ export class CharacterTree {
                 ${RenderUtils.renderButton({
                     text: '+ New Character',
                     variant: 'primary',
-                    dataAttributes: { action: 'new-character' }, // For EventManager
-                    classes: ['new-character-btn-tree'] // More specific if needed
+                    dataAttributes: { action: 'new-character' },
+                    classes: ['new-character-btn-tree']
                 })}
                 ${RenderUtils.renderButton({
                     text: 'Import JSON',
                     variant: 'secondary',
-                    dataAttributes: { action: 'import-character' } // For EventManager
+                    dataAttributes: { action: 'import-character' }
                 })}
             </div>
 
@@ -68,7 +67,7 @@ export class CharacterTree {
                 ${this.renderLibraryStats()}
             </div>
         `;
-        this.setupTreeSpecificListeners(container); // Re-attach listeners for dynamic content
+        this.setupTreeSpecificListeners(container);
     }
 
     renderSearchResults(characters) {
@@ -87,7 +86,7 @@ export class CharacterTree {
     renderCharacterTree(characters, folders) {
         const charactersByFolder = this.groupCharactersByFolder(characters);
         const rootFolders = folders.filter(f => !f.parentId);
-        const unorganizedCharacters = charactersByFolder.get(null) || []; // Use null for root
+        const unorganizedCharacters = charactersByFolder.get(null) || [];
 
         return `
             <div class="character-tree-list">
@@ -139,10 +138,7 @@ export class CharacterTree {
 
     renderCharacterItem(character) {
         const isSelected = this.selectedCharacterId === character.id;
-        // Validation would typically be done by CharacterBuilder and passed or re-validated
-        // For simplicity, let's assume a way to check issues if needed
         const hasIssues = character.validationResults && !character.validationResults.isValid;
-
 
         return `
             <div class="character-item ${isSelected ? 'active' : ''} ${hasIssues ? 'has-issues' : ''}"
@@ -182,7 +178,7 @@ export class CharacterTree {
     groupCharactersByFolder(characters) {
         const groups = new Map();
         characters.forEach(character => {
-            const folderId = character.folderId || null; // null for root/unorganized
+            const folderId = character.folderId || null;
             if (!groups.has(folderId)) {
                 groups.set(folderId, []);
             }
@@ -191,7 +187,7 @@ export class CharacterTree {
         return groups;
     }
 
-    setupTreeSpecificListeners(container) { // Changed from setupEventListeners to be more specific
+    setupTreeSpecificListeners(container) {
         EventManager.delegateEvents(container, {
             click: {
                 '[data-action="new-character"]': () => this.builder.createNewCharacter(),
@@ -200,19 +196,24 @@ export class CharacterTree {
                 '[data-action="toggle-folder"]': (e, el) => this.toggleFolder(el.closest('.folder-header').dataset.folderId),
                 '[data-action="duplicate-character"]': (e, el) => { e.stopPropagation(); this.duplicateCharacter(el.dataset.characterId); },
                 '[data-action="export-character-item"]': (e, el) => { e.stopPropagation(); this.exportCharacter(el.dataset.characterId); },
-                // Note: CharacterBuilder handles its own delete button; this tree doesn't have a top-level one.
                 '[data-action="rename-folder"]': (e, el) => { e.stopPropagation(); this.renameFolder(el.dataset.folderId); },
                 '[data-action="delete-folder"]': (e, el) => { e.stopPropagation(); this.deleteFolder(el.dataset.folderId); }
             },
             input: {
-                '#character-search-input': EventManager.debounce((e) => this.handleSearch(e.target.value), 300)
+                '#character-search-input': (e) => {
+                    // Manual debounce implementation
+                    clearTimeout(this.searchTimeout);
+                    this.searchTimeout = setTimeout(() => {
+                        this.handleSearch(e.target.value);
+                    }, 300);
+                }
             }
         });
     }
     
     handleSearch(query) {
         this.searchTerm = query;
-        this.refresh(); // Re-render with search term
+        this.refresh();
     }
 
     selectCharacter(characterId) {
@@ -221,8 +222,8 @@ export class CharacterTree {
         if (!character) return;
 
         this.selectedCharacterId = characterId;
-        this.builder.loadCharacter(characterId); // Use builder's load method
-        this.refresh(); // Re-render to show selection
+        this.builder.loadCharacter(characterId);
+        this.refresh();
     }
 
     duplicateCharacter(characterId) {
@@ -230,7 +231,7 @@ export class CharacterTree {
         const original = this.library.getCharacter(characterId);
         if (!original) return;
 
-        const duplicate = JSON.parse(JSON.stringify(original)); // Deep clone
+        const duplicate = JSON.parse(JSON.stringify(original));
         duplicate.id = Date.now().toString();
         duplicate.name = `${original.name} (Copy)`;
         duplicate.created = new Date().toISOString();
@@ -268,7 +269,7 @@ export class CharacterTree {
                     const importedCharacter = await this.library.importCharacter(event.target.result);
                     this.refresh();
                     this.builder.showNotification(`Imported character: ${importedCharacter.name}`, 'success');
-                    this.selectCharacter(importedCharacter.id); // Optionally select imported character
+                    this.selectCharacter(importedCharacter.id);
                 } catch (error) {
                     this.builder.showNotification(`Import failed: ${error.message}`, 'error');
                 }
@@ -295,7 +296,7 @@ export class CharacterTree {
         const newName = prompt('Enter new folder name:', folder.name);
         if (newName && newName.trim() !== '') {
             folder.name = newName.trim();
-            this.library.saveToStorage(); // Make sure library saves folder changes
+            this.library.saveToStorage();
             this.refresh();
             this.builder.showNotification(`Folder renamed to: ${newName}`, 'success');
         }
@@ -316,12 +317,12 @@ export class CharacterTree {
             charactersInFolder.forEach(char => {
                 const characterToUpdate = this.library.getCharacter(char.id);
                 if (characterToUpdate) {
-                    characterToUpdate.folderId = null; // Move to unorganized (root)
-                    this.library.saveCharacter(characterToUpdate); // Save change
+                    characterToUpdate.folderId = null;
+                    this.library.saveCharacter(characterToUpdate);
                 }
             });
             this.library.folders.delete(folderId);
-            this.library.saveToStorage(); // Save folder deletion
+            this.library.saveToStorage();
             this.refresh();
             this.builder.showNotification(`Deleted folder: ${folder.name}`, 'success');
         }
@@ -333,15 +334,13 @@ export class CharacterTree {
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
-        document.body.appendChild(link); // Required for Firefox
+        document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
     }
 
     refresh() {
-        // This method is called when the tree needs to re-render itself,
-        // e.g., after library changes or search.
         if(this.library && this.library.initialized) {
             this.render();
         }
