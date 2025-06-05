@@ -188,7 +188,23 @@ Upgrade Options:
 
 **Base Attack Action** → Default combat action available to everyone using their character's base attributes and Tier. Applies Damage or a Basic Condition.
 
-**Basic Conditions** 
+- **Basic Conditions**  
+These represent mundane impairments that any character can apply through Base Attacks. All Conditions either take effect instantly or last until the end of your next turn if they have a duration unless otherwise specified.
+  - **Disarm (Stability)**: Forces the target to drop something they're holding. The dropped item can be picked up as a Quick Action. You may attempt to launch the item in any direction a number of spaces equal to how successful your roll was assuming you have the Cpacity to move it. 
+
+  - **Grab (Stability)**: The target cannot move. As an Action the target can make a Stability check against the Condition roll to break free early or as part of their movement to drag you with them follwing the rules for Capacity.
+
+  - **Shove (Stability)**: Push or pull the target (Condition roll - Resistance) spaces. Collisions deal falling damage to both entities and you can expend 5 Shoving spaces to knock the target prone. 
+    - Prone: Adjacent attacks against you gain +Tier to Accuracy, ranged attacks against you suffer -Tier to Accuracy, standing cost 3 movement spaces.
+
+  - **Blind (Vitality)**: Targets treats all others as visually Hidden. Hidden attackers ignore the target's base Tier Avoidance bonus. When attacking you must roll a Perception check vs the target's Stealth check, the attack is assumed to have missed on a failure.
+
+  - **Daze (Vitality)**: Target cannot take Quick Actions or Reactions.
+
+  - **Setup (Resolve)**: The next Accuracy check against the target adds double your Tier to their regular bonus.
+
+  - **Taunt (Resolve)**: Target's suffer a reduction to their Accuracy checks equal to double your Tier against all targets other than you.
+
 
 
 ***ATTACK RESOLUTION***
