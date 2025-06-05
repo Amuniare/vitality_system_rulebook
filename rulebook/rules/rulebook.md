@@ -469,7 +469,7 @@ Upgrade Options:
 **AREA ATTACK** 
 - **Range:** Originates from your position
 - **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
-- **Penalty:** -Tier to all Damage and Condition rolls
+- **Penalty:** -Tier to all Accuracy checks
 
 ### **HYBRID ATTACKS**
 *Combine damage and conditions in single attack*
@@ -656,22 +656,21 @@ Upgrade Options:
   - **Condition Effect (0p)** → Inflicts Basic Condition instead of damage
   - **Direct Effect (30p)** → Auto-hits without Accuracy roll, -Tier to Damage and Condition rolls  
   - **Precise (15p)** → Only attacks chosen targets
-- **Obscuring Aura** → Provides visual cover, sight-based abilities prevented, attacks through the aura suffer -Tier penalty to Accuracy
-  - **Clairvoyance (15p)** → You can see through your own aura
+- **Obscuring Aura** → Provides visual cover, sight-based abilities prevented, attacks through the aura suffer -Tier penalty to Accuracy. You can see through your Aura and are unpenealized.
+  - **Squad Sight (30p)** → Your allies can also see through your Aura.
 - **Bolster Aura** → Allies in radius receive benefit of your Fighting Actions
   - **Passive Buff (30p/x)** → You and allies in the Aura are always under the effect of X specified Fighting Actions. This bonus stacks for allies but not your own Fighting Actions.
 
 ### **BARRIER**
 *Temporary protective field summoning*
 - **Cost**: 30p
-- **Activation:** Quick Action to summon, Quick Action each turn to maintain
+- **Activation:** Action to summon, Quick Action each turn to maintain
 - **Base Radius:** 1 space, appears centered on you
 - **Statistics:** 50 HP, full Condition immunity, AV = 0, DR = 10 + Tier
-- **Uses:** Twice per rest
 - **Upgrades:**
   - **Increased Radius (5p/x)** → +X radius
-  - **Permeable (15p)** → You/allies move through once per turn, enemies roll Stability vs 10+(Tier×2) to enter
-    - **Entrance Only (0p)** → Only one location is permeable
+  - **Permeable (15p)** → You/allies can move through once per turn, enemies can roll Stability vs 10+(Tier×2) to enter
+    - **Door (0p)** → Only one space on the Barrier is permeable
   - **Slow (15p)** → Non-you characters move half speed through barrier
   - **Shell Only (0p)** → Ranged attacks blocked only at edge
   - **Damaging (30p)** → Non-you characters take Tier damage once per turn when entering/starting turn inside
@@ -701,23 +700,24 @@ Upgrade Options:
   - **Variable Size (20p)** → Change size each activation
   - **Rapid Summon (20p)** → Add Tier twice to placement roll
 
-### **SHIELD**
-*Personal protective energy field*
+### **Shield**
+*Personal protective shield*
 - **Cost**: 30p
-- **Effect:** Gain shield with Tier×3 HP at start of each turn (not cumulative)
-- **Function:** Shield HP taken before personal HP, uses your AV and DR
-- **Restriction:** Cannot purchase Avoidance or Durability bonuses
+- **Effect:** Gain a personal shield with Tier×3 HP at start of each turn (not cumulative)
+- **Function:** The shield's HP is reduced before your regular HP. When the shield reaches 0 HP, any extra damage is applied to your regular HP.
+- **Restriction:** You cannot boost your Avoidance or Durability outside of Fighting Actions or external sources.
 - **Upgrades:**
   - **Increased Shielding (15p/x)** → +Tier×3 max shield HP per X (recovery stays same)
-  - **Quick Recovery (15p/x)** → Recover additional Tier×3 HP per turn per X
+  - **Quick Recovery (15p/x)** → Recover an additional Tier×3 HP per turn per X
   - **Heavy Shield (-15p)** → Only recover Tier HP per turn (cannot be increased)
-  - **Area Shield (30p)** → While shield has HP, all ranged/ranged AOE vs adjacent squares hit your shield instead
+  - **Area Shield (15p)** → While the shield has HP, all ranged or AOE attacks against adjacent squares hit the shield instead.
+  - **Source** (Variable Cost) → You do not naturally regain your shield at the start of your turn. Instead determine a trigger and amount of shield recharged with your GM. For examples: Regain shield equal to damage dealt, regain all shield when you defeat an enemy, gain X shield for each adjacent enemy at the star of your turn, or gain X shield for each attack that has hit you since your last turn.
 
 ### **BACKLASH**
 *Automatic counterattack system*
 - **Cost**: 30p
 - **Trigger:** When hit by melee attack
-- **Effect:** Make base attack against attacker
+- **Effect:** Make a base attack against the attacker
 - **Uses:** Tier uses per turn, all uses regain at start of your turn
 - **Upgrades:**
   - **Passive (30p)** → Doesn't consume Reaction, occurs unlimited times
