@@ -1,4 +1,6 @@
-// SummaryTab.js - Character summary and export
+// rulebook/character-builder/ui/tabs/SummaryTab.js
+import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+
 export class SummaryTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
@@ -9,327 +11,178 @@ export class SummaryTab {
         if (!tabContent) return;
 
         const character = this.builder.currentCharacter;
-        if (!character) return;
+        if (!character) {
+            tabContent.innerHTML = "<p>No character selected.</p>";
+            return;
+        }
 
-        const stats = this.builder.calculateStats();
-        const validation = this.builder.validateCharacter();
+        const stats = this.builder.calculateStats(); // From CharacterBuilder
+        const validation = this.builder.validateCharacter(); // From CharacterBuilder
 
         tabContent.innerHTML = `
             <div class="summary-section">
                 <h2>Character Summary</h2>
-                <div class="summary-grid">
-                    ${this.renderBasicInfo(character)}
-                    ${this.renderArchetypes(character)}
-                    ${this.renderAttributes(character)}
-                    ${this.renderCalculatedStats(stats)}
-                    ${this.renderValidationSummary(validation)}
+                <div class="grid-layout grid-columns-auto-fit-300 summary-grid">
+                    ${this.renderBasicInfoCard(character)}
+                    ${this.renderArchetypesCard(character)}
+                    ${this.renderAttributesCard(character)}
+                    ${this.renderCalculatedStatsCard(stats)}
+                    ${this.renderValidationSummaryCard(validation)}
+                    ${this.renderPointPoolsSummaryCard(character)}
                 </div>
-                
+
                 <div class="export-actions">
                     <h3>Export Character</h3>
                     <div class="export-buttons">
-                        <button id="export-json-summary" class="btn-secondary">Export JSON</button>
-                        <button id="export-roll20-summary" class="btn-secondary">Export for Roll20</button>
-                        <button id="print-character" class="btn-secondary">Print Character Sheet</button>
+                        ${RenderUtils.renderButton({ text: 'Export Full JSON', variant: 'secondary', dataAttributes: { action: 'export-json-summary' }})}
+                        ${RenderUtils.renderButton({ text: 'Export for Roll20', variant: 'secondary', dataAttributes: { action: 'export-roll20-summary' }})}
+                        ${RenderUtils.renderButton({ text: 'Print Character Sheet', variant: 'secondary', dataAttributes: { action: 'print-character' }})}
                     </div>
                 </div>
             </div>
         `;
-
-        this.setupEventListeners();
+        // Event listeners for buttons will be handled by CharacterBuilder via data-actions
     }
 
-    renderBasicInfo(character) {
-        return `
-            <div class="summary-card">
-                <h3>Basic Information</h3>
+    renderBasicInfoCard(character) {
+        return RenderUtils.renderCard({
+            title: 'Basic Information',
+            additionalContent: `
                 <div class="info-grid">
                     <div><strong>Name:</strong> ${character.name}</div>
-                    <div><strong>Real Name:</strong> ${character.realName || 'Not specified'}</div>
+                    <div><strong>Real Name:</strong> ${character.realName || 'N/A'}</div>
                     <div><strong>Tier:</strong> ${character.tier}</div>
                     <div><strong>Created:</strong> ${new Date(character.created).toLocaleDateString()}</div>
+                    <div><strong>Last Modified:</strong> ${new Date(character.lastModified).toLocaleString()}</div>
                 </div>
-            </div>
-        `;
+            `
+        }, { cardClass: 'summary-info-card', showCost: false, showStatus: false });
     }
 
-    renderArchetypes(character) {
-        const archetypeNames = {
-            movement: 'Movement',
-            attackType: 'Attack Type',
-            effectType: 'Effect Type',
-            uniqueAbility: 'Unique Ability',
-            defensive: 'Defensive',
-            specialAttack: 'Special Attack',
-            utility: 'Utility'
+    renderArchetypesCard(character) {
+        const archetypeNames = { /* ... same as before ... */ 
+            movement: 'Movement', attackType: 'Attack Type', effectType: 'Effect Type',
+            uniqueAbility: 'Unique Ability', defensive: 'Defensive', specialAttack: 'Special Attack', utility: 'Utility'
         };
-
-        return `
-            <div class="summary-card">
-                <h3>Archetypes</h3>
-                <div class="archetype-list">
-                    ${Object.entries(character.archetypes).map(([key, value]) => `
-                        <div class="archetype-item">
-                            <strong>${archetypeNames[key]}:</strong> 
-                            ${value ? this.formatArchetypeName(value) : '<em>Not selected</em>'}
-                        </div>
-                    `).join('')}
-                </div>
+        const content = Object.entries(character.archetypes).map(([key, value]) => `
+            <div class="archetype-item stat-item">
+                <span>${archetypeNames[key] || key}:</span>
+                <strong>${value ? this.formatArchetypeName(value) : '<em>Not selected</em>'}</strong>
             </div>
-        `;
+        `).join('');
+        return RenderUtils.renderCard({ title: 'Archetypes', additionalContent: `<div class="archetype-list">${content}</div>` }, { cardClass: 'summary-archetypes-card', showCost: false, showStatus: false });
     }
 
-    renderAttributes(character) {
-        const attributeNames = {
-            focus: 'Focus',
-            mobility: 'Mobility',
-            power: 'Power',
-            endurance: 'Endurance',
-            awareness: 'Awareness',
-            communication: 'Communication',
-            intelligence: 'Intelligence'
+    renderAttributesCard(character) {
+        const attributeNames = { /* ... same as before ... */ 
+            focus: 'Focus', mobility: 'Mobility', power: 'Power', endurance: 'Endurance',
+            awareness: 'Awareness', communication: 'Communication', intelligence: 'Intelligence'
         };
+        const combatAttrs = ['focus', 'mobility', 'power', 'endurance'];
+        const utilityAttrs = ['awareness', 'communication', 'intelligence'];
 
-        return `
-            <div class="summary-card">
-                <h3>Attributes</h3>
-                <div class="attributes-display">
-                    <div class="combat-attrs">
-                        <h4>Combat</h4>
-                        ${['focus', 'mobility', 'power', 'endurance'].map(attr => `
-                            <div class="attr-item">
-                                <span>${attributeNames[attr]}:</span>
-                                <span class="attr-value">${character.attributes[attr] || 0}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="utility-attrs">
-                        <h4>Utility</h4>
-                        ${['awareness', 'communication', 'intelligence'].map(attr => `
-                            <div class="attr-item">
-                                <span>${attributeNames[attr]}:</span>
-                                <span class="attr-value">${character.attributes[attr] || 0}</span>
-                            </div>
-                        `).join('')}
-                    </div>
+        const combatContent = combatAttrs.map(attr => `
+            <div class="attr-item stat-item"><span>${attributeNames[attr]}:</span><strong class="attr-value">${character.attributes[attr] || 0}</strong></div>
+        `).join('');
+        const utilityContent = utilityAttrs.map(attr => `
+            <div class="attr-item stat-item"><span>${attributeNames[attr]}:</span><strong class="attr-value">${character.attributes[attr] || 0}</strong></div>
+        `).join('');
+
+        return RenderUtils.renderCard({
+            title: 'Attributes',
+            additionalContent: `
+                <div class="attributes-display-summary">
+                    <div class="combat-attrs-summary"><h4>Combat</h4>${combatContent}</div>
+                    <div class="utility-attrs-summary"><h4>Utility</h4>${utilityContent}</div>
+                </div>`
+        }, { cardClass: 'summary-attributes-card', showCost: false, showStatus: false });
+    }
+
+    renderCalculatedStatsCard(stats) {
+        if (!stats || !stats.final) return RenderUtils.renderCard({ title: 'Calculated Stats', additionalContent: '<p>Stats not available.</p>'}, {cardClass: 'summary-stats-card'});
+
+        const combat = [
+            { name: 'Accuracy', value: stats.final.accuracy }, { name: 'Damage', value: stats.final.damage },
+            { name: 'Conditions', value: stats.final.conditions }, { name: 'Initiative', value: stats.final.initiative },
+            { name: 'Movement', value: `${stats.final.movement} sp` }, { name: 'HP', value: stats.final.hp },
+        ];
+        const defense = [
+            { name: 'Avoidance', value: stats.final.avoidance }, { name: 'Durability', value: stats.final.durability },
+            { name: 'Resolve', value: stats.final.resolve }, { name: 'Stability', value: stats.final.stability },
+            { name: 'Vitality', value: stats.final.vitality },
+        ];
+        const renderStatList = (statList) => statList.map(s => `<div class="stat-item"><span>${s.name}:</span><strong>${s.value === undefined ? 'N/A' : s.value}</strong></div>`).join('');
+
+        return RenderUtils.renderCard({
+            title: 'Calculated Stats',
+            additionalContent: `
+                <div class="stats-grid-summary">
+                    <div class="combat-stats-summary"><h4>Combat</h4>${renderStatList(combat)}</div>
+                    <div class="defense-stats-summary"><h4>Defenses</h4>${renderStatList(defense)}</div>
+                </div>`
+        }, { cardClass: 'summary-stats-card', showCost: false, showStatus: false });
+    }
+
+    renderPointPoolsSummaryCard(character) {
+        const pools = this.builder.calculatePointPools(); // from CharacterBuilder
+        const poolOrder = ['combatAttributes', 'utilityAttributes', 'mainPool', 'utilityPool', 'specialAttacks'];
+        
+        const content = poolOrder.map(poolKey => {
+            const name = this.formatArchetypeName(poolKey.replace('Attributes', ' Attr.')); // User-friendly name
+            return `
+                <div class="stat-item">
+                    <span>${name}:</span>
+                    <strong>${pools.totalSpent[poolKey] || 0} / ${pools.totalAvailable[poolKey] || 0} (Rem: ${pools.remaining[poolKey] || 0})</strong>
                 </div>
-            </div>
-        `;
+            `;
+        }).join('');
+
+        return RenderUtils.renderCard({
+            title: 'Point Pools',
+            additionalContent: `<div class="point-pool-summary-list">${content}</div>`
+        }, { cardClass: 'summary-pools-card', showCost: false, showStatus: false });
     }
 
 
-    renderValidationSummary(validation) {
-        const status = validation.isValid ? 'valid' : 'invalid';
-        const statusText = validation.isValid ? 'Character is valid and ready for play!' : 'Character has validation issues';
-        const statusIcon = validation.isValid ? '✅' : '⚠️';
+    renderValidationSummaryCard(validation) {
+        const statusType = validation.isValid ? 'success' : (validation.errors.length > 0 ? 'error' : 'warning');
+        const statusText = validation.isValid ? 'Character Valid!' : (validation.errors.length > 0 ? 'Errors Found' : 'Warnings Present');
+        const icon = validation.isValid ? '✅' : (validation.errors.length > 0 ? '❌' : '⚠️');
 
-        return `
-            <div class="summary-card validation-summary ${status}">
-                <h3>Validation Status</h3>
-                <div class="validation-status">
-                    <span class="status-icon">${statusIcon}</span>
-                    <span class="status-text">${statusText}</span>
+        let issuesContent = '';
+        if (validation.errors.length > 0) {
+            issuesContent += `<h6>Errors (${validation.errors.length}):</h6><ul class="error-items">
+                ${validation.errors.slice(0,3).map(e => `<li>${e}</li>`).join('')}
+                ${validation.errors.length > 3 ? `<li>...and ${validation.errors.length-3} more.</li>` : ''}
+            </ul>`;
+        }
+        if (validation.warnings.length > 0) {
+            issuesContent += `<h6>Warnings (${validation.warnings.length}):</h6><ul class="warning-items">
+                ${validation.warnings.slice(0,3).map(w => `<li>${w}</li>`).join('')}
+                ${validation.warnings.length > 3 ? `<li>...and ${validation.warnings.length-3} more.</li>` : ''}
+            </ul>`;
+        }
+        if (!issuesContent) issuesContent = "<p>No validation issues.</p>";
+
+        return RenderUtils.renderCard({
+            title: 'Validation Status',
+            additionalContent: `
+                <div class="validation-status-line">
+                    ${RenderUtils.renderStatusIndicator(statusType, `${icon} ${statusText}`, {absolutePosition: false})}
                 </div>
-                
-                ${validation.errors.length > 0 ? `
-                    <div class="validation-errors">
-                        <h4>Errors (${validation.errors.length})</h4>
-                        <ul>
-                            ${validation.errors.slice(0, 5).map(error => `<li>${error}</li>`).join('')}
-                            ${validation.errors.length > 5 ? `<li><em>...and ${validation.errors.length - 5} more</em></li>` : ''}
-                        </ul>
-                    </div>
-                ` : ''}
-                
-                ${validation.warnings.length > 0 ? `
-                    <div class="validation-warnings">
-                        <h4>Warnings (${validation.warnings.length})</h4>
-                        <ul>
-                            ${validation.warnings.slice(0, 3).map(warning => `<li>${warning}</li>`).join('')}
-                            ${validation.warnings.length > 3 ? `<li><em>...and ${validation.warnings.length - 3} more</em></li>` : ''}
-                        </ul>
-                    </div>
-                ` : ''}
-            </div>
-        `;
+                ${issuesContent}`
+        }, { cardClass: `summary-validation-card status-${statusType}`, showCost: false, showStatus: false });
     }
 
     formatArchetypeName(archetypeId) {
-        // Convert camelCase to Title Case
         return archetypeId.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
     }
 
     setupEventListeners() {
-        const exportJsonBtn = document.getElementById('export-json-summary');
-        if (exportJsonBtn) {
-            exportJsonBtn.addEventListener('click', () => {
-                this.builder.exportCharacterJSON();
-            });
-        }
-
-        const exportRoll20Btn = document.getElementById('export-roll20-summary');
-        if (exportRoll20Btn) {
-            exportRoll20Btn.addEventListener('click', () => {
-                this.exportForRoll20();
-            });
-        }
-
-        const printBtn = document.getElementById('print-character');
-        if (printBtn) {
-            printBtn.addEventListener('click', () => {
-                this.printCharacterSheet();
-            });
-        }
+        // Buttons handled by CharacterBuilder's EventManager via data-actions
     }
 
-    exportForRoll20() {
-        const character = this.builder.currentCharacter;
-        if (!character) return;
-
-        const roll20Data = character.exportForRoll20();
-        const dataStr = JSON.stringify(roll20Data, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-        const url = URL.createObjectURL(dataBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${character.name.replace(/[^a-z0-9]/gi, '_')}_roll20.json`;
-        link.click();
-        URL.revokeObjectURL(url);
-        
-        this.builder.showNotification('Roll20 export downloaded!', 'success');
-    }
-
-    printCharacterSheet() {
-        const character = this.builder.currentCharacter;
-        if (!character) return;
-
-        // Create printable character sheet
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>${character.name} - Character Sheet</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 20px; }
-                    .character-header { border-bottom: 2px solid #000; margin-bottom: 20px; }
-                    .section { margin-bottom: 20px; }
-                    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-                    .stat-line { display: flex; justify-content: space-between; border-bottom: 1px dotted #ccc; }
-                    @media print { body { margin: 0; } }
-                </style>
-            </head>
-            <body>
-                <div class="character-header">
-                    <h1>${character.name}</h1>
-                    <p>Tier ${character.tier} Character</p>
-                </div>
-                <!-- Character sheet content would go here -->
-                <p>Full character sheet printing feature coming soon!</p>
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-    }
-
-    renderCalculatedStats(stats) {
-        if (!stats.final) return '';
-    
-        return `
-            <div class="summary-card">
-                <h3>Calculated Stats</h3>
-                <div class="stats-grid">
-                    <div class="combat-stats">
-                        <h4>Combat</h4>
-                        ${this.renderStatWithBreakdown('Accuracy', stats.final.accuracy, stats.breakdown?.accuracy)}
-                        ${this.renderStatWithBreakdown('Damage', stats.final.damage, stats.breakdown?.damage)}
-                        ${this.renderStatWithBreakdown('Conditions', stats.final.conditions, stats.breakdown?.conditions)}
-                        ${this.renderStatWithBreakdown('Initiative', stats.final.initiative, stats.breakdown?.initiative)}
-                        ${this.renderStatWithBreakdown('Movement', `${stats.final.movement} spaces`, stats.breakdown?.movement)}
-                        ${this.renderStatWithBreakdown('HP', stats.final.hp, stats.breakdown?.hp)}
-                    </div>
-                    <div class="defense-stats">
-                        <h4>Defenses</h4>
-                        ${this.renderStatWithBreakdown('Avoidance', stats.final.avoidance, stats.breakdown?.avoidance)}
-                        ${this.renderStatWithBreakdown('Durability', stats.final.durability, stats.breakdown?.durability)}
-                        ${this.renderStatWithBreakdown('Resolve', stats.final.resolve, stats.breakdown?.resolve)}
-                        ${this.renderStatWithBreakdown('Stability', stats.final.stability, stats.breakdown?.stability)}
-                        ${this.renderStatWithBreakdown('Vitality', stats.final.vitality, stats.breakdown?.vitality)}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    renderStatWithBreakdown(name, value, breakdown) {
-        if (!breakdown) {
-            return `<div class="stat-item"><span>${name}:</span> <span>${value}</span></div>`;
-        }
-        
-        const sourcesText = breakdown.sources?.map(source => 
-            `${source.source}: ${source.value > 0 ? '+' : ''}${source.value}`
-        ).join(', ') || '';
-        
-        return `
-            <div class="stat-item expandable">
-                <div class="stat-header">
-                    <span>${name}:</span> 
-                    <span class="stat-value">${value}</span>
-                </div>
-                ${sourcesText ? `<div class="stat-breakdown" title="${sourcesText}">Base: ${breakdown.base}${breakdown.difference !== 0 ? `, Modifiers: ${breakdown.difference > 0 ? '+' : ''}${breakdown.difference}` : ''}</div>` : ''}
-            </div>
-        `;
-    }
-
-
-    renderCalculatedStats(stats) {
-        if (!stats.final) return '';
-    
-        return `
-            <div class="summary-card">
-                <h3>Calculated Stats</h3>
-                <div class="stats-grid">
-                    <div class="combat-stats">
-                        <h4>Combat</h4>
-                        ${this.renderStatWithBreakdown('Accuracy', stats.final.accuracy, stats.breakdown?.accuracy)}
-                        ${this.renderStatWithBreakdown('Damage', stats.final.damage, stats.breakdown?.damage)}
-                        ${this.renderStatWithBreakdown('Conditions', stats.final.conditions, stats.breakdown?.conditions)}
-                        ${this.renderStatWithBreakdown('Initiative', stats.final.initiative, stats.breakdown?.initiative)}
-                        ${this.renderStatWithBreakdown('Movement', `${stats.final.movement} spaces`, stats.breakdown?.movement)}
-                        ${this.renderStatWithBreakdown('HP', stats.final.hp, stats.breakdown?.hp)}
-                    </div>
-                    <div class="defense-stats">
-                        <h4>Defenses</h4>
-                        ${this.renderStatWithBreakdown('Avoidance', stats.final.avoidance, stats.breakdown?.avoidance)}
-                        ${this.renderStatWithBreakdown('Durability', stats.final.durability, stats.breakdown?.durability)}
-                        ${this.renderStatWithBreakdown('Resolve', stats.final.resolve, stats.breakdown?.resolve)}
-                        ${this.renderStatWithBreakdown('Stability', stats.final.stability, stats.breakdown?.stability)}
-                        ${this.renderStatWithBreakdown('Vitality', stats.final.vitality, stats.breakdown?.vitality)}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    renderStatWithBreakdown(name, value, breakdown) {
-        if (!breakdown) {
-            return `<div class="stat-item"><span>${name}:</span> <span>${value}</span></div>`;
-        }
-        
-        const sourcesText = breakdown.sources?.map(source => 
-            `${source.source}: ${source.value > 0 ? '+' : ''}${source.value}`
-        ).join(', ') || '';
-        
-        return `
-            <div class="stat-item expandable">
-                <div class="stat-header">
-                    <span>${name}:</span> 
-                    <span class="stat-value">${value}</span>
-                </div>
-                ${sourcesText ? `<div class="stat-breakdown" title="${sourcesText}">Base: ${breakdown.base}${breakdown.difference !== 0 ? `, Modifiers: ${breakdown.difference > 0 ? '+' : ''}${breakdown.difference}` : ''}</div>` : ''}
-            </div>
-        `;
-    }
-
+    // exportForRoll20 and printCharacterSheet are called by CharacterBuilder
+    // onCharacterUpdate will be handled by CharacterBuilder calling this.render() if active.
 }
+

@@ -12,35 +12,91 @@ rulebook/character-builder/
 ├── core/                     # Core game mechanics
 │   ├── VitalityCharacter.js  # Character data model
 │   ├── GameConstants.js      # All game constants/formulas
+│   ├── GameDataManager.js    # External data loading system
 │   ├── DiceSystem.js         # Dice rolling mechanics
 │   └── TierSystem.js         # Tier progression calculations
-├── systems/                  # Game system implementations
+├── data/                     # External JSON data files (15 files, 832 lines)
+│   ├── actions.json          # Primary actions (14 entries)
+│   ├── archetypes.json       # 7 archetype categories with variants
+│   ├── attack_types_definitions.json # Attack type mechanics
+│   ├── boons_simple.json     # Simple boon abilities (8 entries)
+│   ├── conditions_basic.json # Basic conditions (9 entries)
+│   ├── descriptors.json      # Reality manipulation descriptors
+│   ├── effect_types_definitions.json # Effect type mechanics
+│   ├── expertise_categories.json # Expertise by attribute (7 categories)
+│   ├── features.json         # Supernatural features (4 tiers, 50+ entries)
+│   ├── flaws.json           # Character flaws (11 entries)
+│   ├── movement_features.json # Enhanced movement (2 tiers)
+│   ├── senses.json          # Enhanced senses (4 tiers, 25+ entries)
+│   ├── stat_options_generic.json # Stat bonus options (7 entries)
+│   ├── trait_conditions.json # Trait conditions (3 tiers, 30+ entries)
+│   └── unique_abilities_complex.json # Complex abilities with upgrades
+├── systems/                  # Game system implementations (10 systems)
+│   ├── ActionSystem.js       # Action economy & upgrades
 │   ├── ArchetypeSystem.js    # 7 archetype categories
+│   ├── AttackTypeSystem.js   # Attack & effect type management
 │   ├── AttributeSystem.js    # Attributes & defenses
-│   ├── ActionSystem.js       # Action economy
-│   └── [others...]           # Additional game systems
+│   ├── SimpleBoonsSystem.js  # Simple boon purchases
+│   ├── SpecialAttackSystem.js # Special attack creation
+│   ├── TraitFlawSystem.js    # Trait & flaw management
+│   ├── UniqueAbilitySystem.js # Complex unique abilities
+│   ├── UtilitySystem.js      # Utility abilities & expertise
+│   └── WealthSystem.js       # Wealth levels & purchasing
 ├── calculators/              # Point pool & stat calculations
-├── validators/               # Build validation & error checking
+│   ├── CombatCalculator.js   # Combat stat calculations
+│   ├── LimitCalculator.js    # Special attack limit scaling
+│   ├── PointPoolCalculator.js # Unified point pool system
+│   └── StatCalculator.js     # Final stat calculations
+├── validators/               # Build validation & error checking (MARKED FOR REMOVAL)
+│   ├── ArchetypeValidator.js
+│   ├── AttributeValidator.js
+│   ├── BuildOrderValidator.js
+│   ├── CharacterValidator.js
+│   └── SpecialAttackValidator.js
 ├── ui/                       # User interface components
 │   ├── CharacterBuilder.js   # Main UI controller
-│   ├── tabs/                 # Individual tab implementations
-│   └── components/           # Reusable UI components
+│   ├── components/           # Reusable UI components (10 components)
+│   │   ├── ActionUpgradeSection.js    # Primary action upgrades
+│   │   ├── BoonPurchaseSection.js     # Simple & complex boons
+│   │   ├── CharacterLibrary.js        # localStorage management
+│   │   ├── CharacterTree.js           # Hierarchical organization
+│   │   ├── FlawPurchaseSection.js     # Flaw economics system
+│   │   ├── PointPoolDisplay.js        # Real-time calculations
+│   │   ├── SimpleBoonSection.js       # Simple boon purchases
+│   │   ├── TraitPurchaseSection.js    # Complex trait builder
+│   │   ├── UniqueAbilitySection.js    # Complex ability upgrades
+│   │   └── ValidationDisplay.js       # Build order enforcement
+│   ├── shared/               # Shared utilities (3 utilities)
+│   │   ├── EventManager.js   # Standardized event handling
+│   │   ├── RenderUtils.js    # Consistent UI rendering
+│   │   └── UpdateManager.js  # Component update lifecycle
+│   └── tabs/                 # Individual tab implementations (7 tabs)
+│       ├── ArchetypeTab.js   # 7-category archetype selection
+│       ├── AttributeTab.js   # Attribute point allocation
+│       ├── BasicInfoTab.js   # Character name & tier selection
+│       ├── MainPoolTab.js    # 5-section modular system
+│       ├── SpecialAttackTab.js # Complex attack builder with modals
+│       ├── SummaryTab.js     # Character overview & export
+│       └── UtilityTab.js     # 5-category utility system
+└── css/
+    └── character-builder.css # Complete design system (651 lines)
 
 
 ## Current Status
 
-### ✅ **Working Components**
-- **Basic Info Tab**: Character name, tier selection
-- **Archetype Tab**: 7 archetype category selection with validation
-- **Attribute Tab**: Point allocation with tier limits
-- **Character Library**: localStorage-based character management
-- **Point Pool Calculations**: Real-time pool tracking
-- **Validation System**: Build order enforcement
+### ✅ **Complete and Functional**
+- **All 7 Tabs**: BasicInfo, Archetypes, Attributes, MainPool, SpecialAttacks, Utility, Summary
+- **External Data System**: 15 JSON files via GameDataManager
+- **Modular Architecture**: EventManager, UpdateManager, RenderUtils, Component system
+- **5-Section Main Pool**: Flaws, Traits, Simple Boons, Unique Abilities, Action Upgrades
+- **Complete Special Attack Builder**: Limits, upgrades, attack types with modal interfaces
+- **Full Utility System**: Expertise, features, senses, movement, descriptors
+- **Character Library**: localStorage with folders, search, import/export
 
-### 🚧 **In Development**
-- **Main Pool Tab**: Traits, flaws, boons purchasing
-- **Special Attacks Tab**: Limits system and upgrade selection
-- **Utility Tab**: Expertise, features, senses, descriptors
+### 🚧 **In Development** 
+- **UI Polish**: Resolving interface responsiveness issues
+- **Performance**: Optimizing update cycles and event handling
+- **Code Quality**: Modularization and cleanup
 
 ### 📋 **Planned Features**
 - JSON export/import

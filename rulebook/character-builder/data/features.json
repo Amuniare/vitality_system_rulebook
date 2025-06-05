@@ -1,0 +1,93 @@
+{
+    "tier1": {
+        "cost": 1,
+        "features": [
+            {"id": "materialSense", "name": "Material Sense", "description": "Make Awareness checks to identify composition, age, and origin of objects by touch"},
+            {"id": "perfectSenses", "name": "Perfect Senses", "description": "Supernatural precision for sounds, time, location, and musical notes"},
+            {"id": "eideticMemory", "name": "Eidetic Memory", "description": "Make Intelligence checks to recall any previously encountered information perfectly"},
+            {"id": "naturalCommunication", "name": "Natural Communication", "description": "Make Communication checks to converse with animals and sense plant health"},
+            {"id": "weatherPrediction", "name": "Weather Prediction", "description": "Make Intelligence checks to predict weather patterns up to 24 hours"},
+            {"id": "multiLimbed", "name": "Multi-limbed", "description": "Additional limbs for enhanced manipulation"},
+            {"id": "personalVehicle", "name": "Personal Vehicle", "description": "Own a vehicle for quick travel"},
+            {"id": "stableHousing", "name": "Stable Housing", "description": "Access to home supporting more than yourself"},
+            {"id": "lock", "name": "Lock", "description": "Place protective barriers with 3×Intelligence resistance"},
+            {"id": "objectEncryption", "name": "Object Encryption", "description": "Seal items in protective field to prevent tampering"},
+            {"id": "debt", "name": "Debt", "description": "Someone owes you something significant"},
+            {"id": "theProphesiedOne", "name": "The Prophesied One", "description": "Prophecy involves you, believers assist"}
+        ]
+    },
+    "tier3": {
+        "cost": 3,
+        "features": [
+            {"id": "telepathy", "name": "Telepathy", "description": "Make Communication checks for two-way mental communication regardless of distance"},
+            {"id": "psychometry", "name": "Psychometry", "description": "Make Intelligence checks to perceive recent history and emotional imprints of objects"},
+            {"id": "dreamWalking", "name": "Dream Walking", "description": "Make Communication checks to enter and interact with dreams of sleeping individuals"},
+            {"id": "spiritCommunication", "name": "Spirit Communication", "description": "Make Communication checks to speak with spirits of recently deceased"},
+            {"id": "technopathy", "name": "Technopathy", "description": "Make Intelligence checks to interface directly with electronic devices"},
+            {"id": "psychicLink", "name": "Psychic Link", "description": "Share memories or form temporary psychic connections"},
+            {"id": "mysticGuardian", "name": "Mystic Guardian", "description": "Create temporary magical guardians for simple tasks"},
+            {"id": "spiritualBind", "name": "Spiritual Bind", "description": "Temporarily bind to objects or locations for influence"},
+            {"id": "auraticSway", "name": "Auratic Sway", "description": "Emit aura affecting emotions, make checks to alter moods"},
+            {"id": "supernaturalIntuition", "name": "Supernatural Intuition", "description": "Sense presence of supernatural beings and forces"},
+            {"id": "temporalEcho", "name": "Temporal Echo", "description": "Temporarily replay past events to uncover secrets"},
+            {"id": "forbiddance", "name": "Forbiddance", "description": "Create protective ward over 100×100 area once per rest"},
+            {"id": "glyphOfWarding", "name": "Glyph of Warding", "description": "Set traps that release your special attacks"},
+            {"id": "quantumPocket", "name": "Quantum Pocket", "description": "Store and retrieve objects in subspace storage"},
+            {"id": "alchemist", "name": "Alchemist", "description": "Create experimental tinctures and tonics for specific goals"},
+            {"id": "ritualist", "name": "Ritualist", "description": "Create magical rituals taking one hour to accomplish specific goals"},
+            {"id": "inventor", "name": "Inventor", "description": "Create technological inventions for specific goals"},
+            {"id": "sponsor", "name": "Sponsor", "description": "Someone invested heavily in you, provides resources but expects returns"},
+            {"id": "streetwiseNetwork", "name": "Streetwise Network", "description": "Connections throughout society providing valuable information"},
+            {"id": "underworldConnection", "name": "Underworld Connection", "description": "Reliable criminal contact for communication and contraband"},
+            {"id": "wellConnected", "name": "Well Connected", "description": "Once per session, \"I Know a Guy\" to create helpful NPC"},
+            {"id": "socialNetwork", "name": "Social Network", "description": "Extensive connections with influential individuals"},
+            {"id": "ancestralKnowledge", "name": "Ancestral Knowledge", "description": "Communicate with ancestral spirits for guidance"},
+            {"id": "dreamwalker", "name": "Dreamwalker", "description": "Enter and interact with dreams"},
+            {"id": "divineInsight", "name": "Divine Insight", "description": "Glimpse alternate dimensions and supernatural realms"},
+            {"id": "prodigy", "name": "Prodigy", "description": "After 1 hour study, gain Tier bonus to specific topic until rest"},
+            {"id": "futureSight", "name": "Future Sight", "description": "Receive visions of possible futures, force with d100 roll"},
+            {"id": "perceptionFilter", "name": "Perception Filter", "description": "Temporarily render objects or areas unnoticed"},
+            {"id": "knowItAll", "name": "Know It All", "description": "Spend 1 minute explaining to give +Intelligence to others' checks"},
+            {"id": "bard", "name": "Bard", "description": "Sing to give +4 bonus to checks, Communication times per day"}
+        ]
+    },
+    "tier5": {
+        "cost": 5,
+        "features": [
+            {"id": "mindReading", "name": "Mind-Reading", "description": "Make Communication checks to read surface thoughts within line of sight"},
+            {"id": "memoryManipulation", "name": "Memory Manipulation", "description": "Make Communication checks to view, modify, or implant memories"},
+            {"id": "consciousnessTransfer", "name": "Consciousness Transfer", "description": "Make Communication checks to temporarily swap consciousness"},
+            {"id": "quantumTunneling", "name": "Quantum Tunneling", "description": "Make Mobility checks to teleport through solid barriers"},
+            {"id": "probabilityControl", "name": "Probability Control", "description": "Make Intelligence checks to influence probability of events"},
+            {"id": "realityAnchoring", "name": "Reality Anchoring", "description": "Make Intelligence checks to stabilize local reality"},
+            {"id": "hexer", "name": "Hexer", "description": "Inflict complex, lasting curses under specific conditions"},
+            {"id": "matterManipulation", "name": "Matter Manipulation", "description": "Make Intelligence checks to temporarily convert materials"},
+            {"id": "molecularControl", "name": "Molecular Control", "description": "Make Intelligence checks to rearrange molecular structures"},
+            {"id": "dimensionalStorage", "name": "Dimensional Storage", "description": "Make Intelligence checks to create pocket dimensions for storage"},
+            {"id": "hiddenTrap", "name": "Hidden Trap", "description": "Advanced trap setting with special attacks, Awareness×2 to detect"},
+            {"id": "bleedingEdge", "name": "Bleeding Edge", "description": "Most advanced technology, hard to repair/maintain"},
+            {"id": "timePerception", "name": "Time Perception", "description": "Make Awareness checks to perceive time flow differently"},
+            {"id": "dimensionalSight", "name": "Dimensional Sight", "description": "Make Awareness checks to see into parallel dimensions"},
+            {"id": "perfectSanctuary", "name": "Perfect Sanctuary", "description": "Create impenetrable zone around you and allies"},
+            {"id": "corruption", "name": "Corruption", "description": "Trigger condition grants power but risks permanent corruption"},
+            {"id": "simultaneousProcessing", "name": "Simultaneous Processing", "description": "Perform hundreds of simple mental tasks simultaneously"}
+        ]
+    },
+    "tier10": {
+        "cost": 10,
+        "features": [
+            {"id": "truePrecognition", "name": "True Precognition", "description": "Make Intelligence checks to perceive detailed future events days in advance"},
+            {"id": "consciousnessNetwork", "name": "Consciousness Network", "description": "Make Communication checks to link multiple minds into collective"},
+            {"id": "quantumConsciousness", "name": "Quantum Consciousness", "description": "Make Awareness checks to exist in multiple probable states"},
+            {"id": "realityRevision", "name": "Reality Revision", "description": "Make Intelligence checks to alter recent events within last hour"},
+            {"id": "timeManipulation", "name": "Time Manipulation", "description": "Make Intelligence checks to slow, accelerate, or pause time locally"},
+            {"id": "causalManipulation", "name": "Causal Manipulation", "description": "Make Intelligence checks to alter cause-and-effect relationships"},
+            {"id": "immortality", "name": "Immortality", "description": "Return to life after 24 hours, with limitations"},
+            {"id": "selfSacrifice", "name": "Self-Sacrifice", "description": "Increase Tier by 4 for 6 rounds, then die"},
+            {"id": "matterCreation", "name": "Matter Creation", "description": "Make Intelligence checks to create matter from quantum foam"},
+            {"id": "universalTranslation", "name": "Universal Translation", "description": "Make Communication checks to understand any language"},
+            {"id": "dimensionalTravel", "name": "Dimensional Travel", "description": "Make Mobility checks to open portals to alternate realities"},
+            {"id": "realityProgramming", "name": "Reality Programming", "description": "Make Intelligence checks to alter fundamental laws of physics"}
+        ]
+    }
+}

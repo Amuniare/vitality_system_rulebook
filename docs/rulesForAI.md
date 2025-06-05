@@ -9,11 +9,6 @@ This is a personal RPG campaign management system with three major components:
 2. **Web Character Builder**: JavaScript browser app for character creation (`rulebook/character-builder/`)
 3. **Roll20 Integration**: Python automation for uploading characters to Roll20 campaigns (`src/`)
 
-### **Development Status**
-- ✅ **RPG Rules**: Complete (2,100+ lines in `rulebook/rules/rulebook.md`)
-- ✅ **Roll20 Upload**: Working (JSON → Roll20 via browser automation + API)
-- 🚧 **Web Builder**: Partial (basic info + archetypes work, main pool/special attacks/utility in development)
-- 🚧 **ScriptCards System**: Working but needs bulk update script
 
 ### **Primary Development Goals**
 - Complete web character builder (main pool, special attacks, utility tabs)

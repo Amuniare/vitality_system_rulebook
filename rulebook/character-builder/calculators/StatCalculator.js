@@ -1,17 +1,29 @@
-// StatCalculator.js - Calculate derived stats and combat values
+// StatCalculator.js - REFACTORED with incremental updates and caching
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
 
 export class StatCalculator {
-    // Calculate all derived stats for a character
+    static cache = new Map();
+    static lastCharacterHash = null;
+    
+    // Calculate all derived stats for a character with caching
     static calculateAllStats(character) {
+        const characterHash = this.getCharacterHash(character);
+        
+        // Return cached result if character hasn't changed
+        if (this.lastCharacterHash === characterHash && this.cache.has('allStats')) {
+            return this.cache.get('allStats');
+        }
+        
+        console.log('🔄 Calculating character stats (cache miss)');
+        
         const baseStats = this.calculateBaseStats(character);
         const archetypeStats = this.applyArchetypeBonuses(character, baseStats);
         const boonStats = this.applyBoonEffects(character, archetypeStats);
         const traitFlawStats = this.applyTraitFlawBonuses(character, boonStats);
         const finalStats = this.applyFinalModifications(character, traitFlawStats);
         
-        return {
+        const result = {
             base: baseStats,
             withArchetypes: archetypeStats,
             withBoons: boonStats,
@@ -19,6 +31,39 @@ export class StatCalculator {
             final: finalStats,
             breakdown: this.generateStatBreakdown(character, baseStats, finalStats)
         };
+        
+        // Cache results
+        this.cache.set('allStats', result);
+        this.lastCharacterHash = characterHash;
+        
+        return result;
+    }
+    
+    // OPTIMIZED: Calculate only specific stat category
+    static calculateSpecificStats(character, category) {
+        const cacheKey = `${category}_${this.getCharacterHash(character)}`;
+        
+        if (this.cache.has(cacheKey)) {
+            return this.cache.get(cacheKey);
+        }
+        
+        let result;
+        switch(category) {
+            case 'combat':
+                result = this.calculateCombatStats(character);
+                break;
+            case 'defense':
+                result = this.calculateDefenseStats(character);
+                break;
+            case 'utility':
+                result = this.calculateUtilityStats(character);
+                break;
+            default:
+                result = this.calculateAllStats(character);
+        }
+        
+        this.cache.set(cacheKey, result);
+        return result;
     }
     
     // Calculate base stats from tier and attributes
@@ -53,6 +98,51 @@ export class StatCalculator {
         };
     }
     
+    // OPTIMIZED: Calculate only combat stats
+    static calculateCombatStats(character) {
+        const tier = character.tier;
+        const attrs = character.attributes;
+        
+        const base = {
+            accuracy: tier + attrs.focus,
+            damage: tier + (attrs.power * GameConstants.POWER_DAMAGE_MULTIPLIER),
+            conditions: tier + attrs.power,
+            initiative: tier + attrs.mobility + attrs.focus + attrs.awareness,
+            movement: TierSystem.calculateBaseMovement(tier, attrs.mobility),
+            hp: TierSystem.calculateBaseHP(tier)
+        };
+        
+        // Apply archetype bonuses to combat stats only
+        return this.applyCombatArchetypeBonuses(character, base);
+    }
+    
+    // OPTIMIZED: Calculate only defense stats
+    static calculateDefenseStats(character) {
+        const tier = character.tier;
+        const attrs = character.attributes;
+        
+        const base = {
+            avoidance: GameConstants.AVOIDANCE_BASE + tier + attrs.mobility,
+            durability: tier + (attrs.endurance * GameConstants.ENDURANCE_DURABILITY_MULTIPLIER),
+            resolve: GameConstants.RESOLVE_BASE + tier + attrs.focus,
+            stability: GameConstants.STABILITY_BASE + tier + attrs.power,
+            vitality: GameConstants.VITALITY_BASE + tier + attrs.endurance
+        };
+        
+        // Apply archetype bonuses to defense stats only
+        return this.applyDefenseArchetypeBonuses(character, base);
+    }
+    
+    // OPTIMIZED: Calculate only utility stats
+    static calculateUtilityStats(character) {
+        const tier = character.tier;
+        
+        return {
+            skillBonus: tier + this.getUtilityArchetypeBonus(character),
+            expertiseBonus: this.calculateExpertiseBonus(character)
+        };
+    }
+    
     // Apply archetype bonuses to base stats
     static applyArchetypeBonuses(character, baseStats) {
         const stats = { ...baseStats };
@@ -66,7 +156,7 @@ export class StatCalculator {
                 stats.movement += Math.ceil(tier / 2);
                 break;
             case 'skirmisher':
-                stats.reach = 1; // Special property
+                stats.reach = 1;
                 stats.opportunityImmunity = true;
                 break;
             case 'behemoth':
@@ -83,9 +173,8 @@ export class StatCalculator {
                 break;
             case 'teleportation':
                 stats.movementType = 'teleportation';
-                stats.movement -= 2; // Penalty
+                stats.movement -= 2;
                 break;
-            // Add other movement archetypes
         }
         
         // Attack Type Archetype Bonuses
@@ -104,13 +193,12 @@ export class StatCalculator {
         // Effect Type Archetype Bonuses
         switch(archetypes.effectType) {
             case 'crowdControl':
-                stats.damage -= tier; // Penalty to damage
+                stats.damage -= tier;
                 stats.freeAdvancedConditions = 2;
                 break;
             case 'hybridSpecialist':
                 stats.mandatoryHybrid = true;
                 break;
-            // damageSpecialist has no stat modifications
         }
         
         // Unique Ability Archetype Bonuses
@@ -131,7 +219,6 @@ export class StatCalculator {
                 stats.initiative += bonus;
                 stats.movement += bonus;
                 break;
-            // extraordinary affects point pools, not stats directly
         }
         
         // Defensive Archetype Bonuses
@@ -159,15 +246,106 @@ export class StatCalculator {
         // Utility Archetype Bonuses
         switch(archetypes.utility) {
             case 'specialized':
-                stats.chosenStatDoubleBonus = tier * 2; // Applied to chosen stat
+                stats.chosenStatDoubleBonus = tier * 2;
                 break;
             case 'jackOfAllTrades':
-                stats.skillBonus += tier; // Additional tier bonus to all checks
+                stats.skillBonus += tier;
                 break;
-            // practical has no special bonuses
         }
         
         return stats;
+    }
+    
+    // OPTIMIZED: Apply only combat archetype bonuses
+    static applyCombatArchetypeBonuses(character, baseStats) {
+        const stats = { ...baseStats };
+        const archetypes = character.archetypes;
+        const tier = character.tier;
+        
+        // Only movement bonuses that affect combat stats
+        if (archetypes.movement === 'swift') {
+            stats.movement += Math.ceil(tier / 2);
+        } else if (archetypes.movement === 'vanguard') {
+            stats.movement += character.attributes.endurance;
+        } else if (archetypes.movement === 'teleportation') {
+            stats.movement -= 2;
+        }
+        
+        // Effect type bonuses that affect combat
+        if (archetypes.effectType === 'crowdControl') {
+            stats.damage -= tier;
+        }
+        
+        // Unique ability bonuses that affect combat
+        if (archetypes.uniqueAbility === 'versatileMaster') {
+            stats.quickActions = tier >= 8 ? 3 : 2;
+        } else if (archetypes.uniqueAbility === 'cutAbove') {
+            const bonus = tier <= 3 ? 1 : tier <= 6 ? 2 : 3;
+            stats.accuracy += bonus;
+            stats.damage += bonus;
+            stats.conditions += bonus;
+            stats.initiative += bonus;
+            stats.movement += bonus;
+        }
+        
+        return stats;
+    }
+    
+    // OPTIMIZED: Apply only defense archetype bonuses
+    static applyDefenseArchetypeBonuses(character, baseStats) {
+        const stats = { ...baseStats };
+        const archetypes = character.archetypes;
+        const tier = character.tier;
+        
+        // Defensive archetype bonuses
+        switch(archetypes.defensive) {
+            case 'stalwart':
+                stats.avoidance -= tier;
+                break;
+            case 'resilient':
+                stats.durability += tier;
+                break;
+            case 'fortress':
+                stats.resolve += tier;
+                stats.stability += tier;
+                stats.vitality += tier;
+                break;
+            case 'juggernaut':
+                // HP bonus would be calculated separately
+                break;
+        }
+        
+        // Cut Above affects all stats including defenses
+        if (archetypes.uniqueAbility === 'cutAbove') {
+            const bonus = tier <= 3 ? 1 : tier <= 6 ? 2 : 3;
+            stats.avoidance += bonus;
+            stats.durability += bonus;
+            stats.resolve += bonus;
+            stats.stability += bonus;
+            stats.vitality += bonus;
+        }
+        
+        return stats;
+    }
+    
+    // Get utility archetype bonus
+    static getUtilityArchetypeBonus(character) {
+        if (character.archetypes.utility === 'jackOfAllTrades') {
+            return character.tier; // Additional tier bonus
+        }
+        return 0;
+    }
+    
+    // Calculate expertise bonus from utility purchases
+    static calculateExpertiseBonus(character) {
+        let bonus = 0;
+        
+        Object.values(character.utilityPurchases.expertise).forEach(category => {
+            bonus += category.basic.length; // Basic expertise gives +1
+            bonus += category.mastered.length * 2; // Mastered gives +2
+        });
+        
+        return bonus;
     }
     
     // Apply boon effects to stats
@@ -177,7 +355,6 @@ export class StatCalculator {
         character.mainPoolPurchases.boons.forEach(boon => {
             switch(boon.boonId) {
                 case 'speedOfThought':
-                    // Replace awareness with intelligence*2 for initiative
                     stats.initiative = stats.initiative - character.attributes.awareness + (character.attributes.intelligence * 2);
                     break;
                 case 'combatReflexes':
@@ -200,14 +377,13 @@ export class StatCalculator {
                 case 'biohacker':
                     stats.conditionTargeting = 'vitality';
                     break;
-                // Add other boon effects
             }
         });
         
         return stats;
     }
     
-    // Apply trait and flaw bonuses
+    // Apply trait and flaw bonuses with stacking reduction
     static applyTraitFlawBonuses(character, baseStats) {
         const stats = { ...baseStats };
         
@@ -224,22 +400,23 @@ export class StatCalculator {
         return stats;
     }
     
-    // Calculate stacking bonuses with reduction
+    // OPTIMIZED: Calculate stacking bonuses with reduction (improved algorithm)
     static calculateStackingBonuses(character) {
         const bonuses = {};
         
-        // Collect all stat bonuses
+        // Collect all stat bonuses by type
         character.mainPoolPurchases.traits.forEach(trait => {
             trait.statBonuses.forEach(stat => {
                 if (!bonuses[stat]) bonuses[stat] = [];
                 bonuses[stat].push({
                     source: 'trait',
-                    name: trait.name,
+                    name: trait.name || 'Trait',
                     baseValue: character.tier
                 });
             });
         });
         
+        // NEW ECONOMICS: Flaws give stat bonuses (not point bonuses)
         character.mainPoolPurchases.flaws.forEach(flaw => {
             if (flaw.statBonus) {
                 if (!bonuses[flaw.statBonus]) bonuses[flaw.statBonus] = [];
@@ -251,13 +428,13 @@ export class StatCalculator {
             }
         });
         
-        // Apply stacking reduction
+        // Apply stacking reduction (each additional bonus to same stat -1)
         const finalBonuses = {};
         Object.entries(bonuses).forEach(([stat, bonusArray]) => {
             let total = 0;
             bonusArray.forEach((bonus, index) => {
                 const stackingPenalty = index; // 0 for first, 1 for second, etc.
-                const actualValue = Math.max(0, bonus.baseValue - stackingPenalty);
+                const actualValue = Math.max(1, bonus.baseValue - stackingPenalty); // Minimum 1
                 total += actualValue;
             });
             finalBonuses[stat] = total;
@@ -266,7 +443,7 @@ export class StatCalculator {
         return finalBonuses;
     }
     
-    // Apply final modifications (flaws that affect stats)
+    // Apply final modifications (flaw effects)
     static applyFinalModifications(character, baseStats) {
         const stats = { ...baseStats };
         
@@ -278,13 +455,12 @@ export class StatCalculator {
                     break;
                 case 'unresponsive':
                     stats.reactions = 0;
-                    stats.initiative -= character.tier; // Remove tier bonus
+                    stats.initiative -= character.tier;
                     stats.noSurpriseRounds = true;
                     break;
                 case 'weak':
                     // This affects point pools, not final stats
                     break;
-                // Add other flaw effects
             }
         });
         
@@ -362,8 +538,6 @@ export class StatCalculator {
             }
         }
         
-        // Add other archetype contributions for other stats
-        
         return bonuses;
     }
     
@@ -378,7 +552,6 @@ export class StatCalculator {
                         bonuses.push({ source: 'Combat Reflexes', value: 1 });
                     }
                     break;
-                // Add other boon contributions
             }
         });
         
@@ -395,6 +568,28 @@ export class StatCalculator {
         }
         
         return bonuses;
+    }
+    
+    // CACHING UTILITIES
+    
+    // Generate hash for character to detect changes
+    static getCharacterHash(character) {
+        const relevantData = {
+            tier: character.tier,
+            archetypes: character.archetypes,
+            attributes: character.attributes,
+            mainPoolPurchases: character.mainPoolPurchases,
+            utilityPurchases: character.utilityPurchases
+        };
+        
+        return JSON.stringify(relevantData);
+    }
+    
+    // Clear cache
+    static clearCache() {
+        this.cache.clear();
+        this.lastCharacterHash = null;
+        console.log('🗑️ Stat calculator cache cleared');
     }
     
     // Calculate combat effectiveness metrics
@@ -436,15 +631,14 @@ export class StatCalculator {
         const stats = this.calculateAllStats(character).final;
         const tier = character.tier;
         
-        // Define tier benchmarks
         const benchmarks = {
-            accuracy: tier + (tier * 0.5), // Expect about 1.5x tier
-            damage: tier + (tier * 0.75), // Expect about 1.75x tier
-            conditions: tier + (tier * 0.5), // Expect about 1.5x tier
-            avoidance: 10 + tier + (tier * 0.5), // Expect mobility investment
-            durability: tier + (tier * 0.75), // Expect endurance investment
-            hp: 100 + (tier * 7), // Expect slightly above base
-            movement: tier + 8 // Expect some mobility investment
+            accuracy: tier + (tier * 0.5),
+            damage: tier + (tier * 0.75),
+            conditions: tier + (tier * 0.5),
+            avoidance: 10 + tier + (tier * 0.5),
+            durability: tier + (tier * 0.75),
+            hp: 100 + (tier * 7),
+            movement: tier + 8
         };
         
         const comparison = {};
@@ -470,48 +664,5 @@ export class StatCalculator {
         if (ratio >= 0.8) return 'adequate';
         if (ratio >= 0.6) return 'weak';
         return 'poor';
-    }
-    
-    // Get stat optimization suggestions
-    static getOptimizationSuggestions(character) {
-        const comparison = this.compareToBenchmarks(character);
-        const suggestions = [];
-        
-        Object.entries(comparison).forEach(([stat, data]) => {
-            if (data.rating === 'poor' || data.rating === 'weak') {
-                suggestions.push({
-                    type: 'stat_improvement',
-                    stat,
-                    current: data.actual,
-                    target: data.benchmark,
-                    priority: data.rating === 'poor' ? 'high' : 'medium',
-                    suggestion: this.getStatImprovementSuggestion(stat, character)
-                });
-            }
-        });
-        
-        return suggestions;
-    }
-    
-    // Get specific improvement suggestion for a stat
-    static getStatImprovementSuggestion(stat, character) {
-        switch(stat) {
-            case 'accuracy':
-                return 'Consider increasing Focus attribute or taking accuracy-boosting traits';
-            case 'damage':
-                return 'Consider increasing Power attribute or damage-focused upgrades';
-            case 'conditions':
-                return 'Consider increasing Power attribute for condition effectiveness';
-            case 'avoidance':
-                return 'Consider increasing Mobility attribute';
-            case 'durability':
-                return 'Consider increasing Endurance attribute';
-            case 'hp':
-                return 'Consider Juggernaut defensive archetype or health-boosting boons';
-            case 'movement':
-                return 'Consider movement-focused archetype or Mobility investment';
-            default:
-                return 'Consider archetype synergy and attribute allocation';
-        }
     }
 }

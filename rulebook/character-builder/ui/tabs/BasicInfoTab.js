@@ -1,4 +1,6 @@
-// BasicInfoTab.js - Character name and tier selection
+// rulebook/character-builder/ui/tabs/BasicInfoTab.js
+import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+
 export class BasicInfoTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
@@ -9,159 +11,77 @@ export class BasicInfoTab {
         if (!tabContent) return;
 
         const character = this.builder.currentCharacter;
-        
+        if (!character) {
+            tabContent.innerHTML = "<p>No character loaded.</p>";
+            return;
+        }
+
         tabContent.innerHTML = `
             <div class="basic-info-section">
                 <h2>Character Information</h2>
                 <p class="section-description">Enter your character's basic information to begin building.</p>
-                
-                <div class="form-group">
-                    <label for="character-name">Hero Name *</label>
-                    <input type="text" 
-                           id="character-name" 
-                           placeholder="Enter your hero name"
-                           value="${character?.name || ''}"
-                           class="large-input">
-                    <small>The name your character uses in their heroic identity</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="real-name">Real Name</label>
-                    <input type="text" 
-                           id="real-name" 
-                           placeholder="Enter your character's real name"
-                           value="${character?.realName || ''}"
-                           class="large-input">
-                    <small>Your character's civilian identity (optional)</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="tier-select">Character Tier *</label>
-                    <select id="tier-select" class="large-input">
-                        ${this.generateTierOptions(character?.tier || 4)}
-                    </select>
-                    <small>Tier represents your character's overall power level and experience</small>
-                </div>
-                
+
+                ${RenderUtils.renderFormGroup({
+                    label: 'Hero Name *',
+                    inputId: 'character-name',
+                    inputHtml: `<input type="text" id="character-name" placeholder="Enter your hero name" value="${character.name || ''}" data-action="update-char-name">`,
+                    description: "The name your character uses in their heroic identity"
+                })}
+
+                ${RenderUtils.renderFormGroup({
+                    label: 'Real Name',
+                    inputId: 'real-name',
+                    inputHtml: `<input type="text" id="real-name" placeholder="Enter your character's real name" value="${character.realName || ''}" data-action="update-real-name">`,
+                    description: "Your character's civilian identity (optional)"
+                })}
+
+                ${RenderUtils.renderFormGroup({
+                    label: 'Character Tier *',
+                    inputId: 'tier-select',
+                    inputHtml: RenderUtils.renderSelect({
+                        id: 'tier-select',
+                        value: character.tier || 4,
+                        options: Array.from({length: 10}, (_, i) => ({ value: i + 1, label: `${i + 1} - ${this.getTierDescription(i + 1)}`})),
+                        dataAttributes: { action: 'update-tier' }
+                    }),
+                    description: "Tier represents your character's overall power level and experience"
+                })}
+
                 <div class="tier-info">
                     <h3>Tier Information</h3>
-                    <div id="tier-description"></div>
+                    <div id="tier-description-display"></div>
                     <div class="tier-effects">
                         <h4>Tier Effects:</h4>
                         <ul id="tier-effects-list"></ul>
                     </div>
                 </div>
-                
+
                 <div class="next-step">
                     <p><strong>Next Step:</strong> Choose your 7 archetype categories to define your character's core abilities.</p>
-                    <button id="continue-to-archetypes" class="btn-primary">Continue to Archetypes →</button>
+                    ${RenderUtils.renderButton({
+                        text: 'Continue to Archetypes →',
+                        variant: 'primary',
+                        dataAttributes: { action: 'continue-to-archetypes' }
+                    })}
                 </div>
             </div>
         `;
 
-        this.setupEventListeners();
-        this.updateTierInfo();
+        this.setupEventListeners(); // For direct event listeners if any, or rely on CharacterBuilder
+        this.updateTierDisplay(character.tier); // Initial display
     }
 
-    generateTierOptions(selectedTier) {
-        let options = '';
-        for (let tier = 1; tier <= 10; tier++) {
-            const selected = tier === selectedTier ? 'selected' : '';
-            const description = this.getTierDescription(tier);
-            options += `<option value="${tier}" ${selected}>${tier} - ${description}</option>`;
-        }
-        return options;
-    }
 
     getTierDescription(tier) {
+        // ... (same as before)
         const descriptions = {
-            1: "Novice",
-            2: "Developing", 
-            3: "Competent",
-            4: "Professional",
-            5: "Veteran",
-            6: "Expert",
-            7: "Elite",
-            8: "Master",
-            9: "Legendary",
-            10: "World-class Expert"
+            1: "Novice", 2: "Developing", 3: "Competent", 4: "Professional", 5: "Veteran",
+            6: "Expert", 7: "Elite", 8: "Master", 9: "Legendary", 10: "World-class Expert"
         };
         return descriptions[tier] || "Unknown";
     }
-
-    setupEventListeners() {
-        const character = this.builder.currentCharacter;
-        if (!character) return;
-
-        // Character name
-        const nameInput = document.getElementById('character-name');
-        if (nameInput) {
-            nameInput.addEventListener('input', (e) => {
-                character.name = e.target.value || 'Unnamed Character';
-                this.builder.updateCharacter();
-            });
-        }
-
-        // Real name
-        const realNameInput = document.getElementById('real-name');
-        if (realNameInput) {
-            realNameInput.addEventListener('input', (e) => {
-                character.realName = e.target.value;
-                this.builder.updateCharacter();
-            });
-        }
-
-        // Tier selection
-        const tierSelect = document.getElementById('tier-select');
-        if (tierSelect) {
-            tierSelect.addEventListener('change', (e) => {
-                const newTier = parseInt(e.target.value);
-                character.tier = newTier;
-                this.updateTierInfo();
-                this.builder.updateCharacter();
-            });
-        }
-
-        // Continue button
-        const continueBtn = document.getElementById('continue-to-archetypes');
-        if (continueBtn) {
-            continueBtn.addEventListener('click', () => {
-                this.builder.switchTab('archetypes');
-            });
-        }
-    }
-
-    updateTierInfo() {
-        const character = this.builder.currentCharacter;
-        if (!character) return;
-
-        const tier = character.tier;
-        
-        // Update description
-        const descElement = document.getElementById('tier-description');
-        if (descElement) {
-            descElement.innerHTML = `
-                <p><strong>Tier ${tier}:</strong> ${this.getTierDescription(tier)}</p>
-                <p>${this.getTierFlavorText(tier)}</p>
-            `;
-        }
-
-        // Update effects list
-        const effectsList = document.getElementById('tier-effects-list');
-        if (effectsList) {
-            effectsList.innerHTML = `
-                <li><strong>Bonus to all actions:</strong> +${tier}</li>
-                <li><strong>Maximum attribute rank:</strong> ${tier}</li>
-                <li><strong>Combat attribute points:</strong> ${tier * 2}</li>
-                <li><strong>Utility attribute points:</strong> ${tier}</li>
-                <li><strong>Main pool points:</strong> ${Math.max(0, (tier - 2) * 15)}</li>
-                <li><strong>Utility pool points:</strong> ${Math.max(0, 5 * (tier - 1))}</li>
-                <li><strong>Base HP:</strong> ${100 + (tier * 5)}</li>
-            `;
-        }
-    }
-
     getTierFlavorText(tier) {
+        // ... (same as before)
         const flavorTexts = {
             1: "Just starting out on your heroic journey. You have potential but lack experience.",
             2: "Developing your abilities and gaining confidence in your powers.",
@@ -176,4 +96,74 @@ export class BasicInfoTab {
         };
         return flavorTexts[tier] || "A hero of unknown caliber.";
     }
+
+
+    setupEventListeners() {
+        // EventManager at CharacterBuilder level will handle data-action inputs/changes.
+    }
+
+    updateName(newName) { // Called by CharacterBuilder
+        const character = this.builder.currentCharacter;
+        if (character) {
+            character.name = newName || 'Unnamed Character';
+            this.builder.updateCharacter(); // This also updates the header
+        }
+    }
+    updateRealName(newRealName) { // Called by CharacterBuilder
+        const character = this.builder.currentCharacter;
+        if (character) {
+            character.realName = newRealName;
+            this.builder.updateCharacter();
+        }
+    }
+    updateTier(newTier) { // Called by CharacterBuilder
+        const character = this.builder.currentCharacter;
+        if (character) {
+            character.tier = parseInt(newTier);
+            this.updateTierDisplay(character.tier);
+            this.builder.updateCharacter(); // This updates header and point pools
+        }
+    }
+
+    updateTierDisplay(tier) {
+        const descElement = document.getElementById('tier-description-display');
+        if (descElement) {
+            descElement.innerHTML = `
+                <p><strong>Tier ${tier}:</strong> ${this.getTierDescription(tier)}</p>
+                <p>${this.getTierFlavorText(tier)}</p>
+            `;
+        }
+
+        const effectsList = document.getElementById('tier-effects-list');
+        if (effectsList) {
+             // These values should ideally come from TierSystem.js or GameConstants.js
+            effectsList.innerHTML = `
+                <li><strong>Bonus to all actions:</strong> +${tier}</li>
+                <li><strong>Maximum attribute rank:</strong> ${tier}</li>
+                <li><strong>Combat attribute points:</strong> ${tier * 2}</li>
+                <li><strong>Utility attribute points:</strong> ${tier}</li>
+                <li><strong>Main pool points:</strong> ${Math.max(0, (tier - 2) * 15)}</li>
+                <li><strong>Utility pool points:</strong> ${Math.max(0, 5 * (tier - 1))}</li>
+                <li><strong>HP (Base):</strong> 100 (Actual HP includes Endurance bonuses)</li>
+            `;
+        }
+    }
+     // onCharacterUpdate can re-call render if needed, or more granular updates.
+    onCharacterUpdate() {
+        // If only tier could change that affects this tab's specific display (beyond header)
+        const tierSelect = document.getElementById('tier-select');
+        if (tierSelect && this.builder.currentCharacter && tierSelect.value != this.builder.currentCharacter.tier) {
+             tierSelect.value = this.builder.currentCharacter.tier;
+             this.updateTierDisplay(this.builder.currentCharacter.tier);
+        }
+         const nameInput = document.getElementById('character-name');
+         if(nameInput && this.builder.currentCharacter && nameInput.value !== this.builder.currentCharacter.name) {
+            nameInput.value = this.builder.currentCharacter.name;
+         }
+         const realNameInput = document.getElementById('real-name');
+         if(realNameInput && this.builder.currentCharacter && realNameInput.value !== this.builder.currentCharacter.realName) {
+            realNameInput.value = this.builder.currentCharacter.realName;
+         }
+    }
 }
+

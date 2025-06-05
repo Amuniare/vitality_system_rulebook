@@ -1,437 +1,349 @@
-// CharacterTree.js - Enhanced character list with library integration
+// rulebook/character-builder/ui/components/CharacterTree.js
+import { RenderUtils } from '../shared/RenderUtils.js';
+import { EventManager } from '../shared/EventManager.js';
+
 export class CharacterTree {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.library = null; // Will be set from builder
-        this.currentFolder = 'all';
-        this.searchQuery = '';
-        this.isInitialized = false;
+        this.library = null; // Will be set by CharacterBuilder
+        this.expandedFolders = new Set();
+        this.selectedCharacterId = null;
+        this.searchTerm = '';
     }
 
-    async init() {
-        this.library = this.builder.library;
-        this.isInitialized = true;
+    init() {
+        console.log('🟡 Initializing CharacterTree...');
+        // Library is expected to be initialized by CharacterBuilder before this
         this.render();
+        // Event listeners are setup once by CharacterBuilder, or need to be specific to this component's container
     }
 
     render() {
         const container = document.getElementById('character-tree');
-        if (!container) return;
-
-        if (!this.isInitialized || !this.library) {
-            container.innerHTML = '<div class="loading">Loading character library...</div>';
+        if (!container) {
+            console.error("Character tree container not found!");
+            return;
+        }
+        if (!this.library || !this.library.initialized) {
+            container.innerHTML = '<p>Loading library...</p>';
             return;
         }
 
-        const characters = this.getFilteredCharacters();
-        const stats = this.library.getLibraryStats();
+        const characters = this.searchTerm ?
+                           this.library.searchCharacters(this.searchTerm) :
+                           this.library.getAllCharacters();
+        const folders = Array.from(this.library.folders.values());
 
         container.innerHTML = `
-            <div class="character-library">
-                ${this.renderQuickActions()}
-                ${this.renderSearchAndFilter()}
-                ${this.renderFolderNavigation(stats)}
-                ${this.renderCharacterList(characters)}
-                ${this.renderLibraryStats(stats)}
+            <div class="character-tree-header">
+                ${RenderUtils.renderButton({
+                    text: '+ New Character',
+                    variant: 'primary',
+                    dataAttributes: { action: 'new-character' }, // For EventManager
+                    classes: ['new-character-btn-tree'] // More specific if needed
+                })}
+                ${RenderUtils.renderButton({
+                    text: 'Import JSON',
+                    variant: 'secondary',
+                    dataAttributes: { action: 'import-character' } // For EventManager
+                })}
+            </div>
+
+            <div class="character-search form-group">
+                <input type="text"
+                       id="character-search-input"
+                       placeholder="Search characters..."
+                       class="search-input"
+                       value="${this.searchTerm}">
+            </div>
+
+            <div class="character-tree-content">
+                ${this.searchTerm ?
+                    this.renderSearchResults(characters) :
+                    this.renderCharacterTree(characters, folders)
+                }
+            </div>
+
+            <div class="character-tree-footer">
+                ${this.renderLibraryStats()}
             </div>
         `;
-
-        this.setupEventListeners();
+        this.setupTreeSpecificListeners(container); // Re-attach listeners for dynamic content
     }
 
-    renderQuickActions() {
+    renderSearchResults(characters) {
         return `
-            <div class="quick-actions">
-                <button id="character-tree-new-btn" class="btn-primary" style="width: 100%; margin-bottom: 0.5rem;">
-                    + New Character
-                </button>
-                <div class="action-buttons" style="display: flex; gap: 0.25rem;">
-                    <button id="bulk-import-btn" class="btn-secondary" style="flex: 1; font-size: 0.8em;">
-                        Import
-                    </button>
-                    <button id="scan-library-btn" class="btn-secondary" style="flex: 1; font-size: 0.8em;">
-                        Scan
-                    </button>
-                    <button id="export-library-btn" class="btn-secondary" style="flex: 1; font-size: 0.8em;">
-                        Export
-                    </button>
-                </div>
-                <input type="file" id="bulk-import-input" multiple accept=".json" style="display: none;">
-            </div>
-        `;
-    }
-
-    renderSearchAndFilter() {
-        return `
-            <div class="search-filter">
-                <input type="text" 
-                       id="character-search" 
-                       placeholder="Search characters..." 
-                       value="${this.searchQuery}"
-                       style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; 
-                              background: var(--bg-primary); border: 1px solid var(--accent-secondary); 
-                              color: var(--text-light); border-radius: 4px;">
-            </div>
-        `;
-    }
-
-    renderFolderNavigation(stats) {
-        const folders = this.library.getFolders();
-        
-        return `
-            <div class="folder-navigation">
-                <h4 style="margin-bottom: 0.5rem;">Folders</h4>
-                <div class="folder-list">
-                    <div class="folder-item ${this.currentFolder === 'all' ? 'active' : ''}" 
-                         data-folder="all">
-                        <span class="folder-name">All Characters</span>
-                        <span class="folder-count">${stats.totalCharacters}</span>
+            <div class="search-results">
+                <div class="search-header">Search Results (${characters.length})</div>
+                ${characters.length > 0 ? `
+                    <div class="search-character-list">
+                        ${characters.map(char => this.renderCharacterItem(char)).join('')}
                     </div>
-                    ${folders.map(folder => `
-                        <div class="folder-item ${this.currentFolder === folder.id ? 'active' : ''}" 
-                             data-folder="${folder.id}">
-                            <span class="folder-name">${folder.name}</span>
-                            <span class="folder-count">${folder.count}</span>
-                        </div>
-                    `).join('')}
-                </div>
+                ` : '<div class="empty-state">No characters found for your search.</div>'}
             </div>
         `;
     }
 
-    renderCharacterList(characters) {
-        if (characters.length === 0) {
-            return this.renderEmptyState();
-        }
+    renderCharacterTree(characters, folders) {
+        const charactersByFolder = this.groupCharactersByFolder(characters);
+        const rootFolders = folders.filter(f => !f.parentId);
+        const unorganizedCharacters = charactersByFolder.get(null) || []; // Use null for root
 
         return `
-            <div class="character-list">
-                <h4 style="margin: 1rem 0 0.5rem 0;">
-                    Characters ${this.currentFolder !== 'all' ? `(${this.library.getFolderInfo(this.currentFolder)?.name})` : ''}
-                    <span class="character-count">(${characters.length})</span>
-                </h4>
-                ${characters.map(character => this.renderCharacterItem(character)).join('')}
+            <div class="character-tree-list">
+                ${rootFolders.map(folder => this.renderFolder(folder, charactersByFolder, folders)).join('')}
+                ${unorganizedCharacters.length > 0 || rootFolders.length === 0 && characters.length > 0 ? `
+                    <div class="folder-section">
+                        <div class="folder-header unorganized">
+                            <span class="folder-name">Unorganized</span>
+                            <span class="folder-count">(${unorganizedCharacters.length})</span>
+                        </div>
+                        <div class="folder-characters">
+                            ${unorganizedCharacters.map(char => this.renderCharacterItem(char)).join('')}
+                        </div>
+                    </div>
+                ` : (characters.length === 0 ? '<div class="empty-state">No characters yet. Click "New Character" to start.</div>' : '')}
+            </div>
+        `;
+    }
+
+    renderFolder(folder, charactersByFolder, allFolders) {
+        const isExpanded = this.expandedFolders.has(folder.id);
+        const folderCharacters = charactersByFolder.get(folder.id) || [];
+        const subFolders = allFolders.filter(f => f.parentId === folder.id);
+
+        return `
+            <div class="folder-section">
+                <div class="folder-header ${isExpanded ? 'expanded' : 'collapsed'}"
+                     data-folder-id="${folder.id}" data-action="toggle-folder">
+                    <span class="folder-icon">${isExpanded ? '📂' : '📁'}</span>
+                    <span class="folder-name">${folder.name}</span>
+                    <span class="folder-count">(${folderCharacters.length + subFolders.length})</span>
+                    <div class="folder-actions">
+                        ${RenderUtils.renderButton({ text: '✏️', variant: 'secondary', size: 'small', dataAttributes: { action: 'rename-folder', 'folder-id': folder.id }})}
+                        ${RenderUtils.renderButton({ text: '🗑️', variant: 'danger', size: 'small', dataAttributes: { action: 'delete-folder', 'folder-id': folder.id }})}
+                    </div>
+                </div>
+
+                ${isExpanded ? `
+                    <div class="folder-content">
+                        ${subFolders.map(subFolder => this.renderFolder(subFolder, charactersByFolder, allFolders)).join('')}
+                        <div class="folder-characters">
+                            ${folderCharacters.map(char => this.renderCharacterItem(char)).join('')}
+                        </div>
+                    </div>
+                ` : ''}
             </div>
         `;
     }
 
     renderCharacterItem(character) {
-        const isLoaded = this.builder.currentCharacter?.id === character.id;
-        const hasIssues = false; // We'll implement validation later
-        
+        const isSelected = this.selectedCharacterId === character.id;
+        // Validation would typically be done by CharacterBuilder and passed or re-validated
+        // For simplicity, let's assume a way to check issues if needed
+        const hasIssues = character.validationResults && !character.validationResults.isValid;
+
+
         return `
-            <div class="character-item ${isLoaded ? 'active' : ''} ${hasIssues ? 'has-issues' : ''}" 
-                 data-character-id="${character.id}">
-                <div class="character-info">
+            <div class="character-item ${isSelected ? 'active' : ''} ${hasIssues ? 'has-issues' : ''}"
+                 data-character-id="${character.id}" data-action="select-character">
+                <div class="character-main">
                     <div class="character-name">${character.name}</div>
                     <div class="character-details">
-                        <span class="character-tier">Tier ${character.tier}</span>
-                        ${character.realName ? `<span class="character-real-name">• ${character.realName}</span>` : ''}
-                        ${this.renderCharacterStatus(character)}
+                        Tier ${character.tier}
+                        ${character.realName ? ` • ${character.realName}` : ''}
                     </div>
-                    ${character.tags.length > 0 ? `
-                        <div class="character-tags">
-                            ${character.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            ${character.tags.length > 3 ? `<span class="tag-more">+${character.tags.length - 3}</span>` : ''}
-                        </div>
-                    ` : ''}
                 </div>
                 <div class="character-actions">
-                    <button class="btn-small btn-secondary" 
-                            data-action="duplicate" 
-                            data-character-id="${character.id}"
-                            title="Duplicate Character">⧉</button>
-                    <button class="btn-small btn-secondary" 
-                            data-action="move" 
-                            data-character-id="${character.id}"
-                            title="Move to Folder">📁</button>
-                    <button class="btn-small btn-danger" 
-                            data-action="delete" 
-                            data-character-id="${character.id}"
-                            title="Remove from Library">✕</button>
+                    ${RenderUtils.renderButton({ text: '📋', variant: 'secondary', size: 'small', dataAttributes: { action: 'duplicate-character', 'character-id': character.id }})}
+                    ${RenderUtils.renderButton({ text: '💾', variant: 'secondary', size: 'small', dataAttributes: { action: 'export-character-item', 'character-id': character.id }})}
                 </div>
             </div>
         `;
     }
 
-    renderCharacterStatus(character) {
-        if (character.imported) {
-            return `<span class="status imported">Imported ${new Date(character.importDate).toLocaleDateString()}</span>`;
-        }
-        
-        const modifiedDate = new Date(character.lastModified);
-        const isRecent = (Date.now() - modifiedDate.getTime()) < 7 * 24 * 60 * 60 * 1000; // 7 days
-        
-        if (isRecent) {
-            return `<span class="status recent">Modified ${modifiedDate.toLocaleDateString()}</span>`;
-        }
-        
-        return `<span class="status ready">Ready</span>`;
-    }
-
-    renderEmptyState() {
-        const folderName = this.currentFolder === 'all' ? 'library' : this.library.getFolderInfo(this.currentFolder)?.name || 'folder';
-        
-        return `
-            <div class="empty-character-list">
-                <p>No characters in ${folderName}.</p>
-                ${this.currentFolder === 'all' ? `
-                    <p>Click "New Character" to create one, or "Import" to load existing characters.</p>
-                ` : `
-                    <p>Import characters or move existing ones to this folder.</p>
-                `}
-            </div>
-        `;
-    }
-
-    renderLibraryStats(stats) {
+    renderLibraryStats() {
+        if (!this.library) return '';
+        const stats = this.library.getStatistics();
         return `
             <div class="library-stats">
-                <h5>Library Stats</h5>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span>Total:</span>
-                        <span>${stats.totalCharacters}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>Avg Tier:</span>
-                        <span>${this.calculateAverageTier(stats.byTier)}</span>
-                    </div>
+                <div class="stat-item">
+                    <span class="stat-value">${stats.totalCharacters}</span>
+                    <span class="stat-label">Characters</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">${stats.totalFolders}</span>
+                    <span class="stat-label">Folders</span>
                 </div>
             </div>
         `;
     }
 
-    calculateAverageTier(tierStats) {
-        let total = 0;
-        let count = 0;
-        
-        Object.entries(tierStats).forEach(([tier, charCount]) => {
-            total += parseInt(tier) * charCount;
-            count += charCount;
-        });
-        
-        return count > 0 ? (total / count).toFixed(1) : '0';
-    }
-
-    getFilteredCharacters() {
-        let characters = this.library.getCharactersByFolder(this.currentFolder);
-        
-        if (this.searchQuery) {
-            characters = this.library.searchCharacters(this.searchQuery, this.currentFolder);
-        }
-        
-        // Sort by last modified (most recent first)
-        return characters.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
-    }
-
-    setupEventListeners() {
-        // New character button with unique ID
-        const newCharacterBtn = document.getElementById('character-tree-new-btn');
-        if (newCharacterBtn) {
-            newCharacterBtn.addEventListener('click', () => {
-                console.log('🎉 CharacterTree new character button clicked!');
-                this.builder.createNewCharacter();
-            });
-        }
-
-        // Bulk import
-        const bulkImportBtn = document.getElementById('bulk-import-btn');
-        const fileInput = document.getElementById('bulk-import-input');
-        
-        if (bulkImportBtn && fileInput) {
-            bulkImportBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', (e) => this.handleBulkImport(e.target.files));
-        }
-
-        // Export library
-        const exportBtn = document.getElementById('export-library-btn');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', () => this.library.exportLibrary());
-        }
-
-        // Search
-        const searchInput = document.getElementById('character-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                this.searchQuery = e.target.value;
-                this.render();
-            });
-        }
-
-        // Folder navigation
-        document.querySelectorAll('.folder-item').forEach(item => {
-            item.addEventListener('click', () => {
-                this.currentFolder = item.dataset.folder;
-                this.render();
-            });
-        });
-
-        // Character selection
-        document.querySelectorAll('.character-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                if (e.target.classList.contains('btn-small')) return;
-                
-                const characterId = item.dataset.characterId;
-                this.loadCharacterFromLibrary(characterId);
-            });
-        });
-
-        // Character actions
-        document.querySelectorAll('[data-action]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                
-                const action = btn.dataset.action;
-                const characterId = btn.dataset.characterId;
-                
-                this.handleCharacterAction(action, characterId);
-            });
-        });
-    }
-
-    async handleBulkImport(files) {
-        if (!files || files.length === 0) return;
-
-        const importBtn = document.getElementById('bulk-import-btn');
-        const originalText = importBtn.textContent;
-        
-        importBtn.textContent = 'Importing...';
-        importBtn.disabled = true;
-
-        try {
-            const results = await this.library.importCharacters(files, 'roll20_imports');
-            
-            this.showImportResults(results);
-            this.render(); // Refresh the display
-            
-        } catch (error) {
-            this.builder.showNotification(`Import failed: ${error.message}`, 'error');
-        } finally {
-            importBtn.textContent = originalText;
-            importBtn.disabled = false;
-        }
-    }
-
-    showImportResults(results) {
-        const total = results.total;
-        const successful = results.successful.length;
-        const failed = results.failed.length;
-        const duplicates = results.duplicates.length;
-
-        let message = `Import completed: ${successful}/${total} successful`;
-        if (duplicates > 0) message += `, ${duplicates} duplicates skipped`;
-        if (failed > 0) message += `, ${failed} failed`;
-
-        const type = failed > successful ? 'warning' : 'success';
-        this.builder.showNotification(message, type);
-
-        if (failed > 0) {
-            console.log('Failed imports:', results.failed);
-        }
-    }
-
-    async loadCharacterFromLibrary(characterId) {
-        const characterMeta = this.library.libraryIndex.characters[characterId];
-        if (!characterMeta) {
-            this.builder.showNotification('Character not found in library', 'error');
-            return;
-        }
-
-        // For now, we'll ask user to load the file manually
-        // Later this will be automatic with API integration
-        this.builder.showNotification(
-            `Please load the character file: ${characterMeta.filename} from characters_data/${characterMeta.folder}/`, 
-            'info'
-        );
-        
-        // Trigger file picker for the specific character
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = '.json';
-        fileInput.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file && file.name === characterMeta.filename) {
-                await this.loadCharacterFromFile(file);
-            } else {
-                this.builder.showNotification('Selected file does not match expected character file', 'warning');
+    groupCharactersByFolder(characters) {
+        const groups = new Map();
+        characters.forEach(character => {
+            const folderId = character.folderId || null; // null for root/unorganized
+            if (!groups.has(folderId)) {
+                groups.set(folderId, []);
             }
-        };
-        fileInput.click();
+            groups.get(folderId).push(character);
+        });
+        return groups;
     }
 
-    async loadCharacterFromFile(file) {
-        try {
-            const characterData = await this.library.readFileAsJSON(file);
-            
-            // Validate and normalize
-            if (!this.library.validateCharacterData(characterData)) {
-                throw new Error('Invalid character file format');
+    setupTreeSpecificListeners(container) { // Changed from setupEventListeners to be more specific
+        EventManager.delegateEvents(container, {
+            click: {
+                '[data-action="new-character"]': () => this.builder.createNewCharacter(),
+                '[data-action="import-character"]': () => this.importCharacter(),
+                '[data-action="select-character"]': (e, el) => this.selectCharacter(el.closest('.character-item').dataset.characterId),
+                '[data-action="toggle-folder"]': (e, el) => this.toggleFolder(el.closest('.folder-header').dataset.folderId),
+                '[data-action="duplicate-character"]': (e, el) => { e.stopPropagation(); this.duplicateCharacter(el.dataset.characterId); },
+                '[data-action="export-character-item"]': (e, el) => { e.stopPropagation(); this.exportCharacter(el.dataset.characterId); },
+                // Note: CharacterBuilder handles its own delete button; this tree doesn't have a top-level one.
+                '[data-action="rename-folder"]': (e, el) => { e.stopPropagation(); this.renameFolder(el.dataset.folderId); },
+                '[data-action="delete-folder"]': (e, el) => { e.stopPropagation(); this.deleteFolder(el.dataset.folderId); }
+            },
+            input: {
+                '#character-search-input': EventManager.debounce((e) => this.handleSearch(e.target.value), 300)
             }
-            
-            this.library.normalizeCharacterData(characterData);
-            
-            // Load into builder
-            this.builder.currentCharacter = characterData;
-            this.builder.loadCharacter(characterData.id);
-            
-            this.render(); // Refresh to show active character
-            this.builder.showNotification(`Loaded ${characterData.name}!`, 'success');
-            
-        } catch (error) {
-            this.builder.showNotification(`Failed to load character: ${error.message}`, 'error');
-        }
+        });
+    }
+    
+    handleSearch(query) {
+        this.searchTerm = query;
+        this.refresh(); // Re-render with search term
     }
 
-    handleCharacterAction(action, characterId) {
-        switch(action) {
-            case 'duplicate':
-                this.duplicateCharacter(characterId);
-                break;
-            case 'move':
-                this.moveCharacterToFolder(characterId);
-                break;
-            case 'delete':
-                this.deleteCharacterFromLibrary(characterId);
-                break;
-        }
+    selectCharacter(characterId) {
+        if (!this.library) return;
+        const character = this.library.getCharacter(characterId);
+        if (!character) return;
+
+        this.selectedCharacterId = characterId;
+        this.builder.loadCharacter(characterId); // Use builder's load method
+        this.refresh(); // Re-render to show selection
     }
 
     duplicateCharacter(characterId) {
-        this.builder.showNotification('Duplicate functionality coming soon!', 'info');
+        if (!this.library) return;
+        const original = this.library.getCharacter(characterId);
+        if (!original) return;
+
+        const duplicate = JSON.parse(JSON.stringify(original)); // Deep clone
+        duplicate.id = Date.now().toString();
+        duplicate.name = `${original.name} (Copy)`;
+        duplicate.created = new Date().toISOString();
+        duplicate.lastModified = new Date().toISOString();
+
+        this.library.saveCharacter(duplicate);
+        this.refresh();
+        this.builder.showNotification(`Duplicated character: ${duplicate.name}`, 'success');
     }
 
-    moveCharacterToFolder(characterId) {
-        this.builder.showNotification('Move to folder functionality coming soon!', 'info');
-    }
-
-    deleteCharacterFromLibrary(characterId) {
-        const character = this.library.libraryIndex.characters[characterId];
+    exportCharacter(characterId) {
+        if (!this.library) return;
+        const character = this.library.getCharacter(characterId);
         if (!character) return;
 
-        if (confirm(`Remove "${character.name}" from library? The file will remain in your folders.`)) {
-            delete this.library.libraryIndex.characters[characterId];
-            
-            // Update folder count
-            if (this.library.libraryIndex.folders[character.folder]) {
-                this.library.libraryIndex.folders[character.folder].count--;
-            }
-            
-            this.library.saveLibraryIndex();
-            
-            // If this was the current character, clear it
-            if (this.builder.currentCharacter?.id === characterId) {
-                this.builder.currentCharacter = null;
-                this.builder.showWelcomeScreen();
-            }
-            
-            this.render();
-            this.builder.showNotification('Character removed from library', 'info');
+        try {
+            const jsonData = this.library.exportCharacter(characterId);
+            this.downloadFile(`${character.name.replace(/[^a-z0-9]/gi, '_')}_character.json`, jsonData, 'application/json');
+            this.builder.showNotification(`Exported ${character.name}`, 'success');
+        } catch (error) {
+            this.builder.showNotification(`Export failed: ${error.message}`, 'error');
+        }
+    }
+    
+    importCharacter() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json,application/json';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                try {
+                    const importedCharacter = await this.library.importCharacter(event.target.result);
+                    this.refresh();
+                    this.builder.showNotification(`Imported character: ${importedCharacter.name}`, 'success');
+                    this.selectCharacter(importedCharacter.id); // Optionally select imported character
+                } catch (error) {
+                    this.builder.showNotification(`Import failed: ${error.message}`, 'error');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    toggleFolder(folderId) {
+        if (this.expandedFolders.has(folderId)) {
+            this.expandedFolders.delete(folderId);
+        } else {
+            this.expandedFolders.add(folderId);
+        }
+        this.refresh();
+    }
+
+    renameFolder(folderId) {
+        if (!this.library) return;
+        const folder = this.library.folders.get(folderId);
+        if (!folder) return;
+
+        const newName = prompt('Enter new folder name:', folder.name);
+        if (newName && newName.trim() !== '') {
+            folder.name = newName.trim();
+            this.library.saveToStorage(); // Make sure library saves folder changes
+            this.refresh();
+            this.builder.showNotification(`Folder renamed to: ${newName}`, 'success');
         }
     }
 
-    // Public method to refresh the display
+    deleteFolder(folderId) {
+        if (!this.library) return;
+        const folder = this.library.folders.get(folderId);
+        if (!folder) return;
+
+        const charactersInFolder = this.library.getCharactersInFolder(folderId);
+        let confirmMessage = `Delete folder "${folder.name}"?`;
+        if (charactersInFolder.length > 0) {
+            confirmMessage += ` This will move ${charactersInFolder.length} character(s) to Unorganized.`;
+        }
+
+        if (confirm(confirmMessage)) {
+            charactersInFolder.forEach(char => {
+                const characterToUpdate = this.library.getCharacter(char.id);
+                if (characterToUpdate) {
+                    characterToUpdate.folderId = null; // Move to unorganized (root)
+                    this.library.saveCharacter(characterToUpdate); // Save change
+                }
+            });
+            this.library.folders.delete(folderId);
+            this.library.saveToStorage(); // Save folder deletion
+            this.refresh();
+            this.builder.showNotification(`Deleted folder: ${folder.name}`, 'success');
+        }
+    }
+
+    downloadFile(filename, content, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link); // Required for Firefox
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
     refresh() {
-        this.render();
+        // This method is called when the tree needs to re-render itself,
+        // e.g., after library changes or search.
+        if(this.library && this.library.initialized) {
+            this.render();
+        }
     }
 }

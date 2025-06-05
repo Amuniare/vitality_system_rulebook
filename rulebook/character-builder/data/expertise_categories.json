@@ -1,0 +1,87 @@
+{
+    "awareness": {
+        "name": "Awareness",
+        "description": "Perception and alertness skills",
+        "activities": [
+            "Alertness", "Investigation", "Perception", "Search", "Surveillance",
+            "Tracking", "Notice Details", "Spot Hidden", "Detect Lies", "Read Body Language"
+        ],
+        "situational": [
+            "Urban Areas", "Wilderness", "Chaotic Scenes", "Low Visibility",
+            "Vertical Environments", "Confined Spaces", "Treacherous Terrain"
+        ]
+    },
+    "communication": {
+        "name": "Communication",
+        "description": "Social interaction and expression",
+        "activities": [
+            "Diplomacy", "Intimidation", "Leadership", "Persuasion", "Deception",
+            "Performance", "Etiquette", "Negotiation", "Public Speaking", "Animal Handling"
+        ],
+        "situational": [
+            "Formal Settings", "Underground Culture", "Diplomatic Zones", "Public Forums",
+            "High-Speed Environments", "Workshops & Labs", "Disaster Zones"
+        ]
+    },
+    "intelligence": {
+        "name": "Intelligence",
+        "description": "Reasoning and knowledge",
+        "activities": [
+            "Research", "Academics", "Technology", "Medicine", "Science",
+            "Strategy", "Tactics", "History", "Languages", "Engineering"
+        ],
+        "situational": [
+            "Academic Environments", "Time-Critical Situations", "Hostile Information", "Collaborative Projects",
+            "Extreme Weather", "Long Operations", "Close Quarters Combat", "Heavy Industry"
+        ]
+    },
+    "focus": {
+        "name": "Focus",
+        "description": "Mental concentration and precision",
+        "activities": [
+            "Meditation", "Mental Resistance", "Concentration", "Willpower", "Composure",
+            "Accuracy Training", "Precision Work", "Aim", "Marksmanship", "Mental Clarity"
+        ],
+        "situational": [
+            "High-Speed Environments", "Workshops & Labs", "Disaster Zones",
+            "Vertical Environments", "Confined Spaces", "Treacherous Terrain"
+        ]
+    },
+    "mobility": {
+        "name": "Mobility",
+        "description": "Movement and physical agility",
+        "activities": [
+            "Acrobatics", "Athletics", "Climbing", "Swimming", "Running",
+            "Parkour", "Dancing", "Gymnastics", "Balance", "Stealth Movement"
+        ],
+        "situational": [
+            "Vertical Environments", "Confined Spaces", "Treacherous Terrain",
+            "Urban Areas", "Wilderness", "Chaotic Scenes"
+        ]
+    },
+    "endurance": {
+        "name": "Endurance",
+        "description": "Stamina and resilience",
+        "activities": [
+            "Marathon Running", "Heavy Lifting", "Pain Tolerance", "Survival", "Stamina",
+            "Physical Training", "Resilience", "Recovery", "Toughness", "Persistence"
+        ],
+        "situational": [
+            "Extreme Weather", "Long Operations", "Close Quarters Combat", "Heavy Industry",
+            "Vertical Environments", "Confined Spaces", "Treacherous Terrain"
+        ]
+    },
+    "power": {
+        "name": "Power",
+        "description": "Physical and mental force",
+        "activities": [
+            "Weightlifting", "Martial Arts", "Combat Training", "Weapon Mastery", "Striking",
+            "Grappling", "Breaking Things", "Physical Force", "Combat Techniques", "Fighting Styles"
+        ],
+        "situational": [
+            "Close Quarters Combat", "Heavy Industry", "Extreme Weather", "Long Operations",
+            "Urban Areas", "Chaotic Scenes"
+        ]
+    }
+}
+

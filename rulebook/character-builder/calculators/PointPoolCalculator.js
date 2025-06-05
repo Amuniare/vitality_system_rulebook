@@ -1,10 +1,22 @@
-// PointPoolCalculator.js - Calculate all point pools and spending
+// PointPoolCalculator.js - REFACTORED with caching and unified calculations
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
 
 export class PointPoolCalculator {
-    // Calculate all point pools for a character
+    static cache = new Map();
+    static lastCharacterHash = null;
+    
+    // Calculate all point pools for a character with caching
     static calculateAllPools(character) {
+        const characterHash = this.getCharacterHash(character);
+        
+        // Return cached result if character hasn't changed
+        if (this.lastCharacterHash === characterHash && this.cache.has('allPools')) {
+            return this.cache.get('allPools');
+        }
+        
+        console.log('🔄 Calculating point pools (cache miss)');
+        
         const tier = character.tier;
         const archetypes = character.archetypes;
         
@@ -18,7 +30,7 @@ export class PointPoolCalculator {
             // Special attack pools (calculated per attack)
             specialAttackPools: this.calculateSpecialAttackPools(character),
             
-            // Flaw bonuses
+            // Flaw bonuses - UPDATED FOR NEW ECONOMICS
             flawBonuses: this.calculateFlawBonuses(character),
             
             // Total available
@@ -46,7 +58,43 @@ export class PointPoolCalculator {
             specialAttacks: pools.totalAvailable.specialAttacks - pools.totalSpent.specialAttacks
         };
         
+        // Cache results
+        this.cache.set('allPools', pools);
+        this.lastCharacterHash = characterHash;
+        
         return pools;
+    }
+    
+    // UNIFIED: Main pool calculation (replaces duplicates in other systems)
+    static calculateMainPoolAvailable(character) {
+        const tier = character.tier;
+        let available = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
+        
+        // Extraordinary archetype doubles main pool
+        if (character.archetypes.uniqueAbility === 'extraordinary') {
+            available += Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
+        }
+        
+        return available;
+    }
+    
+    // UNIFIED: Main pool spending calculation (replaces duplicates)
+    static calculateMainPoolSpent(character) {
+        let spent = 0;
+        
+        // Boons cost points
+        spent += character.mainPoolPurchases.boons.reduce((sum, boon) => sum + (boon.cost || 0), 0);
+        
+        // Traits cost points
+        spent += character.mainPoolPurchases.traits.reduce((sum, trait) => sum + (trait.cost || 0), 0);
+        
+        // NEW ECONOMICS: Flaws now COST points (major change)
+        spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 30), 0);
+        
+        // Primary action upgrades cost points
+        spent += character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
+        
+        return spent;
     }
     
     // Combat attribute pool calculation
@@ -203,9 +251,11 @@ export class PointPoolCalculator {
         return methods[archetype] || 'Unknown method';
     }
     
-    // Calculate flaw bonuses to main pool
+    // NEW ECONOMICS: Flaw bonuses calculation (flaws now cost points but give stat bonuses)
     static calculateFlawBonuses(character) {
-        return character.mainPoolPurchases.flaws.length * GameConstants.FLAW_BONUS;
+        // In new economics, flaws don't give point bonuses - they give stat bonuses instead
+        // This method now returns 0 but we keep it for backwards compatibility
+        return 0;
     }
     
     // Calculate total points spent across all categories
@@ -231,22 +281,6 @@ export class PointPoolCalculator {
         return utilityAttributes.reduce((total, attr) => total + (character.attributes[attr] || 0), 0);
     }
     
-    // Calculate main pool spent
-    static calculateMainPoolSpent(character) {
-        let spent = 0;
-        
-        // Boons
-        spent += character.mainPoolPurchases.boons.reduce((total, boon) => total + (boon.cost || 0), 0);
-        
-        // Traits
-        spent += character.mainPoolPurchases.traits.reduce((total, trait) => total + (trait.cost || 0), 0);
-        
-        // Primary action upgrades
-        spent += character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
-        
-        return spent;
-    }
-    
     // Calculate utility pool spent
     static calculateUtilityPoolSpent(character) {
         let spent = 0;
@@ -258,8 +292,6 @@ export class PointPoolCalculator {
         });
         
         // Features, senses, movement, descriptors
-        // These would need to be calculated based on their individual costs
-        // For now, simplified calculation
         spent += character.utilityPurchases.features.length * 3; // Average cost
         spent += character.utilityPurchases.senses.length * 3; // Average cost
         spent += character.utilityPurchases.movement.length * 7; // Average cost
@@ -296,27 +328,46 @@ export class PointPoolCalculator {
         };
     }
     
-    // Get point efficiency metrics
-    static calculateEfficiencyMetrics(character) {
-        const pools = this.calculateAllPools(character);
-        
-        const totalAvailable = Object.values(pools.totalAvailable).reduce((sum, val) => sum + val, 0);
-        const totalSpent = Object.values(pools.totalSpent).reduce((sum, val) => sum + val, 0);
-        const totalRemaining = Object.values(pools.remaining).reduce((sum, val) => sum + val, 0);
-        
-        return {
-            totalAvailable,
-            totalSpent,
-            totalRemaining,
-            utilizationRate: totalAvailable > 0 ? (totalSpent / totalAvailable) * 100 : 0,
-            efficiency: {
-                combat: pools.totalSpent.combatAttributes / pools.totalAvailable.combatAttributes * 100,
-                utility: pools.totalSpent.utilityAttributes / pools.totalAvailable.utilityAttributes * 100,
-                mainPool: pools.totalSpent.mainPool / pools.totalAvailable.mainPool * 100,
-                utilityPool: pools.totalSpent.utilityPool / pools.totalAvailable.utilityPool * 100,
-                specialAttacks: pools.totalSpent.specialAttacks / pools.totalAvailable.specialAttacks * 100
-            }
+    // CACHING UTILITIES
+    
+    // Generate hash for character to detect changes
+    static getCharacterHash(character) {
+        const relevantData = {
+            tier: character.tier,
+            archetypes: character.archetypes,
+            attributes: character.attributes,
+            mainPoolPurchases: character.mainPoolPurchases,
+            specialAttacks: character.specialAttacks.map(attack => ({
+                limitPointsTotal: attack.limitPointsTotal,
+                upgradePointsSpent: attack.upgradePointsSpent
+            })),
+            utilityPurchases: character.utilityPurchases
         };
+        
+        return JSON.stringify(relevantData);
+    }
+    
+    // Clear cache
+    static clearCache() {
+        this.cache.clear();
+        this.lastCharacterHash = null;
+        console.log('🗑️ Point pool cache cleared');
+    }
+    
+    // Get incremental update for specific pool
+    static updateSpecificPool(character, poolType) {
+        switch(poolType) {
+            case 'mainPool':
+                return this.calculateMainPoolSpent(character);
+            case 'combatAttributes':
+                return this.calculateCombatAttributesSpent(character);
+            case 'utilityAttributes':
+                return this.calculateUtilityAttributesSpent(character);
+            case 'specialAttacks':
+                return this.calculateSpecialAttacksSpent(character);
+            default:
+                return this.calculateAllPools(character);
+        }
     }
     
     // Get recommendations for point spending
