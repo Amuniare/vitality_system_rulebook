@@ -188,7 +188,8 @@ Upgrade Options:
 
 **Base Attack Action** → Default combat action available to everyone using their character's base attributes and Tier. Applies Damage or a Basic Condition.
 
-**Basic Conditions:** 
+**Basic Conditions** 
+
 
 ***ATTACK RESOLUTION***
 1. **Declare Attack** → Attack Type and target/s
