@@ -186,7 +186,9 @@ Upgrade Options:
 
 
 
-**Base Attack Action** → Default combat action available to everyone using their character's base attributes and Tier.
+**Base Attack Action** → Default combat action available to everyone using their character's base attributes and Tier. Applies Damage or a Basic Condition.
+
+**Basic Conditions:** 
 
 ***ATTACK RESOLUTION***
 1. **Declare Attack** → Attack Type and target/s
@@ -195,6 +197,8 @@ Upgrade Options:
 - *Damage Roll:* 3d6 + Tier + (Power × 1.5) - Target's Durability  
 - *Condition Check:* 1d20 + Tier + Power vs Target's Resistance 
 4. **Apply Results** → Reduce HP by damage taken or apply condition effect
+
+
 
 **Defensive Actions**
 - **Dodge Action:** Add your Tier to your Avoidance until the start of your next turn. Does not stack with itself.
@@ -661,28 +665,44 @@ Upgrade Options:
 - **Bolster Aura** → Allies in radius receive benefit of your Fighting Actions
   - **Passive Buff (30p/x)** → You and allies in the Aura are always under the effect of X specified Fighting Actions. This bonus stacks for allies but not your own Fighting Actions.
 
+### **BARRIER**
+*Temporary protective field summoning*
+- **Cost**: 30p
+- **Activation:** Action to summon, Quick Action each turn to maintain
+- **Base Radius:** 1 space, appears centered on you
+- **Statistics:** 50 HP, full Condition immunity, AV = 0, DR = 10 + Tier
+- **Upgrades:**
+  - **Increased Radius (5p/x)** → +X radius
+  - **Permeable (15p)** → You/allies can move through once per turn, enemies can roll Stability vs 10+(Tier×2) to enter
+    - **Door (0p)** → Only one space on the Barrier is permeable
+  - **Slow (15p)** → Non-you characters move half speed through barrier
+  - **Shell Only (0p)** → Ranged attacks blocked only at edge
+  - **Damaging (30p)** → Non-you characters take Tier damage once per turn when entering/starting turn inside
+  - **Firing Position (30p)** → Inside can target outside, but not vice versa
+  - **Tough (30p)** → 100 HP instead of 50 HP
+  - **Heavily Armored (30p/x)** → +Tier DR per X purchased
+  - **Moveable (20p)** → Move barrier Tier spaces per turn, occupants move with it
+  - **Transparent (10p)** → Barrier is see-through
+  - **Variable Size (10p)** → Change size each activation
 
 ### **CREATE WALL**
 *Temporary battlefield structure creation*
 - **Cost**: 30p
-- **Activation:** Action to summon, Quick Action each turn to maintain  
-- **Size:** You can fill a number of spaces equal to Tier x 5, the wall must be at least 1 sp high, or 1 space long
+- **Activation:** Quick Action to summon, Quick Action each turn to maintain  
+- **Size:** 10 Sp long × 4 Sp high
 - **Placement:** Roll d20 + Tier, targets with higher Avoidance can move to other side
 - **Statistics:** 50 HP, full Condition immunity, AV = 0, DR = 10 + Tier
-- **Uses:** Tier uses per rest
+- **Uses:** Twice per rest
 - **Upgrades:**
-  - **Increased Size (15p/x)** → Increase amount of spaces by Tier x 5
-  - **Shapeable (30p)** → You freely manipulate the size and shape.
-  - **Bendable (5p/x)** → You can add a 90 degree bend.
-  - **Permeable (30p)** → You/allies can move through once per turn, enemies can roll Stability vs 10+(Tier×2) to enter
-  - **Firing Position (30p)** → Targets on one side of the wall can target characters on the other side of the wall, declared when wall created
+  - **Increased Size (10p/x)** → +10 Sp length OR +4 Sp height per X
+  - **Shapeable (10p/x)** → Add X 90-degree bends
   - **Damaging (30p)** → Touching or melee attacking wall triggers Direct base attack
   - **Tough (30p)** → 100 HP instead of 50 HP
   - **Heavily Armored (30p/x)** → +Tier DR per X purchased
-  - **Moveable (30p)** → You can move the wall using your movement, each space you move it consumes a 1 Sp of Movement
-  - **Transparent (15p)** → Wall is see-through
-  - **Rapid Summon (15p/x)** → Add Tier to placement roll
-  - **Permanant (15p)** → Doesn't take your bonus action to maintain, lasts until destroyed
+  - **Moveable (20p)** → Move wall Tier spaces per turn
+  - **Transparent (10p)** → Wall is see-through
+  - **Variable Size (20p)** → Change size each activation
+  - **Rapid Summon (20p)** → Add Tier twice to placement roll
 
 ### **Shield**
 *Personal protective shield*
@@ -843,7 +863,7 @@ Upgrade Options:
 - **Precise (30p):** Choose which targets are affected by Area attacks
 - **Ranged Origin (20p):** Area attacks can originate from designated point within 15 spaces
 - **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only  
-- **Hybrid (30p):**  
+- **Hybrid (30p):** Attack becomes Hybrid, inflicting both a Condition and Damage. 
 **Advanced Conditions:** Control (30p), Capture (20p), Stun (20p), Weaken (20p), Mimic (+20p) Disable Specials (10p), Frighten (10p), Enthrall (10p), Frenzy (10p)
 
 
