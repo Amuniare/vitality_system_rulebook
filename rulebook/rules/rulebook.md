@@ -739,7 +739,7 @@ Upgrade Options:
 
 
 
-**BASE SUMMON**
+### **BASE SUMMON**
 - **Cost**: 10p per summon
 - Your Tier, 10 HP (minion), standard stats, no Special Attacks, no Utility, acts on your initiative
 
@@ -768,7 +768,7 @@ Upgrade Options:
 ### **INVISIBILITY**
 *Advanced concealment ability*
 - **Cost**: 30p
-- **Effect:** Can take Hide Action while in line of sight of enemies
+- **Effect:** You are Invisible and can take Hide Action while in line of sight of enemies
 - **Immunity:** Unaffected by sight-based abilities
 
 ### **REGENERATION**
@@ -776,24 +776,26 @@ Upgrade Options:
 - **Cost**: 60p
 - **Effect:** Regain HP at start of each turn: 20 HP (Tiers 1-4), 30 HP (5-6), 40 HP (7-8), 50 HP (9-10)
 - **Unconscious:** Wake up once healed to full HP
-- **Restriction:** Cannot purchase Avoidance or Durability bonuses
+- **Restriction:** You cannot boost your Avoidance or Durability outside of Fighting Actions or external sources.
 
 ### **HEAL**
-*Restore others' health*
+*Restore health to characters*
 - **Cost**: 30p
 - **Action:** Touch living being
 - **Base:** As an action, heal a creature (5 x Tier) HP, 5 Uses per rest.
 - **Upgrades:**
   - **Increased Charges (15p/x)** → Double charges per X
-  - **Increased Healing (15p/x)** → Double HP healed per X  
-  - **Greater Healing (10p)** → Use additional charge on same target as one action
+  - **Increased Healing (30p/x)** → Double HP healed per X  
+  - **Greater Healing (15p)** → Use an additional charge on the same target with the same action
   - **Restorative Only (0p)** → Removes all Conditions instead of damage
   - **Restorative (15p)** → Also removes all Conditions
   - **Heals Objects Only (0p)** → Works on objects instead of living beings
-  - **Heals Objects (5p)** → Works on both objects and living beings
-  - **Ranged (15p)** → Target within 15 spaces
-  - **Mass Healing (15p)** → Additional target per action, pay charges per target
+  - **Heals Objects (15p)** → Works on both objects and living beings
+  - **Ranged (15p)** → Can target up to 15 spaces away from you
+  - **Shared Healing (15p)** → Pick an additional target within range per use, cost an extra charge
+  - **Mass Healing (30p)** → Heal any number of select targets within 6 spaces of you, expending a charge for each target.
   - **Quick Healing (30p)** → Heal as Quick Action
+  - **Versatile Healer (15p/x)** → You can build an additional version of your Heal including this upgrade for each x.
 
 ### **COUNTER**
 *Nullify enemy actions*
