@@ -799,16 +799,16 @@ Upgrade Options:
 
 ### **COUNTER**
 *Nullify enemy actions*
+- **Cost:** 30p
 - **Range:** 30 spaces, must see target
-- **Action:** Declare target on your turn  
+- **Usage:** Activate as a Reaction in response to target's action, can use twice per round, only the first use consumes your reaction
 - **Effect:** When they act, roll Focus or Power + Tier vs their Resolve/Stability/Vitality (chosen at purchase)
 - **Success:** Action nullified and lost
 - **Failure:** They know you tried, immune until you rest
-- **Cost:** Consumes Reaction
 - **Upgrades:**
   - **Stunning Counter (15p)** → Success stuns target until end of their turn
-  - **Disabling Counter (15p)** → Target cannot use attempted action until end of next turn
-  - **Extra Counter (15p/x)** → Gain X extra reactions for Counter only, can target X additional enemies, cannot counter same target multiple times
+  - **Disabling Counter (15p)** → Target cannot use attempted action again until the end of their next turn
+  - **Extra Counter (15p/x)** → Gain X extra uses per round
   - **Source (-Xp)** → Can only disable specific power types (discuss with GM)
 
 
