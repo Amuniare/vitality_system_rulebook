@@ -643,23 +643,23 @@ Upgrade Options:
 ### **AURA**
 *Passive field around you affecting enemies or allies*
 - **Cost**: 30p
-- **Activation:** Quick Action to activate, Quick Action each turn to maintain
+- **Activation:** Action to activate, Quick Action each turn to maintain.
 - **Base Radius:** 1 space
 - **Upgrades:**
   - **Increased Radius (5p/x)** → +X radius
-  - **Ranged Origin (10p)** → Originate from visible point that includes you in radius
-  - **Variable Size (10p)** → Change size each activation to any unlocked size
+  - **Ranged Origin (15p)** → Originates from another point you can see with the center within 15 sp of you. If centered on an ally the point will move with them. 
+  - **Variable Size (5p)** → Change size each activation to any unlocked size
   - **Additional Effect (30p)** → Second aura type active simultaneously
 
 **Aura Types:**
-- **Attack Aura** → Attacks anything entering or ending turn in radius once per round, -Tier to Accuracy
+- **Attack Aura** → Makes a melee Base Attack against anything entering or ending its turn in the radius. Can only affect the same target once per round. -Tier to Accuracy
   - **Condition Effect (0p)** → Inflicts Basic Condition instead of damage
   - **Direct Effect (30p)** → Auto-hits without Accuracy roll, -Tier to Damage and Condition rolls  
   - **Precise (15p)** → Only attacks chosen targets
-- **Obscuring Aura** → Provides visual cover, sight-based abilities prevented, attacks through aura suffer -Tier penalty
+- **Obscuring Aura** → Provides visual cover, sight-based abilities prevented, attacks through the aura suffer -Tier penalty to Accuracy
   - **Clairvoyance (15p)** → You can see through your own aura
 - **Bolster Aura** → Allies in radius receive benefit of your Fighting Actions
-  - **Passive Buff (30p/x)** → You and allies always under effect of X chosen Fighting Actions
+  - **Passive Buff (30p/x)** → You and allies in the Aura are always under the effect of X specified Fighting Actions. This bonus stacks for allies but not your own Fighting Actions.
 
 ### **BARRIER**
 *Temporary protective field summoning*
