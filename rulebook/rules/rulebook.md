@@ -718,7 +718,7 @@ Upgrade Options:
 - **Cost**: 30p
 - **Trigger:** When hit by Melee Attack
 - **Effect:** Make a Base Attack against the attacker
-- **Uses:** You have 2 uses per round, reseting at the start of your turn. The first use each round consumes your Reaction.
+- **Uses:** You have 2 uses per round, reseting at the start of your turn. 
 - **Upgrades:**
   - **Additional Uses (15p/x)** → Additional uses per x
   - **Distant Response (30p)** → Triggered by any attack type, you can now also respond with a Ranged or Direct Base Attack
@@ -801,7 +801,8 @@ Upgrade Options:
 *Nullify enemy actions*
 - **Cost:** 30p
 - **Range:** 30 spaces, must see target
-- **Usage:** Activate as a Reaction in response to target's action, can use twice per round, only the first use consumes your reaction
+- **Usage:** Declare the potential target of your Counter on your turn. You may change this target with GM approval if circumstances change.  
+**Trigger:** Activates as a Reaction in response to the target taking an action, you can Counter twice per round, only the first use consumes your reaction.
 - **Effect:** When they act, roll Focus or Power + Tier vs their Resolve/Stability/Vitality (chosen at purchase)
 - **Success:** Action nullified and lost
 - **Failure:** They know you tried, immune until you rest
@@ -840,22 +841,27 @@ Upgrade Options:
 ### **ATTACK & EFFECT TYPE ACCESS**
 **Free Access:** Use Attack and Effect Types from your chosen Archetypes  
 
-### **SPECIAL ATTACK COSTS**
-*When purchasing for individual Special Attacks only*
+**Purchased Access:** You can purchase Attack Types, Effect Types, and Generic Upgrades for individual use on Special Attacks.
 
-**Attack Types:** Melee (20p), Ranged (20p), Direct (30p), Area (30p)  
+**Attack Types**
+- **Melee (20p)**
+- **Ranged (20p)**
+- **Direct (30p)**
+- **Area (30p)**  
 
-**Attack Upgrades:**
+
+
+**Generic Attack Upgrades:**
 - **Extended Range (10p):** Ranged attacks reach 30 spaces instead of 15
 - **Long Range (20p):** Ranged attacks reach 100 spaces instead of 15  
 - **Perception Range (10p):** Direct attacks can target anyone you can see instead of 30 spaces
 - **Enhanced Scale (20p):** Double the size of Area attacks (6sp radius, 12sp cone, 24sp line)
 - **Precise (30p):** Choose which targets are affected by Area attacks
 - **Ranged Origin (20p):** Area attacks can originate from designated point within 15 spaces
-- **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only
-
-**Hybrid:** +30p to any Attack Type  
+- **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only  
+- **Hybrid (30p):**  
 **Advanced Conditions:** Control (30p), Capture (20p), Stun (20p), Weaken (20p), Mimic (+20p) Disable Specials (10p), Frighten (10p), Enthrall (10p), Frenzy (10p)
+
 
 ### **CREATION CHECKLIST**
 1. **Check Special Attack Archetype:** Quantity, base points, Limits availability, conversion rates
