@@ -729,10 +729,13 @@ Upgrade Options:
 - **Cost**: 60p
 - **Effect:** Increase Tier by half (rounded up) as Free Action
 - **Duration Options:**
-  - **Short** → 3 turns once per fight, regain after 3 rounds of rest (stunned while resting, damage interrupts)
+  - **Short** → 4 consecutive turns once per fight, regain after 3 rounds of rest (stunned while resting, damage resets time)
   - **Source** → Activates when accessing specific environment/descriptor (discuss with GM)
 - **Upgrades:**
-  - **Affects Others (15p)** → Can target other creatures instead of yourself
+  - **Awakened (15p)** → Pick an additional Movement Archetype chosen when purchasing this ability  
+  - **Unstoppable (30p)** → Pick an additional Defesnive Archetype chosen when purchasing this ability  
+  - **Affects Others (15p)** → Can target other chracters instead of yourself
+  - **Affects Others Only (0p)** → Can only target other chracters instead of yourself
 
 
 
