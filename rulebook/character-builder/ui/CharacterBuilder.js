@@ -195,6 +195,98 @@ export class CharacterBuilder {
         console.log('setupEventListeners completed with delegation');
     }
 
+    setupEventListeners() {
+        console.log('setupEventListeners started');
+        
+        const container = document.body;
+        
+        // Use event delegation with proper context and debug logging
+        EventManager.delegateEvents(container, {
+            click: {
+                '#new-character-btn': this.createNewCharacter,
+                '.tab-btn': this.handleTabSwitch,
+                '#save-character': this.saveCharacter,
+                '#export-json': this.exportCharacterJSON,
+                '#delete-character': this.deleteCharacter,
+
+                // ARCHETYPE HANDLERS
+                '[data-action="select-archetype"]': (e, element) => {
+                    const category = element.dataset.category;
+                    const archetypeId = element.dataset.archetype;
+                    console.log(`🔧 Archetype click: ${category} = ${archetypeId}`);
+                    if (this.tabs.archetypes && category && archetypeId) {
+                        this.tabs.archetypes.selectArchetype(category, archetypeId);
+                    }
+                },
+
+                // ATTRIBUTE BUTTON HANDLERS - Add debug logging
+                '[data-action="change-attribute-btn"]': (e, element) => {
+                    console.log('🔧 Attribute button clicked:', element.dataset);
+                    const attrId = element.dataset.attr;
+                    const change = parseInt(element.dataset.change);
+                    if (this.tabs.attributes && attrId !== undefined && change !== undefined) {
+                        console.log(`🎯 Attribute button: ${attrId} ${change > 0 ? '+' : ''}${change}`);
+                        this.tabs.attributes.changeAttribute(attrId, change);
+                    } else {
+                        console.error('❌ Attribute button click failed:', { attrId, change, hasTab: !!this.tabs.attributes });
+                    }
+                },
+
+                // Add fallback for any click on attribute controls
+                '.attribute-controls .attr-btn': (e, element) => {
+                    console.log('🔧 Fallback attribute button handler');
+                    const attrId = element.dataset.attr;
+                    const change = parseInt(element.dataset.change);
+                    if (attrId && change !== undefined) {
+                        this.tabs.attributes?.changeAttribute(attrId, change);
+                    }
+                },
+
+                // NAVIGATION HANDLERS
+                '[data-action="continue-to-archetypes"]': () => this.switchTab('archetypes'),
+                '[data-action="continue-to-attributes"]': () => this.switchTab('attributes'),
+                '[data-action="continue-to-mainpool"]': () => this.switchTab('mainPool'),
+                '[data-action="continue-to-special-attacks"]': () => this.switchTab('specialAttacks'),
+                '[data-action="continue-to-utility"]': () => this.switchTab('utility'),
+                '[data-action="continue-to-summary"]': () => this.switchTab('summary')            },
+            input: {
+                '[data-action="update-char-name"]': (e, element) => {
+                    if (this.tabs.basicInfo) {
+                        this.tabs.basicInfo.updateName(element.value);
+                    }
+                },
+                '[data-action="update-real-name"]': (e, element) => {
+                    if (this.tabs.basicInfo) {
+                        this.tabs.basicInfo.updateRealName(element.value);
+                    }
+                },
+                
+                // ATTRIBUTE SLIDER HANDLER - Add debug logging
+                '[data-action="change-attribute-slider"]': (e, element) => {
+                    console.log('🔧 Attribute slider changed:', element.dataset, 'value:', element.value);
+                    const attrId = element.dataset.attr;
+                    const newValue = element.value;
+                    if (this.tabs.attributes && attrId !== undefined && newValue !== undefined) {
+                        console.log(`🎯 Attribute slider: ${attrId} = ${newValue}`);
+                        this.tabs.attributes.setAttributeViaSlider(attrId, newValue);
+                    } else {
+                        console.error('❌ Attribute slider change failed:', { attrId, newValue, hasTab: !!this.tabs.attributes });
+                    }
+                }
+            },
+            change: {
+                '[data-action="update-tier"]': (e, element) => {
+                    if (this.tabs.basicInfo) {
+                        this.tabs.basicInfo.updateTier(element.value);
+                    }
+                }
+            }
+        }, this); // Pass 'this' as context
+        
+        console.log('setupEventListeners completed with delegation and debug logging');
+    }
+
+
     createNewCharacter() {
         console.log('createNewCharacter called');
         
