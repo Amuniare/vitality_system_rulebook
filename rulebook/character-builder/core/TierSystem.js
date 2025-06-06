@@ -64,10 +64,9 @@ export class TierSystem {
     
     // Calculate limit scaling points with archetype multiplier applied to rates
     static calculateLimitScaling(limitPoints, tier, archetype = null) {
-        const firstTier = tier * GameConstants.LIMIT_FIRST_TIER_MULTIPLIER;
-        const secondTier = tier * GameConstants.LIMIT_SECOND_TIER_MULTIPLIER;
-        
-        // Get archetype multiplier (if provided)
+        const firstTierThreshold = tier * GameConstants.LIMIT_FIRST_TIER_MULTIPLIER;
+        const secondTierThreshold = tier * GameConstants.LIMIT_SECOND_TIER_MULTIPLIER;
+
         let archetypeMultiplier = 1.0;
         if (archetype) {
             switch(archetype) {
@@ -81,34 +80,38 @@ export class TierSystem {
                     archetypeMultiplier = tier / 2;
                     break;
                 case 'sharedUses':
-                    archetypeMultiplier = 1.0;
+                    archetypeMultiplier = 1.0; // No change for shared uses
                     break;
                 default:
-                    archetypeMultiplier = 0;
+                    archetypeMultiplier = 0; // Archetypes that don't use limits
                     break;
             }
         }
-        
-        // Apply archetype multiplier to the diminishing returns rates
+
         const modifiedFirstValue = GameConstants.LIMIT_FIRST_VALUE * archetypeMultiplier;
         const modifiedSecondValue = GameConstants.LIMIT_SECOND_VALUE * archetypeMultiplier;
         const modifiedThirdValue = GameConstants.LIMIT_THIRD_VALUE * archetypeMultiplier;
-        
-        let upgradePoints = 0;
-        
-        if (limitPoints <= firstTier) {
-            upgradePoints = limitPoints * modifiedFirstValue;
-        } else if (limitPoints <= firstTier + secondTier) {
-            upgradePoints = firstTier * modifiedFirstValue + 
-                           (limitPoints - firstTier) * modifiedSecondValue;
+
+        let totalValue = 0;
+
+        if (limitPoints <= firstTierThreshold) {
+            totalValue = limitPoints * modifiedFirstValue;
+        } else if (limitPoints <= firstTierThreshold + secondTierThreshold) {
+            totalValue = (firstTierThreshold * modifiedFirstValue) +
+                         ((limitPoints - firstTierThreshold) * modifiedSecondValue);
         } else {
-            upgradePoints = firstTier * modifiedFirstValue + 
-                           secondTier * modifiedSecondValue + 
-                           (limitPoints - firstTier - secondTier) * modifiedThirdValue;
+            totalValue = (firstTierThreshold * modifiedFirstValue) +
+                         (secondTierThreshold * modifiedSecondValue) +
+                         ((limitPoints - firstTierThreshold - secondTierThreshold) * modifiedThirdValue);
         }
-        
-        // Round up to nearest 10
-        return Math.ceil(upgradePoints / 10) * 10;
+
+        // Round up to nearest 10 for the final points
+        const finalPoints = Math.ceil(totalValue / 10) * 10;
+
+        return {
+            totalValue: totalValue, // The "before rounding" value
+            finalPoints: finalPoints // The final usable points
+        };
     }
     
     // Get archetype special attack points

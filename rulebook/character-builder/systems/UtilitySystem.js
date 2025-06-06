@@ -294,8 +294,9 @@ export class UtilitySystem {
         if (!character.utilityPurchases[categoryKey]) {
             character.utilityPurchases[categoryKey] = [];
         }
-        // Ensure no duplicates, especially for non-expertise
-        if (character.utilityPurchases[categoryKey].some(purchased => purchased.id === itemId)) {
+        // Check for duplicates, but allow multiple purchases for certain items
+        const allowMultiplePurchases = this.canPurchaseMultiple(itemId, categoryKey);
+        if (!allowMultiplePurchases && character.utilityPurchases[categoryKey].some(purchased => purchased.id === itemId)) {
             throw new Error(`${itemId} already purchased.`);
         }
 
@@ -456,5 +457,19 @@ export class UtilitySystem {
             movement: (character.utilityPurchases.movement || []).length,
             descriptors: (character.utilityPurchases.descriptors || []).length
         };
+    }
+
+    // Check if an item allows multiple purchases
+    static canPurchaseMultiple(itemId, categoryKey) {
+        // Define items that can be purchased multiple times
+        const multiPurchaseItems = {
+            features: ['multiLimbed'], // Multi-limbed explicitly states "Each purchase grants one extra limb"
+            senses: [], // Add any multi-purchase senses here
+            movement: [], // Add any multi-purchase movement features here  
+            descriptors: [], // Add any multi-purchase descriptors here
+            expertise: [] // Expertise already has its own handling
+        };
+
+        return multiPurchaseItems[categoryKey]?.includes(itemId) || false;
     }
 }

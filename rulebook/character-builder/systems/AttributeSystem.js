@@ -1,11 +1,50 @@
-// AttributeSystem.js - REFACTORED to remove duplicate calculations
+// AttributeSystem.js - REFACTORED to remove duplicate calculations and load from JSON
 import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js'; // USE UNIFIED CALCULATOR
 import { StatCalculator } from '../calculators/StatCalculator.js'; // USE UNIFIED CALCULATOR
 import { TierSystem } from '../core/TierSystem.js';
+import { GameDataManager } from '../core/GameDataManager.js';
 
 export class AttributeSystem {
-    // Define all attributes and their purposes
+    // Load attribute definitions from attributes.json
     static getAttributeDefinitions() {
+        const data = GameDataManager.getData('attributes');
+        if (!data) {
+            console.warn('Attributes data not loaded, falling back to defaults');
+            return this.getDefaultAttributeDefinitions();
+        }
+
+        // Combine combat and utility attributes into a single lookup object
+        const definitions = {};
+        
+        // Process combat attributes
+        if (data.combat) {
+            data.combat.forEach(attr => {
+                definitions[attr.id] = {
+                    ...attr,
+                    type: "combat",
+                    affects: attr.mechanics || [],
+                    pool: "combat"
+                };
+            });
+        }
+
+        // Process utility attributes  
+        if (data.utility) {
+            data.utility.forEach(attr => {
+                definitions[attr.id] = {
+                    ...attr,
+                    type: "utility", 
+                    affects: attr.mechanics || [],
+                    pool: "utility"
+                };
+            });
+        }
+
+        return definitions;
+    }
+
+    // Fallback definitions if JSON fails to load
+    static getDefaultAttributeDefinitions() {
         return {
             // Combat Attributes
             focus: {

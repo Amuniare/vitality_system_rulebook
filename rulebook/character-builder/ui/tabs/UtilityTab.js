@@ -217,7 +217,8 @@ export class UtilityTab {
                         return RenderUtils.renderCard({
                             title: item.name,
                             cost: item.cost,
-                            description: item.description + (item.applications ? `<br><small><strong>Apps:</strong> ${item.applications.join(', ')}</small>` : ''),
+                            description: item.description + (item.applications && Array.isArray(item.applications) ? 
+                                `<br><small><strong>Applications:</strong> ${item.applications.map(app => app.type || app).join(', ')}</small>` : ''),
                             status: canAfford ? 'available' : 'unaffordable',
                             clickable: canAfford,
                             disabled: !canAfford,

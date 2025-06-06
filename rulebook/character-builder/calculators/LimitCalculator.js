@@ -40,8 +40,9 @@ export class LimitCalculator {
         };
     }
     
-    // Calculate upgrade points from limit points using scaling formula with archetype
+    // Calculate upgrade points from limit points using the canonical TierSystem method
     static calculateUpgradePointsFromLimits(limitPoints, tier, archetype) {
+        // This now returns an object { totalValue, finalPoints }
         return TierSystem.calculateLimitScaling(limitPoints, tier, archetype);
     }
     
@@ -182,84 +183,56 @@ export class LimitCalculator {
     
     // Get detailed calculation breakdown for display
     static getCalculationBreakdown(limitPoints, tier, archetype) {
-        const firstTier = tier * GameConstants.LIMIT_FIRST_TIER_MULTIPLIER;
-        const secondTier = tier * GameConstants.LIMIT_SECOND_TIER_MULTIPLIER;
-        
-        // Get archetype multiplier
-        const archetypeMultiplier = this.getArchetypeMultiplier(tier, archetype);
-        
-        // Calculate modified rates with archetype multiplier applied
+        const firstTierThreshold = tier * GameConstants.LIMIT_FIRST_TIER_MULTIPLIER;
+        const secondTierThreshold = tier * GameConstants.LIMIT_SECOND_TIER_MULTIPLIER;
+
+        let archetypeMultiplier = 1.0;
+         if (archetype) {
+            switch(archetype) {
+                case 'normal': archetypeMultiplier = tier / 6; break;
+                case 'specialist': archetypeMultiplier = tier / 3; break;
+                case 'straightforward': archetypeMultiplier = tier / 2; break;
+                default: archetypeMultiplier = 0; break;
+            }
+        }
+
         const modifiedFirstRate = GameConstants.LIMIT_FIRST_VALUE * archetypeMultiplier;
         const modifiedSecondRate = GameConstants.LIMIT_SECOND_VALUE * archetypeMultiplier;
         const modifiedThirdRate = GameConstants.LIMIT_THIRD_VALUE * archetypeMultiplier;
         
+        const calculationResult = this.calculateUpgradePointsFromLimits(limitPoints, tier, archetype);
+        const totalValue = calculationResult.totalValue;
+        const finalPoints = calculationResult.finalPoints;
+
         const breakdown = {
-            steps: [],
-            firstTierValue: firstTier,
-            secondTierValue: secondTier,
-            archetypeMultiplier,
-            scaling: {
-                first: { points: 0, value: 0, rate: modifiedFirstRate },
-                second: { points: 0, value: 0, rate: modifiedSecondRate },
-                third: { points: 0, value: 0, rate: modifiedThirdRate }
-            }
+            steps: [
+                `1. Sum Limit Points: ${limitPoints}`,
+                `2. Calculate Modified Rates: Base rates × ${archetypeMultiplier.toFixed(3)} (${archetype})`,
+                `3. Apply Modified Rates to DR Buckets:`,
+            ],
+            totalValue: totalValue,
+            finalPoints: finalPoints
         };
-        
-        // Calculate scaling breakdown with modified rates
-        if (limitPoints <= firstTier) {
-            breakdown.scaling.first = {
-                points: limitPoints,
-                value: limitPoints * modifiedFirstRate,
-                rate: modifiedFirstRate
-            };
-        } else if (limitPoints <= firstTier + secondTier) {
-            breakdown.scaling.first = {
-                points: firstTier,
-                value: firstTier * modifiedFirstRate,
-                rate: modifiedFirstRate
-            };
-            breakdown.scaling.second = {
-                points: limitPoints - firstTier,
-                value: (limitPoints - firstTier) * modifiedSecondRate,
-                rate: modifiedSecondRate
-            };
-        } else {
-            breakdown.scaling.first = {
-                points: firstTier,
-                value: firstTier * modifiedFirstRate,
-                rate: modifiedFirstRate
-            };
-            breakdown.scaling.second = {
-                points: secondTier,
-                value: secondTier * modifiedSecondRate,
-                rate: modifiedSecondRate
-            };
-            breakdown.scaling.third = {
-                points: limitPoints - firstTier - secondTier,
-                value: (limitPoints - firstTier - secondTier) * modifiedThirdRate,
-                rate: modifiedThirdRate
-            };
+
+        let remainingPoints = limitPoints;
+        let bucket1Points = 0, bucket2Points = 0, bucket3Points = 0;
+
+        if (remainingPoints > 0) {
+            bucket1Points = Math.min(remainingPoints, firstTierThreshold);
+            breakdown.steps.push(`   • Bucket 1 (${firstTierThreshold} max): ${bucket1Points} × ${modifiedFirstRate.toFixed(3)} = ${(bucket1Points * modifiedFirstRate).toFixed(2)}`);
+            remainingPoints -= bucket1Points;
+        }
+        if (remainingPoints > 0) {
+            bucket2Points = Math.min(remainingPoints, secondTierThreshold);
+            breakdown.steps.push(`   • Bucket 2 (${secondTierThreshold} max): ${bucket2Points} × ${modifiedSecondRate.toFixed(3)} = ${(bucket2Points * modifiedSecondRate).toFixed(2)}`);
+            remainingPoints -= bucket2Points;
+        }
+        if (remainingPoints > 0) {
+            bucket3Points = remainingPoints;
+            breakdown.steps.push(`   • Bucket 3 (remainder): ${bucket3Points} × ${modifiedThirdRate.toFixed(3)} = ${(bucket3Points * modifiedThirdRate).toFixed(2)}`);
         }
         
-        const totalValue = breakdown.scaling.first.value + 
-                          breakdown.scaling.second.value + 
-                          breakdown.scaling.third.value;
-        
-        // Round up to nearest 10
-        const finalPoints = Math.ceil(totalValue / 10) * 10;
-        
-        breakdown.steps = [
-            `1. Sum Limit Points: ${limitPoints}`,
-            `2. Calculate Modified Rates: Base rates × ${archetypeMultiplier.toFixed(3)} (${archetype})`,
-            `3. Apply Modified Rates to Buckets:`,
-            `   • Bucket 1 (${firstTier} max): ${breakdown.scaling.first.points} × ${modifiedFirstRate.toFixed(3)} = ${breakdown.scaling.first.value.toFixed(2)}`,
-            breakdown.scaling.second.points > 0 ? `   • Bucket 2 (${secondTier} max): ${breakdown.scaling.second.points} × ${modifiedSecondRate.toFixed(3)} = ${breakdown.scaling.second.value.toFixed(2)}` : '',
-            breakdown.scaling.third.points > 0 ? `   • Bucket 3 (remainder): ${breakdown.scaling.third.points} × ${modifiedThirdRate.toFixed(3)} = ${breakdown.scaling.third.value.toFixed(2)}` : '',
-            `4. Sum and Round Up: ${totalValue.toFixed(2)} → ${finalPoints} Upgrade Points`
-        ].filter(step => step !== '');
-        
-        breakdown.totalValue = totalValue;
-        breakdown.finalPoints = finalPoints;
+        breakdown.steps.push(`4. Sum and Round Up: ${totalValue.toFixed(2)} → ${finalPoints} Upgrade Points`);
         
         return breakdown;
     }

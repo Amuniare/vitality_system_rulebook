@@ -165,20 +165,11 @@ export class PointPoolCalculator {
         
         switch(archetype) {
             case 'normal':
-                fromLimits = this.calculateLimitPoints(attack.limitPointsTotal || 0, tier);
-                available = Math.floor(fromLimits * (tier / 6));
-                method = 'limits_scaled';
-                break;
-                
             case 'specialist':
-                fromLimits = this.calculateLimitPoints(attack.limitPointsTotal || 0, tier);
-                available = Math.floor(fromLimits * (tier / 3));
-                method = 'limits_scaled';
-                break;
-                
             case 'straightforward':
-                fromLimits = this.calculateLimitPoints(attack.limitPointsTotal || 0, tier);
-                available = Math.floor(fromLimits * (tier / 2));
+                const limitCalcResult = TierSystem.calculateLimitScaling(attack.limitPointsTotal || 0, tier, archetype);
+                fromLimits = limitCalcResult.totalValue;
+                available = limitCalcResult.finalPoints;
                 method = 'limits_scaled';
                 break;
                 
@@ -207,8 +198,9 @@ export class PointPoolCalculator {
                 break;
                 
             case 'sharedUses':
-                fromLimits = this.calculateLimitPoints(attack.limitPointsTotal || 0, tier);
-                available = fromLimits; // No multiplier for shared uses
+                const sharedCalcResult = TierSystem.calculateLimitScaling(attack.limitPointsTotal || 0, tier, archetype);
+                fromLimits = sharedCalcResult.totalValue;
+                available = sharedCalcResult.finalPoints;
                 method = 'shared_resource';
                 break;
                 
@@ -231,8 +223,9 @@ export class PointPoolCalculator {
     }
     
     // Calculate upgrade points from limit points using scaling formula
-    static calculateLimitPoints(limitPoints, tier) {
-        return TierSystem.calculateLimitScaling(limitPoints, tier);
+    static calculateLimitPoints(limitPoints, tier, archetype = null) {
+        const result = TierSystem.calculateLimitScaling(limitPoints, tier, archetype);
+        return result.finalPoints;
     }
     
     // Get the calculation method description for an archetype

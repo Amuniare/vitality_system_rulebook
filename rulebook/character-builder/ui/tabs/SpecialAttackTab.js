@@ -1,175 +1,94 @@
-// rulebook/character-builder/ui/tabs/SpecialAttackTab.js
+// SpecialAttackTab.js - Container component for special attack management
 import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
 import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
+import { TierSystem } from '../../core/TierSystem.js';
 import { RenderUtils } from '../shared/RenderUtils.js';
+import { AttackBasicsForm } from '../components/AttackBasicsForm.js';
+import { LimitSelection } from '../components/LimitSelection.js';
+import { UpgradeSelection } from '../components/UpgradeSelection.js';
 
 export class SpecialAttackTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
         this.selectedAttackIndex = 0;
-        this.showingLimitModal = false;
-        this.showingUpgradeModal = false;
-        this.expandedLimitCategories = new Set(); // Track which limit categories are expanded
+        
+        // Initialize child components
+        this.attackBasicsForm = new AttackBasicsForm(this);
+        this.limitSelection = new LimitSelection(this);
+        this.upgradeSelection = new UpgradeSelection(this);
     }
 
     render() {
-        const tabContent = document.getElementById('tab-specialAttacks');
-        if (!tabContent) return;
-
-        const character = this.builder.currentCharacter;
-        if (!character) {
-            tabContent.innerHTML = "<p>No character selected.</p>";
-            return;
-        }
+        const character = this.builder.character;
+        const archetype = character.archetypes?.specialAttack;
         
-        // Always show the full interface, just add a notice if build order isn't followed
-        const hasAttributes = Object.values(character.attributes).some(attr => attr > 0);
-        const hasMainPurchases = character.mainPoolPurchases.boons.length > 0 || 
-                               character.mainPoolPurchases.traits.length > 0 ||
-                               character.mainPoolPurchases.flaws.length > 0 ||
-                               character.mainPoolPurchases.primaryActionUpgrades.length > 0;
-        
-        let buildOrderNotice = "";
-        if (!hasAttributes) {
-            buildOrderNotice = `
-                <div class="prerequisite-notice">
-                    <h3>Build Order Recommendation</h3>
-                    <p>Consider completing attribute assignment in the Attributes tab first for better point calculations.</p>
-                </div>
-            `;
-        } else if (!hasMainPurchases) {
-            buildOrderNotice = `
-                <div class="prerequisite-notice">
-                    <h3>Build Order Recommendation</h3>
-                    <p>Consider making some purchases in the Main Pool tab before creating special attacks.</p>
-                </div>
-            `;
-        }
-
-        tabContent.innerHTML = `
-            <div class="special-attacks-section">
-                <h2>Special Attacks</h2>
-                <p class="section-description">
-                    Create unique combat abilities using your special attack archetype rules.
-                    Use limits to generate upgrade points, then purchase enhancements.
-                </p>
-
-                ${buildOrderNotice}
+        return `
+            <div class="special-attack-tab tab-content">
                 ${this.renderArchetypeInfo(character)}
                 ${this.renderAttackManagement(character)}
-                ${character.specialAttacks.length > 0 && character.specialAttacks[this.selectedAttackIndex] ?
+                ${character.specialAttacks && character.specialAttacks.length > 0 ? 
                     this.renderAttackBuilder(character) :
-                    '<div class="empty-state">Create your first special attack to begin building.</div>'}
-                ${this.renderLimitModal(character)}
-                ${this.renderUpgradeModal(character)}
-
-                <div class="next-step">
-                    <p><strong>Next Step:</strong> Configure utility abilities and expertise.</p>
-                    ${RenderUtils.renderButton({
-                        text: 'Continue to Utility →',
-                        variant: 'primary',
-                        dataAttributes: { action: 'continue-to-utility' }
-                    })}
-                </div>
+                    '<div class="empty-state">No special attacks created yet.</div>'}
             </div>
         `;
-        this.setupEventListeners();
     }
 
     renderArchetypeInfo(character) {
-        const archetypeId = character.archetypes.specialAttack;
+        const archetype = character.archetypes?.specialAttack;
         
-        if (!archetypeId) {
+        if (!archetype) {
             return `
-                <div class="archetype-info card">
-                    <div class="card-header">
-                        <h3 class="card-title">Special Attack Archetype: Not Selected</h3>
-                    </div>
-                    <div class="card-description">
-                        <p>Select a Special Attack archetype in the Archetypes tab to unlock specific bonuses and free attack types.</p>
-                        <p><em>You can still create basic special attacks without an archetype selected.</em></p>
-                    </div>
+                <div class="archetype-info warning-block">
+                    <h3>⚠️ No Special Attack Archetype Selected</h3>
+                    <p>You need to select a Special Attack archetype in the Archetypes tab before you can create special attacks.</p>
+                    <p><em>You can still create basic special attacks without an archetype selected.</em></p>
+                    ${RenderUtils.renderButton({
+                        text: 'Go to Archetypes Tab',
+                        variant: 'primary',
+                        dataAttributes: { action: 'switch-tab', tab: 'archetypes' }
+                    })}
                 </div>
             `;
         }
-        
-        const archetypeDetails = SpecialAttackSystem.getSpecialAttackArchetypeDetails ? 
-                                SpecialAttackSystem.getSpecialAttackArchetypeDetails(character) :
-                                { name: this.formatArchetypeName(archetypeId), description: this.getArchetypeDescription(archetypeId, character) };
 
         return `
-            <div class="archetype-info card">
-                <div class="card-header">
-                    <h3 class="card-title">Special Attack Archetype: ${archetypeDetails.name}</h3>
-                </div>
-                <div class="card-description">
-                    ${archetypeDetails.description}
-                </div>
+            <div class="archetype-info">
+                <h3>Special Attack Archetype: ${this.formatArchetypeName(archetype)}</h3>
+                <p>${this.getArchetypeDescription(archetype)}</p>
             </div>
         `;
     }
 
-    getArchetypeDescription(archetypeId, character) {
-        if (!archetypeId) return 'No special attack archetype selected.';
-        
-        // Try to get archetype data from GameDataManager
-        const archetypeData = this.builder.gameDataManager?.getData('archetypes');
-        if (archetypeData && archetypeData.specialAttack) {
-            const archetype = archetypeData.specialAttack.find(arch => arch.id === archetypeId);
-            if (archetype) {
-                return archetype.description;
-            }
-        }
-        
-        // Fallback descriptions if data isn't available
-        const fallbackDescriptions = {
-            'normal': '3 Specialty Upgrades at half cost, flexible limits',
-            'specialist': '3 specific Limits, higher returns, focused style',
-            'paragon': '10×Tier points per attack, no Limits',
-            'oneTrick': 'Single attack with Tier×20 points, no Limits',
-            'straightforward': 'Single Limit, simple but effective',
-            'sharedUses': '10 shared uses, resource management focus',
-            'dualNatured': 'Two attacks with 15×Tier points each',
-            'basic': 'Enhances base attacks, Tier×10 points'
-        };
-        
-        return fallbackDescriptions[archetypeId] || `${this.formatArchetypeName(archetypeId)} archetype selected.`;
-    }
-
     renderAttackManagement(character) {
-        const canCreate = SpecialAttackSystem.validateCanCreateAttack(character); // Using system
-        const attacks = character.specialAttacks;
-
+        const canCreate = SpecialAttackSystem.canCreateAttack(character);
+        
         return `
-            <div class="attack-management">
-                <div class="attack-list-header">
-                    <h3>Attacks (${attacks.length})</h3>
+            <div class="attack-management section-block">
+                <div class="attack-management-header">
+                    <h3>Special Attacks (${character.specialAttacks?.length || 0})</h3>
                     ${RenderUtils.renderButton({
                         text: '+ Create Attack',
-                        variant: 'primary',
-                        disabled: !canCreate.isValid,
+                        variant: canCreate.isValid ? 'primary' : 'disabled',
                         dataAttributes: { action: 'create-attack' },
                         title: canCreate.isValid ? 'Create a new special attack' : (canCreate.errors[0] || 'Cannot create more attacks')
                     })}
                 </div>
-                ${!canCreate.isValid && canCreate.errors.length > 0 ? `<p class="error-text small-text">${canCreate.errors[0]}</p>`: ''}
-
-                ${attacks.length > 0 ? `
-                    <div class="attack-tabs-container">
-                        ${attacks.map((attack, index) => `
-                            <div class="attack-tab ${index === this.selectedAttackIndex ? 'active' : ''}"
-                                 data-attack-index="${index}" data-action="select-attack-tab">
-                                <span class="attack-tab-name">${attack.name || `Attack ${index + 1}`}</span>
-                                <span class="attack-tab-points">${attack.upgradePointsSpent || 0}/${attack.upgradePointsAvailable || 0}p</span>
+                
+                ${character.specialAttacks && character.specialAttacks.length > 0 ? `
+                    <div class="attack-tabs">
+                        ${character.specialAttacks.map((attack, index) => `
+                            <button class="attack-tab ${index === this.selectedAttackIndex ? 'active' : ''}" 
+                                    data-action="select-attack" 
+                                    data-index="${index}">
+                                ${attack.name || `Attack ${index + 1}`}
                                 ${RenderUtils.renderButton({
                                     text: '×',
                                     variant: 'danger',
                                     size: 'small',
-                                    classes: ['delete-attack-btn'],
                                     dataAttributes: { action: 'delete-attack', index: index },
                                     title: `Delete ${attack.name || `Attack ${index + 1}`}`
                                 })}
-                            </div>
+                            </button>
                         `).join('')}
                     </div>
                 ` : `<div class="empty-state">No special attacks created yet.</div>`}
@@ -181,17 +100,22 @@ export class SpecialAttackTab {
         const attack = character.specialAttacks[this.selectedAttackIndex];
         if (!attack) return '<div class="empty-state">Select an attack to build.</div>';
 
+        // Update component indices
+        this.attackBasicsForm.setAttackIndex(this.selectedAttackIndex);
+        this.limitSelection.setAttackIndex(this.selectedAttackIndex);
+        this.upgradeSelection.setAttackIndex(this.selectedAttackIndex);
+
         return `
             <div class="attack-builder card">
-                ${this.renderAttackBasics(attack)}
+                ${this.attackBasicsForm.render(attack)}
                 
                 <!-- Two-column layout for limits and upgrades -->
                 <div class="attack-builder-columns">
                     <div class="limits-column">
-                        ${this.renderLimitsSection(attack, character)}
+                        ${this.limitSelection.render(attack, character)}
                     </div>
                     <div class="upgrades-column">
-                        ${this.renderUpgradesSection(attack, character)}
+                        ${this.upgradeSelection.render(attack, character)}
                     </div>
                 </div>
                 
@@ -200,343 +124,7 @@ export class SpecialAttackTab {
         `;
     }
 
-    renderAttackBasics(attack) {
-        return `
-            <div class="attack-basics-form">
-                <div class="attack-basics-columns">
-                    <div class="attack-basics-left">
-                        <div class="attack-name-row">
-                            <label for="attack-name-${this.selectedAttackIndex}">Attack Name:</label>
-                            <input type="text" id="attack-name-${this.selectedAttackIndex}" value="${attack.name || ''}" placeholder="Enter attack name" data-action="update-attack-name">
-                        </div>
-                        <div class="attack-subtitle-row">
-                            <label for="attack-subtitle-${this.selectedAttackIndex}">Attack Subtitle:</label>
-                            <input type="text" id="attack-subtitle-${this.selectedAttackIndex}" value="${attack.subtitle || ''}" placeholder="Enter subtitle" data-action="update-attack-subtitle">
-                        </div>
-                        <div class="attack-details-row">
-                            <label for="attack-details-${this.selectedAttackIndex}">Attack Details:</label>
-                            <input type="text" id="attack-details-${this.selectedAttackIndex}" value="${attack.details || ''}" placeholder="Enter details" data-action="update-attack-details">
-                        </div>
-                    </div>
-                    <div class="attack-basics-right">
-                        <div class="attack-type-row">
-                            <label for="attack-type-${this.selectedAttackIndex}">Attack Type:</label>
-                            <select id="attack-type-${this.selectedAttackIndex}" data-action="update-attack-type">
-                                <option value="">Select attack type</option>
-                                ${this.renderAttackTypeOptions(attack)}
-                            </select>
-                        </div>
-                        <div class="effect-type-row">
-                            <label for="effect-type-${this.selectedAttackIndex}">Effect Type:</label>
-                            <select id="effect-type-${this.selectedAttackIndex}" data-action="update-effect-type">
-                                <option value="damage" ${attack.effectType === 'damage' ? 'selected' : ''}>Damage</option>
-                                <option value="conditions" ${attack.effectType === 'conditions' ? 'selected' : ''}>Conditions</option>
-                                <option value="hybrid" ${attack.effectType === 'hybrid' ? 'selected' : ''}>Hybrid</option>
-                            </select>
-                        </div>
-                        ${attack.effectType === 'hybrid' ? `
-                            <div class="hybrid-order-row">
-                                <label for="hybrid-order-${this.selectedAttackIndex}">Hybrid Order:</label>
-                                <select id="hybrid-order-${this.selectedAttackIndex}" data-action="update-hybrid-order">
-                                    <option value="conditions-first" ${attack.hybridOrder === 'conditions-first' ? 'selected' : ''}>Conditions First</option>
-                                    <option value="damage-first" ${attack.hybridOrder === 'damage-first' ? 'selected' : ''}>Damage First</option>
-                                </select>
-                            </div>
-                        ` : ''}
-                        ${(attack.effectType === 'conditions' || attack.effectType === 'hybrid') ? `
-                            <div class="condition-effect-row">
-                                <label for="condition-effect-${this.selectedAttackIndex}">Condition Effect:</label>
-                                <input type="text" id="condition-effect-${this.selectedAttackIndex}" value="${attack.conditionEffect || ''}" placeholder="Describe condition effect" data-action="update-condition-effect">
-                            </div>
-                            <div class="condition-target-row">
-                                <label for="condition-target-${this.selectedAttackIndex}">Condition Target:</label>
-                                <select id="condition-target-${this.selectedAttackIndex}" data-action="update-condition-target">
-                                    <option value="">Select target</option>
-                                    <option value="stability" ${attack.conditionTarget === 'stability' ? 'selected' : ''}>Stability</option>
-                                    <option value="vitality" ${attack.conditionTarget === 'vitality' ? 'selected' : ''}>Vitality</option>
-                                    <option value="resolve" ${attack.conditionTarget === 'resolve' ? 'selected' : ''}>Resolve</option>
-                                </select>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    renderAttackTypeOptions(attack) {
-        const availableTypes = AttackTypeSystem.getAttackTypeDefinitions();
-        return Object.entries(availableTypes).map(([typeId, typeDef]) => 
-            `<option value="${typeId}" ${attack.selectedAttackType === typeId ? 'selected' : ''}>${typeDef.name}</option>`
-        ).join('');
-    }
-
-
-
-    renderLimitsSection(attack, character) {
-        const archetype = character.archetypes.specialAttack;
-        const canUseLimits = SpecialAttackSystem.canArchetypeUseLimits ? SpecialAttackSystem.canArchetypeUseLimits(archetype) : !['paragon', 'oneTrick', 'dualNatured', 'basic'].includes(archetype);
-
-        if (!canUseLimits) {
-            return `
-                <div class="limits-section section-block disabled">
-                    <h3>Limits</h3>
-                    <p class="archetype-restriction">${this.formatArchetypeName(archetype)} archetype cannot use limits.</p>
-                </div>
-            `;
-        }
-
-        // Simple breakdown display for UI
-        const limitBreakdown = {
-            steps: attack.limits.length > 0 ? [
-                `Limit Points: ${attack.limitPointsTotal || 0}`,
-                `Tier Multiplier: x${character.tier}`,
-                `Upgrade Points: ${attack.upgradePointsFromLimits || 0}`
-            ] : []
-        };
-        const allLimits = SpecialAttackSystem.getAvailableLimits();
-
-        // Group limits by category for hierarchical display
-        const limitsByCategory = {};
-        allLimits.forEach(limit => {
-            if (!limitsByCategory[limit.category]) {
-                limitsByCategory[limit.category] = [];
-            }
-            limitsByCategory[limit.category].push(limit);
-        });
-
-        return `
-            <div class="limits-section section-block">
-                <div class="section-header">
-                    <h3>Limits (${attack.limits.length})</h3>
-                </div>
-                
-                <!-- Selected Limits Table -->
-                ${attack.limits.length > 0 ? `
-                    <div class="selected-limits-table">
-                        <h4>Selected Limits</h4>
-                        <table class="limits-breakdown-table">
-                            <thead>
-                                <tr>
-                                    <th width="40">Remove</th>
-                                    <th>Limit Name</th>
-                                    <th width="80">Points</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${attack.limits.map((limit, index) => this.renderLimitTableRow(limit, index)).join('')}
-                            </tbody>
-                            <tfoot>
-                                ${this.renderLimitCalculationFooter(attack, character)}
-                            </tfoot>
-                        </table>
-                    </div>
-                ` : ''}
-                
-                <!-- Hierarchical Limit Categories -->
-                <div class="limit-categories-hierarchy">
-                    <h4>Available Limits</h4>
-                    ${Object.entries(limitsByCategory).map(([categoryKey, categoryLimits]) => 
-                        this.renderLimitCategory(categoryKey, categoryLimits, attack, character)
-                    ).join('')}
-                </div>
-                
-                ${attack.limits.length > 0 ? `
-                    <div class="limit-calculation-details">
-                        <h5>Point Calculation</h5>
-                        <div class="calculation-breakdown">
-                            ${limitBreakdown.steps.map(step => `<div class="calc-line">${step}</div>`).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-            </div>
-        `;
-    }
-    renderLimitCategory(categoryKey, categoryLimits, attack, character) {
-        const isExpanded = this.expandedLimitCategories.has(categoryKey);
-        const categoryName = this.formatCategoryName(categoryKey);
-        
-        return `
-            <div class="limit-category">
-                <div class="limit-category-header" data-action="toggle-limit-category" data-category="${categoryKey}">
-                    <span class="category-expand-icon">${isExpanded ? '▼' : '▶'}</span>
-                    <span class="category-name">${categoryName}</span>
-                    <span class="category-count">(${categoryLimits.length})</span>
-                </div>
-                ${isExpanded ? `
-                    <div class="limit-category-content">
-                        ${categoryLimits.map(limit => this.renderLimitOption(limit, attack, character)).join('')}
-                    </div>
-                ` : ''}
-            </div>
-        `;
-    }
-
-    renderLimitOption(limit, attack, character) {
-        const isSelected = attack.limits.some(selectedLimit => selectedLimit.id === limit.id);
-        const validation = SpecialAttackSystem.validateLimitSelection(character, attack, limit.id);
-        const canSelect = !isSelected && validation.isValid;
-        
-        // Handle cost display - cost can be a number or "Variable"
-        const costDisplay = typeof limit.cost === 'number' ? `${limit.cost}p` : limit.cost;
-        
-        return `
-            <div class="limit-option ${isSelected ? 'selected' : ''} ${!canSelect && !isSelected ? 'disabled' : ''}"
-                 ${canSelect ? `data-action="select-limit" data-limit-id="${limit.id}"` : ''}>
-                <div class="limit-option-header">
-                    <span class="limit-name">${limit.name}</span>
-                    <span class="limit-points">${costDisplay}</span>
-                    ${isSelected ? '<span class="selected-indicator">✓</span>' : ''}
-                </div>
-                <div class="limit-description">${limit.description}</div>
-                ${!validation.isValid && !isSelected ? `<div class="limit-error">${validation.errors[0]}</div>` : ''}
-            </div>
-        `;
-    }
-
-    renderLimitItem(limit, index) {
-        // Handle both old and new limit structures - stored limits might have 'points' while new ones have 'cost'
-        const pointsValue = limit.points || limit.cost || 0;
-        const pointsDisplay = typeof pointsValue === 'number' ? `${pointsValue}p` : pointsValue;
-        
-        return `
-            <div class="selected-item limit-item">
-                <div class="item-header">
-                    <span class="item-name">${limit.name}</span>
-                    <span class="item-value">${pointsDisplay}</span>
-                </div>
-                <div class="item-description">${limit.description}</div>
-                ${RenderUtils.renderButton({text: '×', variant: 'danger', size: 'small', dataAttributes: {action: 'remove-limit', index: index}})}
-            </div>
-        `;
-    }
-
-    renderLimitTableRow(limit, index) {
-        const pointsValue = limit.points || limit.cost || 0;
-        const pointsDisplay = typeof pointsValue === 'number' ? pointsValue : pointsValue;
-        
-        return `
-            <tr class="limit-table-row">
-                <td class="remove-cell">
-                    ${RenderUtils.renderButton({
-                        text: '×', 
-                        variant: 'danger', 
-                        size: 'small', 
-                        dataAttributes: {action: 'remove-limit', index: index},
-                        title: `Remove ${limit.name}`
-                    })}
-                </td>
-                <td class="limit-name-cell">${limit.name}</td>
-                <td class="limit-points-cell">${pointsDisplay}</td>
-            </tr>
-        `;
-    }
-
-    renderLimitCalculationFooter(attack, character) {
-        const limitPointsTotal = attack.limitPointsTotal || 0;
-        const finalUpgradePoints = attack.upgradePointsFromLimits || 0;
-        
-        // Get archetype details for display
-        const specialAttackArchetype = character.archetypes?.specialAttack;
-        let archetypeMultiplier = 0;
-        if (specialAttackArchetype) {
-            switch(specialAttackArchetype) {
-                case 'normal':
-                    archetypeMultiplier = character.tier / 6;
-                    break;
-                case 'specialist':
-                    archetypeMultiplier = character.tier / 3;
-                    break;
-                case 'straightforward':
-                    archetypeMultiplier = character.tier / 2;
-                    break;
-                case 'sharedUses':
-                    archetypeMultiplier = 1.0;
-                    break;
-                default:
-                    archetypeMultiplier = 0;
-                    break;
-            }
-        }
-        
-        // Calculate what simple multiplication would give (for comparison)
-        const simpleMultiplication = limitPointsTotal * archetypeMultiplier;
-        const hasDiminishingReturns = Math.abs(finalUpgradePoints - simpleMultiplication) > 0.1;
-        
-        return `
-            <tr class="calculation-subtotal">
-                <td colspan="2"><strong>Step 1 - Limit Points Total:</strong></td>
-                <td><strong>${limitPointsTotal}</strong></td>
-            </tr>
-            <tr class="calculation-multiplier">
-                <td colspan="2">Step 2 - Archetype Rate Modifier (${specialAttackArchetype || 'none'}):</td>
-                <td>×${archetypeMultiplier.toFixed(3)}</td>
-            </tr>
-            <tr class="calculation-base">
-                <td colspan="2">Step 3 - Apply Modified Rates to DR Buckets:</td>
-                <td>${hasDiminishingReturns ? 'See calculation below' : `${limitPointsTotal} × ${archetypeMultiplier.toFixed(3)} = ${simpleMultiplication.toFixed(1)}`}</td>
-            </tr>
-            ${hasDiminishingReturns ? `
-                <tr class="calculation-diminishing">
-                    <td colspan="2">Diminishing Returns Applied:</td>
-                    <td>${finalUpgradePoints} (before rounding)</td>
-                </tr>
-            ` : ''}
-            <tr class="calculation-final">
-                <td colspan="2"><strong>Step 4 - Final (Rounded to Nearest 10):</strong></td>
-                <td><strong>${finalUpgradePoints}</strong></td>
-            </tr>
-        `;
-    }
-
-
-    renderUpgradesSection(attack, character) {
-        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
-        const archetype = character.archetypes.specialAttack;
-        const isLimitsBased = ['normal', 'specialist', 'straightforward'].includes(archetype);
-        
-        return `
-            <div class="upgrades-section section-block">
-                <div class="section-header">
-                    <h4>Upgrades</h4>
-                    <div class="points-remaining">
-                        Upgrade Points: <span class="${remainingPoints < 0 ? 'error-text' : ''}">${remainingPoints}</span> / ${attack.upgradePointsAvailable || 0}
-                    </div>
-                </div>
-                
-                ${(attack.upgradePointsAvailable || 0) === 0 && isLimitsBased ? `
-                    <div class="upgrade-guidance">
-                        <p><strong>${this.formatArchetypeName(archetype)} archetype:</strong> Add limits below to generate upgrade points.</p>
-                    </div>
-                ` : ''}
-                 ${RenderUtils.renderPurchasedList(
-                    attack.upgrades || [],
-                    (upgrade, index) => this.renderPurchasedUpgrade(upgrade, index),
-                    { listContainerClass: 'upgrades-list selected-items-list', title: `Purchased Upgrades (${attack.upgrades?.length || 0})`, showCount: false, emptyMessage: 'No upgrades purchased yet.' }
-                )}
-                <div class="available-upgrades-section">
-                    <h4>Available Upgrades</h4>
-                    ${this.renderAvailableUpgrades(character, attack)}
-                </div>
-            </div>
-        `;
-    }
-    renderPurchasedUpgrade(upgrade, index) {
-         return `
-            <div class="selected-item purchased-upgrade">
-                 <div class="item-header">
-                    <span class="item-name">${upgrade.name}</span>
-                    <span class="item-value">${upgrade.cost}p</span>
-                </div>
-                <div class="item-description">${upgrade.description || upgrade.effect || 'Effect details missing.'}</div>
-                ${RenderUtils.renderButton({text: '×', variant: 'danger', size: 'small', dataAttributes: {action: 'remove-upgrade', index: index}})}
-            </div>
-        `;
-    }
-
-
     renderPointsSummary(attack) {
-        // ... (use RenderUtils.renderPointDisplay for consistency if applicable)
         const remaining = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
         const status = remaining < 0 ? 'error' : (remaining === 0 && (attack.upgradePointsAvailable || 0) > 0 ? 'warning' : 'default');
 
@@ -548,400 +136,209 @@ export class SpecialAttackTab {
         `;
     }
 
-    renderLimitModal(character) {
-        // ... (options should be rendered as cards using RenderUtils.renderCard)
-        // ... (close button uses RenderUtils.renderButton)
-        const allLimits = SpecialAttackSystem.getAvailableLimits();
-        const attack = character.specialAttacks[this.selectedAttackIndex];
+    // Event handling methods
+    handleEvent(event) {
+        const action = event.target.dataset.action;
 
-        // Group limits by category for hierarchical display
-        const limitsByCategory = {};
-        allLimits.forEach(limit => {
-            if (!limitsByCategory[limit.category]) {
-                limitsByCategory[limit.category] = [];
-            }
-            limitsByCategory[limit.category].push(limit);
-        });
+        // Route events to appropriate components
+        if (this.attackBasicsForm && ['update-attack-name', 'update-attack-subtitle', 'update-attack-details', 'update-attack-type'].includes(action)) {
+            this.attackBasicsForm.handleFormEvent(event);
+            return;
+        }
 
-        return `
-            <div id="limit-modal" class="modal ${this.showingLimitModal ? '' : 'hidden'}">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Add Limit to "${attack?.name || 'Attack'}"</h3>
-                        ${RenderUtils.renderButton({ text: '×', variant: 'secondary', size: 'small', dataAttributes: { action: 'close-limit-modal' }})}
-                    </div>
-                    <div class="modal-body">
-                        ${Object.entries(limitsByCategory).map(([category, limits]) => `
-                            <div class="limit-category-modal">
-                                <h4>${this.formatCategoryName(category)}</h4>
-                                ${RenderUtils.renderGrid(
-                                    limits,
-                                    (limit) => {
-                                        const isSelected = attack?.limits.some(l => l.id === limit.id);
-                                        // Basic validation for display, actual validation in system
-                                        const validation = attack ? SpecialAttackSystem.validateLimitSelection(character, attack, limit.id) : {isValid: true};
-                                        const costDisplay = typeof limit.cost === 'number' ? limit.cost : limit.cost;
-                                        return RenderUtils.renderCard({
-                                            title: limit.name,
-                                            cost: costDisplay,
-                                            description: limit.description,
-                                            status: isSelected ? 'purchased' : (validation.isValid ? 'available' : 'error'),
-                                            clickable: !isSelected && validation.isValid,
-                                            disabled: isSelected || !validation.isValid,
-                                            dataAttributes: { action: 'select-limit', 'limit-id': limit.id }
-                                        }, { cardClass: 'limit-option', showStatus: true });
-                                    },
-                                    { gridContainerClass: 'grid-layout', gridSpecificClass: 'grid-columns-auto-fit-280' }
-                                )}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
+        if (this.limitSelection && ['open-limit-modal', 'close-limit-modal', 'add-limit', 'remove-limit', 'toggle-limit-category'].includes(action)) {
+            this.limitSelection.handleEvent(event);
+            return;
+        }
+
+        if (this.upgradeSelection && ['purchase-upgrade', 'remove-upgrade', 'toggle-upgrade-category'].includes(action)) {
+            this.upgradeSelection.handleEvent(event);
+            return;
+        }
+
+        // Handle tab-level events
+        switch (action) {
+            case 'create-attack':
+                this.createNewAttack();
+                break;
+            case 'select-attack':
+                this.selectAttack(parseInt(event.target.dataset.index));
+                break;
+            case 'delete-attack':
+                this.deleteAttack(parseInt(event.target.dataset.index));
+                break;
+            case 'switch-tab':
+                this.builder.switchTab(event.target.dataset.tab);
+                break;
+        }
     }
 
-    renderAvailableUpgrades(character, attack) {
-        const availableUpgrades = SpecialAttackSystem.getAvailableUpgrades();
-        const remainingPoints = (attack?.upgradePointsAvailable || 0) - (attack?.upgradePointsSpent || 0);
-        const archetype = character.archetypes.specialAttack;
-        const isLimitsBased = ['normal', 'specialist', 'straightforward'].includes(archetype);
-        
-        // Group upgrades by category
-        const upgradesByCategory = {};
-        availableUpgrades.forEach(upgrade => {
-            if (!upgradesByCategory[upgrade.category]) {
-                upgradesByCategory[upgrade.category] = [];
-            }
-            upgradesByCategory[upgrade.category].push(upgrade);
-        });
-        
-        return `
-            <div class="available-upgrades-container">
-                ${remainingPoints <= 0 && (attack.upgradePointsAvailable || 0) === 0 ? 
-                    `<div class="no-points-message">
-                        ${isLimitsBased ? 
-                            'Add limits below to generate upgrade points for purchases.' : 
-                            'No upgrade points available from archetype.'}
-                    </div>` : 
-                    remainingPoints <= 0 ? 
-                        `<div class="no-points-message">All upgrade points spent.</div>` : ''}
-                ${Object.entries(upgradesByCategory).map(([categoryName, upgrades]) => `
-                        <div class="upgrade-category">
-                            <h5>${categoryName}</h5>
-                            ${RenderUtils.renderGrid(
-                                upgrades.filter(upgrade => {
-                                    // Filter out already purchased upgrades
-                                    const isAlreadyPurchased = attack?.upgrades?.some(u => u.id === upgrade.id);
-                                    return !isAlreadyPurchased;
-                                }),
-                                (upgrade) => {
-                                    // Calculate actual cost for variable costs
-                                    let displayCost = upgrade.cost;
-                                    if (typeof displayCost === 'string' && displayCost.includes('per tier')) {
-                                        const baseAmount = parseInt(displayCost.match(/\d+/)[0]);
-                                        displayCost = baseAmount * character.tier;
-                                    }
-                                    
-                                    const canAfford = remainingPoints >= displayCost;
-                                    const status = canAfford ? 'available' : 'unaffordable';
-                                    
-                                    return RenderUtils.renderCard({
-                                        title: upgrade.name,
-                                        cost: displayCost,
-                                        description: upgrade.effect,
-                                        status: status,
-                                        clickable: canAfford,
-                                        disabled: !canAfford,
-                                        dataAttributes: { 
-                                            action: 'purchase-upgrade', 
-                                            'upgrade-id': upgrade.id,
-                                            'attack-index': this.selectedAttackIndex
-                                        }
-                                    }, { cardClass: 'upgrade-option', showStatus: true });
-                                },
-                                { gridContainerClass: 'grid-layout', gridSpecificClass: 'grid-columns-auto-fit-250' }
-                            )}
-                        </div>
-                    `).join('')}
-            </div>
-        `;
-    }
-
-    renderUpgradeModal(character) {
-        // ... (options should be rendered as cards using RenderUtils.renderCard)
-        // ... (close button uses RenderUtils.renderButton)
-        const attack = character.specialAttacks[this.selectedAttackIndex];
-        // Simplified upgrade categories for now as in original
-        const allUpgrades = SpecialAttackSystem.getAvailableUpgrades ? SpecialAttackSystem.getAvailableUpgrades() : [];
-        const upgradeCategories = {};
-        allUpgrades.forEach(upgrade => {
-            if (!upgradeCategories[upgrade.category]) {
-                upgradeCategories[upgrade.category] = [];
-            }
-            upgradeCategories[upgrade.category].push(upgrade);
-        });
-
-
-        return `
-            <div id="upgrade-modal" class="modal ${this.showingUpgradeModal ? '' : 'hidden'}">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Purchase Upgrades for "${attack?.name || 'Attack'}"</h3>
-                        ${RenderUtils.renderButton({ text: '×', variant: 'secondary', size: 'small', dataAttributes: { action: 'close-upgrade-modal' }})}
-                    </div>
-                     <div class="modal-points-info">
-                        Available Points: ${(attack?.upgradePointsAvailable || 0) - (attack?.upgradePointsSpent || 0)}
-                    </div>
-                    <div class="modal-body">
-                       ${Object.entries(upgradeCategories).map(([categoryName, upgrades]) => `
-                            <div class="upgrade-category-modal">
-                                <h4>${this.formatCategoryName(categoryName)}</h4>
-                                ${RenderUtils.renderGrid(
-                                    upgrades,
-                                    (upgrade) => {
-                                        const isSelected = attack?.upgrades?.some(u => u.id === upgrade.id);
-                                        
-                                        // Calculate actual cost for variable costs
-                                        let actualCost = upgrade.cost;
-                                        if (typeof actualCost === 'string' && actualCost.includes('per tier')) {
-                                            const baseAmount = parseInt(actualCost.match(/\d+/)[0]);
-                                            actualCost = baseAmount * character.tier;
-                                        }
-                                        
-                                        const canAfford = attack ? (attack.upgradePointsAvailable - attack.upgradePointsSpent) >= actualCost : false;
-                                        let status = isSelected ? 'purchased' : (canAfford ? 'available' : 'unaffordable');
-                                        // Further validation if needed from SpecialAttackSystem.validateUpgradeAddition
-                                        return RenderUtils.renderCard({
-                                            title: upgrade.name,
-                                            cost: actualCost,
-                                            description: upgrade.effect || upgrade.description,
-                                            status: status,
-                                            clickable: !isSelected && canAfford,
-                                            disabled: isSelected || !canAfford,
-                                            dataAttributes: { action: 'select-upgrade', 'upgrade-id': upgrade.id }
-                                        }, { cardClass: 'upgrade-option', showStatus: true });
-                                    },
-                                    { gridContainerClass: 'grid-layout', gridSpecificClass: 'grid-columns-auto-fit-280' }
-                                )}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    // setupEventListeners will be more reliant on data-actions handled by CharacterBuilder
-    // formatArchetypeName and formatCategoryName remain the same
-
-    // Method stubs for actions called by CharacterBuilder via EventManager
-    // (Implementations would call SpecialAttackSystem and then this.builder.updateCharacter() & this.render())
+    // Attack management methods
     createNewAttack() {
-        const character = this.builder.currentCharacter;
-        if (!character) return;
         try {
+            const character = this.builder.character;
             const newAttack = SpecialAttackSystem.createSpecialAttack(character);
-            character.specialAttacks.push(newAttack);
             this.selectedAttackIndex = character.specialAttacks.length - 1;
             this.builder.updateCharacter();
             this.builder.showNotification('New attack created!', 'success');
+            this.render();
         } catch (error) {
             this.builder.showNotification(`Error creating attack: ${error.message}`, 'error');
         }
     }
+
+    selectAttack(index) {
+        if (index >= 0 && index < this.builder.character.specialAttacks.length) {
+            this.selectedAttackIndex = index;
+            this.render();
+        }
+    }
+
     deleteAttack(index) {
-        const character = this.builder.currentCharacter;
-        if (!character || !character.specialAttacks[index]) return;
-        const attackName = character.specialAttacks[index].name;
-        if (confirm(`Delete "${attackName}"?`)) {
-            SpecialAttackSystem.deleteSpecialAttack(character, index);
+        const character = this.builder.character;
+        const attackName = character.specialAttacks[index]?.name || `Attack ${index + 1}`;
+        
+        if (SpecialAttackSystem.removeSpecialAttack(character, index)) {
             if (this.selectedAttackIndex >= character.specialAttacks.length) {
                 this.selectedAttackIndex = Math.max(0, character.specialAttacks.length - 1);
             }
             this.builder.updateCharacter();
             this.builder.showNotification(`Attack "${attackName}" deleted.`, 'info');
-        }
-    }
-    updateAttackName(newName) {
-        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
-        if (attack) {
-            attack.name = newName;
-            this.builder.updateCharacter(); // Debounced update will happen
-        }
-    }
-    updateAttackDescription(newDescription) {
-         const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
-        if (attack) {
-            attack.description = newDescription;
-            this.builder.updateCharacter();
-        }
-    }
-    updateAttackSubtitle(newSubtitle) {
-        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
-        if (attack) {
-            attack.subtitle = newSubtitle;
-            this.builder.updateCharacter();
-        }
-    }
-    updateAttackDetails(newDetails) {
-        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
-        if (attack) {
-            attack.details = newDetails;
-            this.builder.updateCharacter();
-        }
-    }
-    updateAttackType(newType) {
-        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
-        if (attack) {
-            attack.selectedAttackType = newType;
-            this.builder.updateCharacter();
-        }
-    }
-    updateEffectType(newEffectType) {
-        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
-        if (attack) {
-            attack.effectType = newEffectType;
-            if (newEffectType !== 'hybrid') {
-                attack.hybridOrder = undefined;
-            }
-            if (newEffectType === 'damage') {
-                attack.conditionEffect = undefined;
-                attack.conditionTarget = undefined;
-            }
-            this.builder.updateCharacter();
             this.render();
         }
     }
-    updateHybridOrder(newOrder) {
-        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
+
+    // Attack property update methods (called by AttackBasicsForm)
+    updateAttackProperty(property, value) {
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        
         if (attack) {
-            attack.hybridOrder = newOrder;
+            attack[property] = value;
+            
+            // Special handling for attack type changes
+            if (property === 'attackType') {
+                // Recalculate attack points if needed
+                SpecialAttackSystem.recalculateAttackPoints(character, attack);
+            }
+            
             this.builder.updateCharacter();
+            
+            // Use granular updates instead of full re-render for better performance
+            if (property === 'attackType') {
+                this.attackBasicsForm.updateAttackType(value);
+            } else {
+                // Update the specific field
+                this.attackBasicsForm[`update${property.charAt(0).toUpperCase() + property.slice(1)}`]?.(value);
+            }
         }
-    }
-    updateConditionEffect(newEffect) {
-        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
-        if (attack) {
-            attack.conditionEffect = newEffect;
-            this.builder.updateCharacter();
-        }
-    }
-    updateConditionTarget(newTarget) {
-        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
-        if (attack) {
-            attack.conditionTarget = newTarget;
-            this.builder.updateCharacter();
-        }
-    }
-    openLimitModal() { this.showingLimitModal = true; this.render(); }
-    closeLimitModal() { this.showingLimitModal = false; this.render(); }
-    toggleLimitCategory(categoryKey) {
-        if (this.expandedLimitCategories.has(categoryKey)) {
-            this.expandedLimitCategories.delete(categoryKey);
-        } else {
-            this.expandedLimitCategories.add(categoryKey);
-        }
-        this.render(); // Re-render to show/hide category content
     }
 
+    // Limit management methods (called by LimitSelection)
     addLimit(limitId) {
-        const character = this.builder.currentCharacter;
-        const attack = character?.specialAttacks[this.selectedAttackIndex];
-        if (!character || !attack) return;
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
         
-        try {
-            SpecialAttackSystem.addLimitToAttack(character, this.selectedAttackIndex, limitId);
-            this.builder.updateCharacter();
-            this.builder.showNotification('Limit added.', 'success');
-        } catch(error) {
-            this.builder.showNotification(`Failed to add limit: ${error.message}`, 'error');
+        if (attack && SpecialAttackSystem.addLimitToAttack) {
+            try {
+                SpecialAttackSystem.addLimitToAttack(character, attack, limitId);
+                this.builder.updateCharacter();
+                this.limitSelection.updateLimitsList(attack);
+                this.limitSelection.updateCalculationFooter(attack, character);
+                this.upgradeSelection.updatePurchasedUpgrades(attack); // Update points display
+                this.builder.showNotification('Limit added!', 'success');
+            } catch (error) {
+                this.builder.showNotification(`Error adding limit: ${error.message}`, 'error');
+            }
         }
     }
-    removeLimit(limitIndexOnAttack) {
-        const character = this.builder.currentCharacter;
-        const attack = character?.specialAttacks[this.selectedAttackIndex];
-        if (!character || !attack || !attack.limits[limitIndexOnAttack]) return;
+
+    removeLimit(index) {
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
         
-        try {
-            const limitToRemove = attack.limits[limitIndexOnAttack];
-            const limitId = limitToRemove.id;
-            SpecialAttackSystem.removeLimitFromAttack(character, this.selectedAttackIndex, limitId);
-            this.builder.updateCharacter();
-            this.builder.showNotification(`Limit "${limitToRemove.name}" removed.`, 'info');
-        } catch(error) {
-            this.builder.showNotification(`Failed to remove limit: ${error.message}`, 'error');
+        if (attack && SpecialAttackSystem.removeLimitFromAttack) {
+            try {
+                SpecialAttackSystem.removeLimitFromAttack(character, attack, index);
+                this.builder.updateCharacter();
+                this.limitSelection.updateLimitsList(attack);
+                this.limitSelection.updateCalculationFooter(attack, character);
+                this.upgradeSelection.updatePurchasedUpgrades(attack); // Update points display
+                this.builder.showNotification('Limit removed!', 'info');
+            } catch (error) {
+                this.builder.showNotification(`Error removing limit: ${error.message}`, 'error');
+            }
         }
     }
 
-    openUpgradeModal() { this.showingUpgradeModal = true; this.render(); }
-    closeUpgradeModal() { this.showingUpgradeModal = false; this.render(); }
-    addUpgrade(upgradeId) {
-        const character = this.builder.currentCharacter;
-        const attack = character?.specialAttacks[this.selectedAttackIndex];
-        if (!character || !attack) return;
-
-        try {
-            SpecialAttackSystem.addUpgradeToAttack(character, this.selectedAttackIndex, upgradeId);
-            this.builder.updateCharacter();
-            this.closeUpgradeModal();
-            this.builder.showNotification('Upgrade added.', 'success');
-        } catch(error) {
-            this.builder.showNotification(`Failed to add upgrade: ${error.message}`, 'error');
-        }
-    }
-    removeUpgrade(upgradeIndexOnAttack) {
-         const character = this.builder.currentCharacter;
-        const attack = character?.specialAttacks[this.selectedAttackIndex];
-        if (!character || !attack || !attack.upgrades) return;
-        try {
-            const removedUpgrade = SpecialAttackSystem.removeUpgradeFromAttack(character, this.selectedAttackIndex, attack.upgrades[upgradeIndexOnAttack].id);
-            this.builder.updateCharacter();
-            this.builder.showNotification(`Upgrade "${removedUpgrade.name}" removed.`, 'info');
-        } catch(error) {
-            this.builder.showNotification(`Failed to remove upgrade: ${error.message}`, 'error');
+    // Upgrade management methods (called by UpgradeSelection)
+    purchaseUpgrade(upgradeId) {
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        
+        if (attack && SpecialAttackSystem.purchaseUpgrade) {
+            try {
+                SpecialAttackSystem.purchaseUpgrade(character, attack, upgradeId);
+                this.builder.updateCharacter();
+                this.upgradeSelection.updatePurchasedUpgrades(attack);
+                this.upgradeSelection.updateUpgradeCard(upgradeId, attack, character);
+                this.builder.showNotification('Upgrade purchased!', 'success');
+            } catch (error) {
+                this.builder.showNotification(`Error purchasing upgrade: ${error.message}`, 'error');
+            }
         }
     }
 
-    purchaseUpgrade(upgradeId, attackIndex) {
-        const character = this.builder.currentCharacter;
-        const attack = character?.specialAttacks[attackIndex];
-        if (!character || !attack) return;
-
-        try {
-            SpecialAttackSystem.addUpgradeToAttack(character, attackIndex, upgradeId);
-            this.builder.updateCharacter();
-            this.render(); // Re-render to update the display
-            this.builder.showNotification('Upgrade purchased successfully!', 'success');
-        } catch(error) {
-            this.builder.showNotification(`Failed to purchase upgrade: ${error.message}`, 'error');
+    removeUpgrade(index) {
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        
+        if (attack && SpecialAttackSystem.removeUpgrade) {
+            try {
+                const upgradeName = attack.upgrades[index]?.name || 'upgrade';
+                SpecialAttackSystem.removeUpgrade(character, attack, index);
+                this.builder.updateCharacter();
+                this.upgradeSelection.updatePurchasedUpgrades(attack);
+                this.builder.showNotification(`${upgradeName} removed!`, 'info');
+            } catch (error) {
+                this.builder.showNotification(`Error removing upgrade: ${error.message}`, 'error');
+            }
         }
     }
 
-    // formatArchetypeName and formatCategoryName remain the same
-    formatArchetypeName(archetypeId) {
-        if (!archetypeId) return 'None Selected';
-        return archetypeId.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-    }
-    formatCategoryName(categoryName) {
-        if (!categoryName) return '';
-        return categoryName.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-    }
-    onCharacterUpdate() { // Called by CharacterBuilder
-        // If the selected attack still exists, re-render. Otherwise, might select first or show empty.
-        if (this.builder.currentCharacter && this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex]) {
-            this.render();
-        } else if (this.builder.currentCharacter && this.builder.currentCharacter.specialAttacks.length > 0) {
-            this.selectedAttackIndex = 0;
-            this.render();
-        } else {
-            this.selectedAttackIndex = 0; // Reset
-            this.render(); // Will show "no attacks" state
+    // Character update callback for granular updates
+    onCharacterUpdate(character) {
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            // Update individual components rather than full re-render
+            this.limitSelection.updateCalculationFooter(attack, character);
+            this.upgradeSelection.updatePurchasedUpgrades(attack);
         }
     }
 
-    setupEventListeners() {
-        // Event listeners are now handled by CharacterBuilder via data-action attributes
-        // This method is kept for compatibility but can be empty since event delegation is used
+    // Helper methods
+    formatArchetypeName(archetype) {
+        return archetype ? archetype.charAt(0).toUpperCase() + archetype.slice(1) : '';
+    }
+
+    getArchetypeDescription(archetype) {
+        const descriptions = {
+            normal: 'Uses limits to generate upgrade points with diminishing returns.',
+            specialist: 'Efficient limit-to-upgrade conversion for focused builds.',
+            straightforward: 'Simple and direct limit-based upgrade system.',
+            paragon: 'Fixed upgrade points per attack, no limits needed.',
+            oneTrick: 'Single powerful attack with high upgrade point allocation.',
+            dualNatured: 'Balanced approach with moderate upgrade points per attack.',
+            basic: 'Simple attacks with minimal upgrade options.',
+            sharedUses: 'Uses shared resource pool across multiple attacks.'
+        };
+        return descriptions[archetype] || 'Custom archetype with unique mechanics.';
+    }
+
+    // Cleanup method
+    destroy() {
+        this.attackBasicsForm?.destroy();
+        this.limitSelection?.destroy();
+        this.upgradeSelection?.destroy();
     }
 }
-

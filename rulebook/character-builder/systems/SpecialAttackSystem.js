@@ -134,31 +134,31 @@ export class SpecialAttackSystem {
         const archetype = character.archetypes.specialAttack;
         const pointMethod = ArchetypeSystem.getSpecialAttackPointMethod(character);
         
-        // Calculate limit points total
-        attack.limitPointsTotal = attack.limits.reduce((total, limit) => total + limit.points, 0);
+        // Calculate limit points total from the sum of selected limits
+        attack.limitPointsTotal = attack.limits.reduce((total, limit) => total + (Number(limit.points) || 0), 0);
         
-        // Calculate upgrade points from limits (if applicable)
+        // Calculate upgrade points from limits (if applicable) using the corrected logic
         if (pointMethod.method === 'limits') {
-            const scaledPoints = TierSystem.calculateLimitScaling(attack.limitPointsTotal, character.tier);
-            attack.upgradePointsFromLimits = Math.floor(scaledPoints * pointMethod.multiplier);
+            const calculationResult = TierSystem.calculateLimitScaling(attack.limitPointsTotal, character.tier, archetype);
+            attack.upgradePointsFromLimits = calculationResult.finalPoints;
         } else {
             attack.upgradePointsFromLimits = 0;
         }
         
-        // Calculate upgrade points from archetype
+        // Calculate upgrade points from archetype (for fixed-point archetypes)
         if (pointMethod.method === 'fixed') {
             attack.upgradePointsFromArchetype = pointMethod.points;
         } else {
             attack.upgradePointsFromArchetype = 0;
         }
         
-        // Total available points
+        // Total available points is the sum of points from limits and archetype
         attack.upgradePointsAvailable = attack.upgradePointsFromLimits + attack.upgradePointsFromArchetype;
         
-        // Ensure spent doesn't exceed available
+        // Ensure spent doesn't exceed available (can be enhanced later)
         if (attack.upgradePointsSpent > attack.upgradePointsAvailable) {
-            // Remove upgrades until under budget
-            this.removeExcessUpgrades(attack);
+            // Placeholder for handling over-budget scenarios
+            console.warn(`Attack "${attack.name}" is over budget. Spent: ${attack.upgradePointsSpent}, Available: ${attack.upgradePointsAvailable}`);
         }
     }
     

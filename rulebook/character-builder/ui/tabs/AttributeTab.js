@@ -70,20 +70,7 @@ this.setupDebugFallbacks();
                 valueDisplay.textContent = value;
             }
             
-            // Update the slider
-            const slider = document.getElementById(`slider-${attrId}`);
-            if (slider && parseInt(slider.value) !== value) { // FIX: Parse slider value for comparison
-                slider.value = value;
-            }
-            
-            // Update slider ticks
-            const ticksContainer = document.querySelector(`#slider-${attrId} + .slider-ticks`);
-            if (ticksContainer) {
-                const ticks = ticksContainer.querySelectorAll('.tick');
-                ticks.forEach((tick, index) => {
-                    tick.classList.toggle('filled', index <= value);
-                });
-            }
+            // Slider removed - using button-only interface
             
             // Update button states
             const minusBtn = document.querySelector(`[data-attr="${attrId}"][data-change="-1"]`);
@@ -151,8 +138,7 @@ this.setupDebugFallbacks();
                     attributeIds,
                     (attrId) => this.renderAttributeControl(
                         attrId,
-                        attributeDefinitions[attrId].name,
-                        attributeDefinitions[attrId].description,
+                        attributeDefinitions[attrId],
                         character
                     ),
                     { gridContainerClass: 'grid-layout attribute-grid', gridSpecificClass: 'grid-columns-auto-fit-250' }
@@ -161,15 +147,26 @@ this.setupDebugFallbacks();
         `;
     }
 
-    // In renderAttributeControl method, update the card structure:
-    renderAttributeControl(attrId, name, description, character) {
+    // Render attribute control with enhanced descriptions from attributes.json
+    renderAttributeControl(attrId, attributeData, character) {
         const value = character.attributes[attrId] || 0;
         const max = character.tier;
 
         return RenderUtils.renderCard({
-            title: name,
+            title: attributeData.name,
             titleTag: 'label',
-            description: description,
+            description: `
+                <div class="attribute-description">
+                    <p class="flavor-text"><em>"${attributeData.flavor}"</em></p>
+                    <p class="description-text">${attributeData.description}</p>
+                    <div class="mechanics-list">
+                        <strong>Game Effects:</strong>
+                        <ul>
+                            ${attributeData.mechanics.map(mechanic => `<li>${mechanic}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `,
             dataAttributes: { attr: attrId },
             additionalContent: `
                 <div class="attribute-controls" style="pointer-events: auto;">
@@ -188,18 +185,6 @@ this.setupDebugFallbacks();
                     })}
                 </div>
                 <div class="attribute-limit">Max: ${max}</div>
-                <div class="attribute-slider form-group">
-                    <input type="range"
-                        id="slider-${attrId}"
-                        min="0"
-                        max="${max}"
-                        value="${value}"
-                        data-attr="${attrId}"
-                        data-action="change-attribute-slider">
-                    <div class="slider-ticks">
-                        ${Array.from({length: max + 1}, (_, i) => `<span class="tick ${i <= value ? 'filled' : ''}">${i}</span>`).join('')}
-                    </div>
-                </div>
             `
         }, { cardClass: 'attribute-item', showCost: false, showStatus: false });
     }
@@ -247,9 +232,7 @@ this.setupDebugFallbacks();
         this.updateAttributeValue(attrId, newValue);
     }
 
-    setAttributeViaSlider(attrId, newValue) {
-        this.updateAttributeValue(attrId, parseInt(newValue));
-    }
+    // Slider method removed - using button-only interface
 
     updateAttributeValue(attrId, newValue) {
         const character = this.builder.currentCharacter;
@@ -298,20 +281,7 @@ this.setupDebugFallbacks();
             valueDisplay.textContent = newValue;
         }
         
-        // Update the slider
-        const slider = document.getElementById(`slider-${attrId}`);
-        if (slider && parseInt(slider.value) !== newValue) {
-            slider.value = newValue;
-        }
-        
-        // Update slider ticks
-        const ticksContainer = document.querySelector(`#slider-${attrId} + .slider-ticks`);
-        if (ticksContainer) {
-            const ticks = ticksContainer.querySelectorAll('.tick');
-            ticks.forEach((tick, index) => {
-                tick.classList.toggle('filled', index <= newValue);
-            });
-        }
+        // Slider removed - using button-only interface
         
         // Update button states
         const minusBtn = document.querySelector(`[data-attr="${attrId}"][data-change="-1"]`);
