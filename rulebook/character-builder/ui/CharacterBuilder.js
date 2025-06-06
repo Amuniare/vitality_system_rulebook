@@ -393,6 +393,41 @@ export class CharacterBuilder {
                     if (this.tabs.specialAttacks) {
                         this.tabs.specialAttacks.updateAttackDescription(element.value);
                     }
+                },
+                '[data-action="update-attack-subtitle"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateAttackSubtitle(element.value);
+                    }
+                },
+                '[data-action="update-attack-details"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateAttackDetails(element.value);
+                    }
+                },
+                '[data-action="update-attack-type"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateAttackType(element.value);
+                    }
+                },
+                '[data-action="update-effect-type"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateEffectType(element.value);
+                    }
+                },
+                '[data-action="update-hybrid-order"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateHybridOrder(element.value);
+                    }
+                },
+                '[data-action="update-condition-effect"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateConditionEffect(element.value);
+                    }
+                },
+                '[data-action="update-condition-target"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateConditionTarget(element.value);
+                    }
                 }
             },
             change: {

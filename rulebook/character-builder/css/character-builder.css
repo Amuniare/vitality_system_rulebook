@@ -258,6 +258,74 @@ input:focus, select:focus, textarea:focus {
 }
 /* .large-input class can be removed if all inputs within form-groups are 100% width and similar font size */
 
+/* Attack Basics Two-Column Layout */
+.attack-basics-form {
+    margin-bottom: var(--gap-large);
+}
+
+.attack-basics-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-large);
+}
+
+.attack-basics-left,
+.attack-basics-right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-medium);
+}
+
+.attack-name-row,
+.attack-subtitle-row,
+.attack-details-row,
+.attack-type-row,
+.effect-type-row,
+.hybrid-order-row,
+.condition-effect-row,
+.condition-target-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--gap-small);
+    align-items: center;
+}
+
+.attack-basics-columns label {
+    color: var(--accent-primary);
+    font-weight: bold;
+    white-space: nowrap;
+    min-width: 120px;
+}
+
+.attack-basics-columns input,
+.attack-basics-columns select {
+    width: 100%;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+    .attack-basics-columns {
+        grid-template-columns: 1fr;
+        gap: var(--gap-medium);
+    }
+    
+    .attack-name-row,
+    .attack-subtitle-row,
+    .attack-details-row,
+    .attack-type-row,
+    .effect-type-row,
+    .hybrid-order-row,
+    .condition-effect-row,
+    .condition-target-row {
+        grid-template-columns: 1fr;
+        gap: var(--gap-small);
+    }
+    
+    .attack-basics-columns label {
+        min-width: auto;
+    }
+}
+
 /* --- BASE CLASSES --- */
 .btn {
     padding: 0.75rem 1.5rem;

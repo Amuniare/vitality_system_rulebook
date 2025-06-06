@@ -205,18 +205,72 @@ export class SpecialAttackTab {
     renderAttackBasics(attack) {
         return `
             <div class="attack-basics-form">
-                ${RenderUtils.renderFormGroup({
-                    label: 'Attack Name',
-                    inputId: `attack-name-${this.selectedAttackIndex}`,
-                    inputHtml: `<input type="text" id="attack-name-${this.selectedAttackIndex}" value="${attack.name}" placeholder="Enter attack name" data-action="update-attack-name">`
-                })}
-                ${RenderUtils.renderFormGroup({
-                    label: 'Description',
-                    inputId: `attack-description-${this.selectedAttackIndex}`,
-                    inputHtml: `<textarea id="attack-description-${this.selectedAttackIndex}" placeholder="Describe your attack..." data-action="update-attack-description">${attack.description || ''}</textarea>`
-                })}
+                <div class="attack-basics-columns">
+                    <div class="attack-basics-left">
+                        <div class="attack-name-row">
+                            <label for="attack-name-${this.selectedAttackIndex}">Attack Name:</label>
+                            <input type="text" id="attack-name-${this.selectedAttackIndex}" value="${attack.name || ''}" placeholder="Enter attack name" data-action="update-attack-name">
+                        </div>
+                        <div class="attack-subtitle-row">
+                            <label for="attack-subtitle-${this.selectedAttackIndex}">Attack Subtitle:</label>
+                            <input type="text" id="attack-subtitle-${this.selectedAttackIndex}" value="${attack.subtitle || ''}" placeholder="Enter subtitle" data-action="update-attack-subtitle">
+                        </div>
+                        <div class="attack-details-row">
+                            <label for="attack-details-${this.selectedAttackIndex}">Attack Details:</label>
+                            <input type="text" id="attack-details-${this.selectedAttackIndex}" value="${attack.details || ''}" placeholder="Enter details" data-action="update-attack-details">
+                        </div>
+                    </div>
+                    <div class="attack-basics-right">
+                        <div class="attack-type-row">
+                            <label for="attack-type-${this.selectedAttackIndex}">Attack Type:</label>
+                            <select id="attack-type-${this.selectedAttackIndex}" data-action="update-attack-type">
+                                <option value="">Select attack type</option>
+                                ${this.renderAttackTypeOptions(attack)}
+                            </select>
+                        </div>
+                        <div class="effect-type-row">
+                            <label for="effect-type-${this.selectedAttackIndex}">Effect Type:</label>
+                            <select id="effect-type-${this.selectedAttackIndex}" data-action="update-effect-type">
+                                <option value="damage" ${attack.effectType === 'damage' ? 'selected' : ''}>Damage</option>
+                                <option value="conditions" ${attack.effectType === 'conditions' ? 'selected' : ''}>Conditions</option>
+                                <option value="hybrid" ${attack.effectType === 'hybrid' ? 'selected' : ''}>Hybrid</option>
+                            </select>
+                        </div>
+                        ${attack.effectType === 'hybrid' ? `
+                            <div class="hybrid-order-row">
+                                <label for="hybrid-order-${this.selectedAttackIndex}">Hybrid Order:</label>
+                                <select id="hybrid-order-${this.selectedAttackIndex}" data-action="update-hybrid-order">
+                                    <option value="conditions-first" ${attack.hybridOrder === 'conditions-first' ? 'selected' : ''}>Conditions First</option>
+                                    <option value="damage-first" ${attack.hybridOrder === 'damage-first' ? 'selected' : ''}>Damage First</option>
+                                </select>
+                            </div>
+                        ` : ''}
+                        ${(attack.effectType === 'conditions' || attack.effectType === 'hybrid') ? `
+                            <div class="condition-effect-row">
+                                <label for="condition-effect-${this.selectedAttackIndex}">Condition Effect:</label>
+                                <input type="text" id="condition-effect-${this.selectedAttackIndex}" value="${attack.conditionEffect || ''}" placeholder="Describe condition effect" data-action="update-condition-effect">
+                            </div>
+                            <div class="condition-target-row">
+                                <label for="condition-target-${this.selectedAttackIndex}">Condition Target:</label>
+                                <select id="condition-target-${this.selectedAttackIndex}" data-action="update-condition-target">
+                                    <option value="">Select target</option>
+                                    <option value="stability" ${attack.conditionTarget === 'stability' ? 'selected' : ''}>Stability</option>
+                                    <option value="vitality" ${attack.conditionTarget === 'vitality' ? 'selected' : ''}>Vitality</option>
+                                    <option value="resolve" ${attack.conditionTarget === 'resolve' ? 'selected' : ''}>Resolve</option>
+                                </select>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
             </div>
         `;
+    }
+
+    renderAttackTypeOptions(attack) {
+        const availableTypes = AttackTypeSystem.getAttackTypeDefinitions();
+        return Object.entries(availableTypes).map(([typeId, typeDef]) => 
+            `<option value="${typeId}" ${attack.selectedAttackType === typeId ? 'selected' : ''}>${typeDef.name}</option>`
+        ).join('');
     }
 
     renderAttackTypesSection(attack, character) {
@@ -550,6 +604,63 @@ export class SpecialAttackTab {
          const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
         if (attack) {
             attack.description = newDescription;
+            this.builder.updateCharacter();
+        }
+    }
+    updateAttackSubtitle(newSubtitle) {
+        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.subtitle = newSubtitle;
+            this.builder.updateCharacter();
+        }
+    }
+    updateAttackDetails(newDetails) {
+        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.details = newDetails;
+            this.builder.updateCharacter();
+        }
+    }
+    updateAttackType(newType) {
+        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.selectedAttackType = newType;
+            this.builder.updateCharacter();
+        }
+    }
+    updateEffectType(newEffectType) {
+        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.effectType = newEffectType;
+            if (newEffectType !== 'hybrid') {
+                attack.hybridOrder = undefined;
+            }
+            if (newEffectType === 'damage') {
+                attack.conditionEffect = undefined;
+                attack.conditionTarget = undefined;
+            }
+            this.builder.updateCharacter();
+            this.render();
+        }
+    }
+    updateHybridOrder(newOrder) {
+        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.hybridOrder = newOrder;
+            this.builder.updateCharacter();
+        }
+    }
+    updateConditionEffect(newEffect) {
+        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.conditionEffect = newEffect;
+            this.builder.updateCharacter();
+        }
+    }
+    updateConditionTarget(newTarget) {
+        const attack = this.builder.currentCharacter?.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.conditionTarget = newTarget;
             this.builder.updateCharacter();
         }
     }
