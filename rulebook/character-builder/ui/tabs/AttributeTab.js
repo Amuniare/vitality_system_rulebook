@@ -13,7 +13,7 @@ export class AttributeTab {
 
         const character = this.builder.currentCharacter;
         if (!character) {
-            tabContent.innerHTML = "<p>No character selected or archetypes incomplete.</p>";
+            tabContent.innerHTML = "<p>No character selected.</p>";
             return;
         }
 

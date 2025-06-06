@@ -135,7 +135,7 @@ export class VitalityCharacter {
             case 'archetypes':
                 return true; // Always can modify
             case 'attributes':
-                return this.buildState.archetypesComplete;
+                return true; // Always can modify attributes
             case 'mainPool':
                 return this.buildState.attributesComplete;
             case 'specialAttacks':
