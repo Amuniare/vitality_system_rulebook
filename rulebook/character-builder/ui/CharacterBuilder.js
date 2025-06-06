@@ -330,21 +330,40 @@ export class CharacterBuilder {
             
             switch(tabName) {
                 case 'basicInfo':
+                    canAccess = true; // Always accessible
+                    break;
                 case 'archetypes':
-                    canAccess = true;
+                    canAccess = true; // Always accessible
                     break;
                 case 'attributes':
+                    // FIX: Make less restrictive - allow if any archetype is selected OR allow anyway
                     const selectedArchetypes = Object.values(this.currentCharacter.archetypes).filter(val => val !== null).length;
-                    canAccess = selectedArchetypes > 0;
+                    canAccess = true; // CHANGED: Always allow access, just show warning if incomplete
+                    // Add visual indicator if archetypes incomplete
+                    if (selectedArchetypes === 0) {
+                        btn.classList.add('needs-prerequisites');
+                        btn.title = 'Complete archetypes first for best experience';
+                    } else {
+                        btn.classList.remove('needs-prerequisites');
+                        btn.title = '';
+                    }
                     break;
                 case 'mainPool':
+                    // FIX: Make less restrictive - allow access even without attributes
+                    canAccess = true; // CHANGED: Always allow access
                     const hasAttributes = Object.values(this.currentCharacter.attributes).some(val => val > 0);
-                    canAccess = hasAttributes;
+                    if (!hasAttributes) {
+                        btn.classList.add('needs-prerequisites');
+                        btn.title = 'Assign attributes first for point calculations';
+                    } else {
+                        btn.classList.remove('needs-prerequisites');
+                        btn.title = '';
+                    }
                     break;
                 case 'specialAttacks':
                 case 'utility':
                 case 'summary':
-                    canAccess = true;
+                    canAccess = true; // Always accessible
                     break;
             }
             
@@ -408,6 +427,11 @@ export class CharacterBuilder {
             const currentTabComponent = this.tabs[this.currentTab];
             if (currentTabComponent && currentTabComponent.onCharacterUpdate) {
                 updates.push({ component: currentTabComponent, method: 'onCharacterUpdate', priority: 'normal' });
+            }
+            
+            // FIX: Also update AttributeTab specifically when attributes change
+            if (this.tabs.attributes && (changes.includes('points') || this.currentTab === 'attributes')) {
+                updates.push({ component: this.tabs.attributes, method: 'onCharacterUpdate', priority: 'normal' });
             }
         }
         
