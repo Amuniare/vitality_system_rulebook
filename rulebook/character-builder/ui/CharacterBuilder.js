@@ -53,7 +53,7 @@ export class CharacterBuilder {
     }
 
     async initAfterDOM() {
-        const requiredElements = ['#content', '.tab-navigation', '#sidebar'];
+        const requiredElements = ['#content', '.tab-navigation'];
         const missing = requiredElements.filter(sel => !document.querySelector(sel));
         if (missing.length > 0) {
             console.error('Required DOM elements missing:', missing);
