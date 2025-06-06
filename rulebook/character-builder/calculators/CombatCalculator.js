@@ -64,8 +64,10 @@ export class CombatCalculator {
         let accuracyPenalty = 0;
         
         // Melee bonus (if applicable)
-        if (attack.attackTypes.includes('melee')) {
-            accuracyBonus += attackerStats.tier; // Assuming melee accuracy bonus
+        if (attack.attackTypes.includes('melee_ac') || attack.attackTypes.includes('melee_dg_cn')) {
+            if (attack.attackTypes.includes('melee_ac')) {
+                accuracyBonus += attackerStats.tier; // Melee AC bonus
+            }
         }
         
         // Ranged penalty (if adjacent)
@@ -132,8 +134,10 @@ export class CombatCalculator {
         let damagePenalty = 0;
         
         // Melee bonus (if applicable - alternative to accuracy bonus)
-        if (attack.attackTypes.includes('melee') && !options.meleeAccuracyBonus) {
-            damageBonus += attackerStats.tier;
+        if ((attack.attackTypes.includes('melee_ac') || attack.attackTypes.includes('melee_dg_cn')) && !options.meleeAccuracyBonus) {
+            if (attack.attackTypes.includes('melee_dg_cn')) {
+                damageBonus += attackerStats.tier; // Melee DG/CN bonus
+            }
         }
         
         // Direct attack penalty

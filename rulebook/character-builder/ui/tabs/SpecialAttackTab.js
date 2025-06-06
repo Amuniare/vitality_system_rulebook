@@ -185,7 +185,6 @@ export class SpecialAttackTab {
         return `
             <div class="attack-builder card">
                 ${this.renderAttackBasics(attack)}
-                ${this.renderAttackTypesSection(attack, character)}
                 
                 <!-- Two-column layout for limits and upgrades -->
                 <div class="attack-builder-columns">
@@ -273,50 +272,6 @@ export class SpecialAttackTab {
         ).join('');
     }
 
-    renderAttackTypesSection(attack, character) {
-        const selectedTypes = attack.attackTypes || [];
-        const availableTypes = AttackTypeSystem.getAttackTypeDefinitions();
-        const freeTypesFromArchetype = AttackTypeSystem.getFreeAttackTypesFromArchetype(character);
-        
-        // Get unselected types for dropdown
-        const unselectedTypes = Object.keys(availableTypes).filter(typeId => !selectedTypes.includes(typeId));
-
-        return `
-            <div class="attack-types-section section-block">
-                <div class="section-header">
-                    <h4>Attack Types (${selectedTypes.length})</h4>
-                    ${unselectedTypes.length > 0 ? `
-                        <div class="attack-type-dropdown-container">
-                            <select data-action="add-attack-type-dropdown" class="attack-type-dropdown">
-                                <option value="">+ Add Attack Type</option>
-                                ${unselectedTypes.map(typeId => {
-                                    const typeDef = availableTypes[typeId];
-                                    const cost = freeTypesFromArchetype.includes(typeId) ? 0 : typeDef.cost;
-                                    const canAfford = (attack.upgradePointsAvailable - attack.upgradePointsSpent) >= cost;
-                                    return `<option value="${typeId}" ${!canAfford ? 'disabled' : ''}>
-                                        ${typeDef.name} (${cost}p) ${freeTypesFromArchetype.includes(typeId) ? '(Free)' : ''}
-                                    </option>`;
-                                }).join('')}
-                            </select>
-                        </div>
-                    ` : `<span class="text-muted">All types selected</span>`}
-                </div>
-                ${selectedTypes.length > 0 ? `
-                    <div class="selected-items-list">
-                        ${selectedTypes.map(typeId => {
-                            const typeDef = availableTypes[typeId];
-                            const cost = freeTypesFromArchetype.includes(typeId) ? 0 : typeDef.cost;
-                            return `
-                                <div class="selected-item">
-                                    <span>${typeDef.name} (${cost}p) ${freeTypesFromArchetype.includes(typeId) ? '(Free)' : ''}</span>
-                                    ${RenderUtils.renderButton({text: '×', variant: 'danger', size: 'small', dataAttributes: {action: 'remove-attack-type', 'type-id': typeId}})}
-                                </div>`;
-                        }).join('')}
-                    </div>
-                ` : `<div class="empty-state-small">No attack types selected.</div>`}
-            </div>
-        `;
-    }
 
 
     renderLimitsSection(attack, character) {
@@ -741,36 +696,6 @@ export class SpecialAttackTab {
         }
     }
 
-    selectAttackType(typeId) {
-        const character = this.builder.currentCharacter;
-        const attack = character?.specialAttacks[this.selectedAttackIndex];
-        if (!character || !attack) return;
-        try {
-            const validation = AttackTypeSystem.validateAttackTypeSelection(character, attack, typeId);
-            if (!validation.isValid) throw new Error(validation.errors.join(', '));
-
-            AttackTypeSystem.addAttackTypeToAttack(character, attack, typeId); // System handles cost
-            SpecialAttackSystem.recalculateAttackPoints(character, attack);
-            this.builder.updateCharacter();
-            this.builder.showNotification(`Attack type ${typeId} added.`, 'success');
-        } catch(error) {
-             this.builder.showNotification(`Failed to add attack type: ${error.message}`, 'error');
-        }
-    }
-    removeAttackType(typeId) {
-        const character = this.builder.currentCharacter;
-        const attack = character?.specialAttacks[this.selectedAttackIndex];
-        if (!character || !attack) return;
-         try {
-            AttackTypeSystem.removeAttackTypeFromAttack(character, attack, typeId); // System handles refund
-            SpecialAttackSystem.recalculateAttackPoints(character, attack);
-            this.builder.updateCharacter();
-            // Modal doesn't need to be open, this acts on the main display
-            this.builder.showNotification(`Attack type ${typeId} removed.`, 'info');
-        } catch(error) {
-             this.builder.showNotification(`Failed to remove attack type: ${error.message}`, 'error');
-        }
-    }
 
 
     // formatArchetypeName and formatCategoryName remain the same

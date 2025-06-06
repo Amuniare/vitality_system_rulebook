@@ -168,7 +168,7 @@ export class ArchetypeSystem {
                 free.push('direct');
                 break;
             case 'singleTarget':
-                free.push('melee', 'ranged');
+                free.push('melee_ac', 'melee_dg_cn', 'ranged');
                 break;
         }
         

@@ -263,12 +263,6 @@ export class CharacterBuilder {
                         this.tabs.specialAttacks.selectAttackType(typeId, cost);
                     }
                 },
-                '[data-action="remove-attack-type"]': (e, element) => {
-                    const typeId = element.dataset.typeId;
-                    if (this.tabs.specialAttacks && typeId) {
-                        this.tabs.specialAttacks.removeAttackType(typeId);
-                    }
-                },
 
                 // UTILITY TAB HANDLERS
                 '[data-action="purchase-feature"]': (e, element) => {
@@ -441,13 +435,6 @@ export class CharacterBuilder {
                         this.tabs.utility.handleExpertiseToggle(element);
                     }
                 },
-                '[data-action="add-attack-type-dropdown"]': (e, element) => {
-                    const typeId = element.value;
-                    if (typeId && this.tabs.specialAttacks) {
-                        this.tabs.specialAttacks.selectAttackType(typeId);
-                        element.value = ''; // Reset dropdown
-                    }
-                }
             }
         }, this); // Pass 'this' as context
         

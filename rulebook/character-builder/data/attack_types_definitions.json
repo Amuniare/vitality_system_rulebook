@@ -1,13 +1,23 @@
 {
-    "melee": {
-        "id": "melee",
-        "name": "Melee Attack",
+    "melee_ac": {
+        "id": "melee_ac",
+        "name": "Melee (AC)",
         "rangeKey": "MELEE_RANGE", 
         "description": "Adjacent targets only",
         "benefit": "Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls",
         "costKey": "melee", 
         "restrictions": [],
-        "bonuses": { "tierToAccuracyOrDamage": true }
+        "bonuses": { "tierToAccuracy": true }
+    },
+    "melee_dg_cn": {
+        "id": "melee_dg_cn",
+        "name": "Melee (DG / CN)",
+        "rangeKey": "MELEE_RANGE", 
+        "description": "Adjacent targets only",
+        "benefit": "Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls",
+        "costKey": "melee", 
+        "restrictions": [],
+        "bonuses": { "tierToDamageAndConditions": true }
     },
     "ranged": {
         "id": "ranged",

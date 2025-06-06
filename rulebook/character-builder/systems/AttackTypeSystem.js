@@ -143,7 +143,8 @@ export class AttackTypeSystem {
         
         // Check archetype conflicts
         const archetype = character.archetypes.specialAttack;
-        if (archetype === 'basic' && attackTypeId !== 'melee' && attackTypeId !== 'ranged') {
+        const meleeTypes = ['melee_ac', 'melee_dg_cn'];
+        if (archetype === 'basic' && !meleeTypes.includes(attackTypeId) && attackTypeId !== 'ranged') {
             errors.push('Basic archetype only allows melee and ranged attacks');
         }
         

@@ -17,7 +17,7 @@ export class SpecialAttackSystem {
             description: "",
             
             // Attack configuration
-            attackTypes: [], // melee, ranged, direct, area
+            attackTypes: [], // melee_ac, melee_dg_cn, ranged, direct, area
             effectTypes: [], // damage, condition, hybrid
             isHybrid: false,
             
@@ -313,7 +313,7 @@ export class SpecialAttackSystem {
     // Get available attack types (free from archetype + purchasable)
     static getAvailableAttackTypes(character) {
         const freeTypes = ArchetypeSystem.getFreeAttackTypes(character);
-        const allTypes = ['melee', 'ranged', 'direct', 'area'];
+        const allTypes = ['melee_ac', 'melee_dg_cn', 'ranged', 'direct', 'area'];
         
         return allTypes.map(type => ({
             id: type,

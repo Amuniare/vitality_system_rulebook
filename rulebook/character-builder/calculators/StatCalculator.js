@@ -180,7 +180,7 @@ export class StatCalculator {
         // Attack Type Archetype Bonuses
         switch(archetypes.attackType) {
             case 'singleTarget':
-                stats.freeAttackTypes = ['melee', 'ranged'];
+                stats.freeAttackTypes = ['melee_ac', 'melee_dg_cn', 'ranged'];
                 break;
             case 'aoeSpecialist':
                 stats.freeAttackTypes = ['area'];
