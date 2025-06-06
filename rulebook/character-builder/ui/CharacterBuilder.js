@@ -123,7 +123,11 @@ export class CharacterBuilder {
         // Use event delegation with proper context
         EventManager.delegateEvents(container, {
             click: {
-                '#create-new-character': () => this.createNewCharacter(),
+                '#create-new-character': (e) => {
+                    console.log('Create new character button clicked!');
+                    e.preventDefault();
+                    this.createNewCharacter();
+                },
                 '#import-character': () => this.handleImportCharacter(),
                 '.character-item': (e) => this.handleCharacterSelect(e),
                 '.tab-btn': (e, element) => this.handleTabSwitch(e, element),
@@ -211,6 +215,19 @@ export class CharacterBuilder {
                 }
             }
         }, this); // Pass 'this' as context
+        
+        // Fallback direct event listener for testing
+        const createBtn = document.getElementById('create-new-character');
+        if (createBtn) {
+            console.log('Found create button, adding direct listener');
+            createBtn.addEventListener('click', (e) => {
+                console.log('Direct event listener triggered!');
+                e.preventDefault();
+                this.createNewCharacter();
+            });
+        } else {
+            console.log('Create button not found in DOM');
+        }
         
         console.log('setupEventListeners completed with delegation');
     }
@@ -613,10 +630,20 @@ export class CharacterBuilder {
     }
 
     createNewCharacter() {
-        console.log('Creating new character');
-        this.currentCharacter = new VitalityCharacter();
-        this.showCharacterBuilder();
-        this.showNotification('New character created!', 'success');
+        console.log('Creating new character method called');
+        try {
+            this.currentCharacter = new VitalityCharacter();
+            console.log('VitalityCharacter created:', this.currentCharacter);
+            
+            this.showCharacterBuilder();
+            console.log('Character builder shown');
+            
+            this.showNotification('New character created!', 'success');
+            console.log('Notification shown');
+        } catch (error) {
+            console.error('Error in createNewCharacter:', error);
+            alert('Error creating character: ' + error.message);
+        }
     }
 
     handleImportCharacter() {
