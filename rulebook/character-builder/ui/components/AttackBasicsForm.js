@@ -1,18 +1,16 @@
-// AttackBasicsForm.js - Handles name, description, and type selectors for special attacks
+// AttackBasicsForm.js - Data-driven attack basics form component
 import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
 import { RenderUtils } from '../shared/RenderUtils.js';
 
 export class AttackBasicsForm {
     constructor(parentTab) {
         this.parentTab = parentTab;
-        this.attackIndex = 0;
     }
 
-    setAttackIndex(index) {
-        this.attackIndex = index;
-    }
-
-    render(attack) {
+    render(attack, character) {
+        // We need the character object to determine which attack types are free
+        const character = this.parentTab.builder.currentCharacter;
+        
         return `
             <div class="attack-basics-form">
                 <div class="attack-basics-columns">
@@ -20,7 +18,7 @@ export class AttackBasicsForm {
                         ${this.renderNameFields(attack)}
                     </div>
                     <div class="attack-basics-right">
-                        ${this.renderTypeSelector(attack)}
+                        ${this.renderTypeSelectors(attack, character)}
                     </div>
                 </div>
             </div>
@@ -30,39 +28,74 @@ export class AttackBasicsForm {
     renderNameFields(attack) {
         return `
             <div class="attack-name-row">
-                <label for="attack-name-${this.attackIndex}">Attack Name:</label>
-                <input type="text" 
-                       id="attack-name-${this.attackIndex}" 
-                       value="${attack.name || ''}" 
-                       placeholder="Enter attack name" 
-                       data-action="update-attack-name">
+                <label for="attack-name-${this.parentTab.selectedAttackIndex}">Attack Name:</label>
+                <input type="text" id="attack-name-${this.parentTab.selectedAttackIndex}" value="${attack.name || ''}" placeholder="Enter attack name" data-action="update-attack-name">
             </div>
             <div class="attack-subtitle-row">
-                <label for="attack-subtitle-${this.attackIndex}">Attack Subtitle:</label>
-                <input type="text" 
-                       id="attack-subtitle-${this.attackIndex}" 
-                       value="${attack.subtitle || ''}" 
-                       placeholder="Enter subtitle" 
-                       data-action="update-attack-subtitle">
+                <label for="attack-subtitle-${this.parentTab.selectedAttackIndex}">Subtitle:</label>
+                <input type="text" id="attack-subtitle-${this.parentTab.selectedAttackIndex}" value="${attack.subtitle || ''}" placeholder="e.g., Ranged Physical" data-action="update-attack-subtitle">
             </div>
             <div class="attack-details-row">
-                <label for="attack-details-${this.attackIndex}">Attack Details:</label>
-                <input type="text" 
-                       id="attack-details-${this.attackIndex}" 
-                       value="${attack.details || ''}" 
-                       placeholder="Enter details" 
-                       data-action="update-attack-details">
+                <label for="attack-details-${this.parentTab.selectedAttackIndex}">Details:</label>
+                <textarea id="attack-details-${this.parentTab.selectedAttackIndex}" placeholder="Describe the attack's appearance and function." data-action="update-attack-details" rows="3">${attack.description || ''}</textarea>
             </div>
         `;
     }
 
-    renderTypeSelector(attack) {
+    renderTypeSelectors(attack, character) {
+        // Fetch all type definitions from the system
+        const attackTypes = AttackTypeSystem.getAttackTypeDefinitions ? AttackTypeSystem.getAttackTypeDefinitions() : {};
+        const effectTypes = AttackTypeSystem.getEffectTypeDefinitions ? AttackTypeSystem.getEffectTypeDefinitions() : {};
+        const freeAttackTypes = AttackTypeSystem.getFreeAttackTypesFromArchetype ? AttackTypeSystem.getFreeAttackTypesFromArchetype(character) : [];
+
+        // Map definitions to options for RenderUtils.renderSelect
+        const attackTypeOptions = Object.values(attackTypes).map(type => ({
+            value: type.id,
+            label: `${type.name} (${freeAttackTypes.includes(type.id) ? 'Free' : (type.cost + 'p')})`,
+            disabled: (attack.attackTypes || []).includes(type.id) // Disable if already selected
+        }));
+
+        const effectTypeOptions = Object.values(effectTypes).map(type => ({
+            value: type.id,
+            label: `${type.name} (${type.cost}p)`,
+            disabled: (attack.effectTypes || []).includes(type.id)
+        }));
+
+        return `
+            ${RenderUtils.renderFormGroup({
+                label: 'Attack Type:',
+                inputId: `attack-type-select-${this.parentTab.selectedAttackIndex}`,
+                inputHtml: RenderUtils.renderSelect({
+                    id: `attack-type-select-${this.parentTab.selectedAttackIndex}`,
+                    options: attackTypeOptions,
+                    dataAttributes: { action: 'add-attack-type' },
+                    placeholder: 'Add an Attack Type...'
+                })
+            })}
+            ${RenderUtils.renderFormGroup({
+                label: 'Effect Type:',
+                inputId: `effect-type-select-${this.parentTab.selectedAttackIndex}`,
+                inputHtml: RenderUtils.renderSelect({
+                    id: `effect-type-select-${this.parentTab.selectedAttackIndex}`,
+                    options: effectTypeOptions,
+                    dataAttributes: { action: 'add-effect-type' },
+                    placeholder: 'Add an Effect Type...'
+                })
+            })}
+        `;
+    }
+
+    // Fallback to simple form if data-driven approach fails
+    renderSimpleTypeSelector(attack) {
         return `
             <div class="attack-type-row">
-                <label for="attack-type-${this.attackIndex}">Attack Type:</label>
-                <select id="attack-type-${this.attackIndex}" data-action="update-attack-type">
+                <label for="attack-type-${this.parentTab.selectedAttackIndex}">Attack Type:</label>
+                <select id="attack-type-${this.parentTab.selectedAttackIndex}" data-action="update-attack-type">
                     <option value="">Select attack type</option>
-                    ${this.renderAttackTypeOptions(attack)}
+                    <option value="melee" ${attack.attackType === 'melee' ? 'selected' : ''}>Melee</option>
+                    <option value="ranged" ${attack.attackType === 'ranged' ? 'selected' : ''}>Ranged</option>
+                    <option value="direct" ${attack.attackType === 'direct' ? 'selected' : ''}>Direct</option>
+                    <option value="area" ${attack.attackType === 'area' ? 'selected' : ''}>Area</option>
                 </select>
             </div>
             <div class="attack-type-description">
@@ -71,54 +104,17 @@ export class AttackBasicsForm {
         `;
     }
 
-    renderAttackTypeOptions(attack) {
-        const attackTypes = AttackTypeSystem.getAvailableAttackTypes();
-        return attackTypes.map(type => 
-            `<option value="${type.id}" ${attack.attackType === type.id ? 'selected' : ''}>${type.name}</option>`
-        ).join('');
-    }
-
     getAttackTypeDescription(attackTypeId) {
-        const attackType = AttackTypeSystem.getAttackTypeById(attackTypeId);
-        return attackType ? `<em>${attackType.description}</em>` : '';
+        const descriptions = {
+            melee: 'Close-range physical attack',
+            ranged: 'Long-range projectile attack', 
+            direct: 'Targeted single enemy attack',
+            area: 'Affects multiple targets in an area'
+        };
+        return `<em>${descriptions[attackTypeId] || ''}</em>`;
     }
 
-    // Granular update methods for improved performance
-    updateAttackName(newName) {
-        const input = document.getElementById(`attack-name-${this.attackIndex}`);
-        if (input && input.value !== newName) {
-            input.value = newName;
-        }
-    }
-
-    updateAttackSubtitle(newSubtitle) {
-        const input = document.getElementById(`attack-subtitle-${this.attackIndex}`);
-        if (input && input.value !== newSubtitle) {
-            input.value = newSubtitle;
-        }
-    }
-
-    updateAttackDetails(newDetails) {
-        const input = document.getElementById(`attack-details-${this.attackIndex}`);
-        if (input && input.value !== newDetails) {
-            input.value = newDetails;
-        }
-    }
-
-    updateAttackType(newType) {
-        const select = document.getElementById(`attack-type-${this.attackIndex}`);
-        if (select && select.value !== newType) {
-            select.value = newType;
-        }
-        
-        // Update description
-        const descContainer = select?.parentElement?.nextElementSibling;
-        if (descContainer) {
-            descContainer.innerHTML = newType ? this.getAttackTypeDescription(newType) : 'Select an attack type to see its description.';
-        }
-    }
-
-    // Handle form events
+    // Event handling
     handleFormEvent(event) {
         const action = event.target.dataset.action;
         const value = event.target.value;
@@ -131,10 +127,22 @@ export class AttackBasicsForm {
                 this.parentTab.updateAttackProperty('subtitle', value);
                 break;
             case 'update-attack-details':
-                this.parentTab.updateAttackProperty('details', value);
+                this.parentTab.updateAttackProperty('description', value);
                 break;
             case 'update-attack-type':
                 this.parentTab.updateAttackProperty('attackType', value);
+                break;
+            case 'add-attack-type':
+                if (value && this.parentTab.addAttackType) {
+                    this.parentTab.addAttackType(value);
+                    event.target.value = ''; // Reset selection
+                }
+                break;
+            case 'add-effect-type':
+                if (value && this.parentTab.addEffectType) {
+                    this.parentTab.addEffectType(value);
+                    event.target.value = ''; // Reset selection
+                }
                 break;
         }
     }

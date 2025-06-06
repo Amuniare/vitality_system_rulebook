@@ -107,9 +107,13 @@ export class SpecialAttackTab {
 
         return `
             <div class="attack-builder card">
-                ${this.attackBasicsForm.render(attack)}
+                ${this.attackBasicsForm.render(attack, character)} 
                 
-                <!-- Two-column layout for limits and upgrades -->
+                <div class="attack-summary-tags">
+                    <!-- This is where selected types will be displayed -->
+                    ${this.renderSelectedTypeTags(attack)}
+                </div>
+
                 <div class="attack-builder-columns">
                     <div class="limits-column">
                         ${this.limitSelection.render(attack, character)}
@@ -141,7 +145,7 @@ export class SpecialAttackTab {
         const action = event.target.dataset.action;
 
         // Route events to appropriate components
-        if (this.attackBasicsForm && ['update-attack-name', 'update-attack-subtitle', 'update-attack-details', 'update-attack-type'].includes(action)) {
+        if (this.attackBasicsForm && ['update-attack-name', 'update-attack-subtitle', 'update-attack-details', 'update-attack-type', 'add-attack-type', 'add-effect-type'].includes(action)) {
             this.attackBasicsForm.handleFormEvent(event);
             return;
         }
@@ -166,6 +170,12 @@ export class SpecialAttackTab {
                 break;
             case 'delete-attack':
                 this.deleteAttack(parseInt(event.target.dataset.index));
+                break;
+            case 'remove-attack-type':
+                this.removeAttackType(event.target.dataset.id);
+                break;
+            case 'remove-effect-type':
+                this.removeEffectType(event.target.dataset.id);
                 break;
             case 'switch-tab':
                 this.builder.switchTab(event.target.dataset.tab);
@@ -313,6 +323,104 @@ export class SpecialAttackTab {
             // Update individual components rather than full re-render
             this.limitSelection.updateCalculationFooter(attack, character);
             this.upgradeSelection.updatePurchasedUpgrades(attack);
+        }
+    }
+
+    // Attack type management methods
+    renderSelectedTypeTags(attack) {
+        // Display selected types as removable tags
+        const attackTypeTags = (attack.attackTypes || []).map(id => {
+            const def = AttackTypeSystem.getAttackTypeDefinition ? AttackTypeSystem.getAttackTypeDefinition(id) : null;
+            return def ? `<span class="tag attack-type-tag">${def.name} <button data-action="remove-attack-type" data-id="${id}">×</button></span>` : '';
+        }).join('');
+
+        const effectTypeTags = (attack.effectTypes || []).map(id => {
+            const def = AttackTypeSystem.getEffectTypeDefinition ? AttackTypeSystem.getEffectTypeDefinition(id) : null;
+            return def ? `<span class="tag effect-type-tag">${def.name} <button data-action="remove-effect-type" data-id="${id}">×</button></span>` : '';
+        }).join('');
+
+        return `${attackTypeTags}${effectTypeTags}`;
+    }
+
+    // Add attack type to current attack
+    addAttackType(typeId) {
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        try {
+            if (AttackTypeSystem.addAttackTypeToAttack) {
+                AttackTypeSystem.addAttackTypeToAttack(character, attack, typeId);
+            } else {
+                // Fallback: add to array if system method doesn't exist
+                if (!attack.attackTypes) attack.attackTypes = [];
+                if (!attack.attackTypes.includes(typeId)) {
+                    attack.attackTypes.push(typeId);
+                }
+            }
+            this.builder.updateCharacter();
+            this.render();
+        } catch (error) {
+            this.builder.showNotification(`Error adding attack type: ${error.message}`, 'error');
+        }
+    }
+
+    // Remove attack type from current attack
+    removeAttackType(typeId) {
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        try {
+            if (AttackTypeSystem.removeAttackTypeFromAttack) {
+                AttackTypeSystem.removeAttackTypeFromAttack(character, attack, typeId);
+            } else {
+                // Fallback: remove from array if system method doesn't exist
+                if (attack.attackTypes) {
+                    attack.attackTypes = attack.attackTypes.filter(id => id !== typeId);
+                }
+            }
+            this.builder.updateCharacter();
+            this.render();
+        } catch (error) {
+            this.builder.showNotification(`Error removing attack type: ${error.message}`, 'error');
+        }
+    }
+
+    // Add effect type to current attack
+    addEffectType(typeId) {
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        try {
+            if (AttackTypeSystem.addEffectTypeToAttack) {
+                AttackTypeSystem.addEffectTypeToAttack(character, attack, typeId);
+            } else {
+                // Fallback: add to array if system method doesn't exist
+                if (!attack.effectTypes) attack.effectTypes = [];
+                if (!attack.effectTypes.includes(typeId)) {
+                    attack.effectTypes.push(typeId);
+                }
+            }
+            this.builder.updateCharacter();
+            this.render();
+        } catch (error) {
+            this.builder.showNotification(`Error adding effect type: ${error.message}`, 'error');
+        }
+    }
+
+    // Remove effect type from current attack
+    removeEffectType(typeId) {
+        const character = this.builder.character;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        try {
+            if (AttackTypeSystem.removeEffectTypeFromAttack) {
+                AttackTypeSystem.removeEffectTypeFromAttack(character, attack, typeId);
+            } else {
+                // Fallback: remove from array if system method doesn't exist
+                if (attack.effectTypes) {
+                    attack.effectTypes = attack.effectTypes.filter(id => id !== typeId);
+                }
+            }
+            this.builder.updateCharacter();
+            this.render();
+        } catch (error) {
+            this.builder.showNotification(`Error removing effect type: ${error.message}`, 'error');
         }
     }
 

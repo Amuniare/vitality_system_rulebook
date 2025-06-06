@@ -543,6 +543,7 @@ export class CharacterBuilder {
 
     switchTab(tabName) {
         console.log('switchTab called with:', tabName);
+        console.log('Current character:', this.currentCharacter);
         
         if (!this.tabs[tabName]) {
             console.error('Tab not found:', tabName);
@@ -562,9 +563,13 @@ export class CharacterBuilder {
         
         // Show selected tab content
         const tabContent = document.getElementById(`tab-${tabName}`);
+        console.log(`Tab content element for tab-${tabName}:`, tabContent);
         if (tabContent) {
             tabContent.classList.add('active');
             tabContent.style.display = 'block';
+            console.log(`✅ Tab content shown for ${tabName}`);
+        } else {
+            console.error(`❌ Tab content element tab-${tabName} not found in DOM`);
         }
         
         // Activate tab button
@@ -575,7 +580,11 @@ export class CharacterBuilder {
         
         // Render the tab content
         if (this.tabs[tabName] && this.tabs[tabName].render) {
+            console.log(`Rendering ${tabName} tab...`);
             this.tabs[tabName].render();
+            console.log(`✅ ${tabName} tab rendered`);
+        } else {
+            console.error(`❌ Tab ${tabName} has no render method`);
         }
         
         this.currentTab = tabName;
