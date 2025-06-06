@@ -8,8 +8,8 @@ export class AttackBasicsForm {
     }
 
     render(attack, character) {
-        // We need the character object to determine which attack types are free
-        const character = this.parentTab.builder.currentCharacter;
+        // Use the character parameter passed in or get from builder
+        const currentCharacter = character || this.parentTab.builder.currentCharacter;
         
         return `
             <div class="attack-basics-form">
@@ -18,7 +18,7 @@ export class AttackBasicsForm {
                         ${this.renderNameFields(attack)}
                     </div>
                     <div class="attack-basics-right">
-                        ${this.renderTypeSelectors(attack, character)}
+                        ${this.renderTypeSelectors(attack, currentCharacter)}
                     </div>
                 </div>
             </div>
