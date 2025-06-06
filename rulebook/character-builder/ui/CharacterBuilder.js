@@ -508,6 +508,11 @@ export class CharacterBuilder {
             }
         }
         
+        // FIX: Always update MainPoolTab when points change (purchases/removals)
+        if (changes.includes('points') && this.tabs.mainPool) {
+            updates.push({ component: this.tabs.mainPool, method: 'onCharacterUpdate', priority: 'normal' });
+        }
+        
         UpdateManager.batchUpdates(updates);
     }
 

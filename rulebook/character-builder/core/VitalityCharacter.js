@@ -151,9 +151,13 @@ export class VitalityCharacter {
                                                this.specialAttacks.every(attack => attack.name && attack.name.trim() !== '');
         
         // Check utility completion
-        const hasUtilityPurchases = Object.values(this.utilityPurchases.expertise).some(exp => exp.length > 0) ||
-                                  this.utilityPurchases.wealth.length > 0 ||
-                                  this.utilityPurchases.uniqueAbilities.length > 0;
+        const hasUtilityPurchases = Object.values(this.utilityPurchases.expertise).some(exp => 
+                                      exp.basic.length > 0 || exp.mastered.length > 0) ||
+                                  this.utilityPurchases.features.length > 0 ||
+                                  this.utilityPurchases.senses.length > 0 ||
+                                  this.utilityPurchases.movement.length > 0 ||
+                                  this.utilityPurchases.descriptors.length > 0 ||
+                                  (this.wealth && this.wealth.level);
         this.buildState.utilityComplete = hasUtilityPurchases;
     }
     

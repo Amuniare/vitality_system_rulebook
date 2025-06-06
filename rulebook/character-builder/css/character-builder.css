@@ -275,14 +275,14 @@ input:focus, select:focus, textarea:focus {
     border-color: var(--accent-primary);
     color: var(--accent-primary);
 }
-.btn-primary:hover:not(:disabled) { background: var(--accent-primary); color: var(--bg-primary); }
+.btn-primary:hover:not(:disabled) { background: white; color: var(--bg-primary); }
 .btn-primary.pulse { animation: pulse 2s infinite; }
 
 .btn-secondary {
     border-color: var(--accent-secondary);
     color: var(--accent-secondary);
 }
-.btn-secondary:hover:not(:disabled) { background: var(--accent-secondary); color: var(--bg-primary); }
+.btn-secondary:hover:not(:disabled) { background: white; color: var(--bg-primary); }
 
 .btn-danger {
     border-color: var(--error-color);
@@ -888,7 +888,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .upgrade-toggle[data-selected="true"] {
-    background: var(--accent-primary);
+    background: white;
     color: var(--bg-primary);
     border-color: var(--accent-primary);
 }
@@ -958,7 +958,7 @@ input:focus, select:focus, textarea:focus {
 
 .stat-toggle[data-selected="true"],
 .condition-toggle[data-selected="true"] {
-    background: var(--accent-primary);
+    background: white;
     color: var(--bg-primary);
     border-color: var(--accent-primary);
 }

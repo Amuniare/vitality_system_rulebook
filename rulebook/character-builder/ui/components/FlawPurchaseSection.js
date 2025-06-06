@@ -96,9 +96,6 @@ export class FlawPurchaseSection {
         else if (!canAfford) status = 'unaffordable';
         
         let additionalContent = '';
-        if (flaw.restriction) {
-            additionalContent += `<div class="flaw-restriction"><strong>Restriction:</strong> ${flaw.restriction}</div>`;
-        }
 
         if (!isAlreadyPurchased && canAfford) {
             additionalContent += `
