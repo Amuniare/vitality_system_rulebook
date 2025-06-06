@@ -189,7 +189,7 @@ Upgrade Options:
 **Base Attack Action** → Default combat action available to everyone using their character's base attributes and Tier. Applies Damage or a Basic Condition.
 
 - **Basic Conditions**  
-These represent mundane impairments that any character can apply through Base Attacks. All Conditions either take effect instantly or last until the end of your next turn if they have a duration unless otherwise specified.
+These represent mundane impairments that any character can apply through Base Attacks. All Basic Conditions either take effect instantly or last until the end of your next turn if they have a duration unless otherwise specified.
   - **Disarm (Stability)**: Forces the target to drop something they're holding. The dropped item can be picked up as a Quick Action. You may attempt to launch the item in any direction a number of spaces equal to how successful your roll was assuming you have the Cpacity to move it. 
 
   - **Grab (Stability)**: The target cannot move. As an Action the target can make a Stability check against the Condition roll to break free early or as part of their movement to drag you with them follwing the rules for Capacity.
@@ -501,30 +501,25 @@ These represent mundane impairments that any character can apply through Base At
 - **Penalty:** -Tier to ALL Damage and Condition rolls
 - **Rule:** When combined with Direct or Area attacks, only the Hybrid penalty applies
 
-### **BASIC CONDITIONS**
-*Simple impairments any character can inflict through Normal Attacks*
-*Uses standard Condition formulas from Basic Rules*
+### **Basic Conditions**  
+These represent mundane impairments that any character can apply through Base Attacks. All Basic Conditions either take effect instantly or last until the end of your next turn if they have a duration unless otherwise specified.
+  - **Disarm (Stability)**: Forces the target to drop something they're holding. The dropped item can be picked up as a Quick Action. You may attempt to launch the item in any direction a number of spaces equal to how successful your roll was assuming you have the Cpacity to move it. 
 
-**Duration:** Basic conditions last until the end of your next turn.
+  - **Grab (Stability)**: The target cannot move. As an Action the target can make a Stability check against the Condition roll to break free early or as part of their movement to drag you with them follwing the rules for Capacity.
 
-**STABILITY CONDITIONS**
-- **Disarm** → Drop held item, launch (Condition roll - Resistance) spaces
-- **Grab** → Cannot move unless dragging grabber, contested Capacity to break free
-- **Shove** → Push/pull (Condition roll - Resistance) spaces, 5 spaces = Prone
-- **Prone** → Adjacent attacks +5 Accuracy, Ranged attacks -5 Accuracy, costs 3 Movement to stand
+  - **Shove (Stability)**: Push or pull the target (Condition roll - Resistance) spaces. Collisions deal falling damage to both entities and you can expend 5 Shoving spaces to knock the target prone. 
+    - Prone: Adjacent attacks against you gain +Tier to Accuracy, ranged attacks against you suffer -Tier to Accuracy, standing cost 3 movement spaces.
 
-**VITALITY CONDITIONS**
-- **Blind** → Treat all others as Hidden, attackers ignore base Tier Avoidance bonus
-- **Daze** → Lose Quick Actions and Reactions
+  - **Blind (Vitality)**: Targets treats all others as visually Hidden. Hidden attackers ignore the target's base Tier Avoidance bonus. When attacking you must roll a Perception check vs the target's Stealth check, the attack is assumed to have missed on a failure.
 
-**RESOLVE CONDITIONS**
-- **Misdirect** → Cannot attack the caster
-- **Setup** → Next Accuracy roll vs target gains double Tier bonus
-- **Taunt** → -2×Tier Accuracy against anyone except caster
+  - **Daze (Vitality)**: Target cannot take Quick Actions or Reactions.
+
+  - **Setup (Resolve)**: The next Accuracy check against the target adds double your Tier to their regular bonus.
+
+  - **Taunt (Resolve)**: Target's suffer a reduction to their Accuracy checks equal to double your Tier against all targets other than you.
 
 ### **ADVANCED CONDITIONS**
-*Complex effects unlocked by Effect Type Archetype or purchased for Special Attacks*
-*Uses standard Condition formulas from Basic Rules*
+.Complex effects unlocked by Effect Type Archetype or purchased for Special Attacks. All Advanced Conditions either take effect instantly or last until the start of your next turn if they have a duration unless otherwise specified.
 
 **Duration:** Advanced conditions last until the start of your next turn.
 
@@ -864,7 +859,7 @@ These represent mundane impairments that any character can apply through Base At
 - **Precise (30p):** Choose which targets are affected by Area attacks
 - **Ranged Origin (20p):** Area attacks can originate from designated point within 15 spaces
 - **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only  
-- **Hybrid (30p):** Attack becomes Hybrid, inflicting both a Condition and Damage. 
+- **Hybrid (30p):** Attack becomes Hybrid, inflicting both a Condition and Damage.  
 **Advanced Conditions:** Control (30p), Capture (20p), Stun (20p), Weaken (20p), Mimic (+20p) Disable Specials (10p), Frighten (10p), Enthrall (10p), Frenzy (10p)
 
 
