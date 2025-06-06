@@ -256,6 +256,13 @@ export class CharacterBuilder {
                         this.tabs.specialAttacks.removeUpgrade(upgradeIndex);
                     }
                 },
+                '[data-action="purchase-upgrade"]': (e, element) => {
+                    const upgradeId = element.dataset.upgradeId;
+                    const attackIndex = parseInt(element.dataset.attackIndex);
+                    if (this.tabs.specialAttacks && upgradeId && !isNaN(attackIndex)) {
+                        this.tabs.specialAttacks.purchaseUpgrade(upgradeId, attackIndex);
+                    }
+                },
                 '[data-action="select-attack-type"]': (e, element) => {
                     const typeId = element.dataset.typeId;
                     const cost = parseInt(element.dataset.cost);

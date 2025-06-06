@@ -2,6 +2,7 @@
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
 import { ArchetypeSystem } from './ArchetypeSystem.js';
+import { gameDataManager } from '../core/GameDataManager.js';
 
 export class SpecialAttackSystem {
     // Create a new special attack
@@ -87,25 +88,38 @@ export class SpecialAttackSystem {
     }
     
     // Add a limit to a specific attack
-    static addLimitToAttack(character, attackIndex, limitData) {
+    static addLimitToAttack(character, attackIndex, limitId) {
         const attack = character.specialAttacks[attackIndex];
         if (!attack) {
             throw new Error('Attack not found');
         }
         
-        const validation = this.validateLimitAddition(character, attack, limitData);
+        const validation = this.validateLimitSelection(character, attack, limitId);
         if (!validation.isValid) {
             throw new Error(validation.errors.join(', '));
+        }
+        
+        const limitData = this.getLimitById(limitId);
+        if (!limitData) {
+            throw new Error('Limit not found');
+        }
+        
+        // Calculate actual point cost (handle "Variable" costs)
+        let actualCost = limitData.cost;
+        if (typeof actualCost === 'string' && actualCost.toLowerCase() === 'variable') {
+            actualCost = 0; // Default to 0 for variable costs, would need UI input
         }
         
         // Add the limit
         attack.limits.push({
             id: limitData.id,
-            points: limitData.points,
+            points: actualCost,
             category: limitData.category,
             name: limitData.name,
             description: limitData.description,
-            restrictions: limitData.restrictions || []
+            type: limitData.type,
+            parent: limitData.parent || null,
+            originalCost: limitData.cost // Keep original for reference
         });
         
         // Recalculate points
@@ -114,42 +128,6 @@ export class SpecialAttackSystem {
         return attack;
     }
     
-    // Validate adding a limit to an attack
-    static validateLimitAddition(character, attack, limitData) {
-        const errors = [];
-        const warnings = [];
-        
-        const archetype = character.archetypes.specialAttack;
-        
-        // Check if archetype allows limits
-        const noLimitsArchetypes = ['paragon', 'oneTrick', 'dualNatured', 'basic'];
-        if (noLimitsArchetypes.includes(archetype)) {
-            errors.push(`${archetype} archetype cannot use limits`);
-        }
-        
-        // Check for duplicate limits
-        if (attack.limits.some(limit => limit.id === limitData.id)) {
-            errors.push('Limit already applied to this attack');
-        }
-        
-        // Check behemoth conflicts
-        if (character.archetypes.movement === 'behemoth') {
-            if (limitData.restrictions && limitData.restrictions.includes('behemoth')) {
-                errors.push('Behemoth archetype conflicts with this limit');
-            }
-        }
-        
-        // Check specialist archetype specific limits
-        if (archetype === 'specialist') {
-            // TODO: Implement specific limit requirements for specialist
-        }
-        
-        return {
-            isValid: errors.length === 0,
-            errors,
-            warnings
-        };
-    }
     
     // Recalculate attack points from limits and archetype
     static recalculateAttackPoints(character, attack) {
@@ -194,10 +172,15 @@ export class SpecialAttackSystem {
     }
     
     // Add upgrade to attack
-    static addUpgradeToAttack(character, attackIndex, upgradeData) {
+    static addUpgradeToAttack(character, attackIndex, upgradeId) {
         const attack = character.specialAttacks[attackIndex];
         if (!attack) {
             throw new Error('Attack not found');
+        }
+        
+        const upgradeData = this.getUpgradeById(upgradeId);
+        if (!upgradeData) {
+            throw new Error('Upgrade not found');
         }
         
         const validation = this.validateUpgradeAddition(character, attack, upgradeData);
@@ -205,16 +188,31 @@ export class SpecialAttackSystem {
             throw new Error(validation.errors.join(', '));
         }
         
+        // Handle variable costs (e.g., "20 per tier")
+        let actualCost = upgradeData.cost;
+        if (typeof actualCost === 'string') {
+            if (actualCost.includes('per tier')) {
+                const baseAmount = parseInt(actualCost.match(/\d+/)[0]);
+                actualCost = baseAmount * character.tier;
+            } else {
+                actualCost = parseInt(actualCost) || 0;
+            }
+        }
+        
         // Add the upgrade
         attack.upgrades.push({
             id: upgradeData.id,
             name: upgradeData.name,
-            cost: upgradeData.cost,
+            cost: actualCost,
             category: upgradeData.category,
-            effect: upgradeData.effect
+            subcategory: upgradeData.subcategory,
+            effect: upgradeData.effect,
+            restriction: upgradeData.restriction,
+            exclusion: upgradeData.exclusion,
+            originalCost: upgradeData.cost
         });
         
-        attack.upgradePointsSpent += upgradeData.cost;
+        attack.upgradePointsSpent += actualCost;
         
         return attack;
     }
@@ -359,5 +357,216 @@ export class SpecialAttackSystem {
         return attack.name.trim() !== '' && 
                attack.attackTypes.length > 0 &&
                (attack.effectTypes.length > 0 || attack.upgrades.length > 0);
+    }
+
+    // Get available limits from limits.json
+    static getAvailableLimits() {
+        const limitsData = gameDataManager.getLimits();
+        const limits = [];
+
+        Object.entries(limitsData).forEach(([mainCategory, categoryData]) => {
+            // Add main category
+            limits.push({
+                id: mainCategory,
+                category: mainCategory,
+                name: mainCategory,
+                description: categoryData.description,
+                cost: categoryData.cost,
+                type: 'main'
+            });
+
+            // Add variants
+            if (categoryData.variants) {
+                Object.entries(categoryData.variants).forEach(([variantName, variantData]) => {
+                    limits.push({
+                        id: `${mainCategory}_${variantName}`,
+                        category: mainCategory,
+                        name: variantName,
+                        description: variantData.description,
+                        cost: variantData.cost,
+                        type: 'variant',
+                        parent: mainCategory
+                    });
+
+                    // Add modifiers
+                    if (variantData.modifiers) {
+                        Object.entries(variantData.modifiers).forEach(([modifierName, modifierData]) => {
+                            limits.push({
+                                id: `${mainCategory}_${variantName}_${modifierName}`,
+                                category: mainCategory,
+                                name: modifierName,
+                                description: modifierData.description,
+                                cost: modifierData.cost,
+                                type: 'modifier',
+                                parent: `${mainCategory}_${variantName}`
+                            });
+                        });
+                    }
+                });
+            }
+        });
+
+        return limits;
+    }
+
+    // Get limit by ID
+    static getLimitById(limitId) {
+        const limits = this.getAvailableLimits();
+        return limits.find(limit => limit.id === limitId);
+    }
+
+    // Get limits by category
+    static getLimitsByCategory(category) {
+        const limits = this.getAvailableLimits();
+        return limits.filter(limit => limit.category === category);
+    }
+
+    // Validate limit selection based on rules
+    static validateLimitSelection(character, attack, limitId) {
+        const limit = this.getLimitById(limitId);
+        if (!limit) {
+            return { isValid: false, errors: ['Limit not found'] };
+        }
+
+        const errors = [];
+        const warnings = [];
+
+        // Check archetype restrictions
+        const archetype = character.archetypes.specialAttack;
+        const noLimitsArchetypes = ['paragon', 'oneTrick', 'dualNatured', 'basic'];
+        if (noLimitsArchetypes.includes(archetype)) {
+            errors.push(`${archetype} archetype cannot use limits`);
+        }
+
+        // Check for duplicate limits
+        if (attack.limits.some(existingLimit => existingLimit.id === limitId)) {
+            errors.push('Limit already applied to this attack');
+        }
+
+        // Check for conflicting limits within same category
+        const existingCategoryLimits = attack.limits.filter(l => l.category === limit.category);
+        if (existingCategoryLimits.length > 0 && limit.type === 'main') {
+            errors.push(`Cannot add main ${limit.category} limit when variants already exist`);
+        }
+
+        // Check parent-child relationships
+        if (limit.type === 'variant') {
+            const hasMainCategory = attack.limits.some(l => l.id === limit.category);
+            if (!hasMainCategory) {
+                errors.push(`Must add main ${limit.category} limit before adding variants`);
+            }
+        }
+
+        if (limit.type === 'modifier') {
+            const hasParentVariant = attack.limits.some(l => l.id === limit.parent);
+            if (!hasParentVariant) {
+                errors.push(`Must add ${limit.parent} limit before adding modifiers`);
+            }
+        }
+
+        return {
+            isValid: errors.length === 0,
+            errors,
+            warnings
+        };
+    }
+
+    // Remove limit from attack (handles cascading removals)
+    static removeLimitFromAttack(character, attackIndex, limitId) {
+        const attack = character.specialAttacks[attackIndex];
+        if (!attack) {
+            throw new Error('Attack not found');
+        }
+        
+        const limitIndex = attack.limits.findIndex(l => l.id === limitId);
+        if (limitIndex === -1) {
+            throw new Error('Limit not found');
+        }
+        
+        const limitToRemove = attack.limits[limitIndex];
+        
+        // Remove dependent limits first (modifiers and variants)
+        const dependentLimits = attack.limits.filter(l => 
+            l.parent === limitId || 
+            (limitToRemove.type === 'main' && l.category === limitToRemove.category && l.id !== limitId)
+        );
+        
+        // Remove dependents in reverse order (deepest first)
+        dependentLimits.forEach(dependent => {
+            const depIndex = attack.limits.findIndex(l => l.id === dependent.id);
+            if (depIndex !== -1) {
+                attack.limits.splice(depIndex, 1);
+            }
+        });
+        
+        // Remove the main limit
+        const finalIndex = attack.limits.findIndex(l => l.id === limitId);
+        if (finalIndex !== -1) {
+            attack.limits.splice(finalIndex, 1);
+        }
+        
+        // Recalculate points
+        this.recalculateAttackPoints(character, attack);
+        
+        return attack;
+    }
+
+    // Get available upgrades from upgrades.json
+    static getAvailableUpgrades() {
+        const upgradesData = gameDataManager.getUpgrades();
+        const upgrades = [];
+
+        if (upgradesData.Upgrades) {
+            Object.entries(upgradesData.Upgrades).forEach(([mainCategory, categoryData]) => {
+                // Handle nested structure (e.g., "Damage Bonuses" -> "Core Damage Modifiers")
+                if (Array.isArray(categoryData)) {
+                    // Direct array of upgrades
+                    categoryData.forEach(upgrade => {
+                        upgrades.push({
+                            ...upgrade,
+                            id: `${mainCategory}_${upgrade.name}`.replace(/\s+/g, '_'),
+                            category: mainCategory,
+                            subcategory: null
+                        });
+                    });
+                } else {
+                    // Nested subcategories
+                    Object.entries(categoryData).forEach(([subCategory, subData]) => {
+                        if (Array.isArray(subData)) {
+                            subData.forEach(upgrade => {
+                                upgrades.push({
+                                    ...upgrade,
+                                    id: `${mainCategory}_${subCategory}_${upgrade.name}`.replace(/\s+/g, '_'),
+                                    category: mainCategory,
+                                    subcategory: subCategory
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        return upgrades;
+    }
+
+    // Get upgrades by category
+    static getUpgradesByCategory(category) {
+        const upgrades = this.getAvailableUpgrades();
+        return upgrades.filter(upgrade => upgrade.category === category);
+    }
+
+    // Get upgrade by ID
+    static getUpgradeById(upgradeId) {
+        const upgrades = this.getAvailableUpgrades();
+        return upgrades.find(upgrade => upgrade.id === upgradeId);
+    }
+
+    // Get all upgrade categories
+    static getUpgradeCategories() {
+        const upgrades = this.getAvailableUpgrades();
+        const categories = new Set();
+        upgrades.forEach(upgrade => categories.add(upgrade.category));
+        return Array.from(categories);
     }
 }

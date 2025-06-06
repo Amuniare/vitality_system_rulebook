@@ -27,7 +27,11 @@ class GameDataManager {
             availableFeatures: 'data/features.json', // Tiered structure
             availableSenses: 'data/senses.json',     // Tiered structure
             movementFeatures: 'data/movement_features.json', // Tiered structure
-            descriptors: 'data/descriptors.json'      // Tiered structure
+            descriptors: 'data/descriptors.json',      // Tiered structure
+
+            // Special Attack Limits and Upgrades
+            limits: 'data/limits.json',
+            upgrades: 'data/upgrades.json'
 
             // GameConstants (optional future externalization)
             // gameConstantsData: 'data/game_constants_data.json',
@@ -112,6 +116,9 @@ class GameDataManager {
     getAvailableSenses() { return this._getData('availableSenses', {}); }
     getMovementFeatures() { return this._getData('movementFeatures', {}); }
     getDescriptors() { return this._getData('descriptors', {}); }
+
+    getLimits() { return this._getData('limits', {}); }
+    getUpgrades() { return this._getData('upgrades', {}); }
 }
 
 export const gameDataManager = new GameDataManager();

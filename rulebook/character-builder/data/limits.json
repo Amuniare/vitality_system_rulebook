@@ -1,0 +1,640 @@
+{
+    "Charge-Up": {
+      "cost": 10,
+      "description": "Must use Primary Action on consecutive turns to charge before using attack",
+      "variants": {
+        "Extended Charge": {
+          "cost": 30,
+          "description": "Must charge for two turns before using",
+          "modifiers": {
+            "Triple Charge": {
+              "cost": 40,
+              "description": "Must charge three turns before using"
+            },
+            "Cascade Failure": {
+              "cost": 50,
+              "description": "If interrupted during any charge turn, lose ability for rest of combat"
+            },
+            "Escalating Exposure": {
+              "cost": 30,
+              "description": "Each charge turn reduces your Durability by 2"
+            }
+          }
+        },
+        "Rooted While Charging": {
+          "cost": 10,
+          "description": "Cannot move between charge-up and release",
+          "modifiers": {
+            "Immobilized": {
+              "cost": 30,
+              "description": "Cannot move until end of turn after releasing attack"
+            },
+            "Anchored": {
+              "cost": 20,
+              "description": "If moved from position by any effect, lose charge"
+            },
+            "Melee": {
+              "cost": 50,
+              "description": "The attack you are making is a melee attack"
+            }
+          }
+        },
+        "Concentration": {
+          "cost": 40,
+          "description": "Lose charge if you take damage or gain conditions",
+          "modifiers": {
+            "Fragile Concentration": {
+              "cost": 40,
+              "description": "Concentration breaks if any character moves adjacent to you"
+            },
+            "Cascade Failure": {
+              "cost": 50,
+              "description": "If concentration broken, you cannot attempt any attack with Concentration for rest of combat"
+            },
+            "Proximity Sensitivity": {
+              "cost": 30,
+              "description": "Concentration breaks if any character moves within 5 spaces of you"
+            }
+          }
+        },
+        "Exposed While Charging": {
+          "cost": 20,
+          "description": "Avoidance reduced by 2×Tier while charging",
+          "modifiers": {
+            "Fragile": {
+              "cost": 50,
+              "description": "Avoidance becomes 0 while charging, all attacks are critical hits"
+            },
+            "Beacon": {
+              "cost": 30,
+              "description": "All enemies within 30 spaces know your exact location while charging"
+            },
+            "Vulnerable": {
+              "cost": 40,
+              "description": "Take double damage from all sources while charging"
+            }
+          }
+        },
+        "Power Lock": {
+          "cost": "Variable",
+          "description": "Disable specific defensive ability while charging, gain points equal to that ability's cost",
+          "modifiers": {
+            "Extended Lock": {
+              "cost": 30,
+              "description": "Disabled ability remains unusable until end of next turn"
+            },
+            "Multiple Lock": {
+              "cost": "Variable",
+              "description": "Disable second defensive ability, gain its cost in points"
+            },
+            "System Failure": {
+              "cost": 50,
+              "description": "Requires Concentration - If interrupted, all locked abilities unusable for rest of combat"
+            }
+          }
+        },
+        "Focused Charging": {
+          "cost": 20,
+          "description": "Must also spend Quick Action on charge and release turns",
+          "modifiers": {
+            "Total Focus": {
+              "cost": 50,
+              "description": "Must spend Primary Action, Quick Action, and Movement on charge turns"
+            },
+            "Ally Coordination": {
+              "cost": 30,
+              "description": "Adjacent ally must attack same target you're charging against or charge fails"
+            },
+            "Reaction Delay": {
+              "cost": "Variable",
+              "description": "Cannot use Reactions while charging, gain points equal to cost of reaction abilities you have purchased"
+            }
+          }
+        }
+      }
+    },
+    "Reserves": {
+      "cost": 10,
+      "description": "Can only be used 3 times per combat. Regain all uses after combat ends",
+      "variants": {
+        "Reserves 2": {
+          "cost": 10,
+          "description": "Reduce to 2 uses per combat",
+          "modifiers": {
+            "Reserves 1": {
+              "cost": 30,
+              "description": "Reduce to 1 use per combat"
+            },
+            "Fragile Reserve": {
+              "cost": 50,
+              "description": "Each time you take damage, lose 1 use"
+            },
+            "Critical Failure": {
+              "cost": 50,
+              "description": "If you roll a natural 1 on any d20, lose 1 use"
+            }
+          }
+        },
+        "Extended Recovery": {
+          "cost": 30,
+          "description": "Regain uses after full rest instead of after combat, once per day",
+          "modifiers": {
+            "Preparation": {
+              "cost": 30,
+              "description": "You need to spend 8 hours of time preparing, to recover uses"
+            },
+            "Weekly Preparation": {
+              "cost": 50,
+              "description": "Can only regain uses once per week"
+            },
+            "Slow Recovery": {
+              "cost": 30,
+              "description": "Regain only 1 use per rest period instead of all uses"
+            }
+          }
+        },
+        "Volatile Uses": {
+          "cost": 30,
+          "description": "External factors can cause unexpected use loss",
+          "modifiers": {
+            "Proximity Loss": {
+              "cost": 30,
+              "description": "Lose 1 use when enemy ends turn adjacent to you"
+            },
+            "Damage Cascade": {
+              "cost": 50,
+              "description": "Taking 10+ damage in single attack causes loss of 1 use"
+            },
+            "Condition Trigger": {
+              "cost": 50,
+              "description": "Gaining any Advanced Condition causes loss of all remaining uses"
+            }
+          }
+        },
+        "Shared Pool": {
+          "cost": 20,
+          "description": "Multiple special attacks share same use pool, total uses divided among them, +1 use for each special attack added",
+          "modifiers": {
+            "Reserves 1": {
+              "cost": 30,
+              "description": "Reduce pool by 1 use"
+            },
+            "Pool Drain": {
+              "cost": 40,
+              "description": "If any attack in pool misses, remove an extra use"
+            },
+            "Cascade Lock": {
+              "cost": 30,
+              "description": "If any attack in pool misses, no attacks in pool can be used for 1 turn"
+            }
+          }
+        },
+        "Resource Drain": {
+          "cost": 40,
+          "description": "When out of uses, cannot take Quick Actions",
+          "modifiers": {
+            "Stat Drain": {
+              "cost": 40,
+              "description": "When out of uses, subtract Tier from Accuracy and Damage"
+            },
+            "Life Drain": {
+              "cost": 50,
+              "description": "When out of uses, take 10 damage at start of each turn, until you hit 0 hp"
+            },
+            "Movement Lock": {
+              "cost": 50,
+              "description": "When out of uses, Movement reduced by your Tier"
+            }
+          }
+        },
+        "Usage Prerequisites": {
+          "cost": 30,
+          "description": "Cannot use until turn 3 of combat",
+          "modifiers": {
+            "Unhealthy": {
+              "cost": 30,
+              "description": "Must be below half HP to use"
+            },
+            "Melee": {
+              "cost": 40,
+              "description": "Must be adjacent to enemy to use"
+            },
+            "Target History": {
+              "cost": 50,
+              "description": "Can only target enemies you have not attacked this combat"
+            }
+          }
+        }
+      }
+    },
+    "Cooldown": {
+      "cost": 10,
+      "description": "Cannot use again for 1 turn after use",
+      "variants": {
+        "Cooldown 2": {
+          "cost": 10,
+          "description": "Cannot use again for 2 turns after use",
+          "modifiers": {
+            "Cooldown 3": {
+              "cost": 20,
+              "description": "Cannot use again for 3 turns after use"
+            },
+            "Permanent Injury": {
+              "cost": 50,
+              "description": "Each use increases cooldown by 1 turn permanently"
+            },
+            "Fates": {
+              "cost": 40,
+              "description": "Roll a d4-1 when the attack is made, the cooldown is extended by the result"
+            }
+          }
+        },
+        "Failure Extension": {
+          "cost": 20,
+          "description": "If attack misses or fails effect, cooldown increases by 2 turns",
+          "modifiers": {
+            "Cascade Extension": {
+              "cost": 40,
+              "description": "If attack fails, all your special attacks gain +1 turn cooldown"
+            },
+            "Attrition": {
+              "cost": 40,
+              "description": "Take 10 damage for each turn spent on cooldown"
+            }
+          }
+        },
+        "Shared Cooldown": {
+          "cost": 30,
+          "description": "3 special attacks share same cooldown timer",
+          "modifiers": {
+            "Pool Interference": {
+              "cost": 30,
+              "description": "When one attack is on cooldown, all others have +1 turn added"
+            },
+            "System Lock": {
+              "cost": 50,
+              "description": "If any shared attack fails, entire pool gains +2 turn cooldown"
+            },
+            "Cascade Shutdown": {
+              "cost": 50,
+              "description": "One attack failing puts all shared attacks on 5-turn cooldown"
+            }
+          }
+        },
+        "Conditional Reset": {
+          "cost": 20,
+          "description": "Must wait cooldown period then expend a quick action to regain special attack",
+          "modifiers": {
+            "Combat Victory": {
+              "cost": 50,
+              "description": "Instead of quick action, you need to expend an action"
+            },
+            "Environmental": {
+              "cost": 40,
+              "description": "Cooldown only resets in specific location/weather/time"
+            },
+            "Ally Dependent": {
+              "cost": 50,
+              "description": "Ally must use specific action to reset your cooldown"
+            }
+          }
+        },
+        "Trigger Extension": {
+          "cost": 40,
+          "description": "Taking damage or gaining conditions adds 1 turn to current cooldown",
+          "modifiers": {
+            "Damage Cascade": {
+              "cost": 40,
+              "description": "Taking damage or gaining conditions adds an additional turn to current cooldown"
+            },
+            "Condition Spiral": {
+              "cost": 50,
+              "description": "Conditions last until the end of your cooldown period"
+            },
+            "Death Proximity": {
+              "cost": 50,
+              "description": "Cooldown increases by 1 turn for every 25 HP below maximum"
+            }
+          }
+        }
+      }
+    },
+    "Reliability": {
+      "cost": 20,
+      "description": "Roll d20 before use; if under 5, attack fails and action is wasted",
+      "variants": {
+        "Unreliable 10": {
+          "cost": 20,
+          "description": "Must roll 10+ or attack fails",
+          "modifiers": {
+            "Unreliable 15": {
+              "cost": 30,
+              "description": "Must roll 15+ or attack fails"
+            },
+            "Unreliable 20": {
+              "cost": 50,
+              "description": "Must roll 20 or attack fails"
+            },
+            "Double Check": {
+              "cost": 50,
+              "description": "Must make reliability check twice, both must succeed"
+            }
+          }
+        },
+        "Stress Breakdown": {
+          "cost": 30,
+          "description": "Reliability DC increases by 1 each turn of combat",
+          "modifiers": {
+            "Rapid Degradation": {
+              "cost": 50,
+              "description": "Reliability DC increases by an additional 1 each turn of combat"
+            },
+            "Permanent Decay": {
+              "cost": 50,
+              "description": "Each failed check permanently increases future DCs by 5"
+            }
+          }
+        },
+        "Equipment Dependent": {
+          "cost": 10,
+          "description": "You have a specific, noticeable and disarmable item, in order to do any attack",
+          "modifiers": {
+            "Fragile Gear": {
+              "cost": 30,
+              "description": "If you fail the Unreliable roll, the item breaks and won't be fixed until you spend 8 hours, or meet another specified condition (discuss with GM)"
+            },
+            "Maintenance": {
+              "cost": 50,
+              "description": "Equipment breaks if attack fails, requires action to repair"
+            }
+          }
+        },
+        "Health Dependent": {
+          "cost": 40,
+          "description": "DC increases by 1 for every 10 HP missing",
+          "modifiers": {
+            "System Failure": {
+              "cost": 50,
+              "description": "Automatic failure when below 25 HP"
+            }
+          }
+        },
+        "Cascading Failure": {
+          "cost": 50,
+          "description": "Each failure increases next reliability DC by 5",
+          "modifiers": {
+            "Accelerated Decay": {
+              "cost": 50,
+              "description": "Each failure increases DC by 10 instead of 5"
+            },
+            "Spread Effect": {
+              "cost": 50,
+              "description": "Failed checks increase DC for all your special attacks"
+            },
+            "Critical Cascade": {
+              "cost": 50,
+              "description": "Three failures in combat make ability unusable for rest of session"
+            }
+          }
+        },
+        "Failure Backlash": {
+          "cost": 30,
+          "description": "When unreliable roll fails, take 15 damage when attack fails",
+          "modifiers": {
+            "Self Damage": {
+              "cost": 50,
+              "description": "When unreliable roll fails, take an additional 15 damage when attack fails"
+            },
+            "Condition Infliction": {
+              "cost": 50,
+              "description": "When unreliable roll fails, gain Stun condition"
+            },
+            "Exhaustion": {
+              "cost": "Variable",
+              "description": "When unreliable roll fails, you must spend an effort or fall unconscious"
+            }
+          }
+        }
+      }
+    },
+    "Sequential": {
+      "cost": 20,
+      "description": "You must have hit an enemy on your last turn",
+      "variants": {
+        "Combat History": {
+          "cost": 10,
+          "description": "You must have hit an enemy on your last turn",
+          "modifiers": {
+            "Damage History": {
+              "cost": 20,
+              "description": "You must have done damage on your last turn"
+            },
+            "Kill History": {
+              "cost": 30,
+              "description": "You must have defeated an enemy on your last turn"
+            },
+            "Perfect History": {
+              "cost": 40,
+              "description": "You must have critically hit on your last turn"
+            }
+          }
+        },
+        "Action Chain": {
+          "cost": 20,
+          "description": "Must use Aim, Empower, or Refine Action this turn before use",
+          "modifiers": {
+            "Double Chain": {
+              "cost": 40,
+              "description": "Must use two different Primary Actions this turn before use"
+            },
+            "Perfect Chain": {
+              "cost": 50,
+              "description": "All prerequisite actions this turn must succeed or this fails"
+            },
+            "Specific Chain": {
+              "cost": 50,
+              "description": "Must use one specific Primary Action chosen at character creation"
+            }
+          }
+        },
+        "Target History": {
+          "cost": 30,
+          "description": "Can only target enemies you have not damaged this combat",
+          "modifiers": {
+            "Fresh Targets Only": {
+              "cost": 50,
+              "description": "Can only target enemies no ally has damaged this combat"
+            },
+            "Finishing Move": {
+              "cost": 40,
+              "description": "Can only target enemies with 25 HP or below"
+            },
+            "Hunter Restriction": {
+              "cost": 50,
+              "description": "Can only target one specific enemy type chosen at character creation"
+            }
+          }
+        },
+        "Ally Setup": {
+          "cost": 40,
+          "description": "Adjacent ally must have attacked this turn for you to use this",
+          "modifiers": {
+            "Coordination": {
+              "cost": 50,
+              "description": "Ally must target same enemy you're about to attack this turn"
+            },
+            "Sacrifice": {
+              "cost": 50,
+              "description": "Ally must have taken 10+ damage this turn for you to use this"
+            },
+            "Perfect Teamwork": {
+              "cost": 50,
+              "description": "Ally's attack must have hit for your attack to work"
+            }
+          }
+        },
+        "Combat Gate": {
+          "cost": 20,
+          "description": "Cannot use until turn 3 of combat",
+          "modifiers": {
+            "Late Entry": {
+              "cost": 30,
+              "description": "Cannot use until turn 5 of combat"
+            },
+            "Escalation": {
+              "cost": 50,
+              "description": "Cannot use until someone has taken 20+ damage this combat"
+            },
+            "Desperation": {
+              "cost": 50,
+              "description": "Cannot use until ally is unconscious"
+            }
+          }
+        },
+        "Set Up": {
+          "cost": 20,
+          "description": "Must have hit with a specific special attack (chosen when limit taken)",
+          "modifiers": {
+            "Solid Set Up": {
+              "cost": 30,
+              "description": "Must have damaged with a specific special attack (chosen when limit taken)"
+            },
+            "Perfect Set Up": {
+              "cost": 40,
+              "description": "Must have critically hit with specific special attack"
+            },
+            "Applied Condition": {
+              "cost": 50,
+              "description": "Must have applied condition with specific special attack"
+            }
+          }
+        }
+      }
+    },
+    "Health State": {
+      "cost": 10,
+      "description": "Can only use when below max HP",
+      "variants": {
+        "Critical State": {
+          "cost": 30,
+          "description": "Can only use when at 75 HP or below",
+          "modifiers": {
+            "Death's Door": {
+              "cost": 40,
+              "description": "Can only use when at 50 HP or below"
+            },
+            "Last Breath": {
+              "cost": 50,
+              "description": "Can only use when at 25 HP or below"
+            },
+            "Zero Hour": {
+              "cost": 50,
+              "description": "Can only use when at 0 HP or below"
+            }
+          }
+        },
+        "Fresh Wound": {
+          "cost": 10,
+          "description": "Must have taken 10+ damage this turn to use",
+          "modifiers": {
+            "Significant Trauma": {
+              "cost": 30,
+              "description": "Must have taken 25+ damage this turn to use"
+            },
+            "Recent Pain": {
+              "cost": 20,
+              "description": "Must have taken damage within last 2 turns to use"
+            },
+            "Continuous Suffering": {
+              "cost": 40,
+              "description": "Must take 5+ damage every turn or lose access, unusable for 2 turns"
+            }
+          }
+        },
+        "Blood Price": {
+          "cost": 30,
+          "description": "Each use costs 15 HP, paid after attack resolves",
+          "modifiers": {
+            "Escalating Price": {
+              "cost": 40,
+              "description": "Each successive use costs additional 15 HP (15, 30, 45, etc.)"
+            },
+            "Vital Sacrifice": {
+              "cost": 50,
+              "description": "Each use permanently reduces maximum HP by 10"
+            },
+            "Life Force": {
+              "cost": 50,
+              "description": "Each use costs half your current HP (minimum 10)"
+            }
+          }
+        },
+        "Last Resort": {
+          "cost": 40,
+          "description": "Can only use when ally is at 25 HP or below",
+          "modifiers": {
+            "Desperation": {
+              "cost": 50,
+              "description": "Can only use when 2+ allies are at 25 HP or below"
+            },
+            "Avenge": {
+              "cost": 50,
+              "description": "Can when an ally is unconscious"
+            },
+            "Final Stand": {
+              "cost": 50,
+              "description": "Can only use when 2+ allies are unconscious"
+            }
+          }
+        },
+        "Condition Lock": {
+          "cost": 20,
+          "description": "Can only use while affected by any Condition, can't be inflicted by an ally or yourself",
+          "modifiers": {
+            "Multiple Afflictions": {
+              "cost": 40,
+              "description": "Must be affected by 2+ different conditions"
+            },
+            "Deterioration": {
+              "cost": 50,
+              "description": "Each use extends all your conditions by 1 turn"
+            }
+          }
+        },
+        "Timid": {
+          "cost": 20,
+          "description": "Can only use when at max HP, instead of when below max HP",
+          "modifiers": {
+            "Pristine": {
+              "cost": 30,
+              "description": "Can only use when at max HP and no conditions"
+            },
+            "Perfect Moment": {
+              "cost": 50,
+              "description": "Can only use when at max HP and all enemies have missed you this turn"
+            }
+          }
+        }
+      }
+    }
+  }

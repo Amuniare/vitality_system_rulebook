@@ -393,8 +393,9 @@ export class SpecialAttackTab {
                     (upgrade, index) => this.renderPurchasedUpgrade(upgrade, index),
                     { listContainerClass: 'upgrades-list selected-items-list', title: `Purchased Upgrades (${attack.upgrades?.length || 0})`, showCount: false, emptyMessage: 'No upgrades purchased yet.' }
                 )}
-                <div class="browse-upgrades-action">
-                     ${RenderUtils.renderButton({ text: 'Browse Available Upgrades', variant: 'secondary', size: 'small', dataAttributes: { action: 'open-upgrade-modal' }})}
+                <div class="available-upgrades-section">
+                    <h4>Available Upgrades</h4>
+                    ${this.renderAvailableUpgrades(character, attack)}
                 </div>
             </div>
         `;
@@ -465,6 +466,66 @@ export class SpecialAttackTab {
                         `).join('')}
                     </div>
                 </div>
+            </div>
+        `;
+    }
+
+    renderAvailableUpgrades(character, attack) {
+        const availableUpgrades = SpecialAttackSystem.getAvailableUpgrades();
+        const remainingPoints = (attack?.upgradePointsAvailable || 0) - (attack?.upgradePointsSpent || 0);
+        
+        // Group upgrades by category
+        const upgradesByCategory = {};
+        availableUpgrades.forEach(upgrade => {
+            if (!upgradesByCategory[upgrade.category]) {
+                upgradesByCategory[upgrade.category] = [];
+            }
+            upgradesByCategory[upgrade.category].push(upgrade);
+        });
+        
+        return `
+            <div class="available-upgrades-container">
+                ${remainingPoints <= 0 ? 
+                    `<div class="no-points-message">No upgrade points available</div>` :
+                    Object.entries(upgradesByCategory).map(([categoryName, upgrades]) => `
+                        <div class="upgrade-category">
+                            <h5>${categoryName}</h5>
+                            ${RenderUtils.renderGrid(
+                                upgrades.filter(upgrade => {
+                                    // Filter out already purchased upgrades
+                                    const isAlreadyPurchased = attack?.upgrades?.some(u => u.id === upgrade.id);
+                                    return !isAlreadyPurchased;
+                                }),
+                                (upgrade) => {
+                                    // Calculate actual cost for variable costs
+                                    let displayCost = upgrade.cost;
+                                    if (typeof displayCost === 'string' && displayCost.includes('per tier')) {
+                                        const baseAmount = parseInt(displayCost.match(/\d+/)[0]);
+                                        displayCost = baseAmount * character.tier;
+                                    }
+                                    
+                                    const canAfford = remainingPoints >= displayCost;
+                                    const status = canAfford ? 'available' : 'unaffordable';
+                                    
+                                    return RenderUtils.renderCard({
+                                        title: upgrade.name,
+                                        cost: displayCost,
+                                        description: upgrade.effect,
+                                        status: status,
+                                        clickable: canAfford,
+                                        disabled: !canAfford,
+                                        dataAttributes: { 
+                                            action: 'purchase-upgrade', 
+                                            'upgrade-id': upgrade.id,
+                                            'attack-index': this.selectedAttackIndex
+                                        }
+                                    }, { cardClass: 'upgrade-option', showStatus: true });
+                                },
+                                { gridContainerClass: 'grid-layout', gridSpecificClass: 'grid-columns-auto-fit-250' }
+                            )}
+                        </div>
+                    `).join('')
+                }
             </div>
         `;
     }
@@ -696,7 +757,20 @@ export class SpecialAttackTab {
         }
     }
 
+    purchaseUpgrade(upgradeId, attackIndex) {
+        const character = this.builder.currentCharacter;
+        const attack = character?.specialAttacks[attackIndex];
+        if (!character || !attack) return;
 
+        try {
+            SpecialAttackSystem.addUpgradeToAttack(character, attackIndex, upgradeId);
+            this.builder.updateCharacter();
+            this.render(); // Re-render to update the display
+            this.builder.showNotification('Upgrade purchased successfully!', 'success');
+        } catch(error) {
+            this.builder.showNotification(`Failed to purchase upgrade: ${error.message}`, 'error');
+        }
+    }
 
     // formatArchetypeName and formatCategoryName remain the same
     formatArchetypeName(archetypeId) {
