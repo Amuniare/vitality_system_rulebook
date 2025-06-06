@@ -553,6 +553,7 @@ export class CharacterBuilder {
         // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
+            content.classList.add('hidden');
             content.style.display = 'none';
         });
         
@@ -565,9 +566,12 @@ export class CharacterBuilder {
         const tabContent = document.getElementById(`tab-${tabName}`);
         console.log(`Tab content element for tab-${tabName}:`, tabContent);
         if (tabContent) {
+            // Remove any conflicting CSS classes and set display
+            tabContent.classList.remove('hidden');
             tabContent.classList.add('active');
             tabContent.style.display = 'block';
-            console.log(`✅ Tab content shown for ${tabName}`);
+            tabContent.style.visibility = 'visible'; // Ensure visibility
+            console.log(`✅ Tab content shown for ${tabName}. Display:`, tabContent.style.display, 'Classes:', tabContent.className);
         } else {
             console.error(`❌ Tab content element tab-${tabName} not found in DOM`);
         }
