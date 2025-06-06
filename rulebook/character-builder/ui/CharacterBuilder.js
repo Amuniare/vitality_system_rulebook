@@ -126,7 +126,7 @@ export class CharacterBuilder {
                 '#create-new-character': () => this.createNewCharacter(),
                 '#import-character': () => this.handleImportCharacter(),
                 '.character-item': (e) => this.handleCharacterSelect(e),
-                '.tab-btn': (e) => this.handleTabSwitch(e),
+                '.tab-btn': (e, element) => this.handleTabSwitch(e, element),
                 '#save-character': () => this.saveCharacter(),
                 '#export-json': () => this.exportCharacterJSON(),
                 '#delete-character': () => this.deleteCharacter(),
@@ -215,146 +215,10 @@ export class CharacterBuilder {
         console.log('setupEventListeners completed with delegation');
     }
 
-    setupEventListeners() {
-        console.log('setupEventListeners started');
-        
-        const container = document.body;
-        
-        // Use event delegation with proper context and debug logging
-        EventManager.delegateEvents(container, {
-            click: {
-                '#new-character-btn': this.createNewCharacter,
-                '.tab-btn': this.handleTabSwitch,
-                '#save-character': this.saveCharacter,
-                '#export-json': this.exportCharacterJSON,
-                '#delete-character': this.deleteCharacter,
-
-                // ARCHETYPE HANDLERS
-                '[data-action="select-archetype"]': (e, element) => {
-                    const category = element.dataset.category;
-                    const archetypeId = element.dataset.archetype;
-                    console.log(`🔧 Archetype click: ${category} = ${archetypeId}`);
-                    if (this.tabs.archetypes && category && archetypeId) {
-                        this.tabs.archetypes.selectArchetype(category, archetypeId);
-                    }
-                },
-
-                // ATTRIBUTE BUTTON HANDLERS - Add debug logging
-                '[data-action="change-attribute-btn"]': (e, element) => {
-                    console.log('🔧 Attribute button clicked:', element.dataset);
-                    const attrId = element.dataset.attr;
-                    const change = parseInt(element.dataset.change);
-                    if (this.tabs.attributes && attrId !== undefined && change !== undefined) {
-                        console.log(`🎯 Attribute button: ${attrId} ${change > 0 ? '+' : ''}${change}`);
-                        this.tabs.attributes.changeAttribute(attrId, change);
-                    } else {
-                        console.error('❌ Attribute button click failed:', { attrId, change, hasTab: !!this.tabs.attributes });
-                    }
-                },
-
-                // Add fallback for any click on attribute controls
-                '.attribute-controls .attr-btn': (e, element) => {
-                    console.log('🔧 Fallback attribute button handler');
-                    const attrId = element.dataset.attr;
-                    const change = parseInt(element.dataset.change);
-                    if (attrId && change !== undefined) {
-                        this.tabs.attributes?.changeAttribute(attrId, change);
-                    }
-                },
-
-                // NAVIGATION HANDLERS
-                '[data-action="continue-to-archetypes"]': () => this.switchTab('archetypes'),
-                '[data-action="continue-to-attributes"]': () => this.switchTab('attributes'),
-                '[data-action="continue-to-mainpool"]': () => this.switchTab('mainPool'),
-                '[data-action="continue-to-special-attacks"]': () => this.switchTab('specialAttacks'),
-                '[data-action="continue-to-utility"]': () => this.switchTab('utility'),
-                '[data-action="continue-to-summary"]': () => this.switchTab('summary')            },
-            input: {
-                '[data-action="update-char-name"]': (e, element) => {
-                    if (this.tabs.basicInfo) {
-                        this.tabs.basicInfo.updateName(element.value);
-                    }
-                },
-                '[data-action="update-real-name"]': (e, element) => {
-                    if (this.tabs.basicInfo) {
-                        this.tabs.basicInfo.updateRealName(element.value);
-                    }
-                },
-                
-                // ATTRIBUTE SLIDER HANDLER - Add debug logging
-                '[data-action="change-attribute-slider"]': (e, element) => {
-                    console.log('🔧 Attribute slider changed:', element.dataset, 'value:', element.value);
-                    const attrId = element.dataset.attr;
-                    const newValue = element.value;
-                    if (this.tabs.attributes && attrId !== undefined && newValue !== undefined) {
-                        console.log(`🎯 Attribute slider: ${attrId} = ${newValue}`);
-                        this.tabs.attributes.setAttributeViaSlider(attrId, newValue);
-                    } else {
-                        console.error('❌ Attribute slider change failed:', { attrId, newValue, hasTab: !!this.tabs.attributes });
-                    }
-                }
-            },
-            change: {
-                '[data-action="update-tier"]': (e, element) => {
-                    if (this.tabs.basicInfo) {
-                        this.tabs.basicInfo.updateTier(element.value);
-                    }
-                }
-            }
-        }, this); // Pass 'this' as context
-        
-        console.log('setupEventListeners completed with delegation and debug logging');
-    }
-
-
-    createNewCharacter() {
-        console.log('createNewCharacter called');
-        
-        try {
-            const name = prompt('Character name:') || 'New Character';
-            console.log('Character name entered:', name);
-            
-            const character = new VitalityCharacter(null, name);
-            console.log('VitalityCharacter created:', character);
-            
-            this.currentCharacter = character;
-            console.log('Character set as current');
-            
-            this.showCharacterBuilder();
-            console.log('Character builder shown');
-            
-            this.switchTab('basicInfo');
-            console.log('Switched to basic info tab');
-            
-            this.scheduleFullUpdate('character_created');
-            console.log('createNewCharacter completed successfully');
-            
-        } catch (error) {
-            console.error('Error in createNewCharacter:', error);
-            this.showNotification('Error creating character: ' + error.message, 'error');
-        }
-    }
-
     handleTabSwitch(e, element) {
         const tabName = element.dataset.tab;
         if (tabName) {
             this.switchTab(tabName);
-        }
-    }
-
-    loadCharacter(characterId) {
-        console.log('loadCharacter called with ID:', characterId);
-        
-        try {
-            this.currentCharacter = this.library.getCharacter(characterId);
-            if (this.currentCharacter) {
-                this.showCharacterBuilder();
-                this.scheduleFullUpdate('character_loaded');
-                this.switchTab('basicInfo');
-            }
-        } catch (error) {
-            console.error('Error loading character:', error);
-            this.showNotification('Error loading character', 'error');
         }
     }
 
