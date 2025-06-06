@@ -1428,7 +1428,7 @@ These abilities represent your character's capabilities outside of combat. The V
 ## Expertises
 
 Specialized knowledge, training, or unique abilities that enhance your effectiveness within existing skill categories. Expertises can represent peak human achievement, superhuman talent, or distinctive capabilities that improve standard actions.
-Expertises add to rolls you can already make. They provide bonuses to existing check categories rather than creating new ones.
+Expertises add to rolls you can already make. They provide bonuses to existing skill check opportunities rather than creating new ones.
 
 ### Expertise Mechanics
 - **Stacking**: You can only apply two levels of expertise to any skill check two levels per individual expertise.
