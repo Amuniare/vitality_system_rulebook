@@ -535,7 +535,14 @@ export class SpecialAttackTab {
         // ... (close button uses RenderUtils.renderButton)
         const attack = character.specialAttacks[this.selectedAttackIndex];
         // Simplified upgrade categories for now as in original
-        const upgradeCategories = SpecialAttackSystem.getAvailableUpgrades ? SpecialAttackSystem.getAvailableUpgrades(character, attack) : { /* fallback from original */ };
+        const allUpgrades = SpecialAttackSystem.getAvailableUpgrades ? SpecialAttackSystem.getAvailableUpgrades() : [];
+        const upgradeCategories = {};
+        allUpgrades.forEach(upgrade => {
+            if (!upgradeCategories[upgrade.category]) {
+                upgradeCategories[upgrade.category] = [];
+            }
+            upgradeCategories[upgrade.category].push(upgrade);
+        });
 
 
         return `
@@ -556,13 +563,21 @@ export class SpecialAttackTab {
                                     upgrades,
                                     (upgrade) => {
                                         const isSelected = attack?.upgrades?.some(u => u.id === upgrade.id);
-                                        const canAfford = attack ? (attack.upgradePointsAvailable - attack.upgradePointsSpent) >= upgrade.cost : false;
+                                        
+                                        // Calculate actual cost for variable costs
+                                        let actualCost = upgrade.cost;
+                                        if (typeof actualCost === 'string' && actualCost.includes('per tier')) {
+                                            const baseAmount = parseInt(actualCost.match(/\d+/)[0]);
+                                            actualCost = baseAmount * character.tier;
+                                        }
+                                        
+                                        const canAfford = attack ? (attack.upgradePointsAvailable - attack.upgradePointsSpent) >= actualCost : false;
                                         let status = isSelected ? 'purchased' : (canAfford ? 'available' : 'unaffordable');
                                         // Further validation if needed from SpecialAttackSystem.validateUpgradeAddition
                                         return RenderUtils.renderCard({
                                             title: upgrade.name,
-                                            cost: upgrade.cost,
-                                            description: upgrade.description,
+                                            cost: actualCost,
+                                            description: upgrade.effect || upgrade.description,
                                             status: status,
                                             clickable: !isSelected && canAfford,
                                             disabled: isSelected || !canAfford,
@@ -730,13 +745,8 @@ export class SpecialAttackTab {
         const attack = character?.specialAttacks[this.selectedAttackIndex];
         if (!character || !attack) return;
 
-        // Fetch full upgrade data - Placeholder, replace with actual data source
-        const upgradeData = SpecialAttackSystem.getUpgradeDefinition ? SpecialAttackSystem.getUpgradeDefinition(upgradeId) : { id: upgradeId, name: upgradeId, cost: 10, description: 'Placeholder' };
-         if(!upgradeData) {
-            this.builder.showNotification('Upgrade definition not found.', 'error'); return;
-        }
         try {
-            SpecialAttackSystem.addUpgradeToAttack(character, this.selectedAttackIndex, upgradeData);
+            SpecialAttackSystem.addUpgradeToAttack(character, this.selectedAttackIndex, upgradeId);
             this.builder.updateCharacter();
             this.closeUpgradeModal();
             this.builder.showNotification('Upgrade added.', 'success');

@@ -5,7 +5,34 @@ import { gameDataManager } from '../core/GameDataManager.js'; // ADDED
 export class UtilitySystem {
     // Get expertise categories and options
     static getExpertiseCategories() {
-        return gameDataManager.getExpertiseCategories() || {}; // MODIFIED
+        const expertiseData = gameDataManager.getExpertiseCategories() || {};
+        
+        // Transform new JSON structure to expected format
+        if (expertiseData.Expertises && expertiseData.Expertises.types) {
+            const transformed = {};
+            const types = expertiseData.Expertises.types;
+            
+            // Merge activity-based and situational categories by attribute
+            ['Mobility', 'Power', 'Endurance', 'Focus', 'Awareness', 'Communication', 'Intelligence'].forEach(attr => {
+                transformed[attr] = {
+                    activities: types.activityBased?.categories?.[attr] || [],
+                    situational: types.situational?.categories?.[attr] || []
+                };
+            });
+            
+            return transformed;
+        }
+        
+        return expertiseData;
+    }
+
+    // Get expertise cost information
+    static getExpertiseCosts() {
+        const expertiseData = gameDataManager.getExpertiseCategories() || {};
+        return expertiseData.Expertises?.mechanics?.costs || {
+            activityBased: { basic: { cost: 2, effect: 'Add your Tier to relevant checks' }, mastered: { cost: 6, effect: 'Add 2 × your Tier to relevant checks' } },
+            situational: { basic: { cost: 1, effect: 'Add your Tier to relevant checks when context matches' }, mastered: { cost: 3, effect: 'Add 2 × your Tier to relevant checks when context matches' } }
+        };
     }
     
     // Get available features by cost tier
@@ -325,6 +352,66 @@ export class UtilitySystem {
                 }
             }
         }
+        return character;
+    }
+
+    static purchaseExpertise(character, attribute, expertiseId, expertiseType, level) {
+        if (!character.utilityPurchases.expertise[attribute]) {
+            character.utilityPurchases.expertise[attribute] = { basic: [], mastered: [] };
+        }
+        
+        const costs = this.getExpertiseCosts();
+        const cost = costs[expertiseType === 'activity' ? 'activityBased' : 'situational']?.[level]?.cost || 0;
+        
+        // Validation
+        const validation = this.validateUtilityPurchase(character, 'expertise', expertiseId, level, expertiseType);
+        if (!validation.isValid) {
+            throw new Error(validation.errors.join(', '));
+        }
+        
+        // For mastered, must first have basic
+        if (level === 'mastered' && !character.utilityPurchases.expertise[attribute].basic.includes(expertiseId)) {
+            // Auto-purchase basic first
+            const basicCost = costs[expertiseType === 'activity' ? 'activityBased' : 'situational']?.basic?.cost || 0;
+            character.utilityPurchases.expertise[attribute].basic.push(expertiseId);
+            character.utilityPointsSpent = (character.utilityPointsSpent || 0) + basicCost;
+        }
+        
+        // Add to appropriate level
+        const targetArray = character.utilityPurchases.expertise[attribute][level];
+        if (!targetArray.includes(expertiseId)) {
+            targetArray.push(expertiseId);
+            character.utilityPointsSpent = (character.utilityPointsSpent || 0) + cost;
+        }
+        
+        return character;
+    }
+
+    static removeExpertise(character, attribute, expertiseId, expertiseType, level) {
+        if (!character.utilityPurchases.expertise[attribute]) return character;
+        
+        const costs = this.getExpertiseCosts();
+        const cost = costs[expertiseType === 'activity' ? 'activityBased' : 'situational']?.[level]?.cost || 0;
+        
+        const targetArray = character.utilityPurchases.expertise[attribute][level];
+        const index = targetArray.indexOf(expertiseId);
+        
+        if (index !== -1) {
+            targetArray.splice(index, 1);
+            character.utilityPointsSpent = (character.utilityPointsSpent || 0) - cost;
+            
+            // If removing basic, also remove mastered
+            if (level === 'basic') {
+                const masteredArray = character.utilityPurchases.expertise[attribute].mastered;
+                const masteredIndex = masteredArray.indexOf(expertiseId);
+                if (masteredIndex !== -1) {
+                    masteredArray.splice(masteredIndex, 1);
+                    const masteredCost = costs[expertiseType === 'activity' ? 'activityBased' : 'situational']?.mastered?.cost || 0;
+                    character.utilityPointsSpent = (character.utilityPointsSpent || 0) - masteredCost;
+                }
+            }
+        }
+        
         return character;
     }
     

@@ -23,7 +23,7 @@ class GameDataManager {
             traitConditionTiers: 'data/trait_conditions.json',
 
             // Utility System
-            expertiseCategories: 'data/expertise_categories.json',
+            expertiseCategories: 'data/expertise.json',
             availableFeatures: 'data/features.json', // Tiered structure
             availableSenses: 'data/senses.json',     // Tiered structure
             movementFeatures: 'data/movement_features.json', // Tiered structure

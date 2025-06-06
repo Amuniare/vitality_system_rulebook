@@ -442,6 +442,16 @@ export class CharacterBuilder {
                         this.tabs.utility.handleExpertiseToggle(element);
                     }
                 },
+                '[data-action="purchase-expertise"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleExpertisePurchase(element);
+                    }
+                },
+                '[data-action="remove-expertise"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleExpertiseRemoval(element);
+                    }
+                },
             }
         }, this); // Pass 'this' as context
         

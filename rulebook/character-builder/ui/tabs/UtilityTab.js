@@ -98,46 +98,86 @@ export class UtilityTab {
 
     renderAttributeExpertiseBlock(attrKey, attrData, character) {
         const currentExpertise = character.utilityPurchases.expertise[attrKey] || { basic: [], mastered: [] };
+        const costs = UtilitySystem.getExpertiseCosts();
+        
         const renderOptions = (type, options) => {
             if (!options || options.length === 0) return '<p class="empty-state-small">None available.</p>';
-            return options.map(ex => this.renderSingleExpertiseOption(ex, attrKey, type, currentExpertise)).join('');
+            return `<div class="expertise-cards-grid">${options.map(ex => this.renderSingleExpertiseOption(ex, attrKey, type, currentExpertise)).join('')}</div>`;
         };
 
+        const activityBasicCost = costs.activityBased?.basic?.cost || 2;
+        const activityMasteredCost = costs.activityBased?.mastered?.cost || 6;
+        const situationalBasicCost = costs.situational?.basic?.cost || 1;
+        const situationalMasteredCost = costs.situational?.mastered?.cost || 3;
+
         return RenderUtils.renderCard({
-            title: `${attrData.name} Expertise`,
+            title: `${attrKey} Expertise`,
             titleTag: 'h4',
             additionalContent: `
                 <div class="expertise-subsection">
-                    <h5>Activity-Based (Basic: ${UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost('activity','basic'):2}p / Mastered: +${UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost('activity','mastered') - UtilitySystem.getExpertiseCost('activity','basic'):4}p)</h5>
+                    <h5>Activity-Based (Basic: ${activityBasicCost}p / Mastered: ${activityMasteredCost}p)</h5>
                     <div class="expertise-options-list">${renderOptions('activity', attrData.activities)}</div>
                 </div>
                 <div class="expertise-subsection">
-                    <h5>Situational (Basic: ${UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost('situational','basic'):1}p / Mastered: +${UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost('situational','mastered') - UtilitySystem.getExpertiseCost('situational','basic'):2}p)</h5>
+                    <h5>Situational (Basic: ${situationalBasicCost}p / Mastered: ${situationalMasteredCost}p)</h5>
                     <div class="expertise-options-list">${renderOptions('situational', attrData.situational)}</div>
                 </div>`
         }, { cardClass: 'expertise-attribute-card', showCost: false, showStatus: false });
     }
 
     renderSingleExpertiseOption(expertise, attribute, type, currentExpertise) {
-        const basicCost = UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost(type, 'basic') : (type === 'activity' ? 2 : 1);
-        const masteredCostDelta = (UtilitySystem.getExpertiseCost ? UtilitySystem.getExpertiseCost(type, 'mastered') : (type === 'activity' ? 6 : 3)) - basicCost;
+        const costs = UtilitySystem.getExpertiseCosts();
+        const basicCost = costs[type === 'activity' ? 'activityBased' : 'situational']?.basic?.cost || (type === 'activity' ? 2 : 1);
+        const masteredCost = costs[type === 'activity' ? 'activityBased' : 'situational']?.mastered?.cost || (type === 'activity' ? 6 : 3);
 
-        const isBasic = currentExpertise.basic.includes(expertise.id);
-        const isMastered = currentExpertise.mastered.includes(expertise.id);
+        const isBasic = currentExpertise.basic.includes(expertise.id || expertise.name);
+        const isMastered = currentExpertise.mastered.includes(expertise.id || expertise.name);
+
+        const canAffordBasic = !isBasic; // Can purchase if not already owned
+        const canAffordMastered = isBasic && !isMastered; // Can only master if basic is owned
 
         return `
-            <div class="expertise-option-item form-group">
-                <label>
-                    <input type="checkbox" data-action="toggle-expertise" data-attribute="${attribute}" data-expertise-id="${expertise.id}" data-expertise-type="${type}" data-level="basic" ${isBasic ? 'checked' : ''}>
-                    ${expertise.name} (${basicCost}p)
-                </label>
-                ${expertise.description ? `<small class="expertise-desc">${expertise.description}</small>`:''}
-                ${isBasic ? `
-                    <label class="mastery-label">
-                        <input type="checkbox" data-action="toggle-expertise" data-attribute="${attribute}" data-expertise-id="${expertise.id}" data-expertise-type="${type}" data-level="mastered" ${isMastered ? 'checked' : ''}>
-                        Master (+${masteredCostDelta}p)
-                    </label>
-                ` : ''}
+            <div class="expertise-card">
+                <div class="expertise-card-header">
+                    <div class="expertise-name">${expertise.name}</div>
+                    <div class="expertise-description">${expertise.description || 'No description available'}</div>
+                </div>
+                <div class="expertise-card-footer">
+                    <div class="expertise-basic-section">
+                        <div class="expertise-cost-label">Basic:</div>
+                        <div class="expertise-cost-value">${basicCost}p</div>
+                        ${RenderUtils.renderButton({
+                            text: isBasic ? 'Purchased' : 'Purchase',
+                            variant: isBasic ? 'success' : (canAffordBasic ? 'primary' : 'secondary'),
+                            size: 'small',
+                            disabled: !canAffordBasic,
+                            dataAttributes: {
+                                action: isBasic ? 'remove-expertise' : 'purchase-expertise',
+                                attribute: attribute,
+                                'expertise-id': expertise.id || expertise.name,
+                                'expertise-type': type,
+                                level: 'basic'
+                            }
+                        })}
+                    </div>
+                    <div class="expertise-mastered-section">
+                        <div class="expertise-cost-label">Mastered:</div>
+                        <div class="expertise-cost-value">${masteredCost}p</div>
+                        ${RenderUtils.renderButton({
+                            text: isMastered ? 'Mastered' : 'Master',
+                            variant: isMastered ? 'success' : (canAffordMastered ? 'primary' : 'secondary'),
+                            size: 'small',
+                            disabled: !canAffordMastered,
+                            dataAttributes: {
+                                action: isMastered ? 'remove-expertise' : 'purchase-expertise',
+                                attribute: attribute,
+                                'expertise-id': expertise.id || expertise.name,
+                                'expertise-type': type,
+                                level: 'mastered'
+                            }
+                        })}
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -257,6 +297,34 @@ export class UtilityTab {
         } catch (error) {
             this.builder.showNotification(`Expertise update failed: ${error.message}`, 'error');
             checkbox.checked = !isChecked; // Revert UI on failure
+        }
+    }
+
+    handleExpertisePurchase(element) {
+        const { attribute, expertiseId, expertiseType, level } = element.dataset;
+        const character = this.builder.currentCharacter;
+        
+        try {
+            UtilitySystem.purchaseExpertise(character, attribute, expertiseId, expertiseType, level);
+            this.builder.updateCharacter();
+            this.render(); // Re-render to update button states
+            this.builder.showNotification(`${expertiseId} ${level} expertise purchased!`, 'success');
+        } catch (error) {
+            this.builder.showNotification(`Expertise purchase failed: ${error.message}`, 'error');
+        }
+    }
+
+    handleExpertiseRemoval(element) {
+        const { attribute, expertiseId, expertiseType, level } = element.dataset;
+        const character = this.builder.currentCharacter;
+        
+        try {
+            UtilitySystem.removeExpertise(character, attribute, expertiseId, expertiseType, level);
+            this.builder.updateCharacter();
+            this.render(); // Re-render to update button states
+            this.builder.showNotification(`${expertiseId} ${level} expertise removed!`, 'info');
+        } catch (error) {
+            this.builder.showNotification(`Expertise removal failed: ${error.message}`, 'error');
         }
     }
 
