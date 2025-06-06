@@ -109,3 +109,16 @@ Characters use a structured format with:
 - Attributes (combat + utility stats)
 - Purchases (boons, traits, flaws, special attacks)
 - Calculated stats and validation results
+
+## Development History & Lessons Learned
+
+**IMPORTANT**: Before working on the web character builder, review `docs/web_dev_logs.md` for:
+- Critical architectural insights and lessons learned
+- Known issues and their solutions
+- Event handling patterns that work vs. those that don't
+- UI consistency guidelines
+- Browser caching issues and debugging strategies
+- Successful implementation patterns to follow
+- Common pitfalls to avoid
+
+The web dev logs contain detailed session summaries with specific technical findings that prevent repeating past mistakes and guide effective development approaches.

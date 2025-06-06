@@ -911,6 +911,86 @@ input:focus, select:focus, textarea:focus {
     font-size: 1.1em;
 }
 
+/* Trait Builder Card Styling */
+.trait-stat-grid,
+.trait-condition-grid {
+    margin: var(--gap-large) 0;
+}
+
+.trait-stat-card,
+.trait-condition-card {
+    min-height: 140px;
+    border: 2px solid var(--accent-secondary);
+    transition: all 0.3s ease;
+}
+
+.trait-stat-card:hover,
+.trait-condition-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+}
+
+.trait-stat-card.selected,
+.trait-condition-card.selected {
+    border-color: var(--accent-primary);
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+}
+
+.trait-stat-card.disabled,
+.trait-condition-card.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.stat-toggle-controls,
+.condition-toggle-controls {
+    margin-top: var(--gap-medium);
+    text-align: center;
+}
+
+.stat-toggle,
+.condition-toggle {
+    width: 80px;
+    padding: var(--padding-small) var(--padding-medium);
+}
+
+.stat-toggle[data-selected="true"],
+.condition-toggle[data-selected="true"] {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    border-color: var(--accent-primary);
+}
+
+/* Trait Builder Step Styling */
+.trait-builder-content .builder-step {
+    margin-bottom: 3rem;
+    border-bottom: 1px solid var(--accent-secondary);
+    padding-bottom: var(--padding-large);
+}
+
+.trait-builder-content .builder-step:last-child {
+    border-bottom: none;
+}
+
+.trait-builder-content h6 {
+    color: var(--accent-primary);
+    margin-bottom: var(--gap-large);
+    font-size: 1.1em;
+}
+
+.trait-builder-content .selection-summary {
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-primary);
+    padding: var(--padding-medium);
+    color: var(--accent-primary);
+    font-weight: bold;
+    margin-top: var(--gap-large);
+    border-radius: var(--border-radius-medium);
+    text-align: center;
+}
+
 /* Character Management Styles */
 .character-management {
     background: var(--bg-secondary);

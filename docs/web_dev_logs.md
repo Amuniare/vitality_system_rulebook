@@ -175,3 +175,69 @@ Archetype selection is **fully functional**. Users can:
 4. **Re-render Strategy**: Mix of partial updates and full re-renders causing inconsistency
 
 The real solution requires **consolidating the update architecture**, not fixing individual symptoms.
+
+## SESSION SUMMARY - Character Builder Screen Switching & Unique Ability UI Overhaul
+
+**DATE**: December 6, 2025
+
+**ATTEMPTED:**
+- Debug character creation button functionality → **Success** (button was working, screen switching was failing)
+- Fix screen switching between welcome and character builder → **Success** (added both CSS classes and inline styles for reliable visibility control)
+- Redesign unique ability upgrade interface → **Success** (converted from checkboxes to card-based interface)
+- Implement +/- button controls for quantity upgrades → **Success** (horizontal rectangular cards with quantity controls)
+
+**KEY FINDINGS:**
+- **Screen switching issues**: Browser caching prevented updated JavaScript from loading, causing old showCharacterBuilder() method to run
+- **UI consistency**: Unique abilities needed to match archetype selection pattern for better UX
+- **Event delegation works**: Main event system successfully handles complex upgrade interactions
+- **CSS + inline styles**: Using both approaches ensures reliable screen visibility changes
+
+**MAJOR IMPROVEMENTS:**
+1. **Reliable Screen Switching**: 
+   - Added comprehensive debugging with emoji indicators
+   - Implemented dual approach (CSS classes + inline styles) for screen visibility
+   - Resolved browser caching issues affecting JavaScript updates
+
+2. **Unique Ability Interface Overhaul**:
+   - Converted from vertical checkbox/input layout to horizontal card grid
+   - Implemented +/- button controls for quantity-based upgrades
+   - Added toggle buttons for single-purchase upgrades
+   - Applied archetype-style visual selection states
+   - Added hover effects and visual feedback
+
+3. **Event System Integration**:
+   - Added unique ability event handlers to main event delegation system
+   - Removed redundant local event listeners
+   - Maintained proper event propagation and context handling
+
+**CURRENT STATE:**
+- ✅ Character creation button works reliably
+- ✅ Screen switching between welcome and builder works
+- ✅ Unique abilities use clean card-based interface matching archetype selection
+- ✅ +/- buttons for quantity upgrades work correctly
+- ✅ Real-time cost calculation updates as upgrades are selected
+- ✅ Visual selection states provide clear feedback
+
+**UI IMPROVEMENTS:**
+- **Consistency**: Unique ability selection now matches archetype selection pattern
+- **Clarity**: Card-based layout is more intuitive than checkbox lists
+- **Functionality**: +/- buttons provide precise quantity control
+- **Visual Feedback**: Selected cards have distinct highlighting and hover effects
+- **Information Density**: Grid layout makes better use of screen space
+
+**NEXT STEPS:**
+- Test unique ability purchasing with new interface
+- Verify cost calculations are accurate
+- Ensure all upgrade types (with/without quantities) work correctly
+- Continue with remaining character builder features
+
+**AVOID:**
+- Relying solely on CSS classes for critical UI state changes (use inline styles as backup)
+- Ignoring browser caching when JavaScript updates don't seem to take effect
+- Inconsistent UI patterns across similar selection interfaces
+
+**ARCHITECTURAL INSIGHTS:**
+- Event delegation scales well for complex nested controls
+- Dual approaches (CSS + inline) provide robust fallbacks for UI state
+- Card-based interfaces are more intuitive than form-based interfaces for game content
+- Visual consistency across similar interactions improves overall UX

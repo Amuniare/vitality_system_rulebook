@@ -114,11 +114,9 @@ export class TraitPurchaseSection {
         return `
             <div class="builder-step">
                 <h6>Step 1: Choose Stat Bonuses (Exactly 2 required)</h6>
-                ${RenderUtils.renderGrid(
-                    statOptionsData,
-                    (stat) => this.renderStatOption(stat, disabled),
-                    { gridContainerClass: 'grid-layout stat-selection', gridSpecificClass: 'grid-columns-auto-fit-200' }
-                )}
+                <div class="trait-stat-grid grid-layout grid-columns-auto-fit-250">
+                    ${statOptionsData.map(stat => this.renderStatCard(stat, disabled)).join('')}
+                </div>
                 <div class="selection-summary">
                     Selected Stats: ${this.currentTraitData.statBonuses.map(s => this.getStatName(s)).join(', ') || 'None'}
                     (${this.currentTraitData.statBonuses.length}/2)
@@ -127,20 +125,27 @@ export class TraitPurchaseSection {
         `;
     }
 
-    renderStatOption(stat, sectionDisabled) {
+    renderStatCard(stat, sectionDisabled) {
         const isSelected = this.currentTraitData.statBonuses.includes(stat.id);
         const isDisabledByLimit = this.currentTraitData.statBonuses.length >= 2 && !isSelected;
+        const disabled = sectionDisabled || isDisabledByLimit;
+        
         return `
-            <div class="stat-option form-group">
-                <label>
-                    <input type="checkbox"
-                           class="stat-checkbox"
-                           data-stat-id="${stat.id}"
-                           ${isSelected ? 'checked' : ''}
-                           ${sectionDisabled || isDisabledByLimit ? 'disabled' : ''}>
-                    ${stat.name}
-                </label>
-                <small>${stat.description}</small>
+            <div class="card trait-stat-card clickable ${isSelected ? 'selected' : ''} ${disabled ? 'disabled' : ''}"
+                 data-stat-id="${stat.id}">
+                <div class="card-header">
+                    <h4 class="card-title">${stat.name}</h4>
+                    <div class="stat-toggle-controls">
+                        <button type="button" 
+                                class="btn btn-small stat-toggle" 
+                                data-stat-id="${stat.id}"
+                                data-selected="${isSelected}"
+                                ${disabled ? 'disabled' : ''}>
+                            ${isSelected ? 'Remove' : 'Add'}
+                        </button>
+                    </div>
+                </div>
+                <div class="card-description">${stat.description}</div>
             </div>
         `;
     }
@@ -168,30 +173,37 @@ export class TraitPurchaseSection {
         return `
             <div class="condition-tier">
                 <h7>${tierData.name} (${tierData.cost} point${tierData.cost !== 1 ? 's' : ''} each)</h7>
-                ${RenderUtils.renderGrid(
-                    tierData.conditions,
-                    (condition) => this.renderConditionOption(condition, tierData.cost, sectionDisabled),
-                    { gridContainerClass: 'grid-layout condition-grid', gridSpecificClass: 'grid-columns-auto-fit-250' }
-                )}
+                <div class="trait-condition-grid grid-layout grid-columns-auto-fit-280">
+                    ${tierData.conditions.map(condition => this.renderConditionCard(condition, tierData.cost, sectionDisabled)).join('')}
+                </div>
             </div>
         `;
     }
 
-    renderConditionOption(condition, cost, sectionDisabled) {
+    renderConditionCard(condition, cost, sectionDisabled) {
         const isSelected = this.currentTraitData.conditions.includes(condition.id);
         const wouldExceed = !isSelected && (this.currentTraitData.tierCost + cost > 3);
+        const disabled = sectionDisabled || wouldExceed;
+        
         return `
-            <div class="condition-option form-group">
-                <label>
-                    <input type="checkbox"
-                           class="condition-checkbox"
-                           data-condition-id="${condition.id}"
-                           data-tier-cost="${cost}"
-                           ${isSelected ? 'checked' : ''}
-                           ${sectionDisabled || wouldExceed ? 'disabled' : ''}>
-                    ${condition.name}
-                </label>
-                <small>${condition.description}</small>
+            <div class="card trait-condition-card clickable ${isSelected ? 'selected' : ''} ${disabled ? 'disabled' : ''}"
+                 data-condition-id="${condition.id}"
+                 data-tier-cost="${cost}">
+                <div class="card-header">
+                    <h4 class="card-title">${condition.name}</h4>
+                    <span class="card-cost">${cost}pt</span>
+                </div>
+                <div class="card-description">${condition.description}</div>
+                <div class="condition-toggle-controls">
+                    <button type="button" 
+                            class="btn btn-small condition-toggle" 
+                            data-condition-id="${condition.id}"
+                            data-tier-cost="${cost}"
+                            data-selected="${isSelected}"
+                            ${disabled ? 'disabled' : ''}>
+                        ${isSelected ? 'Remove' : 'Add'}
+                    </button>
+                </div>
             </div>
         `;
     }
@@ -215,52 +227,119 @@ export class TraitPurchaseSection {
     }
 
     setupEventListeners() {
-        // Delegated to MainPoolTab
-        // Internal listeners for builder UI state updates:
+        // Event listeners for trait builder controls
         const container = document.querySelector('.trait-purchase-section-content');
         if (container) {
-            // Stat checkboxes
-            container.addEventListener('change', (e) => {
-                if (e.target.matches('.stat-checkbox')) {
-                    this.handleStatSelection(e.target);
-                } else if (e.target.matches('.condition-checkbox')) {
-                    this.handleConditionSelection(e.target);
-                }
+            // Handle stat toggle buttons
+            container.querySelectorAll('.stat-toggle').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.handleStatToggle(e.target);
+                });
+            });
+            
+            // Handle condition toggle buttons
+            container.querySelectorAll('.condition-toggle').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.handleConditionToggle(e.target);
+                });
+            });
+            
+            // Handle stat card clicks
+            container.querySelectorAll('.trait-stat-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.closest('button')) {
+                        this.handleStatCardClick(card);
+                    }
+                });
+            });
+            
+            // Handle condition card clicks
+            container.querySelectorAll('.trait-condition-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.closest('button')) {
+                        this.handleConditionCardClick(card);
+                    }
+                });
             });
         }
     }
 
-    handleStatSelection(checkboxElement) {
-        const statId = checkboxElement.dataset.statId;
-        if (checkboxElement.checked) {
+    handleStatToggle(button) {
+        const statId = button.dataset.statId;
+        const isSelected = button.dataset.selected === 'true';
+        
+        if (!isSelected) {
+            // Adding stat
             if (this.currentTraitData.statBonuses.length < 2) {
                 this.currentTraitData.statBonuses.push(statId);
+                this.refreshBuilderUI();
             } else {
-                checkboxElement.checked = false; // Revert if limit exceeded
                 this.builder.showNotification('Maximum 2 stat bonuses allowed.', 'warning');
             }
         } else {
+            // Removing stat
             this.currentTraitData.statBonuses = this.currentTraitData.statBonuses.filter(s => s !== statId);
+            this.refreshBuilderUI();
         }
-        this.refreshBuilderUI();
     }
 
-    handleConditionSelection(checkboxElement) {
-        const conditionId = checkboxElement.dataset.conditionId;
-        const tierCost = parseInt(checkboxElement.dataset.tierCost);
-        if (checkboxElement.checked) {
+    handleConditionToggle(button) {
+        const conditionId = button.dataset.conditionId;
+        const tierCost = parseInt(button.dataset.tierCost);
+        const isSelected = button.dataset.selected === 'true';
+        
+        if (!isSelected) {
+            // Adding condition
             if (this.currentTraitData.tierCost + tierCost <= 3) {
                 this.currentTraitData.conditions.push(conditionId);
                 this.currentTraitData.tierCost += tierCost;
+                this.refreshBuilderUI();
             } else {
-                checkboxElement.checked = false; // Revert
+                this.builder.showNotification('Condition tier limit (3 points) exceeded.', 'warning');
+            }
+        } else {
+            // Removing condition
+            this.currentTraitData.conditions = this.currentTraitData.conditions.filter(c => c !== conditionId);
+            this.currentTraitData.tierCost -= tierCost;
+            this.refreshBuilderUI();
+        }
+    }
+
+    handleStatCardClick(card) {
+        const statId = card.dataset.statId;
+        const isSelected = this.currentTraitData.statBonuses.includes(statId);
+        
+        if (!isSelected && this.currentTraitData.statBonuses.length < 2) {
+            this.currentTraitData.statBonuses.push(statId);
+            this.refreshBuilderUI();
+        } else if (isSelected) {
+            this.currentTraitData.statBonuses = this.currentTraitData.statBonuses.filter(s => s !== statId);
+            this.refreshBuilderUI();
+        } else {
+            this.builder.showNotification('Maximum 2 stat bonuses allowed.', 'warning');
+        }
+    }
+
+    handleConditionCardClick(card) {
+        const conditionId = card.dataset.conditionId;
+        const tierCost = parseInt(card.dataset.tierCost);
+        const isSelected = this.currentTraitData.conditions.includes(conditionId);
+        
+        if (!isSelected) {
+            if (this.currentTraitData.tierCost + tierCost <= 3) {
+                this.currentTraitData.conditions.push(conditionId);
+                this.currentTraitData.tierCost += tierCost;
+                this.refreshBuilderUI();
+            } else {
                 this.builder.showNotification('Condition tier limit (3 points) exceeded.', 'warning');
             }
         } else {
             this.currentTraitData.conditions = this.currentTraitData.conditions.filter(c => c !== conditionId);
             this.currentTraitData.tierCost -= tierCost;
+            this.refreshBuilderUI();
         }
-        this.refreshBuilderUI();
     }
     
     refreshBuilderUI() {
