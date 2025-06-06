@@ -1,9 +1,7 @@
 // CharacterBuilder.js - COMPLETE REWRITE without validators and with fixed event handling
 import { VitalityCharacter } from '../core/VitalityCharacter.js';
 import { CharacterLibrary } from './components/CharacterLibrary.js';
-import { CharacterTree } from './components/CharacterTree.js';
-import { PointPoolDisplay } from './components/PointPoolDisplay.js';
-import { ValidationDisplay } from './components/ValidationDisplay.js';
+// Sidebar components removed
 
 // Import all tabs
 import { BasicInfoTab } from './tabs/BasicInfoTab.js';
@@ -96,13 +94,9 @@ export class CharacterBuilder {
     initializeComponents() {
         console.log('Initializing UI components...');
         
-        this.characterTree = new CharacterTree(this);
-        this.pointPoolDisplay = new PointPoolDisplay(this);
-        this.validationDisplay = new ValidationDisplay(this);
+        // Sidebar components removed - no longer needed
         
-        this.characterTree.library = this.library;
-        
-        console.log('Real components created');
+        console.log('Components initialized (sidebar removed)');
     }
 
     initializeTabs() {
@@ -346,9 +340,7 @@ export class CharacterBuilder {
         if (welcomeScreen) welcomeScreen.classList.remove('hidden');
         if (characterBuilder) characterBuilder.classList.add('hidden');
         
-        if (this.characterTree && this.characterTree.init) {
-            this.characterTree.init();
-        }
+        // Character tree removed with sidebar
     }
 
     showCharacterBuilder() {
@@ -535,10 +527,7 @@ export class CharacterBuilder {
         console.log(`Scheduling full update: ${reason}`);
         
         UpdateManager.batchUpdates([
-            { component: this.pointPoolDisplay, method: 'update', priority: 'high' },
-            { component: this.validationDisplay, method: 'update', priority: 'normal' },
-            { component: this, method: 'updateCharacterHeader', priority: 'high' },
-            { component: this.characterTree, method: 'refresh', priority: 'low' }
+            { component: this, method: 'updateCharacterHeader', priority: 'high' }
         ]);
     }
 
@@ -647,8 +636,6 @@ export class CharacterBuilder {
             try {
                 this.library.saveCharacter(this.currentCharacter);
                 this.showNotification('Character saved successfully!', 'success');
-                
-                UpdateManager.scheduleUpdate(this.characterTree, 'refresh', 'normal');
             } catch (error) {
                 console.error('Error saving character:', error);
                 this.showNotification('Error saving character', 'error');

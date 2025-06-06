@@ -31,7 +31,7 @@ export class UniqueAbilitySection {
                     ${RenderUtils.renderGrid(
                         uniqueAbilities,
                         (ability) => this.renderUniqueAbilityOption(ability, character, pointInfo),
-                        { gridContainerClass: 'grid-layout ability-grid', gridSpecificClass: 'grid-columns-auto-fit-320' }
+                        { gridContainerClass: 'grid-layout ability-grid', gridSpecificClass: 'grid-columns-1fr' }
                     )}
                 </div>
             </div>
