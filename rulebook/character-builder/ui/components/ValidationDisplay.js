@@ -1,35 +1,33 @@
-// rulebook/character-builder/ui/components/ValidationDisplay.js
-import { RenderUtils } from '../shared/RenderUtils.js'; // Keep if used for icons/status
+// ValidationDisplay.js - COMPLETE REWRITE without validator dependencies
+import { RenderUtils } from '../shared/RenderUtils.js';
 
 export class ValidationDisplay {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.lastValidationResultString = null; // Store stringified result for comparison
+        this.lastValidationResultString = null;
     }
-
 
     update() {
         const container = document.getElementById('validation-panel');
         if (!container) return;
-    
+
         const character = this.builder.currentCharacter;
         if (!character) {
             container.innerHTML = this.renderEmptyState();
+            this.lastValidationResultString = null;
             return;
         }
-    
-        // Use builder's validation instead of CharacterValidator
+
         const validationResult = this.builder.validateCharacter();
         const currentResultString = JSON.stringify(validationResult);
 
         if (currentResultString === this.lastValidationResultString) {
-            return; // No change in validation, no re-render
+            return;
         }
         this.lastValidationResultString = currentResultString;
 
-        container.innerHTML = this.renderValidation(validationResult);    }
-
-
+        container.innerHTML = this.renderValidation(validationResult);
+    }
 
     renderValidation(validationResult) {
         return `
@@ -45,10 +43,7 @@ export class ValidationDisplay {
 
     renderOverallStatus(validationResult) {
         const isValid = validationResult.isValid;
-        const statusType = isValid ? 'success' : 'error'; // 'error' if any errors, 'warning' if only warnings
-        if (!isValid && validationResult.errors.length === 0 && validationResult.warnings.length > 0) {
-           // statusType = 'warning'; // Could refine this logic
-        }
+        const statusType = isValid ? 'success' : 'error';
 
         const icon = isValid ? '✅' : (validationResult.errors.length > 0 ? '❌' : '⚠️');
         const titleText = isValid ? 'Character Valid' : (validationResult.errors.length > 0 ? 'Errors Found' : 'Warnings Found');
@@ -72,7 +67,7 @@ export class ValidationDisplay {
         const steps = [
             { id: 'archetypes', name: 'Archetypes Complete', completed: buildState.archetypesComplete },
             { id: 'attributes', name: 'Attributes Assigned', completed: buildState.attributesAssigned },
-            { id: 'mainPool', name: 'Main Pool Touched', completed: buildState.mainPoolPurchases }, // Assuming "touched"
+            { id: 'mainPool', name: 'Main Pool Touched', completed: buildState.mainPoolPurchases },
             { id: 'specialAttacks', name: 'Special Attacks Exist', completed: buildState.hasSpecialAttacks }
         ];
 
@@ -104,7 +99,6 @@ export class ValidationDisplay {
             attributes: 'Attributes',
             specialAttacks: 'Special Attacks',
             pointPools: 'Point Pools',
-            // Add more user-friendly names if CharacterValidator returns more sections
         };
 
         return `
@@ -112,7 +106,7 @@ export class ValidationDisplay {
                 <h4>Section Status</h4>
                 <div class="section-status-list">
                     ${Object.entries(sectionsValidation).map(([sectionKey, valResult]) => {
-                        if (sectionKey === 'buildOrder') return ''; // Handled separately
+                        if (sectionKey === 'buildOrder') return '';
                         const sectionName = sectionNamesMap[sectionKey] || sectionKey.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase());
                         const icon = valResult.isValid ? '✅' : (valResult.errors.length > 0 ? '❌' : '⚠️');
                         const issueSummary = [];
@@ -167,4 +161,3 @@ export class ValidationDisplay {
         `;
     }
 }
-

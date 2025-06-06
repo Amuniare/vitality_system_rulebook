@@ -1,4 +1,4 @@
-// CharacterBuilder.js - REFACTORED to use UpdateManager for central update management
+// CharacterBuilder.js - COMPLETE REWRITE without validators and with fixed event handling
 import { VitalityCharacter } from '../core/VitalityCharacter.js';
 import { CharacterLibrary } from './components/CharacterLibrary.js';
 import { CharacterTree } from './components/CharacterTree.js';
@@ -35,7 +35,6 @@ export class CharacterBuilder {
         try {
             console.log('CharacterBuilder.init() started');
             
-            // Check if DOM is ready
             if (document.readyState === 'loading') {
                 console.log('DOM still loading, waiting for DOMContentLoaded');
                 return new Promise(resolve => {
@@ -56,7 +55,6 @@ export class CharacterBuilder {
     }
 
     async initAfterDOM() {
-        // Add explicit DOM element checks before listener attachment
         const requiredElements = ['#content', '.tab-navigation', '#sidebar'];
         const missing = requiredElements.filter(sel => !document.querySelector(sel));
         if (missing.length > 0) {
@@ -66,27 +64,22 @@ export class CharacterBuilder {
         console.log('initAfterDOM started');
         
         try {
-            // Initialize character library first
             console.log('Initializing character library...');
             await this.library.init();
             console.log('Character library initialized');
 
-            // Initialize components
             console.log('Initializing components...');
             this.initializeComponents();
             console.log('Components initialized');
 
-            // Initialize tabs
             console.log('Initializing tabs...');
             this.initializeTabs();
             console.log('Tabs initialized');
             
-            // Set up event listeners
             console.log('Setting up event listeners...');
             this.setupEventListeners();
             console.log('Event listeners setup completed');
             
-            // Show welcome screen
             console.log('Showing welcome screen...');
             this.showWelcomeScreen();
             console.log('Welcome screen shown');
@@ -107,7 +100,6 @@ export class CharacterBuilder {
         this.pointPoolDisplay = new PointPoolDisplay(this);
         this.validationDisplay = new ValidationDisplay(this);
         
-        // Initialize character tree with library
         this.characterTree.library = this.library;
         
         console.log('Real components created');
@@ -129,17 +121,21 @@ export class CharacterBuilder {
         console.log('All tabs created');
     }
 
-
     setupEventListeners() {
         console.log('setupEventListeners started');
         
         const container = document.body;
         
-        // Pass 'this' as context to EventManager
+        // Use event delegation with proper context
         EventManager.delegateEvents(container, {
             click: {
                 '#new-character-btn': this.createNewCharacter,
                 '.tab-btn': this.handleTabSwitch,
+                '#save-character': this.saveCharacter,
+                '#export-json': this.exportCharacterJSON,
+                '#delete-character': this.deleteCharacter,
+
+                // ARCHETYPE HANDLERS
                 '[data-action="select-archetype"]': (e, element) => {
                     const category = element.dataset.category;
                     const archetypeId = element.dataset.archetype;
@@ -147,7 +143,24 @@ export class CharacterBuilder {
                         this.tabs.archetypes.selectArchetype(category, archetypeId);
                     }
                 },
-                // ... other handlers
+
+                // ATTRIBUTE BUTTON HANDLERS
+                '[data-action="change-attribute-btn"]': (e, element) => {
+                    const attrId = element.dataset.attr;
+                    const change = parseInt(element.dataset.change);
+                    if (this.tabs.attributes && attrId !== undefined && change !== undefined) {
+                        console.log(`🎯 Attribute button: ${attrId} ${change > 0 ? '+' : ''}${change}`);
+                        this.tabs.attributes.changeAttribute(attrId, change);
+                    }
+                },
+
+                // NAVIGATION HANDLERS
+                '[data-action="continue-to-archetypes"]': () => this.switchTab('archetypes'),
+                '[data-action="continue-to-attributes"]': () => this.switchTab('attributes'),
+                '[data-action="continue-to-mainpool"]': () => this.switchTab('mainPool'),
+                '[data-action="continue-to-special-attacks"]': () => this.switchTab('specialAttacks'),
+                '[data-action="continue-to-utility"]': () => this.switchTab('utility'),
+                '[data-action="continue-to-summary"]': () => this.switchTab('summary')
             },
             input: {
                 '[data-action="update-char-name"]': (e, element) => {
@@ -155,11 +168,32 @@ export class CharacterBuilder {
                         this.tabs.basicInfo.updateName(element.value);
                     }
                 },
-                // ... other handlers
+                '[data-action="update-real-name"]': (e, element) => {
+                    if (this.tabs.basicInfo) {
+                        this.tabs.basicInfo.updateRealName(element.value);
+                    }
+                },
+                
+                '[data-action="change-attribute-slider"]': (e, element) => {
+                    const attrId = element.dataset.attr;
+                    const newValue = element.value;
+                    if (this.tabs.attributes && attrId !== undefined && newValue !== undefined) {
+                        console.log(`🎯 Attribute slider: ${attrId} = ${newValue}`);
+                        this.tabs.attributes.setAttributeViaSlider(attrId, newValue);
+                    }
+                }
+            },
+            change: {
+                '[data-action="update-tier"]': (e, element) => {
+                    if (this.tabs.basicInfo) {
+                        this.tabs.basicInfo.updateTier(element.value);
+                    }
+                }
             }
         }, this); // Pass 'this' as context
-    }    
-            
+        
+        console.log('setupEventListeners completed with delegation');
+    }
 
     createNewCharacter() {
         console.log('createNewCharacter called');
@@ -180,10 +214,7 @@ export class CharacterBuilder {
             this.switchTab('basicInfo');
             console.log('Switched to basic info tab');
             
-            // Use UpdateManager for initial display update
             this.scheduleFullUpdate('character_created');
-            console.log('Displays updated');
-            
             console.log('createNewCharacter completed successfully');
             
         } catch (error) {
@@ -223,7 +254,6 @@ export class CharacterBuilder {
         if (welcomeScreen) welcomeScreen.classList.remove('hidden');
         if (characterBuilder) characterBuilder.classList.add('hidden');
         
-        // Initialize character tree
         if (this.characterTree && this.characterTree.init) {
             this.characterTree.init();
         }
@@ -237,7 +267,6 @@ export class CharacterBuilder {
         if (welcomeScreen) welcomeScreen.classList.add('hidden');
         if (characterBuilder) characterBuilder.classList.remove('hidden');
         
-        // Update character header
         this.updateCharacterHeader();
     }
 
@@ -292,45 +321,30 @@ export class CharacterBuilder {
         this.updateTabStates();
     }
 
-
-
     updateTabStates() {
         if (!this.currentCharacter) return;
         
-        const validation = this.validateCharacter();
-        const buildOrder = validation.sections?.buildOrder;
-        
-        // Enable/disable tabs based on build order
         document.querySelectorAll('.tab-btn').forEach(btn => {
             const tabName = btn.dataset.tab;
             let canAccess = true;
             
             switch(tabName) {
                 case 'basicInfo':
-                    canAccess = true;
-                    break;
                 case 'archetypes':
                     canAccess = true;
                     break;
                 case 'attributes':
-                    // CHANGED: Allow access with partial archetypes
                     const selectedArchetypes = Object.values(this.currentCharacter.archetypes).filter(val => val !== null).length;
-                    canAccess = selectedArchetypes > 0; // Need at least one archetype
+                    canAccess = selectedArchetypes > 0;
                     break;
                 case 'mainPool':
-                    // CHANGED: Allow access with basic attributes assigned
                     const hasAttributes = Object.values(this.currentCharacter.attributes).some(val => val > 0);
                     canAccess = hasAttributes;
                     break;
                 case 'specialAttacks':
-                    // CHANGED: Always allow if archetypes started
-                    canAccess = Object.values(this.currentCharacter.archetypes).some(val => val !== null);
-                    break;
                 case 'utility':
-                    canAccess = true; // Always allow
-                    break;
                 case 'summary':
-                    canAccess = true; // Always allow
+                    canAccess = true;
                     break;
             }
             
@@ -339,14 +353,12 @@ export class CharacterBuilder {
         });
     }
 
-    // OPTIMIZED UPDATE SYSTEM using UpdateManager
     updateCharacter() {
         console.log('updateCharacter called');
         if (!this.currentCharacter) return;
         
         this.currentCharacter.touch();
         
-        // Detect what changed and update only relevant components
         const changes = this.detectCharacterChanges();
         this.scheduleSelectiveUpdate(changes);
     }
@@ -356,8 +368,6 @@ export class CharacterBuilder {
         const changes = [];
         
         if (this.lastCharacterHash !== currentHash) {
-            // For now, assume all components might need updates
-            // In future, could implement more granular change detection
             changes.push('points', 'validation', 'stats', 'basicInfo');
             this.lastCharacterHash = currentHash;
         }
@@ -368,7 +378,6 @@ export class CharacterBuilder {
     getCharacterHash() {
         if (!this.currentCharacter) return null;
         
-        // Simple hash of character state for change detection
         return JSON.stringify({
             tier: this.currentCharacter.tier,
             name: this.currentCharacter.name,
@@ -396,17 +405,11 @@ export class CharacterBuilder {
         }
         
         if (changes.includes('stats')) {
-            // Notify current tab that stats may have changed
             const currentTabComponent = this.tabs[this.currentTab];
             if (currentTabComponent && currentTabComponent.onCharacterUpdate) {
                 updates.push({ component: currentTabComponent, method: 'onCharacterUpdate', priority: 'normal' });
             }
         }
-        
-        // Only update character tree on save, not every change
-        // if (changes.includes('save')) {
-        //     updates.push({ component: this.characterTree, method: 'refresh', priority: 'low' });
-        // }
         
         UpdateManager.batchUpdates(updates);
     }
@@ -427,7 +430,8 @@ export class CharacterBuilder {
         if (!this.currentCharacter) {
             return {
                 totalAvailable: { combatAttributes: 0, utilityAttributes: 0, mainPool: 0, utilityPool: 0, specialAttacks: 0 },
-                totalSpent: { combatAttributes: 0, utilityAttributes: 0, mainPool: 0, utilityPool: 0, specialAttacks: 0 }
+                totalSpent: { combatAttributes: 0, utilityAttributes: 0, mainPool: 0, utilityPool: 0, specialAttacks: 0 },
+                remaining: { combatAttributes: 0, utilityAttributes: 0, mainPool: 0, utilityPool: 0, specialAttacks: 0 }
             };
         }
         
@@ -443,35 +447,62 @@ export class CharacterBuilder {
         return StatCalculator.calculateAllStats(this.currentCharacter);
     }
 
-
-
+    // Character validation (without validator dependencies)
     validateCharacter() {
         if (!this.currentCharacter) {
-            return { isValid: false, errors: ['No character loaded'], warnings: [], sections: {} };
+            return { 
+                isValid: false, 
+                errors: ['No character loaded'], 
+                warnings: [], 
+                sections: { 
+                    buildOrder: { isValid: false, errors: ['No character'], warnings: [] }
+                }
+            };
         }
         
-        // Use systems for validation instead
         const errors = [];
         const warnings = [];
-        
-        // Basic validation using existing systems
         const pools = this.calculatePointPools();
+        
+        // Check point pool validation
         Object.entries(pools.remaining).forEach(([pool, remaining]) => {
             if (remaining < 0) {
                 errors.push(`${pool} over budget by ${Math.abs(remaining)} points`);
             }
         });
         
+        // Check archetype completion
+        const archetypeCount = Object.values(this.currentCharacter.archetypes).filter(v => v !== null).length;
+        if (archetypeCount < 7) {
+            warnings.push(`Only ${archetypeCount}/7 archetypes selected`);
+        }
+        
+        // Check basic character data
+        if (!this.currentCharacter.name || this.currentCharacter.name.trim() === '') {
+            errors.push('Character must have a name');
+        }
+        
         return {
             isValid: errors.length === 0,
             errors,
             warnings,
             sections: {
-                buildOrder: { isValid: true, errors: [], warnings: [] }
+                buildOrder: { 
+                    isValid: archetypeCount > 0, 
+                    errors: archetypeCount === 0 ? ['No archetypes selected'] : [], 
+                    warnings: archetypeCount < 7 ? [`${archetypeCount}/7 archetypes selected`] : [],
+                    buildState: {
+                        archetypesComplete: archetypeCount === 7,
+                        attributesAssigned: Object.values(this.currentCharacter.attributes).some(val => val > 0),
+                        mainPoolPurchases: this.currentCharacter.mainPoolPurchases.boons.length > 0 || 
+                                         this.currentCharacter.mainPoolPurchases.traits.length > 0 ||
+                                         this.currentCharacter.mainPoolPurchases.flaws.length > 0,
+                        hasSpecialAttacks: this.currentCharacter.specialAttacks.length > 0
+                    }
+                }
             }
         };
     }
-
 
     // Character export
     exportCharacterJSON() {
@@ -500,7 +531,6 @@ export class CharacterBuilder {
                 this.library.saveCharacter(this.currentCharacter);
                 this.showNotification('Character saved successfully!', 'success');
                 
-                // Update character tree
                 UpdateManager.scheduleUpdate(this.characterTree, 'refresh', 'normal');
             } catch (error) {
                 console.error('Error saving character:', error);
@@ -528,7 +558,6 @@ export class CharacterBuilder {
     showNotification(message, type = 'info') {
         console.log(`Notification (${type}): ${message}`);
         
-        // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.textContent = message;
@@ -547,7 +576,6 @@ export class CharacterBuilder {
         
         document.body.appendChild(notification);
         
-        // Remove after 3 seconds
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);

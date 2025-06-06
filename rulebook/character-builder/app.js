@@ -1,7 +1,7 @@
-// app.js - Main application entry point
+// app.js - COMPLETE REWRITE with proper initialization order
 import { CharacterBuilder } from './ui/CharacterBuilder.js';
 import { VitalityCharacter } from './core/VitalityCharacter.js';
-import { gameDataManager } from './core/GameDataManager.js'; // ADDED
+import { gameDataManager } from './core/GameDataManager.js';
 
 class VitalityCharacterBuilderApp {
     constructor() {
@@ -10,18 +10,22 @@ class VitalityCharacterBuilderApp {
     }
 
     async init() {
+        console.log('Initializing Vitality Character Builder App...');
+        
         try {
-            // 1. Wait for DOM
+            // Wait for DOM to be ready
             if (document.readyState === 'loading') {
                 await new Promise(resolve => {
                     document.addEventListener('DOMContentLoaded', resolve);
                 });
             }
-    
-            // 2. Initialize GameDataManager first
+
+            // Initialize GameDataManager first and wait for data to load
+            console.log('🔵 Initializing GameDataManager...');
             await gameDataManager.init();
-    
-            // 3. Initialize character builder (which sets up events)
+            console.log('🟢 GameDataManager initialized.');
+
+            // Initialize character builder
             this.characterBuilder = new CharacterBuilder();
             await this.characterBuilder.init();
             
@@ -55,4 +59,4 @@ app.init();
 
 // Make globally accessible for debugging
 window.vitalityApp = app;
-window.gameDataManager = gameDataManager; // For debugging access
+window.gameDataManager = gameDataManager;
