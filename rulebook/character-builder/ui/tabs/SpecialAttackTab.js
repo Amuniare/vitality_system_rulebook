@@ -434,34 +434,56 @@ export class SpecialAttackTab {
 
     renderLimitCalculationFooter(attack, character) {
         const limitPointsTotal = attack.limitPointsTotal || 0;
-        const archetypeMultiplier = character.tier || 1;
-        const baseUpgradePoints = limitPointsTotal * archetypeMultiplier;
+        const finalUpgradePoints = attack.upgradePointsFromLimits || 0;
         
-        // Calculate diminishing returns if applicable
-        const finalUpgradePoints = attack.upgradePointsFromLimits || baseUpgradePoints;
-        const hasDiminishingReturns = finalUpgradePoints !== baseUpgradePoints;
+        // Get archetype details for display
+        const specialAttackArchetype = character.archetypes?.specialAttack;
+        let archetypeMultiplier = 0;
+        if (specialAttackArchetype) {
+            switch(specialAttackArchetype) {
+                case 'normal':
+                    archetypeMultiplier = character.tier / 6;
+                    break;
+                case 'specialist':
+                    archetypeMultiplier = character.tier / 3;
+                    break;
+                case 'straightforward':
+                    archetypeMultiplier = character.tier / 2;
+                    break;
+                case 'sharedUses':
+                    archetypeMultiplier = 1.0;
+                    break;
+                default:
+                    archetypeMultiplier = 0;
+                    break;
+            }
+        }
+        
+        // Calculate what simple multiplication would give (for comparison)
+        const simpleMultiplication = limitPointsTotal * archetypeMultiplier;
+        const hasDiminishingReturns = Math.abs(finalUpgradePoints - simpleMultiplication) > 0.1;
         
         return `
             <tr class="calculation-subtotal">
-                <td colspan="2"><strong>Limit Points Total:</strong></td>
+                <td colspan="2"><strong>Step 1 - Limit Points Total:</strong></td>
                 <td><strong>${limitPointsTotal}</strong></td>
             </tr>
             <tr class="calculation-multiplier">
-                <td colspan="2">Archetype Multiplier (Tier ${character.tier}):</td>
-                <td>×${archetypeMultiplier}</td>
+                <td colspan="2">Step 2 - Archetype Rate Modifier (${specialAttackArchetype || 'none'}):</td>
+                <td>×${archetypeMultiplier.toFixed(3)}</td>
             </tr>
             <tr class="calculation-base">
-                <td colspan="2">Base Upgrade Points:</td>
-                <td>${baseUpgradePoints}</td>
+                <td colspan="2">Step 3 - Apply Modified Rates to DR Buckets:</td>
+                <td>${hasDiminishingReturns ? 'See calculation below' : `${limitPointsTotal} × ${archetypeMultiplier.toFixed(3)} = ${simpleMultiplication.toFixed(1)}`}</td>
             </tr>
             ${hasDiminishingReturns ? `
                 <tr class="calculation-diminishing">
-                    <td colspan="2">After Diminishing Returns:</td>
-                    <td>${finalUpgradePoints}</td>
+                    <td colspan="2">Diminishing Returns Applied:</td>
+                    <td>${finalUpgradePoints} (before rounding)</td>
                 </tr>
             ` : ''}
             <tr class="calculation-final">
-                <td colspan="2"><strong>Final Upgrade Points:</strong></td>
+                <td colspan="2"><strong>Step 4 - Final (Rounded to Nearest 10):</strong></td>
                 <td><strong>${finalUpgradePoints}</strong></td>
             </tr>
         `;

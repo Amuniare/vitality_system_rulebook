@@ -1,166 +1,418 @@
 {
-    "Upgrades": {
-      "Accuracy Bonuses": [
+  "Upgrades": {
+    "Accuracy Bonuses": [
+      {
+        "name": "Accurate Attack",
+        "cost": 10,
+        "effect": "+Tier to Accuracy rolls, -Tier to Damage and Condition rolls",
+        "usage": "Basic accuracy/damage trade-off"
+      },
+      {
+        "name": "Reliable Accuracy",
+        "cost": 20,
+        "effect": "Advantage on Accuracy rolls, -4 penalty to all Accuracy rolls",
+        "usage": "Consistent hitting with reduced total bonus"
+      },
+      {
+        "name": "Critical Accuracy",
+        "cost": 30,
+        "effect": "Critical hit range expanded to 15-20 on d20",
+        "restriction": "Cannot apply to AOE attacks"
+      },
+      {
+        "name": "Powerful Critical",
+        "cost": 20,
+        "effect": "Add Tier bonus again to Damage and Condition rolls on critical hits",
+        "usage": "Enhances critical hit effect roll strength"
+      },
+      {
+        "name": "Overhit",
+        "cost": 30,
+        "effect": "When Accuracy exceeds target Avoidance by 5+, add half the difference to Effect roll",
+        "usage": "Rewards high accuracy against low-defense targets"
+      },
+      {
+        "name": "Blitz",
+        "cost": 20,
+        "effect": "+1 Accuracy per 6 spaces moved toward target this turn",
+        "usage": "Mobile attacker bonus, stacks with movement"
+      },
+      {
+        "name": "Ricochet",
+        "cost": 20,
+        "effect": "Critical hits trigger additional attack against different target within range",
+        "restriction": "Secondary attack cannot crit from target being Stunned",
+        "exclusion": "Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet"
+      },
+      {
+        "name": "Double-Tap",
+        "cost": 30,
+        "effect": "Critical hits trigger same attack again against same target",
+        "restriction": "Secondary attack cannot crit from target being Stunned",
+        "exclusion": "Cannot trigger from Ricochet, Explosive Critical, or other Double-Tap"
+      },
+      {
+        "name": "Explosive Critical",
+        "cost": 40,
+        "effect": "Critical hits trigger attack against all enemies within 3 spaces of target",
+        "restriction": "Cannot apply to AOE attacks, secondary attacks cannot crit from Stun",
+        "exclusion": "Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical"
+      }
+    ],
+    "Damage Bonuses": {
+      "Core Damage Modifiers": [
         {
-          "name": "Accurate Attack",
+          "name": "Power Attack",
           "cost": 10,
-          "effect": "+Tier to Accuracy rolls, -Tier to Damage and Condition rolls",
-          "usage": "Basic accuracy/damage trade-off"
+          "effect": "+Tier to Damage rolls, -Tier to Accuracy rolls",
+          "usage": "Basic damage/accuracy trade-off"
         },
         {
-          "name": "Reliable Accuracy",
+          "name": "High Impact",
           "cost": 20,
-          "effect": "Advantage on Accuracy rolls, -4 penalty to all Accuracy rolls",
-          "usage": "Consistent hitting with reduced total bonus"
+          "effect": "Replace 3d6 damage roll with flat 15 damage",
+          "usage": "Eliminates damage variance for consistent output"
         },
         {
-          "name": "Critical Accuracy",
+          "name": "Enhanced Effect",
+          "cost": 50,
+          "effect": "Add one additional damage die to damage rolls",
+          "usage": "Increases damage potential and average"
+        }
+      ],
+      "Dice Manipulation": [
+        {
+          "name": "Reliable Effect",
+          "cost": 10,
+          "effect": "Roll extra die on damage and condition rolls, drop lowest result"
+        },
+        {
+          "name": "Consistent Effect",
+          "cost": 20,
+          "effect": "Reroll all 1s on damage dice"
+        },
+        {
+          "name": "Critical Effect",
+          "cost": 50,
+          "effect": "All effect dice explode on rolls of 5 or 6",
+          "usage": "Dice continue rolling when showing 5-6, cumulative"
+        }
+      ],
+      "Armor and Defense Bypass": [
+        {
+          "name": "Armor Piercing",
           "cost": 30,
-          "effect": "Critical hit range expanded to 15-20 on d20",
+          "effect": "-Tier to Attack rolls, ignore target's Durability Endurance bonus",
+          "note": "For Direct attacks, reduce Damage roll instead of Attack roll"
+        },
+        {
+          "name": "Brutal",
+          "cost": 40,
+          "effect": "When Damage roll exceeds target Durability by 10+, deal extra damage equal to half the difference",
+          "bannedCombination": "Cannot combine with Heavy Strike or Headshot"
+        }
+      ],
+      "Damage Over Time and Area": [
+        {
+          "name": "Bleed",
+          "cost": 50,
+          "effect": "Target takes identical damage again at end of your next 2 turns",
+          "duration": "2 additional damage instances"
+        },
+        {
+          "name": "Splash Damage",
+          "cost": 20,
+          "effect": "Adjacent targets take Tier+1d6 damage if Attack roll would hit their Avoidance",
+          "usage": "Applies to Melee and Ranged attacks only"
+        },
+        {
+          "name": "Environmental",
+          "cost": 50,
+          "effect": "All hexes hit by attack become hazardous terrain",
+          "hazardEffect": "Deal attack's Damage and Condition to any character entering or ending turn in hex"
+        }
+      ],
+      "Utility Effects": [
+        {
+          "name": "Shatter",
+          "cost": 20,
+          "effect": "Deal double damage to structures and vehicles",
+          "usage": "Specialized anti-object enhancement"
+        },
+        {
+          "name": "Leech",
+          "cost": 80,
+          "effect": "Regain HP equal to half damage dealt",
+          "restriction": "Cannot apply to AOE attacks"
+        }
+      ],
+      "Instant Defeat Mechanics": [
+        {
+          "name": "Finishing Blow",
+          "cost": "20 per tier",
+          "effect": "If attack reduces enemy to 5×tier HP or below, enemy is defeated instead",
+          "maximum": "3 tiers purchasable, stacks multiplicatively",
           "restriction": "Cannot apply to AOE attacks"
         },
         {
-          "name": "Powerful Critical",
+          "name": "Culling Strike",
           "cost": 20,
-          "effect": "Add Tier bonus again to Damage and Condition rolls on critical hits",
-          "usage": "Enhances critical hit effect roll strength"
-        },
+          "effect": "If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead",
+          "restriction": "Cannot apply to AOE attacks"
+        }
+      ]
+    },
+    "Condition Bonuses": [
+      {
+        "name": "Critical Condition",
+        "cost": 30,
+        "effect": "Condition rolls critical hit on 15-20 range",
+        "restriction": "Cannot apply to AOE attacks"
+      },
+      {
+        "name": "Lasting Condition",
+        "cost": 20,
+        "effect": "If Condition roll exceeds Resistance by 10+, condition duration extends by 1 turn"
+      },
+      {
+        "name": "Mass Effect",
+        "cost": 60,
+        "effect": "Single Direct condition attack targets up to Tier enemies simultaneously",
+        "effectModifier": "-Tier penalty to Condition rolls"
+      },
+      {
+        "name": "Collateral Condition",
+        "cost": 60,
+        "effect": "Successful condition triggers attack against all targets within 3-space burst",
+        "restriction": "Cannot apply to AOE attacks, triggers only once per attack"
+      },
+      {
+        "name": "Contagious",
+        "cost": 40,
+        "effect": "Successful condition triggers attack against nearest enemy",
+        "maximumTriggers": "Tier/2 times per attack (rounded down)",
+        "restriction": "Cannot apply to AOE attacks"
+      },
+      {
+        "name": "Cursed",
+        "cost": 30,
+        "effect": "If 2×(Condition roll - Resistance) ≥ target's remaining HP, condition becomes permanent"
+      },
+      {
+        "name": "Overwhelming Affliction",
+        "cost": 40,
+        "effect": "If Condition roll exceeds Resistance by 3×Tier, condition becomes permanent regardless of target HP"
+      }
+    ],
+    "Specialized Combat": {
+      "Melee Specialization": [
         {
-          "name": "Overhit",
-          "cost": 30,
-          "effect": "When Accuracy exceeds target Avoidance by 5+, add half the difference to Effect roll",
-          "usage": "Rewards high accuracy against low-defense targets"
-        },
-        {
-          "name": "Blitz",
-          "cost": 20,
-          "effect": "+1 Accuracy per 6 spaces moved toward target this turn",
-          "usage": "Mobile attacker bonus, stacks with movement"
-        },
-        {
-          "name": "Ricochet",
-          "cost": 20,
-          "effect": "Critical hits trigger additional attack against different target within range",
-          "restriction": "Secondary attack cannot crit from target being Stunned",
-          "exclusion": "Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet"
-        },
-        {
-          "name": "Double-Tap",
-          "cost": 30,
-          "effect": "Critical hits trigger same attack again against same target",
-          "restriction": "Secondary attack cannot crit from target being Stunned",
-          "exclusion": "Cannot trigger from Ricochet, Explosive Critical, or other Double-Tap"
-        },
-        {
-          "name": "Explosive Critical",
+          "name": "Heavy Strike",
           "cost": 40,
-          "effect": "Critical hits trigger attack against all enemies within 3 spaces of target",
-          "restriction": "Cannot apply to AOE attacks, secondary attacks cannot crit from Stun",
-          "exclusion": "Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical"
+          "requirement": "Expend all Movement and one Quick Action to charge",
+          "effect": "+3×Tier to Damage and Condition rolls, -Tier to Accuracy rolls",
+          "bannedCombination": "Cannot combine with Brutal"
+        },
+        {
+          "name": "Quick Strikes",
+          "cost": 40,
+          "requirement": "Expend all Movement and one Quick Action to charge",
+          "effect": "Make same Melee attack three times against single target, -Tier to Accuracy rolls"
+        },
+        {
+          "name": "Whirlwind Strike",
+          "cost": 30,
+          "effect": "Single Melee attack targets up to Tier enemies simultaneously",
+          "effectModifier": "-Tier penalty to Accuracy rolls"
         }
       ],
-      "Damage Bonuses": {
-        "Core Damage Modifiers": [
-          {
-            "name": "Power Attack",
-            "cost": 10,
-            "effect": "+Tier to Damage rolls, -Tier to Accuracy rolls",
-            "usage": "Basic damage/accuracy trade-off"
-          },
-          {
-            "name": "High Impact",
-            "cost": 20,
-            "effect": "Replace 3d6 damage roll with flat 15 damage",
-            "usage": "Eliminates damage variance for consistent output"
-          },
-          {
-            "name": "Enhanced Effect",
-            "cost": 50,
-            "effect": "Add one additional damage die to damage rolls",
-            "usage": "Increases damage potential and average"
-          }
-        ],
-        "Dice Manipulation": [
-          {
-            "name": "Reliable Effect",
-            "cost": 10,
-            "effect": "Roll extra die on damage and condition rolls, drop lowest result"
-          },
-          {
-            "name": "Consistent Effect",
-            "cost": 20,
-            "effect": "Reroll all 1s on damage dice"
-          },
-          {
-            "name": "Critical Effect",
-            "cost": 50,
-            "effect": "All effect dice explode on rolls of 5 or 6",
-            "usage": "Dice continue rolling when showing 5-6, cumulative"
-          }
-        ],
-        "Armor and Defense Bypass": [
-          {
-            "name": "Armor Piercing",
-            "cost": 30,
-            "effect": "-Tier to Attack rolls, ignore target's Durability Endurance bonus",
-            "note": "For Direct attacks, reduce Damage roll instead of Attack roll"
-          },
-          {
-            "name": "Brutal",
-            "cost": 40,
-            "effect": "When Damage roll exceeds target Durability by 10+, deal extra damage equal to half the difference",
-            "bannedCombination": "Cannot combine with Heavy Strike or Headshot"
-          }
-        ],
-        "Damage Over Time and Area": [
-          {
-            "name": "Bleed",
-            "cost": 50,
-            "effect": "Target takes identical damage again at end of your next 2 turns",
-            "duration": "2 additional damage instances"
-          },
-          {
-            "name": "Splash Damage",
-            "cost": 20,
-            "effect": "Adjacent targets take Tier+1d6 damage if Attack roll would hit their Avoidance",
-            "usage": "Applies to Melee and Ranged attacks only"
-          },
-          {
-            "name": "Environmental",
-            "cost": 50,
-            "effect": "All hexes hit by attack become hazardous terrain",
-            "hazardEffect": "Deal attack's Damage and Condition to any character entering or ending turn in hex"
-          }
-        ],
-        "Utility Effects": [
-          {
-            "name": "Shatter",
-            "cost": 20,
-            "effect": "Deal double damage to structures and vehicles",
-            "usage": "Specialized anti-object enhancement"
-          },
-          {
-            "name": "Leech",
-            "cost": 80,
-            "effect": "Regain HP equal to half damage dealt",
-            "restriction": "Cannot apply to AOE attacks"
-          }
-        ],
-        "Instant Defeat Mechanics": [
-          {
-            "name": "Finishing Blow",
-            "cost": "20 per tier",
-            "effect": "If attack reduces enemy to 5×tier HP or below, enemy is defeated instead",
-            "maximum": "3 tiers purchasable, stacks multiplicatively",
-            "restriction": "Cannot apply to AOE attacks"
-          },
-          {
-            "name": "Culling Strike",
-            "cost": 20,
-            "effect": "If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead",
-            "restriction": "Cannot apply to AOE attacks"
-          }
-        ]
-      }
+      "Ranged Specialization": [
+        {
+          "name": "Headshot",
+          "cost": 60,
+          "requirement": "Expend all Movement and one Quick Action to charge",
+          "effect": "+3×Tier to Damage and Condition rolls, -Tier to Accuracy rolls",
+          "bannedCombination": "Cannot combine with Brutal"
+        },
+        {
+          "name": "Barrage",
+          "cost": 60,
+          "requirement": "Expend all Movement and one Quick Action to charge",
+          "effect": "Make same Ranged attack three times against single target, -Tier to Accuracy rolls"
+        },
+        {
+          "name": "Scatter Shot",
+          "cost": 60,
+          "effect": "Single Ranged attack targets up to Tier enemies simultaneously",
+          "effectModifier": "-Tier penalty to Accuracy rolls"
+        }
+      ],
+      "Universal Combat Techniques": [
+        {
+          "name": "Flurry of Blows",
+          "cost": 40,
+          "effect": "Make same attack three times against single target",
+          "effectModifier": "-Tier to Accuracy, Damage, and Condition rolls",
+          "usage": "Works with Melee or Ranged attacks"
+        },
+        {
+          "name": "Pounce",
+          "cost": 20,
+          "effect": "Move up to 6 spaces in straight line toward target as part of attack",
+          "usage": "Movement occurs during attack resolution"
+        },
+        {
+          "name": "Splinter",
+          "cost": 40,
+          "effect": "Defeating enemy triggers another attack against new target before turn ends",
+          "chainLimit": "Maximum Tier/2 additional attacks (rounded up)",
+          "restriction": "Cannot apply to AOE attacks"
+        }
+      ],
+      "Tactical Enhancements": [
+        {
+          "name": "Menacing",
+          "cost": 30,
+          "effect": "Reducing enemy to 0 HP allows Intimidation attempt against all enemies within 3 spaces",
+          "surrenderThreshold": "Enemies with HP ≤ Intimidation bonus surrender"
+        },
+        {
+          "name": "Disengage",
+          "cost": 30,
+          "effect": "Successful hit prevents opportunity attacks from all hit targets until end of turn"
+        },
+        {
+          "name": "Extra Attack",
+          "cost": 60,
+          "effect": "Successful hit with successful effect allows identical attack against same target",
+          "usage": "Must hit and succeed on both Accuracy and Effect"
+        }
+      ],
+      "Sequential Attack Systems": [
+        {
+          "name": "Analyzing Strike",
+          "cost": 20,
+          "effect": "+1 to chosen stat (Accuracy/Damage/Conditions) per previous Analyzing Strike against same target",
+          "maximumBonus": "Equal to Tier",
+          "resetCondition": "Bonus resets if you skip attacking target for one turn",
+          "limitation": "Only one target can have Analyzing Strike bonus at any time"
+        },
+        {
+          "name": "Follow-Up Strike",
+          "cost": 30,
+          "effect": "Successful hit with successful effect allows one Base Attack against same target",
+          "frequency": "Once per turn maximum"
+        },
+        {
+          "name": "Counterattack",
+          "cost": 40,
+          "effect": "Using attack against enemy that missed you or failed their effect adds Tier to chosen roll",
+          "bonusSelection": "Choose Accuracy, Damage, or Condition when purchasing",
+          "restriction": "Cannot use with limits requiring you to be attacked or affected"
+        },
+        {
+          "name": "Exploit",
+          "cost": 40,
+          "effect": "+Tier to Damage and Condition rolls against targets currently afflicted by any Condition"
+        }
+      ],
+      "Combat Control": [
+        {
+          "name": "Priority Target",
+          "cost": 20,
+          "effect": "After hitting target, mark them as Priority Target until start of next turn",
+          "allyBonus": "Other characters gain Tier/2 Accuracy bonus against marked target (rounded up)",
+          "frequency": "Once per turn"
+        },
+        {
+          "name": "Bully",
+          "cost": 10,
+          "effect": "Damaging target with Power score equal to or less than yours allows 1-space forced movement"
+        },
+        {
+          "name": "Martial Artist",
+          "cost": 20,
+          "effect": "Critical hits allow choice of Grab, 3-space forced movement, or Prone condition"
+        },
+        {
+          "name": "Grappler",
+          "cost": 30,
+          "effect": "+Tier damage against targets you have Grabbed",
+          "requirement": "Must have Grab condition active on target"
+        }
+      ]
+    },
+    "Variable Bonuses": {
+      "Enemy Type Bonuses": [
+        {
+          "name": "Minion Slayer",
+          "cost": 20,
+          "effect": "Bonus applies against 10 maximum HP enemies"
+        },
+        {
+          "name": "Captain Slayer",
+          "cost": 20,
+          "effect": "Bonus applies against 25 maximum HP enemies"
+        },
+        {
+          "name": "Elite Slayer",
+          "cost": 20,
+          "effect": "Bonus applies against 50 maximum HP enemies"
+        },
+        {
+          "name": "Boss Slayer",
+          "cost": 20,
+          "effect": "Bonus applies against 100 maximum HP enemies"
+        }
+      ],
+      "Resource-Based Bonuses": [
+        {
+          "name": "Lucky Strike",
+          "cost": 20,
+          "effect": "Using Effort on this attack allows rolling extra die on the Effort roll"
+        },
+        {
+          "name": "Compressed Release",
+          "cost": 20,
+          "requirement": "Active Aura ability",
+          "effect": "Disable Aura until start of next turn, +Tier to Accuracy, Damage and Condition rolls"
+        }
+      ],
+      "Environmental Bonuses": [
+        {
+          "name": "Domain",
+          "cost": 30,
+          "requirement": "Active Barrier ability",
+          "effect": "+Tier to chosen roll when attacking targets within your Barrier"
+        },
+        {
+          "name": "Tower Defense",
+          "cost": 30,
+          "requirement": "Active Wall ability",
+          "effect": "+Tier to chosen roll when attacking targets on opposite side of your Wall"
+        }
+      ],
+      "Sustained Attack Systems": [
+        {
+          "name": "Channeled",
+          "cost": 40,
+          "requirement": "Ranged or AOE attack type",
+          "effect": "Spend Primary Action + Movement on subsequent turns to repeat attack",
+          "scaling": "+Tier to chosen roll for each consecutive turn channeling (maximum 5 turns)"
+        },
+        {
+          "name": "Focused",
+          "cost": 20,
+          "requirement": "Melee attack type",
+          "effect": "Spend Primary Action + Movement on subsequent turns to repeat attack",
+          "scaling": "+Tier to chosen roll for each consecutive turn focusing (maximum 5 turns)"
+        }
+      ]
     }
-  }
+  },
+  "bannedCombinations": [
+    ["brutal", "heavyStrike"],
+    ["brutal", "headshot"],
+    ["criticalEffect", "consistentEffect"]
+  ]
+}

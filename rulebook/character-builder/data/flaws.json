@@ -68,12 +68,5 @@
         "cost": 30,
         "description": "Choose specific item; lose access to one Archetype benefit without it, it is noticeable and you can be disarmed of it",
         "restriction": "Archetype benefit tied to equipment"
-    },
-    {
-        "id": "stubborn",
-        "name": "Stubborn",
-        "cost": 30,
-        "description": "Cannot benefit from Assist actions, healing, or any other ally bonuses (they can't block for you, or move you via carry)",
-        "restriction": "No ally assistance benefits"
     }
 ]

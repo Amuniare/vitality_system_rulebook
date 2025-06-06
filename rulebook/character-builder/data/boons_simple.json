@@ -41,14 +41,6 @@
         "bonus": { "utilityPoints": 10 }
     },
     {
-        "id": "speedOfThought",
-        "name": "Speed of Thought",
-        "cost": 15,
-        "description": "Use 2 × Intelligence instead of Awareness for Initiative",
-        "effect": "initiative_intelligence",
-        "category": "enhancement"
-    },
-    {
         "id": "perfectionist",
         "name": "Perfectionist",
         "cost": 15,

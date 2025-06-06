@@ -41,9 +41,18 @@
             { "id": "temporary1", "name": "Temporary 1", "description": "Activate for 1 turn, recharges after 1 minute rest" },
             { "id": "irregular2", "name": "Irregular 2", "description": "Roll d20, DC 10 to activate each turn" },
             { "id": "nearDeath", "name": "Near Death", "description": "At 0 Hit Points" },
-            { "id": "dangerous", "name": "Dangerous", "description": "No allies within 15 spaces, no civilians within 50 spaces" },
-            { "id": "avenger", "name": "Avenger", "description": "Ally unconscious or great peril occurred" },
-            { "id": "holdingBack", "name": "Holding Back", "description": "No allies within 15 spaces, no civilians within 30 spaces" }
+            { "id": "dangerous", "name": "Dangerous", "description": "No allies within 15 spaces, no civilians within 30 spaces" },
+            { "id": "avenger", "name": "Avenger", "description": "Ally unconscious or great peril occurred" }
+        ]
+    },
+    "variable": {
+        "cost": "Variable",
+        "name": "Variable Conditions (Discuss with GM)",
+        "conditions": [
+            { "id": "environment", "name": "Environment", "description": "Specific locations (electricity, water, urban, forest)" },
+            { "id": "time", "name": "Time", "description": "Specific times (night, full moon, day)" },
+            { "id": "weather", "name": "Weather", "description": "Specific weather (stormy, sunny, cloudy)" },
+            { "id": "descriptor", "name": "Descriptor", "description": "Specific damage types (hit with energy)" }
         ]
     }
 }

@@ -40,32 +40,9 @@ export class LimitCalculator {
         };
     }
     
-    // Calculate upgrade points from limit points using scaling formula
-    static calculateUpgradePointsFromLimits(limitPoints, tier) {
-        return TierSystem.calculateLimitScaling(limitPoints, tier);
-    }
-    
-    // Apply archetype multiplier to scaled limit points
-    static applyArchetypeMultiplier(scaledPoints, tier, specialAttackArchetype) {
-        const multipliers = GameConstants.ARCHETYPE_MULTIPLIERS;
-        
-        switch(specialAttackArchetype) {
-            case 'normal':
-                return Math.floor(scaledPoints * (tier / 6));
-            case 'specialist':
-                return Math.floor(scaledPoints * (tier / 3));
-            case 'straightforward':
-                return Math.floor(scaledPoints * (tier / 2));
-            case 'paragon':
-            case 'oneTrick':
-            case 'dualNatured':
-            case 'basic':
-                return 0; // These archetypes don't use limits
-            case 'sharedUses':
-                return scaledPoints; // No multiplier for shared uses
-            default:
-                return 0;
-        }
+    // Calculate upgrade points from limit points using scaling formula with archetype
+    static calculateUpgradePointsFromLimits(limitPoints, tier, archetype) {
+        return TierSystem.calculateLimitScaling(limitPoints, tier, archetype);
     }
     
     // Calculate trait bonuses from limits
@@ -187,18 +164,14 @@ export class LimitCalculator {
         // Step 1: Calculate total limit points
         const totalLimitPoints = this.calculateTotalLimitPoints(attack.limits);
         
-        // Step 2: Apply scaling formula
-        const scaledPoints = this.calculateUpgradePointsFromLimits(totalLimitPoints, tier);
+        // Step 2: Apply scaling formula with archetype multiplier built in
+        const finalUpgradePoints = this.calculateUpgradePointsFromLimits(totalLimitPoints, tier, archetype);
         
-        // Step 3: Apply archetype multiplier
-        const finalUpgradePoints = this.applyArchetypeMultiplier(scaledPoints, tier, archetype);
-        
-        // Step 4: Calculate trait bonuses
+        // Step 3: Calculate trait bonuses
         const traitBonuses = this.calculateTraitBonuses(attack.limits);
         
         return {
             totalLimitPoints,
-            scaledPoints,
             finalUpgradePoints,
             traitBonuses,
             archetype,
@@ -212,70 +185,80 @@ export class LimitCalculator {
         const firstTier = tier * GameConstants.LIMIT_FIRST_TIER_MULTIPLIER;
         const secondTier = tier * GameConstants.LIMIT_SECOND_TIER_MULTIPLIER;
         
+        // Get archetype multiplier
+        const archetypeMultiplier = this.getArchetypeMultiplier(tier, archetype);
+        
+        // Calculate modified rates with archetype multiplier applied
+        const modifiedFirstRate = GameConstants.LIMIT_FIRST_VALUE * archetypeMultiplier;
+        const modifiedSecondRate = GameConstants.LIMIT_SECOND_VALUE * archetypeMultiplier;
+        const modifiedThirdRate = GameConstants.LIMIT_THIRD_VALUE * archetypeMultiplier;
+        
         const breakdown = {
             steps: [],
             firstTierValue: firstTier,
             secondTierValue: secondTier,
+            archetypeMultiplier,
             scaling: {
-                first: { points: 0, value: 0, rate: 1.0 },
-                second: { points: 0, value: 0, rate: 0.5 },
-                third: { points: 0, value: 0, rate: 0.25 }
+                first: { points: 0, value: 0, rate: modifiedFirstRate },
+                second: { points: 0, value: 0, rate: modifiedSecondRate },
+                third: { points: 0, value: 0, rate: modifiedThirdRate }
             }
         };
         
-        // Calculate scaling breakdown
+        // Calculate scaling breakdown with modified rates
         if (limitPoints <= firstTier) {
             breakdown.scaling.first = {
                 points: limitPoints,
-                value: limitPoints * 1.0,
-                rate: 1.0
+                value: limitPoints * modifiedFirstRate,
+                rate: modifiedFirstRate
             };
         } else if (limitPoints <= firstTier + secondTier) {
             breakdown.scaling.first = {
                 points: firstTier,
-                value: firstTier * 1.0,
-                rate: 1.0
+                value: firstTier * modifiedFirstRate,
+                rate: modifiedFirstRate
             };
             breakdown.scaling.second = {
                 points: limitPoints - firstTier,
-                value: (limitPoints - firstTier) * 0.5,
-                rate: 0.5
+                value: (limitPoints - firstTier) * modifiedSecondRate,
+                rate: modifiedSecondRate
             };
         } else {
             breakdown.scaling.first = {
                 points: firstTier,
-                value: firstTier * 1.0,
-                rate: 1.0
+                value: firstTier * modifiedFirstRate,
+                rate: modifiedFirstRate
             };
             breakdown.scaling.second = {
                 points: secondTier,
-                value: secondTier * 0.5,
-                rate: 0.5
+                value: secondTier * modifiedSecondRate,
+                rate: modifiedSecondRate
             };
             breakdown.scaling.third = {
                 points: limitPoints - firstTier - secondTier,
-                value: (limitPoints - firstTier - secondTier) * 0.25,
-                rate: 0.25
+                value: (limitPoints - firstTier - secondTier) * modifiedThirdRate,
+                rate: modifiedThirdRate
             };
         }
         
-        const totalScaled = breakdown.scaling.first.value + 
-                           breakdown.scaling.second.value + 
-                           breakdown.scaling.third.value;
+        const totalValue = breakdown.scaling.first.value + 
+                          breakdown.scaling.second.value + 
+                          breakdown.scaling.third.value;
         
-        // Add archetype multiplier
-        const archetypeMultiplier = this.getArchetypeMultiplier(tier, archetype);
-        const finalPoints = Math.floor(totalScaled * archetypeMultiplier);
+        // Round up to nearest 10
+        const finalPoints = Math.ceil(totalValue / 10) * 10;
         
         breakdown.steps = [
-            `1. Total Limit Points: ${limitPoints}`,
-            `2. Apply Scaling: ${Math.floor(totalScaled)} points`,
-            `3. Archetype Multiplier (${archetype}): ×${archetypeMultiplier}`,
-            `4. Final Upgrade Points: ${finalPoints}`
-        ];
+            `1. Sum Limit Points: ${limitPoints}`,
+            `2. Calculate Modified Rates: Base rates × ${archetypeMultiplier.toFixed(3)} (${archetype})`,
+            `3. Apply Modified Rates to Buckets:`,
+            `   • Bucket 1 (${firstTier} max): ${breakdown.scaling.first.points} × ${modifiedFirstRate.toFixed(3)} = ${breakdown.scaling.first.value.toFixed(2)}`,
+            breakdown.scaling.second.points > 0 ? `   • Bucket 2 (${secondTier} max): ${breakdown.scaling.second.points} × ${modifiedSecondRate.toFixed(3)} = ${breakdown.scaling.second.value.toFixed(2)}` : '',
+            breakdown.scaling.third.points > 0 ? `   • Bucket 3 (remainder): ${breakdown.scaling.third.points} × ${modifiedThirdRate.toFixed(3)} = ${breakdown.scaling.third.value.toFixed(2)}` : '',
+            `4. Sum and Round Up: ${totalValue.toFixed(2)} → ${finalPoints} Upgrade Points`
+        ].filter(step => step !== '');
         
-        breakdown.totalScaled = totalScaled;
-        breakdown.archetypeMultiplier = archetypeMultiplier;
+        breakdown.totalValue = totalValue;
         breakdown.finalPoints = finalPoints;
         
         return breakdown;
@@ -406,13 +389,11 @@ export class LimitCalculator {
         const scenarios = [];
         
         for (let points = 0; points <= targetPoints; points += 10) {
-            const scaledPoints = this.calculateUpgradePointsFromLimits(points, tier);
-            const finalPoints = this.applyArchetypeMultiplier(scaledPoints, tier, archetype);
+            const finalPoints = this.calculateUpgradePointsFromLimits(points, tier, archetype);
             const efficiency = points > 0 ? finalPoints / points : 0;
             
             scenarios.push({
                 limitPoints: points,
-                scaledPoints: Math.floor(scaledPoints),
                 upgradePoints: finalPoints,
                 efficiency: efficiency.toFixed(3)
             });

@@ -62,25 +62,53 @@ export class TierSystem {
         return GameConstants.BASE_HP;
     }
     
-    // Calculate limit scaling points
-    static calculateLimitScaling(limitPoints, tier) {
+    // Calculate limit scaling points with archetype multiplier applied to rates
+    static calculateLimitScaling(limitPoints, tier, archetype = null) {
         const firstTier = tier * GameConstants.LIMIT_FIRST_TIER_MULTIPLIER;
         const secondTier = tier * GameConstants.LIMIT_SECOND_TIER_MULTIPLIER;
+        
+        // Get archetype multiplier (if provided)
+        let archetypeMultiplier = 1.0;
+        if (archetype) {
+            switch(archetype) {
+                case 'normal':
+                    archetypeMultiplier = tier / 6;
+                    break;
+                case 'specialist':
+                    archetypeMultiplier = tier / 3;
+                    break;
+                case 'straightforward':
+                    archetypeMultiplier = tier / 2;
+                    break;
+                case 'sharedUses':
+                    archetypeMultiplier = 1.0;
+                    break;
+                default:
+                    archetypeMultiplier = 0;
+                    break;
+            }
+        }
+        
+        // Apply archetype multiplier to the diminishing returns rates
+        const modifiedFirstValue = GameConstants.LIMIT_FIRST_VALUE * archetypeMultiplier;
+        const modifiedSecondValue = GameConstants.LIMIT_SECOND_VALUE * archetypeMultiplier;
+        const modifiedThirdValue = GameConstants.LIMIT_THIRD_VALUE * archetypeMultiplier;
         
         let upgradePoints = 0;
         
         if (limitPoints <= firstTier) {
-            upgradePoints = limitPoints * GameConstants.LIMIT_FIRST_VALUE;
+            upgradePoints = limitPoints * modifiedFirstValue;
         } else if (limitPoints <= firstTier + secondTier) {
-            upgradePoints = firstTier + 
-                           (limitPoints - firstTier) * GameConstants.LIMIT_SECOND_VALUE;
+            upgradePoints = firstTier * modifiedFirstValue + 
+                           (limitPoints - firstTier) * modifiedSecondValue;
         } else {
-            upgradePoints = firstTier + 
-                           secondTier * GameConstants.LIMIT_SECOND_VALUE + 
-                           (limitPoints - firstTier - secondTier) * GameConstants.LIMIT_THIRD_VALUE;
+            upgradePoints = firstTier * modifiedFirstValue + 
+                           secondTier * modifiedSecondValue + 
+                           (limitPoints - firstTier - secondTier) * modifiedThirdValue;
         }
         
-        return Math.floor(upgradePoints);
+        // Round up to nearest 10
+        return Math.ceil(upgradePoints / 10) * 10;
     }
     
     // Get archetype special attack points
