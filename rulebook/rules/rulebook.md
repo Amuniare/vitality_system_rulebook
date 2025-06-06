@@ -502,7 +502,7 @@ These represent mundane impairments that any character can apply through Base At
 - **Rule:** When combined with Direct or Area attacks, only the Hybrid penalty applies
 
 ### **Basic Conditions**  
-These represent mundane impairments that any character can apply through Base Attacks. All Basic Conditions either take effect instantly or last until the end of your next turn if they have a duration unless otherwise specified.
+These represent mundane impairments that any character can apply through Base Attacks. All Basic Conditions either take effect instantly or last until the **end of your next turn** if they have a duration unless otherwise specified.
   - **Disarm (Stability)**: Forces the target to drop something they're holding. The dropped item can be picked up as a Quick Action. You may attempt to launch the item in any direction a number of spaces equal to how successful your roll was assuming you have the Cpacity to move it. 
 
   - **Grab (Stability)**: The target cannot move. As an Action the target can make a Stability check against the Condition roll to break free early or as part of their movement to drag you with them follwing the rules for Capacity.
@@ -519,19 +519,16 @@ These represent mundane impairments that any character can apply through Base At
   - **Taunt (Resolve)**: Target's suffer a reduction to their Accuracy checks equal to double your Tier against all targets other than you.
 
 ### **ADVANCED CONDITIONS**
-.Complex effects unlocked by Effect Type Archetype or purchased for Special Attacks. All Advanced Conditions either take effect instantly or last until the start of your next turn if they have a duration unless otherwise specified.
+Complex effects unlocked by Effect Type Archetype or purchased for Special Attacks. All Advanced Conditions either take effect instantly or last until the **start of your next turn** if they have a duration unless otherwise specified.
 
-**Duration:** Advanced conditions last until the start of your next turn.
-
-- **Control (Resolve)** → Take over target's next turn completely
-- **Capture (Stability)** → Prevent all movement, Avoidance reduced to 10
-- **Stun (Resolve/Vitality)** → No actions, Avoidance = 0, all attacks auto-hit and crit
-- **Weaken (Vitality)** → Reduce chosen stat by Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances; this effect does not expire, target cannot be affected by more than 1 instance of Weaken
-- **Disable Specials (Resolve/Vitality)** → Cannot use Special Attacks
-  - **Mimic** → Gain use of disabled Special Attacks
-- **Frighten (Resolve)** → Move away, defensive actions only
-- **Enthrall (Resolve)** → Must defend caster
-- **Frenzy (Resolve)** → Attack nearest character randomly
+- **Control (Resolve)**: You control the target on their next turn. Common uses are making them attack, protect you, or become Stunned. If you or an ally attack them, the Control ends.
+- **Stun (Resolve/Vitality)**: The target can take no actions or movement, their AV is reduced to 0, and any attacks that hit them are considered critical hits.
+- **Weaken (Vitality)**: Reduce the chosen stat by your Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances. This effect does not expire but the target cannot be affected by more than 1 instance of Weaken.
+- **Disable Specials (Resolve/Vitality)**: Target cannot use Special Attacks.
+  - **Mimic**: You gain use of the disabled Special Attacks but using your own stats. 
+- **Frighten (Resolve)**: The target must move away from you and can only take the Hasten or Hide Actions. If there is nowhere to run or hide they may take the Dodge or Brace Actions.
+- **Enthrall (Resolve)**: The target must defend you.
+- **Frenzy (Resolve)**: Target attacks the nearest character indiscriminantly. 
 
 
 
@@ -849,7 +846,14 @@ These represent mundane impairments that any character can apply through Base At
 - **Direct (30p)**
 - **Area (30p)**  
 
-
+**Advanced Conditions** 
+- **Control (30p)**
+- **Stun (20p)**
+- **Weaken (20p) → Mimic (+20p)** 
+- **Disable Specials (10p)**
+- **Frighten (10p)**
+- **Enthrall (10p)**
+- **Frenzy (10p)**
 
 **Generic Attack Upgrades:**
 - **Extended Range (10p):** Ranged attacks reach 30 spaces instead of 15
@@ -860,7 +864,8 @@ These represent mundane impairments that any character can apply through Base At
 - **Ranged Origin (20p):** Area attacks can originate from designated point within 15 spaces
 - **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only  
 - **Hybrid (30p):** Attack becomes Hybrid, inflicting both a Condition and Damage.  
-**Advanced Conditions:** Control (30p), Capture (20p), Stun (20p), Weaken (20p), Mimic (+20p) Disable Specials (10p), Frighten (10p), Enthrall (10p), Frenzy (10p)
+
+
 
 
 ### **CREATION CHECKLIST**
