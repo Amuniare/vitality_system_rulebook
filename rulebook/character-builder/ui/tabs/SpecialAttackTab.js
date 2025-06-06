@@ -1,8 +1,7 @@
 // rulebook/character-builder/ui/tabs/SpecialAttackTab.js
 import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
-import { LimitCalculator } from '../../calculators/LimitCalculator.js';
 import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
-import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+import { RenderUtils } from '../shared/RenderUtils.js';
 
 export class SpecialAttackTab {
     constructor(characterBuilder) {
@@ -287,8 +286,24 @@ export class SpecialAttackTab {
             `;
         }
 
-        const limitBreakdown = LimitCalculator.getCalculationBreakdown(attack.limitPointsTotal || 0, character.tier, archetype);
-        const allLimits = LimitCalculator.getAllLimits();
+        // Simple breakdown display for UI
+        const limitBreakdown = {
+            steps: attack.limits.length > 0 ? [
+                `Limit Points: ${attack.limitPointsTotal || 0}`,
+                `Tier Multiplier: x${character.tier}`,
+                `Upgrade Points: ${attack.upgradePointsFromLimits || 0}`
+            ] : []
+        };
+        const allLimits = SpecialAttackSystem.getAvailableLimits();
+
+        // Group limits by category for hierarchical display
+        const limitsByCategory = {};
+        allLimits.forEach(limit => {
+            if (!limitsByCategory[limit.category]) {
+                limitsByCategory[limit.category] = [];
+            }
+            limitsByCategory[limit.category].push(limit);
+        });
 
         return `
             <div class="limits-section section-block">
@@ -307,7 +322,7 @@ export class SpecialAttackTab {
                 <!-- Hierarchical Limit Categories -->
                 <div class="limit-categories-hierarchy">
                     <h4>Available Limits</h4>
-                    ${Object.entries(allLimits).map(([categoryKey, categoryLimits]) => 
+                    ${Object.entries(limitsByCategory).map(([categoryKey, categoryLimits]) => 
                         this.renderLimitCategory(categoryKey, categoryLimits, attack, character)
                     ).join('')}
                 </div>
@@ -348,12 +363,15 @@ export class SpecialAttackTab {
         const validation = SpecialAttackSystem.validateLimitSelection(character, attack, limit.id);
         const canSelect = !isSelected && validation.isValid;
         
+        // Handle cost display - cost can be a number or "Variable"
+        const costDisplay = typeof limit.cost === 'number' ? `${limit.cost}p` : limit.cost;
+        
         return `
             <div class="limit-option ${isSelected ? 'selected' : ''} ${!canSelect && !isSelected ? 'disabled' : ''}"
                  ${canSelect ? `data-action="select-limit" data-limit-id="${limit.id}"` : ''}>
                 <div class="limit-option-header">
                     <span class="limit-name">${limit.name}</span>
-                    <span class="limit-points">${limit.points}p</span>
+                    <span class="limit-points">${costDisplay}</span>
                     ${isSelected ? '<span class="selected-indicator">✓</span>' : ''}
                 </div>
                 <div class="limit-description">${limit.description}</div>
@@ -363,11 +381,15 @@ export class SpecialAttackTab {
     }
 
     renderLimitItem(limit, index) {
+        // Handle both old and new limit structures - stored limits might have 'points' while new ones have 'cost'
+        const pointsValue = limit.points || limit.cost || 0;
+        const pointsDisplay = typeof pointsValue === 'number' ? `${pointsValue}p` : pointsValue;
+        
         return `
             <div class="selected-item limit-item">
                 <div class="item-header">
                     <span class="item-name">${limit.name}</span>
-                    <span class="item-value">${limit.points}p</span>
+                    <span class="item-value">${pointsDisplay}</span>
                 </div>
                 <div class="item-description">${limit.description}</div>
                 ${RenderUtils.renderButton({text: '×', variant: 'danger', size: 'small', dataAttributes: {action: 'remove-limit', index: index}})}
@@ -430,8 +452,17 @@ export class SpecialAttackTab {
     renderLimitModal(character) {
         // ... (options should be rendered as cards using RenderUtils.renderCard)
         // ... (close button uses RenderUtils.renderButton)
-        const allLimits = LimitCalculator.getAllLimits();
+        const allLimits = SpecialAttackSystem.getAvailableLimits();
         const attack = character.specialAttacks[this.selectedAttackIndex];
+
+        // Group limits by category for hierarchical display
+        const limitsByCategory = {};
+        allLimits.forEach(limit => {
+            if (!limitsByCategory[limit.category]) {
+                limitsByCategory[limit.category] = [];
+            }
+            limitsByCategory[limit.category].push(limit);
+        });
 
         return `
             <div id="limit-modal" class="modal ${this.showingLimitModal ? '' : 'hidden'}">
@@ -441,7 +472,7 @@ export class SpecialAttackTab {
                         ${RenderUtils.renderButton({ text: '×', variant: 'secondary', size: 'small', dataAttributes: { action: 'close-limit-modal' }})}
                     </div>
                     <div class="modal-body">
-                        ${Object.entries(allLimits).map(([category, limits]) => `
+                        ${Object.entries(limitsByCategory).map(([category, limits]) => `
                             <div class="limit-category-modal">
                                 <h4>${this.formatCategoryName(category)}</h4>
                                 ${RenderUtils.renderGrid(
@@ -450,9 +481,10 @@ export class SpecialAttackTab {
                                         const isSelected = attack?.limits.some(l => l.id === limit.id);
                                         // Basic validation for display, actual validation in system
                                         const validation = attack ? SpecialAttackSystem.validateLimitSelection(character, attack, limit.id) : {isValid: true};
+                                        const costDisplay = typeof limit.cost === 'number' ? limit.cost : limit.cost;
                                         return RenderUtils.renderCard({
                                             title: limit.name,
-                                            cost: limit.points,
+                                            cost: costDisplay,
                                             description: limit.description,
                                             status: isSelected ? 'purchased' : (validation.isValid ? 'available' : 'error'),
                                             clickable: !isSelected && validation.isValid,
@@ -710,13 +742,9 @@ export class SpecialAttackTab {
         const character = this.builder.currentCharacter;
         const attack = character?.specialAttacks[this.selectedAttackIndex];
         if (!character || !attack) return;
-        // Fetch full limit data
-        const limitData = LimitCalculator.findLimitById(limitId);
-        if(!limitData) {
-            this.builder.showNotification('Limit definition not found.', 'error'); return;
-        }
+        
         try {
-            SpecialAttackSystem.addLimitToAttack(character, this.selectedAttackIndex, limitData);
+            SpecialAttackSystem.addLimitToAttack(character, this.selectedAttackIndex, limitId);
             this.builder.updateCharacter();
             this.builder.showNotification('Limit added.', 'success');
         } catch(error) {
@@ -726,13 +754,14 @@ export class SpecialAttackTab {
     removeLimit(limitIndexOnAttack) {
         const character = this.builder.currentCharacter;
         const attack = character?.specialAttacks[this.selectedAttackIndex];
-        if (!character || !attack) return;
+        if (!character || !attack || !attack.limits[limitIndexOnAttack]) return;
+        
         try {
-            // Assume SpecialAttackSystem.removeLimitFromAttack(character, attackIndex, limitIndexOnAttack)
-            const removedLimit = attack.limits.splice(limitIndexOnAttack, 1)[0];
-            SpecialAttackSystem.recalculateAttackPoints(character, attack); // Ensure system recalculates
+            const limitToRemove = attack.limits[limitIndexOnAttack];
+            const limitId = limitToRemove.id;
+            SpecialAttackSystem.removeLimitFromAttack(character, this.selectedAttackIndex, limitId);
             this.builder.updateCharacter();
-            this.builder.showNotification(`Limit "${removedLimit.name}" removed.`, 'info');
+            this.builder.showNotification(`Limit "${limitToRemove.name}" removed.`, 'info');
         } catch(error) {
             this.builder.showNotification(`Failed to remove limit: ${error.message}`, 'error');
         }
