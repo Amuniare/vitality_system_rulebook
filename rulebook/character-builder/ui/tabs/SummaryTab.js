@@ -17,7 +17,6 @@ export class SummaryTab {
         }
 
         const stats = this.builder.calculateStats(); // From CharacterBuilder
-        const validation = this.builder.validateCharacter(); // From CharacterBuilder
 
         tabContent.innerHTML = `
             <div class="summary-section">
@@ -27,7 +26,6 @@ export class SummaryTab {
                     ${this.renderArchetypesCard(character)}
                     ${this.renderAttributesCard(character)}
                     ${this.renderCalculatedStatsCard(stats)}
-                    ${this.renderValidationSummaryCard(validation)}
                     ${this.renderPointPoolsSummaryCard(character)}
                 </div>
 
@@ -35,7 +33,6 @@ export class SummaryTab {
                     <h3>Export Character</h3>
                     <div class="export-buttons">
                         ${RenderUtils.renderButton({ text: 'Export Full JSON', variant: 'secondary', dataAttributes: { action: 'export-json-summary' }})}
-                        ${RenderUtils.renderButton({ text: 'Export for Roll20', variant: 'secondary', dataAttributes: { action: 'export-roll20-summary' }})}
                         ${RenderUtils.renderButton({ text: 'Print Character Sheet', variant: 'secondary', dataAttributes: { action: 'print-character' }})}
                     </div>
                 </div>
@@ -144,35 +141,6 @@ export class SummaryTab {
     }
 
 
-    renderValidationSummaryCard(validation) {
-        const statusType = validation.isValid ? 'success' : (validation.errors.length > 0 ? 'error' : 'warning');
-        const statusText = validation.isValid ? 'Character Valid!' : (validation.errors.length > 0 ? 'Errors Found' : 'Warnings Present');
-        const icon = validation.isValid ? '✅' : (validation.errors.length > 0 ? '❌' : '⚠️');
-
-        let issuesContent = '';
-        if (validation.errors.length > 0) {
-            issuesContent += `<h6>Errors (${validation.errors.length}):</h6><ul class="error-items">
-                ${validation.errors.slice(0,3).map(e => `<li>${e}</li>`).join('')}
-                ${validation.errors.length > 3 ? `<li>...and ${validation.errors.length-3} more.</li>` : ''}
-            </ul>`;
-        }
-        if (validation.warnings.length > 0) {
-            issuesContent += `<h6>Warnings (${validation.warnings.length}):</h6><ul class="warning-items">
-                ${validation.warnings.slice(0,3).map(w => `<li>${w}</li>`).join('')}
-                ${validation.warnings.length > 3 ? `<li>...and ${validation.warnings.length-3} more.</li>` : ''}
-            </ul>`;
-        }
-        if (!issuesContent) issuesContent = "<p>No validation issues.</p>";
-
-        return RenderUtils.renderCard({
-            title: 'Validation Status',
-            additionalContent: `
-                <div class="validation-status-line">
-                    ${RenderUtils.renderStatusIndicator(statusType, `${icon} ${statusText}`, {absolutePosition: false})}
-                </div>
-                ${issuesContent}`
-        }, { cardClass: `summary-validation-card status-${statusType}`, showCost: false, showStatus: false });
-    }
 
     formatArchetypeName(archetypeId) {
         return archetypeId.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
@@ -182,7 +150,29 @@ export class SummaryTab {
         // Buttons handled by CharacterBuilder's EventManager via data-actions
     }
 
-    // exportForRoll20 and printCharacterSheet are called by CharacterBuilder
+    exportCharacterJSON() {
+        const character = this.builder.currentCharacter;
+        if (!character) {
+            this.builder.showNotification('No character to export', 'error');
+            return;
+        }
+        
+        const dataStr = JSON.stringify(character, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${character.name.replace(/[^a-z0-9]/gi, '_')}_character.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        this.builder.showNotification('Character exported successfully!', 'success');
+    }
+
+    printCharacter() {
+        this.builder.showNotification('Print functionality coming soon!', 'info');
+    }
+
     // onCharacterUpdate will be handled by CharacterBuilder calling this.render() if active.
 }
 

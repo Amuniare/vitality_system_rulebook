@@ -131,9 +131,6 @@ export class CharacterBuilder {
                 '#import-character': () => this.handleImportCharacter(),
                 '.character-item': (e) => this.handleCharacterSelect(e),
                 '.tab-btn': (e, element) => this.handleTabSwitch(e, element),
-                '#save-character': () => this.saveCharacter(),
-                '#export-json': () => this.exportCharacterJSON(),
-                '#delete-character': () => this.deleteCharacter(),
 
                 // ARCHETYPE HANDLERS
                 '[data-action="select-archetype"]': (e, element) => {
@@ -186,6 +183,139 @@ export class CharacterBuilder {
                 '[data-action="continue-to-utility"]': () => this.switchTab('utility'),
                 '[data-action="continue-to-summary"]': () => this.switchTab('summary'),
 
+                // SPECIAL ATTACK HANDLERS
+                '[data-action="create-attack"]': () => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.createNewAttack();
+                    }
+                },
+                '[data-action="select-attack-tab"]': (e, element) => {
+                    const attackIndex = parseInt(element.dataset.attackIndex);
+                    if (this.tabs.specialAttacks && !isNaN(attackIndex)) {
+                        this.tabs.specialAttacks.selectedAttackIndex = attackIndex;
+                        this.tabs.specialAttacks.render();
+                    }
+                },
+                '[data-action="delete-attack"]': (e, element) => {
+                    const attackIndex = parseInt(element.dataset.index);
+                    if (this.tabs.specialAttacks && !isNaN(attackIndex)) {
+                        this.tabs.specialAttacks.deleteAttack(attackIndex);
+                    }
+                },
+
+                // SPECIAL ATTACK MODAL HANDLERS
+                '[data-action="open-limit-modal"]': () => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.openLimitModal();
+                    }
+                },
+                '[data-action="close-limit-modal"]': () => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.closeLimitModal();
+                    }
+                },
+                '[data-action="open-upgrade-modal"]': () => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.openUpgradeModal();
+                    }
+                },
+                '[data-action="close-upgrade-modal"]': () => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.closeUpgradeModal();
+                    }
+                },
+                '[data-action="open-attack-type-modal"]': () => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.openAttackTypeModal();
+                    }
+                },
+                '[data-action="close-attack-type-modal"]': () => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.closeAttackTypeModal();
+                    }
+                },
+
+                // SPECIAL ATTACK SELECTION HANDLERS
+                '[data-action="select-limit"]': (e, element) => {
+                    const limitId = element.dataset.limitId;
+                    if (this.tabs.specialAttacks && limitId) {
+                        this.tabs.specialAttacks.addLimit(limitId);
+                    }
+                },
+                '[data-action="remove-limit"]': (e, element) => {
+                    const limitIndex = parseInt(element.dataset.index);
+                    if (this.tabs.specialAttacks && !isNaN(limitIndex)) {
+                        this.tabs.specialAttacks.removeLimit(limitIndex);
+                    }
+                },
+                '[data-action="select-upgrade"]': (e, element) => {
+                    const upgradeId = element.dataset.upgradeId;
+                    if (this.tabs.specialAttacks && upgradeId) {
+                        this.tabs.specialAttacks.addUpgrade(upgradeId);
+                    }
+                },
+                '[data-action="remove-upgrade"]': (e, element) => {
+                    const upgradeIndex = parseInt(element.dataset.index);
+                    if (this.tabs.specialAttacks && !isNaN(upgradeIndex)) {
+                        this.tabs.specialAttacks.removeUpgrade(upgradeIndex);
+                    }
+                },
+                '[data-action="select-attack-type"]': (e, element) => {
+                    const typeId = element.dataset.typeId;
+                    const cost = parseInt(element.dataset.cost);
+                    if (this.tabs.specialAttacks && typeId) {
+                        this.tabs.specialAttacks.selectAttackType(typeId, cost);
+                    }
+                },
+                '[data-action="remove-attack-type"]': (e, element) => {
+                    const typeId = element.dataset.typeId;
+                    if (this.tabs.specialAttacks && typeId) {
+                        this.tabs.specialAttacks.removeAttackType(typeId);
+                    }
+                },
+
+                // UTILITY TAB HANDLERS
+                '[data-action="purchase-feature"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleGenericPurchase(element);
+                    }
+                },
+                '[data-action="purchase-sense"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleGenericPurchase(element);
+                    }
+                },
+                '[data-action="purchase-movement"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleGenericPurchase(element);
+                    }
+                },
+                '[data-action="purchase-descriptor"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleGenericPurchase(element);
+                    }
+                },
+                '[data-action="remove-feature"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleGenericRemove(element);
+                    }
+                },
+                '[data-action="remove-sense"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleGenericRemove(element);
+                    }
+                },
+                '[data-action="remove-movement"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleGenericRemove(element);
+                    }
+                },
+                '[data-action="remove-descriptor"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleGenericRemove(element);
+                    }
+                },
+
                 // UNIQUE ABILITY UPGRADE HANDLERS
                 '.upgrade-increase': (e, element) => {
                     e.stopPropagation();
@@ -222,6 +352,18 @@ export class CharacterBuilder {
                             section.handleUpgradeCardClick(element);
                         }
                     }
+                },
+
+                // SUMMARY TAB HANDLERS
+                '[data-action="export-json-summary"]': () => {
+                    if (this.tabs.summary) {
+                        this.tabs.summary.exportCharacterJSON();
+                    }
+                },
+                '[data-action="print-character"]': () => {
+                    if (this.tabs.summary) {
+                        this.tabs.summary.printCharacter();
+                    }
                 }
             },
             input: {
@@ -243,12 +385,29 @@ export class CharacterBuilder {
                         console.log(`🎯 Attribute slider: ${attrId} = ${newValue}`);
                         this.tabs.attributes.setAttributeViaSlider(attrId, newValue);
                     }
+                },
+
+                // SPECIAL ATTACK INPUT HANDLERS
+                '[data-action="update-attack-name"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateAttackName(element.value);
+                    }
+                },
+                '[data-action="update-attack-description"]': (e, element) => {
+                    if (this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.updateAttackDescription(element.value);
+                    }
                 }
             },
             change: {
                 '[data-action="update-tier"]': (e, element) => {
                     if (this.tabs.basicInfo) {
                         this.tabs.basicInfo.updateTier(element.value);
+                    }
+                },
+                '[data-action="toggle-expertise"]': (e, element) => {
+                    if (this.tabs.utility) {
+                        this.tabs.utility.handleExpertiseToggle(element);
                     }
                 }
             }
@@ -603,54 +762,6 @@ export class CharacterBuilder {
         };
     }
 
-    // Character export
-    exportCharacterJSON() {
-        if (!this.currentCharacter) {
-            this.showNotification('No character to export', 'error');
-            return;
-        }
-        
-        const dataStr = JSON.stringify(this.currentCharacter, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-        const url = URL.createObjectURL(dataBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${this.currentCharacter.name.replace(/[^a-z0-9]/gi, '_')}_character.json`;
-        link.click();
-        URL.revokeObjectURL(url);
-        
-        this.showNotification('Character exported successfully!', 'success');
-    }
-
-    // Storage methods
-    saveCharacter() {
-        console.log('saveCharacter called');
-        if (this.currentCharacter && this.library) {
-            try {
-                this.library.saveCharacter(this.currentCharacter);
-                this.showNotification('Character saved successfully!', 'success');
-            } catch (error) {
-                console.error('Error saving character:', error);
-                this.showNotification('Error saving character', 'error');
-            }
-        }
-    }
-
-    deleteCharacter() {
-        if (!this.currentCharacter) return;
-        
-        if (confirm(`Delete character "${this.currentCharacter.name}"? This cannot be undone.`)) {
-            try {
-                this.library.deleteCharacter(this.currentCharacter.id);
-                this.currentCharacter = null;
-                this.showWelcomeScreen();
-                this.showNotification('Character deleted', 'info');
-            } catch (error) {
-                console.error('Error deleting character:', error);
-                this.showNotification('Error deleting character', 'error');
-            }
-        }
-    }
 
     showNotification(message, type = 'info') {
         console.log(`Notification (${type}): ${message}`);

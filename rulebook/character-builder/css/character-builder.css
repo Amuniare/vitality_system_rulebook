@@ -1087,3 +1087,168 @@ input:focus, select:focus, textarea:focus {
 .archetype-card {
     pointer-events: auto;
 }
+
+/* UTILITY TAB STYLES */
+.utility-tab-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-large);
+}
+
+.utility-section-tabs {
+    margin-bottom: var(--gap-large);
+}
+
+.utility-category-content {
+    min-height: 400px;
+}
+
+/* Expertise Specific Styles */
+.expertise-main-grid {
+    margin-top: var(--gap-medium);
+}
+
+.expertise-attribute-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-secondary);
+}
+
+.expertise-subsection {
+    margin-bottom: var(--gap-large);
+    padding: var(--padding-medium);
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--border-radius-medium);
+    background: var(--bg-primary);
+}
+
+.expertise-subsection h5 {
+    color: var(--accent-primary);
+    margin-bottom: var(--gap-medium);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.expertise-options-list {
+    display: grid;
+    gap: var(--gap-small);
+    margin: var(--gap-medium) 0;
+}
+
+.expertise-option-item {
+    padding: var(--padding-small);
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--border-radius-small);
+    background: var(--bg-secondary);
+    transition: background-color 0.2s ease;
+}
+
+.expertise-option-item:hover {
+    background: var(--bg-primary);
+}
+
+.expertise-option-item label {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-small);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.expertise-option-item input[type="checkbox"] {
+    margin: 0;
+    accent-color: var(--accent-primary);
+}
+
+.expertise-desc {
+    display: block;
+    margin-top: var(--gap-small);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.mastery-label {
+    margin-top: var(--gap-small);
+    margin-left: 1.5rem;
+    color: var(--accent-highlight);
+    font-size: 0.85rem;
+}
+
+.mastery-label input[type="checkbox"] {
+    accent-color: var(--accent-highlight);
+}
+
+/* Generic Utility Section Styles */
+.utility-generic-section {
+    margin-bottom: var(--gap-large);
+}
+
+.utility-generic-section h3 {
+    color: var(--accent-primary);
+    margin-bottom: var(--gap-medium);
+    font-size: 1.3rem;
+}
+
+.utility-generic-section h4 {
+    color: var(--accent-secondary);
+    margin: var(--gap-large) 0 var(--gap-medium) 0;
+    font-size: 1.1rem;
+}
+
+.category-description {
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: var(--gap-large);
+    padding: var(--padding-small);
+    border-left: 3px solid var(--accent-secondary);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-small);
+}
+
+/* Utility Item Cards */
+.feature-card, .sense-card, .movement-card, .descriptor-card {
+    min-height: 160px;
+    border: 1px solid var(--accent-secondary);
+    background: var(--bg-secondary);
+    transition: all 0.2s ease;
+}
+
+.feature-card:hover, .sense-card:hover, .movement-card:hover, .descriptor-card:hover {
+    border-color: var(--accent-primary);
+    background: var(--bg-primary);
+}
+
+.utility-item-grid {
+    margin-top: var(--gap-medium);
+}
+
+/* Purchased Item Styling for Utility */
+.purchased-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--padding-small);
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--border-radius-small);
+    background: var(--bg-secondary);
+    margin-bottom: var(--gap-small);
+}
+
+.purchased-item .item-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    margin-right: var(--gap-medium);
+}
+
+.purchased-item .item-name {
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.purchased-item .item-cost {
+    color: var(--accent-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
