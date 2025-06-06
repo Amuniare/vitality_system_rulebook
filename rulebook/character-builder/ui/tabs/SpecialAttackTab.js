@@ -311,11 +311,25 @@ export class SpecialAttackTab {
                     <h3>Limits (${attack.limits.length})</h3>
                 </div>
                 
-                <!-- Selected Limits -->
+                <!-- Selected Limits Table -->
                 ${attack.limits.length > 0 ? `
-                    <div class="selected-limits-list">
+                    <div class="selected-limits-table">
                         <h4>Selected Limits</h4>
-                        ${attack.limits.map((limit, index) => this.renderLimitItem(limit, index)).join('')}
+                        <table class="limits-breakdown-table">
+                            <thead>
+                                <tr>
+                                    <th width="40">Remove</th>
+                                    <th>Limit Name</th>
+                                    <th width="80">Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${attack.limits.map((limit, index) => this.renderLimitTableRow(limit, index)).join('')}
+                            </tbody>
+                            <tfoot>
+                                ${this.renderLimitCalculationFooter(attack, character)}
+                            </tfoot>
+                        </table>
                     </div>
                 ` : ''}
                 
@@ -394,6 +408,62 @@ export class SpecialAttackTab {
                 <div class="item-description">${limit.description}</div>
                 ${RenderUtils.renderButton({text: '×', variant: 'danger', size: 'small', dataAttributes: {action: 'remove-limit', index: index}})}
             </div>
+        `;
+    }
+
+    renderLimitTableRow(limit, index) {
+        const pointsValue = limit.points || limit.cost || 0;
+        const pointsDisplay = typeof pointsValue === 'number' ? pointsValue : pointsValue;
+        
+        return `
+            <tr class="limit-table-row">
+                <td class="remove-cell">
+                    ${RenderUtils.renderButton({
+                        text: '×', 
+                        variant: 'danger', 
+                        size: 'small', 
+                        dataAttributes: {action: 'remove-limit', index: index},
+                        title: `Remove ${limit.name}`
+                    })}
+                </td>
+                <td class="limit-name-cell">${limit.name}</td>
+                <td class="limit-points-cell">${pointsDisplay}</td>
+            </tr>
+        `;
+    }
+
+    renderLimitCalculationFooter(attack, character) {
+        const limitPointsTotal = attack.limitPointsTotal || 0;
+        const archetypeMultiplier = character.tier || 1;
+        const baseUpgradePoints = limitPointsTotal * archetypeMultiplier;
+        
+        // Calculate diminishing returns if applicable
+        const finalUpgradePoints = attack.upgradePointsFromLimits || baseUpgradePoints;
+        const hasDiminishingReturns = finalUpgradePoints !== baseUpgradePoints;
+        
+        return `
+            <tr class="calculation-subtotal">
+                <td colspan="2"><strong>Limit Points Total:</strong></td>
+                <td><strong>${limitPointsTotal}</strong></td>
+            </tr>
+            <tr class="calculation-multiplier">
+                <td colspan="2">Archetype Multiplier (Tier ${character.tier}):</td>
+                <td>×${archetypeMultiplier}</td>
+            </tr>
+            <tr class="calculation-base">
+                <td colspan="2">Base Upgrade Points:</td>
+                <td>${baseUpgradePoints}</td>
+            </tr>
+            ${hasDiminishingReturns ? `
+                <tr class="calculation-diminishing">
+                    <td colspan="2">After Diminishing Returns:</td>
+                    <td>${finalUpgradePoints}</td>
+                </tr>
+            ` : ''}
+            <tr class="calculation-final">
+                <td colspan="2"><strong>Final Upgrade Points:</strong></td>
+                <td><strong>${finalUpgradePoints}</strong></td>
+            </tr>
         `;
     }
 

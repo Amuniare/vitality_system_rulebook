@@ -51,8 +51,23 @@
             { "type": "cone", "sizeKey": "AOE_CONE", "description": "6sp Cone" },
             { "type": "line", "sizeKey": "AOE_LINE", "description": "12sp Line" }
         ],
-        "penalty": "-Tier to all Damage and Condition rolls",
+        "penalty": "-Tier to all Accuracy rolls",
         "costKey": "area",
+        "restrictions": ["area_penalty"],
+        "bonuses": { "multiTarget": true }
+    },
+    "area_direct": {
+        "id": "area_direct",
+        "name": "Direct Area Attack",
+        "range": "self",
+        "description": "Affects multiple targets in area",
+        "areaOptions": [
+            { "type": "radius", "sizeKey": "AOE_RADIUS", "description": "3sp Radius Burst" },
+            { "type": "cone", "sizeKey": "AOE_CONE", "description": "6sp Cone" },
+            { "type": "line", "sizeKey": "AOE_LINE", "description": "12sp Line" }
+        ],
+        "penalty": "-Tier to all Damage and Condition rolls",
+        "costKey": "direct_area",
         "restrictions": ["area_penalty"],
         "bonuses": { "multiTarget": true }
     }

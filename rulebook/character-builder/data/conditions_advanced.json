@@ -3,75 +3,72 @@
         "id": "control",
         "name": "Control",
         "resistance": "resolve",
-        "durationKey": "ADVANCED_CONDITION_DURATION",
-        "description": "Take over target's next turn completely",
-        "costKey": "control"
-    },
-    {
-        "id": "capture",
-        "name": "Capture",
-        "resistance": "stability",
-        "durationKey": "ADVANCED_CONDITION_DURATION",
-        "description": "Prevent all movement, Avoidance reduced to 10",
-        "costKey": "capture"
+        "duration": "Until the start of your next turn",
+        "description": "You control the target on their next turn. Common uses are making them attack, protect you, or become Stunned. If you or an ally attack them, the Control ends."
     },
     {
         "id": "stun",
         "name": "Stun",
-        "resistance": "resolve_or_vitality",
-        "durationKey": "ADVANCED_CONDITION_DURATION",
-        "description": "No actions, Avoidance = 0, all attacks auto-hit and crit",
-        "costKey": "stun"
+        "resistance": [
+            "resolve",
+            "vitality"
+        ],
+        "duration": "Until the start of your next turn",
+        "description": "The target can take no actions or movement, their AV is reduced to 0, and any attacks that hit them are considered critical hits."
     },
     {
         "id": "weaken",
         "name": "Weaken",
         "resistance": "vitality",
-        "duration": "permanent",
-        "description": "Reduce chosen stat by Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances",
-        "costKey": "weaken",
+        "duration": "Permanent (does not stack)",
+        "description": "Reduce the chosen stat by your Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances. This effect does not expire but the target cannot be affected by more than 1 instance of Weaken.",
         "requiresChoice": true,
-        "choices": ["accuracy", "damage", "conditions", "avoidance", "durability", "allResistances"]
+        "choices": [
+            "Accuracy",
+            "Damage",
+            "Conditions",
+            "Avoidance",
+            "Durability",
+            "All Resistances"
+        ]
     },
     {
         "id": "disableSpecials",
         "name": "Disable Specials",
-        "resistance": "resolve_or_vitality",
-        "durationKey": "ADVANCED_CONDITION_DURATION",
-        "description": "Cannot use Special Attacks",
-        "costKey": "disableSpecials"
-    },
-    {
-        "id": "mimic",
-        "name": "Mimic",
-        "resistance": "resolve_or_vitality",
-        "durationKey": "ADVANCED_CONDITION_DURATION",
-        "description": "Gain use of disabled Special Attacks",
-        "costKey": "mimic",
-        "requires": "disableSpecials"
+        "resistance": [
+            "resolve",
+            "vitality"
+        ],
+        "duration": "Until the start of your next turn",
+        "description": "Target cannot use Special Attacks.",
+        "upgrades": [
+            {
+                "id": "mimic",
+                "name": "Mimic",
+                "cost": 20,
+                "description": "You gain use of the disabled Special Attacks but using your own stats."
+            }
+        ]
     },
     {
         "id": "frighten",
         "name": "Frighten",
         "resistance": "resolve",
-        "durationKey": "ADVANCED_CONDITION_DURATION",
-        "description": "Move away, defensive actions only",
-        "costKey": "frighten"
+        "duration": "Until the start of your next turn",
+        "description": "The target must move away from you and can only take the Hasten or Hide Actions. If there is nowhere to run or hide they may take the Dodge or Brace Actions."
     },
     {
         "id": "enthrall",
         "name": "Enthrall",
         "resistance": "resolve",
-        "durationKey": "ADVANCED_CONDITION_DURATION",
-        "description": "Must defend caster",
-        "costKey": "enthrall"
+        "duration": "Until the start of your next turn",
+        "description": "The target must defend you."
     },
     {
         "id": "frenzy",
         "name": "Frenzy",
         "resistance": "resolve",
-        "durationKey": "ADVANCED_CONDITION_DURATION",
-        "description": "Attack nearest character randomly",
-        "costKey": "frenzy"
+        "duration": "Until the start of your next turn",
+        "description": "Target attacks the nearest character indiscriminantly."
     }
 ]

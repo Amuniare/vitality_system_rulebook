@@ -1624,6 +1624,76 @@ input:focus, select:focus, textarea:focus {
     margin-bottom: var(--gap-medium);
 }
 
+/* Limits Breakdown Table */
+.limits-breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--gap-small);
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
+}
+
+.limits-breakdown-table th {
+    background: var(--bg-secondary);
+    color: var(--accent-primary);
+    padding: var(--padding-small);
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 1px solid var(--accent-secondary);
+}
+
+.limits-breakdown-table td {
+    padding: var(--padding-small);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    vertical-align: middle;
+}
+
+.limits-breakdown-table .limit-table-row:hover {
+    background: rgba(0, 255, 255, 0.05);
+}
+
+.limits-breakdown-table .remove-cell {
+    text-align: center;
+    width: 40px;
+}
+
+.limits-breakdown-table .limit-points-cell {
+    text-align: right;
+    font-weight: bold;
+    color: var(--accent-highlight);
+}
+
+/* Calculation footer styles */
+.limits-breakdown-table tfoot td {
+    padding: var(--padding-small);
+    border-top: 1px solid var(--accent-secondary);
+    background: var(--bg-secondary);
+}
+
+.limits-breakdown-table .calculation-subtotal td {
+    border-top: 2px solid var(--accent-secondary);
+    font-weight: bold;
+}
+
+.limits-breakdown-table .calculation-multiplier td,
+.limits-breakdown-table .calculation-base td {
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.limits-breakdown-table .calculation-diminishing td {
+    color: var(--warning-color);
+    font-style: italic;
+}
+
+.limits-breakdown-table .calculation-final td {
+    border-top: 1px solid var(--accent-primary);
+    font-weight: bold;
+    color: var(--accent-primary);
+    font-size: 1.1em;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .attack-builder-columns {

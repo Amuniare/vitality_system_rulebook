@@ -3,72 +3,56 @@
         "id": "disarm",
         "name": "Disarm",
         "resistance": "stability",
-        "durationKey": "BASIC_CONDITION_DURATION",
-        "description": "Drop held item, launch (Condition roll - Resistance) spaces",
-        "cost": 0
+        "duration": "Instant",
+        "description": "Forces the target to drop something they're holding. The dropped item can be picked up as a Quick Action. You may attempt to launch the item in any direction a number of spaces equal to how successful your roll was assuming you have the Capacity to move it."
     },
     {
         "id": "grab",
         "name": "Grab",
         "resistance": "stability",
-        "duration": "until_broken",
-        "description": "Cannot move unless dragging grabber, contested Capacity to break free",
-        "cost": 0
+        "duration": "Until broken",
+        "description": "The target cannot move. As an Action the target can make a Stability check against the Condition roll to break free early or as part of their movement to drag you with them following the rules for Capacity."
     },
     {
         "id": "shove",
         "name": "Shove",
         "resistance": "stability",
-        "duration": "instant",
-        "description": "Push/pull (Condition roll - Resistance) spaces, 5 spaces = Prone",
-        "cost": 0
+        "duration": "Instant",
+        "description": "Push or pull the target (Condition roll - Resistance) spaces. Collisions deal falling damage to both entities and you can expend 5 Shoving spaces to knock the target prone."
     },
     {
         "id": "prone",
         "name": "Prone",
-        "resistance": "stability",
-        "duration": "until_stood_up",
-        "description": "Adjacent attacks +5 Accuracy, Ranged attacks -5 Accuracy, costs 3 Movement to stand",
-        "cost": 0
+        "resistance": null,
+        "duration": "Until stood up",
+        "description": "Adjacent attacks against you gain +Tier to Accuracy, ranged attacks against you suffer -Tier to Accuracy, standing cost 3 movement spaces."
     },
     {
         "id": "blind",
         "name": "Blind",
         "resistance": "vitality",
-        "durationKey": "BASIC_CONDITION_DURATION",
-        "description": "Treat all others as Hidden, attackers ignore base Tier Avoidance bonus",
-        "cost": 0
+        "duration": "Until the end of your next turn",
+        "description": "Targets treats all others as visually Hidden. Hidden attackers ignore the target's base Tier Avoidance bonus. When attacking you must roll a Perception check vs the target's Stealth check, the attack is assumed to have missed on a failure."
     },
     {
         "id": "daze",
         "name": "Daze",
         "resistance": "vitality",
-        "durationKey": "BASIC_CONDITION_DURATION",
-        "description": "Lose Quick Actions and Reactions",
-        "cost": 0
-    },
-    {
-        "id": "misdirect",
-        "name": "Misdirect",
-        "resistance": "resolve",
-        "durationKey": "BASIC_CONDITION_DURATION",
-        "description": "Cannot attack the caster",
-        "cost": 0
+        "duration": "Until the end of your next turn",
+        "description": "Target cannot take Quick Actions or Reactions."
     },
     {
         "id": "setup",
         "name": "Setup",
         "resistance": "resolve",
-        "duration": "next_attack",
-        "description": "Next Accuracy roll vs target gains double Tier bonus",
-        "cost": 0
+        "duration": "Next attack against target",
+        "description": "The next Accuracy check against the target adds double your Tier to their regular bonus."
     },
     {
         "id": "taunt",
         "name": "Taunt",
         "resistance": "resolve",
-        "durationKey": "BASIC_CONDITION_DURATION",
-        "description": "-2×Tier Accuracy against anyone except caster",
-        "cost": 0
+        "duration": "Until the end of your next turn",
+        "description": "Target's suffer a reduction to their Accuracy checks equal to double your Tier against all targets other than you."
     }
 ]

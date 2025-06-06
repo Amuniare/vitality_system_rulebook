@@ -67,7 +67,8 @@ export const GameConstants = {
         ranged: 20,
         direct: 30,
         area: 30,
-        hybrid: 30
+        hybrid: 30,
+        direct_area: 60
     },
     
     // Condition Costs
