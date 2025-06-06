@@ -1,9 +1,7 @@
 // CharacterBuilder.js - COMPLETE REWRITE without validators and with fixed event handling
 import { VitalityCharacter } from '../core/VitalityCharacter.js';
 import { CharacterLibrary } from './components/CharacterLibrary.js';
-import { CharacterTree } from './components/CharacterTree.js';
-import { PointPoolDisplay } from './components/PointPoolDisplay.js';
-import { ValidationDisplay } from './components/ValidationDisplay.js';
+// Sidebar components removed
 
 // Import all tabs
 import { BasicInfoTab } from './tabs/BasicInfoTab.js';
@@ -55,7 +53,7 @@ export class CharacterBuilder {
     }
 
     async initAfterDOM() {
-        const requiredElements = ['#content', '.tab-navigation', '#sidebar'];
+        const requiredElements = ['#content', '.tab-navigation'];
         const missing = requiredElements.filter(sel => !document.querySelector(sel));
         if (missing.length > 0) {
             console.error('Required DOM elements missing:', missing);
@@ -96,13 +94,9 @@ export class CharacterBuilder {
     initializeComponents() {
         console.log('Initializing UI components...');
         
-        this.characterTree = new CharacterTree(this);
-        this.pointPoolDisplay = new PointPoolDisplay(this);
-        this.validationDisplay = new ValidationDisplay(this);
+        // Sidebar components removed - no longer needed
         
-        this.characterTree.library = this.library;
-        
-        console.log('Real components created');
+        console.log('Components initialized (sidebar removed)');
     }
 
     initializeTabs() {
@@ -129,11 +123,17 @@ export class CharacterBuilder {
         // Use event delegation with proper context
         EventManager.delegateEvents(container, {
             click: {
-                '#new-character-btn': this.createNewCharacter,
-                '.tab-btn': this.handleTabSwitch,
-                '#save-character': this.saveCharacter,
-                '#export-json': this.exportCharacterJSON,
-                '#delete-character': this.deleteCharacter,
+                '#create-new-character': (e) => {
+                    console.log('Create new character button clicked!');
+                    e.preventDefault();
+                    this.createNewCharacter();
+                },
+                '#import-character': () => this.handleImportCharacter(),
+                '.character-item': (e) => this.handleCharacterSelect(e),
+                '.tab-btn': (e, element) => this.handleTabSwitch(e, element),
+                '#save-character': () => this.saveCharacter(),
+                '#export-json': () => this.exportCharacterJSON(),
+                '#delete-character': () => this.deleteCharacter(),
 
                 // ARCHETYPE HANDLERS
                 '[data-action="select-archetype"]': (e, element) => {
@@ -154,13 +154,75 @@ export class CharacterBuilder {
                     }
                 },
 
+                // CHARACTER LIBRARY HANDLERS
+                '[data-action="load-character"]': (e, element) => {
+                    const characterId = element.dataset.characterId;
+                    if (characterId && this.library) {
+                        const character = this.library.getCharacter(characterId);
+                        if (character) {
+                            this.currentCharacter = character;
+                            this.showCharacterBuilder();
+                            this.showNotification(`Loaded ${character.name}`, 'success');
+                        }
+                    }
+                },
+                '[data-action="delete-from-library"]': (e, element) => {
+                    const characterId = element.dataset.characterId;
+                    if (characterId && this.library) {
+                        const character = this.library.getCharacter(characterId);
+                        if (character && confirm(`Delete "${character.name}" from library?`)) {
+                            this.library.deleteCharacter(characterId);
+                            this.renderCharacterLibrary();
+                            this.showNotification('Character deleted from library', 'info');
+                        }
+                    }
+                },
+
                 // NAVIGATION HANDLERS
                 '[data-action="continue-to-archetypes"]': () => this.switchTab('archetypes'),
                 '[data-action="continue-to-attributes"]': () => this.switchTab('attributes'),
                 '[data-action="continue-to-mainpool"]': () => this.switchTab('mainPool'),
                 '[data-action="continue-to-special-attacks"]': () => this.switchTab('specialAttacks'),
                 '[data-action="continue-to-utility"]': () => this.switchTab('utility'),
-                '[data-action="continue-to-summary"]': () => this.switchTab('summary')
+                '[data-action="continue-to-summary"]': () => this.switchTab('summary'),
+
+                // UNIQUE ABILITY UPGRADE HANDLERS
+                '.upgrade-increase': (e, element) => {
+                    e.stopPropagation();
+                    if (this.tabs.mainPool && this.tabs.mainPool.activeSection === 'uniqueAbilities') {
+                        const section = this.tabs.mainPool.sections.uniqueAbilities;
+                        if (section) {
+                            section.handleUpgradeIncrease(element);
+                        }
+                    }
+                },
+                '.upgrade-decrease': (e, element) => {
+                    e.stopPropagation();
+                    if (this.tabs.mainPool && this.tabs.mainPool.activeSection === 'uniqueAbilities') {
+                        const section = this.tabs.mainPool.sections.uniqueAbilities;
+                        if (section) {
+                            section.handleUpgradeDecrease(element);
+                        }
+                    }
+                },
+                '.upgrade-toggle': (e, element) => {
+                    e.stopPropagation();
+                    if (this.tabs.mainPool && this.tabs.mainPool.activeSection === 'uniqueAbilities') {
+                        const section = this.tabs.mainPool.sections.uniqueAbilities;
+                        if (section) {
+                            section.handleUpgradeToggle(element);
+                        }
+                    }
+                },
+                '.upgrade-card': (e, element) => {
+                    // Only handle if click is not on a button
+                    if (!e.target.closest('button') && this.tabs.mainPool && this.tabs.mainPool.activeSection === 'uniqueAbilities') {
+                        const section = this.tabs.mainPool.sections.uniqueAbilities;
+                        if (section) {
+                            section.handleUpgradeCardClick(element);
+                        }
+                    }
+                }
             },
             input: {
                 '[data-action="update-char-name"]': (e, element) => {
@@ -192,35 +254,20 @@ export class CharacterBuilder {
             }
         }, this); // Pass 'this' as context
         
-        console.log('setupEventListeners completed with delegation');
-    }
-
-    createNewCharacter() {
-        console.log('createNewCharacter called');
-        
-        try {
-            const name = prompt('Character name:') || 'New Character';
-            console.log('Character name entered:', name);
-            
-            const character = new VitalityCharacter(null, name);
-            console.log('VitalityCharacter created:', character);
-            
-            this.currentCharacter = character;
-            console.log('Character set as current');
-            
-            this.showCharacterBuilder();
-            console.log('Character builder shown');
-            
-            this.switchTab('basicInfo');
-            console.log('Switched to basic info tab');
-            
-            this.scheduleFullUpdate('character_created');
-            console.log('createNewCharacter completed successfully');
-            
-        } catch (error) {
-            console.error('Error in createNewCharacter:', error);
-            this.showNotification('Error creating character: ' + error.message, 'error');
+        // Fallback direct event listener for testing
+        const createBtn = document.getElementById('create-new-character');
+        if (createBtn) {
+            console.log('Found create button, adding direct listener');
+            createBtn.addEventListener('click', (e) => {
+                console.log('Direct event listener triggered!');
+                e.preventDefault();
+                this.createNewCharacter();
+            });
+        } else {
+            console.log('Create button not found in DOM');
         }
+        
+        console.log('setupEventListeners completed with delegation');
     }
 
     handleTabSwitch(e, element) {
@@ -230,44 +277,69 @@ export class CharacterBuilder {
         }
     }
 
-    loadCharacter(characterId) {
-        console.log('loadCharacter called with ID:', characterId);
-        
-        try {
-            this.currentCharacter = this.library.getCharacter(characterId);
-            if (this.currentCharacter) {
-                this.showCharacterBuilder();
-                this.scheduleFullUpdate('character_loaded');
-                this.switchTab('basicInfo');
-            }
-        } catch (error) {
-            console.error('Error loading character:', error);
-            this.showNotification('Error loading character', 'error');
-        }
-    }
-
     showWelcomeScreen() {
         console.log('showWelcomeScreen called');
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
         
-        if (welcomeScreen) welcomeScreen.classList.remove('hidden');
-        if (characterBuilder) characterBuilder.classList.add('hidden');
+        console.log('Welcome screen element:', welcomeScreen);
+        console.log('Character builder element:', characterBuilder);
         
-        if (this.characterTree && this.characterTree.init) {
-            this.characterTree.init();
+        if (welcomeScreen) {
+            welcomeScreen.classList.remove('hidden');
+            console.log('Welcome screen shown');
+        } else {
+            console.error('Welcome screen element not found');
         }
+        
+        if (characterBuilder) {
+            characterBuilder.classList.add('hidden');
+            console.log('Character builder hidden');
+        } else {
+            console.error('Character builder element not found');
+        }
+        
+        // Render character library
+        this.renderCharacterLibrary();
     }
 
     showCharacterBuilder() {
-        console.log('showCharacterBuilder called');
+        console.log('🎯 NEW showCharacterBuilder method called!');
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
         
-        if (welcomeScreen) welcomeScreen.classList.add('hidden');
-        if (characterBuilder) characterBuilder.classList.remove('hidden');
+        console.log('🔍 Welcome screen element:', welcomeScreen);
+        console.log('🔍 Character builder element:', characterBuilder);
+        console.log('🔍 Welcome screen classes before:', welcomeScreen?.className);
+        console.log('🔍 Character builder classes before:', characterBuilder?.className);
+        
+        if (welcomeScreen) {
+            welcomeScreen.style.display = 'none'; // Force hide with inline style
+            welcomeScreen.classList.add('hidden');
+            console.log('✅ Welcome screen hidden');
+        } else {
+            console.error('❌ Welcome screen element not found');
+        }
+        
+        if (characterBuilder) {
+            characterBuilder.style.display = 'block'; // Force show with inline style
+            characterBuilder.classList.remove('hidden');
+            console.log('✅ Character builder shown');
+            console.log('🔍 Character builder classes after:', characterBuilder.className);
+        } else {
+            console.error('❌ Character builder element not found');
+        }
         
         this.updateCharacterHeader();
+        
+        // Render current tab
+        if (this.currentTab) {
+            this.switchTab(this.currentTab);
+        } else {
+            this.switchTab('basicInfo');
+        }
+        
+        console.log('🎯 showCharacterBuilder method completed!');
     }
 
     updateCharacterHeader() {
@@ -377,6 +449,7 @@ export class CharacterBuilder {
         if (!this.currentCharacter) return;
         
         this.currentCharacter.touch();
+        this.currentCharacter.updateBuildState(); // Update build state after any change
         
         const changes = this.detectCharacterChanges();
         this.scheduleSelectiveUpdate(changes);
@@ -442,10 +515,7 @@ export class CharacterBuilder {
         console.log(`Scheduling full update: ${reason}`);
         
         UpdateManager.batchUpdates([
-            { component: this.pointPoolDisplay, method: 'update', priority: 'high' },
-            { component: this.validationDisplay, method: 'update', priority: 'normal' },
-            { component: this, method: 'updateCharacterHeader', priority: 'high' },
-            { component: this.characterTree, method: 'refresh', priority: 'low' }
+            { component: this, method: 'updateCharacterHeader', priority: 'high' }
         ]);
     }
 
@@ -554,8 +624,6 @@ export class CharacterBuilder {
             try {
                 this.library.saveCharacter(this.currentCharacter);
                 this.showNotification('Character saved successfully!', 'success');
-                
-                UpdateManager.scheduleUpdate(this.characterTree, 'refresh', 'normal');
             } catch (error) {
                 console.error('Error saving character:', error);
                 this.showNotification('Error saving character', 'error');
@@ -606,4 +674,95 @@ export class CharacterBuilder {
             }
         }, 3000);
     }
+
+    // Character Management Methods
+    showWelcomeScreen() {
+        console.log('Showing welcome screen');
+        document.getElementById('welcome-screen').style.display = 'block';
+        document.getElementById('character-builder').style.display = 'none';
+        
+        // Render character library
+        this.renderCharacterLibrary();
+    }
+
+    renderCharacterLibrary() {
+        const characterList = document.getElementById('character-list');
+        if (!characterList || !this.library) return;
+
+        const characters = this.library.getAllCharacters();
+        
+        if (characters.length === 0) {
+            characterList.innerHTML = '<p class="empty-state">No saved characters yet</p>';
+            return;
+        }
+
+        characterList.innerHTML = characters.map(char => `
+            <div class="character-item" data-character-id="${char.id}">
+                <div class="character-info">
+                    <div class="character-name">${char.name}</div>
+                    <div class="character-details">Tier ${char.tier} | ${new Date(char.lastModified).toLocaleDateString()}</div>
+                </div>
+                <div class="character-actions">
+                    <button class="btn btn-small btn-primary" data-action="load-character" data-character-id="${char.id}">Load</button>
+                    <button class="btn btn-small btn-danger" data-action="delete-from-library" data-character-id="${char.id}">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    createNewCharacter() {
+        console.log('Creating new character method called');
+        try {
+            this.currentCharacter = new VitalityCharacter();
+            console.log('VitalityCharacter created:', this.currentCharacter);
+            
+            this.showCharacterBuilder();
+            console.log('Character builder shown');
+            
+            this.showNotification('New character created!', 'success');
+            console.log('Notification shown');
+        } catch (error) {
+            console.error('Error in createNewCharacter:', error);
+            alert('Error creating character: ' + error.message);
+        }
+    }
+
+    handleImportCharacter() {
+        console.log('Import character triggered');
+        const fileInput = document.getElementById('import-file');
+        fileInput.click();
+        
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const characterData = JSON.parse(event.target.result);
+                    this.currentCharacter = new VitalityCharacter();
+                    Object.assign(this.currentCharacter, characterData);
+                    this.showCharacterBuilder();
+                    this.showNotification('Character imported successfully!', 'success');
+                } catch (error) {
+                    console.error('Import error:', error);
+                    this.showNotification('Failed to import character', 'error');
+                }
+            };
+            reader.readAsText(file);
+        };
+    }
+
+    handleCharacterSelect(e) {
+        const characterId = e.target.closest('.character-item')?.dataset.characterId;
+        if (!characterId) return;
+        
+        const character = this.library.getCharacter(characterId);
+        if (character) {
+            this.currentCharacter = character;
+            this.showCharacterBuilder();
+            this.showNotification(`Loaded ${character.name}`, 'success');
+        }
+    }
+
 }

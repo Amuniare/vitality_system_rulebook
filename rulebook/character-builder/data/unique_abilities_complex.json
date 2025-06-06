@@ -3,124 +3,247 @@
         "id": "aura",
         "name": "Aura",
         "baseCost": 30,
-        "description": "Passive field around you affecting enemies or allies",
+        "description": "Passive field around you affecting enemies or allies. Action to activate, Quick Action each turn to maintain.",
         "category": "area_effect",
         "baseProperties": {
             "radius": 1,
-            "activation": "quick_action",
+            "activation": "action",
             "maintenance": "quick_action_per_turn"
         },
+        "auraTypes": [
+            {
+                "id": "attack_aura",
+                "name": "Attack Aura",
+                "description": "Makes melee Base Attack against anything entering/ending turn in radius"
+            },
+            {
+                "id": "obscuring_aura",
+                "name": "Obscuring Aura",
+                "description": "Provides visual cover, prevents sight-based abilities"
+            },
+            {
+                "id": "bolster_aura",
+                "name": "Bolster Aura",
+                "description": "Allies in radius receive benefit of your Fighting Actions"
+            }
+        ],
         "upgrades": [
             { "id": "increasedRadius", "name": "Increased Radius", "cost": 5, "per": "space", "description": "+X radius" },
-            { "id": "rangedOrigin", "name": "Ranged Origin", "cost": 10, "description": "Originate from visible point" },
-            { "id": "variableSize", "name": "Variable Size", "cost": 10, "description": "Change size each activation" },
-            { "id": "additionalEffect", "name": "Additional Effect", "cost": 30, "description": "Second aura type active" },
-            { "id": "conditionEffect", "name": "Condition Effect", "cost": 0, "description": "Basic Condition instead of damage" },
-            { "id": "directEffect", "name": "Direct Effect", "cost": 30, "description": "Auto-hits without Accuracy roll" },
+            { "id": "rangedOrigin", "name": "Ranged Origin", "cost": 15, "description": "Originates from another point you can see within 15 sp" },
+            { "id": "variableSize", "name": "Variable Size", "cost": 5, "description": "Change size each activation" },
+            { "id": "additionalEffect", "name": "Additional Effect", "cost": 30, "description": "Second aura type active simultaneously" },
+            { "id": "conditionEffect", "name": "Condition Effect", "cost": 0, "description": "Inflicts Basic Condition instead of damage" },
+            { "id": "directEffect", "name": "Direct Effect", "cost": 30, "description": "Auto-hits without Accuracy roll, -Tier to Damage/Condition rolls" },
             { "id": "precise", "name": "Precise", "cost": 15, "description": "Only attacks chosen targets" },
-            { "id": "clairvoyance", "name": "Clairvoyance", "cost": 15, "description": "See through your own aura" },
-            { "id": "passiveBuff", "name": "Passive Buff", "cost": 30, "per": "action", "description": "Always under effect of X Fighting Actions" }
+            { "id": "squadSight", "name": "Squad Sight", "cost": 30, "description": "Your allies can also see through your Aura" },
+            { "id": "passiveBuff", "name": "Passive Buff", "cost": 30, "per": "action", "description": "You and allies always under effect of X Fighting Actions" }
         ]
     },
     {
-        "id": "barrier",
-        "name": "Barrier",
+        "id": "createWall",
+        "name": "Create Wall",
         "baseCost": 30,
-        "description": "Temporary protective field summoning",
-        "category": "defensive",
+        "description": "Temporary battlefield structure creation. Action to summon, Quick Action each turn to maintain.",
+        "category": "battlefield_control",
         "baseProperties": {
-            "radius": 1,
+            "size": "Tier × 5 spaces, min 1 sp high or 1 space long",
             "hp": 50,
+            "conditions": "full immunity",
             "avoidance": 0,
-            "durability": "10 + tier",
-            "uses": 2,
-            "activation": "quick_action"
+            "durability": "10 + Tier",
+            "uses": "Tier uses per rest",
+            "activation": "action",
+            "maintenance": "quick_action_per_turn"
         },
         "upgrades": [
-            { "id": "increasedRadius", "name": "Increased Radius", "cost": 5, "per": "space", "description": "+X radius" },
-            { "id": "permeable", "name": "Permeable", "cost": 15, "description": "You/allies move through once per turn" },
-            { "id": "slow", "name": "Slow", "cost": 15, "description": "Non-you characters move half speed" },
-            { "id": "shellOnly", "name": "Shell Only", "cost": 0, "description": "Ranged attacks blocked only at edge" },
-            { "id": "damaging", "name": "Damaging", "cost": 30, "description": "Tier damage for entering/staying inside" },
-            { "id": "firingPosition", "name": "Firing Position", "cost": 30, "description": "Inside can target outside, not vice versa" },
+            { "id": "increasedSize", "name": "Increased Size", "cost": 15, "per": "tier", "description": "Increase spaces by Tier × 5" },
+            { "id": "shapeable", "name": "Shapeable", "cost": 30, "description": "Freely manipulate size and shape" },
+            { "id": "bendable", "name": "Bendable", "cost": 5, "per": "bend", "description": "Add 90 degree bend" },
+            { "id": "permeable", "name": "Permeable", "cost": 30, "description": "You/allies can move through" },
+            { "id": "firingPosition", "name": "Firing Position", "cost": 30, "description": "Allows targeting through wall" },
+            { "id": "damaging", "name": "Damaging", "cost": 30, "description": "Touching triggers Direct base attack" },
             { "id": "tough", "name": "Tough", "cost": 30, "description": "100 HP instead of 50 HP" },
-            { "id": "heavilyArmored", "name": "Heavily Armored", "cost": 30, "per": "tier", "description": "+Tier DR per purchase" },
-            { "id": "moveable", "name": "Moveable", "cost": 20, "description": "Move barrier Tier spaces per turn" },
-            { "id": "transparent", "name": "Transparent", "cost": 10, "description": "Barrier is see-through" },
-            { "id": "variableSize", "name": "Variable Size", "cost": 10, "description": "Change size each activation" }
+            { "id": "heavilyArmored", "name": "Heavily Armored", "cost": 30, "per": "tier", "description": "+Tier DR per X" },
+            { "id": "moveable", "name": "Moveable", "cost": 30, "description": "Move wall using your movement" },
+            { "id": "transparent", "name": "Transparent", "cost": 15, "description": "Wall is see-through" },
+            { "id": "rapidSummon", "name": "Rapid Summon", "cost": 15, "per": "tier", "description": "Add Tier to placement roll" },
+            { "id": "permanent", "name": "Permanent", "cost": 15, "description": "Doesn't require maintenance" }
         ]
     },
     {
         "id": "shield",
         "name": "Shield",
         "baseCost": 30,
-        "description": "Personal protective energy field",
+        "description": "Personal protective shield. Gain shield with Tier×3 HP at start of each turn (not cumulative).",
         "category": "defensive",
         "baseProperties": {
-            "shieldHp": "tier × 3",
-            "recovery": "tier × 3 per turn",
-            "restriction": "cannot_buy_avoidance_durability_bonuses"
+            "shieldHp": "Tier × 3",
+            "recovery": "Tier × 3 per turn",
+            "restriction": "Cannot boost Avoidance or Durability outside Fighting Actions"
         },
         "upgrades": [
-            { "id": "increasedShielding", "name": "Increased Shielding", "cost": 15, "per": "tier", "description": "+Tier×3 max shield HP" },
-            { "id": "quickRecovery", "name": "Quick Recovery", "cost": 15, "per": "tier", "description": "Recover additional Tier×3 HP per turn" },
+            { "id": "increasedShielding", "name": "Increased Shielding", "cost": 15, "per": "tier", "description": "+Tier×3 max shield HP per X" },
+            { "id": "quickRecovery", "name": "Quick Recovery", "cost": 15, "per": "tier", "description": "Recover additional Tier×3 HP per turn per X" },
             { "id": "heavyShield", "name": "Heavy Shield", "cost": -15, "description": "Only recover Tier HP per turn" },
-            { "id": "areaShield", "name": "Area Shield", "cost": 30, "description": "Ranged/AOE vs adjacent hit your shield instead" }
+            { "id": "areaShield", "name": "Area Shield", "cost": 15, "description": "Shield protects adjacent squares from ranged/AOE" },
+            { "id": "source", "name": "Source", "cost": "variable", "description": "Custom trigger for shield recharge" }
         ]
     },
     {
-        "id": "summon",
-        "name": "Summon",
+        "id": "backlash",
+        "name": "Backlash",
+        "baseCost": 30,
+        "description": "Automatic counterattack system. When hit by Melee Attack, make Base Attack against attacker.",
+        "category": "reactive",
+        "baseProperties": {
+            "trigger": "When hit by Melee Attack",
+            "effect": "Make Base Attack against attacker",
+            "uses": "2 uses per round, reset at start of turn"
+        },
+        "upgrades": [
+            { "id": "additionalUses", "name": "Additional Uses", "cost": 15, "per": "use", "description": "Additional uses per x" },
+            { "id": "distantResponse", "name": "Distant Response", "cost": 30, "description": "Triggered by any attack type, respond with Ranged/Direct" },
+            { "id": "explosiveResponse", "name": "Explosive Response", "cost": 30, "description": "Base attack becomes 3sp AOE Burst" }
+        ]
+    },
+    {
+        "id": "boost",
+        "name": "Boost",
+        "baseCost": 60,
+        "description": "Temporary power enhancement. Increase Tier by half (rounded up) as Free Action.",
+        "category": "enhancement",
+        "baseProperties": {
+            "effect": "Increase Tier by half (rounded up)",
+            "activation": "free_action"
+        },
+        "durationOptions": [
+            {
+                "id": "short",
+                "name": "Short",
+                "description": "4 consecutive turns once per fight, regain after 3 rounds rest"
+            },
+            {
+                "id": "source",
+                "name": "Source",
+                "description": "Activates when accessing specific environment/descriptor"
+            }
+        ],
+        "upgrades": [
+            { "id": "awakened", "name": "Awakened", "cost": 15, "description": "Pick additional Movement Archetype" },
+            { "id": "unstoppable", "name": "Unstoppable", "cost": 30, "description": "Pick additional Defensive Archetype" },
+            { "id": "affectsOthers", "name": "Affects Others", "cost": 15, "description": "Can target other characters instead" },
+            { "id": "affectsOthersOnly", "name": "Affects Others Only", "cost": 0, "description": "Can only target others" }
+        ]
+    },
+    {
+        "id": "baseSummon",
+        "name": "Base Summon",
         "baseCost": 10,
-        "description": "Create allied creatures",
+        "description": "Basic summon: Your Tier, 10 HP (minion), standard stats, no Special Attacks/Utility.",
         "category": "summoning",
         "baseProperties": {
             "tier": "character_tier",
             "hp": 10,
             "type": "minion",
             "stats": "standard",
-            "initiative": "your_initiative"
+            "specialAttacks": "none",
+            "utility": "none"
         },
         "upgrades": [
             { "id": "mobile", "name": "Mobile", "cost": 5, "description": "Gets Movement archetype" },
-            { "id": "extraPoints", "name": "Extra Points", "cost": "variable", "description": "Summon gains X points for abilities" },
+            { "id": "extraPoints", "name": "Extra Points", "cost": "variable", "description": "Summon gains X points for base abilities" },
             { "id": "minionHorde", "name": "Minion Horde", "cost": 5, "per": "minion", "description": "Gain X additional 10 HP minions" },
-            { "id": "alternateSummons", "name": "Alternate Summons", "cost": 5, "per": "variant", "description": "Different stats when resummoned" },
-            { "id": "resummon", "name": "Resummon", "cost": 15, "per": "use", "description": "Can resummon X times after defeat" },
+            { "id": "alternateSummons", "name": "Alternate Summons", "cost": 5, "per": "variant", "description": "Resummoned creature can have different stats" },
+            { "id": "resummon", "name": "Resummon", "cost": 15, "per": "use", "description": "Can resummon X additional times after defeat" },
             { "id": "helpfulCompanion", "name": "Helpful Companion", "cost": 15, "description": "Gets utility section" },
-            { "id": "source", "name": "Source", "cost": 15, "per": "condition", "description": "Require conditions, add Tier to chosen stat" },
-            { "id": "captain", "name": "Captain", "cost": 10, "description": "25 HP instead of 10 HP", "requires": "base" },
+            { "id": "source", "name": "Source", "cost": 15, "per": "condition", "description": "Require conditions to summon, adds Tier to chosen stat" },
+            { "id": "captain", "name": "Captain", "cost": 10, "description": "25 HP instead of 10 HP" },
             { "id": "elite", "name": "Elite", "cost": 10, "description": "50 HP instead of 25 HP", "requires": "captain" },
             { "id": "boss", "name": "Boss", "cost": 10, "description": "100 HP instead of 50 HP", "requires": "elite" },
-            { "id": "heroic", "name": "Heroic", "cost": 15, "description": "Gets Special Attacks archetype" },
+            { "id": "heroic", "name": "Heroic", "cost": 15, "description": "Gets Special Attacks archetype and attacks" },
             { "id": "unique", "name": "Unique", "cost": 15, "description": "Gets Unique Abilities archetype" },
             { "id": "massSummoner", "name": "Mass Summoner", "cost": 30, "description": "Summon all as single action" },
-            { "id": "gameHunter", "name": "Game Hunter", "cost": 40, "description": "Summon defeated enemies under conditions" }
+            { "id": "gameHunter", "name": "Game Hunter", "cost": 40, "description": "Summon defeated enemies under specific conditions" }
         ]
+    },
+    {
+        "id": "invisibility",
+        "name": "Invisibility",
+        "baseCost": 30,
+        "description": "Advanced concealment ability. You are Invisible and can take Hide Action while in line of sight of enemies.",
+        "category": "stealth",
+        "baseProperties": {
+            "effect": "You are Invisible",
+            "hideAction": "Can Hide while in line of sight",
+            "immunity": "Unaffected by sight-based abilities"
+        },
+        "upgrades": []
+    },
+    {
+        "id": "regeneration",
+        "name": "Regeneration",
+        "baseCost": 60,
+        "description": "Rapid healing ability. Regain HP at start of each turn based on Tier.",
+        "category": "healing",
+        "baseProperties": {
+            "healing": {
+                "tiers_1_4": "20 HP",
+                "tiers_5_6": "30 HP",
+                "tiers_7_8": "40 HP",
+                "tiers_9_10": "50 HP"
+            },
+            "unconscious": "Wake up once healed to full HP",
+            "restriction": "Cannot boost Avoidance or Durability outside Fighting Actions"
+        },
+        "upgrades": []
     },
     {
         "id": "heal",
         "name": "Heal",
         "baseCost": 30,
-        "description": "Restore others' health",
+        "description": "Restore health to characters. Touch living being to heal (5 × Tier) HP.",
         "category": "healing",
         "baseProperties": {
-            "healing": "5 × tier HP",
-            "uses": 5,
+            "healing": "5 × Tier HP",
+            "uses": "5 uses per rest",
             "range": "touch",
-            "action": "action"
+            "action": "action",
+            "target": "living beings"
         },
         "upgrades": [
-            { "id": "increasedCharges", "name": "Increased Charges", "cost": 15, "per": "double", "description": "Double charges per purchase" },
-            { "id": "increasedHealing", "name": "Increased Healing", "cost": 15, "per": "double", "description": "Double HP healed per purchase" },
-            { "id": "greaterHealing", "name": "Greater Healing", "cost": 10, "description": "Use additional charge on same target" },
-            { "id": "restorativeOnly", "name": "Restorative Only", "cost": 0, "description": "Removes Conditions instead of damage" },
+            { "id": "increasedCharges", "name": "Increased Charges", "cost": 15, "per": "double", "description": "Double charges per X" },
+            { "id": "increasedHealing", "name": "Increased Healing", "cost": 30, "per": "double", "description": "Double HP healed per X" },
+            { "id": "greaterHealing", "name": "Greater Healing", "cost": 15, "description": "Use additional charge on same target with same action" },
+            { "id": "restorativeOnly", "name": "Restorative Only", "cost": 0, "description": "Removes all Conditions instead of damage" },
             { "id": "restorative", "name": "Restorative", "cost": 15, "description": "Also removes all Conditions" },
-            { "id": "healsObjectsOnly", "name": "Heals Objects Only", "cost": 0, "description": "Works on objects instead of living" },
-            { "id": "healsObjects", "name": "Heals Objects", "cost": 5, "description": "Works on both objects and living" },
-            { "id": "ranged", "name": "Ranged", "cost": 15, "description": "Target within 15 spaces" },
-            { "id": "massHealing", "name": "Mass Healing", "cost": 15, "description": "Additional target per action" },
-            { "id": "quickHealing", "name": "Quick Healing", "cost": 30, "description": "Heal as Quick Action" }
+            { "id": "healsObjectsOnly", "name": "Heals Objects Only", "cost": 0, "description": "Works on objects instead of living beings" },
+            { "id": "healsObjects", "name": "Heals Objects", "cost": 15, "description": "Works on both objects and living beings" },
+            { "id": "ranged", "name": "Ranged", "cost": 15, "description": "Can target up to 15 spaces away" },
+            { "id": "sharedHealing", "name": "Shared Healing", "cost": 15, "description": "Pick additional target within range per use" },
+            { "id": "massHealing", "name": "Mass Healing", "cost": 30, "description": "Heal any number of targets within 6 spaces" },
+            { "id": "quickHealing", "name": "Quick Healing", "cost": 30, "description": "Heal as Quick Action" },
+            { "id": "versatileHealer", "name": "Versatile Healer", "cost": 15, "per": "version", "description": "Build additional version per x" }
+        ]
+    },
+    {
+        "id": "counter",
+        "name": "Counter",
+        "baseCost": 30,
+        "description": "Nullify enemy actions. Range: 30 spaces, must see target. Can Counter twice per round.",
+        "category": "control",
+        "baseProperties": {
+            "range": "30 spaces",
+            "visibility": "must see target",
+            "usage": "Declare target on your turn, twice per round",
+            "roll": "Focus or Power + Tier vs their Resolve/Stability/Vitality",
+            "success": "Action nullified and lost",
+            "failure": "They know you tried, immune until you rest"
+        },
+        "upgrades": [
+            { "id": "stunningCounter", "name": "Stunning Counter", "cost": 15, "description": "Success stuns target until end of their turn" },
+            { "id": "disablingCounter", "name": "Disabling Counter", "cost": 15, "description": "Target cannot use attempted action again" },
+            { "id": "extraCounter", "name": "Extra Counter", "cost": 15, "per": "use", "description": "Gain X extra uses per round" },
+            { "id": "source", "name": "Source", "cost": "negative_variable", "description": "Can only disable specific power types" }
         ]
     }
 ]

@@ -19,3 +19,8 @@ Personal campaign management system for the Vitality System RPG, featuring web-b
 - ✅ Roll20 character upload working
 - 🚧 Web character builder (basic info + archetypes complete)
 - 🚧 Special attacks, main pool, utility tabs in development
+
+
+wsl -d Ubuntu
+
+claude

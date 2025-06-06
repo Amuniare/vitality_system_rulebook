@@ -1,7 +1,7 @@
 // rulebook/character-builder/ui/tabs/SpecialAttackTab.js
 import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
 import { LimitCalculator } from '../../calculators/LimitCalculator.js';
-// import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js'; // Already imported
+import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
 import { RenderUtils } from '../shared/RenderUtils.js'; // Added
 
 export class SpecialAttackTab {
@@ -10,7 +10,7 @@ export class SpecialAttackTab {
         this.selectedAttackIndex = 0;
         this.showingLimitModal = false;
         this.showingUpgradeModal = false;
-        // Add more specific modal states if needed, e.g., for attack types
+        this.showingAttackTypeModal = false;
     }
 
     render() {
@@ -19,8 +19,32 @@ export class SpecialAttackTab {
 
         const character = this.builder.currentCharacter;
         if (!character) {
-            tabContent.innerHTML = "<p>No character selected or prerequisites not met.</p>";
+            tabContent.innerHTML = "<p>No character selected.</p>";
             return;
+        }
+        
+        // Always show the full interface, just add a notice if build order isn't followed
+        const hasAttributes = Object.values(character.attributes).some(attr => attr > 0);
+        const hasMainPurchases = character.mainPoolPurchases.boons.length > 0 || 
+                               character.mainPoolPurchases.traits.length > 0 ||
+                               character.mainPoolPurchases.flaws.length > 0 ||
+                               character.mainPoolPurchases.primaryActionUpgrades.length > 0;
+        
+        let buildOrderNotice = "";
+        if (!hasAttributes) {
+            buildOrderNotice = `
+                <div class="prerequisite-notice">
+                    <h3>Build Order Recommendation</h3>
+                    <p>Consider completing attribute assignment in the Attributes tab first for better point calculations.</p>
+                </div>
+            `;
+        } else if (!hasMainPurchases) {
+            buildOrderNotice = `
+                <div class="prerequisite-notice">
+                    <h3>Build Order Recommendation</h3>
+                    <p>Consider making some purchases in the Main Pool tab before creating special attacks.</p>
+                </div>
+            `;
         }
 
         tabContent.innerHTML = `
@@ -31,15 +55,15 @@ export class SpecialAttackTab {
                     Use limits to generate upgrade points, then purchase enhancements.
                 </p>
 
+                ${buildOrderNotice}
                 ${this.renderArchetypeInfo(character)}
                 ${this.renderAttackManagement(character)}
                 ${character.specialAttacks.length > 0 && character.specialAttacks[this.selectedAttackIndex] ?
                     this.renderAttackBuilder(character) :
-                    '<div class="empty-state">No attack selected or available to build.</div>'}
+                    '<div class="empty-state">Create your first special attack to begin building.</div>'}
                 ${this.renderLimitModal(character)}
                 ${this.renderUpgradeModal(character)}
                 ${this.renderAttackTypeModal(character)}
-
 
                 <div class="next-step">
                     <p><strong>Next Step:</strong> Configure utility abilities and expertise.</p>
@@ -56,10 +80,24 @@ export class SpecialAttackTab {
 
     renderArchetypeInfo(character) {
         const archetypeId = character.archetypes.specialAttack;
-        const archetypeDetails = SpecialAttackSystem.getSpecialAttackArchetypeDetails ? // Check if new method exists
+        
+        if (!archetypeId) {
+            return `
+                <div class="archetype-info card">
+                    <div class="card-header">
+                        <h3 class="card-title">Special Attack Archetype: Not Selected</h3>
+                    </div>
+                    <div class="card-description">
+                        <p>Select a Special Attack archetype in the Archetypes tab to unlock specific bonuses and free attack types.</p>
+                        <p><em>You can still create basic special attacks without an archetype selected.</em></p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        const archetypeDetails = SpecialAttackSystem.getSpecialAttackArchetypeDetails ? 
                                 SpecialAttackSystem.getSpecialAttackArchetypeDetails(character) :
                                 { name: this.formatArchetypeName(archetypeId), description: this.getArchetypeDescription(archetypeId, character) };
-
 
         return `
             <div class="archetype-info card">
@@ -72,8 +110,33 @@ export class SpecialAttackTab {
             </div>
         `;
     }
-    // getArchetypeDescription remains the same
 
+    getArchetypeDescription(archetypeId, character) {
+        if (!archetypeId) return 'No special attack archetype selected.';
+        
+        // Try to get archetype data from GameDataManager
+        const archetypeData = this.builder.gameDataManager?.getData('archetypes');
+        if (archetypeData && archetypeData.specialAttack) {
+            const archetype = archetypeData.specialAttack.find(arch => arch.id === archetypeId);
+            if (archetype) {
+                return archetype.description;
+            }
+        }
+        
+        // Fallback descriptions if data isn't available
+        const fallbackDescriptions = {
+            'normal': '3 Specialty Upgrades at half cost, flexible limits',
+            'specialist': '3 specific Limits, higher returns, focused style',
+            'paragon': '10×Tier points per attack, no Limits',
+            'oneTrick': 'Single attack with Tier×20 points, no Limits',
+            'straightforward': 'Single Limit, simple but effective',
+            'sharedUses': '10 shared uses, resource management focus',
+            'dualNatured': 'Two attacks with 15×Tier points each',
+            'basic': 'Enhances base attacks, Tier×10 points'
+        };
+        
+        return fallbackDescriptions[archetypeId] || `${this.formatArchetypeName(archetypeId)} archetype selected.`;
+    }
 
     renderAttackManagement(character) {
         const canCreate = SpecialAttackSystem.validateCanCreateAttack(character); // Using system
@@ -583,6 +646,11 @@ export class SpecialAttackTab {
             this.selectedAttackIndex = 0; // Reset
             this.render(); // Will show "no attacks" state
         }
+    }
+
+    setupEventListeners() {
+        // Event listeners are now handled by CharacterBuilder via data-action attributes
+        // This method is kept for compatibility but can be empty since event delegation is used
     }
 }
 

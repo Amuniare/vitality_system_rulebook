@@ -13,14 +13,14 @@ export class AttributeTab {
 
         const character = this.builder.currentCharacter;
         if (!character) {
-            tabContent.innerHTML = "<p>No character selected or archetypes incomplete.</p>";
+            tabContent.innerHTML = "<p>No character selected.</p>";
             return;
         }
 
         console.log('🔍 AttributeTab.render() - Current attributes:', JSON.stringify(character.attributes));
 
         const pools = this.builder.calculatePointPools();
-
+this.setupDebugFallbacks();
         tabContent.innerHTML = `
             <div class="attributes-section">
                 <h2>Assign Attributes</h2>
@@ -44,6 +44,7 @@ export class AttributeTab {
             </div>
         `;
         this.setupEventListeners();
+        this.setupDebugFallbacks();
     }
 
     onCharacterUpdate() {
@@ -160,31 +161,44 @@ export class AttributeTab {
         `;
     }
 
+    // In renderAttributeControl method, update the card structure:
     renderAttributeControl(attrId, name, description, character) {
         const value = character.attributes[attrId] || 0;
         const max = character.tier;
 
-        // Using card base for attribute items
         return RenderUtils.renderCard({
             title: name,
             titleTag: 'label',
             description: description,
-            dataAttributes: { attr: attrId }, // Add data-attr to card itself
+            dataAttributes: { attr: attrId },
             additionalContent: `
-                <div class="attribute-controls">
-                    ${RenderUtils.renderButton({ text: '-', classes: ['attr-btn', 'minus'], dataAttributes: { attr: attrId, change: -1, action: 'change-attribute-btn' }, disabled: value <= 0 })}
+                <div class="attribute-controls" style="pointer-events: auto;">
+                    ${RenderUtils.renderButton({ 
+                        text: '-', 
+                        classes: ['attr-btn', 'minus'], 
+                        dataAttributes: { attr: attrId, change: -1, action: 'change-attribute-btn' }, 
+                        disabled: value <= 0,
+                        onClick: `window.debugAttributeChange && window.debugAttributeChange('${attrId}', -1)` // Debug fallback
+                    })}
                     <span class="attribute-value">${value}</span>
-                    ${RenderUtils.renderButton({ text: '+', classes: ['attr-btn', 'plus'], dataAttributes: { attr: attrId, change: 1, action: 'change-attribute-btn' }, disabled: value >= max })}
+                    ${RenderUtils.renderButton({ 
+                        text: '+', 
+                        classes: ['attr-btn', 'plus'], 
+                        dataAttributes: { attr: attrId, change: 1, action: 'change-attribute-btn' }, 
+                        disabled: value >= max,
+                        onClick: `window.debugAttributeChange && window.debugAttributeChange('${attrId}', 1)` // Debug fallback
+                    })}
                 </div>
                 <div class="attribute-limit">Max: ${max}</div>
                 <div class="attribute-slider form-group">
-                     <input type="range"
-                           id="slider-${attrId}"
-                           min="0"
-                           max="${max}"
-                           value="${value}"
-                           data-attr="${attrId}"
-                           data-action="change-attribute-slider">
+                    <input type="range"
+                        id="slider-${attrId}"
+                        min="0"
+                        max="${max}"
+                        value="${value}"
+                        data-attr="${attrId}"
+                        data-action="change-attribute-slider"
+                        onchange="window.debugSliderChange && window.debugSliderChange('${attrId}', this.value)">
                     <div class="slider-ticks">
                         ${Array.from({length: max + 1}, (_, i) => `<span class="tick ${i <= value ? 'filled' : ''}">${i}</span>`).join('')}
                     </div>
@@ -192,6 +206,21 @@ export class AttributeTab {
             `
         }, { cardClass: 'attribute-item', showCost: false, showStatus: false });
     }
+
+    // Add debug methods to AttributeTab
+    setupDebugFallbacks() {
+        // Global fallback functions for debugging
+        window.debugAttributeChange = (attrId, change) => {
+            console.log(`🔧 DEBUG: Attribute ${attrId} change ${change}`);
+            this.changeAttribute(attrId, change);
+        };
+        
+        window.debugSliderChange = (attrId, newValue) => {
+            console.log(`🔧 DEBUG: Slider ${attrId} = ${newValue}`);
+            this.setAttributeViaSlider(attrId, newValue);
+        };
+    }
+
 
     renderAttributeRecommendations(character) {
         const recommendations = AttributeSystem.getAttributeRecommendations(character);

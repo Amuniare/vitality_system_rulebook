@@ -129,13 +129,41 @@ export class VitalityCharacter {
         this.lastModified = new Date().toISOString();
     }
     
+    // Update build state based on current character state
+    updateBuildState() {
+        // Check archetypes completion
+        this.buildState.archetypesComplete = Object.values(this.archetypes).every(archetype => archetype !== null);
+        
+        // Check attributes completion (all attributes assigned)
+        const totalAttributePoints = Object.values(this.attributes).reduce((sum, value) => sum + value, 0);
+        this.buildState.attributesComplete = totalAttributePoints > 0;
+        
+        // Check main pool completion (any purchases made OR explicitly marked complete)
+        const hasMainPoolPurchases = this.mainPoolPurchases.boons.length > 0 || 
+                                    this.mainPoolPurchases.traits.length > 0 ||
+                                    this.mainPoolPurchases.flaws.length > 0 ||
+                                    this.mainPoolPurchases.primaryActionUpgrades.length > 0;
+        // For now, allow special attacks if any main pool purchases exist OR if attributes are complete
+        this.buildState.mainPoolComplete = hasMainPoolPurchases || this.buildState.attributesComplete;
+        
+        // Check special attacks completion
+        this.buildState.specialAttacksComplete = this.specialAttacks.length > 0 && 
+                                               this.specialAttacks.every(attack => attack.name && attack.name.trim() !== '');
+        
+        // Check utility completion
+        const hasUtilityPurchases = Object.values(this.utilityPurchases.expertise).some(exp => exp.length > 0) ||
+                                  this.utilityPurchases.wealth.length > 0 ||
+                                  this.utilityPurchases.uniqueAbilities.length > 0;
+        this.buildState.utilityComplete = hasUtilityPurchases;
+    }
+    
     // Validate build order is being followed
     canModifySection(section) {
         switch(section) {
             case 'archetypes':
                 return true; // Always can modify
             case 'attributes':
-                return this.buildState.archetypesComplete;
+                return true; // Always can modify attributes
             case 'mainPool':
                 return this.buildState.attributesComplete;
             case 'specialAttacks':

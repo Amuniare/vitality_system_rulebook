@@ -67,11 +67,6 @@ export class AttributeSystem {
         const errors = [];
         const warnings = [];
         
-        // Check if archetypes are selected
-        if (!this.hasRequiredArchetypes(character)) {
-            errors.push("Must select all archetypes before assigning attributes");
-        }
-        
         // Check tier maximum
         const maxValue = TierSystem.getAttributeMaximum(character.tier);
         if (value > maxValue) {
