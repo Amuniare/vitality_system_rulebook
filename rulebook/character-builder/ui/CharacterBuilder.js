@@ -123,7 +123,9 @@ export class CharacterBuilder {
         // Use event delegation with proper context
         EventManager.delegateEvents(container, {
             click: {
-                '#new-character-btn': this.createNewCharacter,
+                '#create-new-character': this.createNewCharacter,
+                '#import-character': this.handleImportCharacter,
+                '.character-item': this.handleCharacterSelect,
                 '.tab-btn': this.handleTabSwitch,
                 '#save-character': this.saveCharacter,
                 '#export-json': this.exportCharacterJSON,
@@ -145,6 +147,30 @@ export class CharacterBuilder {
                     if (this.tabs.attributes && attrId !== undefined && change !== undefined) {
                         console.log(`🎯 Attribute button: ${attrId} ${change > 0 ? '+' : ''}${change}`);
                         this.tabs.attributes.changeAttribute(attrId, change);
+                    }
+                },
+
+                // CHARACTER LIBRARY HANDLERS
+                '[data-action="load-character"]': (e, element) => {
+                    const characterId = element.dataset.characterId;
+                    if (characterId && this.library) {
+                        const character = this.library.getCharacter(characterId);
+                        if (character) {
+                            this.currentCharacter = character;
+                            this.showCharacterBuilder();
+                            this.showNotification(`Loaded ${character.name}`, 'success');
+                        }
+                    }
+                },
+                '[data-action="delete-from-library"]': (e, element) => {
+                    const characterId = element.dataset.characterId;
+                    if (characterId && this.library) {
+                        const character = this.library.getCharacter(characterId);
+                        if (character && confirm(`Delete "${character.name}" from library?`)) {
+                            this.library.deleteCharacter(characterId);
+                            this.renderCharacterLibrary();
+                            this.showNotification('Character deleted from library', 'info');
+                        }
                     }
                 },
 
@@ -685,5 +711,100 @@ export class CharacterBuilder {
                 notification.parentNode.removeChild(notification);
             }
         }, 3000);
+    }
+
+    // Character Management Methods
+    showWelcomeScreen() {
+        console.log('Showing welcome screen');
+        document.getElementById('welcome-screen').style.display = 'block';
+        document.getElementById('character-builder').style.display = 'none';
+        
+        // Render character library
+        this.renderCharacterLibrary();
+    }
+
+    renderCharacterLibrary() {
+        const characterList = document.getElementById('character-list');
+        if (!characterList || !this.library) return;
+
+        const characters = this.library.getAllCharacters();
+        
+        if (characters.length === 0) {
+            characterList.innerHTML = '<p class="empty-state">No saved characters yet</p>';
+            return;
+        }
+
+        characterList.innerHTML = characters.map(char => `
+            <div class="character-item" data-character-id="${char.id}">
+                <div class="character-info">
+                    <div class="character-name">${char.name}</div>
+                    <div class="character-details">Tier ${char.tier} | ${new Date(char.lastModified).toLocaleDateString()}</div>
+                </div>
+                <div class="character-actions">
+                    <button class="btn btn-small btn-primary" data-action="load-character" data-character-id="${char.id}">Load</button>
+                    <button class="btn btn-small btn-danger" data-action="delete-from-library" data-character-id="${char.id}">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    createNewCharacter() {
+        console.log('Creating new character');
+        this.currentCharacter = new VitalityCharacter();
+        this.showCharacterBuilder();
+        this.showNotification('New character created!', 'success');
+    }
+
+    handleImportCharacter() {
+        console.log('Import character triggered');
+        const fileInput = document.getElementById('import-file');
+        fileInput.click();
+        
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const characterData = JSON.parse(event.target.result);
+                    this.currentCharacter = new VitalityCharacter();
+                    Object.assign(this.currentCharacter, characterData);
+                    this.showCharacterBuilder();
+                    this.showNotification('Character imported successfully!', 'success');
+                } catch (error) {
+                    console.error('Import error:', error);
+                    this.showNotification('Failed to import character', 'error');
+                }
+            };
+            reader.readAsText(file);
+        };
+    }
+
+    handleCharacterSelect(e) {
+        const characterId = e.target.closest('.character-item')?.dataset.characterId;
+        if (!characterId) return;
+        
+        const character = this.library.getCharacter(characterId);
+        if (character) {
+            this.currentCharacter = character;
+            this.showCharacterBuilder();
+            this.showNotification(`Loaded ${character.name}`, 'success');
+        }
+    }
+
+    showCharacterBuilder() {
+        console.log('Showing character builder');
+        document.getElementById('welcome-screen').style.display = 'none';
+        document.getElementById('character-builder').style.display = 'block';
+        
+        // Update header info
+        if (this.currentCharacter) {
+            document.getElementById('character-name-display').textContent = this.currentCharacter.name || 'Unnamed Character';
+            document.getElementById('character-tier-display').textContent = `Tier ${this.currentCharacter.tier}`;
+        }
+        
+        // Render current tab
+        this.switchTab(this.currentTab);
     }
 }
