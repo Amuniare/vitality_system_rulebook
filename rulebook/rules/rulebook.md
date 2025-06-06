@@ -846,7 +846,14 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 - **Direct (30p)**
 - **Area (30p)**  
 
-
+**Advanced Conditions** 
+- **Control (30p)**
+- **Stun (20p)**
+- **Weaken (20p) → Mimic (+20p)** 
+- **Disable Specials (10p)**
+- **Frighten (10p)**
+- **Enthrall (10p)**
+- **Frenzy (10p)**
 
 **Generic Attack Upgrades:**
 - **Extended Range (10p):** Ranged attacks reach 30 spaces instead of 15
@@ -857,7 +864,8 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 - **Ranged Origin (20p):** Area attacks can originate from designated point within 15 spaces
 - **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only  
 - **Hybrid (30p):** Attack becomes Hybrid, inflicting both a Condition and Damage.  
-**Advanced Conditions:** Control (30p), Capture (20p), Stun (20p), Weaken (20p), Mimic (+20p) Disable Specials (10p), Frighten (10p), Enthrall (10p), Frenzy (10p)
+
+
 
 
 ### **CREATION CHECKLIST**
