@@ -861,7 +861,7 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 - **Perception Range (10p):** Direct attacks can target anyone you can see instead of 30 spaces
 - **Enhanced Scale (20p):** Double the size of Area attacks (6sp radius, 12sp cone, 24sp line)
 - **Precise (30p):** Choose which targets are affected by Area attacks
-- **Ranged Origin (20p):** Area attacks can originate from designated point within 15 spaces
+- **Ranged AOE  (20p):** Area attacks can originate from designated point within 15 spaces
 - **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only  
 - **Hybrid (30p):** Attack becomes Hybrid, inflicting both a Condition and Damage.  
 
