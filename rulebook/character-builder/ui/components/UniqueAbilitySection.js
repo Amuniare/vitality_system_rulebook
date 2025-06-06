@@ -105,67 +105,147 @@ export class UniqueAbilitySection {
 
     renderUpgradeOptions(ability, abilityId) {
         if (!ability.upgrades) return '<p class="empty-state">No upgrades for this ability.</p>';
-        return ability.upgrades.map(upgrade => `
-            <div class="upgrade-option">
-                <label class="upgrade-label">
-                    <input type="checkbox"
-                           class="upgrade-checkbox"
-                           data-ability-id="${abilityId}"
-                           data-upgrade-id="${upgrade.id}"
-                           data-upgrade-cost="${upgrade.cost}">
-                    <span class="upgrade-name">${upgrade.name}</span>
-                    <span class="upgrade-cost">${upgrade.cost}p${upgrade.per ? `/${upgrade.per}` : ''}</span>
-                </label>
-                <div class="upgrade-description">${upgrade.description}</div>
-                ${upgrade.per ? `
-                    <div class="upgrade-quantity">
-                        <label for="qty-${abilityId}-${upgrade.id}">Quantity:</label>
-                        <input type="number"
-                               id="qty-${abilityId}-${upgrade.id}"
-                               class="upgrade-qty"
-                               data-ability-id="${abilityId}"
-                               data-upgrade-id="${upgrade.id}"
-                               min="1" max="10" value="1" disabled>
-                    </div>
-                ` : ''}
+        
+        return `
+            <div class="upgrade-grid grid-layout grid-columns-auto-fit-300">
+                ${ability.upgrades.map(upgrade => this.renderUpgradeCard(upgrade, abilityId)).join('')}
             </div>
-        `).join('');
+        `;
+    }
+
+    renderUpgradeCard(upgrade, abilityId) {
+        const hasQuantity = upgrade.per;
+        const costDisplay = hasQuantity ? `${upgrade.cost}p/${upgrade.per}` : `${upgrade.cost}p`;
+        
+        return `
+            <div class="card upgrade-card clickable" 
+                 data-ability-id="${abilityId}" 
+                 data-upgrade-id="${upgrade.id}"
+                 data-upgrade-cost="${upgrade.cost}">
+                <div class="card-header">
+                    <h4 class="card-title">${upgrade.name}</h4>
+                    <span class="card-cost">${costDisplay}</span>
+                </div>
+                <div class="card-description">${upgrade.description}</div>
+                
+                ${hasQuantity ? `
+                    <div class="upgrade-quantity-controls">
+                        <button type="button" 
+                                class="btn btn-small upgrade-decrease" 
+                                data-ability-id="${abilityId}" 
+                                data-upgrade-id="${upgrade.id}"
+                                disabled>-</button>
+                        <span class="quantity-display" 
+                              id="qty-display-${abilityId}-${upgrade.id}">0</span>
+                        <button type="button" 
+                                class="btn btn-small upgrade-increase" 
+                                data-ability-id="${abilityId}" 
+                                data-upgrade-id="${upgrade.id}">+</button>
+                    </div>
+                ` : `
+                    <div class="upgrade-toggle-controls">
+                        <button type="button" 
+                                class="btn btn-small upgrade-toggle" 
+                                data-ability-id="${abilityId}" 
+                                data-upgrade-id="${upgrade.id}"
+                                data-selected="false">Add Upgrade</button>
+                    </div>
+                `}
+            </div>
+        `;
     }
 
 
-    setupEventListeners() {
-        // Handled by MainPoolTab's EventManager using data-action for purchase/remove
-        // Internal listeners for checkboxes and quantity need to be setup if this component manages its own re-render
-        // or if MainPoolTab delegates these specific input changes.
-        // For now, assuming MainPoolTab will re-render this section, which re-attaches.
-        // If this component re-renders itself on upgrade selection, then:
-        const container = document.querySelector('.unique-ability-section'); // This selector needs to be more specific if used
-        if (container) {
-             container.querySelectorAll('.upgrade-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => this.handleUpgradeSelectionChange(e.target));
-            });
-            container.querySelectorAll('.upgrade-qty').forEach(input => {
-                input.addEventListener('input', (e) => this.handleUpgradeQuantityChange(e.target));
-            });
-        }
-    }
+    // Event handlers called by main event delegation system
     
-    handleUpgradeSelectionChange(checkboxElement) {
-        const abilityId = checkboxElement.dataset.abilityId;
-        const upgradeId = checkboxElement.dataset.upgradeId;
-        const isChecked = checkboxElement.checked;
-
-        const qtyInput = document.querySelector(`input.upgrade-qty[data-ability-id="${abilityId}"][data-upgrade-id="${upgradeId}"]`);
-        if (qtyInput) {
-            qtyInput.disabled = !isChecked;
-            if (!isChecked) qtyInput.value = 1; // Reset quantity if unchecked
+    handleUpgradeIncrease(button) {
+        const abilityId = button.dataset.abilityId;
+        const upgradeId = button.dataset.upgradeId;
+        const displayElement = document.getElementById(`qty-display-${abilityId}-${upgradeId}`);
+        const decreaseBtn = button.parentElement.querySelector('.upgrade-decrease');
+        
+        if (displayElement) {
+            let currentQty = parseInt(displayElement.textContent) || 0;
+            currentQty++;
+            displayElement.textContent = currentQty;
+            
+            // Enable decrease button
+            decreaseBtn.disabled = false;
+            
+            // Update card selection state
+            this.updateUpgradeCardState(abilityId, upgradeId, currentQty > 0);
+            this.updateAbilityCostDisplay(abilityId);
         }
+    }
+
+    handleUpgradeDecrease(button) {
+        const abilityId = button.dataset.abilityId;
+        const upgradeId = button.dataset.upgradeId;
+        const displayElement = document.getElementById(`qty-display-${abilityId}-${upgradeId}`);
+        
+        if (displayElement) {
+            let currentQty = parseInt(displayElement.textContent) || 0;
+            if (currentQty > 0) {
+                currentQty--;
+                displayElement.textContent = currentQty;
+                
+                // Disable decrease button if quantity is 0
+                if (currentQty === 0) {
+                    button.disabled = true;
+                }
+                
+                // Update card selection state
+                this.updateUpgradeCardState(abilityId, upgradeId, currentQty > 0);
+                this.updateAbilityCostDisplay(abilityId);
+            }
+        }
+    }
+
+    handleUpgradeToggle(button) {
+        const abilityId = button.dataset.abilityId;
+        const upgradeId = button.dataset.upgradeId;
+        const isSelected = button.dataset.selected === 'true';
+        
+        button.dataset.selected = (!isSelected).toString();
+        button.textContent = isSelected ? 'Add Upgrade' : 'Remove Upgrade';
+        
+        // Update card selection state
+        this.updateUpgradeCardState(abilityId, upgradeId, !isSelected);
         this.updateAbilityCostDisplay(abilityId);
     }
 
-    handleUpgradeQuantityChange(quantityInputElement) {
-         const abilityId = quantityInputElement.dataset.abilityId;
-         this.updateAbilityCostDisplay(abilityId);
+    handleUpgradeCardClick(card) {
+        const abilityId = card.dataset.abilityId;
+        const upgradeId = card.dataset.upgradeId;
+        
+        // Check if this is a quantity-based upgrade
+        const quantityControls = card.querySelector('.upgrade-quantity-controls');
+        const toggleControls = card.querySelector('.upgrade-toggle-controls');
+        
+        if (quantityControls) {
+            // For quantity upgrades, clicking the card acts like the + button
+            const increaseBtn = quantityControls.querySelector('.upgrade-increase');
+            if (increaseBtn) {
+                this.handleUpgradeIncrease(increaseBtn);
+            }
+        } else if (toggleControls) {
+            // For toggle upgrades, clicking the card acts like the toggle button
+            const toggleBtn = toggleControls.querySelector('.upgrade-toggle');
+            if (toggleBtn) {
+                this.handleUpgradeToggle(toggleBtn);
+            }
+        }
+    }
+
+    updateUpgradeCardState(abilityId, upgradeId, isSelected) {
+        const card = document.querySelector(`[data-ability-id="${abilityId}"][data-upgrade-id="${upgradeId}"]`);
+        if (card) {
+            if (isSelected) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        }
     }
 
 
@@ -176,19 +256,30 @@ export class UniqueAbilitySection {
         let currentTotalCost = abilityDef.baseCost;
         const currentSelectedUpgrades = [];
 
-        document.querySelectorAll(`input.upgrade-checkbox[data-ability-id="${abilityId}"]:checked`).forEach(checkbox => {
-            const upgradeId = checkbox.dataset.upgradeId;
-            const upgradeDef = abilityDef.upgrades.find(u => u.id === upgradeId);
-            if (upgradeDef) {
-                let quantity = 1;
-                if (upgradeDef.per) {
-                    const qtyInput = document.querySelector(`input.upgrade-qty[data-ability-id="${abilityId}"][data-upgrade-id="${upgradeId}"]`);
-                    quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+        // Check quantity-based upgrades
+        document.querySelectorAll(`[data-ability-id="${abilityId}"] .quantity-display`).forEach(display => {
+            const card = display.closest('.upgrade-card');
+            const upgradeId = card.dataset.upgradeId;
+            const quantity = parseInt(display.textContent) || 0;
+            
+            if (quantity > 0) {
+                const upgradeDef = abilityDef.upgrades.find(u => u.id === upgradeId);
+                if (upgradeDef) {
                     currentTotalCost += upgradeDef.cost * quantity;
-                } else {
-                    currentTotalCost += upgradeDef.cost;
+                    currentSelectedUpgrades.push({ id: upgradeId, quantity: quantity });
                 }
-                currentSelectedUpgrades.push({ id: upgradeId, quantity: upgradeDef.per ? quantity : undefined });
+            }
+        });
+
+        // Check toggle-based upgrades
+        document.querySelectorAll(`[data-ability-id="${abilityId}"] .upgrade-toggle[data-selected="true"]`).forEach(button => {
+            const card = button.closest('.upgrade-card');
+            const upgradeId = card.dataset.upgradeId;
+            const upgradeDef = abilityDef.upgrades.find(u => u.id === upgradeId);
+            
+            if (upgradeDef) {
+                currentTotalCost += upgradeDef.cost;
+                currentSelectedUpgrades.push({ id: upgradeId });
             }
         });
 

@@ -819,6 +819,98 @@ input:focus, select:focus, textarea:focus {
     margin-bottom: var(--gap-large); /* INCREASED */
 }
 
+/* Upgrade Card Styling */
+.upgrade-grid {
+    margin: var(--gap-large) 0;
+}
+
+.upgrade-card {
+    min-height: 160px;
+    border: 2px solid var(--accent-secondary);
+    transition: all 0.3s ease;
+}
+
+.upgrade-card:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+}
+
+.upgrade-card.selected {
+    border-color: var(--accent-primary);
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3);
+}
+
+.upgrade-quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-medium);
+    margin-top: var(--gap-medium);
+    padding: var(--padding-small);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-medium);
+}
+
+.upgrade-toggle-controls {
+    margin-top: var(--gap-medium);
+    text-align: center;
+}
+
+.quantity-display {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--accent-primary);
+    min-width: 2em;
+    text-align: center;
+    padding: 0.25rem 0.5rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--border-radius-small);
+}
+
+.upgrade-increase,
+.upgrade-decrease {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.upgrade-toggle {
+    width: 100%;
+    padding: var(--padding-small) var(--padding-medium);
+}
+
+.upgrade-toggle[data-selected="true"] {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    border-color: var(--accent-primary);
+}
+
+/* Unique Ability Card Styling */
+.ability-card.complex {
+    border: 2px solid var(--accent-secondary);
+    min-height: 200px;
+}
+
+.ability-card.complex .upgrade-preview {
+    border-top: 2px solid var(--accent-secondary);
+    margin-top: var(--gap-large);
+    padding-top: var(--gap-large);
+}
+
+.upgrade-selector h6 {
+    color: var(--accent-primary);
+    margin-bottom: var(--gap-medium);
+    font-size: 1.1em;
+}
+
 /* Character Management Styles */
 .character-management {
     background: var(--bg-secondary);

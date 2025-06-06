@@ -184,7 +184,45 @@ export class CharacterBuilder {
                 '[data-action="continue-to-mainpool"]': () => this.switchTab('mainPool'),
                 '[data-action="continue-to-special-attacks"]': () => this.switchTab('specialAttacks'),
                 '[data-action="continue-to-utility"]': () => this.switchTab('utility'),
-                '[data-action="continue-to-summary"]': () => this.switchTab('summary')
+                '[data-action="continue-to-summary"]': () => this.switchTab('summary'),
+
+                // UNIQUE ABILITY UPGRADE HANDLERS
+                '.upgrade-increase': (e, element) => {
+                    e.stopPropagation();
+                    if (this.tabs.mainPool && this.tabs.mainPool.activeSection === 'uniqueAbilities') {
+                        const section = this.tabs.mainPool.sections.uniqueAbilities;
+                        if (section) {
+                            section.handleUpgradeIncrease(element);
+                        }
+                    }
+                },
+                '.upgrade-decrease': (e, element) => {
+                    e.stopPropagation();
+                    if (this.tabs.mainPool && this.tabs.mainPool.activeSection === 'uniqueAbilities') {
+                        const section = this.tabs.mainPool.sections.uniqueAbilities;
+                        if (section) {
+                            section.handleUpgradeDecrease(element);
+                        }
+                    }
+                },
+                '.upgrade-toggle': (e, element) => {
+                    e.stopPropagation();
+                    if (this.tabs.mainPool && this.tabs.mainPool.activeSection === 'uniqueAbilities') {
+                        const section = this.tabs.mainPool.sections.uniqueAbilities;
+                        if (section) {
+                            section.handleUpgradeToggle(element);
+                        }
+                    }
+                },
+                '.upgrade-card': (e, element) => {
+                    // Only handle if click is not on a button
+                    if (!e.target.closest('button') && this.tabs.mainPool && this.tabs.mainPool.activeSection === 'uniqueAbilities') {
+                        const section = this.tabs.mainPool.sections.uniqueAbilities;
+                        if (section) {
+                            section.handleUpgradeCardClick(element);
+                        }
+                    }
+                }
             },
             input: {
                 '[data-action="update-char-name"]': (e, element) => {
