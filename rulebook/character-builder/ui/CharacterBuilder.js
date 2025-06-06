@@ -185,12 +185,8 @@ export class CharacterBuilder {
 
                 // SPECIAL ATTACK HANDLERS
                 '[data-action="create-attack"]': () => {
-                    console.log('🎯 create-attack event handler called');
                     if (this.tabs.specialAttacks) {
-                        console.log('✅ specialAttacks tab found, calling createNewAttack()');
                         this.tabs.specialAttacks.createNewAttack();
-                    } else {
-                        console.log('❌ specialAttacks tab not found');
                     }
                 },
                 '[data-action="select-attack-tab"]': (e, element) => {

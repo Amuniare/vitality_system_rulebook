@@ -345,7 +345,7 @@ export class SpecialAttackTab {
 
     renderLimitOption(limit, attack, character) {
         const isSelected = attack.limits.some(selectedLimit => selectedLimit.id === limit.id);
-        const validation = SpecialAttackSystem.validateLimitAddition(character, attack, limit);
+        const validation = SpecialAttackSystem.validateLimitSelection(character, attack, limit.id);
         const canSelect = !isSelected && validation.isValid;
         
         return `
@@ -449,7 +449,7 @@ export class SpecialAttackTab {
                                     (limit) => {
                                         const isSelected = attack?.limits.some(l => l.id === limit.id);
                                         // Basic validation for display, actual validation in system
-                                        const validation = attack ? SpecialAttackSystem.validateLimitAddition(character, attack, limit) : {isValid: true};
+                                        const validation = attack ? SpecialAttackSystem.validateLimitSelection(character, attack, limit.id) : {isValid: true};
                                         return RenderUtils.renderCard({
                                             title: limit.name,
                                             cost: limit.points,
@@ -599,24 +599,15 @@ export class SpecialAttackTab {
     // Method stubs for actions called by CharacterBuilder via EventManager
     // (Implementations would call SpecialAttackSystem and then this.builder.updateCharacter() & this.render())
     createNewAttack() {
-        console.log('🎯 createNewAttack() called');
         const character = this.builder.currentCharacter;
-        if (!character) {
-            console.log('❌ No character found');
-            return;
-        }
-        console.log('✅ Character found, creating attack...');
+        if (!character) return;
         try {
-            const newAttack = SpecialAttackSystem.createSpecialAttack(character); // System handles validation now
-            console.log('✅ Attack created:', newAttack);
+            const newAttack = SpecialAttackSystem.createSpecialAttack(character);
             character.specialAttacks.push(newAttack);
             this.selectedAttackIndex = character.specialAttacks.length - 1;
-            console.log('✅ Attack added to character, calling updateCharacter()');
-            this.builder.updateCharacter(); // This triggers re-render via CharacterBuilder
+            this.builder.updateCharacter();
             this.builder.showNotification('New attack created!', 'success');
-            console.log('✅ Attack creation complete');
         } catch (error) {
-            console.error('❌ Error creating attack:', error);
             this.builder.showNotification(`Error creating attack: ${error.message}`, 'error');
         }
     }
