@@ -10,7 +10,7 @@ export class SpecialAttackTab {
         this.selectedAttackIndex = 0;
         this.showingLimitModal = false;
         this.showingUpgradeModal = false;
-        this.showingAttackTypeModal = false;
+        this.expandedLimitCategories = new Set(); // Track which limit categories are expanded
     }
 
     render() {
@@ -63,7 +63,6 @@ export class SpecialAttackTab {
                     '<div class="empty-state">Create your first special attack to begin building.</div>'}
                 ${this.renderLimitModal(character)}
                 ${this.renderUpgradeModal(character)}
-                ${this.renderAttackTypeModal(character)}
 
                 <div class="next-step">
                     <p><strong>Next Step:</strong> Configure utility abilities and expertise.</p>
@@ -187,8 +186,17 @@ export class SpecialAttackTab {
             <div class="attack-builder card">
                 ${this.renderAttackBasics(attack)}
                 ${this.renderAttackTypesSection(attack, character)}
-                ${this.renderLimitsSection(attack, character)}
-                ${this.renderUpgradesSection(attack, character)}
+                
+                <!-- Two-column layout for limits and upgrades -->
+                <div class="attack-builder-columns">
+                    <div class="limits-column">
+                        ${this.renderLimitsSection(attack, character)}
+                    </div>
+                    <div class="upgrades-column">
+                        ${this.renderUpgradesSection(attack, character)}
+                    </div>
+                </div>
+                
                 ${this.renderPointsSummary(attack)}
             </div>
         `;
@@ -212,18 +220,32 @@ export class SpecialAttackTab {
     }
 
     renderAttackTypesSection(attack, character) {
-        // This section needs to show selected attack types and allow adding/removing them.
-        // For brevity, a simplified version. A modal would be better for selection.
         const selectedTypes = attack.attackTypes || [];
-        const availableTypes = AttackTypeSystem.getAttackTypeDefinitions(); // Get all
+        const availableTypes = AttackTypeSystem.getAttackTypeDefinitions();
         const freeTypesFromArchetype = AttackTypeSystem.getFreeAttackTypesFromArchetype(character);
-
+        
+        // Get unselected types for dropdown
+        const unselectedTypes = Object.keys(availableTypes).filter(typeId => !selectedTypes.includes(typeId));
 
         return `
             <div class="attack-types-section section-block">
-                 <div class="section-header">
+                <div class="section-header">
                     <h4>Attack Types (${selectedTypes.length})</h4>
-                    ${RenderUtils.renderButton({ text: '+ Add Attack Type', variant: 'secondary', size: 'small', dataAttributes: { action: 'open-attack-type-modal' }})}
+                    ${unselectedTypes.length > 0 ? `
+                        <div class="attack-type-dropdown-container">
+                            <select data-action="add-attack-type-dropdown" class="attack-type-dropdown">
+                                <option value="">+ Add Attack Type</option>
+                                ${unselectedTypes.map(typeId => {
+                                    const typeDef = availableTypes[typeId];
+                                    const cost = freeTypesFromArchetype.includes(typeId) ? 0 : typeDef.cost;
+                                    const canAfford = (attack.upgradePointsAvailable - attack.upgradePointsSpent) >= cost;
+                                    return `<option value="${typeId}" ${!canAfford ? 'disabled' : ''}>
+                                        ${typeDef.name} (${cost}p) ${freeTypesFromArchetype.includes(typeId) ? '(Free)' : ''}
+                                    </option>`;
+                                }).join('')}
+                            </select>
+                        </div>
+                    ` : `<span class="text-muted">All types selected</span>`}
                 </div>
                 ${selectedTypes.length > 0 ? `
                     <div class="selected-items-list">
@@ -241,78 +263,49 @@ export class SpecialAttackTab {
             </div>
         `;
     }
-     renderAttackTypeModal(character) {
-        if (!character || !character.specialAttacks[this.selectedAttackIndex]) return '';
-        const attack = character.specialAttacks[this.selectedAttackIndex];
-        const allTypes = AttackTypeSystem.getAttackTypeDefinitions();
-        const freeTypes = AttackTypeSystem.getFreeAttackTypesFromArchetype(character);
-
-        return `
-            <div id="attack-type-modal" class="modal hidden">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Add Attack Type</h3>
-                        ${RenderUtils.renderButton({ text: '×', variant: 'secondary', size: 'small', dataAttributes: { action: 'close-attack-type-modal' }})}
-                    </div>
-                    <div class="modal-body">
-                        ${RenderUtils.renderGrid(
-                            Object.values(allTypes),
-                            (typeDef) => {
-                                const isSelected = attack.attackTypes.includes(typeDef.id);
-                                const cost = freeTypes.includes(typeDef.id) ? 0 : typeDef.cost;
-                                const canAfford = (attack.upgradePointsAvailable - attack.upgradePointsSpent) >= cost;
-                                let status = isSelected ? 'purchased' : (canAfford ? 'available' : 'unaffordable');
-
-                                return RenderUtils.renderCard({
-                                    title: typeDef.name,
-                                    cost: cost,
-                                    description: `${typeDef.description} ${typeDef.penalty ? `<br><strong>Penalty:</strong> ${typeDef.penalty}` : ''}`,
-                                    status: status,
-                                    clickable: !isSelected && canAfford,
-                                    disabled: isSelected || !canAfford,
-                                    dataAttributes: { action: 'select-attack-type', 'type-id': typeDef.id, cost: cost }
-                                }, { cardClass: 'attack-type-option', showStatus: true });
-                            },
-                            { gridContainerClass: 'grid-layout', gridSpecificClass: 'grid-columns-auto-fit-280' }
-                        )}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
 
 
     renderLimitsSection(attack, character) {
-        // ... (renderLimitItem should use RenderUtils.renderButton for delete)
-        // ... (add limit button should use RenderUtils.renderButton)
         const archetype = character.archetypes.specialAttack;
         const canUseLimits = SpecialAttackSystem.canArchetypeUseLimits ? SpecialAttackSystem.canArchetypeUseLimits(archetype) : !['paragon', 'oneTrick', 'dualNatured', 'basic'].includes(archetype);
 
         if (!canUseLimits) {
             return `
                 <div class="limits-section section-block disabled">
-                    <h4>Limits</h4>
+                    <h3>Limits</h3>
                     <p class="archetype-restriction">${this.formatArchetypeName(archetype)} archetype cannot use limits.</p>
                 </div>
             `;
         }
-        const limitBreakdown = LimitCalculator.getCalculationBreakdown(attack.limitPointsTotal || 0, character.tier, archetype);
 
+        const limitBreakdown = LimitCalculator.getCalculationBreakdown(attack.limitPointsTotal || 0, character.tier, archetype);
+        const allLimits = LimitCalculator.getAllLimits();
 
         return `
             <div class="limits-section section-block">
                 <div class="section-header">
-                    <h4>Limits (${attack.limits.length})</h4>
-                    ${RenderUtils.renderButton({ text: '+ Add Limit', variant: 'secondary', size: 'small', dataAttributes: { action: 'open-limit-modal' }})}
+                    <h3>Limits (${attack.limits.length})</h3>
                 </div>
-                 ${RenderUtils.renderPurchasedList( // Using purchased list for display
-                    attack.limits,
-                    (limit, index) => this.renderLimitItem(limit, index),
-                    { listContainerClass: 'limits-list selected-items-list', emptyMessage: 'No limits selected. Add limits to generate upgrade points.' }
-                )}
+                
+                <!-- Selected Limits -->
+                ${attack.limits.length > 0 ? `
+                    <div class="selected-limits-list">
+                        <h4>Selected Limits</h4>
+                        ${attack.limits.map((limit, index) => this.renderLimitItem(limit, index)).join('')}
+                    </div>
+                ` : ''}
+                
+                <!-- Hierarchical Limit Categories -->
+                <div class="limit-categories-hierarchy">
+                    <h4>Available Limits</h4>
+                    ${Object.entries(allLimits).map(([categoryKey, categoryLimits]) => 
+                        this.renderLimitCategory(categoryKey, categoryLimits, attack, character)
+                    ).join('')}
+                </div>
+                
                 ${attack.limits.length > 0 ? `
                     <div class="limit-calculation-details">
-                        <h5>Point Calculation from Limits</h5>
+                        <h5>Point Calculation</h5>
                         <div class="calculation-breakdown">
                             ${limitBreakdown.steps.map(step => `<div class="calc-line">${step}</div>`).join('')}
                         </div>
@@ -321,6 +314,45 @@ export class SpecialAttackTab {
             </div>
         `;
     }
+    renderLimitCategory(categoryKey, categoryLimits, attack, character) {
+        const isExpanded = this.expandedLimitCategories.has(categoryKey);
+        const categoryName = this.formatCategoryName(categoryKey);
+        
+        return `
+            <div class="limit-category">
+                <div class="limit-category-header" data-action="toggle-limit-category" data-category="${categoryKey}">
+                    <span class="category-expand-icon">${isExpanded ? '▼' : '▶'}</span>
+                    <span class="category-name">${categoryName}</span>
+                    <span class="category-count">(${categoryLimits.length})</span>
+                </div>
+                ${isExpanded ? `
+                    <div class="limit-category-content">
+                        ${categoryLimits.map(limit => this.renderLimitOption(limit, attack, character)).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    renderLimitOption(limit, attack, character) {
+        const isSelected = attack.limits.some(selectedLimit => selectedLimit.id === limit.id);
+        const validation = SpecialAttackSystem.validateLimitAddition(character, attack, limit);
+        const canSelect = !isSelected && validation.isValid;
+        
+        return `
+            <div class="limit-option ${isSelected ? 'selected' : ''} ${!canSelect && !isSelected ? 'disabled' : ''}"
+                 ${canSelect ? `data-action="select-limit" data-limit-id="${limit.id}"` : ''}>
+                <div class="limit-option-header">
+                    <span class="limit-name">${limit.name}</span>
+                    <span class="limit-points">${limit.points}p</span>
+                    ${isSelected ? '<span class="selected-indicator">✓</span>' : ''}
+                </div>
+                <div class="limit-description">${limit.description}</div>
+                ${!validation.isValid && !isSelected ? `<div class="limit-error">${validation.errors[0]}</div>` : ''}
+            </div>
+        `;
+    }
+
     renderLimitItem(limit, index) {
         return `
             <div class="selected-item limit-item">
@@ -523,6 +555,15 @@ export class SpecialAttackTab {
     }
     openLimitModal() { this.showingLimitModal = true; this.render(); }
     closeLimitModal() { this.showingLimitModal = false; this.render(); }
+    toggleLimitCategory(categoryKey) {
+        if (this.expandedLimitCategories.has(categoryKey)) {
+            this.expandedLimitCategories.delete(categoryKey);
+        } else {
+            this.expandedLimitCategories.add(categoryKey);
+        }
+        this.render(); // Re-render to show/hide category content
+    }
+
     addLimit(limitId) {
         const character = this.builder.currentCharacter;
         const attack = character?.specialAttacks[this.selectedAttackIndex];
@@ -535,7 +576,6 @@ export class SpecialAttackTab {
         try {
             SpecialAttackSystem.addLimitToAttack(character, this.selectedAttackIndex, limitData);
             this.builder.updateCharacter();
-            this.closeLimitModal(); // Re-renders implicitly via builder update if tab is active
             this.builder.showNotification('Limit added.', 'success');
         } catch(error) {
             this.builder.showNotification(`Failed to add limit: ${error.message}`, 'error');
@@ -589,22 +629,18 @@ export class SpecialAttackTab {
             this.builder.showNotification(`Failed to remove upgrade: ${error.message}`, 'error');
         }
     }
-    openAttackTypeModal() { this.showingAttackTypeModal = true; this.render(); }
-    closeAttackTypeModal() { this.showingAttackTypeModal = false; this.render(); }
 
-    selectAttackType(typeId, cost) {
+    selectAttackType(typeId) {
         const character = this.builder.currentCharacter;
         const attack = character?.specialAttacks[this.selectedAttackIndex];
         if (!character || !attack) return;
         try {
-            // AttackTypeSystem.addAttackTypeToAttack might be better here
             const validation = AttackTypeSystem.validateAttackTypeSelection(character, attack, typeId);
             if (!validation.isValid) throw new Error(validation.errors.join(', '));
 
             AttackTypeSystem.addAttackTypeToAttack(character, attack, typeId); // System handles cost
             SpecialAttackSystem.recalculateAttackPoints(character, attack);
             this.builder.updateCharacter();
-            this.closeAttackTypeModal(); // Will re-render via builder.updateCharacter
             this.builder.showNotification(`Attack type ${typeId} added.`, 'success');
         } catch(error) {
              this.builder.showNotification(`Failed to add attack type: ${error.message}`, 'error');

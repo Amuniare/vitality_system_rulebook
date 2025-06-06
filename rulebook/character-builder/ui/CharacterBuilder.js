@@ -224,16 +224,6 @@ export class CharacterBuilder {
                         this.tabs.specialAttacks.closeUpgradeModal();
                     }
                 },
-                '[data-action="open-attack-type-modal"]': () => {
-                    if (this.tabs.specialAttacks) {
-                        this.tabs.specialAttacks.openAttackTypeModal();
-                    }
-                },
-                '[data-action="close-attack-type-modal"]': () => {
-                    if (this.tabs.specialAttacks) {
-                        this.tabs.specialAttacks.closeAttackTypeModal();
-                    }
-                },
 
                 // SPECIAL ATTACK SELECTION HANDLERS
                 '[data-action="select-limit"]': (e, element) => {
@@ -246,6 +236,12 @@ export class CharacterBuilder {
                     const limitIndex = parseInt(element.dataset.index);
                     if (this.tabs.specialAttacks && !isNaN(limitIndex)) {
                         this.tabs.specialAttacks.removeLimit(limitIndex);
+                    }
+                },
+                '[data-action="toggle-limit-category"]': (e, element) => {
+                    const categoryKey = element.dataset.category;
+                    if (this.tabs.specialAttacks && categoryKey) {
+                        this.tabs.specialAttacks.toggleLimitCategory(categoryKey);
                     }
                 },
                 '[data-action="select-upgrade"]': (e, element) => {
@@ -409,6 +405,13 @@ export class CharacterBuilder {
                     if (this.tabs.utility) {
                         this.tabs.utility.handleExpertiseToggle(element);
                     }
+                },
+                '[data-action="add-attack-type-dropdown"]': (e, element) => {
+                    const typeId = element.value;
+                    if (typeId && this.tabs.specialAttacks) {
+                        this.tabs.specialAttacks.selectAttackType(typeId);
+                        element.value = ''; // Reset dropdown
+                    }
                 }
             }
         }, this); // Pass 'this' as context
@@ -567,29 +570,16 @@ export class CharacterBuilder {
                     canAccess = true; // Always accessible
                     break;
                 case 'attributes':
-                    // FIX: Make less restrictive - allow if any archetype is selected OR allow anyway
-                    const selectedArchetypes = Object.values(this.currentCharacter.archetypes).filter(val => val !== null).length;
-                    canAccess = true; // CHANGED: Always allow access, just show warning if incomplete
-                    // Add visual indicator if archetypes incomplete
-                    if (selectedArchetypes === 0) {
-                        btn.classList.add('needs-prerequisites');
-                        btn.title = 'Complete archetypes first for best experience';
-                    } else {
-                        btn.classList.remove('needs-prerequisites');
-                        btn.title = '';
-                    }
+                    canAccess = true; // Always accessible - no warnings
+                    // Remove any existing warning indicators
+                    btn.classList.remove('needs-prerequisites');
+                    btn.title = '';
                     break;
                 case 'mainPool':
-                    // FIX: Make less restrictive - allow access even without attributes
-                    canAccess = true; // CHANGED: Always allow access
-                    const hasAttributes = Object.values(this.currentCharacter.attributes).some(val => val > 0);
-                    if (!hasAttributes) {
-                        btn.classList.add('needs-prerequisites');
-                        btn.title = 'Assign attributes first for point calculations';
-                    } else {
-                        btn.classList.remove('needs-prerequisites');
-                        btn.title = '';
-                    }
+                    canAccess = true; // Always accessible - no warnings
+                    // Remove any existing warning indicators
+                    btn.classList.remove('needs-prerequisites');
+                    btn.title = '';
                     break;
                 case 'specialAttacks':
                 case 'utility':
