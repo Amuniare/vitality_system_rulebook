@@ -599,15 +599,24 @@ export class SpecialAttackTab {
     // Method stubs for actions called by CharacterBuilder via EventManager
     // (Implementations would call SpecialAttackSystem and then this.builder.updateCharacter() & this.render())
     createNewAttack() {
+        console.log('🎯 createNewAttack() called');
         const character = this.builder.currentCharacter;
-        if (!character) return;
+        if (!character) {
+            console.log('❌ No character found');
+            return;
+        }
+        console.log('✅ Character found, creating attack...');
         try {
             const newAttack = SpecialAttackSystem.createSpecialAttack(character); // System handles validation now
+            console.log('✅ Attack created:', newAttack);
             character.specialAttacks.push(newAttack);
             this.selectedAttackIndex = character.specialAttacks.length - 1;
+            console.log('✅ Attack added to character, calling updateCharacter()');
             this.builder.updateCharacter(); // This triggers re-render via CharacterBuilder
             this.builder.showNotification('New attack created!', 'success');
+            console.log('✅ Attack creation complete');
         } catch (error) {
+            console.error('❌ Error creating attack:', error);
             this.builder.showNotification(`Error creating attack: ${error.message}`, 'error');
         }
     }

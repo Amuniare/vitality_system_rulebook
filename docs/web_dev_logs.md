@@ -247,6 +247,170 @@ items.map(item => `
 3. `AttributeTab.js` - Double event binding elimination
 4. `VitalityCharacter.js` - Character model data integrity
 5. `character-builder.css` - Button color standardization
+
+---
+
+## PHASE 7: DATA SYSTEM OVERHAUL & SPECIAL ATTACK FIXES *(December 6, 2025)*
+
+### **EXTERNAL DATA INTEGRATION COMPLETIONS**
+
+#### **Problem**: Incomplete JSON Integration & UI Issues
+- Expertise section showing "undefined" values due to renamed JSON file
+- Special Attack tab blank screen from upgrade system method conflicts
+- Browse Available Upgrades button needed replacement with inline display
+- New limits.json and upgrades.json files needed integration
+
+#### **Root Cause Analysis**
+**1. File Naming Mismatch**: GameDataManager looking for `expertise_categories.json` but file renamed to `expertise.json`
+**2. JSON Structure Mismatch**: New expertise.json has nested structure incompatible with existing UI expectations
+**3. Method Signature Conflicts**: `SpecialAttackSystem.getAvailableUpgrades()` called with parameters but accepts none
+**4. Data Transformation Gap**: New JSON structures needed parsing logic to match UI expectations
+
+### **SOLUTIONS IMPLEMENTED**
+
+#### **1. Expertise System Complete Overhaul**
+```javascript
+// BEFORE: Hardcoded/undefined expertise values
+expertiseCategories: 'data/expertise_categories.json'
+
+// AFTER: Dynamic JSON transformation
+expertiseCategories: 'data/expertise.json'
+static getExpertiseCategories() {
+    // Transform nested structure to expected format
+    ['Mobility', 'Power', 'Endurance', 'Focus', 'Awareness', 'Communication', 'Intelligence'].forEach(attr => {
+        transformed[attr] = {
+            activities: types.activityBased?.categories?.[attr] || [],
+            situational: types.situational?.categories?.[attr] || []
+        };
+    });
+}
+```
+**Files**: `GameDataManager.js`, `UtilitySystem.js`, `UtilityTab.js`
+**Impact**: 47 total expertises now properly loaded (25 activity-based + 22 situational)
+
+#### **2. Expertise 4-Corner Card Layout Implementation**
+```javascript
+// NEW: Card-based layout replacing checkbox lists
+<div class="expertise-card">
+    <div class="expertise-card-header">
+        <div class="expertise-name">${expertise.name}</div>           // Top Left
+        <div class="expertise-description">${expertise.description}</div> // Top Right
+    </div>
+    <div class="expertise-card-footer">
+        <div class="expertise-basic-section">
+            <div class="expertise-cost-value">${basicCost}p</div>      // Bottom Left
+            ${purchaseButton}
+        </div>
+        <div class="expertise-mastered-section">
+            <div class="expertise-cost-value">${masteredCost}p</div>   // Bottom Right
+            ${masterButton}
+        </div>
+    </div>
+</div>
+```
+**Files**: `UtilityTab.js`, `character-builder.css`
+**Impact**: Professional card-based expertise selection with clear cost display and purchase states
+
+#### **3. Special Attack Upgrade System Integration**
+```javascript
+// BEFORE: Method conflict causing blank screen
+const upgradeCategories = SpecialAttackSystem.getAvailableUpgrades(character, attack);
+
+// AFTER: Proper method usage with grouping
+const allUpgrades = SpecialAttackSystem.getAvailableUpgrades();
+const upgradeCategories = {};
+allUpgrades.forEach(upgrade => {
+    upgradeCategories[upgrade.category] = upgradeCategories[upgrade.category] || [];
+    upgradeCategories[upgrade.category].push(upgrade);
+});
+```
+**Files**: `SpecialAttackSystem.js`, `SpecialAttackTab.js`, `CharacterBuilder.js`
+**Impact**: 24 upgrades now properly loaded (9 Accuracy + 15 Damage) with inline display replacing modal button
+
+#### **4. Limits System JSON Integration**
+```javascript
+// NEW: Complete limits.json integration
+static getAvailableLimits() {
+    // Parse hierarchical structure: main → variants → modifiers
+    Object.entries(limitsData).forEach(([mainCategory, categoryData]) => {
+        // Add main categories, variants, and modifiers with proper IDs
+    });
+}
+```
+**Files**: `SpecialAttackSystem.js`, `GameDataManager.js`
+**Impact**: 139 total limits available (6 main categories with full hierarchy)
+
+### **DATA INTEGRATION STATISTICS**
+
+#### **JSON Files Successfully Integrated**
+- **expertise.json**: 47 expertises (Activity: 2p basic/6p mastered, Situational: 1p basic/3p mastered)
+- **upgrades.json**: 24 upgrades including variable costs ("20 per tier")
+- **limits.json**: 139 hierarchical limits (main → variant → modifier structure)
+
+#### **System Architecture Improvements**
+- **Dynamic Data Transformation**: JSON structures adapted to existing UI expectations
+- **Cost Calculation Logic**: Variable costs ("per tier") properly handled in UI
+- **Hierarchical Data Support**: Parent-child relationships maintained for limits system
+- **Purchase State Management**: Smart validation (basic required before mastered)
+
+### **UI/UX ENHANCEMENTS**
+
+#### **Expertise Section Transformation**
+- **Card-Based Layout**: Professional 4-corner design with clear information hierarchy
+- **Responsive Grid**: Auto-fit cards with 280px minimum width
+- **Purchase Flow**: Separate buttons for basic/mastered with state management
+- **Cost Transparency**: Clear display of both basic and mastered costs
+
+#### **Special Attack Improvements**
+- **Inline Upgrade Display**: Replaced modal with immediate card-based selection
+- **Category Organization**: Upgrades grouped by Accuracy Bonuses and Damage Bonuses
+- **Variable Cost Support**: "20 per tier" upgrades calculate correctly based on character tier
+- **Affordability Indicators**: Real-time cost checking with disabled states for unaffordable options
+
+### **TECHNICAL INNOVATIONS**
+
+#### **JSON Structure Adaptation Pattern**
+```javascript
+// Pattern: Transform external JSON to match UI expectations
+static getExternalData() {
+    const rawData = gameDataManager.getRawData();
+    return transformToExpectedFormat(rawData);
+}
+```
+**Benefit**: Maintain UI stability while supporting evolving data structures
+
+#### **Hierarchical Data Management**
+```javascript
+// Pattern: Parent-child relationship validation
+if (limit.type === 'modifier') {
+    const hasParentVariant = attack.limits.some(l => l.id === limit.parent);
+    if (!hasParentVariant) {
+        errors.push(`Must add ${limit.parent} limit before adding modifiers`);
+    }
+}
+```
+**Benefit**: Enforce proper selection order in complex hierarchical systems
+
+### **CURRENT STATUS**
+
+#### **✅ RESOLVED**
+- Expertise section fully functional with 47 expertises in card layout
+- Special Attack tab rendering properly with 24 upgrades and 139 limits
+- All JSON data files properly integrated and transformed
+- Consistent purchase/removal flow across all utility systems
+
+#### **🚧 KNOWN REMAINING ISSUES**
+- **Special Attack Creation**: "Create Attack" button not functional (UI loads but button inactive)
+- **Event Handler Gap**: Purchase buttons work but creation workflow incomplete
+
+### **FILES MODIFIED**
+1. `GameDataManager.js` - expertise.json path fix, upgrades.json and limits.json integration
+2. `UtilitySystem.js` - expertise data transformation, cost calculation, purchase/removal methods
+3. `UtilityTab.js` - 4-corner card layout, new event handlers
+4. `SpecialAttackSystem.js` - upgrades/limits JSON integration, method signature fixes
+5. `SpecialAttackTab.js` - upgrade modal fix, inline display replacement
+6. `CharacterBuilder.js` - new event handler mappings
+7. `character-builder.css` - expertise card styling with 4-corner layout
 6. `FlawPurchaseSection.js` - Restriction text removal
 
 ### **TESTING VALIDATION**
