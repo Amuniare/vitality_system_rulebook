@@ -399,9 +399,10 @@ export class SpecialAttackTab {
 
 
     renderUpgradesSection(attack, character) {
-        // ... (browse upgrades button should use RenderUtils.renderButton)
-        // ... (purchased upgrade items should use a consistent structure, maybe a variant of .selected-item)
-         const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
+        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
+        const archetype = character.archetypes.specialAttack;
+        const isLimitsBased = ['normal', 'specialist', 'straightforward'].includes(archetype);
+        
         return `
             <div class="upgrades-section section-block">
                 <div class="section-header">
@@ -410,6 +411,12 @@ export class SpecialAttackTab {
                         Upgrade Points: <span class="${remainingPoints < 0 ? 'error-text' : ''}">${remainingPoints}</span> / ${attack.upgradePointsAvailable || 0}
                     </div>
                 </div>
+                
+                ${(attack.upgradePointsAvailable || 0) === 0 && isLimitsBased ? `
+                    <div class="upgrade-guidance">
+                        <p><strong>${this.formatArchetypeName(archetype)} archetype:</strong> Add limits below to generate upgrade points.</p>
+                    </div>
+                ` : ''}
                  ${RenderUtils.renderPurchasedList(
                     attack.upgrades || [],
                     (upgrade, index) => this.renderPurchasedUpgrade(upgrade, index),
@@ -505,6 +512,8 @@ export class SpecialAttackTab {
     renderAvailableUpgrades(character, attack) {
         const availableUpgrades = SpecialAttackSystem.getAvailableUpgrades();
         const remainingPoints = (attack?.upgradePointsAvailable || 0) - (attack?.upgradePointsSpent || 0);
+        const archetype = character.archetypes.specialAttack;
+        const isLimitsBased = ['normal', 'specialist', 'straightforward'].includes(archetype);
         
         // Group upgrades by category
         const upgradesByCategory = {};
@@ -517,9 +526,15 @@ export class SpecialAttackTab {
         
         return `
             <div class="available-upgrades-container">
-                ${remainingPoints <= 0 ? 
-                    `<div class="no-points-message">No upgrade points available</div>` :
-                    Object.entries(upgradesByCategory).map(([categoryName, upgrades]) => `
+                ${remainingPoints <= 0 && (attack.upgradePointsAvailable || 0) === 0 ? 
+                    `<div class="no-points-message">
+                        ${isLimitsBased ? 
+                            'Add limits below to generate upgrade points for purchases.' : 
+                            'No upgrade points available from archetype.'}
+                    </div>` : 
+                    remainingPoints <= 0 ? 
+                        `<div class="no-points-message">All upgrade points spent.</div>` : ''}
+                ${Object.entries(upgradesByCategory).map(([categoryName, upgrades]) => `
                         <div class="upgrade-category">
                             <h5>${categoryName}</h5>
                             ${RenderUtils.renderGrid(
@@ -556,8 +571,7 @@ export class SpecialAttackTab {
                                 { gridContainerClass: 'grid-layout', gridSpecificClass: 'grid-columns-auto-fit-250' }
                             )}
                         </div>
-                    `).join('')
-                }
+                    `).join('')}
             </div>
         `;
     }
