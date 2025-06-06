@@ -505,42 +505,30 @@ export class CharacterBuilder {
     }
 
     showCharacterBuilder() {
-        console.log('🎯 NEW showCharacterBuilder method called!');
+        console.log('🎯 CORRECTED showCharacterBuilder method called!');
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
-        
-        console.log('🔍 Welcome screen element:', welcomeScreen);
-        console.log('🔍 Character builder element:', characterBuilder);
-        console.log('🔍 Welcome screen classes before:', welcomeScreen?.className);
-        console.log('🔍 Character builder classes before:', characterBuilder?.className);
-        
+
         if (welcomeScreen) {
-            welcomeScreen.style.display = 'none'; // Force hide with inline style
+            // GOOD: This correctly hides the welcome screen using the .hidden class.
             welcomeScreen.classList.add('hidden');
-            console.log('✅ Welcome screen hidden');
+            console.log('✅ Welcome screen hidden.');
         } else {
             console.error('❌ Welcome screen element not found');
         }
-        
+
         if (characterBuilder) {
-            characterBuilder.style.display = 'block'; // Force show with inline style
+            // GOOD: This correctly shows the builder screen by removing the .hidden class.
             characterBuilder.classList.remove('hidden');
-            console.log('✅ Character builder shown');
-            console.log('🔍 Character builder classes after:', characterBuilder.className);
+            console.log('✅ Character builder shown.');
         } else {
             console.error('❌ Character builder element not found');
         }
-        
+
         this.updateCharacterHeader();
-        
-        // Render current tab
-        if (this.currentTab) {
-            this.switchTab(this.currentTab);
-        } else {
-            this.switchTab('basicInfo');
-        }
-        
-        console.log('🎯 showCharacterBuilder method completed!');
+
+        // Render the current tab to ensure it's populated.
+        this.switchTab(this.currentTab || 'basicInfo');
     }
 
     updateCharacterHeader() {
