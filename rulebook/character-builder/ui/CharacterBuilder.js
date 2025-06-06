@@ -484,11 +484,11 @@ export class CharacterBuilder {
     scheduleSelectiveUpdate(changes) {
         const updates = [];
         
-        if (changes.includes('points')) {
+        if (changes.includes('points') && this.pointPoolDisplay) {
             updates.push({ component: this.pointPoolDisplay, method: 'update', priority: 'high' });
         }
         
-        if (changes.includes('validation')) {
+        if (changes.includes('validation') && this.validationDisplay) {
             updates.push({ component: this.validationDisplay, method: 'update', priority: 'normal' });
         }
         
@@ -499,18 +499,18 @@ export class CharacterBuilder {
         if (changes.includes('stats')) {
             const currentTabComponent = this.tabs[this.currentTab];
             if (currentTabComponent && currentTabComponent.onCharacterUpdate) {
-                updates.push({ component: currentTabComponent, method: 'onCharacterUpdate', priority: 'normal' });
+                // FIX: Force immediate update for MainPoolTab to ensure real-time updates
+                if (this.currentTab === 'mainPool') {
+                    UpdateManager.forceUpdate(currentTabComponent, 'onCharacterUpdate');
+                } else {
+                    updates.push({ component: currentTabComponent, method: 'onCharacterUpdate', priority: 'high' });
+                }
             }
             
             // FIX: Also update AttributeTab specifically when attributes change
             if (this.tabs.attributes && (changes.includes('points') || this.currentTab === 'attributes')) {
                 updates.push({ component: this.tabs.attributes, method: 'onCharacterUpdate', priority: 'normal' });
             }
-        }
-        
-        // FIX: Always update MainPoolTab when points change (purchases/removals)
-        if (changes.includes('points') && this.tabs.mainPool) {
-            updates.push({ component: this.tabs.mainPool, method: 'onCharacterUpdate', priority: 'normal' });
         }
         
         UpdateManager.batchUpdates(updates);

@@ -177,16 +177,14 @@ this.setupDebugFallbacks();
                         text: '-', 
                         classes: ['attr-btn', 'minus'], 
                         dataAttributes: { attr: attrId, change: -1, action: 'change-attribute-btn' }, 
-                        disabled: value <= 0,
-                        onClick: `window.debugAttributeChange && window.debugAttributeChange('${attrId}', -1)` // Debug fallback
+                        disabled: value <= 0
                     })}
                     <span class="attribute-value">${value}</span>
                     ${RenderUtils.renderButton({ 
                         text: '+', 
                         classes: ['attr-btn', 'plus'], 
                         dataAttributes: { attr: attrId, change: 1, action: 'change-attribute-btn' }, 
-                        disabled: value >= max,
-                        onClick: `window.debugAttributeChange && window.debugAttributeChange('${attrId}', 1)` // Debug fallback
+                        disabled: value >= max
                     })}
                 </div>
                 <div class="attribute-limit">Max: ${max}</div>
@@ -197,8 +195,7 @@ this.setupDebugFallbacks();
                         max="${max}"
                         value="${value}"
                         data-attr="${attrId}"
-                        data-action="change-attribute-slider"
-                        onchange="window.debugSliderChange && window.debugSliderChange('${attrId}', this.value)">
+                        data-action="change-attribute-slider">
                     <div class="slider-ticks">
                         ${Array.from({length: max + 1}, (_, i) => `<span class="tick ${i <= value ? 'filled' : ''}">${i}</span>`).join('')}
                     </div>

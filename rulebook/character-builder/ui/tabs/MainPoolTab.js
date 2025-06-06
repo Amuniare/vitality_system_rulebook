@@ -87,17 +87,13 @@ export class MainPoolTab {
     }
 
     renderPointUsageBreakdown(breakdown) {
-        if (Object.values(breakdown).every(val => val === 0)) {
-            return '<div class="empty-state-small">No Main Pool points spent yet.</div>';
-        }
-
         const items = [
             { label: 'Simple Boons', value: breakdown.simpleBoons, class: 'boon-cost' },
             { label: 'Unique Abilities', value: breakdown.uniqueAbilities, class: 'ability-cost' },
             { label: 'Traits', value: breakdown.traits, class: 'trait-cost' },
             { label: 'Flaws (Cost)', value: breakdown.flaws, class: 'flaw-item-cost' },
             { label: 'Action Upgrades', value: breakdown.actions, class: 'action-cost' },
-        ].filter(item => item.value > 0);
+        ];
 
         return `
             <div class="pool-spending-details">
@@ -106,7 +102,7 @@ export class MainPoolTab {
                     ${items.map(item => `
                         <div class="spending-item ${item.class || ''}">
                             <span>${item.label}:</span>
-                            <span>-${item.value}p</span>
+                            <span>${item.value > 0 ? '-' : ''}${item.value}p</span>
                         </div>
                     `).join('')}
                 </div>
@@ -224,8 +220,33 @@ export class MainPoolTab {
         // Re-render the point pool display and the currently active section
         const pointPoolContainer = document.querySelector('.main-pool-specific-display');
         if (pointPoolContainer && this.builder.currentCharacter) {
-            pointPoolContainer.outerHTML = this.renderPointPoolInfo(this.builder.currentCharacter);
+            pointPoolContainer.innerHTML = this.renderPointPoolInfoContent(this.builder.currentCharacter);
         }
         this.updateActiveSectionUI();
+    }
+
+    renderPointPoolInfoContent(character) {
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const mainPoolInfo = {
+            spent: pools.totalSpent.mainPool || 0,
+            available: pools.totalAvailable.mainPool || 0,
+            remaining: pools.remaining.mainPool || 0
+        };
+        const breakdown = this.calculatePointBreakdown(character, pools);
+
+        return `
+            ${RenderUtils.renderPointDisplay(
+                mainPoolInfo.spent,
+                mainPoolInfo.available,
+                'Main Pool',
+                { showRemaining: true, variant: mainPoolInfo.remaining < 0 ? 'error' : mainPoolInfo.remaining === 0 && mainPoolInfo.spent > 0 ? 'warning' : 'default' }
+            )}
+            <div class="pool-sources">
+                <small>Base: ${Math.max(0, (character.tier - 2) * 15)}
+                ${character.archetypes.uniqueAbility === 'extraordinary' ? ` (+${Math.max(0, (character.tier - 2) * 15)} from Extraordinary)` : ''}
+                </small>
+            </div>
+            ${this.renderPointUsageBreakdown(breakdown)}
+        `;
     }
 }
