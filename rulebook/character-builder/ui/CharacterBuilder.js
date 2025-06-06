@@ -244,10 +244,25 @@ export class CharacterBuilder {
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
         
-        if (welcomeScreen) welcomeScreen.classList.remove('hidden');
-        if (characterBuilder) characterBuilder.classList.add('hidden');
+        console.log('Welcome screen element:', welcomeScreen);
+        console.log('Character builder element:', characterBuilder);
         
-        // Character tree removed with sidebar
+        if (welcomeScreen) {
+            welcomeScreen.classList.remove('hidden');
+            console.log('Welcome screen shown');
+        } else {
+            console.error('Welcome screen element not found');
+        }
+        
+        if (characterBuilder) {
+            characterBuilder.classList.add('hidden');
+            console.log('Character builder hidden');
+        } else {
+            console.error('Character builder element not found');
+        }
+        
+        // Render character library
+        this.renderCharacterLibrary();
     }
 
     showCharacterBuilder() {
@@ -255,10 +270,31 @@ export class CharacterBuilder {
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
         
-        if (welcomeScreen) welcomeScreen.classList.add('hidden');
-        if (characterBuilder) characterBuilder.classList.remove('hidden');
+        console.log('Welcome screen element:', welcomeScreen);
+        console.log('Character builder element:', characterBuilder);
+        
+        if (welcomeScreen) {
+            welcomeScreen.classList.add('hidden');
+            console.log('Welcome screen hidden');
+        } else {
+            console.error('Welcome screen element not found');
+        }
+        
+        if (characterBuilder) {
+            characterBuilder.classList.remove('hidden');
+            console.log('Character builder shown');
+        } else {
+            console.error('Character builder element not found');
+        }
         
         this.updateCharacterHeader();
+        
+        // Render current tab
+        if (this.currentTab) {
+            this.switchTab(this.currentTab);
+        } else {
+            this.switchTab('basicInfo');
+        }
     }
 
     updateCharacterHeader() {
@@ -684,18 +720,4 @@ export class CharacterBuilder {
         }
     }
 
-    showCharacterBuilder() {
-        console.log('Showing character builder');
-        document.getElementById('welcome-screen').style.display = 'none';
-        document.getElementById('character-builder').style.display = 'block';
-        
-        // Update header info
-        if (this.currentCharacter) {
-            document.getElementById('character-name-display').textContent = this.currentCharacter.name || 'Unnamed Character';
-            document.getElementById('character-tier-display').textContent = `Tier ${this.currentCharacter.tier}`;
-        }
-        
-        // Render current tab
-        this.switchTab(this.currentTab);
-    }
 }
