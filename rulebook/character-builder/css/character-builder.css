@@ -190,6 +190,7 @@ body {
     cursor: pointer;
     border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0;
     transition: all 0.3s ease;
+    position: relative; /* For pseudo-elements */
 }
 .tab-btn:hover { border-color: var(--accent-primary); }
 .tab-btn.active {
@@ -198,6 +199,24 @@ body {
     border-color: var(--accent-primary);
 }
 .tab-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ADDED: Tab prerequisites indicator */
+.tab-btn.needs-prerequisites {
+    border-color: var(--warning-color);
+    color: var(--warning-color);
+}
+
+.tab-btn.needs-prerequisites::after {
+    content: '⚠️';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.8em;
+}
+
+.tab-btn.needs-prerequisites:hover {
+    background: rgba(255, 170, 0, 0.1);
+}
 
 .tab-content {
     display: none;

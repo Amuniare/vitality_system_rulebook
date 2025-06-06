@@ -66,7 +66,7 @@ export class MainPoolTab {
             available: pools.totalAvailable.mainPool || 0,
             remaining: pools.remaining.mainPool || 0
         };
-        const breakdown = this.calculatePointBreakdown(character, pools); // Pass full pools
+        const breakdown = this.calculatePointBreakdown(character, pools);
 
         return `
             <div class="point-pool-display main-pool-specific-display">
@@ -87,7 +87,6 @@ export class MainPoolTab {
     }
 
     renderPointUsageBreakdown(breakdown) {
-        // Only render if there's something spent
         if (Object.values(breakdown).every(val => val === 0)) {
             return '<div class="empty-state-small">No Main Pool points spent yet.</div>';
         }
@@ -96,7 +95,7 @@ export class MainPoolTab {
             { label: 'Simple Boons', value: breakdown.simpleBoons, class: 'boon-cost' },
             { label: 'Unique Abilities', value: breakdown.uniqueAbilities, class: 'ability-cost' },
             { label: 'Traits', value: breakdown.traits, class: 'trait-cost' },
-            { label: 'Flaws (Cost)', value: breakdown.flaws, class: 'flaw-item-cost' }, // Flaws cost points
+            { label: 'Flaws (Cost)', value: breakdown.flaws, class: 'flaw-item-cost' },
             { label: 'Action Upgrades', value: breakdown.actions, class: 'action-cost' },
         ].filter(item => item.value > 0);
 
@@ -115,7 +114,7 @@ export class MainPoolTab {
         `;
     }
 
-    calculatePointBreakdown(character, pools) { // pools might not be needed if we recalculate from character.mainPoolPurchases
+    calculatePointBreakdown(character, pools) {
         return {
             simpleBoons: character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).reduce((sum, b) => sum + (b.cost || 0), 0),
             uniqueAbilities: character.mainPoolPurchases.boons.filter(b => b.type === 'unique').reduce((sum, b) => sum + (b.cost || 0), 0),
@@ -124,7 +123,6 @@ export class MainPoolTab {
             actions: character.mainPoolPurchases.primaryActionUpgrades.reduce((sum, a) => sum + (a.cost || 0), 0),
         };
     }
-
 
     renderSectionNavigation() {
         const sectionTabsConfig = [
@@ -156,7 +154,8 @@ export class MainPoolTab {
 
         EventManager.delegateEvents(container, {
             click: {
-                '.section-tab': (e, el) => this.handleSectionSwitch(el.dataset.section),
+                // FIX: Change from data-section to data-tab to match RenderUtils.renderTabs()
+                '.section-tab': (e, el) => this.handleSectionSwitch(el.dataset.tab),
                 '[data-action="continue-to-special-attacks"]': () => this.builder.switchTab('specialAttacks'),
                 // Delegate actions for children components
                 '[data-action="purchase-flaw"]': (e, el) => this.sections.flaws.handleFlawPurchase(el.dataset.flawId),
@@ -172,32 +171,32 @@ export class MainPoolTab {
                 '[data-action="purchase-action-upgrade"]': (e, el) => this.sections.actions.purchaseActionUpgrade(el.dataset.actionId),
                 '[data-action="remove-action-upgrade"]': (e, el) => this.sections.actions.removeUpgrade(parseInt(el.dataset.index))
             },
-            change: { // For trait builder internal updates
+            change: {
                 '.stat-checkbox': (e, el) => { if (this.activeSection === 'traits') this.sections.traits.handleStatSelection(el);},
                 '.condition-checkbox': (e, el) => { if (this.activeSection === 'traits') this.sections.traits.handleConditionSelection(el);},
-                '.flaw-purchase-section-content .stat-bonus-select': (e, el) => { // Specific to flaw section select
+                '.flaw-purchase-section-content .stat-bonus-select': (e, el) => {
                      if (this.activeSection === 'flaws' && this.sections.flaws.handleStatBonusChange) {
                         this.sections.flaws.handleStatBonusChange(e, el);
                     }
                 },
-                '.unique-ability-section .upgrade-checkbox': (e, el) => { // Specific to unique ability section
+                '.unique-ability-section .upgrade-checkbox': (e, el) => {
                     if (this.activeSection === 'uniqueAbilities' && this.sections.uniqueAbilities.handleUpgradeSelectionChange) {
                         this.sections.uniqueAbilities.handleUpgradeSelectionChange(el);
                     }
                 }
             },
             input: {
-                 '.unique-ability-section .upgrade-qty': (e, el) => { // Specific to unique ability section
+                 '.unique-ability-section .upgrade-qty': (e, el) => {
                     if (this.activeSection === 'uniqueAbilities' && this.sections.uniqueAbilities.handleUpgradeQuantityChange) {
                         this.sections.uniqueAbilities.handleUpgradeQuantityChange(el);
                     }
                 }
             }
         });
+        
         // Call setup for the currently active section if it has its own more complex listeners
         this.sections[this.activeSection]?.setupEventListeners?.();
     }
-
 
     handleSectionSwitch(newSection) {
         if (newSection && newSection !== this.activeSection) {
@@ -209,7 +208,8 @@ export class MainPoolTab {
     updateActiveSectionUI() {
         // Update tab button active states
         document.querySelectorAll('.main-pool-tab-content .section-tab').forEach(tab => {
-            tab.classList.toggle('active', tab.dataset.section === this.activeSection);
+            // FIX: Change from data-section to data-tab
+            tab.classList.toggle('active', tab.dataset.tab === this.activeSection);
         });
         // Re-render the content of the active section
         const contentArea = document.getElementById('main-pool-active-section');
@@ -220,13 +220,12 @@ export class MainPoolTab {
         }
     }
 
-    onCharacterUpdate() { // Called by CharacterBuilder
+    onCharacterUpdate() {
         // Re-render the point pool display and the currently active section
         const pointPoolContainer = document.querySelector('.main-pool-specific-display');
         if (pointPoolContainer && this.builder.currentCharacter) {
-            pointPoolContainer.innerHTML = this.renderPointPoolInfo(this.builder.currentCharacter);
+            pointPoolContainer.outerHTML = this.renderPointPoolInfo(this.builder.currentCharacter);
         }
         this.updateActiveSectionUI();
     }
 }
-
