@@ -285,6 +285,43 @@ this.setupDebugFallbacks();
         console.log(`✅ Saved ${attrId} = ${newValue}`);
         console.log('🔍 Current character attributes:', JSON.stringify(character.attributes));
         
+        // Update UI immediately for responsiveness
+        this.updateSingleAttributeDisplay(attrId, newValue);
+        
+        // Then update character and point pools
         this.builder.updateCharacter(); // This triggers re-render and point pool updates
+    }
+
+    updateSingleAttributeDisplay(attrId, newValue) {
+        const character = this.builder.currentCharacter;
+        
+        // Update the displayed value
+        const valueDisplay = document.querySelector(`.attribute-item[data-attr="${attrId}"] .attribute-value`);
+        if (valueDisplay) {
+            valueDisplay.textContent = newValue;
+        }
+        
+        // Update the slider
+        const slider = document.getElementById(`slider-${attrId}`);
+        if (slider && parseInt(slider.value) !== newValue) {
+            slider.value = newValue;
+        }
+        
+        // Update slider ticks
+        const ticksContainer = document.querySelector(`#slider-${attrId} + .slider-ticks`);
+        if (ticksContainer) {
+            const ticks = ticksContainer.querySelectorAll('.tick');
+            ticks.forEach((tick, index) => {
+                tick.classList.toggle('filled', index <= newValue);
+            });
+        }
+        
+        // Update button states
+        const minusBtn = document.querySelector(`[data-attr="${attrId}"][data-change="-1"]`);
+        const plusBtn = document.querySelector(`[data-attr="${attrId}"][data-change="1"]`);
+        if (minusBtn) minusBtn.disabled = newValue <= 0;
+        if (plusBtn) plusBtn.disabled = newValue >= character.tier;
+        
+        console.log(`🎨 Updated display for ${attrId} = ${newValue}`);
     }
 }
