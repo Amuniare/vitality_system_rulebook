@@ -112,13 +112,21 @@ Characters use a structured format with:
 
 ## Development History & Lessons Learned
 
-**IMPORTANT**: Before working on the web character builder, review `docs/web_dev_logs.md` for:
-- Critical architectural insights and lessons learned
-- Known issues and their solutions
-- Event handling patterns that work vs. those that don't
-- UI consistency guidelines
-- Browser caching issues and debugging strategies
-- Successful implementation patterns to follow
-- Common pitfalls to avoid
+**IMPORTANT**: Before working on the web character builder, review both:
 
-The web dev logs contain detailed session summaries with specific technical findings that prevent repeating past mistakes and guide effective development approaches.
+1. **`docs/rulesForAI.md`** - Critical AI development guidelines including:
+   - Code style requirements and restrictions  
+   - File modification policies
+   - Documentation creation rules
+   - UI/UX design principles specific to this project
+
+2. **`docs/web_dev_logs.md`** - Technical implementation insights including:
+   - Critical architectural insights and lessons learned
+   - Known issues and their solutions
+   - Event handling patterns that work vs. those that don't
+   - UI consistency guidelines
+   - Browser caching issues and debugging strategies
+   - Successful implementation patterns to follow
+   - Common pitfalls to avoid
+
+The combination of AI rules and development logs provides comprehensive guidance for maintaining code quality, following project conventions, and avoiding both technical and procedural mistakes.
