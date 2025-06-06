@@ -469,6 +469,7 @@ export class CharacterBuilder {
         if (!this.currentCharacter) return;
         
         this.currentCharacter.touch();
+        this.currentCharacter.updateBuildState(); // Update build state after any change
         
         const changes = this.detectCharacterChanges();
         this.scheduleSelectiveUpdate(changes);

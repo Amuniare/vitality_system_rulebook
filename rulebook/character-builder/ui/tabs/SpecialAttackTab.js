@@ -19,7 +19,42 @@ export class SpecialAttackTab {
 
         const character = this.builder.currentCharacter;
         if (!character) {
-            tabContent.innerHTML = "<p>No character selected or prerequisites not met.</p>";
+            tabContent.innerHTML = "<p>No character selected.</p>";
+            return;
+        }
+        
+        // Show helpful message if prerequisites aren't met, but still allow access
+        const prerequisitesMet = character.buildState.mainPoolComplete;
+        if (!prerequisitesMet) {
+            const hasAttributes = Object.values(character.attributes).some(attr => attr > 0);
+            const hasMainPurchases = character.mainPoolPurchases.boons.length > 0 || 
+                                   character.mainPoolPurchases.traits.length > 0 ||
+                                   character.mainPoolPurchases.flaws.length > 0 ||
+                                   character.mainPoolPurchases.primaryActionUpgrades.length > 0;
+            
+            let prerequisiteMessage = "";
+            if (!hasAttributes) {
+                prerequisiteMessage = "Complete attribute assignment in the Attributes tab first.";
+            } else if (!hasMainPurchases) {
+                prerequisiteMessage = "Consider making some purchases in the Main Pool tab before creating special attacks.";
+            }
+            
+            tabContent.innerHTML = `
+                <div class="special-attacks-section">
+                    <h2>Special Attacks</h2>
+                    <div class="prerequisite-notice">
+                        <h3>Getting Started</h3>
+                        <p>${prerequisiteMessage}</p>
+                        <p><em>You can still create attacks here, but completing the previous steps is recommended for proper build order.</em></p>
+                    </div>
+                    ${this.renderArchetypeInfo(character)}
+                    ${this.renderAttackManagement(character)}
+                    ${character.specialAttacks.length > 0 && character.specialAttacks[this.selectedAttackIndex] ?
+                        this.renderAttackBuilder(character) :
+                        '<div class="empty-state">Create your first special attack to begin building.</div>'}
+                </div>
+            `;
+            this.setupEventListeners();
             return;
         }
 
