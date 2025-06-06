@@ -266,25 +266,30 @@ export class CharacterBuilder {
     }
 
     showCharacterBuilder() {
-        console.log('showCharacterBuilder called');
+        console.log('🎯 NEW showCharacterBuilder method called!');
         const welcomeScreen = document.getElementById('welcome-screen');
         const characterBuilder = document.getElementById('character-builder');
         
-        console.log('Welcome screen element:', welcomeScreen);
-        console.log('Character builder element:', characterBuilder);
+        console.log('🔍 Welcome screen element:', welcomeScreen);
+        console.log('🔍 Character builder element:', characterBuilder);
+        console.log('🔍 Welcome screen classes before:', welcomeScreen?.className);
+        console.log('🔍 Character builder classes before:', characterBuilder?.className);
         
         if (welcomeScreen) {
+            welcomeScreen.style.display = 'none'; // Force hide with inline style
             welcomeScreen.classList.add('hidden');
-            console.log('Welcome screen hidden');
+            console.log('✅ Welcome screen hidden');
         } else {
-            console.error('Welcome screen element not found');
+            console.error('❌ Welcome screen element not found');
         }
         
         if (characterBuilder) {
+            characterBuilder.style.display = 'block'; // Force show with inline style
             characterBuilder.classList.remove('hidden');
-            console.log('Character builder shown');
+            console.log('✅ Character builder shown');
+            console.log('🔍 Character builder classes after:', characterBuilder.className);
         } else {
-            console.error('Character builder element not found');
+            console.error('❌ Character builder element not found');
         }
         
         this.updateCharacterHeader();
@@ -295,6 +300,8 @@ export class CharacterBuilder {
         } else {
             this.switchTab('basicInfo');
         }
+        
+        console.log('🎯 showCharacterBuilder method completed!');
     }
 
     updateCharacterHeader() {
