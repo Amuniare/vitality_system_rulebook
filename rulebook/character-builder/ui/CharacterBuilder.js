@@ -123,13 +123,13 @@ export class CharacterBuilder {
         // Use event delegation with proper context
         EventManager.delegateEvents(container, {
             click: {
-                '#create-new-character': this.createNewCharacter,
-                '#import-character': this.handleImportCharacter,
-                '.character-item': this.handleCharacterSelect,
-                '.tab-btn': this.handleTabSwitch,
-                '#save-character': this.saveCharacter,
-                '#export-json': this.exportCharacterJSON,
-                '#delete-character': this.deleteCharacter,
+                '#create-new-character': () => this.createNewCharacter(),
+                '#import-character': () => this.handleImportCharacter(),
+                '.character-item': (e) => this.handleCharacterSelect(e),
+                '.tab-btn': (e) => this.handleTabSwitch(e),
+                '#save-character': () => this.saveCharacter(),
+                '#export-json': () => this.exportCharacterJSON(),
+                '#delete-character': () => this.deleteCharacter(),
 
                 // ARCHETYPE HANDLERS
                 '[data-action="select-archetype"]': (e, element) => {
