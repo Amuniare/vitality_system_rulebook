@@ -19,7 +19,7 @@ export class SpecialAttackTab {
     }
 
     render() {
-        const character = this.builder.character;
+        const character = this.builder.currentCharacter;
         const archetype = character.archetypes?.specialAttack;
         
         return `
@@ -186,10 +186,7 @@ export class SpecialAttackTab {
     // Attack management methods
     createNewAttack() {
         try {
-            const character = this.builder.character;
-            const newAttack = SpecialAttackSystem.createSpecialAttack(character);
-            this.selectedAttackIndex = character.specialAttacks.length - 1;
-            this.builder.updateCharacter();
+            this.selectedAttackIndex = this.builder.createSpecialAttack();
             this.builder.showNotification('New attack created!', 'success');
             this.render();
         } catch (error) {
@@ -198,121 +195,90 @@ export class SpecialAttackTab {
     }
 
     selectAttack(index) {
-        if (index >= 0 && index < this.builder.character.specialAttacks.length) {
+        if (index >= 0 && index < this.builder.currentCharacter.specialAttacks.length) {
             this.selectedAttackIndex = index;
             this.render();
         }
     }
 
     deleteAttack(index) {
-        const character = this.builder.character;
+        const character = this.builder.currentCharacter;
         const attackName = character.specialAttacks[index]?.name || `Attack ${index + 1}`;
         
-        if (SpecialAttackSystem.removeSpecialAttack(character, index)) {
-            if (this.selectedAttackIndex >= character.specialAttacks.length) {
-                this.selectedAttackIndex = Math.max(0, character.specialAttacks.length - 1);
-            }
-            this.builder.updateCharacter();
-            this.builder.showNotification(`Attack "${attackName}" deleted.`, 'info');
-            this.render();
+        this.builder.removeSpecialAttack(index);
+        if (this.selectedAttackIndex >= character.specialAttacks.length) {
+            this.selectedAttackIndex = Math.max(0, character.specialAttacks.length - 1);
         }
+        this.builder.showNotification(`Attack "${attackName}" deleted.`, 'info');
+        this.render();
     }
 
     // Attack property update methods (called by AttackBasicsForm)
     updateAttackProperty(property, value) {
-        const character = this.builder.character;
-        const attack = character.specialAttacks[this.selectedAttackIndex];
+        this.builder.updateSpecialAttack(this.selectedAttackIndex, property, value);
         
-        if (attack) {
-            attack[property] = value;
-            
-            // Special handling for attack type changes
-            if (property === 'attackType') {
-                // Recalculate attack points if needed
-                SpecialAttackSystem.recalculateAttackPoints(character, attack);
-            }
-            
-            this.builder.updateCharacter();
-            
-            // Use granular updates instead of full re-render for better performance
-            if (property === 'attackType') {
-                this.attackBasicsForm.updateAttackType(value);
-            } else {
-                // Update the specific field
-                this.attackBasicsForm[`update${property.charAt(0).toUpperCase() + property.slice(1)}`]?.(value);
-            }
+        // Use granular updates instead of full re-render for better performance
+        if (property === 'attackType') {
+            this.attackBasicsForm.updateAttackType?.(value);
+        } else {
+            // Update the specific field
+            this.attackBasicsForm[`update${property.charAt(0).toUpperCase() + property.slice(1)}`]?.(value);
         }
     }
 
     // Limit management methods (called by LimitSelection)
     addLimit(limitId) {
-        const character = this.builder.character;
-        const attack = character.specialAttacks[this.selectedAttackIndex];
-        
-        if (attack && SpecialAttackSystem.addLimitToAttack) {
-            try {
-                SpecialAttackSystem.addLimitToAttack(character, attack, limitId);
-                this.builder.updateCharacter();
-                this.limitSelection.updateLimitsList(attack);
-                this.limitSelection.updateCalculationFooter(attack, character);
-                this.upgradeSelection.updatePurchasedUpgrades(attack); // Update points display
-                this.builder.showNotification('Limit added!', 'success');
-            } catch (error) {
-                this.builder.showNotification(`Error adding limit: ${error.message}`, 'error');
-            }
+        try {
+            this.builder.addSpecialAttackLimit(this.selectedAttackIndex, limitId);
+            const character = this.builder.currentCharacter;
+            const attack = character.specialAttacks[this.selectedAttackIndex];
+            this.limitSelection.updateLimitsList(attack);
+            this.limitSelection.updateCalculationFooter(attack, character);
+            this.upgradeSelection.updatePurchasedUpgrades(attack); // Update points display
+            this.builder.showNotification('Limit added!', 'success');
+        } catch (error) {
+            this.builder.showNotification(`Error adding limit: ${error.message}`, 'error');
         }
     }
 
     removeLimit(index) {
-        const character = this.builder.character;
-        const attack = character.specialAttacks[this.selectedAttackIndex];
-        
-        if (attack && SpecialAttackSystem.removeLimitFromAttack) {
-            try {
-                SpecialAttackSystem.removeLimitFromAttack(character, attack, index);
-                this.builder.updateCharacter();
-                this.limitSelection.updateLimitsList(attack);
-                this.limitSelection.updateCalculationFooter(attack, character);
-                this.upgradeSelection.updatePurchasedUpgrades(attack); // Update points display
-                this.builder.showNotification('Limit removed!', 'info');
-            } catch (error) {
-                this.builder.showNotification(`Error removing limit: ${error.message}`, 'error');
-            }
+        try {
+            this.builder.removeSpecialAttackLimit(this.selectedAttackIndex, index);
+            const character = this.builder.currentCharacter;
+            const attack = character.specialAttacks[this.selectedAttackIndex];
+            this.limitSelection.updateLimitsList(attack);
+            this.limitSelection.updateCalculationFooter(attack, character);
+            this.upgradeSelection.updatePurchasedUpgrades(attack); // Update points display
+            this.builder.showNotification('Limit removed!', 'info');
+        } catch (error) {
+            this.builder.showNotification(`Error removing limit: ${error.message}`, 'error');
         }
     }
 
     // Upgrade management methods (called by UpgradeSelection)
     purchaseUpgrade(upgradeId) {
-        const character = this.builder.character;
-        const attack = character.specialAttacks[this.selectedAttackIndex];
-        
-        if (attack && SpecialAttackSystem.purchaseUpgrade) {
-            try {
-                SpecialAttackSystem.purchaseUpgrade(character, attack, upgradeId);
-                this.builder.updateCharacter();
-                this.upgradeSelection.updatePurchasedUpgrades(attack);
-                this.upgradeSelection.updateUpgradeCard(upgradeId, attack, character);
-                this.builder.showNotification('Upgrade purchased!', 'success');
-            } catch (error) {
-                this.builder.showNotification(`Error purchasing upgrade: ${error.message}`, 'error');
-            }
+        try {
+            this.builder.addSpecialAttackUpgrade(this.selectedAttackIndex, upgradeId);
+            const character = this.builder.currentCharacter;
+            const attack = character.specialAttacks[this.selectedAttackIndex];
+            this.upgradeSelection.updatePurchasedUpgrades(attack);
+            this.upgradeSelection.updateUpgradeCard(upgradeId, attack, character);
+            this.builder.showNotification('Upgrade purchased!', 'success');
+        } catch (error) {
+            this.builder.showNotification(`Error purchasing upgrade: ${error.message}`, 'error');
         }
     }
 
     removeUpgrade(index) {
-        const character = this.builder.character;
-        const attack = character.specialAttacks[this.selectedAttackIndex];
-        
-        if (attack && SpecialAttackSystem.removeUpgrade) {
-            try {
-                const upgradeName = attack.upgrades[index]?.name || 'upgrade';
-                SpecialAttackSystem.removeUpgrade(character, attack, index);
-                this.builder.updateCharacter();
-                this.upgradeSelection.updatePurchasedUpgrades(attack);
-                this.builder.showNotification(`${upgradeName} removed!`, 'info');
-            } catch (error) {
-                this.builder.showNotification(`Error removing upgrade: ${error.message}`, 'error');
-            }
+        try {
+            const character = this.builder.currentCharacter;
+            const attack = character.specialAttacks[this.selectedAttackIndex];
+            const upgradeName = attack.upgrades[index]?.name || 'upgrade';
+            this.builder.removeSpecialAttackUpgrade(this.selectedAttackIndex, index);
+            this.upgradeSelection.updatePurchasedUpgrades(attack);
+            this.builder.showNotification(`${upgradeName} removed!`, 'info');
+        } catch (error) {
+            this.builder.showNotification(`Error removing upgrade: ${error.message}`, 'error');
         }
     }
 
@@ -344,7 +310,7 @@ export class SpecialAttackTab {
 
     // Add attack type to current attack
     addAttackType(typeId) {
-        const character = this.builder.character;
+        const character = this.builder.currentCharacter;
         const attack = character.specialAttacks[this.selectedAttackIndex];
         try {
             if (AttackTypeSystem.addAttackTypeToAttack) {
@@ -365,7 +331,7 @@ export class SpecialAttackTab {
 
     // Remove attack type from current attack
     removeAttackType(typeId) {
-        const character = this.builder.character;
+        const character = this.builder.currentCharacter;
         const attack = character.specialAttacks[this.selectedAttackIndex];
         try {
             if (AttackTypeSystem.removeAttackTypeFromAttack) {
@@ -385,7 +351,7 @@ export class SpecialAttackTab {
 
     // Add effect type to current attack
     addEffectType(typeId) {
-        const character = this.builder.character;
+        const character = this.builder.currentCharacter;
         const attack = character.specialAttacks[this.selectedAttackIndex];
         try {
             if (AttackTypeSystem.addEffectTypeToAttack) {
@@ -406,7 +372,7 @@ export class SpecialAttackTab {
 
     // Remove effect type from current attack
     removeEffectType(typeId) {
-        const character = this.builder.character;
+        const character = this.builder.currentCharacter;
         const attack = character.specialAttacks[this.selectedAttackIndex];
         try {
             if (AttackTypeSystem.removeEffectTypeFromAttack) {

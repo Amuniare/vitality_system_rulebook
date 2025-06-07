@@ -103,26 +103,16 @@ export class BasicInfoTab {
     }
 
     updateName(newName) { // Called by CharacterBuilder
-        const character = this.builder.currentCharacter;
-        if (character) {
-            character.name = newName || 'Unnamed Character';
-            this.builder.updateCharacter(); // This also updates the header
-        }
+        this.builder.setCharacterName(newName);
     }
+    
     updateRealName(newRealName) { // Called by CharacterBuilder
-        const character = this.builder.currentCharacter;
-        if (character) {
-            character.realName = newRealName;
-            this.builder.updateCharacter();
-        }
+        this.builder.setCharacterRealName(newRealName);
     }
+    
     updateTier(newTier) { // Called by CharacterBuilder
-        const character = this.builder.currentCharacter;
-        if (character) {
-            character.tier = parseInt(newTier);
-            this.updateTierDisplay(character.tier);
-            this.builder.updateCharacter(); // This updates header and point pools
-        }
+        this.builder.setCharacterTier(newTier);
+        this.updateTierDisplay(parseInt(newTier));
     }
 
     updateTierDisplay(tier) {

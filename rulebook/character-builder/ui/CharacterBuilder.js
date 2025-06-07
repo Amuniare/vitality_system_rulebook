@@ -638,79 +638,21 @@ export class CharacterBuilder {
         if (!this.currentCharacter) return;
         
         this.currentCharacter.touch();
-        this.currentCharacter.updateBuildState(); // Update build state after any change
+        this.currentCharacter.updateBuildState();
         
-        const changes = this.detectCharacterChanges();
-        this.scheduleSelectiveUpdate(changes);
-    }
-
-    detectCharacterChanges() {
-        const currentHash = this.getCharacterHash();
-        const changes = [];
+        // Unified update system - always update all necessary components
+        this.updateCharacterHeader();
         
-        if (this.lastCharacterHash !== currentHash) {
-            changes.push('points', 'validation', 'stats', 'basicInfo');
-            this.lastCharacterHash = currentHash;
+        // Update current tab if it has an update method
+        const currentTabComponent = this.tabs[this.currentTab];
+        if (currentTabComponent?.onCharacterUpdate) {
+            currentTabComponent.onCharacterUpdate(this.currentCharacter);
         }
         
-        return changes;
-    }
-
-    getCharacterHash() {
-        if (!this.currentCharacter) return null;
-        
-        return JSON.stringify({
-            tier: this.currentCharacter.tier,
-            name: this.currentCharacter.name,
-            archetypes: this.currentCharacter.archetypes,
-            attributes: this.currentCharacter.attributes,
-            mainPoolPurchases: this.currentCharacter.mainPoolPurchases,
-            specialAttacks: this.currentCharacter.specialAttacks.length,
-            lastModified: this.currentCharacter.lastModified
-        });
-    }
-
-    scheduleSelectiveUpdate(changes) {
-        const updates = [];
-        
-        if (changes.includes('points') && this.pointPoolDisplay) {
-            updates.push({ component: this.pointPoolDisplay, method: 'update', priority: 'high' });
+        // Save character automatically to localStorage if library exists
+        if (this.library && this.currentCharacter.id) {
+            this.library.saveCharacter(this.currentCharacter);
         }
-        
-        if (changes.includes('validation') && this.validationDisplay) {
-            updates.push({ component: this.validationDisplay, method: 'update', priority: 'normal' });
-        }
-        
-        if (changes.includes('basicInfo')) {
-            updates.push({ component: this, method: 'updateCharacterHeader', priority: 'high' });
-        }
-        
-        if (changes.includes('stats')) {
-            const currentTabComponent = this.tabs[this.currentTab];
-            if (currentTabComponent && currentTabComponent.onCharacterUpdate) {
-                // FIX: Force immediate update for MainPoolTab to ensure real-time updates
-                if (this.currentTab === 'mainPool') {
-                    UpdateManager.forceUpdate(currentTabComponent, 'onCharacterUpdate');
-                } else {
-                    updates.push({ component: currentTabComponent, method: 'onCharacterUpdate', priority: 'high' });
-                }
-            }
-            
-            // FIX: Also update AttributeTab specifically when attributes change
-            if (this.tabs.attributes && (changes.includes('points') || this.currentTab === 'attributes')) {
-                updates.push({ component: this.tabs.attributes, method: 'onCharacterUpdate', priority: 'normal' });
-            }
-        }
-        
-        UpdateManager.batchUpdates(updates);
-    }
-
-    scheduleFullUpdate(reason) {
-        console.log(`Scheduling full update: ${reason}`);
-        
-        UpdateManager.batchUpdates([
-            { component: this, method: 'updateCharacterHeader', priority: 'high' }
-        ]);
     }
 
     // Point pool calculations
@@ -821,6 +763,178 @@ export class CharacterBuilder {
         }, 3000);
     }
 
+    // =============================================================
+    // CENTRALIZED STATE MANAGEMENT METHODS
+    // These are the ONLY methods that should modify this.currentCharacter
+    // =============================================================
+    
+    // Basic character information
+    setCharacterName(name) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.name = name || 'Unnamed Character';
+        this.updateCharacter();
+    }
+    
+    setCharacterRealName(realName) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.realName = realName;
+        this.updateCharacter();
+    }
+    
+    setCharacterTier(tier) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.tier = parseInt(tier);
+        this.updateCharacter();
+    }
+    
+    // Archetype management
+    setArchetype(category, archetypeId) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.archetypes[category] = archetypeId;
+        this.updateCharacter();
+    }
+    
+    // Attribute management
+    setAttribute(attributeId, value) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.attributes[attributeId] = parseInt(value);
+        this.updateCharacter();
+    }
+    
+    changeAttribute(attributeId, change) {
+        if (!this.currentCharacter) return;
+        const currentValue = this.currentCharacter.attributes[attributeId] || 0;
+        const newValue = Math.max(0, currentValue + change);
+        this.setAttribute(attributeId, newValue);
+    }
+    
+    // Main pool purchases
+    purchaseBoon(boonId, details = {}) {
+        if (!this.currentCharacter) return;
+        const purchase = { boonId, ...details, timestamp: Date.now() };
+        this.currentCharacter.mainPoolPurchases.boons.push(purchase);
+        this.updateCharacter();
+    }
+    
+    removeBoon(index) {
+        if (!this.currentCharacter || index < 0 || index >= this.currentCharacter.mainPoolPurchases.boons.length) return;
+        this.currentCharacter.mainPoolPurchases.boons.splice(index, 1);
+        this.updateCharacter();
+    }
+    
+    purchaseTrait(traitId, details = {}) {
+        if (!this.currentCharacter) return;
+        const purchase = { traitId, ...details, timestamp: Date.now() };
+        this.currentCharacter.mainPoolPurchases.traits.push(purchase);
+        this.updateCharacter();
+    }
+    
+    removeTrait(index) {
+        if (!this.currentCharacter || index < 0 || index >= this.currentCharacter.mainPoolPurchases.traits.length) return;
+        this.currentCharacter.mainPoolPurchases.traits.splice(index, 1);
+        this.updateCharacter();
+    }
+    
+    purchaseFlaw(flawId, details = {}) {
+        if (!this.currentCharacter) return;
+        const purchase = { flawId, ...details, timestamp: Date.now() };
+        this.currentCharacter.mainPoolPurchases.flaws.push(purchase);
+        this.updateCharacter();
+    }
+    
+    removeFlaw(index) {
+        if (!this.currentCharacter || index < 0 || index >= this.currentCharacter.mainPoolPurchases.flaws.length) return;
+        this.currentCharacter.mainPoolPurchases.flaws.splice(index, 1);
+        this.updateCharacter();
+    }
+    
+    // Special attack management
+    createSpecialAttack() {
+        if (!this.currentCharacter) return;
+        const newAttack = {
+            name: '',
+            subtitle: '',
+            description: '',
+            attackTypes: [],
+            effectTypes: [],
+            limits: [],
+            upgrades: [],
+            upgradePointsAvailable: 0,
+            upgradePointsSpent: 0,
+            timestamp: Date.now()
+        };
+        this.currentCharacter.specialAttacks.push(newAttack);
+        this.updateCharacter();
+        return this.currentCharacter.specialAttacks.length - 1; // Return index
+    }
+    
+    updateSpecialAttack(index, property, value) {
+        if (!this.currentCharacter || index < 0 || index >= this.currentCharacter.specialAttacks.length) return;
+        this.currentCharacter.specialAttacks[index][property] = value;
+        this.updateCharacter();
+    }
+    
+    removeSpecialAttack(index) {
+        if (!this.currentCharacter || index < 0 || index >= this.currentCharacter.specialAttacks.length) return;
+        this.currentCharacter.specialAttacks.splice(index, 1);
+        this.updateCharacter();
+    }
+    
+    addSpecialAttackLimit(attackIndex, limitId) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        if (!attack.limits.some(limit => limit.limitId === limitId)) {
+            attack.limits.push({ limitId, timestamp: Date.now() });
+            this.updateCharacter();
+        }
+    }
+    
+    removeSpecialAttackLimit(attackIndex, limitIndex) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        if (limitIndex >= 0 && limitIndex < attack.limits.length) {
+            attack.limits.splice(limitIndex, 1);
+            this.updateCharacter();
+        }
+    }
+    
+    addSpecialAttackUpgrade(attackIndex, upgradeId) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        if (!attack.upgrades.some(upgrade => upgrade.upgradeId === upgradeId)) {
+            attack.upgrades.push({ upgradeId, timestamp: Date.now() });
+            this.updateCharacter();
+        }
+    }
+    
+    removeSpecialAttackUpgrade(attackIndex, upgradeIndex) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        if (upgradeIndex >= 0 && upgradeIndex < attack.upgrades.length) {
+            attack.upgrades.splice(upgradeIndex, 1);
+            this.updateCharacter();
+        }
+    }
+    
+    // Utility purchases
+    purchaseUtilityItem(category, itemId, details = {}) {
+        if (!this.currentCharacter) return;
+        if (!this.currentCharacter.utilityPurchases[category]) {
+            this.currentCharacter.utilityPurchases[category] = [];
+        }
+        const purchase = { itemId, ...details, timestamp: Date.now() };
+        this.currentCharacter.utilityPurchases[category].push(purchase);
+        this.updateCharacter();
+    }
+    
+    removeUtilityItem(category, index) {
+        if (!this.currentCharacter || !this.currentCharacter.utilityPurchases[category]) return;
+        if (index >= 0 && index < this.currentCharacter.utilityPurchases[category].length) {
+            this.currentCharacter.utilityPurchases[category].splice(index, 1);
+            this.updateCharacter();
+        }
+    }
+    
     // Character Management Methods
     showWelcomeScreen() {
         console.log('Showing welcome screen');

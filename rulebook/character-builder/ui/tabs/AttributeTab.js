@@ -224,52 +224,13 @@ this.setupDebugFallbacks();
     }
 
     changeAttribute(attrId, change) {
-        const character = this.builder.currentCharacter;
-        if (!character) return;
-
-        const currentValue = character.attributes[attrId] || 0;
-        const newValue = Math.max(0, Math.min(character.tier, currentValue + change));
-        this.updateAttributeValue(attrId, newValue);
+        this.builder.changeAttribute(attrId, change);
     }
 
     // Slider method removed - using button-only interface
 
     updateAttributeValue(attrId, newValue) {
-        const character = this.builder.currentCharacter;
-        if (!character) {
-            console.error('❌ No current character in updateAttributeValue');
-            return;
-        }
-        
-        const oldValue = character.attributes[attrId] || 0;
-        console.log(`🔄 Updating ${attrId}: ${oldValue} → ${newValue}`);
-
-        if (oldValue === newValue) {
-            console.log(`⚪ No change for ${attrId}`);
-            return; // No change
-        }
-
-        const validation = AttributeSystem.validateAttributeAssignment(character, attrId, newValue);
-        if (!validation.isValid) {
-            console.error(`❌ Validation failed for ${attrId}:`, validation.errors);
-            this.builder.showNotification(validation.errors.join(', '), 'error');
-            // Re-render to show previous valid state
-            this.render();
-            return;
-        }
-
-        // EXPLICITLY save the value
-        character.attributes[attrId] = newValue;
-        character.touch(); // Ensure lastModified is updated
-        
-        console.log(`✅ Saved ${attrId} = ${newValue}`);
-        console.log('🔍 Current character attributes:', JSON.stringify(character.attributes));
-        
-        // Update UI immediately for responsiveness
-        this.updateSingleAttributeDisplay(attrId, newValue);
-        
-        // Then update character and point pools
-        this.builder.updateCharacter(); // This triggers re-render and point pool updates
+        this.builder.setAttribute(attrId, newValue);
     }
 
     updateSingleAttributeDisplay(attrId, newValue) {
