@@ -34,19 +34,12 @@ export class LimitSelection {
         return `
             <div class="limits-section section-block">
                 <div class="section-header">
-                    <h3>Limits (${attack.limits.length})</h3>
-                    ${RenderUtils.renderButton({
-                        text: '+ Add Limit',
-                        variant: 'primary',
-                        size: 'small',
-                        dataAttributes: { action: 'open-limit-modal' },
-                        title: 'Add a new limit to this attack'
-                    })}
+                    <h3>Limits</h3>
                 </div>
                 
                 ${this.renderSelectedLimitsTable(attack, character)}
                 ${this.renderCalculationDetails(attack, character)}
-                ${this.renderModal(character, attack)}
+                ${this.renderAvailableLimits(character, attack)}
             </div>
         `;
     }
@@ -192,7 +185,7 @@ export class LimitSelection {
         `;
     }
 
-    renderModal(character, attack) {
+    renderAvailableLimits(character, attack) {
         const allLimits = SpecialAttackSystem.getAvailableLimits();
         
         // Group limits by category for hierarchical display
@@ -205,20 +198,12 @@ export class LimitSelection {
         });
 
         return `
-            <div id="limit-modal" class="modal ${this.showingModal ? '' : 'hidden'}">
-                <div class="modal-overlay" data-action="close-limit-modal"></div>
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Add Limit to Attack</h3>
-                        ${RenderUtils.renderButton({ text: '×', variant: 'secondary', size: 'small', dataAttributes: { action: 'close-limit-modal' }})}
-                    </div>
-                    <div class="modal-body">
-                        <div class="limit-categories-hierarchy">
-                            ${Object.entries(limitsByCategory).map(([categoryKey, categoryLimits]) => 
-                                this.renderLimitCategory(categoryKey, categoryLimits, attack, character)
-                            ).join('')}
-                        </div>
-                    </div>
+            <div class="available-limits">
+                <h4>Available Limits</h4>
+                <div class="limit-categories-hierarchy">
+                    ${Object.entries(limitsByCategory).map(([categoryKey, categoryLimits]) => 
+                        this.renderLimitCategory(categoryKey, categoryLimits, attack, character)
+                    ).join('')}
                 </div>
             </div>
         `;
@@ -245,27 +230,24 @@ export class LimitSelection {
 
     renderLimitOption(limit, attack, character) {
         const isSelected = attack.limits.some(selected => selected.id === limit.id);
-        const canAdd = !isSelected; // Add more validation logic as needed
+        const validation = SpecialAttackSystem.validateLimitSelection(character, attack, limit.id);
+        const canAdd = !isSelected && validation.isValid;
 
         return RenderUtils.renderCard({
             title: limit.name,
-            content: `
-                <div class="limit-option-details">
-                    <p><strong>Points:</strong> ${limit.points || limit.cost || 0}</p>
-                    ${limit.description ? `<p class="limit-description">${limit.description}</p>` : ''}
-                    ${limit.effects ? `<p class="limit-effects"><em>Effects:</em> ${limit.effects}</p>` : ''}
-                </div>
+            cost: limit.points || limit.cost || 0,
+            description: `
+                ${limit.description || ''}
+                ${!validation.isValid ? `<br><small class="error-text">${validation.errors[0]}</small>` : ''}
             `,
-            footer: canAdd ? 
-                RenderUtils.renderButton({
-                    text: 'Add Limit',
-                    variant: 'primary',
-                    size: 'small',
-                    dataAttributes: { action: 'add-limit', limitId: limit.id }
-                }) : '<span class="already-selected">Already selected</span>',
-            cardClass: `limit-option ${isSelected ? 'selected' : ''}`,
-            showStatus: true
-        });
+            clickable: canAdd,
+            disabled: isSelected || !validation.isValid,
+            selected: isSelected,
+            dataAttributes: { 
+                action: canAdd ? 'add-limit' : '', 
+                limitId: limit.id 
+            }
+        }, { cardClass: 'limit-option', showStatus: false });
     }
 
     // Granular update methods

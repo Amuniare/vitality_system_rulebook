@@ -16,9 +16,11 @@ export class AttackBasicsForm {
                 <div class="attack-basics-columns">
                     <div class="attack-basics-left">
                         ${this.renderNameFields(attack)}
+                        ${this.renderSelectedTypes(attack, currentCharacter)}
                     </div>
                     <div class="attack-basics-right">
                         ${this.renderTypeSelectors(attack, currentCharacter)}
+                        ${this.renderConditionalFields(attack, currentCharacter)}
                     </div>
                 </div>
             </div>
@@ -83,6 +85,68 @@ export class AttackBasicsForm {
                 })
             })}
         `;
+    }
+
+    renderSelectedTypes(attack, character) {
+        const attackTypes = AttackTypeSystem.getAttackTypeDefinitions ? AttackTypeSystem.getAttackTypeDefinitions() : {};
+        const effectTypes = AttackTypeSystem.getEffectTypeDefinitions ? AttackTypeSystem.getEffectTypeDefinitions() : {};
+
+        return `
+            <div class="selected-types-display">
+                <h4>Selected Types</h4>
+                <div class="type-tags">
+                    ${(attack.attackTypes || []).map(id => {
+                        const def = attackTypes[id];
+                        return `<span class="tag attack-type-tag">${def?.name || id} <button data-action="remove-attack-type" data-id="${id}">×</button></span>`;
+                    }).join('')}
+                    ${(attack.effectTypes || []).map(id => {
+                        const def = effectTypes[id];
+                        return `<span class="tag effect-type-tag">${def?.name || id} <button data-action="remove-effect-type" data-id="${id}">×</button></span>`;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderConditionalFields(attack, character) {
+        let html = '';
+        
+        // Show hybrid order selector if hybrid effect type is selected
+        if ((attack.effectTypes || []).includes('hybrid')) {
+            html += `
+                <div class="form-group">
+                    <label for="hybrid-order-${this.parentTab.selectedAttackIndex}">Hybrid Order:</label>
+                    <select id="hybrid-order-${this.parentTab.selectedAttackIndex}" data-action="update-hybrid-order">
+                        <option value="damage-first" ${attack.hybridOrder === 'damage-first' ? 'selected' : ''}>Damage then Conditions</option>
+                        <option value="conditions-first" ${attack.hybridOrder === 'conditions-first' ? 'selected' : ''}>Conditions then Damage</option>
+                    </select>
+                </div>
+            `;
+        }
+        
+        // Show basic conditions selector if condition or hybrid effect type is selected
+        if ((attack.effectTypes || []).some(e => ['condition', 'hybrid'].includes(e))) {
+            const conditions = AttackTypeSystem.getBasicConditions ? AttackTypeSystem.getBasicConditions() : [];
+            html += `
+                <div class="form-group">
+                    <label for="basic-condition-${this.parentTab.selectedAttackIndex}">Add Basic Condition:</label>
+                    <select id="basic-condition-${this.parentTab.selectedAttackIndex}" data-action="add-basic-condition">
+                        <option value="">Select condition...</option>
+                        ${conditions
+                            .filter(c => !(attack.basicConditions || []).includes(c.id))
+                            .map(c => `<option value="${c.id}">${c.name}</option>`)
+                            .join('')}
+                    </select>
+                </div>
+                <div class="selected-conditions">
+                    ${(attack.basicConditions || []).map(id => 
+                        `<span class="tag condition-tag">${id} <button data-action="remove-basic-condition" data-id="${id}">×</button></span>`
+                    ).join('')}
+                </div>
+            `;
+        }
+        
+        return html ? `<div class="conditional-fields">${html}</div>` : '';
     }
 
     // Fallback to simple form if data-driven approach fails

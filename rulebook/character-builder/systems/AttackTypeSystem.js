@@ -128,6 +128,44 @@ export class AttackTypeSystem {
         return ArchetypeSystem.getFreeAttackTypes(character); // DELEGATE
     }
     
+    // Get all attack type definitions (for dropdowns)
+    static getAttackTypeDefinitions() {
+        const definitions = gameDataManager.getAttackTypeDefinitions() || {};
+        const resolved = {};
+        for (const [key, def] of Object.entries(definitions)) {
+            resolved[key] = {
+                ...def,
+                id: key,
+                range: def.rangeKey ? GameConstants[def.rangeKey] : def.range,
+                cost: def.costKey ? GameConstants.ATTACK_TYPE_COSTS[def.costKey] : def.cost
+            };
+        }
+        return resolved;
+    }
+    
+    // Get all effect type definitions (for dropdowns)
+    static getEffectTypeDefinitions() {
+        const definitions = gameDataManager.getEffectTypeDefinitions() || {};
+        const resolved = {};
+        for (const [key, def] of Object.entries(definitions)) {
+            resolved[key] = {
+                ...def,
+                id: key,
+                cost: def.costKey ? GameConstants.ATTACK_TYPE_COSTS[def.costKey] : def.cost
+            };
+        }
+        return resolved;
+    }
+    
+    // Get basic conditions (for dropdowns)
+    static getBasicConditions() {
+        const conditions = gameDataManager.getBasicConditions() || [];
+        return conditions.map(c => ({
+            ...c,
+            duration: c.durationKey ? GameConstants[c.durationKey] : c.duration
+        }));
+    }
+    
     // Validate attack type restrictions
     static validateAttackTypeRestrictions(character, attack, attackTypeId) {
         const errors = [];
