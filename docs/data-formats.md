@@ -352,3 +352,5 @@ assert "name" in char["metadata"]
 assert "attributes" in char
 assert "char_tier" in char["attributes"]
 ```
+
+

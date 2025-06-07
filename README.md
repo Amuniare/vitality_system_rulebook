@@ -11,8 +11,8 @@ Personal campaign management system for the Vitality System RPG, featuring web-b
 ## Current Status
 - ✅ Vitality System rules complete
 - ✅ Roll20 character upload working
-- 🚧 Web character builder (basic info + archetypes complete)
-- 🚧 Special attacks, main pool, utility tabs in development
+- ✅ Web character builder (all 7 tabs fully functional)
+- 🚧 UI Polish & Final Bug Fixes
 
 
 

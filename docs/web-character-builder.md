@@ -23,7 +23,7 @@ rulebook/character-builder/
 │   ├── conditions_basic.json # Basic conditions (9 entries)
 │   ├── descriptors.json      # Reality manipulation descriptors
 │   ├── effect_types_definitions.json # Effect type mechanics
-│   ├── expertise_categories.json # Expertise by attribute (7 categories)
+│   ├── expertise.json        # Expertise by attribute (7 categories) - REVISED
 │   ├── features.json         # Supernatural features (4 tiers, 50+ entries)
 │   ├── flaws.json           # Character flaws (11 entries)
 │   ├── movement_features.json # Enhanced movement (2 tiers)
@@ -47,12 +47,6 @@ rulebook/character-builder/
 │   ├── LimitCalculator.js    # Special attack limit scaling
 │   ├── PointPoolCalculator.js # Unified point pool system
 │   └── StatCalculator.js     # Final stat calculations
-├── validators/               # Build validation & error checking (MARKED FOR REMOVAL)
-│   ├── ArchetypeValidator.js
-│   ├── AttributeValidator.js
-│   ├── BuildOrderValidator.js
-│   ├── CharacterValidator.js
-│   └── SpecialAttackValidator.js
 ├── ui/                       # User interface components
 │   ├── CharacterBuilder.js   # Main UI controller
 │   ├── components/           # Reusable UI components (10 components)
@@ -81,6 +75,11 @@ rulebook/character-builder/
 └── css/
     └── character-builder.css # Complete design system (651 lines)
 
+
+## Key Architectural Patterns
+- **Data-Driven Design:** All game rules and options are loaded from external JSON files via the `GameDataManager`. This allows for easy updates to game content without changing application code.
+- **Event Delegation:** User interactions are managed through a centralized event delegation system (`EventManager`). UI elements use `data-action` attributes, and parent components (tabs) handle the logic. This keeps the HTML clean and the component logic centralized.
+- **Data Transformation:** Systems like `UtilitySystem` contain logic to transform evolving JSON data structures (e.g., the new `expertise.json` format) into the format expected by the UI. This provides a robust "anti-corruption layer" that allows the data source and UI to evolve independently.
 
 ## Current Status
 
@@ -125,30 +124,7 @@ rulebook/character-builder/
 - Character search and filtering
 - Import/export capabilities
 
-## Development Notes
-
-### **Point Pool System**
-```javascript
-// Combat attributes: tier × 2 points
-// Utility attributes: tier points  
-// Main pool: (tier - 2) × 15 points
-// Utility pool: 5 × (tier - 1) points
-```
-
-### **Archetype Dependencies**
-- Must be selected before attribute assignment
-- Affects point pool calculations
-- Provides bonuses and restrictions
-- 7 categories: Movement, Attack Type, Effect Type, Unique Ability, Defensive, Special Attack, Utility
-
-### **Validation Rules**
-- No attribute can exceed tier value
-- Point pools cannot be overspent
-- Certain archetype combinations are restricted
-- Build order must be followed
-
 ## Usage
-
 1. Open `character-builder.html` in browser
 2. Click "New Character" 
 3. Fill basic info → select archetypes → assign attributes
@@ -156,7 +132,6 @@ rulebook/character-builder/
 5. Export JSON for Roll20 upload
 
 ## Troubleshooting
-
 **Character not saving**: Check browser localStorage limits
 **Point calculations wrong**: Verify archetype selections are complete
 **Tabs disabled**: Ensure previous steps are completed (build order enforcement)
