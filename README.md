@@ -7,12 +7,6 @@ Personal campaign management system for the Vitality System RPG, featuring web-b
 - **Roll20 Upload**: Run `python main.py` for character upload workflow
 - **Rules Reference**: See `rulebook/rules/` for complete game mechanics
 
-## Documentation
-- [Web Character Builder](docs/web-character-builder.md) - Browser-based character creation
-- [Roll20 Integration](docs/roll20-integration.md) - Character upload/download workflows  
-- [Development Guide](docs/development-guide.md) - Setup, common tasks, troubleshooting
-- [ScriptCards System](docs/scriptcards-system.md) - Template compression and ability management
-- [Data Formats](docs/data-formats.md) - JSON structures and character data flow
 
 ## Current Status
 - ✅ Vitality System rules complete
@@ -21,16 +15,27 @@ Personal campaign management system for the Vitality System RPG, featuring web-b
 - 🚧 Special attacks, main pool, utility tabs in development
 
 
+
+## Commands for Claude Code
 wsl -d Ubuntu
 
 claude
 
-## TODO
-- better display for limits
-- better display for upgrades
-- each character should get base attacks according to their archetype
-- on the basic info screen, i should be able to select type: {Minion, Captain, Vanguard, Boss, Player Character, Vehicle / Structure Captain, Vehicle / Structure Vanguard, Vehicle / Structure Boss}
-- issue with utility purchasing pushing errors
 
 
 
+## Documentation
+
+- **Core Concepts & Guides**
+  - [Development Guide](docs/development-guide.md) - Setup, common tasks, troubleshooting.
+  - [Rules for AI Collaboration](docs/rulesForAI.md) - Guidelines for AI-assisted development.
+  - [Data Formats](docs/data-formats.md) - JSON structures and character data flow.
+
+- **Application Architecture**
+  - [Web Character Builder](docs/web-character-builder.md) - Overview of the frontend application.
+  - [Roll20 Integration](docs/roll20-integration.md) - Backend character upload/download workflows.
+  - [ScriptCards System](docs/scriptcards-system.md) - Macro template compression and management.
+
+- **Development Logs**
+  - [Frontend Development Logs](docs/web_dev_logs/) - Phase-by-phase history of the web character builder.
+  - [Backend Development Logs](docs/src_dev_logs/) - Session-by-session history of the Roll20 integration system.
