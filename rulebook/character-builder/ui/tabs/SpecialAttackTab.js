@@ -349,27 +349,54 @@ export class SpecialAttackTab {
         e.stopPropagation();
 
         const handlers = {
+            // Attack management
             createAttack: () => this.createNewAttack(),
             selectAttackTab: () => this.selectAttack(parseInt(data.attackIndex)),
             deleteAttack: () => this.deleteAttack(parseInt(data.index)),
+            
+            // Attack basics form events
             updateAttackName: () => this.updateAttackProperty('name', element.value),
+            updateAttackSubtitle: () => this.updateAttackProperty('subtitle', element.value),
+            updateAttackDetails: () => this.updateAttackProperty('description', element.value),
+            
+            // Attack/Effect type management
             addAttackType: () => this.addAttackType(element.value),
             removeAttackType: () => this.removeAttackType(data.id),
             addEffectType: () => this.addEffectType(element.value),
             removeEffectType: () => this.removeEffectType(data.id),
+            
+            // Condition management
             addBasicCondition: () => this.addCondition(element.value, false),
             removeBasicCondition: () => this.removeCondition(data.id, false),
             updateHybridOrder: () => this.updateAttackProperty('hybridOrder', element.value),
+            
+            // Category toggles
             toggleLimitCategory: () => this.toggleCategory('limit', data.category),
             toggleUpgradeCategory: () => this.toggleCategory('upgrade', data.category),
+            
+            // Limit management
             addLimit: () => this.addLimit(data.limitId),
             removeLimit: () => this.removeLimit(data.limitId),
             removeLimitRow: () => this.removeLimitByIndex(parseInt(data.index)),
+            
+            // Modal management for limits
+            openLimitModal: () => this.openLimitModal(),
+            closeLimitModal: () => this.closeLimitModal(),
+            
+            // Upgrade management
             purchaseUpgrade: () => this.purchaseUpgrade(data.upgradeId),
             removeUpgrade: () => this.removeUpgrade(data.upgradeId),
+            
+            // Navigation
             'continue-to-utility': () => this.builder.switchTab('utility')
         };
-        handlers[action]?.();
+        
+        const handler = handlers[action];
+        if (handler) {
+            handler();
+        } else {
+            console.warn(`No handler found for action: ${action}`);
+        }
     }
     
     onCharacterUpdate() { 
@@ -420,19 +447,115 @@ export class SpecialAttackTab {
             this.builder.updateCharacter();
         }
     }
-    updateAttackProperty(prop, value) { this.builder.updateSpecialAttackProperty(this.selectedAttackIndex, prop, value); }
-    addAttackType(typeId) { if(typeId) { this.builder.addAttackTypeToAttack(this.selectedAttackIndex, typeId); } }
-    removeAttackType(typeId) { this.builder.removeAttackTypeFromAttack(this.selectedAttackIndex, typeId); }
-    addEffectType(typeId) { if(typeId) { this.builder.addEffectTypeToAttack(this.selectedAttackIndex, typeId); } }
-    removeEffectType(typeId) { this.builder.removeEffectTypeFromAttack(this.selectedAttackIndex, typeId); }
-    addCondition(id, isAdvanced) { if(id) { this.builder.addConditionToAttack(this.selectedAttackIndex, id, isAdvanced); } }
-    removeCondition(id, isAdvanced) { this.builder.removeConditionFromAttack(this.selectedAttackIndex, id, isAdvanced); }
+    updateAttackProperty(prop, value) { 
+        this.builder.updateSpecialAttackProperty(this.selectedAttackIndex, prop, value); 
+    }
+    
+    addAttackType(typeId) { 
+        if (typeId) { 
+            this.builder.addAttackTypeToAttack(this.selectedAttackIndex, typeId);
+            this.builder.showNotification('Attack type added', 'success');
+            // Clear the dropdown
+            const select = document.querySelector(`#attack-type-select-${this.selectedAttackIndex}`);
+            if (select) select.value = '';
+        } 
+    }
+    
+    removeAttackType(typeId) { 
+        this.builder.removeAttackTypeFromAttack(this.selectedAttackIndex, typeId);
+        this.builder.showNotification('Attack type removed', 'info');
+    }
+    
+    addEffectType(typeId) { 
+        if (typeId) { 
+            this.builder.addEffectTypeToAttack(this.selectedAttackIndex, typeId);
+            this.builder.showNotification('Effect type added', 'success');
+            // Clear the dropdown
+            const select = document.querySelector(`#effect-type-select-${this.selectedAttackIndex}`);
+            if (select) select.value = '';
+        } 
+    }
+    
+    removeEffectType(typeId) { 
+        this.builder.removeEffectTypeFromAttack(this.selectedAttackIndex, typeId);
+        this.builder.showNotification('Effect type removed', 'info');
+    }
+    
+    addCondition(id, isAdvanced) { 
+        if (id) { 
+            this.builder.addConditionToAttack(this.selectedAttackIndex, id, isAdvanced);
+            this.builder.showNotification('Condition added', 'success');
+            // Clear the dropdown
+            const select = document.querySelector(`#basic-condition-select-${this.selectedAttackIndex}`);
+            if (select) select.value = '';
+        } 
+    }
+    
+    removeCondition(id, isAdvanced) { 
+        this.builder.removeConditionFromAttack(this.selectedAttackIndex, id, isAdvanced);
+        this.builder.showNotification('Condition removed', 'info');
+    }
     toggleCategory(type, category) { const set = type === 'limit' ? this.expandedLimitCategories : this.expandedUpgradeCategories; if (set.has(category)) set.delete(category); else set.add(category); this.render(); }
-    addLimit(id) { SpecialAttackSystem.addLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); this.builder.updateCharacter(); }
-    removeLimit(id) { SpecialAttackSystem.removeLimitFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); this.builder.updateCharacter(); }
-    removeLimitByIndex(index) { const limitId = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex].limits[index].id; this.removeLimit(limitId); }
-    purchaseUpgrade(id) { SpecialAttackSystem.addUpgradeToAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); this.builder.updateCharacter(); }
-    removeUpgrade(id) { SpecialAttackSystem.removeUpgradeFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); this.builder.updateCharacter(); }
+    // Limit management methods
+    addLimit(id) { 
+        try {
+            SpecialAttackSystem.addLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); 
+            this.builder.updateCharacter(); 
+            this.builder.showNotification('Limit added successfully', 'success');
+        } catch (error) {
+            this.builder.showNotification(error.message, 'error');
+        }
+    }
+    
+    removeLimit(id) { 
+        try {
+            SpecialAttackSystem.removeLimitFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); 
+            this.builder.updateCharacter(); 
+            this.builder.showNotification('Limit removed', 'info');
+        } catch (error) {
+            this.builder.showNotification(error.message, 'error');
+        }
+    }
+    
+    removeLimitByIndex(index) { 
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if (attack && attack.limits[index]) {
+            const limitId = attack.limits[index].id; 
+            this.removeLimit(limitId);
+        }
+    }
+    
+    // Modal management methods
+    openLimitModal() {
+        this.limitSelection.setModalState(true);
+        this.render();
+    }
+    
+    closeLimitModal() {
+        this.limitSelection.setModalState(false);
+        this.render();
+    }
+    
+    // Upgrade management methods
+    purchaseUpgrade(id) { 
+        try {
+            SpecialAttackSystem.addUpgradeToAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); 
+            this.builder.updateCharacter(); 
+            this.builder.showNotification('Upgrade purchased', 'success');
+        } catch (error) {
+            this.builder.showNotification(error.message, 'error');
+        }
+    }
+    
+    removeUpgrade(id) { 
+        try {
+            SpecialAttackSystem.removeUpgradeFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); 
+            this.builder.updateCharacter(); 
+            this.builder.showNotification('Upgrade removed', 'info');
+        } catch (error) {
+            this.builder.showNotification(error.message, 'error');
+        }
+    }
     
     groupLimitsByCategory(limits) { return limits.reduce((acc, l) => { (acc[l.category] = acc[l.category] || []).push(l); return acc; }, {}); }
     groupUpgradesByCategory(upgrades) { return upgrades.reduce((acc, u) => { (acc[u.category] = acc[u.category] || []).push(u); return acc; }, {}); }
