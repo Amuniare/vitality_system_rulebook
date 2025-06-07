@@ -350,42 +350,42 @@ export class SpecialAttackTab {
 
         const handlers = {
             // Attack management
-            createAttack: () => this.createNewAttack(),
-            selectAttackTab: () => this.selectAttack(parseInt(data.attackIndex)),
-            deleteAttack: () => this.deleteAttack(parseInt(data.index)),
+            'create-attack': () => this.createNewAttack(),
+            'select-attack-tab': () => this.selectAttack(parseInt(data.attackIndex)),
+            'delete-attack': () => this.deleteAttack(parseInt(data.index)),
             
             // Attack basics form events
-            updateAttackName: () => this.updateAttackProperty('name', element.value),
-            updateAttackSubtitle: () => this.updateAttackProperty('subtitle', element.value),
-            updateAttackDetails: () => this.updateAttackProperty('description', element.value),
+            'update-attack-name': () => this.updateAttackProperty('name', element.value),
+            'update-attack-subtitle': () => this.updateAttackProperty('subtitle', element.value),
+            'update-attack-details': () => this.updateAttackProperty('description', element.value),
             
             // Attack/Effect type management
-            addAttackType: () => this.addAttackType(element.value),
-            removeAttackType: () => this.removeAttackType(data.id),
-            addEffectType: () => this.addEffectType(element.value),
-            removeEffectType: () => this.removeEffectType(data.id),
+            'add-attack-type': () => this.addAttackType(element.value),
+            'remove-attack-type': () => this.removeAttackType(data.id),
+            'add-effect-type': () => this.addEffectType(element.value),
+            'remove-effect-type': () => this.removeEffectType(data.id),
             
             // Condition management
-            addBasicCondition: () => this.addCondition(element.value, false),
-            removeBasicCondition: () => this.removeCondition(data.id, false),
-            updateHybridOrder: () => this.updateAttackProperty('hybridOrder', element.value),
+            'add-basic-condition': () => this.addCondition(element.value, false),
+            'remove-basic-condition': () => this.removeCondition(data.id, false),
+            'update-hybrid-order': () => this.updateAttackProperty('hybridOrder', element.value),
             
             // Category toggles
-            toggleLimitCategory: () => this.toggleCategory('limit', data.category),
-            toggleUpgradeCategory: () => this.toggleCategory('upgrade', data.category),
+            'toggle-limit-category': () => this.toggleCategory('limit', data.category),
+            'toggle-upgrade-category': () => this.toggleCategory('upgrade', data.category),
             
             // Limit management
-            addLimit: () => this.addLimit(data.limitId),
-            removeLimit: () => this.removeLimit(data.limitId),
-            removeLimitRow: () => this.removeLimitByIndex(parseInt(data.index)),
+            'add-limit': () => this.addLimit(data.limitId),
+            'remove-limit': () => this.removeLimit(data.limitId),
+            'remove-limit-row': () => this.removeLimitByIndex(parseInt(data.index)),
             
             // Modal management for limits
-            openLimitModal: () => this.openLimitModal(),
-            closeLimitModal: () => this.closeLimitModal(),
+            'open-limit-modal': () => this.openLimitModal(),
+            'close-limit-modal': () => this.closeLimitModal(),
             
             // Upgrade management
-            purchaseUpgrade: () => this.purchaseUpgrade(data.upgradeId),
-            removeUpgrade: () => this.removeUpgrade(data.upgradeId),
+            'purchase-upgrade': () => this.purchaseUpgrade(data.upgradeId),
+            'remove-upgrade': () => this.removeUpgrade(data.upgradeId),
             
             // Navigation
             'continue-to-utility': () => this.builder.switchTab('utility')
