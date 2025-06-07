@@ -1,9 +1,11 @@
 // rulebook/character-builder/ui/tabs/SummaryTab.js
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
+import { EventManager } from '../../shared/utils/EventManager.js';
 
 export class SummaryTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
+        this.listenersAttached = false;
     }
 
     render() {
@@ -147,7 +149,26 @@ export class SummaryTab {
     }
 
     setupEventListeners() {
-        // Buttons handled by CharacterBuilder's EventManager via data-actions
+        if (this.listenersAttached) {
+            return;
+        }
+        
+        const container = document.getElementById('tab-summary');
+        if (!container) return;
+        
+        EventManager.delegateEvents(container, {
+            click: {
+                '[data-action="export-json-summary"]': () => {
+                    this.exportCharacterJSON();
+                },
+                '[data-action="print-character"]': () => {
+                    this.printCharacter();
+                }
+            }
+        }, this);
+        
+        this.listenersAttached = true;
+        console.log('✅ SummaryTab event listeners attached ONCE.');
     }
 
     exportCharacterJSON() {

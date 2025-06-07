@@ -1,10 +1,12 @@
 // rulebook/character-builder/ui/tabs/AttributeTab.js
 import { AttributeSystem } from '../../systems/AttributeSystem.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
+import { EventManager } from '../../shared/utils/EventManager.js';
 
 export class AttributeTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
+        this.listenersAttached = false;
     }
 
     render() {
@@ -220,14 +222,48 @@ this.setupDebugFallbacks();
     }
 
     setupEventListeners() {
-        // EventManager at CharacterBuilder will handle data-action clicks/inputs.
+        if (this.listenersAttached) {
+            return;
+        }
+        
+        const container = document.getElementById('tab-attributes');
+        if (!container) return;
+        
+        EventManager.delegateEvents(container, {
+            click: {
+                '[data-action="change-attribute-btn"]': (e, element) => {
+                    const attrId = element.dataset.attr;
+                    const change = parseInt(element.dataset.change);
+                    if (attrId !== undefined && change !== undefined) {
+                        console.log(`🎯 Attribute button: ${attrId} ${change > 0 ? '+' : ''}${change}`);
+                        this.changeAttribute(attrId, change);
+                    }
+                },
+                '[data-action="continue-to-mainpool"]': () => this.builder.switchTab('mainPool')
+            },
+            input: {
+                '[data-action="change-attribute-slider"]': (e, element) => {
+                    const attrId = element.dataset.attr;
+                    const newValue = element.value;
+                    if (attrId !== undefined && newValue !== undefined) {
+                        console.log(`🎯 Attribute slider: ${attrId} = ${newValue}`);
+                        this.setAttributeViaSlider(attrId, newValue);
+                    }
+                }
+            }
+        }, this);
+        
+        this.listenersAttached = true;
+        console.log('✅ AttributeTab event listeners attached ONCE.');
     }
 
     changeAttribute(attrId, change) {
         this.builder.changeAttribute(attrId, change);
     }
 
-    // Slider method removed - using button-only interface
+    setAttributeViaSlider(attrId, newValue) {
+        this.builder.setAttribute(attrId, newValue);
+    }
 
     updateAttributeValue(attrId, newValue) {
         this.builder.setAttribute(attrId, newValue);

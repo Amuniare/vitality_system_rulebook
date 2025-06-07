@@ -1,10 +1,12 @@
 // rulebook/character-builder/ui/tabs/ArchetypeTab.js
 import { ArchetypeSystem } from '../../systems/ArchetypeSystem.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
+import { EventManager } from '../../shared/utils/EventManager.js';
 
 export class ArchetypeTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
+        this.listenersAttached = false;
     }
 
 
@@ -148,8 +150,28 @@ export class ArchetypeTab {
     }
 
     setupEventListeners() {
-        // EventManager at CharacterBuilder level will handle data-action clicks.
-        // No direct querySelectors needed here if using data-action attributes.
+        if (this.listenersAttached) {
+            return;
+        }
+        
+        const container = document.getElementById('tab-archetypes');
+        if (!container) return;
+        
+        EventManager.delegateEvents(container, {
+            click: {
+                '[data-action="select-archetype"]': (e, element) => {
+                    const category = element.dataset.category;
+                    const archetypeId = element.dataset.archetype;
+                    if (category && archetypeId) {
+                        this.selectArchetype(category, archetypeId);
+                    }
+                },
+                '[data-action="continue-to-attributes"]': () => this.builder.switchTab('attributes')
+            }
+        }, this);
+        
+        this.listenersAttached = true;
+        console.log('✅ ArchetypeTab event listeners attached ONCE.');
     }
 
 
@@ -199,7 +221,8 @@ export class ArchetypeTab {
             console.log(`✅ Set archetype: ${category} = ${archetypeId}`);
         }
         
-        this.updateArchetypeSelectionUI(category, character.archetypes[category]);
+        // Update the UI to reflect the change
+        this.updateArchetypeSelectionUI(category, this.builder.currentCharacter.archetypes[category]);
         this.updateProgress();
     }
     

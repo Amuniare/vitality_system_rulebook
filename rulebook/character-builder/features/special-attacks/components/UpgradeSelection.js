@@ -1,5 +1,5 @@
 // UpgradeSelection.js - Manages the display and purchasing of upgrades for special attacks
-import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
+import { SpecialAttackSystem } from '../../../systems/SpecialAttackSystem.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class UpgradeSelection {

@@ -1,6 +1,6 @@
 // rulebook/character-builder/ui/components/TraitPurchaseSection.js
-import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
-import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js'; // Ensure this is used
+import { TraitFlawSystem } from '../../../systems/TraitFlawSystem.js';
+import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js'; // Ensure this is used
 import { EventManager } from '../../../shared/utils/EventManager.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 

@@ -1,6 +1,6 @@
 // LimitSelection.js - Manages the display and selection of limits for special attacks
-import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
-import { TierSystem } from '../../core/TierSystem.js';
+import { SpecialAttackSystem } from '../../../systems/SpecialAttackSystem.js';
+import { TierSystem } from '../../../core/TierSystem.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class LimitSelection {

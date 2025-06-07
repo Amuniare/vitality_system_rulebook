@@ -14,6 +14,8 @@ export class SpecialAttackTab {
         this.attackBasicsForm = new AttackBasicsForm(this);
         this.limitSelection = new LimitSelection(this);
         this.upgradeSelection = new UpgradeSelection(this);
+        // --- FIX: Add a flag to track listener state ---
+        this.listenersAttached = false;
     }
 
     render() {
@@ -42,6 +44,7 @@ export class SpecialAttackTab {
                 </div>
             </div>
         `;
+        // --- FIX: This now safely calls the guarded method ---
         this.setupEventListeners();
     }
     
@@ -69,7 +72,10 @@ export class SpecialAttackTab {
                 <span class="attack-tab-name">${attack.name || `Attack ${index + 1}`}</span>
                 <span class="attack-tab-points">${attack.upgradePointsSpent || 0}/${attack.upgradePointsAvailable || 0}p</span>
                 ${RenderUtils.renderButton({
-                    text: '×', variant: 'danger', size: 'small', classes: ['delete-attack-btn'],
+                    text: '×',
+                    variant: 'danger',
+                    size: 'small',
+                    classes: ['delete-attack-btn'],
                     dataAttributes: { action: 'delete-attack', index }
                 })}
             </div>
@@ -96,6 +102,11 @@ export class SpecialAttackTab {
     }
     
     setupEventListeners() {
+        // --- FIX: Guard the listener attachment ---
+        if (this.listenersAttached) {
+            return; // Don't attach listeners again
+        }
+
         const container = document.getElementById('tab-specialAttacks');
         if(container) {
             EventManager.delegateEvents(container, {
@@ -106,6 +117,10 @@ export class SpecialAttackTab {
                     'textarea[data-action]': (e, el) => this.handleEvent(e, el) 
                 }
             }, this);
+            
+            // --- FIX: Set the flag to true after attaching ---
+            this.listenersAttached = true;
+            console.log('✅ SpecialAttackTab event listeners attached ONCE.');
         }
     }
 
@@ -116,7 +131,10 @@ export class SpecialAttackTab {
         const handlers = {
             'create-attack': () => this.createNewAttack(),
             'select-attack-tab': () => this.selectAttack(parseInt(data.attackIndex)),
-            'delete-attack': () => this.deleteAttack(parseInt(data.index)),
+            'delete-attack': () => {
+                console.log('Delete attack data:', data, 'index:', data.index);
+                this.deleteAttack(parseInt(data.index));
+            },
             
             'update-attack-name': () => this.updateAttackProperty('name', element.value),
             'update-attack-subtitle': () => this.updateAttackProperty('subtitle', element.value),
@@ -168,10 +186,19 @@ export class SpecialAttackTab {
     }
     
     deleteAttack(index) {
+        console.log('deleteAttack called with index:', index, 'type:', typeof index);
+        
+        const character = this.builder.currentCharacter;
+        if (isNaN(index) || index < 0 || index >= character.specialAttacks.length) {
+            console.error('Stale or invalid attack index for deletion:', index);
+            this.builder.showNotification('Could not delete attack (stale index).', 'error');
+            return;
+        }
+        
         if(confirm('Are you sure you want to delete this attack?')){
-            SpecialAttackSystem.deleteSpecialAttack(this.builder.currentCharacter, index);
-            if (this.selectedAttackIndex >= this.builder.currentCharacter.specialAttacks.length) {
-                this.selectedAttackIndex = Math.max(0, this.builder.currentCharacter.specialAttacks.length - 1);
+            SpecialAttackSystem.deleteSpecialAttack(character, index);
+            if (this.selectedAttackIndex >= character.specialAttacks.length) {
+                this.selectedAttackIndex = Math.max(0, character.specialAttacks.length - 1);
             }
             this.builder.updateCharacter();
         }
@@ -202,7 +229,6 @@ export class SpecialAttackTab {
         if (!typeId) return;
         const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
         if(attack) {
-            // FIX: Replace effect type, don't push, as it's mutually exclusive.
             attack.effectTypes = [typeId];
             this.builder.updateCharacter();
         }
@@ -211,7 +237,6 @@ export class SpecialAttackTab {
     removeEffectType(typeId) {
         const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
         if(attack) {
-            // FIX: Clear the array, as there's only one.
             attack.effectTypes = [];
             this.builder.updateCharacter();
         }

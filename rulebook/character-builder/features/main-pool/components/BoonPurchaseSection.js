@@ -1,5 +1,5 @@
 // BoonPurchaseSection.js - Boon purchase UI component
-import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
+import { UniqueAbilitySystem } from '../../../systems/UniqueAbilitySystem.js';
 
 export class BoonPurchaseSection {
     constructor(characterBuilder) {

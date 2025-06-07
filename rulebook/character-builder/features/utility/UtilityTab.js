@@ -8,6 +8,7 @@ export class UtilityTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
         this.activeCategory = 'expertise';
+        this.listenersAttached = false;
     }
 
     render() {
@@ -154,6 +155,10 @@ export class UtilityTab {
     }
 
     setupEventListeners() {
+        if (this.listenersAttached) {
+            return;
+        }
+        
         const container = document.querySelector('.utility-tab-content');
         if (!container) return;
         EventManager.delegateEvents(container, {
@@ -163,8 +168,19 @@ export class UtilityTab {
                 '[data-action^="purchase-"]': (e, el) => { if (el.dataset.action !== 'purchase-expertise') { e.stopPropagation(); this.handleGenericPurchase(el); }},
                 '[data-action^="remove-"]': (e, el) => this.handleGenericRemove(el),
                 '[data-action="continue-to-summary"]': () => this.builder.switchTab('summary'),
+            },
+            change: {
+                '[data-action="toggle-expertise"]': (e, element) => {
+                    this.handleExpertiseToggle(element);
+                },
+                '[data-action="remove-expertise"]': (e, element) => {
+                    this.handleExpertiseRemoval(element);
+                }
             }
         });
+        
+        this.listenersAttached = true;
+        console.log('✅ UtilityTab event listeners attached ONCE.');
     }
 
     handleCategorySwitch(newCategory) {
@@ -251,4 +267,14 @@ export class UtilityTab {
         }
     }
     capitalizeFirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+    
+    handleExpertiseToggle(element) {
+        // Handle expertise toggle logic
+        console.log('Expertise toggle:', element);
+    }
+    
+    handleExpertiseRemoval(element) {
+        // Handle expertise removal logic
+        console.log('Expertise removal:', element);
+    }
 }

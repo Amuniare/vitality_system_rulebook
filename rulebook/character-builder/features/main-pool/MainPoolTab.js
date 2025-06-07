@@ -20,6 +20,7 @@ export class MainPoolTab {
             actions: new ActionUpgradeSection(characterBuilder)
         };
         this.activeSection = 'flaws'; // Default section
+        this.listenersAttached = false;
     }
 
     render() {
@@ -145,6 +146,10 @@ export class MainPoolTab {
     }
 
     setupEventListeners() {
+        if (this.listenersAttached) {
+            return;
+        }
+        
         const container = document.querySelector('.main-pool-tab-content');
         if (!container) return;
 
@@ -189,6 +194,9 @@ export class MainPoolTab {
                 }
             }
         });
+        
+        this.listenersAttached = true;
+        console.log('✅ MainPoolTab event listeners attached ONCE.');
         
         // Call setup for the currently active section if it has its own more complex listeners
         this.sections[this.activeSection]?.setupEventListeners?.();

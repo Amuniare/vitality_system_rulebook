@@ -1,5 +1,5 @@
 // rulebook/character-builder/ui/components/FlawPurchaseSection.js
-import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
+import { TraitFlawSystem } from '../../../systems/TraitFlawSystem.js';
 import { EventManager } from '../../../shared/utils/EventManager.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 

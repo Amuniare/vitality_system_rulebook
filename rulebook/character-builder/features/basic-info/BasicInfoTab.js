@@ -1,9 +1,11 @@
 // rulebook/character-builder/ui/tabs/BasicInfoTab.js
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
+import { EventManager } from '../../shared/utils/EventManager.js';
 
 export class BasicInfoTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
+        this.listenersAttached = false;
     }
 
     render() {
@@ -99,7 +101,34 @@ export class BasicInfoTab {
 
 
     setupEventListeners() {
-        // EventManager at CharacterBuilder level will handle data-action inputs/changes.
+        if (this.listenersAttached) {
+            return;
+        }
+        
+        const container = document.getElementById('tab-basicInfo');
+        if (!container) return;
+        
+        EventManager.delegateEvents(container, {
+            click: {
+                '[data-action="continue-to-archetypes"]': () => this.builder.switchTab('archetypes')
+            },
+            input: {
+                '[data-action="update-char-name"]': (e, element) => {
+                    this.updateName(element.value);
+                },
+                '[data-action="update-real-name"]': (e, element) => {
+                    this.updateRealName(element.value);
+                }
+            },
+            change: {
+                '[data-action="update-tier"]': (e, element) => {
+                    this.updateTier(element.value);
+                }
+            }
+        }, this);
+        
+        this.listenersAttached = true;
+        console.log('✅ BasicInfoTab event listeners attached ONCE.');
     }
 
     updateName(newName) { // Called by CharacterBuilder
