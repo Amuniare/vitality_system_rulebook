@@ -4,12 +4,22 @@ import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
 import { RenderUtils } from '../shared/RenderUtils.js';
 import { EventManager } from '../shared/EventManager.js';
 
+// Import modular components
+import { AttackBasicsForm } from '../components/AttackBasicsForm.js';
+import { LimitSelection } from '../components/LimitSelection.js';
+import { UpgradeSelection } from '../components/UpgradeSelection.js';
+
 export class SpecialAttackTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
         this.selectedAttackIndex = 0;
         this.expandedLimitCategories = new Set();
         this.expandedUpgradeCategories = new Set(['Accuracy Bonuses', 'Damage Bonuses']);
+        
+        // Initialize modular components
+        this.attackBasicsForm = new AttackBasicsForm(this);
+        this.limitSelection = new LimitSelection(this);
+        this.upgradeSelection = new UpgradeSelection(this);
     }
 
     render() {
@@ -91,16 +101,20 @@ export class SpecialAttackTab {
     renderAttackBuilder(character) {
         const attack = character.specialAttacks[this.selectedAttackIndex];
         if (!attack) return '';
+        
+        // Update component attack indices
+        this.limitSelection.setAttackIndex(this.selectedAttackIndex);
+        this.upgradeSelection.setAttackIndex(this.selectedAttackIndex);
+        
         return `
             <div class="attack-builder card">
-                ${this.renderAttackBasics(attack, character)}
-                ${this.renderAttackConditionalFields(attack)}
+                ${this.attackBasicsForm.render(attack, character)}
                 <div class="attack-builder-columns">
                     <div class="limits-column">
-                        ${this.renderLimitsSection(attack, character)}
+                        ${this.limitSelection.render(attack, character)}
                     </div>
                     <div class="upgrades-column">
-                        ${this.renderUpgradesSection(attack, character)}
+                        ${this.upgradeSelection.render(attack, character)}
                     </div>
                 </div>
             </div>
@@ -350,7 +364,36 @@ export class SpecialAttackTab {
         handlers[action]?.();
     }
     
-    onCharacterUpdate() { this.render(); }
+    onCharacterUpdate() { 
+        // Granular updates using modular components
+        this.updateAttackTabs();
+        this.updateComponentStates();
+    }
+    
+    // Granular update methods
+    updateAttackTabs() {
+        const character = this.builder.currentCharacter;
+        if (!character) return;
+        
+        const tabsContainer = document.querySelector('.attack-tabs-container');
+        if (tabsContainer) {
+            tabsContainer.innerHTML = character.specialAttacks.map((attack, index) => 
+                this.renderAttackTab(attack, index)
+            ).join('');
+        }
+    }
+    
+    updateComponentStates() {
+        const character = this.builder.currentCharacter;
+        if (!character || !character.specialAttacks[this.selectedAttackIndex]) return;
+        
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        
+        // Update modular components with granular updates
+        this.limitSelection.updateLimitsList(attack);
+        this.limitSelection.updateCalculationFooter(attack, character);
+        this.upgradeSelection.updatePurchasedUpgrades(attack);
+    }
     
     createNewAttack() {
         const character = this.builder.currentCharacter;
@@ -369,13 +412,13 @@ export class SpecialAttackTab {
             this.builder.updateCharacter();
         }
     }
-    updateAttackProperty(prop, value) { this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex][prop] = value; this.builder.updateCharacter(); }
-    addAttackType(typeId) { if(typeId) { AttackTypeSystem.addAttackTypeToAttack(this.builder.currentCharacter, this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex], typeId); this.builder.updateCharacter(); } }
-    removeAttackType(typeId) { AttackTypeSystem.removeAttackTypeFromAttack(this.builder.currentCharacter, this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex], typeId); this.builder.updateCharacter(); }
-    addEffectType(typeId) { if(typeId) { AttackTypeSystem.addEffectTypeToAttack(this.builder.currentCharacter, this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex], typeId); this.builder.updateCharacter(); } }
-    removeEffectType(typeId) { const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex]; attack.effectTypes = attack.effectTypes.filter(id => id !== typeId); this.builder.updateCharacter(); }
-    addCondition(id, isAdvanced) { if(id) { AttackTypeSystem.addConditionToAttack(this.builder.currentCharacter, this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex], id, isAdvanced); this.builder.updateCharacter(); } }
-    removeCondition(id, isAdvanced) { const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex]; const arr = isAdvanced ? 'advancedConditions' : 'basicConditions'; attack[arr] = attack[arr].filter(cid => cid !== id); this.builder.updateCharacter(); }
+    updateAttackProperty(prop, value) { this.builder.updateSpecialAttackProperty(this.selectedAttackIndex, prop, value); }
+    addAttackType(typeId) { if(typeId) { this.builder.addAttackTypeToAttack(this.selectedAttackIndex, typeId); } }
+    removeAttackType(typeId) { this.builder.removeAttackTypeFromAttack(this.selectedAttackIndex, typeId); }
+    addEffectType(typeId) { if(typeId) { this.builder.addEffectTypeToAttack(this.selectedAttackIndex, typeId); } }
+    removeEffectType(typeId) { this.builder.removeEffectTypeFromAttack(this.selectedAttackIndex, typeId); }
+    addCondition(id, isAdvanced) { if(id) { this.builder.addConditionToAttack(this.selectedAttackIndex, id, isAdvanced); } }
+    removeCondition(id, isAdvanced) { this.builder.removeConditionFromAttack(this.selectedAttackIndex, id, isAdvanced); }
     toggleCategory(type, category) { const set = type === 'limit' ? this.expandedLimitCategories : this.expandedUpgradeCategories; if (set.has(category)) set.delete(category); else set.add(category); this.render(); }
     addLimit(id) { SpecialAttackSystem.addLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); this.builder.updateCharacter(); }
     removeLimit(id) { SpecialAttackSystem.removeLimitFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); this.builder.updateCharacter(); }

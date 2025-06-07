@@ -85,7 +85,7 @@ export class RenderUtils {
         `;
     }
 
-    // Render a standard button
+    // Render a standard button (uses data-action attributes only, no inline handlers)
     static renderButton(config) {
         const {
             text,
@@ -95,7 +95,7 @@ export class RenderUtils {
             disabled = false,
             dataAttributes = {},
             classes = [], // Additional custom classes
-            onClick = '' // For inline JS, though data-action is preferred
+            title = '' // For tooltip
         } = config;
 
         const dataAttrs = Object.entries(dataAttributes)
@@ -114,8 +114,8 @@ export class RenderUtils {
             <button type="${type}"
                     class="${buttonClasses}"
                     ${disabled ? 'disabled' : ''}
-                    ${dataAttrs}
-                    ${onClick ? `onclick="${onClick}"` : ''}>
+                    ${title ? `title="${title}"` : ''}
+                    ${dataAttrs}>
                 ${text}
             </button>
         `;

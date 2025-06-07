@@ -569,4 +569,26 @@ export class SpecialAttackSystem {
         upgrades.forEach(upgrade => categories.add(upgrade.category));
         return Array.from(categories);
     }
+
+    // Check if archetype can use limits
+    static canArchetypeUseLimits(character) {
+        const archetype = character.archetypes.specialAttack;
+        const noLimitsArchetypes = ['paragon', 'oneTrick', 'dualNatured', 'basic'];
+        return !noLimitsArchetypes.includes(archetype);
+    }
+
+    // Calculate limit to upgrade points with proper scaling
+    static calculateLimitToUpgradePoints(character, attack) {
+        const limitPointsTotal = attack.limits?.reduce((total, limit) => total + (Number(limit.points) || 0), 0) || 0;
+        const tier = character.tier;
+        const archetype = character.archetypes.specialAttack;
+        
+        // Use TierSystem for proper calculation
+        const calculationResult = TierSystem.calculateLimitScaling(limitPointsTotal, tier, archetype);
+        
+        return {
+            totalValue: calculationResult.scaledPoints,
+            finalPoints: calculationResult.finalPoints
+        };
+    }
 }

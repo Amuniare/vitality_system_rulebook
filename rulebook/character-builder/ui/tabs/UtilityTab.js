@@ -226,7 +226,29 @@ export class UtilityTab {
     }
     
     onCharacterUpdate() {
-        this.render();
+        // Granular updates instead of full re-render
+        this.updatePointPoolDisplay();
+        this.updateActiveCategoryContentUI();
+    }
+    
+    // Granular update method for point pool
+    updatePointPoolDisplay() {
+        const character = this.builder.currentCharacter;
+        if (!character) return;
+        
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const utilityPool = pools.remaining.utilityPool || 0;
+        const available = pools.totalAvailable.utilityPool || 0;
+        const spent = pools.totalSpent.utilityPool || 0;
+        
+        const pointDisplay = document.querySelector('.utility-tab-content .point-display');
+        if (pointDisplay) {
+            pointDisplay.className = `point-display ${utilityPool < 0 ? 'error' : (utilityPool === 0 && spent > 0 ? 'warning' : 'default')}`;
+            pointDisplay.innerHTML = RenderUtils.renderPointDisplay(spent, available, 'Utility Pool', {
+                showRemaining: true,
+                variant: utilityPool < 0 ? 'error' : (utilityPool === 0 && spent > 0 ? 'warning' : 'default')
+            });
+        }
     }
     capitalizeFirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 }

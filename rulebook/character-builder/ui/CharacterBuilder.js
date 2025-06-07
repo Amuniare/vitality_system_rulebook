@@ -155,22 +155,30 @@ export class CharacterBuilder {
                 '[data-action="load-character"]': (e, element) => {
                     const characterId = element.dataset.characterId;
                     if (characterId && this.library) {
-                        const character = this.library.getCharacter(characterId);
-                        if (character) {
-                            this.currentCharacter = character;
+                        const characterData = this.library.getCharacter(characterId);
+                        if (characterData) {
+                            // Rehydrate the character object to restore VitalityCharacter methods
+                            this.currentCharacter = this.rehydrateCharacter(characterData);
                             this.showCharacterBuilder();
-                            this.showNotification(`Loaded ${character.name}`, 'success');
+                            this.showNotification(`Loaded ${characterData.name}`, 'success');
                         }
                     }
                 },
                 '[data-action="delete-from-library"]': (e, element) => {
+                    e.stopPropagation(); // Prevent event bubbling to parent character item
                     const characterId = element.dataset.characterId;
                     if (characterId && this.library) {
                         const character = this.library.getCharacter(characterId);
                         if (character && confirm(`Delete "${character.name}" from library?`)) {
                             this.library.deleteCharacter(characterId);
-                            this.renderCharacterLibrary();
+                            this.renderCharacterLibrary(); // Re-render the library UI immediately
                             this.showNotification('Character deleted from library', 'info');
+                            
+                            // If we're viewing the deleted character, return to welcome screen
+                            if (this.currentCharacter && this.currentCharacter.id === characterId) {
+                                this.currentCharacter = null;
+                                this.showWelcomeScreen();
+                            }
                         }
                     }
                 },
@@ -918,6 +926,63 @@ export class CharacterBuilder {
         }
     }
     
+    // Additional special attack management methods for centralization
+    updateSpecialAttackProperty(attackIndex, property, value) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        this.currentCharacter.specialAttacks[attackIndex][property] = value;
+        this.updateCharacter();
+    }
+    
+    addAttackTypeToAttack(attackIndex, typeId) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        if (!attack.attackTypes.includes(typeId)) {
+            attack.attackTypes.push(typeId);
+            this.updateCharacter();
+        }
+    }
+    
+    removeAttackTypeFromAttack(attackIndex, typeId) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        attack.attackTypes = attack.attackTypes.filter(id => id !== typeId);
+        this.updateCharacter();
+    }
+    
+    addEffectTypeToAttack(attackIndex, typeId) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        if (!attack.effectTypes.includes(typeId)) {
+            attack.effectTypes.push(typeId);
+            this.updateCharacter();
+        }
+    }
+    
+    removeEffectTypeFromAttack(attackIndex, typeId) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        attack.effectTypes = attack.effectTypes.filter(id => id !== typeId);
+        this.updateCharacter();
+    }
+    
+    addConditionToAttack(attackIndex, conditionId, isAdvanced = false) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        const conditionsArray = isAdvanced ? attack.advancedConditions : attack.basicConditions;
+        if (!conditionsArray.includes(conditionId)) {
+            conditionsArray.push(conditionId);
+            this.updateCharacter();
+        }
+    }
+    
+    removeConditionFromAttack(attackIndex, conditionId, isAdvanced = false) {
+        if (!this.currentCharacter || attackIndex < 0 || attackIndex >= this.currentCharacter.specialAttacks.length) return;
+        const attack = this.currentCharacter.specialAttacks[attackIndex];
+        const arrayName = isAdvanced ? 'advancedConditions' : 'basicConditions';
+        attack[arrayName] = attack[arrayName].filter(id => id !== conditionId);
+        this.updateCharacter();
+    }
+    
     // Character Management Methods
 
     renderCharacterLibrary() {
@@ -975,8 +1040,8 @@ export class CharacterBuilder {
             reader.onload = (event) => {
                 try {
                     const characterData = JSON.parse(event.target.result);
-                    this.currentCharacter = new VitalityCharacter();
-                    Object.assign(this.currentCharacter, characterData);
+                    // Rehydrate the imported character to restore VitalityCharacter methods
+                    this.currentCharacter = this.rehydrateCharacter(characterData);
                     this.showCharacterBuilder();
                     this.showNotification('Character imported successfully!', 'success');
                 } catch (error) {
@@ -992,12 +1057,36 @@ export class CharacterBuilder {
         const characterId = e.target.closest('.character-item')?.dataset.characterId;
         if (!characterId) return;
         
-        const character = this.library.getCharacter(characterId);
-        if (character) {
-            this.currentCharacter = character;
+        const characterData = this.library.getCharacter(characterId);
+        if (characterData) {
+            // Rehydrate the character object to restore VitalityCharacter methods
+            this.currentCharacter = this.rehydrateCharacter(characterData);
             this.showCharacterBuilder();
-            this.showNotification(`Loaded ${character.name}`, 'success');
+            this.showNotification(`Loaded ${characterData.name}`, 'success');
         }
+    }
+
+    /**
+     * Rehydrate a plain character object to restore VitalityCharacter methods
+     * This fixes the "touch is not a function" error when loading from localStorage
+     */
+    rehydrateCharacter(characterData) {
+        // Create a new VitalityCharacter instance
+        const character = new VitalityCharacter();
+        
+        // Copy all properties from the loaded data
+        Object.assign(character, characterData);
+        
+        // Ensure the character has a proper ID
+        if (!character.id) {
+            character.id = Date.now().toString();
+        }
+        
+        // Update the modified timestamp
+        character.touch();
+        
+        console.log('Character rehydrated successfully:', character.name);
+        return character;
     }
 
 }

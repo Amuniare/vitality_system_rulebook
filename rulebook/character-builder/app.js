@@ -46,9 +46,15 @@ class VitalityCharacterBuilderApp {
                     <h1>Initialization Error</h1>
                     <p>Failed to load the Character Builder. Please check the console for details.</p>
                     <p class="error-details">Error: ${error.message}</p>
-                    <button onclick="location.reload()" class="btn-primary">Refresh Page</button>
+                    <button id="refresh-page-btn" class="btn-primary">Refresh Page</button>
                 </div>
             `;
+            
+            // Add event listener for refresh button
+            const refreshBtn = document.getElementById('refresh-page-btn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => location.reload());
+            }
         }
     }
 }
