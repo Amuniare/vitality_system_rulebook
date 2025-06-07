@@ -31,7 +31,10 @@ class GameDataManager {
 
             // Special Attack Limits and Upgrades
             limits: 'data/limits.json',
-            upgrades: 'data/upgrades.json'
+            upgrades: 'data/upgrades.json',
+
+            // Attributes
+            attributes: 'data/attributes.json'
 
             // GameConstants (optional future externalization)
             // gameConstantsData: 'data/game_constants_data.json',
@@ -119,6 +122,9 @@ class GameDataManager {
 
     getLimits() { return this._getData('limits', {}); }
     getUpgrades() { return this._getData('upgrades', {}); }
+
+    // Attributes
+    getAttributes() { return this._getData('attributes', {}); }
 }
 
 export const gameDataManager = new GameDataManager();

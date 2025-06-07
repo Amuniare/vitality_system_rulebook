@@ -184,7 +184,7 @@ export class ArchetypeTab {
     
         // NEW: Allow clearing by clicking the same archetype
         if (character.archetypes[category] === archetypeId) {
-            character.archetypes[category] = null;
+            this.builder.setArchetype(category, null);
             console.log(`✅ Cleared archetype: ${category}`);
         } else {
             // Existing validation logic (simplified)
@@ -195,13 +195,12 @@ export class ArchetypeTab {
                 return;
             }
             
-            character.archetypes[category] = archetypeId;
+            this.builder.setArchetype(category, archetypeId);
             console.log(`✅ Set archetype: ${category} = ${archetypeId}`);
         }
         
         this.updateArchetypeSelectionUI(category, character.archetypes[category]);
         this.updateProgress();
-        this.builder.updateCharacter();
     }
     
     updateProgress() {

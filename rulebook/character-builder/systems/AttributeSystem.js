@@ -7,7 +7,7 @@ import { gameDataManager } from '../core/GameDataManager.js';
 export class AttributeSystem {
     // Load attribute definitions from attributes.json
     static getAttributeDefinitions() {
-        const data = gameDataManager.getData('attributes');
+        const data = gameDataManager.getAttributes();
         if (!data) {
             console.warn('Attributes data not loaded, falling back to defaults');
             return this.getDefaultAttributeDefinitions();

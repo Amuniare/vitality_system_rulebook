@@ -226,6 +226,43 @@ export class SpecialAttackTab {
         }
     }
 
+    // Individual update methods called by CharacterBuilder event handlers
+    updateAttackName(name) {
+        this.updateAttackProperty('name', name);
+    }
+
+    updateAttackDescription(description) {
+        this.updateAttackProperty('description', description);
+    }
+
+    updateAttackSubtitle(subtitle) {
+        this.updateAttackProperty('subtitle', subtitle);
+    }
+
+    updateAttackDetails(details) {
+        this.updateAttackProperty('description', details);
+    }
+
+    updateAttackType(type) {
+        this.updateAttackProperty('attackType', type);
+    }
+
+    updateEffectType(effectType) {
+        this.updateAttackProperty('effectType', effectType);
+    }
+
+    updateHybridOrder(order) {
+        this.updateAttackProperty('hybridOrder', order);
+    }
+
+    updateConditionEffect(effect) {
+        this.updateAttackProperty('conditionEffect', effect);
+    }
+
+    updateConditionTarget(target) {
+        this.updateAttackProperty('conditionTarget', target);
+    }
+
     // Limit management methods (called by LimitSelection)
     addLimit(limitId) {
         try {

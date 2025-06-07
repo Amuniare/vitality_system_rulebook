@@ -455,20 +455,7 @@ export class CharacterBuilder {
             }
         }, this); // Pass 'this' as context
         
-        // Fallback direct event listener for testing
-        const createBtn = document.getElementById('create-new-character');
-        if (createBtn) {
-            console.log('Found create button, adding direct listener');
-            createBtn.addEventListener('click', (e) => {
-                console.log('Direct event listener triggered!');
-                e.preventDefault();
-                this.createNewCharacter();
-            });
-        } else {
-            console.log('Create button not found in DOM');
-        }
-        
-        console.log('setupEventListeners completed with delegation');
+        console.log('setupEventListeners completed with pure delegation');
     }
 
     handleTabSwitch(e, element) {

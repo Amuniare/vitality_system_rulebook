@@ -21,15 +21,59 @@ export class PointPoolDisplay {
 
         const pools = PointPoolCalculator.calculateAllPools(character);
 
-        // Only update if pools stringified are different (simple deep comparison)
-        const currentPoolsString = JSON.stringify(pools);
-        if (currentPoolsString === this.lastPools) {
-            return; // No change, no re-render
+        // Granular update approach - only update changed pools
+        if (!this.lastPools) {
+            // First render - use innerHTML
+            container.innerHTML = this.renderPointPools(pools);
+            this.lastPools = pools;
+            return;
         }
-        this.lastPools = currentPoolsString; // Cache the new state
 
-        container.innerHTML = this.renderPointPools(pools);
-        // console.log('🔄 Point pools display updated');
+        // Check what changed and update only those parts
+        this.updateChangedPools(pools);
+        this.lastPools = pools;
+    }
+
+    updateChangedPools(newPools) {
+        // Update individual pool displays only if they changed
+        this.updatePoolIfChanged('combatAttributes', newPools.totalSpent.combatAttributes, newPools.totalAvailable.combatAttributes, newPools.remaining.combatAttributes);
+        this.updatePoolIfChanged('utilityAttributes', newPools.totalSpent.utilityAttributes, newPools.totalAvailable.utilityAttributes, newPools.remaining.utilityAttributes);
+        this.updatePoolIfChanged('mainPool', newPools.totalSpent.mainPool, newPools.totalAvailable.mainPool, newPools.remaining.mainPool);
+        this.updatePoolIfChanged('utilityPool', newPools.totalSpent.utilityPool, newPools.totalAvailable.utilityPool, newPools.remaining.utilityPool);
+        this.updatePoolIfChanged('specialAttacks', newPools.totalSpent.specialAttacks, newPools.totalAvailable.specialAttacks, newPools.remaining.specialAttacks);
+    }
+
+    updatePoolIfChanged(poolType, spent, available, remaining) {
+        const lastPool = this.lastPools;
+        if (!lastPool || 
+            lastPool.totalSpent[poolType] !== spent || 
+            lastPool.totalAvailable[poolType] !== available || 
+            lastPool.remaining[poolType] !== remaining) {
+            
+            // Update just this pool's display
+            const poolElement = document.querySelector(`[data-pool="${poolType}"]`);
+            if (poolElement) {
+                this.updatePoolElement(poolElement, spent, available, remaining);
+            }
+        }
+    }
+
+    updatePoolElement(element, spent, available, remaining) {
+        // Update spent value
+        const spentElement = element.querySelector('.pool-spent');
+        if (spentElement) spentElement.textContent = spent;
+
+        // Update available value
+        const availableElement = element.querySelector('.pool-available');
+        if (availableElement) availableElement.textContent = available;
+
+        // Update remaining value and status
+        const remainingElement = element.querySelector('.pool-remaining');
+        if (remainingElement) {
+            remainingElement.textContent = remaining;
+            // Update status classes
+            remainingElement.className = 'pool-remaining ' + (remaining < 0 ? 'over-budget' : remaining === 0 ? 'exactly-spent' : 'under-budget');
+        }
     }
 
     renderPointPools(pools) {
@@ -49,18 +93,21 @@ export class PointPoolDisplay {
         return `
             <div class="attribute-pools pool-category">
                 <h4>Attributes</h4>
-                ${RenderUtils.renderPointDisplay(
-                    pools.totalSpent.combatAttributes,
-                    pools.totalAvailable.combatAttributes,
-                    'Combat Attr.',
-                    { variant: pools.remaining.combatAttributes < 0 ? 'error' : pools.remaining.combatAttributes === 0 ? 'warning' : 'default', showRemaining: true }
-                )}
-                ${RenderUtils.renderPointDisplay(
-                    pools.totalSpent.utilityAttributes,
-                    pools.totalAvailable.utilityAttributes,
-                    'Utility Attr.',
-                    { variant: pools.remaining.utilityAttributes < 0 ? 'error' : pools.remaining.utilityAttributes === 0 ? 'warning' : 'default', showRemaining: true }
-                )}
+                ${this.renderGranularPool('combatAttributes', pools.totalSpent.combatAttributes, pools.totalAvailable.combatAttributes, pools.remaining.combatAttributes, 'Combat Attr.')}
+                ${this.renderGranularPool('utilityAttributes', pools.totalSpent.utilityAttributes, pools.totalAvailable.utilityAttributes, pools.remaining.utilityAttributes, 'Utility Attr.')}
+            </div>
+        `;
+    }
+
+    renderGranularPool(poolType, spent, available, remaining, label) {
+        const variant = remaining < 0 ? 'error' : remaining === 0 ? 'warning' : 'default';
+        return `
+            <div class="point-display ${variant}" data-pool="${poolType}">
+                <div class="point-display-label">${label}</div>
+                <div class="point-display-values">
+                    <span class="pool-spent">${spent}</span> / <span class="pool-available">${available}</span>
+                    <span class="pool-remaining ${remaining < 0 ? 'over-budget' : remaining === 0 ? 'exactly-spent' : 'under-budget'}">(${remaining >= 0 ? '+' : ''}${remaining})</span>
+                </div>
             </div>
         `;
     }
@@ -72,12 +119,7 @@ export class PointPoolDisplay {
         return `
             <div class="main-pool pool-category">
                 <h4>Main Pool</h4>
-                ${RenderUtils.renderPointDisplay(
-                    pools.totalSpent.mainPool,
-                    pools.totalAvailable.mainPool, // This should NOT include flaw costs as a bonus
-                    'Main Pool',
-                    { variant: pools.remaining.mainPool < 0 ? 'error' : pools.remaining.mainPool === 0 ? 'warning' : 'default', showRemaining: true, showPercentage: true }
-                )}
+                ${this.renderGranularPool('mainPool', pools.totalSpent.mainPool, pools.totalAvailable.mainPool, pools.remaining.mainPool, 'Main Pool')}
                 ${flawCost > 0 ? `<div class="pool-detail"><small>(${flawCost}p spent on Flaws)</small></div>` : ''}
             </div>
         `;
@@ -88,12 +130,7 @@ export class PointPoolDisplay {
         return `
             <div class="utility-pool pool-category">
                 <h4>Utility Pool</h4>
-                ${RenderUtils.renderPointDisplay(
-                    pools.totalSpent.utilityPool,
-                    pools.totalAvailable.utilityPool,
-                    'Utility Pool',
-                    { variant: pools.remaining.utilityPool < 0 ? 'error' : pools.remaining.utilityPool === 0 ? 'warning' : 'default', showRemaining: true }
-                )}
+                ${this.renderGranularPool('utilityPool', pools.totalSpent.utilityPool, pools.totalAvailable.utilityPool, pools.remaining.utilityPool, 'Utility Pool')}
             </div>
         `;
     }
@@ -110,12 +147,7 @@ export class PointPoolDisplay {
         return `
             <div class="special-attack-pools pool-category">
                 <h4>Special Attacks</h4>
-                ${RenderUtils.renderPointDisplay(
-                    pools.totalSpent.specialAttacks,
-                    pools.totalAvailable.specialAttacks,
-                    'Total SA Points',
-                    { variant: pools.remaining.specialAttacks < 0 ? 'error' : pools.remaining.specialAttacks === 0 ? 'warning' : 'default', showRemaining: true }
-                )}
+                ${this.renderGranularPool('specialAttacks', pools.totalSpent.specialAttacks, pools.totalAvailable.specialAttacks, pools.remaining.specialAttacks, 'Total SA Points')}
                 <div class="pool-method-display">
                     <small>Method: ${pools.specialAttackPools.method || 'N/A'}</small>
                 </div>
