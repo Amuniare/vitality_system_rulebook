@@ -294,6 +294,32 @@ export class UtilitySystem {
         
         return character;
     }
+
+    static removeExpertise(character, attribute, expertiseId, level) {
+        if (!character.utilityPurchases.expertise[attribute]) {
+            throw new Error(`No expertises found for ${attribute} attribute.`);
+        }
+
+        const targetArray = character.utilityPurchases.expertise[attribute][level];
+        if (!targetArray || !targetArray.includes(expertiseId)) {
+            throw new Error(`${expertiseId} (${level}) not found in ${attribute} expertises.`);
+        }
+
+        // If removing mastered level, also remove basic level
+        if (level === 'mastered') {
+            const basicArray = character.utilityPurchases.expertise[attribute].basic;
+            const basicIndex = basicArray.indexOf(expertiseId);
+            if (basicIndex > -1) {
+                basicArray.splice(basicIndex, 1);
+            }
+        }
+
+        // Remove the expertise from the target level
+        const index = targetArray.indexOf(expertiseId);
+        targetArray.splice(index, 1);
+
+        return character;
+    }
     
     static canPurchaseMultiple(itemId, categoryKey) {
         const multiPurchaseItems = {

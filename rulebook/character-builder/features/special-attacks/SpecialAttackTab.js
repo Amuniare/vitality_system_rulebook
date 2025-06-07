@@ -14,7 +14,6 @@ export class SpecialAttackTab {
         this.attackBasicsForm = new AttackBasicsForm(this);
         this.limitSelection = new LimitSelection(this);
         this.upgradeSelection = new UpgradeSelection(this);
-        // --- FIX: Add a flag to track listener state ---
         this.listenersAttached = false;
     }
 
@@ -44,7 +43,6 @@ export class SpecialAttackTab {
                 </div>
             </div>
         `;
-        // --- FIX: This now safely calls the guarded method ---
         this.setupEventListeners();
     }
     
@@ -102,9 +100,8 @@ export class SpecialAttackTab {
     }
     
     setupEventListeners() {
-        // --- FIX: Guard the listener attachment ---
         if (this.listenersAttached) {
-            return; // Don't attach listeners again
+            return;
         }
 
         const container = document.getElementById('tab-specialAttacks');
@@ -118,7 +115,6 @@ export class SpecialAttackTab {
                 }
             }, this);
             
-            // --- FIX: Set the flag to true after attaching ---
             this.listenersAttached = true;
             console.log('✅ SpecialAttackTab event listeners attached ONCE.');
         }
@@ -131,10 +127,7 @@ export class SpecialAttackTab {
         const handlers = {
             'create-attack': () => this.createNewAttack(),
             'select-attack-tab': () => this.selectAttack(parseInt(data.attackIndex)),
-            'delete-attack': () => {
-                console.log('Delete attack data:', data, 'index:', data.index);
-                this.deleteAttack(parseInt(data.index));
-            },
+            'delete-attack': () => this.deleteAttack(parseInt(data.index)),
             
             'update-attack-name': () => this.updateAttackProperty('name', element.value),
             'update-attack-subtitle': () => this.updateAttackProperty('subtitle', element.value),
@@ -153,11 +146,11 @@ export class SpecialAttackTab {
             'update-hybrid-order': () => this.updateAttackProperty('hybridOrder', element.value),
             
             'add-limit': () => this.addLimit(data.limitId),
-            'remove-limit': () => this.removeLimitByIndex(parseInt(data.index)),
-            'toggle-limit-category': () => { this.limitSelection.toggleCategory(data.category); this.render(); },
+            'remove-limit': () => this.removeLimit(data.limitId),
+            'toggle-limit-category': () => this.toggleLimitCategory(data.category),
             
             'purchase-upgrade': () => this.purchaseUpgrade(data.upgradeId),
-            'remove-upgrade': () => this.removeUpgrade(parseInt(data.index)),
+            'remove-upgrade': () => this.removeUpgrade(data.upgradeId),
             'toggle-upgrade-category': () => { this.upgradeSelection.toggleCategory(data.category); this.render(); },
             
             'continue-to-utility': () => this.builder.switchTab('utility')
@@ -165,8 +158,6 @@ export class SpecialAttackTab {
         
         handlers[action]?.();
     }
-    
-    // --- Action Implementations ---
     
     createNewAttack() {
         const character = this.builder.currentCharacter;
@@ -186,19 +177,11 @@ export class SpecialAttackTab {
     }
     
     deleteAttack(index) {
-        console.log('deleteAttack called with index:', index, 'type:', typeof index);
-        
-        const character = this.builder.currentCharacter;
-        if (isNaN(index) || index < 0 || index >= character.specialAttacks.length) {
-            console.error('Stale or invalid attack index for deletion:', index);
-            this.builder.showNotification('Could not delete attack (stale index).', 'error');
-            return;
-        }
-        
+        if(isNaN(index)) return;
         if(confirm('Are you sure you want to delete this attack?')){
-            SpecialAttackSystem.deleteSpecialAttack(character, index);
-            if (this.selectedAttackIndex >= character.specialAttacks.length) {
-                this.selectedAttackIndex = Math.max(0, character.specialAttacks.length - 1);
+            SpecialAttackSystem.deleteSpecialAttack(this.builder.currentCharacter, index);
+            if (this.selectedAttackIndex >= this.builder.currentCharacter.specialAttacks.length) {
+                this.selectedAttackIndex = Math.max(0, this.builder.currentCharacter.specialAttacks.length - 1);
             }
             this.builder.updateCharacter();
         }
@@ -271,12 +254,16 @@ export class SpecialAttackTab {
         } catch (error) { this.builder.showNotification(error.message, 'error'); }
     }
 
-    removeLimitByIndex(index) {
-        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
-        if (attack && attack.limits[index]) {
-            SpecialAttackSystem.removeLimitFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, attack.limits[index].id);
+    removeLimit(limitId) {
+        try {
+            SpecialAttackSystem.removeLimitFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitId);
             this.builder.updateCharacter();
-        }
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+    }
+
+    toggleLimitCategory(category) {
+        this.limitSelection.toggleCategory(category);
+        this.render();
     }
 
     purchaseUpgrade(upgradeId) {
@@ -286,12 +273,11 @@ export class SpecialAttackTab {
         } catch (error) { this.builder.showNotification(error.message, 'error'); }
     }
 
-    removeUpgrade(index) {
-        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
-        if (attack && attack.upgrades[index]) {
-            SpecialAttackSystem.removeUpgradeFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, attack.upgrades[index].id);
+    removeUpgrade(upgradeId) {
+        try {
+            SpecialAttackSystem.removeUpgradeFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, upgradeId);
             this.builder.updateCharacter();
-        }
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
     }
     
     onCharacterUpdate() {

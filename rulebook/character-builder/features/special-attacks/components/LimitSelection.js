@@ -1,4 +1,5 @@
-// LimitSelection.js - Manages the display and selection of limits for special attacks
+// rulebook/character-builder/features/special-attacks/components/LimitSelection.js
+// FIXED: This version correctly uses hierarchical data to prevent ID mismatches and restore UI indentation.
 import { SpecialAttackSystem } from '../../../systems/SpecialAttackSystem.js';
 import { TierSystem } from '../../../core/TierSystem.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
@@ -6,29 +7,18 @@ import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 export class LimitSelection {
     constructor(parentTab) {
         this.parentTab = parentTab;
-        this.attackIndex = 0;
-        this.showingModal = false;
         this.expandedCategories = new Set();
-    }
-
-    setAttackIndex(index) {
-        this.attackIndex = index;
-    }
-
-    setModalState(showing) {
-        this.showingModal = showing;
     }
 
     render(attack, character) {
         if (!character || !character.archetypes) {
             return this.renderDisabledSection('unknown');
         }
-        
-        const archetype = character.archetypes.specialAttack;
-        const canUseLimits = this.canArchetypeUseLimits(character);
+
+        const canUseLimits = SpecialAttackSystem.canArchetypeUseLimits(character);
 
         if (!canUseLimits) {
-            return this.renderDisabledSection(archetype);
+            return this.renderDisabledSection(character.archetypes.specialAttack);
         }
 
         return `
@@ -36,37 +26,35 @@ export class LimitSelection {
                 <div class="section-header">
                     <h3>Limits</h3>
                 </div>
-                
                 ${this.renderSelectedLimitsTable(attack, character)}
-                ${this.renderCalculationDetails(attack, character)}
                 ${this.renderAvailableLimits(character, attack)}
             </div>
         `;
     }
 
     renderDisabledSection(archetype) {
+        const archetypeName = archetype ? archetype.charAt(0).toUpperCase() + archetype.slice(1) : 'Unknown';
         return `
             <div class="limits-section section-block disabled">
                 <h3>Limits</h3>
-                <p class="archetype-restriction">${this.formatArchetypeName(archetype)} archetype cannot use limits.</p>
+                <p class="archetype-restriction">${archetypeName} archetype cannot use limits.</p>
             </div>
         `;
     }
 
     renderSelectedLimitsTable(attack, character) {
-        if (attack.limits.length === 0) {
-            return `<div class="empty-state">No limits selected. Click "Add Limit" to get started.</div>`;
+        if (!attack.limits || attack.limits.length === 0) {
+            return `<div class="empty-state">No limits selected. Choose from the available limits below.</div>`;
         }
-
         return `
-            <div class="selected-limits-table">
-                <h4>Selected Limits</h4>
+            <div class="selected-limits-list">
+                <h4>Selected Limits (${attack.limits.length})</h4>
                 <table class="limits-breakdown-table">
                     <thead>
                         <tr>
-                            <th width="40">Remove</th>
+                            <th width="40"></th>
                             <th>Limit Name</th>
-                            <th width="80">Points</th>
+                            <th width="60">Points</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,218 +67,134 @@ export class LimitSelection {
             </div>
         `;
     }
-
+    
     renderLimitTableRow(limit, index) {
-        const pointsValue = limit.points || limit.cost || 0;
+        const limitDef = SpecialAttackSystem.getLimitById(limit.id);
+        const cost = limitDef ? (typeof limitDef.cost === 'number' ? limitDef.cost : 0) : 0;
         
         return `
-            <tr class="limit-table-row" data-limit-index="${index}">
+            <tr class="limit-table-row">
                 <td class="remove-cell">
                     ${RenderUtils.renderButton({
-                        text: '×', 
-                        variant: 'danger', 
-                        size: 'small', 
-                        dataAttributes: {action: 'remove-limit', index: index},
+                        text: '×',
+                        variant: 'danger',
+                        size: 'small',
+                        dataAttributes: { action: 'remove-limit', 'limit-id': limit.id },
                         title: `Remove ${limit.name}`
                     })}
                 </td>
-                <td class="limit-name-cell">${limit.name}</td>
-                <td class="limit-points-cell">${pointsValue}</td>
+                <td>${limitDef ? limitDef.name : limit.id}</td>
+                <td class="limit-points-cell">${cost}</td>
             </tr>
         `;
     }
 
     renderLimitCalculationFooter(attack, character) {
         const limitPointsTotal = attack.limitPointsTotal || 0;
-        const finalUpgradePoints = attack.upgradePointsFromLimits || 0;
-        
-        // Get archetype details for display
-        const specialAttackArchetype = character.archetypes?.specialAttack;
-        let archetypeMultiplier = 0;
-        if (specialAttackArchetype) {
-            switch(specialAttackArchetype) {
-                case 'normal':
-                    archetypeMultiplier = character.tier / 6;
-                    break;
-                case 'specialist':
-                    archetypeMultiplier = character.tier / 3;
-                    break;
-                case 'straightforward':
-                    archetypeMultiplier = character.tier / 2;
-                    break;
-                case 'sharedUses':
-                    archetypeMultiplier = 1.0;
-                    break;
-                default:
-                    archetypeMultiplier = 0;
-                    break;
-            }
-        }
-        
-        // Get the raw calculation to show "before rounding"
-        let totalValueBeforeRounding = 0;
-        if (limitPointsTotal > 0 && specialAttackArchetype) {
-            const calcResult = TierSystem.calculateLimitScaling(limitPointsTotal, character.tier, specialAttackArchetype);
-            totalValueBeforeRounding = calcResult.totalValue;
-        }
-        
-        // Calculate what simple multiplication would give (for comparison)
-        const simpleMultiplication = limitPointsTotal * archetypeMultiplier;
-        const hasDiminishingReturns = Math.abs(totalValueBeforeRounding - simpleMultiplication) > 0.1;
-        
+        const finalUpgradePoints = attack.upgradePointsAvailable || 0; // Use available as it includes archetype points
+        const fromLimits = attack.upgradePointsFromLimits || 0;
+        const archetype = character.archetypes.specialAttack;
+        const archetypeMultiplier = SpecialAttackSystem.canArchetypeUseLimits(character) ? (TierSystem.calculateLimitScaling(100, character.tier, archetype).totalValue / 100) : 0;
+
         return `
             <tr class="calculation-subtotal">
-                <td colspan="2"><strong>Step 1 - Limit Points Total:</strong></td>
+                <td colspan="2">Limit Points Total</td>
                 <td><strong>${limitPointsTotal}</strong></td>
             </tr>
             <tr class="calculation-multiplier">
-                <td colspan="2">Step 2 - Archetype Rate Modifier (${specialAttackArchetype || 'none'}):</td>
-                <td>×${archetypeMultiplier.toFixed(3)}</td>
+                <td colspan="2">Scaling Rate (from ${archetype} archetype)</td>
+                <td>×${archetypeMultiplier.toFixed(2)}</td>
             </tr>
-            <tr class="calculation-base">
-                <td colspan="2">Step 3 - Apply Modified Rates to DR Buckets:</td>
-                <td>${hasDiminishingReturns ? 'See buckets below' : `${limitPointsTotal} × ${archetypeMultiplier.toFixed(3)} = ${simpleMultiplication.toFixed(1)}`}</td>
-            </tr>
-            ${hasDiminishingReturns ? `
-                <tr class="calculation-diminishing">
-                    <td colspan="2">Before Rounding:</td>
-                    <td>${totalValueBeforeRounding.toFixed(2)}</td>
-                </tr>
-            ` : ''}
             <tr class="calculation-final">
-                <td colspan="2"><strong>Step 4 - Final (Rounded to Nearest 10):</strong></td>
-                <td><strong>${finalUpgradePoints}</strong></td>
+                <td colspan="2"><strong>Upgrade Points from Limits</strong></td>
+                <td><strong>${fromLimits}</strong></td>
             </tr>
         `;
     }
-
-    renderCalculationDetails(attack, character) {
-        if (attack.limits.length === 0) return '';
-
-        const limitBreakdown = {
-            steps: [
-                `Limit Points: ${attack.limitPointsTotal || 0}`,
-                `Tier Multiplier: x${character.tier}`,
-                `Upgrade Points: ${attack.upgradePointsFromLimits || 0}`
-            ]
-        };
-
-        return `
-            <div class="limit-calculation-details">
-                <h5>Point Calculation</h5>
-                <div class="calculation-breakdown">
-                    ${limitBreakdown.steps.map(step => `<div class="calc-line">${step}</div>`).join('')}
-                </div>
-            </div>
-        `;
-    }
-
 
     renderAvailableLimits(character, attack) {
+        // FIX: Use the hierarchical data source to preserve structure
         const limitsData = SpecialAttackSystem.getAvailableLimitsHierarchy();
-    
         return `
             <div class="available-limits">
                 <h4>Available Limits</h4>
                 <div class="limit-categories-hierarchy">
-                    ${Object.entries(limitsData).map(([categoryKey, categoryData]) => 
+                    ${Object.entries(limitsData).map(([categoryKey, categoryData]) =>
                         this.renderLimitCategory(categoryKey, categoryData, attack, character)
                     ).join('')}
                 </div>
             </div>
         `;
     }
-    
+
     renderLimitCategory(categoryKey, categoryData, attack, character) {
         const isExpanded = this.expandedCategories.has(categoryKey);
         const formattedCategoryName = this.formatCategoryName(categoryKey);
-    
         return `
             <div class="limit-category">
-                <div class="category-header" data-action="toggle-limit-category" data-category="${categoryKey}">
-                    <span class="category-toggle ${isExpanded ? 'expanded' : ''}">${isExpanded ? '▼' : '▶'}</span>
-                    <h5>${formattedCategoryName}</h5>
+                <div class="limit-category-header" data-action="toggle-limit-category" data-category="${categoryKey}">
+                    <span class="category-expand-icon">${isExpanded ? '▼' : '▶'}</span>
+                    <h5 class="category-name">${formattedCategoryName}</h5>
                 </div>
-                <div class="category-content ${isExpanded ? 'expanded' : 'collapsed'}">
-                    <div class="limit-options-grid">
+                ${isExpanded ? `
+                    <div class="limit-category-content">
                         ${this.renderMainLimitOption(categoryKey, categoryData, attack, character)}
                         ${this.renderVariants(categoryKey, categoryData, attack, character)}
-                    </div>
-                </div>
+                    </div>` : ''
+                }
             </div>
         `;
     }
 
     renderMainLimitOption(categoryKey, categoryData, attack, character) {
         if (categoryData.cost === undefined) return '';
-        
         const limitData = {
             id: categoryKey,
             name: categoryKey,
-            description: categoryData.description,
-            cost: categoryData.cost,
+            ...categoryData,
             type: 'main'
         };
-        
         return this.renderLimitOption(limitData, attack, character, 'main-limit');
     }
 
     renderVariants(categoryKey, categoryData, attack, character) {
         if (!categoryData.variants) return '';
-        
-        return Object.entries(categoryData.variants).map(([variantKey, variantData]) => 
-            this.renderVariantGroup(categoryKey, variantKey, variantData, attack, character)
+        return Object.entries(categoryData.variants).map(([variantKey, variantData]) =>
+            `
+            ${this.renderVariantOption(categoryKey, variantKey, variantData, attack, character)}
+            ${this.renderModifiers(categoryKey, variantKey, variantData, attack, character)}
+            `
         ).join('');
-    }
-
-    renderVariantGroup(categoryKey, variantKey, variantData, attack, character) {
-        return `
-            <div class="limit-variant-group">
-                ${this.renderVariantOption(categoryKey, variantKey, variantData, attack, character)}
-                ${this.renderModifiers(categoryKey, variantKey, variantData, attack, character)}
-            </div>
-        `;
     }
 
     renderVariantOption(categoryKey, variantKey, variantData, attack, character) {
         const limitData = {
             id: `${categoryKey}_${variantKey}`,
             name: variantKey,
-            description: variantData.description,
-            cost: variantData.cost,
+            ...variantData,
             type: 'variant',
             parent: categoryKey
         };
-        
         return this.renderLimitOption(limitData, attack, character, 'variant-limit');
     }
 
     renderModifiers(categoryKey, variantKey, variantData, attack, character) {
         if (!variantData.modifiers) return '';
-        
-        return `
-            <div class="limit-modifier-group">
-                ${Object.entries(variantData.modifiers).map(([modifierKey, modifierData]) => 
-                    this.renderModifierOption(categoryKey, variantKey, modifierKey, modifierData, attack, character)
-                ).join('')}
-            </div>
-        `;
+        return Object.entries(variantData.modifiers).map(([modifierKey, modifierData]) =>
+            this.renderModifierOption(categoryKey, variantKey, modifierKey, modifierData, attack, character)
+        ).join('');
     }
 
     renderModifierOption(categoryKey, variantKey, modifierKey, modifierData, attack, character) {
         const limitData = {
             id: `${categoryKey}_${variantKey}_${modifierKey}`,
             name: modifierKey,
-            description: modifierData.description,
-            cost: modifierData.cost,
+            ...modifierData,
             type: 'modifier',
             parent: `${categoryKey}_${variantKey}`
         };
-        
         return this.renderLimitOption(limitData, attack, character, 'modifier-limit');
     }
-
-
 
     renderLimitOption(limit, attack, character, cssClass = 'limit-option') {
         const isSelected = attack.limits.some(selected => selected.id === limit.id);
@@ -299,68 +203,16 @@ export class LimitSelection {
 
         return RenderUtils.renderCard({
             title: limit.name,
-            cost: limit.points || limit.cost || 0,
-            description: `
-                ${limit.description || ''}
-                ${!validation.isValid ? `<br><small class="error-text">${validation.errors[0]}</small>` : ''}
-            `,
+            cost: typeof limit.cost === 'string' ? limit.cost : limit.cost || 0,
+            description: `${limit.description || ''} ${!validation.isValid && !isSelected ? `<br><small class="error-text">${validation.errors[0]}</small>` : ''}`,
             clickable: canAdd,
             disabled: isSelected || !validation.isValid,
             selected: isSelected,
-            dataAttributes: { 
-                action: canAdd ? 'add-limit' : '', 
-                'limit-id': limit.id 
+            dataAttributes: {
+                action: canAdd ? 'add-limit' : '',
+                'limit-id': limit.id
             }
         }, { cardClass: `limit-option ${cssClass}`, showStatus: false });
-    }
-
-    // Granular update methods
-    updateLimitsList(attack) {
-        const tableBody = document.querySelector('.limits-breakdown-table tbody');
-        if (tableBody) {
-            tableBody.innerHTML = attack.limits.map((limit, index) => this.renderLimitTableRow(limit, index)).join('');
-        }
-
-        // Update count in header
-        const header = document.querySelector('.limits-section h3');
-        if (header) {
-            header.textContent = `Limits (${attack.limits.length})`;
-        }
-
-        // Show/hide empty state vs table
-        const emptyState = document.querySelector('.limits-section .empty-state');
-        const table = document.querySelector('.selected-limits-table');
-        
-        if (attack.limits.length === 0) {
-            if (table) table.style.display = 'none';
-            if (emptyState) emptyState.style.display = 'block';
-        } else {
-            if (table) table.style.display = 'block';
-            if (emptyState) emptyState.style.display = 'none';
-        }
-    }
-
-    updateCalculationFooter(attack, character) {
-        const tfoot = document.querySelector('.limits-breakdown-table tfoot');
-        if (tfoot) {
-            tfoot.innerHTML = this.renderLimitCalculationFooter(attack, character);
-        }
-    }
-
-    // Helper methods
-    canArchetypeUseLimits(character) {
-        if (SpecialAttackSystem.canArchetypeUseLimits) {
-            return SpecialAttackSystem.canArchetypeUseLimits(character);
-        }
-        
-        // Fallback logic if SpecialAttackSystem method doesn't exist
-        if (!character || !character.archetypes) return false;
-        const archetype = character.archetypes.specialAttack;
-        return !['paragon', 'oneTrick', 'dualNatured', 'basic'].includes(archetype);
-    }
-
-    formatArchetypeName(archetype) {
-        return archetype ? archetype.charAt(0).toUpperCase() + archetype.slice(1) : '';
     }
 
     formatCategoryName(category) {
@@ -375,8 +227,6 @@ export class LimitSelection {
         }
     }
 
-
-    // Cleanup
     destroy() {
         this.expandedCategories.clear();
     }

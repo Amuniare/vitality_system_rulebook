@@ -71,10 +71,17 @@ export class UtilityTab {
 
     renderExpertiseSection(character) {
         const expertiseCategories = UtilitySystem.getExpertiseCategories();
-        const content = Object.entries(expertiseCategories).map(([attrKey, attrData]) =>
+        const availableContent = Object.entries(expertiseCategories).map(([attrKey, attrData]) =>
             this.renderAttributeExpertiseBlock(attrKey, attrData, character)
         ).join('');
-        return `<div class="expertise-main-grid grid-layout grid-columns-auto-fit-300">${content}</div>`;
+        
+        return `
+            <div class="expertise-section">
+                ${this.renderSelectedExpertises(character)}
+                <h4>Available Expertise</h4>
+                <div class="expertise-main-grid grid-layout grid-columns-auto-fit-300">${availableContent}</div>
+            </div>
+        `;
     }
 
     renderAttributeExpertiseBlock(attrKey, attrData, character) {
@@ -154,6 +161,91 @@ export class UtilityTab {
         return `<div class="purchased-item"><div class="item-info"><span class="item-name">${item.name}</span><span class="item-cost">${item.cost}p</span></div>${RenderUtils.renderButton({ text: 'Remove', variant: 'danger', size: 'small', dataAttributes: { action: `remove-${categoryKey.slice(0, -1)}`, 'item-id': item.id } })}</div>`;
     }
 
+    renderSelectedExpertises(character) {
+        const expertises = character.utilityPurchases.expertise;
+        const costs = UtilitySystem.getExpertiseCosts();
+        
+        // Count total expertises and organize data
+        let totalExpertises = 0;
+        let expertisesByAttribute = {};
+        
+        Object.entries(expertises).forEach(([attribute, levels]) => {
+            const basicCount = levels.basic.length;
+            const masteredCount = levels.mastered.length;
+            const totalForAttr = basicCount + masteredCount;
+            
+            if (totalForAttr > 0) {
+                expertisesByAttribute[attribute] = {
+                    basic: levels.basic,
+                    mastered: levels.mastered,
+                    total: totalForAttr
+                };
+                totalExpertises += totalForAttr;
+            }
+        });
+
+        if (totalExpertises === 0) {
+            return `
+                <div class="selected-expertises">
+                    <h4>Selected Expertises</h4>
+                    <div class="empty-state">No expertises selected yet.</div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="selected-expertises">
+                <h4>Selected Expertises (${totalExpertises})</h4>
+                <div class="expertises-by-attribute">
+                    ${Object.entries(expertisesByAttribute).map(([attribute, data]) => 
+                        this.renderAttributeExpertiseList(attribute, data, costs)
+                    ).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderAttributeExpertiseList(attribute, data, costs) {
+        const attributeName = attribute.charAt(0).toUpperCase() + attribute.slice(1);
+        
+        return `
+            <div class="attribute-expertise-group">
+                <h5>${attributeName} (${data.total})</h5>
+                <div class="expertise-items">
+                    ${data.basic.map(expertiseId => 
+                        this.renderSelectedExpertiseItem(expertiseId, attribute, 'basic', costs.activityBased.basic.cost)
+                    ).join('')}
+                    ${data.mastered.map(expertiseId => 
+                        this.renderSelectedExpertiseItem(expertiseId, attribute, 'mastered', costs.activityBased.mastered.cost)
+                    ).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderSelectedExpertiseItem(expertiseId, attribute, level, cost) {
+        return `
+            <div class="purchased-expertise-item">
+                <div class="expertise-info">
+                    <span class="expertise-name">${expertiseId}</span>
+                    <span class="expertise-level ${level}">${level.charAt(0).toUpperCase() + level.slice(1)}</span>
+                    <span class="expertise-cost">${cost}p</span>
+                </div>
+                ${RenderUtils.renderButton({ 
+                    text: 'Remove', 
+                    variant: 'danger', 
+                    size: 'small', 
+                    dataAttributes: { 
+                        action: 'remove-expertise', 
+                        attribute: attribute, 
+                        'expertise-id': expertiseId, 
+                        level: level 
+                    } 
+                })}
+            </div>
+        `;
+    }
+
     setupEventListeners() {
         if (this.listenersAttached) {
             return;
@@ -166,6 +258,7 @@ export class UtilityTab {
                 '.section-tab': (e, el) => this.handleCategorySwitch(el.dataset.tab),
                 '[data-action="purchase-expertise"]': (e, el) => { e.stopPropagation(); this.handleExpertisePurchase(el); },
                 '[data-action^="purchase-"]': (e, el) => { if (el.dataset.action !== 'purchase-expertise') { e.stopPropagation(); this.handleGenericPurchase(el); }},
+                '[data-action="remove-expertise"]': (e, el) => { e.stopPropagation(); this.handleExpertiseRemoval(el); },
                 '[data-action^="remove-"]': (e, el) => this.handleGenericRemove(el),
                 '[data-action="continue-to-summary"]': () => this.builder.switchTab('summary'),
             },
@@ -274,7 +367,16 @@ export class UtilityTab {
     }
     
     handleExpertiseRemoval(element) {
-        // Handle expertise removal logic
-        console.log('Expertise removal:', element);
+        const { attribute, expertiseId, level } = element.dataset;
+        
+        if (confirm(`Remove ${expertiseId} (${level}) expertise?`)) {
+            try {
+                UtilitySystem.removeExpertise(this.builder.currentCharacter, attribute, expertiseId, level);
+                this.builder.updateCharacter();
+                this.builder.showNotification(`${expertiseId} ${level} expertise removed.`, 'info');
+            } catch (error) {
+                this.builder.showNotification(`Removal failed: ${error.message}`, 'error');
+            }
+        }
     }
 }

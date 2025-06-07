@@ -1,4 +1,4 @@
-// SpecialAttackSystem.js - Special attack creation and management
+// rulebook/character-builder/systems/SpecialAttackSystem.js
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
 import { ArchetypeSystem } from './ArchetypeSystem.js';
@@ -90,7 +90,7 @@ export class SpecialAttackSystem {
         }
         
         // Check build order
-        if (!character.buildState.mainPoolComplete) {
+        if (!character.buildState?.mainPoolComplete) {
             warnings.push('Consider completing main pool purchases before creating special attacks');
         }
         
@@ -118,13 +118,11 @@ export class SpecialAttackSystem {
             throw new Error('Limit not found');
         }
         
-        // Calculate actual point cost (handle "Variable" costs)
         let actualCost = limitData.cost;
         if (typeof actualCost === 'string' && actualCost.toLowerCase() === 'variable') {
-            actualCost = 0; // Default to 0 for variable costs, would need UI input
+            actualCost = 0;
         }
         
-        // Add the limit
         attack.limits.push({
             id: limitData.id,
             points: actualCost,
@@ -133,25 +131,19 @@ export class SpecialAttackSystem {
             description: limitData.description,
             type: limitData.type,
             parent: limitData.parent || null,
-            originalCost: limitData.cost // Keep original for reference
+            originalCost: limitData.cost
         });
         
-        // Recalculate points
         this.recalculateAttackPoints(character, attack);
-        
         return attack;
     }
     
-    
-    // Recalculate attack points from limits and archetype
     static recalculateAttackPoints(character, attack) {
         const archetype = character.archetypes.specialAttack;
         const pointMethod = ArchetypeSystem.getSpecialAttackPointMethod(character);
         
-        // Calculate limit points total from the sum of selected limits
         attack.limitPointsTotal = attack.limits.reduce((total, limit) => total + (Number(limit.points) || 0), 0);
         
-        // Calculate upgrade points from limits (if applicable) using the corrected logic
         if (pointMethod.method === 'limits') {
             const calculationResult = TierSystem.calculateLimitScaling(attack.limitPointsTotal, character.tier, archetype);
             attack.upgradePointsFromLimits = calculationResult.finalPoints;
@@ -159,65 +151,49 @@ export class SpecialAttackSystem {
             attack.upgradePointsFromLimits = 0;
         }
         
-        // Calculate upgrade points from archetype (for fixed-point archetypes)
         if (pointMethod.method === 'fixed') {
             attack.upgradePointsFromArchetype = pointMethod.points;
         } else {
             attack.upgradePointsFromArchetype = 0;
         }
         
-        // Total available points is the sum of points from limits and archetype
         attack.upgradePointsAvailable = attack.upgradePointsFromLimits + attack.upgradePointsFromArchetype;
-        
-        // Ensure spent doesn't exceed available (can be enhanced later)
-        if (attack.upgradePointsSpent > attack.upgradePointsAvailable) {
-            // Placeholder for handling over-budget scenarios
-            console.warn(`Attack "${attack.name}" is over budget. Spent: ${attack.upgradePointsSpent}, Available: ${attack.upgradePointsAvailable}`);
+    }
+
+    // NEW HELPER: Centralize cost calculation
+    static _getActualUpgradeCost(upgradeData, character) {
+        if (!upgradeData) return 0;
+        let actualCost = upgradeData.cost;
+        if (typeof actualCost === 'string') {
+            if (actualCost.includes('per tier')) {
+                const baseAmount = parseInt(actualCost.match(/\d+/)[0] || '0');
+                actualCost = baseAmount * (character.tier || 1);
+            } else {
+                actualCost = parseInt(actualCost) || 0;
+            }
         }
+        return actualCost;
     }
     
-    // Remove upgrades when over budget
-    static removeExcessUpgrades(attack) {
-        while (attack.upgradePointsSpent > attack.upgradePointsAvailable && attack.upgrades.length > 0) {
-            const removedUpgrade = attack.upgrades.pop();
-            // Subtract the cost (would need upgrade cost lookup)
-            // attack.upgradePointsSpent -= getUpgradeCost(removedUpgrade);
-        }
-    }
-    
-    // Add upgrade to attack
+    // Add upgrade to attack (MODIFIED to use helper)
     static addUpgradeToAttack(character, attackIndex, upgradeId) {
         const attack = character.specialAttacks[attackIndex];
-        if (!attack) {
-            throw new Error('Attack not found');
-        }
+        if (!attack) throw new Error('Attack not found');
         
         const upgradeData = this.getUpgradeById(upgradeId);
-        if (!upgradeData) {
-            throw new Error('Upgrade not found');
-        }
+        if (!upgradeData) throw new Error('Upgrade not found');
         
         const validation = this.validateUpgradeAddition(character, attack, upgradeData);
         if (!validation.isValid) {
             throw new Error(validation.errors.join(', '));
         }
         
-        // Handle variable costs (e.g., "20 per tier")
-        let actualCost = upgradeData.cost;
-        if (typeof actualCost === 'string') {
-            if (actualCost.includes('per tier')) {
-                const baseAmount = parseInt(actualCost.match(/\d+/)[0]);
-                actualCost = baseAmount * character.tier;
-            } else {
-                actualCost = parseInt(actualCost) || 0;
-            }
-        }
+        const actualCost = this._getActualUpgradeCost(upgradeData, character);
         
-        // Add the upgrade
         attack.upgrades.push({
             id: upgradeData.id,
             name: upgradeData.name,
-            cost: actualCost,
+            cost: actualCost, // Use the calculated cost
             category: upgradeData.category,
             subcategory: upgradeData.subcategory,
             effect: upgradeData.effect,
@@ -227,30 +203,29 @@ export class SpecialAttackSystem {
         });
         
         attack.upgradePointsSpent += actualCost;
-        
         return attack;
     }
     
-    // Validate adding an upgrade
+    // Validate adding an upgrade (MODIFIED to use helper)
     static validateUpgradeAddition(character, attack, upgradeData) {
         const errors = [];
         const warnings = [];
         
-        // Check if can afford
-        const remainingPoints = attack.upgradePointsAvailable - attack.upgradePointsSpent;
-        if (upgradeData.cost > remainingPoints) {
-            errors.push(`Insufficient upgrade points (need ${upgradeData.cost}, have ${remainingPoints})`);
+        const actualCost = this._getActualUpgradeCost(upgradeData, character);
+        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
+
+        if (actualCost > remainingPoints) {
+            errors.push(`Insufficient points (need ${actualCost}, have ${remainingPoints})`);
         }
         
-        // Check for duplicate upgrades
         if (attack.upgrades.some(upgrade => upgrade.id === upgradeData.id)) {
-            errors.push('Upgrade already applied to this attack');
+            errors.push('Already purchased');
         }
         
-        // Check for banned combinations
         const conflicts = this.checkUpgradeConflicts(attack, upgradeData);
-        errors.push(...conflicts.errors);
-        warnings.push(...conflicts.warnings);
+        if (conflicts.length > 0) {
+            errors.push(`Conflicts with: ${conflicts.join(', ')}`);
+        }
         
         return {
             isValid: errors.length === 0,
@@ -259,40 +234,40 @@ export class SpecialAttackSystem {
         };
     }
     
-    // Check for upgrade conflicts
+    // Check for upgrade conflicts (MODIFIED to return a simple array of conflicting names)
     static checkUpgradeConflicts(attack, newUpgrade) {
-        const errors = [];
-        const warnings = [];
-        
-        // Check banned combinations from GameConstants
+        const allUpgrades = this.getAvailableUpgrades();
+        const bannedData = gameDataManager.getUpgrades()?.bannedCombinations || [];
         const existingUpgradeIds = attack.upgrades.map(u => u.id);
-        
-        GameConstants.BANNED_UPGRADE_COMBINATIONS.forEach(bannedCombo => {
-            if (bannedCombo.includes(newUpgrade.id)) {
-                const conflictingUpgrades = bannedCombo.filter(id => 
-                    id !== newUpgrade.id && existingUpgradeIds.includes(id)
-                );
-                
-                if (conflictingUpgrades.length > 0) {
-                    errors.push(`${newUpgrade.name} conflicts with: ${conflictingUpgrades.join(', ')}`);
+        const conflictingNames = [];
+
+        bannedData.forEach(bannedPair => {
+            // Find the full upgrade objects to get their generated IDs
+            const upgrade1 = allUpgrades.find(u => u.name === bannedPair[0]);
+            const upgrade2 = allUpgrades.find(u => u.name === bannedPair[1]);
+
+            if (upgrade1 && upgrade2) {
+                const id1 = upgrade1.id;
+                const id2 = upgrade2.id;
+
+                if ((newUpgrade.id === id1 && existingUpgradeIds.includes(id2)) ||
+                    (newUpgrade.id === id2 && existingUpgradeIds.includes(id1))) {
+                        const conflictingUpgradeName = newUpgrade.id === id1 ? upgrade2.name : upgrade1.name;
+                        conflictingNames.push(conflictingUpgradeName);
                 }
             }
         });
         
-        return { errors, warnings };
+        return conflictingNames;
     }
     
     // Remove upgrade from attack
     static removeUpgradeFromAttack(character, attackIndex, upgradeId) {
         const attack = character.specialAttacks[attackIndex];
-        if (!attack) {
-            throw new Error('Attack not found');
-        }
+        if (!attack) throw new Error('Attack not found');
         
         const upgradeIndex = attack.upgrades.findIndex(u => u.id === upgradeId);
-        if (upgradeIndex === -1) {
-            throw new Error('Upgrade not found');
-        }
+        if (upgradeIndex === -1) throw new Error('Upgrade not found');
         
         const upgrade = attack.upgrades[upgradeIndex];
         attack.upgrades.splice(upgradeIndex, 1);
@@ -309,7 +284,6 @@ export class SpecialAttackSystem {
         
         character.specialAttacks.splice(attackIndex, 1);
         
-        // Renumber remaining attacks
         character.specialAttacks.forEach((attack, index) => {
             if (!attack.name || attack.name.startsWith('Special Attack')) {
                 attack.name = `Special Attack ${index + 1}`;
@@ -317,62 +291,6 @@ export class SpecialAttackSystem {
         });
     }
     
-    // Get attack type costs for purchase
-    static getAttackTypeCosts() {
-        return GameConstants.ATTACK_TYPE_COSTS;
-    }
-    
-    // Get available attack types (free from archetype + purchasable)
-    static getAvailableAttackTypes(character) {
-        const freeTypes = ArchetypeSystem.getFreeAttackTypes(character);
-        const allTypes = ['melee_ac', 'melee_dg_cn', 'ranged', 'direct', 'area'];
-        
-        return allTypes.map(type => ({
-            id: type,
-            name: type.charAt(0).toUpperCase() + type.slice(1),
-            cost: freeTypes.includes(type) ? 0 : GameConstants.ATTACK_TYPE_COSTS[type],
-            isFree: freeTypes.includes(type)
-        }));
-    }
-    
-    // Calculate total special attack budget across all attacks
-    static calculateTotalSpecialAttackBudget(character) {
-        let totalBudget = 0;
-        let totalSpent = 0;
-        
-        character.specialAttacks.forEach(attack => {
-            totalBudget += attack.upgradePointsAvailable;
-            totalSpent += attack.upgradePointsSpent;
-        });
-        
-        return {
-            total: totalBudget,
-            spent: totalSpent,
-            remaining: totalBudget - totalSpent
-        };
-    }
-    
-    // Get attack summary for display
-    static getAttackSummary(attack) {
-        return {
-            name: attack.name,
-            attackTypes: attack.attackTypes,
-            effectTypes: attack.effectTypes,
-            limitCount: attack.limits.length,
-            limitPoints: attack.limitPointsTotal,
-            upgradeCount: attack.upgrades.length,
-            pointsUsed: `${attack.upgradePointsSpent}/${attack.upgradePointsAvailable}`,
-            isComplete: this.isAttackComplete(attack)
-        };
-    }
-    
-    // Check if attack is complete
-    static isAttackComplete(attack) {
-        return attack.name.trim() !== '' && 
-               attack.attackTypes.length > 0 &&
-               (attack.effectTypes.length > 0 || attack.upgrades.length > 0);
-    }
-
     // Get available limits from limits.json (returns hierarchical structure for UI)
     static getAvailableLimitsHierarchy() {
         return gameDataManager.getLimits();
@@ -384,153 +302,71 @@ export class SpecialAttackSystem {
         const flatLimits = [];
         
         Object.entries(hierarchicalData).forEach(([categoryKey, categoryData]) => {
-            // Add main category limit if it has a cost
             if (categoryData.cost !== undefined) {
-                flatLimits.push({
-                    id: categoryKey,
-                    name: categoryKey,
-                    description: categoryData.description,
-                    cost: categoryData.cost,
-                    type: 'main',
-                    category: categoryKey
-                });
+                flatLimits.push({ id: categoryKey, name: categoryKey, ...categoryData, type: 'main', category: categoryKey });
             }
-            
-            // Add variant limits
             if (categoryData.variants) {
                 Object.entries(categoryData.variants).forEach(([variantKey, variantData]) => {
                     const variantId = `${categoryKey}_${variantKey}`;
-                    flatLimits.push({
-                        id: variantId,
-                        name: variantKey,
-                        description: variantData.description,
-                        cost: variantData.cost,
-                        type: 'variant',
-                        category: categoryKey,
-                        parent: categoryKey
-                    });
-                    
-                    // Add modifier limits
+                    flatLimits.push({ id: variantId, name: variantKey, ...variantData, type: 'variant', category: categoryKey, parent: categoryKey });
                     if (variantData.modifiers) {
                         Object.entries(variantData.modifiers).forEach(([modifierKey, modifierData]) => {
                             const modifierId = `${categoryKey}_${variantKey}_${modifierKey}`;
-                            flatLimits.push({
-                                id: modifierId,
-                                name: modifierKey,
-                                description: modifierData.description,
-                                cost: modifierData.cost,
-                                type: 'modifier',
-                                category: categoryKey,
-                                parent: variantId
-                            });
+                            flatLimits.push({ id: modifierId, name: modifierKey, ...modifierData, type: 'modifier', category: categoryKey, parent: variantId });
                         });
                     }
                 });
             }
         });
-        
         return flatLimits;
     }
 
     // Get limit by ID
     static getLimitById(limitId) {
-        const limits = this.getAvailableLimits();
-        return limits.find(limit => limit.id === limitId);
-    }
-
-    // Get limits by category
-    static getLimitsByCategory(category) {
-        const limits = this.getAvailableLimits();
-        return limits.filter(limit => limit.category === category);
+        return this.getAvailableLimits().find(limit => limit.id === limitId);
     }
 
     // Validate limit selection based on rules
     static validateLimitSelection(character, attack, limitId) {
         const limit = this.getLimitById(limitId);
-        if (!limit) {
-            return { isValid: false, errors: ['Limit not found'] };
-        }
+        if (!limit) return { isValid: false, errors: ['Limit not found'] };
 
         const errors = [];
-        const warnings = [];
-
-        // Check archetype restrictions
-        const archetype = character.archetypes.specialAttack;
-        const noLimitsArchetypes = ['paragon', 'oneTrick', 'dualNatured', 'basic'];
-        if (noLimitsArchetypes.includes(archetype)) {
-            errors.push(`${archetype} archetype cannot use limits`);
+        if (!this.canArchetypeUseLimits(character)) {
+            errors.push(`${character.archetypes.specialAttack} archetype cannot use limits`);
         }
-
-        // Check for duplicate limits
-        if (attack.limits.some(existingLimit => existingLimit.id === limitId)) {
-            errors.push('Limit already applied to this attack');
+        if (attack.limits.some(existing => existing.id === limitId)) {
+            errors.push('Limit already applied');
         }
-
-        // Check for conflicting limits within same category
-        const existingCategoryLimits = attack.limits.filter(l => l.category === limit.category);
-        if (existingCategoryLimits.length > 0 && limit.type === 'main') {
-            errors.push(`Cannot add main ${limit.category} limit when variants already exist`);
+        if (limit.type === 'modifier' && !attack.limits.some(l => l.id === limit.parent)) {
+            const parentVariant = this.getLimitById(limit.parent);
+            errors.push(`Requires parent limit: ${parentVariant?.name || limit.parent}`);
         }
-
-        // Check parent-child relationships
-        if (limit.type === 'variant') {
-            const hasMainCategory = attack.limits.some(l => l.id === limit.category);
-            if (!hasMainCategory) {
-                errors.push(`Must add main ${limit.category} limit before adding variants`);
-            }
-        }
-
-        if (limit.type === 'modifier') {
-            const hasParentVariant = attack.limits.some(l => l.id === limit.parent);
-            if (!hasParentVariant) {
-                errors.push(`Must add ${limit.parent} limit before adding modifiers`);
-            }
-        }
-
-        return {
-            isValid: errors.length === 0,
-            errors,
-            warnings
-        };
+        
+        return { isValid: errors.length === 0, errors, warnings: [] };
     }
 
-    // Remove limit from attack (handles cascading removals)
+    // Remove limit from attack
     static removeLimitFromAttack(character, attackIndex, limitId) {
         const attack = character.specialAttacks[attackIndex];
-        if (!attack) {
-            throw new Error('Attack not found');
-        }
+        if (!attack) throw new Error('Attack not found');
         
-        const limitIndex = attack.limits.findIndex(l => l.id === limitId);
-        if (limitIndex === -1) {
-            throw new Error('Limit not found');
-        }
+        const limitToRemove = attack.limits.find(l => l.id === limitId);
+        if (!limitToRemove) throw new Error('Limit not found on attack');
         
-        const limitToRemove = attack.limits[limitIndex];
+        const idsToRemove = [limitId];
+        const findDependents = (parentId) => {
+            attack.limits.forEach(l => {
+                if (l.parent === parentId) {
+                    idsToRemove.push(l.id);
+                    findDependents(l.id);
+                }
+            });
+        };
+        findDependents(limitId);
         
-        // Remove dependent limits first (modifiers and variants)
-        const dependentLimits = attack.limits.filter(l => 
-            l.parent === limitId || 
-            (limitToRemove.type === 'main' && l.category === limitToRemove.category && l.id !== limitId)
-        );
-        
-        // Remove dependents in reverse order (deepest first)
-        dependentLimits.forEach(dependent => {
-            const depIndex = attack.limits.findIndex(l => l.id === dependent.id);
-            if (depIndex !== -1) {
-                attack.limits.splice(depIndex, 1);
-            }
-        });
-        
-        // Remove the main limit
-        const finalIndex = attack.limits.findIndex(l => l.id === limitId);
-        if (finalIndex !== -1) {
-            attack.limits.splice(finalIndex, 1);
-        }
-        
-        // Recalculate points
+        attack.limits = attack.limits.filter(l => !idsToRemove.includes(l.id));
         this.recalculateAttackPoints(character, attack);
-        
         return attack;
     }
 
@@ -538,87 +374,34 @@ export class SpecialAttackSystem {
     static getAvailableUpgrades() {
         const upgradesData = gameDataManager.getUpgrades();
         const upgrades = [];
-
-        if (upgradesData.Upgrades) {
+        if (upgradesData && upgradesData.Upgrades) {
             Object.entries(upgradesData.Upgrades).forEach(([mainCategory, categoryData]) => {
-                // Handle nested structure (e.g., "Damage Bonuses" -> "Core Damage Modifiers")
                 if (Array.isArray(categoryData)) {
-                    // Direct array of upgrades
                     categoryData.forEach(upgrade => {
-                        upgrades.push({
-                            ...upgrade,
-                            id: `${mainCategory}_${upgrade.name}`.replace(/\s+/g, '_'),
-                            category: mainCategory,
-                            subcategory: null
-                        });
+                        upgrades.push({ ...upgrade, id: `${mainCategory}_${upgrade.name}`.replace(/\s+/g, '_'), category: mainCategory, subcategory: null });
                     });
                 } else {
-                    // Nested subcategories
                     Object.entries(categoryData).forEach(([subCategory, subData]) => {
                         if (Array.isArray(subData)) {
                             subData.forEach(upgrade => {
-                                upgrades.push({
-                                    ...upgrade,
-                                    id: `${mainCategory}_${subCategory}_${upgrade.name}`.replace(/\s+/g, '_'),
-                                    category: mainCategory,
-                                    subcategory: subCategory
-                                });
+                                upgrades.push({ ...upgrade, id: `${mainCategory}_${subCategory}_${upgrade.name}`.replace(/\s+/g, '_'), category: mainCategory, subcategory: subCategory });
                             });
                         }
                     });
                 }
             });
         }
-
         return upgrades;
     }
 
-    // Get upgrades by category
-    static getUpgradesByCategory(category) {
-        const upgrades = this.getAvailableUpgrades();
-        return upgrades.filter(upgrade => upgrade.category === category);
-    }
-
-    // Get upgrade by ID
     static getUpgradeById(upgradeId) {
-        const upgrades = this.getAvailableUpgrades();
-        return upgrades.find(upgrade => upgrade.id === upgradeId);
+        return this.getAvailableUpgrades().find(upgrade => upgrade.id === upgradeId);
     }
-
-    // Get all upgrade categories
-    static getUpgradeCategories() {
-        const upgrades = this.getAvailableUpgrades();
-        const categories = new Set();
-        upgrades.forEach(upgrade => categories.add(upgrade.category));
-        return Array.from(categories);
-    }
-
-    // Check if archetype can use limits
+    
     static canArchetypeUseLimits(character) {
-        if (!character || !character.archetypes) {
-            return false; // Safe default when character is null/undefined
-        }
+        if (!character || !character.archetypes) return false;
         const archetype = character.archetypes.specialAttack;
         const noLimitsArchetypes = ['paragon', 'oneTrick', 'dualNatured', 'basic'];
         return !noLimitsArchetypes.includes(archetype);
-    }
-
-    // Calculate limit to upgrade points with proper scaling
-    static calculateLimitToUpgradePoints(character, attack) {
-        if (!character || !attack) {
-            return { totalValue: 0, finalPoints: 0 };
-        }
-        
-        const limitPointsTotal = attack.limits?.reduce((total, limit) => total + (Number(limit.points) || 0), 0) || 0;
-        const tier = character.tier || 1;
-        const archetype = character.archetypes?.specialAttack || 'basic';
-        
-        // Use TierSystem for proper calculation
-        const calculationResult = TierSystem.calculateLimitScaling(limitPointsTotal, tier, archetype);
-        
-        return {
-            totalValue: calculationResult.scaledPoints || 0,
-            finalPoints: calculationResult.finalPoints || 0
-        };
     }
 }
