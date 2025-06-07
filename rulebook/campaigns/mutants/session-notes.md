@@ -94,3 +94,10 @@
 - Bri departed to handle immortal children while Blackout eliminated candidate Lucian Drake from prison
 
 
+## Session 14: "Unlikely Alliances"
+- Willis-Ryder launched anti-mutant campaign leading polls while Blackout broadcast call for mutant uprising from refugee camps
+- Party committed to democratic strategy, successfully recruited Unity for mayoral ticket but identified Angel negotiation as key challenge
+- Varia's attempt to contact Apollo accidentally summoned Dionysus instead, gaining ancient mutant ally who scaled back vineyard takeover
+- Mason, Pandora, and Vagrant organized tunnel network, rescued trapped mutants, recruited specialists including bad luck infiltrator for Corporate campaign
+- Direct negotiation with Zeus/Blackout resulted in alliance: violence delayed if mutant candidate wins by 55% five days before election
+- Blackout's organization transformed into "Invincible Defense Force" with Mind Warp as public face, cancelling planned march assassination attempt
