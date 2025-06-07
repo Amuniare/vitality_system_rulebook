@@ -147,6 +147,11 @@ export class AttackBasicsForm {
         }
     }
 
+    // Set attack index (for compatibility with other components)
+    setAttackIndex(index) {
+        // AttackBasicsForm doesn't need to store this as it uses parentTab.selectedAttackIndex
+    }
+
     // Cleanup method
     destroy() {
         // Remove any event listeners if needed

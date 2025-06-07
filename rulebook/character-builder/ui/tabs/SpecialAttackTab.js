@@ -19,11 +19,17 @@ export class SpecialAttackTab {
     }
 
     render() {
+        const tabContent = document.getElementById('tab-specialAttacks');
+        if (!tabContent) return;
+
         const character = this.builder.currentCharacter;
-        const archetype = character.archetypes?.specialAttack;
+        if (!character) {
+            tabContent.innerHTML = "<p>No character loaded.</p>";
+            return;
+        }
         
-        return `
-            <div class="special-attack-tab tab-content">
+        tabContent.innerHTML = `
+            <div class="special-attack-section">
                 ${this.renderArchetypeInfo(character)}
                 ${this.renderAttackManagement(character)}
                 ${character.specialAttacks && character.specialAttacks.length > 0 ? 
@@ -60,7 +66,7 @@ export class SpecialAttackTab {
     }
 
     renderAttackManagement(character) {
-        const canCreate = SpecialAttackSystem.canCreateAttack(character);
+        const canCreate = SpecialAttackSystem.validateCanCreateAttack(character);
         
         return `
             <div class="attack-management section-block">
