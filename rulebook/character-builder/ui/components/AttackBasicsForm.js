@@ -16,10 +16,9 @@ export class AttackBasicsForm {
                 <div class="attack-basics-columns">
                     <div class="attack-basics-left">
                         ${this.renderNameFields(attack)}
-                        ${this.renderSelectedTypes(attack, currentCharacter)}
+                        ${this.renderIntegratedTypeSelection(attack, currentCharacter)}
                     </div>
                     <div class="attack-basics-right">
-                        ${this.renderTypeSelectors(attack, currentCharacter)}
                         ${this.renderConditionalFields(attack, currentCharacter)}
                     </div>
                 </div>
@@ -44,69 +43,94 @@ export class AttackBasicsForm {
         `;
     }
 
-    renderTypeSelectors(attack, character) {
-        // Fetch all type definitions from the system
-        const attackTypes = AttackTypeSystem.getAttackTypeDefinitions ? AttackTypeSystem.getAttackTypeDefinitions() : {};
-        const effectTypes = AttackTypeSystem.getEffectTypeDefinitions ? AttackTypeSystem.getEffectTypeDefinitions() : {};
-        const freeAttackTypes = AttackTypeSystem.getFreeAttackTypesFromArchetype ? AttackTypeSystem.getFreeAttackTypesFromArchetype(character) : [];
-
-        // Map definitions to options for RenderUtils.renderSelect
-        const attackTypeOptions = Object.values(attackTypes).map(type => ({
-            value: type.id,
-            label: `${type.name} (${freeAttackTypes.includes(type.id) ? 'Free' : (type.cost + 'p')})`,
-            disabled: (attack.attackTypes || []).includes(type.id) // Disable if already selected
-        }));
-
-        const effectTypeOptions = Object.values(effectTypes).map(type => ({
-            value: type.id,
-            label: `${type.name} (${type.cost}p)`,
-            disabled: (attack.effectTypes || []).includes(type.id)
-        }));
-
+    renderIntegratedTypeSelection(attack, character) {
         return `
-            ${RenderUtils.renderFormGroup({
-                label: 'Attack Type:',
-                inputId: `attack-type-select-${this.parentTab.selectedAttackIndex}`,
-                inputHtml: RenderUtils.renderSelect({
-                    id: `attack-type-select-${this.parentTab.selectedAttackIndex}`,
-                    options: attackTypeOptions,
-                    dataAttributes: { action: 'add-attack-type' },
-                    placeholder: 'Add an Attack Type...'
-                })
-            })}
-            ${RenderUtils.renderFormGroup({
-                label: 'Effect Type:',
-                inputId: `effect-type-select-${this.parentTab.selectedAttackIndex}`,
-                inputHtml: RenderUtils.renderSelect({
-                    id: `effect-type-select-${this.parentTab.selectedAttackIndex}`,
-                    options: effectTypeOptions,
-                    dataAttributes: { action: 'add-effect-type' },
-                    placeholder: 'Add an Effect Type...'
-                })
-            })}
+            <div class="integrated-type-selection">
+                ${this.renderAttackTypeSection(attack, character)}
+                ${this.renderEffectTypeSection(attack, character)}
+            </div>
         `;
     }
 
-    renderSelectedTypes(attack, character) {
-        const attackTypes = AttackTypeSystem.getAttackTypeDefinitions ? AttackTypeSystem.getAttackTypeDefinitions() : {};
-        const effectTypes = AttackTypeSystem.getEffectTypeDefinitions ? AttackTypeSystem.getEffectTypeDefinitions() : {};
-
+    renderAttackTypeSection(attack, character) {
+        const attackTypes = AttackTypeSystem.getAttackTypeDefinitions?.() || {};
+        const freeAttackTypes = AttackTypeSystem.getFreeAttackTypesFromArchetype?.(character) || [];
+        const selectedTypes = attack.attackTypes || [];
+        
+        // Show selected attack types as tags
+        const selectedTags = selectedTypes.map(typeId => {
+            const def = attackTypes[typeId];
+            const isFree = freeAttackTypes.includes(typeId);
+            return `<span class="tag attack-type-tag">
+                ${def?.name || typeId} ${isFree ? '(Free)' : `(${def?.cost || 0}p)`}
+                <button data-action="remove-attack-type" data-id="${typeId}" title="Remove attack type">×</button>
+            </span>`;
+        }).join('');
+        
+        // Filter out already selected types for dropdown
+        const availableTypes = Object.values(attackTypes)
+            .filter(type => !selectedTypes.includes(type.id))
+            .map(type => ({
+                value: type.id,
+                label: `${type.name} (${freeAttackTypes.includes(type.id) ? 'Free' : (type.cost + 'p')})`
+            }));
+        
         return `
-            <div class="selected-types-display">
-                <h4>Selected Types</h4>
-                <div class="type-tags">
-                    ${(attack.attackTypes || []).map(id => {
-                        const def = attackTypes[id];
-                        return `<span class="tag attack-type-tag">${def?.name || id} <button data-action="remove-attack-type" data-id="${id}">×</button></span>`;
-                    }).join('')}
-                    ${(attack.effectTypes || []).map(id => {
-                        const def = effectTypes[id];
-                        return `<span class="tag effect-type-tag">${def?.name || id} <button data-action="remove-effect-type" data-id="${id}">×</button></span>`;
-                    }).join('')}
+            <div class="type-section">
+                <h4>Attack Types</h4>
+                <div class="type-tags-area">
+                    ${selectedTags}
+                    ${availableTypes.length > 0 ? RenderUtils.renderSelect({
+                        id: `attack-type-select-${this.parentTab.selectedAttackIndex}`,
+                        options: availableTypes,
+                        dataAttributes: { action: 'add-attack-type' },
+                        placeholder: 'Add an Attack Type...',
+                        classes: ['inline-selector']
+                    }) : '<span class="no-options">All attack types selected</span>'}
                 </div>
             </div>
         `;
     }
+
+    renderEffectTypeSection(attack, character) {
+        const effectTypes = AttackTypeSystem.getEffectTypeDefinitions?.() || {};
+        const selectedTypes = attack.effectTypes || [];
+        
+        // Show selected effect types as tags
+        const selectedTags = selectedTypes.map(typeId => {
+            const def = effectTypes[typeId];
+            return `<span class="tag effect-type-tag">
+                ${def?.name || typeId} (${def?.cost || 0}p)
+                <button data-action="remove-effect-type" data-id="${typeId}" title="Remove effect type">×</button>
+            </span>`;
+        }).join('');
+        
+        // For Effect Type, typically only one is selected (mutually exclusive)
+        // But we'll allow multiple for flexibility
+        const availableTypes = Object.values(effectTypes)
+            .filter(type => !selectedTypes.includes(type.id))
+            .map(type => ({
+                value: type.id,
+                label: `${type.name} (${type.cost}p)`
+            }));
+        
+        return `
+            <div class="type-section">
+                <h4>Effect Type</h4>
+                <div class="type-tags-area">
+                    ${selectedTags}
+                    ${availableTypes.length > 0 ? RenderUtils.renderSelect({
+                        id: `effect-type-select-${this.parentTab.selectedAttackIndex}`,
+                        options: availableTypes,
+                        dataAttributes: { action: 'add-effect-type' },
+                        placeholder: 'Add an Effect Type...',
+                        classes: ['inline-selector']
+                    }) : '<span class="no-options">Effect type selected</span>'}
+                </div>
+            </div>
+        `;
+    }
+
 
     renderConditionalFields(attack, character) {
         let html = '';
@@ -126,27 +150,87 @@ export class AttackBasicsForm {
         
         // Show basic conditions selector if condition or hybrid effect type is selected
         if ((attack.effectTypes || []).some(e => ['condition', 'hybrid'].includes(e))) {
-            const conditions = AttackTypeSystem.getBasicConditions ? AttackTypeSystem.getBasicConditions() : [];
-            html += `
-                <div class="form-group">
-                    <label for="basic-condition-${this.parentTab.selectedAttackIndex}">Add Basic Condition:</label>
-                    <select id="basic-condition-${this.parentTab.selectedAttackIndex}" data-action="add-basic-condition">
-                        <option value="">Select condition...</option>
-                        ${conditions
-                            .filter(c => !(attack.basicConditions || []).includes(c.id))
-                            .map(c => `<option value="${c.id}">${c.name}</option>`)
-                            .join('')}
-                    </select>
-                </div>
-                <div class="selected-conditions">
-                    ${(attack.basicConditions || []).map(id => 
-                        `<span class="tag condition-tag">${id} <button data-action="remove-basic-condition" data-id="${id}">×</button></span>`
-                    ).join('')}
-                </div>
-            `;
+            html += this.renderBasicConditionsSection(attack);
+            html += this.renderAdvancedConditionsSection(attack);
         }
         
         return html ? `<div class="conditional-fields">${html}</div>` : '';
+    }
+
+    renderBasicConditionsSection(attack) {
+        const conditions = AttackTypeSystem.getBasicConditions?.() || [];
+        const selectedConditions = attack.basicConditions || [];
+        
+        // Show selected basic conditions as tags
+        const selectedTags = selectedConditions.map(conditionId => {
+            const condition = conditions.find(c => c.id === conditionId);
+            return `<span class="tag condition-tag">
+                ${condition?.name || conditionId}
+                <button data-action="remove-basic-condition" data-id="${conditionId}" title="Remove basic condition">×</button>
+            </span>`;
+        }).join('');
+        
+        // Filter out already selected conditions for dropdown
+        const availableConditions = conditions
+            .filter(c => !selectedConditions.includes(c.id))
+            .map(c => ({
+                value: c.id,
+                label: c.name
+            }));
+        
+        return `
+            <div class="conditions-section">
+                <h4>Basic Conditions</h4>
+                <div class="condition-tags-area">
+                    ${selectedTags}
+                    ${availableConditions.length > 0 ? RenderUtils.renderSelect({
+                        id: `basic-condition-select-${this.parentTab.selectedAttackIndex}`,
+                        options: availableConditions,
+                        dataAttributes: { action: 'add-basic-condition' },
+                        placeholder: 'Add Basic Condition...',
+                        classes: ['inline-selector']
+                    }) : (selectedConditions.length > 0 ? '<span class="no-options">All basic conditions selected</span>' : '')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderAdvancedConditionsSection(attack) {
+        const conditions = AttackTypeSystem.getAdvancedConditions?.() || [];
+        const selectedConditions = attack.advancedConditions || [];
+        
+        // Show selected advanced conditions as tags
+        const selectedTags = selectedConditions.map(conditionId => {
+            const condition = conditions.find(c => c.id === conditionId);
+            return `<span class="tag advanced-condition-tag">
+                ${condition?.name || conditionId} (${condition?.cost || 0}p)
+                <button data-action="remove-advanced-condition" data-id="${conditionId}" title="Remove advanced condition">×</button>
+            </span>`;
+        }).join('');
+        
+        // Filter out already selected conditions for dropdown
+        const availableConditions = conditions
+            .filter(c => !selectedConditions.includes(c.id))
+            .map(c => ({
+                value: c.id,
+                label: `${c.name} (${c.cost || 0}p)`
+            }));
+        
+        return `
+            <div class="conditions-section">
+                <h4>Advanced Conditions</h4>
+                <div class="condition-tags-area">
+                    ${selectedTags}
+                    ${availableConditions.length > 0 ? RenderUtils.renderSelect({
+                        id: `advanced-condition-select-${this.parentTab.selectedAttackIndex}`,
+                        options: availableConditions,
+                        dataAttributes: { action: 'add-advanced-condition' },
+                        placeholder: 'Add Advanced Condition...',
+                        classes: ['inline-selector']
+                    }) : (selectedConditions.length > 0 ? '<span class="no-options">All advanced conditions selected</span>' : '')}
+                </div>
+            </div>
+        `;
     }
 
     // Fallback to simple form if data-driven approach fails
@@ -178,38 +262,6 @@ export class AttackBasicsForm {
         return `<em>${descriptions[attackTypeId] || ''}</em>`;
     }
 
-    // Event handling
-    handleFormEvent(event) {
-        const action = event.target.dataset.action;
-        const value = event.target.value;
-
-        switch (action) {
-            case 'update-attack-name':
-                this.parentTab.updateAttackProperty('name', value);
-                break;
-            case 'update-attack-subtitle':
-                this.parentTab.updateAttackProperty('subtitle', value);
-                break;
-            case 'update-attack-details':
-                this.parentTab.updateAttackProperty('description', value);
-                break;
-            case 'update-attack-type':
-                this.parentTab.updateAttackProperty('attackType', value);
-                break;
-            case 'add-attack-type':
-                if (value && this.parentTab.addAttackType) {
-                    this.parentTab.addAttackType(value);
-                    event.target.value = ''; // Reset selection
-                }
-                break;
-            case 'add-effect-type':
-                if (value && this.parentTab.addEffectType) {
-                    this.parentTab.addEffectType(value);
-                    event.target.value = ''; // Reset selection
-                }
-                break;
-        }
-    }
 
     // Set attack index (for compatibility with other components)
     setAttackIndex(index) {

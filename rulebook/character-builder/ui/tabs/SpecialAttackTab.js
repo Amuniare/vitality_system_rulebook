@@ -367,7 +367,9 @@ export class SpecialAttackTab {
             
             // Condition management
             'add-basic-condition': () => this.addCondition(element.value, false),
+            'add-advanced-condition': () => this.addCondition(element.value, true),
             'remove-basic-condition': () => this.removeCondition(data.id, false),
+            'remove-advanced-condition': () => this.removeCondition(data.id, true),
             'update-hybrid-order': () => this.updateAttackProperty('hybridOrder', element.value),
             
             // Category toggles
@@ -484,16 +486,19 @@ export class SpecialAttackTab {
     addCondition(id, isAdvanced) { 
         if (id) { 
             this.builder.addConditionToAttack(this.selectedAttackIndex, id, isAdvanced);
-            this.builder.showNotification('Condition added', 'success');
-            // Clear the dropdown
-            const select = document.querySelector(`#basic-condition-select-${this.selectedAttackIndex}`);
+            this.builder.showNotification(`${isAdvanced ? 'Advanced' : 'Basic'} condition added`, 'success');
+            // Clear the appropriate dropdown
+            const selectId = isAdvanced ? 
+                `#advanced-condition-select-${this.selectedAttackIndex}` : 
+                `#basic-condition-select-${this.selectedAttackIndex}`;
+            const select = document.querySelector(selectId);
             if (select) select.value = '';
         } 
     }
     
     removeCondition(id, isAdvanced) { 
         this.builder.removeConditionFromAttack(this.selectedAttackIndex, id, isAdvanced);
-        this.builder.showNotification('Condition removed', 'info');
+        this.builder.showNotification(`${isAdvanced ? 'Advanced' : 'Basic'} condition removed`, 'info');
     }
     toggleCategory(type, category) { const set = type === 'limit' ? this.expandedLimitCategories : this.expandedUpgradeCategories; if (set.has(category)) set.delete(category); else set.add(category); this.render(); }
     // Limit management methods
