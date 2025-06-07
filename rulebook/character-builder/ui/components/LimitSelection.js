@@ -311,31 +311,6 @@ export class LimitSelection {
         }
     }
 
-    // Event handling
-    handleEvent(event) {
-        const action = event.target.dataset.action;
-
-        switch (action) {
-            case 'open-limit-modal':
-                this.setModalState(true);
-                this.parentTab.render();
-                break;
-            case 'close-limit-modal':
-                this.setModalState(false);
-                this.parentTab.render();
-                break;
-            case 'add-limit':
-                this.parentTab.addLimit(event.target.dataset.limitId);
-                break;
-            case 'remove-limit':
-                this.parentTab.removeLimit(parseInt(event.target.dataset.index));
-                break;
-            case 'toggle-limit-category':
-                this.toggleCategory(event.target.dataset.category || event.target.closest('[data-category]').dataset.category);
-                this.parentTab.render();
-                break;
-        }
-    }
 
     // Cleanup
     destroy() {
