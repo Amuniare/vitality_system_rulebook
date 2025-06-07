@@ -3,8 +3,6 @@ import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
 import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
 import { RenderUtils } from '../shared/RenderUtils.js';
 import { EventManager } from '../shared/EventManager.js';
-
-// Import modular components
 import { AttackBasicsForm } from '../components/AttackBasicsForm.js';
 import { LimitSelection } from '../components/LimitSelection.js';
 import { UpgradeSelection } from '../components/UpgradeSelection.js';
@@ -13,10 +11,6 @@ export class SpecialAttackTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
         this.selectedAttackIndex = 0;
-        this.expandedLimitCategories = new Set();
-        this.expandedUpgradeCategories = new Set(['Accuracy Bonuses', 'Damage Bonuses']);
-        
-        // Initialize modular components
         this.attackBasicsForm = new AttackBasicsForm(this);
         this.limitSelection = new LimitSelection(this);
         this.upgradeSelection = new UpgradeSelection(this);
@@ -35,12 +29,9 @@ export class SpecialAttackTab {
         tabContent.innerHTML = `
             <div class="special-attacks-section">
                 <h2>Special Attacks</h2>
-                <p class="section-description">
-                    Create unique combat abilities. Use limits to generate upgrade points, then purchase enhancements.
-                </p>
-                ${this.renderArchetypeInfo(character)}
+                <p class="section-description">Create unique combat abilities using limits and upgrades.</p>
                 ${this.renderAttackManagement(character)}
-                ${character.specialAttacks.length > 0 && character.specialAttacks[this.selectedAttackIndex] ?
+                ${character.specialAttacks.length > 0 ?
                     this.renderAttackBuilder(character) :
                     '<div class="empty-state">Create your first special attack to begin building.</div>'}
                 <div class="next-step">
@@ -55,35 +46,15 @@ export class SpecialAttackTab {
         this.setupEventListeners();
     }
     
-    renderArchetypeInfo(character) {
-        if (!character || !character.archetypes) {
-            return `<div class="archetype-info card"><div class="card-header"><h3 class="card-title">Character Not Loaded</h3></div><p>Please load a character first.</p></div>`;
-        }
-        
-        const archetypeId = character.archetypes.specialAttack;
-        if (!archetypeId) {
-            return `<div class="archetype-info card"><div class="card-header"><h3 class="card-title">Archetype Not Selected</h3></div><p>Please select a Special Attack Archetype.</p></div>`;
-        }
-        const archetypeData = (this.builder.gameDataManager.getArchetypes().specialAttack || []).find(a => a.id === archetypeId);
-        return `<div class="archetype-info card"><div class="card-header"><h3 class="card-title">Archetype: ${archetypeData?.name || 'Unknown'}</h3></div><p>${archetypeData?.description || 'No description available'}</p></div>`;
-    }
-
     renderAttackManagement(character) {
-        if (!character) {
-            return '<div class="attack-management"><p>No character loaded.</p></div>';
-        }
-        
         const canCreate = SpecialAttackSystem.validateCanCreateAttack(character);
         return `
             <div class="attack-management">
                 <div class="attack-list-header">
                     <h3>Attacks (${character.specialAttacks.length})</h3>
                     ${RenderUtils.renderButton({
-                        text: '+ Create Attack',
-                        variant: 'primary',
-                        disabled: !canCreate.isValid,
-                        dataAttributes: { action: 'create-attack' },
-                        title: canCreate.isValid ? 'Create new' : (canCreate.errors[0] || '')
+                        text: '+ Create Attack', variant: 'primary', disabled: !canCreate.isValid,
+                        dataAttributes: { action: 'create-attack' }, title: canCreate.isValid ? 'Create new' : (canCreate.errors[0] || '')
                     })}
                 </div>
                 <div class="attack-tabs-container">
@@ -110,10 +81,6 @@ export class SpecialAttackTab {
         const attack = character.specialAttacks[this.selectedAttackIndex];
         if (!attack) return '';
         
-        // Update component attack indices
-        this.limitSelection.setAttackIndex(this.selectedAttackIndex);
-        this.upgradeSelection.setAttackIndex(this.selectedAttackIndex);
-        
         return `
             <div class="attack-builder card">
                 ${this.attackBasicsForm.render(attack, character)}
@@ -129,219 +96,18 @@ export class SpecialAttackTab {
         `;
     }
     
-    renderAttackBasics(attack, character) {
-        const attackTypes = AttackTypeSystem.getAttackTypeDefinitions();
-        const effectTypes = AttackTypeSystem.getEffectTypeDefinitions();
-        const freeAttackTypes = AttackTypeSystem.getFreeAttackTypesFromArchetype(character);
-    
-        return `
-            <div class="attack-basics-form">
-                ${RenderUtils.renderFormGroup({
-                    label: 'Attack Name', inputId: 'attack-name',
-                    inputHtml: `<input type="text" id="attack-name" value="${attack.name || ''}" data-action="update-attack-name">`
-                })}
-                 <div class="attack-summary-tags">
-                    ${(attack.attackTypes || []).map(id => {
-                        const def = attackTypes[id];
-                        return `<span class="tag attack-type-tag">${def?.name || id} <button data-action="remove-attack-type" data-id="${id}">×</button></span>`;
-                    }).join('')}
-                    ${(attack.effectTypes || []).map(id => {
-                        const def = effectTypes[id];
-                        return `<span class="tag effect-type-tag">${def?.name || id} <button data-action="remove-effect-type" data-id="${id}">×</button></span>`;
-                    }).join('')}
-                </div>
-                <div class="attack-type-selectors">
-                    ${RenderUtils.renderFormGroup({
-                        label: 'Add Attack Type',
-                        inputHtml: RenderUtils.renderSelect({
-                            id: 'attack-type-select', placeholder: 'Select...',
-                            options: Object.values(attackTypes)
-                                .filter(t => !(attack.attackTypes || []).includes(t.id))
-                                .map(t => ({ value: t.id, label: `${t.name} (${freeAttackTypes.includes(t.id) ? 'Free' : (t.cost + 'p')})`})),
-                            dataAttributes: { action: 'add-attack-type' }
-                        })
-                    })}
-                    ${RenderUtils.renderFormGroup({
-                        label: 'Add Effect Type',
-                        inputHtml: RenderUtils.renderSelect({
-                            id: 'effect-type-select', placeholder: 'Select...',
-                            options: Object.values(effectTypes)
-                                .filter(t => !(attack.effectTypes || []).includes(t.id))
-                                .map(t => ({ value: t.id, label: `${t.name} (${t.cost}p)`})),
-                            dataAttributes: { action: 'add-effect-type' }
-                        })
-                    })}
-                </div>
-            </div>
-        `;
-    }
-
-    renderAttackConditionalFields(attack) {
-        let html = '';
-        if ((attack.effectTypes || []).includes('hybrid')) {
-            html += RenderUtils.renderFormGroup({
-                label: 'Hybrid Order',
-                inputHtml: RenderUtils.renderSelect({
-                    id: 'hybrid-order-select', value: attack.hybridOrder || 'damage-first',
-                    options: [{value: 'damage-first', label: 'Damage then Conditions'}, {value: 'conditions-first', label: 'Conditions then Damage'}],
-                    dataAttributes: { action: 'update-hybrid-order' }
-                })
-            });
-        }
-        if ((attack.effectTypes || []).some(e => ['condition', 'hybrid'].includes(e))) {
-            const conditions = AttackTypeSystem.getBasicConditions();
-            html += RenderUtils.renderFormGroup({
-                label: 'Add Basic Condition',
-                inputHtml: RenderUtils.renderSelect({
-                    id: 'basic-condition-select', placeholder: 'Select...',
-                    options: conditions
-                        .filter(c => !(attack.basicConditions || []).includes(c.id))
-                        .map(c => ({value: c.id, label: c.name})),
-                    dataAttributes: { action: 'add-basic-condition'}
-                })
-            });
-            html += `<div class="attack-summary-tags">${(attack.basicConditions || []).map(id => `<span class="tag condition-tag">${id} <button data-action="remove-basic-condition" data-id="${id}">×</button></span>`).join('')}</div>`;
-        }
-        return html ? `<div class="attack-basics-conditionals">${html}</div>` : '';
-    }
-
-    renderLimitsSection(attack, character) {
-        const archetype = character.archetypes.specialAttack;
-        if (!SpecialAttackSystem.canArchetypeUseLimits(character)) {
-            return `<div class="limits-section section-block disabled"><h3>Limits</h3><p class="archetype-restriction">${this.formatArchetypeName(archetype)} archetype cannot use limits.</p></div>`;
-        }
-        const allLimits = SpecialAttackSystem.getAvailableLimits();
-        const limitsByCategory = this.groupLimitsByCategory(allLimits);
-        return `
-            <div class="limits-section section-block">
-                ${this.renderSelectedLimitsTable(attack, character)}
-                <div class="limit-categories-hierarchy">
-                    <h4>Available Limits</h4>
-                    ${Object.entries(limitsByCategory).map(([cat, lims]) => this.renderLimitCategory(cat, lims, attack, character)).join('')}
-                </div>
-            </div>
-        `;
-    }
-    
-    renderSelectedLimitsTable(attack, character) {
-        if (!attack.limits || attack.limits.length === 0) return '';
-        return `
-            <div class="selected-limits-table">
-                <h4>Selected Limits</h4>
-                <table class="limits-breakdown-table">
-                    <thead><tr><th>Remove</th><th>Limit</th><th>Points</th></tr></thead>
-                    <tbody>${attack.limits.map((limit, index) => this.renderLimitTableRow(limit, index)).join('')}</tbody>
-                    <tfoot>${this.renderLimitCalculationFooter(attack, character)}</tfoot>
-                </table>
-            </div>
-        `;
-    }
-    
-    renderLimitTableRow(limit, index) {
-        const pointsValue = limit.points || limit.cost || 0;
-        return `
-            <tr class="limit-table-row" data-limit-index="${index}">
-                <td class="remove-cell">${RenderUtils.renderButton({ text: '×', variant: 'danger', size: 'small', dataAttributes: {action: 'remove-limit-row', index: index}})}</td>
-                <td class="limit-name-cell">${limit.name}</td>
-                <td class="limit-points-cell">${pointsValue}</td>
-            </tr>`;
-    }
-
-    renderLimitCalculationFooter(attack, character) {
-        const { totalValue, finalPoints } = SpecialAttackSystem.calculateLimitToUpgradePoints(character, attack);
-        return `
-            <tr class="calculation-subtotal"><td colspan="2"><strong>Limit Points Total:</strong></td><td><strong>${attack.limitPointsTotal || 0}</strong></td></tr>
-            <tr class="calculation-diminishing"><td colspan="2">Before Rounding:</td><td>${totalValue.toFixed(2)}</td></tr>
-            <tr class="calculation-final"><td colspan="2"><strong>Final Upgrade Points:</strong></td><td><strong>${finalPoints}</strong></td></tr>`;
-    }
-
-    renderLimitCategory(categoryKey, categoryLimits, attack, character) {
-        const isExpanded = this.expandedLimitCategories.has(categoryKey);
-        return `
-            <div class="limit-category">
-                <div class="limit-category-header" data-action="toggle-limit-category" data-category="${categoryKey}">
-                    <span class="category-expand-icon">${isExpanded ? '▼' : '▶'}</span>
-                    <span class="category-name">${this.formatCategoryName(categoryKey)}</span>
-                </div>
-                <div class="limit-category-content" style="display: ${isExpanded ? 'block' : 'none'};">
-                    ${categoryLimits.map(limit => this.renderLimitOption(limit, attack, character)).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    renderLimitOption(limit, attack, character) {
-        const isSelected = (attack.limits || []).some(l => l.id === limit.id);
-        const validation = SpecialAttackSystem.validateLimitSelection(character, attack, limit.id);
-        return RenderUtils.renderCard({
-            title: limit.name,
-            cost: limit.cost,
-            description: limit.description + (!validation.isValid ? `<br><small class="error-text">${validation.errors[0]}</small>` : ''),
-            clickable: !isSelected && validation.isValid,
-            disabled: isSelected || !validation.isValid,
-            selected: isSelected,
-            dataAttributes: { action: isSelected ? 'remove-limit' : 'add-limit', 'limit-id': limit.id }
-        }, { cardClass: 'limit-option', showStatus: false });
-    }
-
-    renderUpgradesSection(attack, character) {
-        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
-        return `
-            <div class="upgrades-section section-block">
-                <div class="section-header">
-                    <h4>Upgrades</h4>
-                    <div class="points-remaining">Points: <span class="${remainingPoints < 0 ? 'error-text' : ''}">${remainingPoints}</span></div>
-                </div>
-                ${this.renderAvailableUpgrades(character, attack)}
-            </div>
-        `;
-    }
-
-    renderAvailableUpgrades(character, attack) {
-        const allUpgrades = SpecialAttackSystem.getAvailableUpgrades();
-        const upgradesByCategory = this.groupUpgradesByCategory(allUpgrades);
-
-        return `
-            <div class="upgrade-categories">
-                ${Object.entries(upgradesByCategory).map(([category, upgrades]) => `
-                    <div class="upgrade-category">
-                        <div class="category-header" data-action="toggle-upgrade-category" data-category="${category}">
-                           <span class="category-toggle">${this.expandedUpgradeCategories.has(category) ? '▼' : '▶'}</span>
-                           <h5>${category}</h5>
-                        </div>
-                        <div class="category-content" style="display: ${this.expandedUpgradeCategories.has(category) ? 'block' : 'none'};">
-                            ${upgrades.map(up => this.renderUpgradeCard(up, attack, character)).join('')}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
-
-    renderUpgradeCard(upgrade, attack, character) {
-        let actualCost = typeof upgrade.cost === 'string' ? ((parseInt(upgrade.cost) || 0) * character.tier) : upgrade.cost;
-        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
-        const canAfford = remainingPoints >= actualCost;
-        const isPurchased = (attack.upgrades || []).some(u => u.id === upgrade.id);
-        const validation = SpecialAttackSystem.validateUpgradeAddition(character, attack, upgrade);
-
-        return RenderUtils.renderCard({
-            title: upgrade.name,
-            cost: actualCost,
-            description: `${upgrade.effect || ''} ${upgrade.restriction ? `<br><small><strong>Restriction:</strong> ${upgrade.restriction}</small>`: ''} ${!validation.isValid ? `<br><small class="error-text">${validation.errors[0]}</small>` : ''}`,
-            clickable: !isPurchased && canAfford && validation.isValid,
-            disabled: isPurchased || !canAfford || !validation.isValid,
-            selected: isPurchased,
-            dataAttributes: { action: isPurchased ? 'remove-upgrade' : 'purchase-upgrade', 'upgrade-id': upgrade.id }
-        }, { cardClass: 'upgrade-option', showStatus: false });
-    }
-
     setupEventListeners() {
-        EventManager.delegateEvents(document.getElementById('tab-specialAttacks'), {
-            click: { '[data-action]': (e, el) => this.handleEvent(e, el) },
-            change: { 'select[data-action]': (e, el) => this.handleEvent(e, el) },
-            input: { 'input[data-action]': (e, el) => this.handleEvent(e, el) }
-        });
+        const container = document.getElementById('tab-specialAttacks');
+        if(container) {
+            EventManager.delegateEvents(container, {
+                click: { '[data-action]': (e, el) => this.handleEvent(e, el) },
+                change: { 'select[data-action]': (e, el) => this.handleEvent(e, el) },
+                input: { 
+                    'input[data-action]': (e, el) => this.handleEvent(e, el), 
+                    'textarea[data-action]': (e, el) => this.handleEvent(e, el) 
+                }
+            }, this);
+        }
     }
 
     handleEvent(e, element) {
@@ -349,97 +115,59 @@ export class SpecialAttackTab {
         e.stopPropagation();
 
         const handlers = {
-            // Attack management
             'create-attack': () => this.createNewAttack(),
             'select-attack-tab': () => this.selectAttack(parseInt(data.attackIndex)),
             'delete-attack': () => this.deleteAttack(parseInt(data.index)),
             
-            // Attack basics form events
             'update-attack-name': () => this.updateAttackProperty('name', element.value),
             'update-attack-subtitle': () => this.updateAttackProperty('subtitle', element.value),
             'update-attack-details': () => this.updateAttackProperty('description', element.value),
             
-            // Attack/Effect type management
-            'add-attack-type': () => this.addAttackType(element.value),
-            'remove-attack-type': () => this.removeAttackType(data.id),
-            'add-effect-type': () => this.addEffectType(element.value),
-            'remove-effect-type': () => this.removeEffectType(data.id),
+            'add-attackType': () => this.addAttackType(element.value),
+            'remove-attackType': () => this.removeAttackType(data.id),
+            'add-effectType': () => this.addEffectType(element.value),
+            'remove-effectType': () => this.removeEffectType(data.id),
             
-            // Condition management
-            'add-basic-condition': () => this.addCondition(element.value, false),
+            'add-basicCondition': () => this.addCondition(element.value, false),
+            'remove-basicCondition': () => this.removeCondition(data.id, false),
             'add-advancedCondition': () => this.addCondition(element.value, true),
-            'remove-basic-condition': () => this.removeCondition(data.id, false),
             'remove-advancedCondition': () => this.removeCondition(data.id, true),
+            
             'update-hybrid-order': () => this.updateAttackProperty('hybridOrder', element.value),
             
-            // Category toggles
-            'toggle-limit-category': () => this.toggleCategory('limit', data.category),
-            'toggle-upgrade-category': () => this.toggleCategory('upgrade', data.category),
-            
-            // Limit management
             'add-limit': () => this.addLimit(data.limitId),
-            'remove-limit': () => this.removeLimit(data.limitId),
-            'remove-limit-row': () => this.removeLimitByIndex(parseInt(data.index)),
+            'remove-limit': () => this.removeLimitByIndex(parseInt(data.index)),
+            'toggle-limit-category': () => this.limitSelection.toggleCategory(data.category) & this.render(),
             
-            // Modal management for limits
-            'open-limit-modal': () => this.openLimitModal(),
-            'close-limit-modal': () => this.closeLimitModal(),
-            
-            // Upgrade management
             'purchase-upgrade': () => this.purchaseUpgrade(data.upgradeId),
-            'remove-upgrade': () => this.removeUpgrade(data.upgradeId),
+            'remove-upgrade': () => this.removeUpgrade(parseInt(data.index)),
+            'toggle-upgrade-category': () => this.upgradeSelection.toggleCategory(data.category) & this.render(),
             
-            // Navigation
             'continue-to-utility': () => this.builder.switchTab('utility')
         };
         
-        const handler = handlers[action];
-        if (handler) {
-            handler();
-        } else {
-            console.warn(`No handler found for action: ${action}`);
-        }
+        handlers[action]?.();
     }
     
-    onCharacterUpdate() { 
-        // Granular updates using modular components
-        this.updateAttackTabs();
-        this.updateComponentStates();
-    }
-    
-    // Granular update methods
-    updateAttackTabs() {
-        const character = this.builder.currentCharacter;
-        if (!character) return;
-        
-        const tabsContainer = document.querySelector('.attack-tabs-container');
-        if (tabsContainer) {
-            tabsContainer.innerHTML = character.specialAttacks.map((attack, index) => 
-                this.renderAttackTab(attack, index)
-            ).join('');
-        }
-    }
-    
-    updateComponentStates() {
-        const character = this.builder.currentCharacter;
-        if (!character || !character.specialAttacks[this.selectedAttackIndex]) return;
-        
-        const attack = character.specialAttacks[this.selectedAttackIndex];
-        
-        // Update modular components with granular updates
-        this.limitSelection.updateLimitsList(attack);
-        this.limitSelection.updateCalculationFooter(attack, character);
-        this.upgradeSelection.updatePurchasedUpgrades(attack);
-    }
+    // --- Action Implementations ---
     
     createNewAttack() {
         const character = this.builder.currentCharacter;
-        const newAttack = SpecialAttackSystem.createSpecialAttack(character);
-        character.specialAttacks.push(newAttack);
-        this.selectedAttackIndex = character.specialAttacks.length - 1;
-        this.builder.updateCharacter();
+        try {
+            const newAttack = SpecialAttackSystem.createSpecialAttack(character);
+            character.specialAttacks.push(newAttack);
+            this.selectedAttackIndex = character.specialAttacks.length - 1;
+            this.builder.updateCharacter();
+        } catch(e) { this.builder.showNotification(e.message, 'error'); }
     }
-    selectAttack(index) { this.selectedAttackIndex = index; this.render(); }
+    
+    selectAttack(index) {
+        if (index !== this.selectedAttackIndex) {
+            this.selectedAttackIndex = index;
+            this.render();
+        }
+    }
+    
     deleteAttack(index) {
         if(confirm('Are you sure you want to delete this attack?')){
             SpecialAttackSystem.deleteSpecialAttack(this.builder.currentCharacter, index);
@@ -449,121 +177,108 @@ export class SpecialAttackTab {
             this.builder.updateCharacter();
         }
     }
+    
     updateAttackProperty(prop, value) { 
-        this.builder.updateSpecialAttackProperty(this.selectedAttackIndex, prop, value); 
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if(attack) attack[prop] = value;
+        this.builder.updateCharacter(); 
     }
     
     addAttackType(typeId) { 
-        if (typeId) { 
-            this.builder.addAttackTypeToAttack(this.selectedAttackIndex, typeId);
-            this.builder.showNotification('Attack type added', 'success');
-            // Clear the dropdown
-            const select = document.querySelector(`#attack-type-select-${this.selectedAttackIndex}`);
-            if (select) select.value = '';
-        } 
-    }
-    
-    removeAttackType(typeId) { 
-        this.builder.removeAttackTypeFromAttack(this.selectedAttackIndex, typeId);
-        this.builder.showNotification('Attack type removed', 'info');
-    }
-    
-    addEffectType(typeId) { 
-        if (typeId) { 
-            this.builder.addEffectTypeToAttack(this.selectedAttackIndex, typeId);
-            this.builder.showNotification('Effect type added', 'success');
-            // Clear the dropdown
-            const select = document.querySelector(`#effect-type-select-${this.selectedAttackIndex}`);
-            if (select) select.value = '';
-        } 
-    }
-    
-    removeEffectType(typeId) { 
-        this.builder.removeEffectTypeFromAttack(this.selectedAttackIndex, typeId);
-        this.builder.showNotification('Effect type removed', 'info');
-    }
-    
-    addCondition(id, isAdvanced) { 
-        if (id) { 
-            this.builder.addConditionToAttack(this.selectedAttackIndex, id, isAdvanced);
-            this.builder.showNotification(`${isAdvanced ? 'Advanced' : 'Basic'} condition added`, 'success');
-            // Clear the appropriate dropdown
-            const selectId = isAdvanced ? 
-                `#advanced-condition-select-${this.selectedAttackIndex}` : 
-                `#basic-condition-select-${this.selectedAttackIndex}`;
-            const select = document.querySelector(selectId);
-            if (select) select.value = '';
-        } 
-    }
-    
-    removeCondition(id, isAdvanced) { 
-        this.builder.removeConditionFromAttack(this.selectedAttackIndex, id, isAdvanced);
-        this.builder.showNotification(`${isAdvanced ? 'Advanced' : 'Basic'} condition removed`, 'info');
-    }
-    toggleCategory(type, category) { const set = type === 'limit' ? this.expandedLimitCategories : this.expandedUpgradeCategories; if (set.has(category)) set.delete(category); else set.add(category); this.render(); }
-    // Limit management methods
-    addLimit(id) { 
+        if (!typeId) return;
         try {
-            SpecialAttackSystem.addLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); 
-            this.builder.updateCharacter(); 
-            this.builder.showNotification('Limit added successfully', 'success');
-        } catch (error) {
-            this.builder.showNotification(error.message, 'error');
+            const char = this.builder.currentCharacter;
+            const attack = char.specialAttacks[this.selectedAttackIndex];
+            AttackTypeSystem.addAttackTypeToAttack(char, attack, typeId);
+            this.builder.updateCharacter();
+            this.builder.showNotification('Attack Type added.', 'success');
+        } catch(e) { this.builder.showNotification(e.message, 'error'); }
+    }
+
+    removeAttackType(typeId) {
+        const char = this.builder.currentCharacter;
+        const attack = char.specialAttacks[this.selectedAttackIndex];
+        AttackTypeSystem.removeAttackTypeFromAttack(char, attack, typeId);
+        this.builder.updateCharacter();
+    }
+
+    addEffectType(typeId) {
+        if (!typeId) return;
+        try {
+            const char = this.builder.currentCharacter;
+            const attack = char.specialAttacks[this.selectedAttackIndex];
+            AttackTypeSystem.addEffectTypeToAttack(char, attack, typeId);
+            this.builder.updateCharacter();
+        } catch(e) { this.builder.showNotification(e.message, 'error'); }
+    }
+
+    removeEffectType(typeId) {
+        const char = this.builder.currentCharacter;
+        const attack = char.specialAttacks[this.selectedAttackIndex];
+        const index = (attack.effectTypes || []).indexOf(typeId);
+        if (index > -1) {
+            attack.effectTypes.splice(index, 1);
+            this.builder.updateCharacter();
         }
     }
     
-    removeLimit(id) { 
+    addCondition(conditionId, isAdvanced) {
+        if (!conditionId) return;
         try {
-            SpecialAttackSystem.removeLimitFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); 
-            this.builder.updateCharacter(); 
-            this.builder.showNotification('Limit removed', 'info');
+            const char = this.builder.currentCharacter;
+            const attack = char.specialAttacks[this.selectedAttackIndex];
+            AttackTypeSystem.addConditionToAttack(char, attack, conditionId, isAdvanced);
+            this.builder.updateCharacter();
+            this.builder.showNotification(`${isAdvanced ? 'Advanced' : 'Basic'} condition added.`, 'success');
         } catch (error) {
-            this.builder.showNotification(error.message, 'error');
+            this.builder.showNotification(`Error: ${error.message}`, 'error');
+        }
+    }
+
+    removeCondition(conditionId, isAdvanced) {
+        const char = this.builder.currentCharacter;
+        const attack = char.specialAttacks[this.selectedAttackIndex];
+        const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
+        if (!attack[arrayKey]) attack[arrayKey] = [];
+        const index = attack[arrayKey].indexOf(conditionId);
+        if (index > -1) {
+            attack[arrayKey].splice(index, 1);
+            this.builder.updateCharacter();
         }
     }
     
-    removeLimitByIndex(index) { 
+    addLimit(limitId) {
+        try {
+            SpecialAttackSystem.addLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitId);
+            this.builder.updateCharacter();
+            this.builder.showNotification('Limit added.', 'success');
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+    }
+
+    removeLimitByIndex(index) {
         const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
         if (attack && attack.limits[index]) {
-            const limitId = attack.limits[index].id; 
-            this.removeLimit(limitId);
+            SpecialAttackSystem.removeLimitFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, attack.limits[index].id);
+            this.builder.updateCharacter();
+        }
+    }
+
+    purchaseUpgrade(upgradeId) {
+        try {
+            SpecialAttackSystem.addUpgradeToAttack(this.builder.currentCharacter, this.selectedAttackIndex, upgradeId);
+            this.builder.updateCharacter();
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+    }
+
+    removeUpgrade(index) {
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if (attack && attack.upgrades[index]) {
+            SpecialAttackSystem.removeUpgradeFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, attack.upgrades[index].id);
+            this.builder.updateCharacter();
         }
     }
     
-    // Modal management methods
-    openLimitModal() {
-        this.limitSelection.setModalState(true);
+    onCharacterUpdate() {
         this.render();
     }
-    
-    closeLimitModal() {
-        this.limitSelection.setModalState(false);
-        this.render();
-    }
-    
-    // Upgrade management methods
-    purchaseUpgrade(id) { 
-        try {
-            SpecialAttackSystem.addUpgradeToAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); 
-            this.builder.updateCharacter(); 
-            this.builder.showNotification('Upgrade purchased', 'success');
-        } catch (error) {
-            this.builder.showNotification(error.message, 'error');
-        }
-    }
-    
-    removeUpgrade(id) { 
-        try {
-            SpecialAttackSystem.removeUpgradeFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, id); 
-            this.builder.updateCharacter(); 
-            this.builder.showNotification('Upgrade removed', 'info');
-        } catch (error) {
-            this.builder.showNotification(error.message, 'error');
-        }
-    }
-    
-    groupLimitsByCategory(limits) { return limits.reduce((acc, l) => { (acc[l.category] = acc[l.category] || []).push(l); return acc; }, {}); }
-    groupUpgradesByCategory(upgrades) { return upgrades.reduce((acc, u) => { (acc[u.category] = acc[u.category] || []).push(u); return acc; }, {}); }
-    formatCategoryName(name) { return name.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase()); }
-    formatArchetypeName(name) { return name ? name.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase()) : 'None'; }
 }
