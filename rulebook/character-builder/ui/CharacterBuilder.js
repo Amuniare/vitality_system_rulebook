@@ -537,11 +537,10 @@ export class CharacterBuilder {
             return;
         }
         
-        // Hide all tab contents
+        // Hide all tab contents using only classes
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
             content.classList.add('hidden');
-            content.style.display = 'none';
         });
         
         // Remove active class from all tab buttons
@@ -549,16 +548,13 @@ export class CharacterBuilder {
             btn.classList.remove('active');
         });
         
-        // Show selected tab content
+        // Show selected tab content using only classes
         const tabContent = document.getElementById(`tab-${tabName}`);
         console.log(`Tab content element for tab-${tabName}:`, tabContent);
         if (tabContent) {
-            // Remove any conflicting CSS classes and set display
             tabContent.classList.remove('hidden');
             tabContent.classList.add('active');
-            tabContent.style.display = 'block';
-            tabContent.style.visibility = 'visible'; // Ensure visibility
-            console.log(`✅ Tab content shown for ${tabName}. Display:`, tabContent.style.display, 'Classes:', tabContent.className);
+            console.log(`✅ Tab content shown for ${tabName}. Classes:`, tabContent.className);
         } else {
             console.error(`❌ Tab content element tab-${tabName} not found in DOM`);
         }
@@ -923,14 +919,6 @@ export class CharacterBuilder {
     }
     
     // Character Management Methods
-    showWelcomeScreen() {
-        console.log('Showing welcome screen');
-        document.getElementById('welcome-screen').style.display = 'block';
-        document.getElementById('character-builder').style.display = 'none';
-        
-        // Render character library
-        this.renderCharacterLibrary();
-    }
 
     renderCharacterLibrary() {
         const characterList = document.getElementById('character-list');
