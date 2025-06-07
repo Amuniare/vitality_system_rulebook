@@ -79,7 +79,7 @@ export class AttackBasicsForm {
         }).join('');
 
         let dropdownHtml = '';
-        if (allowMultiple || selectedIds.length === 0) {
+        if (selectedIds.length === 0) {
             const availableOptions = allOptions
                 .filter(opt => !selectedIds.includes(opt.id))
                 .map(type => ({

@@ -60,15 +60,19 @@
         "id": "area_direct",
         "name": "Direct Area Attack",
         "range": "self",
-        "description": "Affects multiple targets in area",
+        "description": "Affects multiple targets in an area and automatically hits them. This attack is typically limited to applying conditions only.",
+        "baseCostKey": "direct_area",
+        "discounts": {
+            "aoeSpecialist": "area",
+            "directSpecialist": "direct"
+        },
         "areaOptions": [
             { "type": "radius", "sizeKey": "AOE_RADIUS", "description": "3sp Radius Burst" },
             { "type": "cone", "sizeKey": "AOE_CONE", "description": "6sp Cone" },
             { "type": "line", "sizeKey": "AOE_LINE", "description": "12sp Line" }
         ],
         "penalty": "-Tier to all Damage and Condition rolls",
-        "costKey": "direct_area",
-        "restrictions": ["area_penalty"],
-        "bonuses": { "multiTarget": true }
+        "restrictions": ["area_penalty", "condition_only"],
+        "bonuses": { "multiTarget": true, "autoHit": true }
     }
 }

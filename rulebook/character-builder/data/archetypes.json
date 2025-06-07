@@ -84,7 +84,8 @@
         {
             "id": "crowdControl",
             "name": "Crowd Control",
-            "description": "Free access to 2 Advanced condition effects (chosen at selection). Trade-off: -Tier to all Damage rolls. Specializes in enemy control and debilitation. Strong team support role."
+            "description": "Free access to 2 Advanced condition effects (chosen at selection). Trade-off: -Tier to all Damage rolls. Specializes in enemy control and debilitation. Strong team support role.",
+            "freeAdvancedConditions": 2
         }
     ],
     "uniqueAbility": [

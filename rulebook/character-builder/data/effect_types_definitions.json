@@ -24,6 +24,7 @@
         "benefit": "Versatile attack combining effects",
         "penalty": "-Tier to ALL Damage and Condition rolls",
         "costKey": "hybrid", 
+        "freeForArchetype": "hybridSpecialist",
         "restrictions": ["hybrid_penalty"],
         "bonuses": { "bothEffects": true }
     }
