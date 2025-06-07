@@ -133,16 +133,21 @@ export class AttackBasicsForm {
             </span>`;
         }).join('');
 
-        const availableOptions = allDefinitions
-            .filter(c => !selectedIds.includes(c.id))
-            .map(c => ({ value: c.id, label: `${c.name}${c.cost ? ` (${c.cost}p)` : ''}` }));
+        let dropdownHtml = '';
+        if (selectedIds.length === 0) {
+            const availableOptions = allDefinitions
+                .filter(c => !selectedIds.includes(c.id))
+                .map(c => ({ value: c.id, label: `${c.name}${c.cost ? ` (${c.cost}p)` : ''}` }));
 
-        const dropdownHtml = availableOptions.length > 0 ? RenderUtils.renderSelect({
-            id: `${propertyKey}-select-${this.parentTab.selectedAttackIndex}`,
-            options: availableOptions,
-            dataAttributes: { action: `add-${propertyKey.slice(0, -1)}` },
-            placeholder: `Add a ${label.slice(0, -1)}...`
-        }) : '';
+            if (availableOptions.length > 0) {
+                dropdownHtml = RenderUtils.renderSelect({
+                    id: `${propertyKey}-select-${this.parentTab.selectedAttackIndex}`,
+                    options: availableOptions,
+                    dataAttributes: { action: `add-${propertyKey.slice(0, -1)}` },
+                    placeholder: `Add a ${label.slice(0, -1)}...`
+                });
+            }
+        }
 
         return `
             <div class="form-group integrated-selector">
