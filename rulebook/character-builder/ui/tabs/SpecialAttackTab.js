@@ -19,7 +19,6 @@ export class SpecialAttackTab {
     render() {
         const tabContent = document.getElementById('tab-specialAttacks');
         if (!tabContent) return;
-
         const character = this.builder.currentCharacter;
         if (!character) {
             tabContent.innerHTML = "<p>No character loaded.</p>";
@@ -137,11 +136,11 @@ export class SpecialAttackTab {
             
             'add-limit': () => this.addLimit(data.limitId),
             'remove-limit': () => this.removeLimitByIndex(parseInt(data.index)),
-            'toggle-limit-category': () => this.limitSelection.toggleCategory(data.category) & this.render(),
+            'toggle-limit-category': () => { this.limitSelection.toggleCategory(data.category); this.render(); },
             
             'purchase-upgrade': () => this.purchaseUpgrade(data.upgradeId),
             'remove-upgrade': () => this.removeUpgrade(parseInt(data.index)),
-            'toggle-upgrade-category': () => this.upgradeSelection.toggleCategory(data.category) & this.render(),
+            'toggle-upgrade-category': () => { this.upgradeSelection.toggleCategory(data.category); this.render(); },
             
             'continue-to-utility': () => this.builder.switchTab('utility')
         };
@@ -191,7 +190,6 @@ export class SpecialAttackTab {
             const attack = char.specialAttacks[this.selectedAttackIndex];
             AttackTypeSystem.addAttackTypeToAttack(char, attack, typeId);
             this.builder.updateCharacter();
-            this.builder.showNotification('Attack Type added.', 'success');
         } catch(e) { this.builder.showNotification(e.message, 'error'); }
     }
 
@@ -215,11 +213,8 @@ export class SpecialAttackTab {
     removeEffectType(typeId) {
         const char = this.builder.currentCharacter;
         const attack = char.specialAttacks[this.selectedAttackIndex];
-        const index = (attack.effectTypes || []).indexOf(typeId);
-        if (index > -1) {
-            attack.effectTypes.splice(index, 1);
-            this.builder.updateCharacter();
-        }
+        attack.effectTypes = (attack.effectTypes || []).filter(id => id !== typeId);
+        this.builder.updateCharacter();
     }
     
     addCondition(conditionId, isAdvanced) {
@@ -229,29 +224,20 @@ export class SpecialAttackTab {
             const attack = char.specialAttacks[this.selectedAttackIndex];
             AttackTypeSystem.addConditionToAttack(char, attack, conditionId, isAdvanced);
             this.builder.updateCharacter();
-            this.builder.showNotification(`${isAdvanced ? 'Advanced' : 'Basic'} condition added.`, 'success');
-        } catch (error) {
-            this.builder.showNotification(`Error: ${error.message}`, 'error');
-        }
+        } catch (error) { this.builder.showNotification(`Error: ${error.message}`, 'error'); }
     }
 
     removeCondition(conditionId, isAdvanced) {
-        const char = this.builder.currentCharacter;
-        const attack = char.specialAttacks[this.selectedAttackIndex];
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
         const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
-        if (!attack[arrayKey]) attack[arrayKey] = [];
-        const index = attack[arrayKey].indexOf(conditionId);
-        if (index > -1) {
-            attack[arrayKey].splice(index, 1);
-            this.builder.updateCharacter();
-        }
+        attack[arrayKey] = (attack[arrayKey] || []).filter(id => id !== conditionId);
+        this.builder.updateCharacter();
     }
     
     addLimit(limitId) {
         try {
             SpecialAttackSystem.addLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitId);
             this.builder.updateCharacter();
-            this.builder.showNotification('Limit added.', 'success');
         } catch (error) { this.builder.showNotification(error.message, 'error'); }
     }
 

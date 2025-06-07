@@ -12,23 +12,22 @@ export class AttackBasicsForm {
             return `<div class="error-text">Attack data not available for rendering.</div>`;
         }
 
+        // CORRECTED: The Type Selectors are now properly placed in the right column's div.
         return `
             <div class="attack-basics-form">
                 <div class="attack-basics-columns">
-                    <!-- Left Column: Name, Subtitle, Description -->
                     <div class="attack-basics-left">
-                        ${this.renderNameFields(attack)}
+                        ${this.renderNameAndDetailFields(attack)}
                     </div>
-                    <!-- Right Column: All type selections -->
                     <div class="attack-basics-right">
-                        ${this.renderTypeSelectors(attack, character)}
+                        ${this.renderTypeAndConditionSelectors(attack, character)}
                     </div>
                 </div>
             </div>
         `;
     }
 
-    renderNameFields(attack) {
+    renderNameAndDetailFields(attack) {
         return `
             ${RenderUtils.renderFormGroup({
                 label: 'Attack Name:',
@@ -43,31 +42,40 @@ export class AttackBasicsForm {
             ${RenderUtils.renderFormGroup({
                 label: 'Details:',
                 inputId: `attack-details-${this.parentTab.selectedAttackIndex}`,
-                inputHtml: `<textarea id="attack-details-${this.parentTab.selectedAttackIndex}" placeholder="Describe the attack's appearance and function." data-action="update-attack-details" rows="3">${attack.description || ''}</textarea>`
+                inputHtml: `<textarea id="attack-details-${this.parentTab.selectedAttackIndex}" placeholder="Describe the attack's appearance and function." data-action="update-attack-details" rows="4">${attack.description || ''}</textarea>`
             })}
         `;
     }
 
-    renderTypeSelectors(attack, character) {
+    renderTypeAndConditionSelectors(attack, character) {
+        const hasConditionEffect = (attack.effectTypes || []).some(e => ['condition', 'hybrid'].includes(e));
+
         return `
             ${this.renderIntegratedSelector(attack, character, 'Attack Types', 'attackTypes', AttackTypeSystem.getAttackTypeDefinitions(), true)}
             ${this.renderIntegratedSelector(attack, character, 'Effect Type', 'effectTypes', AttackTypeSystem.getEffectTypeDefinitions(), false)}
-            ${this.renderConditionalFields(attack, character)}
+
+            ${(attack.effectTypes || []).includes('hybrid') ? this.renderHybridOrderSelector(attack) : ''}
+            
+            ${hasConditionEffect ? `
+                <hr style="border-color: var(--accent-secondary); margin: 1.5rem 0 1rem;">
+                ${this.renderConditionSelector(attack, 'Basic Conditions', 'basicConditions', AttackTypeSystem.getBasicConditions())}
+                ${this.renderConditionSelector(attack, 'Advanced Conditions', 'advancedConditions', AttackTypeSystem.getAdvancedConditions())}
+            ` : ''}
         `;
     }
-
-    renderIntegratedSelector(attack, character, label, property, definitions, allowMultiple) {
-        const selectedIds = attack[property] || [];
+    
+    renderIntegratedSelector(attack, character, label, propertyKey, definitions, allowMultiple) {
+        const selectedIds = attack[propertyKey] || [];
         const allOptions = Object.values(definitions || {});
-        const freeTypes = property === 'attackTypes' ? AttackTypeSystem.getFreeAttackTypesFromArchetype(character) : [];
+        const freeTypes = propertyKey === 'attackTypes' ? (AttackTypeSystem.getFreeAttackTypesFromArchetype?.(character) || []) : [];
 
         const tagsHtml = selectedIds.map(id => {
             const def = allOptions.find(o => o.id === id);
             const isFree = freeTypes.includes(id);
-            const costText = isFree ? 'Free' : `${def?.cost || 0}p`;
+            const costText = (propertyKey === 'attackTypes' && isFree) ? 'Free' : `${def?.cost || 0}p`;
             return `<span class="tag attack-type-tag">
                 ${def?.name || id} (${costText})
-                <button data-action="remove-${property.slice(0, -1)}" data-id="${id}" title="Remove">×</button>
+                <button data-action="remove-${propertyKey.slice(0, -1)}" data-id="${id}" title="Remove">×</button>
             </span>`;
         }).join('');
 
@@ -77,67 +85,52 @@ export class AttackBasicsForm {
                 .filter(opt => !selectedIds.includes(opt.id))
                 .map(type => ({
                     value: type.id,
-                    label: `${type.name} (${freeTypes.includes(type.id) ? 'Free' : `${type.cost || 0}p`})`
+                    label: `${type.name} (${(propertyKey === 'attackTypes' && freeTypes.includes(type.id)) ? 'Free' : `${type.cost || 0}p`})`
                 }));
-
+            
             if (availableOptions.length > 0) {
                 dropdownHtml = RenderUtils.renderSelect({
-                    id: `${property}-select-${this.parentTab.selectedAttackIndex}`,
+                    id: `${propertyKey}-select-${this.parentTab.selectedAttackIndex}`,
                     options: availableOptions,
-                    dataAttributes: { action: `add-${property.slice(0, -1)}` },
+                    dataAttributes: { action: `add-${propertyKey.slice(0, -1)}` },
                     placeholder: `Add an ${label.slice(0, -1)}...`
                 });
             }
         }
-
+        
         return `
             <div class="form-group integrated-selector">
                 <label>${label}</label>
-                <div class="selected-tags">
-                    ${tagsHtml || ''}
-                </div>
+                <div class="selected-tags">${tagsHtml}</div>
                 ${dropdownHtml}
             </div>
         `;
     }
 
-    renderConditionalFields(attack, character) {
-        let html = '';
-        const hasConditionEffect = (attack.effectTypes || []).some(e => ['condition', 'hybrid'].includes(e));
-
-        if ((attack.effectTypes || []).includes('hybrid')) {
-            html += RenderUtils.renderFormGroup({
-                label: 'Hybrid Order:',
-                inputHtml: RenderUtils.renderSelect({
-                    id: `hybrid-order-${this.parentTab.selectedAttackIndex}`,
-                    options: [
-                        { value: 'damage-first', label: 'Damage then Conditions' },
-                        { value: 'conditions-first', label: 'Conditions then Damage' }
-                    ],
-                    value: attack.hybridOrder || 'damage-first',
-                    dataAttributes: { action: 'update-hybrid-order' }
-                })
-            });
-        }
-        
-        if (hasConditionEffect) {
-            html += '<hr style="border-color: var(--accent-secondary); margin: 1rem 0;">';
-            html += this.renderConditionSelector(attack, 'Basic Conditions', 'basicConditions', AttackTypeSystem.getBasicConditions());
-            html += this.renderConditionSelector(attack, 'Advanced Conditions', 'advancedConditions', AttackTypeSystem.getAdvancedConditions());
-        }
-
-        return html ? `<div class="conditional-fields">${html}</div>` : '';
+    renderHybridOrderSelector(attack) {
+        return RenderUtils.renderFormGroup({
+            label: 'Hybrid Order:',
+            inputHtml: RenderUtils.renderSelect({
+                id: `hybrid-order-${this.parentTab.selectedAttackIndex}`,
+                options: [
+                    { value: 'damage-first', label: 'Damage then Conditions' },
+                    { value: 'conditions-first', label: 'Conditions then Damage' }
+                ],
+                value: attack.hybridOrder || 'damage-first',
+                dataAttributes: { action: 'update-hybrid-order' }
+            })
+        });
     }
 
-    renderConditionSelector(attack, label, property, definitions) {
-        const selectedIds = attack[property] || [];
+    renderConditionSelector(attack, label, propertyKey, definitions) {
+        const selectedIds = attack[propertyKey] || [];
         const allDefinitions = definitions || [];
 
         const tagsHtml = selectedIds.map(id => {
             const def = allDefinitions.find(d => d.id === id);
             return `<span class="tag condition-tag">
-                ${def?.name || id} ${def?.cost ? `(${def.cost}p)`: ''}
-                <button data-action="remove-${property.slice(0, -1)}" data-id="${id}">×</button>
+                ${def?.name || id}${def?.cost ? ` (${def.cost}p)` : ''}
+                <button data-action="remove-${propertyKey.slice(0, -1)}" data-id="${id}">×</button>
             </span>`;
         }).join('');
 
@@ -146,16 +139,16 @@ export class AttackBasicsForm {
             .map(c => ({ value: c.id, label: `${c.name}${c.cost ? ` (${c.cost}p)` : ''}` }));
 
         const dropdownHtml = availableOptions.length > 0 ? RenderUtils.renderSelect({
-            id: `${property}-select-${this.parentTab.selectedAttackIndex}`,
+            id: `${propertyKey}-select-${this.parentTab.selectedAttackIndex}`,
             options: availableOptions,
-            dataAttributes: { action: `add-${property.slice(0, -1)}` },
+            dataAttributes: { action: `add-${propertyKey.slice(0, -1)}` },
             placeholder: `Add a ${label.slice(0, -1)}...`
         }) : '';
 
         return `
             <div class="form-group integrated-selector">
                 <label>${label}</label>
-                <div class="selected-tags">${tagsHtml || ''}</div>
+                <div class="selected-tags">${tagsHtml}</div>
                 ${dropdownHtml}
             </div>
         `;
