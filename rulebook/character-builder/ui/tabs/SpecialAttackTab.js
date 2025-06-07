@@ -56,15 +56,23 @@ export class SpecialAttackTab {
     }
     
     renderArchetypeInfo(character) {
+        if (!character || !character.archetypes) {
+            return `<div class="archetype-info card"><div class="card-header"><h3 class="card-title">Character Not Loaded</h3></div><p>Please load a character first.</p></div>`;
+        }
+        
         const archetypeId = character.archetypes.specialAttack;
         if (!archetypeId) {
             return `<div class="archetype-info card"><div class="card-header"><h3 class="card-title">Archetype Not Selected</h3></div><p>Please select a Special Attack Archetype.</p></div>`;
         }
         const archetypeData = (this.builder.gameDataManager.getArchetypes().specialAttack || []).find(a => a.id === archetypeId);
-        return `<div class="archetype-info card"><div class="card-header"><h3 class="card-title">Archetype: ${archetypeData.name}</h3></div><p>${archetypeData.description}</p></div>`;
+        return `<div class="archetype-info card"><div class="card-header"><h3 class="card-title">Archetype: ${archetypeData?.name || 'Unknown'}</h3></div><p>${archetypeData?.description || 'No description available'}</p></div>`;
     }
 
     renderAttackManagement(character) {
+        if (!character) {
+            return '<div class="attack-management"><p>No character loaded.</p></div>';
+        }
+        
         const canCreate = SpecialAttackSystem.validateCanCreateAttack(character);
         return `
             <div class="attack-management">

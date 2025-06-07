@@ -20,8 +20,12 @@ export class LimitSelection {
     }
 
     render(attack, character) {
+        if (!character || !character.archetypes) {
+            return this.renderDisabledSection('unknown');
+        }
+        
         const archetype = character.archetypes.specialAttack;
-        const canUseLimits = this.canArchetypeUseLimits(archetype);
+        const canUseLimits = this.canArchetypeUseLimits(character);
 
         if (!canUseLimits) {
             return this.renderDisabledSection(archetype);
@@ -298,10 +302,15 @@ export class LimitSelection {
     }
 
     // Helper methods
-    canArchetypeUseLimits(archetype) {
-        return SpecialAttackSystem.canArchetypeUseLimits ? 
-               SpecialAttackSystem.canArchetypeUseLimits(archetype) : 
-               !['paragon', 'oneTrick', 'dualNatured', 'basic'].includes(archetype);
+    canArchetypeUseLimits(character) {
+        if (SpecialAttackSystem.canArchetypeUseLimits) {
+            return SpecialAttackSystem.canArchetypeUseLimits(character);
+        }
+        
+        // Fallback logic if SpecialAttackSystem method doesn't exist
+        if (!character || !character.archetypes) return false;
+        const archetype = character.archetypes.specialAttack;
+        return !['paragon', 'oneTrick', 'dualNatured', 'basic'].includes(archetype);
     }
 
     formatArchetypeName(archetype) {

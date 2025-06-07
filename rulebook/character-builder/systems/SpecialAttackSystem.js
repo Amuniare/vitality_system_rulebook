@@ -7,6 +7,10 @@ import { gameDataManager } from '../core/GameDataManager.js';
 export class SpecialAttackSystem {
     // Create a new special attack
     static createSpecialAttack(character, name = null) {
+        if (!character) {
+            throw new Error('Character is required to create special attack');
+        }
+        
         const validation = this.validateCanCreateAttack(character);
         if (!validation.isValid) {
             throw new Error(validation.errors.join(', '));
@@ -59,6 +63,16 @@ export class SpecialAttackSystem {
     static validateCanCreateAttack(character) {
         const errors = [];
         const warnings = [];
+        
+        if (!character) {
+            errors.push('No character provided');
+            return { isValid: false, errors, warnings };
+        }
+        
+        if (!character.archetypes) {
+            errors.push('Character has no archetypes defined');
+            return { isValid: false, errors, warnings };
+        }
         
         const archetype = character.archetypes.specialAttack;
         
@@ -572,6 +586,9 @@ export class SpecialAttackSystem {
 
     // Check if archetype can use limits
     static canArchetypeUseLimits(character) {
+        if (!character || !character.archetypes) {
+            return false; // Safe default when character is null/undefined
+        }
         const archetype = character.archetypes.specialAttack;
         const noLimitsArchetypes = ['paragon', 'oneTrick', 'dualNatured', 'basic'];
         return !noLimitsArchetypes.includes(archetype);
@@ -579,16 +596,20 @@ export class SpecialAttackSystem {
 
     // Calculate limit to upgrade points with proper scaling
     static calculateLimitToUpgradePoints(character, attack) {
+        if (!character || !attack) {
+            return { totalValue: 0, finalPoints: 0 };
+        }
+        
         const limitPointsTotal = attack.limits?.reduce((total, limit) => total + (Number(limit.points) || 0), 0) || 0;
-        const tier = character.tier;
-        const archetype = character.archetypes.specialAttack;
+        const tier = character.tier || 1;
+        const archetype = character.archetypes?.specialAttack || 'basic';
         
         // Use TierSystem for proper calculation
         const calculationResult = TierSystem.calculateLimitScaling(limitPointsTotal, tier, archetype);
         
         return {
-            totalValue: calculationResult.scaledPoints,
-            finalPoints: calculationResult.finalPoints
+            totalValue: calculationResult.scaledPoints || 0,
+            finalPoints: calculationResult.finalPoints || 0
         };
     }
 }
