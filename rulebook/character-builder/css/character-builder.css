@@ -1406,7 +1406,7 @@ input:focus, select:focus, textarea:focus {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--padding-medium);
+    padding: var(--padding-large);
     border: 2px solid var(--accent-secondary);
     border-radius: var(--border-radius-medium);
     background: var(--bg-secondary);
@@ -1414,6 +1414,7 @@ input:focus, select:focus, textarea:focus {
     transition: all 0.2s ease;
     min-width: 200px;
     position: relative;
+    color: var(--text-light);
 }
 
 .attack-tab:hover {
