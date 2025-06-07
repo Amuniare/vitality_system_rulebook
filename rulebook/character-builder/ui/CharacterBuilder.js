@@ -19,14 +19,15 @@ import { UpdateManager } from './shared/UpdateManager.js';
 import { EventManager } from './shared/EventManager.js';
 
 export class CharacterBuilder {
-    constructor() {
+    constructor(gameDataManager) {
         console.log('CharacterBuilder constructor started');
+        this.gameDataManager = gameDataManager;
         this.currentCharacter = null;
         this.library = new CharacterLibrary();
         this.currentTab = 'basicInfo';
         this.initialized = false;
         this.lastCharacterHash = null;
-        console.log('CharacterBuilder constructor completed');
+        console.log('CharacterBuilder constructor completed with gameDataManager:', !!gameDataManager);
     }
 
     async init() {

@@ -25,8 +25,8 @@ class VitalityCharacterBuilderApp {
             await gameDataManager.init();
             console.log('🟢 GameDataManager initialized.');
 
-            // Initialize character builder
-            this.characterBuilder = new CharacterBuilder();
+            // Initialize character builder with gameDataManager
+            this.characterBuilder = new CharacterBuilder(gameDataManager);
             await this.characterBuilder.init();
             
             this.initialized = true;
