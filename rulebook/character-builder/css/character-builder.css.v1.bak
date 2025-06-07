@@ -5,6 +5,7 @@
 @import url("base/_variables.css");
 @import url("base/_globals.css");
 @import url("base/_layout.css");
+@import url("base/_typography.css");
 
 /* 2. Reusable Components */
 @import url("components/_buttons.css");
@@ -20,8 +21,3 @@
 @import url("tabs/_special-attacks.css");
 @import url("tabs/_utility.css");
 @import url("tabs/_summary.css");
-
-/* 4. Utilities & Animations */
-@import url("utils/_animations.css");
-@import url("utils/_utilities.css");
-@import url("utils/_misc.css"); /* Contains unassigned styles if any */
