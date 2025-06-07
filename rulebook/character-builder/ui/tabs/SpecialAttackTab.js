@@ -367,9 +367,9 @@ export class SpecialAttackTab {
             
             // Condition management
             'add-basic-condition': () => this.addCondition(element.value, false),
-            'add-advanced-condition': () => this.addCondition(element.value, true),
+            'add-advancedCondition': () => this.addCondition(element.value, true),
             'remove-basic-condition': () => this.removeCondition(data.id, false),
-            'remove-advanced-condition': () => this.removeCondition(data.id, true),
+            'remove-advancedCondition': () => this.removeCondition(data.id, true),
             'update-hybrid-order': () => this.updateAttackProperty('hybridOrder', element.value),
             
             // Category toggles

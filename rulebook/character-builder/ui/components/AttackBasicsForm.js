@@ -105,27 +105,25 @@ export class AttackBasicsForm {
             </span>`;
         }).join('');
         
-        // For Effect Type, typically only one is selected (mutually exclusive)
-        // But we'll allow multiple for flexibility
-        const availableTypes = Object.values(effectTypes)
-            .filter(type => !selectedTypes.includes(type.id))
+        // Effect Type - single selection only, dropdown disappears after selection
+        const availableTypes = selectedTypes.length === 0 ? Object.values(effectTypes)
             .map(type => ({
                 value: type.id,
                 label: `${type.name} (${type.cost}p)`
-            }));
+            })) : [];
         
         return `
             <div class="type-section">
                 <h4>Effect Type</h4>
                 <div class="type-tags-area">
                     ${selectedTags}
-                    ${availableTypes.length > 0 ? RenderUtils.renderSelect({
+                    ${selectedTypes.length === 0 ? RenderUtils.renderSelect({
                         id: `effect-type-select-${this.parentTab.selectedAttackIndex}`,
                         options: availableTypes,
                         dataAttributes: { action: 'add-effect-type' },
                         placeholder: 'Add an Effect Type...',
                         classes: ['inline-selector']
-                    }) : '<span class="no-options">Effect type selected</span>'}
+                    }) : ''}
                 </div>
             </div>
         `;
@@ -204,7 +202,7 @@ export class AttackBasicsForm {
             const condition = conditions.find(c => c.id === conditionId);
             return `<span class="tag advanced-condition-tag">
                 ${condition?.name || conditionId} (${condition?.cost || 0}p)
-                <button data-action="remove-advanced-condition" data-id="${conditionId}" title="Remove advanced condition">×</button>
+                <button data-action="remove-advancedCondition" data-id="${conditionId}" title="Remove advanced condition">×</button>
             </span>`;
         }).join('');
         
@@ -224,7 +222,7 @@ export class AttackBasicsForm {
                     ${availableConditions.length > 0 ? RenderUtils.renderSelect({
                         id: `advanced-condition-select-${this.parentTab.selectedAttackIndex}`,
                         options: availableConditions,
-                        dataAttributes: { action: 'add-advanced-condition' },
+                        dataAttributes: { action: 'add-advancedCondition' },
                         placeholder: 'Add Advanced Condition...',
                         classes: ['inline-selector']
                     }) : (selectedConditions.length > 0 ? '<span class="no-options">All advanced conditions selected</span>' : '')}
