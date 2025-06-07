@@ -25,7 +25,8 @@ claude
 ## Start Server
 python -m http.server
 
-http://localhost:8000/
+http://localhost:8000/rulebook/character-builder/character-builder.html
+
 
 ## Documentation
 
