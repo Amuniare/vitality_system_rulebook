@@ -25,6 +25,11 @@
 .limit-option:hover:not(.disabled):not(.selected) { border-color: var(--accent-primary); background: var(--bg-primary); }
 .limit-option.selected { border-color: var(--success-color); background: rgba(0, 255, 0, 0.1); }
 .limit-option.disabled { opacity: 0.5; cursor: not-allowed; background: var(--bg-primary); }
+
+/* Hierarchical indentation for limit types */
+.limit-option.main-limit { margin-left: 0; }
+.limit-option.variant-limit { margin-left: 2rem; }
+.limit-option.modifier-limit { margin-left: 4rem; }
 .limit-option-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--gap-small); }
 .limit-name { font-weight: 500; color: var(--text-light); }
 .limit-points { font-size: 0.9rem; color: var(--accent-secondary); font-weight: 600; }

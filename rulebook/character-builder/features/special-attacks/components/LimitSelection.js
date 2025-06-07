@@ -187,42 +187,13 @@ export class LimitSelection {
 
 
     renderAvailableLimits(character, attack) {
-        const allLimits = SpecialAttackSystem.getAvailableLimits();
-    
-        // Group the flat list of limits into a hierarchical structure for rendering
-        const limitsByCategory = allLimits.reduce((acc, limit) => {
-            if (limit.type === 'main') {
-                if (!acc[limit.category]) {
-                    acc[limit.category] = { main: limit, variants: {} };
-                } else {
-                    acc[limit.category].main = limit;
-                }
-            } else if (limit.type === 'variant') {
-                if (!acc[limit.category]) {
-                    acc[limit.category] = { main: null, variants: {} };
-                }
-                if (!acc[limit.category].variants[limit.id]) {
-                    acc[limit.category].variants[limit.id] = { variant: limit, modifiers: [] };
-                } else {
-                    acc[limit.category].variants[limit.id].variant = limit;
-                }
-            } else if (limit.type === 'modifier') {
-                const parentId = limit.parent;
-                const category = allLimits.find(l => l.id === parentId)?.category;
-                if (category) {
-                     if (!acc[category]) acc[category] = { main: null, variants: {} };
-                     if (!acc[category].variants[parentId]) acc[category].variants[parentId] = { variant: null, modifiers: [] };
-                     acc[category].variants[parentId].modifiers.push(limit);
-                }
-            }
-            return acc;
-        }, {});
+        const limitsData = SpecialAttackSystem.getAvailableLimitsHierarchy();
     
         return `
             <div class="available-limits">
                 <h4>Available Limits</h4>
                 <div class="limit-categories-hierarchy">
-                    ${Object.entries(limitsByCategory).map(([categoryKey, categoryData]) => 
+                    ${Object.entries(limitsData).map(([categoryKey, categoryData]) => 
                         this.renderLimitCategory(categoryKey, categoryData, attack, character)
                     ).join('')}
                 </div>
@@ -230,7 +201,6 @@ export class LimitSelection {
         `;
     }
     
-    // And replace renderLimitCategory with this to handle the new structure
     renderLimitCategory(categoryKey, categoryData, attack, character) {
         const isExpanded = this.expandedCategories.has(categoryKey);
         const formattedCategoryName = this.formatCategoryName(categoryKey);
@@ -243,23 +213,86 @@ export class LimitSelection {
                 </div>
                 <div class="category-content ${isExpanded ? 'expanded' : 'collapsed'}">
                     <div class="limit-options-grid">
-                        ${categoryData.main ? this.renderLimitOption(categoryData.main, attack, character) : ''}
-                        ${Object.values(categoryData.variants).map(({variant, modifiers}) => `
-                            <div class="limit-variant-group">
-                                ${variant ? this.renderLimitOption(variant, attack, character) : ''}
-                                <div class="limit-modifier-group">
-                                    ${modifiers.map(mod => this.renderLimitOption(mod, attack, character)).join('')}
-                                </div>
-                            </div>
-                        `).join('')}
+                        ${this.renderMainLimitOption(categoryKey, categoryData, attack, character)}
+                        ${this.renderVariants(categoryKey, categoryData, attack, character)}
                     </div>
                 </div>
-            `;
+            </div>
+        `;
+    }
+
+    renderMainLimitOption(categoryKey, categoryData, attack, character) {
+        if (categoryData.cost === undefined) return '';
+        
+        const limitData = {
+            id: categoryKey,
+            name: categoryKey,
+            description: categoryData.description,
+            cost: categoryData.cost,
+            type: 'main'
+        };
+        
+        return this.renderLimitOption(limitData, attack, character, 'main-limit');
+    }
+
+    renderVariants(categoryKey, categoryData, attack, character) {
+        if (!categoryData.variants) return '';
+        
+        return Object.entries(categoryData.variants).map(([variantKey, variantData]) => 
+            this.renderVariantGroup(categoryKey, variantKey, variantData, attack, character)
+        ).join('');
+    }
+
+    renderVariantGroup(categoryKey, variantKey, variantData, attack, character) {
+        return `
+            <div class="limit-variant-group">
+                ${this.renderVariantOption(categoryKey, variantKey, variantData, attack, character)}
+                ${this.renderModifiers(categoryKey, variantKey, variantData, attack, character)}
+            </div>
+        `;
+    }
+
+    renderVariantOption(categoryKey, variantKey, variantData, attack, character) {
+        const limitData = {
+            id: `${categoryKey}_${variantKey}`,
+            name: variantKey,
+            description: variantData.description,
+            cost: variantData.cost,
+            type: 'variant',
+            parent: categoryKey
+        };
+        
+        return this.renderLimitOption(limitData, attack, character, 'variant-limit');
+    }
+
+    renderModifiers(categoryKey, variantKey, variantData, attack, character) {
+        if (!variantData.modifiers) return '';
+        
+        return `
+            <div class="limit-modifier-group">
+                ${Object.entries(variantData.modifiers).map(([modifierKey, modifierData]) => 
+                    this.renderModifierOption(categoryKey, variantKey, modifierKey, modifierData, attack, character)
+                ).join('')}
+            </div>
+        `;
+    }
+
+    renderModifierOption(categoryKey, variantKey, modifierKey, modifierData, attack, character) {
+        const limitData = {
+            id: `${categoryKey}_${variantKey}_${modifierKey}`,
+            name: modifierKey,
+            description: modifierData.description,
+            cost: modifierData.cost,
+            type: 'modifier',
+            parent: `${categoryKey}_${variantKey}`
+        };
+        
+        return this.renderLimitOption(limitData, attack, character, 'modifier-limit');
     }
 
 
 
-    renderLimitOption(limit, attack, character) {
+    renderLimitOption(limit, attack, character, cssClass = 'limit-option') {
         const isSelected = attack.limits.some(selected => selected.id === limit.id);
         const validation = SpecialAttackSystem.validateLimitSelection(character, attack, limit.id);
         const canAdd = !isSelected && validation.isValid;
@@ -276,9 +309,9 @@ export class LimitSelection {
             selected: isSelected,
             dataAttributes: { 
                 action: canAdd ? 'add-limit' : '', 
-                limitId: limit.id 
+                'limit-id': limit.id 
             }
-        }, { cardClass: 'limit-option', showStatus: false });
+        }, { cardClass: `limit-option ${cssClass}`, showStatus: false });
     }
 
     // Granular update methods

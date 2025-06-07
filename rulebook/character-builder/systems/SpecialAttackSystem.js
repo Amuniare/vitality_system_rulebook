@@ -373,54 +373,63 @@ export class SpecialAttackSystem {
                (attack.effectTypes.length > 0 || attack.upgrades.length > 0);
     }
 
-    // Get available limits from limits.json
+    // Get available limits from limits.json (returns hierarchical structure for UI)
+    static getAvailableLimitsHierarchy() {
+        return gameDataManager.getLimits();
+    }
+
+    // Get available limits as flat array for system logic
     static getAvailableLimits() {
-        const limitsData = gameDataManager.getLimits();
-        const limits = [];
-
-        Object.entries(limitsData).forEach(([mainCategory, categoryData]) => {
-            // Add main category
-            limits.push({
-                id: mainCategory,
-                category: mainCategory,
-                name: mainCategory,
-                description: categoryData.description,
-                cost: categoryData.cost,
-                type: 'main'
-            });
-
-            // Add variants
+        const hierarchicalData = this.getAvailableLimitsHierarchy();
+        const flatLimits = [];
+        
+        Object.entries(hierarchicalData).forEach(([categoryKey, categoryData]) => {
+            // Add main category limit if it has a cost
+            if (categoryData.cost !== undefined) {
+                flatLimits.push({
+                    id: categoryKey,
+                    name: categoryKey,
+                    description: categoryData.description,
+                    cost: categoryData.cost,
+                    type: 'main',
+                    category: categoryKey
+                });
+            }
+            
+            // Add variant limits
             if (categoryData.variants) {
-                Object.entries(categoryData.variants).forEach(([variantName, variantData]) => {
-                    limits.push({
-                        id: `${mainCategory}_${variantName}`,
-                        category: mainCategory,
-                        name: variantName,
+                Object.entries(categoryData.variants).forEach(([variantKey, variantData]) => {
+                    const variantId = `${categoryKey}_${variantKey}`;
+                    flatLimits.push({
+                        id: variantId,
+                        name: variantKey,
                         description: variantData.description,
                         cost: variantData.cost,
                         type: 'variant',
-                        parent: mainCategory
+                        category: categoryKey,
+                        parent: categoryKey
                     });
-
-                    // Add modifiers
+                    
+                    // Add modifier limits
                     if (variantData.modifiers) {
-                        Object.entries(variantData.modifiers).forEach(([modifierName, modifierData]) => {
-                            limits.push({
-                                id: `${mainCategory}_${variantName}_${modifierName}`,
-                                category: mainCategory,
-                                name: modifierName,
+                        Object.entries(variantData.modifiers).forEach(([modifierKey, modifierData]) => {
+                            const modifierId = `${categoryKey}_${variantKey}_${modifierKey}`;
+                            flatLimits.push({
+                                id: modifierId,
+                                name: modifierKey,
                                 description: modifierData.description,
                                 cost: modifierData.cost,
                                 type: 'modifier',
-                                parent: `${mainCategory}_${variantName}`
+                                category: categoryKey,
+                                parent: variantId
                             });
                         });
                     }
                 });
             }
         });
-
-        return limits;
+        
+        return flatLimits;
     }
 
     // Get limit by ID
