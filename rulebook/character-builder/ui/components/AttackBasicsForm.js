@@ -9,10 +9,9 @@ export class AttackBasicsForm {
 
     render(attack, character) {
         if (!attack || !character) {
-            return `<div class="error-text">Attack data not available for rendering.</div>`;
+            return `<div class="error-text">Attack data not available.</div>`;
         }
 
-        // CORRECTED: The Type Selectors are now properly placed in the right column's div.
         return `
             <div class="attack-basics-form">
                 <div class="attack-basics-columns">

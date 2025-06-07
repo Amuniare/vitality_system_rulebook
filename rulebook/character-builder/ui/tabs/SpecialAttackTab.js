@@ -185,53 +185,58 @@ export class SpecialAttackTab {
     
     addAttackType(typeId) { 
         if (!typeId) return;
-        try {
-            const char = this.builder.currentCharacter;
-            const attack = char.specialAttacks[this.selectedAttackIndex];
-            AttackTypeSystem.addAttackTypeToAttack(char, attack, typeId);
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if (attack && !attack.attackTypes.includes(typeId)) {
+            attack.attackTypes.push(typeId);
             this.builder.updateCharacter();
-        } catch(e) { this.builder.showNotification(e.message, 'error'); }
+        }
     }
 
     removeAttackType(typeId) {
-        const char = this.builder.currentCharacter;
-        const attack = char.specialAttacks[this.selectedAttackIndex];
-        AttackTypeSystem.removeAttackTypeFromAttack(char, attack, typeId);
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if(attack) attack.attackTypes = (attack.attackTypes || []).filter(id => id !== typeId);
         this.builder.updateCharacter();
     }
 
     addEffectType(typeId) {
         if (!typeId) return;
-        try {
-            const char = this.builder.currentCharacter;
-            const attack = char.specialAttacks[this.selectedAttackIndex];
-            AttackTypeSystem.addEffectTypeToAttack(char, attack, typeId);
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if(attack) {
+            // FIX: Replace effect type, don't push, as it's mutually exclusive.
+            attack.effectTypes = [typeId];
             this.builder.updateCharacter();
-        } catch(e) { this.builder.showNotification(e.message, 'error'); }
+        }
     }
 
     removeEffectType(typeId) {
-        const char = this.builder.currentCharacter;
-        const attack = char.specialAttacks[this.selectedAttackIndex];
-        attack.effectTypes = (attack.effectTypes || []).filter(id => id !== typeId);
-        this.builder.updateCharacter();
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if(attack) {
+            // FIX: Clear the array, as there's only one.
+            attack.effectTypes = [];
+            this.builder.updateCharacter();
+        }
     }
     
     addCondition(conditionId, isAdvanced) {
         if (!conditionId) return;
-        try {
-            const char = this.builder.currentCharacter;
-            const attack = char.specialAttacks[this.selectedAttackIndex];
-            AttackTypeSystem.addConditionToAttack(char, attack, conditionId, isAdvanced);
-            this.builder.updateCharacter();
-        } catch (error) { this.builder.showNotification(`Error: ${error.message}`, 'error'); }
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
+            if (!attack[arrayKey]) attack[arrayKey] = [];
+            if (!attack[arrayKey].includes(conditionId)) {
+                attack[arrayKey].push(conditionId);
+                this.builder.updateCharacter();
+            }
+        }
     }
 
     removeCondition(conditionId, isAdvanced) {
         const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
-        const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
-        attack[arrayKey] = (attack[arrayKey] || []).filter(id => id !== conditionId);
-        this.builder.updateCharacter();
+        if(attack) {
+            const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
+            if(attack[arrayKey]) attack[arrayKey] = attack[arrayKey].filter(id => id !== conditionId);
+            this.builder.updateCharacter();
+        }
     }
     
     addLimit(limitId) {
