@@ -1,5 +1,5 @@
 // rulebook/character-builder/ui/tabs/SummaryTab.js
-import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 
 export class SummaryTab {
     constructor(characterBuilder) {

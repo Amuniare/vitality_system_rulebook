@@ -1,6 +1,6 @@
 // rulebook/character-builder/ui/components/UniqueAbilitySection.js
 import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
-import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class UniqueAbilitySection {
     constructor(characterBuilder) {

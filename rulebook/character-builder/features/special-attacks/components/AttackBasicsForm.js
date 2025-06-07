@@ -1,6 +1,6 @@
 // rulebook/character-builder/ui/components/AttackBasicsForm.js
 import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
-import { RenderUtils } from '../shared/RenderUtils.js';
+import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class AttackBasicsForm {
     constructor(parentTab) {

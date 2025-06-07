@@ -5,9 +5,9 @@ import { TraitPurchaseSection } from '../components/TraitPurchaseSection.js';
 import { SimpleBoonSection } from '../components/SimpleBoonSection.js';
 import { UniqueAbilitySection } from '../components/UniqueAbilitySection.js';
 import { ActionUpgradeSection } from '../components/ActionUpgradeSection.js';
-import { UpdateManager } from '../shared/UpdateManager.js';
-import { EventManager } from '../shared/EventManager.js';
-import { RenderUtils } from '../shared/RenderUtils.js';
+import { UpdateManager } from '../../shared/utils/UpdateManager.js';
+import { EventManager } from '../../shared/utils/EventManager.js';
+import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 
 export class MainPoolTab {
     constructor(characterBuilder) {

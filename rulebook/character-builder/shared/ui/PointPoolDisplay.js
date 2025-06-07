@@ -1,5 +1,5 @@
 // rulebook/character-builder/ui/components/PointPoolDisplay.js
-import { RenderUtils } from '../shared/RenderUtils.js';
+import { RenderUtils } from '../utils/RenderUtils.js';
 import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
 
 export class PointPoolDisplay {

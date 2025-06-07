@@ -1,7 +1,7 @@
 // LimitSelection.js - Manages the display and selection of limits for special attacks
 import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
 import { TierSystem } from '../../core/TierSystem.js';
-import { RenderUtils } from '../shared/RenderUtils.js';
+import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class LimitSelection {
     constructor(parentTab) {
@@ -185,34 +185,56 @@ export class LimitSelection {
         `;
     }
 
+
     renderAvailableLimits(character, attack) {
         const allLimits = SpecialAttackSystem.getAvailableLimits();
-        
-        // Group limits by category for hierarchical display
-        const limitsByCategory = {};
-        allLimits.forEach(limit => {
-            if (!limitsByCategory[limit.category]) {
-                limitsByCategory[limit.category] = [];
+    
+        // Group the flat list of limits into a hierarchical structure for rendering
+        const limitsByCategory = allLimits.reduce((acc, limit) => {
+            if (limit.type === 'main') {
+                if (!acc[limit.category]) {
+                    acc[limit.category] = { main: limit, variants: {} };
+                } else {
+                    acc[limit.category].main = limit;
+                }
+            } else if (limit.type === 'variant') {
+                if (!acc[limit.category]) {
+                    acc[limit.category] = { main: null, variants: {} };
+                }
+                if (!acc[limit.category].variants[limit.id]) {
+                    acc[limit.category].variants[limit.id] = { variant: limit, modifiers: [] };
+                } else {
+                    acc[limit.category].variants[limit.id].variant = limit;
+                }
+            } else if (limit.type === 'modifier') {
+                const parentId = limit.parent;
+                const category = allLimits.find(l => l.id === parentId)?.category;
+                if (category) {
+                     if (!acc[category]) acc[category] = { main: null, variants: {} };
+                     if (!acc[category].variants[parentId]) acc[category].variants[parentId] = { variant: null, modifiers: [] };
+                     acc[category].variants[parentId].modifiers.push(limit);
+                }
             }
-            limitsByCategory[limit.category].push(limit);
-        });
-
+            return acc;
+        }, {});
+    
         return `
             <div class="available-limits">
                 <h4>Available Limits</h4>
                 <div class="limit-categories-hierarchy">
-                    ${Object.entries(limitsByCategory).map(([categoryKey, categoryLimits]) => 
-                        this.renderLimitCategory(categoryKey, categoryLimits, attack, character)
+                    ${Object.entries(limitsByCategory).map(([categoryKey, categoryData]) => 
+                        this.renderLimitCategory(categoryKey, categoryData, attack, character)
                     ).join('')}
                 </div>
             </div>
         `;
     }
-
-    renderLimitCategory(categoryKey, categoryLimits, attack, character) {
+    
+    // And replace renderLimitCategory with this to handle the new structure
+    renderLimitCategory(categoryKey, categoryData, attack, character) {
         const isExpanded = this.expandedCategories.has(categoryKey);
         const formattedCategoryName = this.formatCategoryName(categoryKey);
-
+    
         return `
             <div class="limit-category">
                 <div class="category-header" data-action="toggle-limit-category" data-category="${categoryKey}">
@@ -221,12 +243,21 @@ export class LimitSelection {
                 </div>
                 <div class="category-content ${isExpanded ? 'expanded' : 'collapsed'}">
                     <div class="limit-options-grid">
-                        ${categoryLimits.map(limit => this.renderLimitOption(limit, attack, character)).join('')}
+                        ${categoryData.main ? this.renderLimitOption(categoryData.main, attack, character) : ''}
+                        ${Object.values(categoryData.variants).map(({variant, modifiers}) => `
+                            <div class="limit-variant-group">
+                                ${variant ? this.renderLimitOption(variant, attack, character) : ''}
+                                <div class="limit-modifier-group">
+                                    ${modifiers.map(mod => this.renderLimitOption(mod, attack, character)).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
-            </div>
-        `;
+            `;
     }
+
+
 
     renderLimitOption(limit, attack, character) {
         const isSelected = attack.limits.some(selected => selected.id === limit.id);

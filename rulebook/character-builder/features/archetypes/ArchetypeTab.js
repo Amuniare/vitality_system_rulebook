@@ -1,6 +1,6 @@
 // rulebook/character-builder/ui/tabs/ArchetypeTab.js
 import { ArchetypeSystem } from '../../systems/ArchetypeSystem.js';
-import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 
 export class ArchetypeTab {
     constructor(characterBuilder) {

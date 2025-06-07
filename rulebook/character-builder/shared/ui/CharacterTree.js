@@ -1,6 +1,6 @@
 // CharacterTree.js - COMPLETE REWRITE with fixed debounce
-import { RenderUtils } from '../shared/RenderUtils.js';
-import { EventManager } from '../shared/EventManager.js';
+import { RenderUtils } from '../utils/RenderUtils.js';
+import { EventManager } from '../utils/EventManager.js';
 
 export class CharacterTree {
     constructor(characterBuilder) {

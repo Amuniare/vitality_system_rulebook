@@ -1,8 +1,8 @@
 // rulebook/character-builder/ui/tabs/SpecialAttackTab.js
 import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
 import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
-import { RenderUtils } from '../shared/RenderUtils.js';
-import { EventManager } from '../shared/EventManager.js';
+import { RenderUtils } from '../../shared/utils/RenderUtils.js';
+import { EventManager } from '../../shared/utils/EventManager.js';
 import { AttackBasicsForm } from '../components/AttackBasicsForm.js';
 import { LimitSelection } from '../components/LimitSelection.js';
 import { UpgradeSelection } from '../components/UpgradeSelection.js';

@@ -1,6 +1,6 @@
 // rulebook/character-builder/ui/components/SimpleBoonSection.js
 import { SimpleBoonsSystem } from '../../systems/SimpleBoonsSystem.js';
-import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class SimpleBoonSection {
     constructor(characterBuilder) {

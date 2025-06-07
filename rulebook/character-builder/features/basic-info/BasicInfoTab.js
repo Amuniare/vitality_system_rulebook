@@ -1,5 +1,5 @@
 // rulebook/character-builder/ui/tabs/BasicInfoTab.js
-import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 
 export class BasicInfoTab {
     constructor(characterBuilder) {

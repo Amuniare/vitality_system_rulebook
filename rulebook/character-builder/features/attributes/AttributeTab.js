@@ -1,6 +1,6 @@
 // rulebook/character-builder/ui/tabs/AttributeTab.js
 import { AttributeSystem } from '../../systems/AttributeSystem.js';
-import { RenderUtils } from '../shared/RenderUtils.js';
+import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 
 export class AttributeTab {
     constructor(characterBuilder) {

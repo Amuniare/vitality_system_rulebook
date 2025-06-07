@@ -1,7 +1,7 @@
 // app.js - COMPLETE REWRITE with proper initialization order
-import { CharacterBuilder } from './ui/CharacterBuilder.js';
-import { VitalityCharacter } from './core/VitalityCharacter.js';
-import { gameDataManager } from './core/GameDataManager.js';
+import { CharacterBuilder } from './CharacterBuilder.js';
+import { VitalityCharacter } from '../core/VitalityCharacter.js';
+import { gameDataManager } from '../core/GameDataManager.js';
 
 class VitalityCharacterBuilderApp {
     constructor() {

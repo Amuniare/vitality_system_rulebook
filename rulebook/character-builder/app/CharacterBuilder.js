@@ -1,22 +1,22 @@
 // CharacterBuilder.js - COMPLETE REWRITE without validators and with fixed event handling
 import { VitalityCharacter } from '../core/VitalityCharacter.js';
-import { CharacterLibrary } from './components/CharacterLibrary.js';
+import { CharacterLibrary } from '../shared/ui/CharacterLibrary.js';
 // Sidebar components removed
 
 // Import all tabs
-import { BasicInfoTab } from './tabs/BasicInfoTab.js';
-import { ArchetypeTab } from './tabs/ArchetypeTab.js';
-import { AttributeTab } from './tabs/AttributeTab.js';
-import { MainPoolTab } from './tabs/MainPoolTab.js';
-import { SpecialAttackTab } from './tabs/SpecialAttackTab.js';
-import { UtilityTab } from './tabs/UtilityTab.js';
-import { SummaryTab } from './tabs/SummaryTab.js';
+import { BasicInfoTab } from '../features/basic-info/BasicInfoTab.js';
+import { ArchetypeTab } from '../features/archetypes/ArchetypeTab.js';
+import { AttributeTab } from '../features/attributes/AttributeTab.js';
+import { MainPoolTab } from '../features/main-pool/MainPoolTab.js';
+import { SpecialAttackTab } from '../features/special-attacks/SpecialAttackTab.js';
+import { UtilityTab } from '../features/utility/UtilityTab.js';
+import { SummaryTab } from '../features/summary/SummaryTab.js';
 
 // Import calculation systems
 import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js';
 import { StatCalculator } from '../calculators/StatCalculator.js';
-import { UpdateManager } from './shared/UpdateManager.js';
-import { EventManager } from './shared/EventManager.js';
+import { UpdateManager } from '../shared/utils/UpdateManager.js';
+import { EventManager } from '../shared/utils/EventManager.js';
 
 export class CharacterBuilder {
     constructor(gameDataManager) {
@@ -783,8 +783,22 @@ export class CharacterBuilder {
     setArchetype(category, archetypeId) {
         if (!this.currentCharacter) return;
         this.currentCharacter.archetypes[category] = archetypeId;
+    
+        // --- THIS IS THE FIX ---
+        // If the special attack archetype changes, we MUST recalculate all attack points.
+        if (category === 'specialAttack') {
+            console.log('🔄 Special Attack archetype changed. Recalculating all attack points...');
+            this.currentCharacter.specialAttacks.forEach(attack => {
+                // This method updates the attack object in-place with new point values
+                SpecialAttackSystem.recalculateAttackPoints(this.currentCharacter, attack);
+            });
+        }
+        // --- END OF FIX ---
+    
         this.updateCharacter();
     }
+
+
     
     // Attribute management
     setAttribute(attributeId, value) {

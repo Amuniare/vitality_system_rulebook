@@ -1,7 +1,7 @@
 // rulebook/character-builder/ui/components/FlawPurchaseSection.js
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
-import { EventManager } from '../shared/EventManager.js'; // Assuming used by MainPoolTab
-import { RenderUtils } from '../shared/RenderUtils.js';
+import { EventManager } from '../../../shared/utils/EventManager.js';
+import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class FlawPurchaseSection {
     constructor(characterBuilder) {

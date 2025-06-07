@@ -1,7 +1,7 @@
 // rulebook/character-builder/ui/components/ActionUpgradeSection.js
 import { ActionSystem } from '../../systems/ActionSystem.js';
 import { GameConstants } from '../../core/GameConstants.js';
-import { RenderUtils } from '../shared/RenderUtils.js'; // Added
+import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class ActionUpgradeSection {
     constructor(characterBuilder) {

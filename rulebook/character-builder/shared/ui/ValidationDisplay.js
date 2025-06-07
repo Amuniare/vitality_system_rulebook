@@ -1,5 +1,5 @@
 // ValidationDisplay.js - COMPLETE REWRITE without validator dependencies
-import { RenderUtils } from '../shared/RenderUtils.js';
+import { RenderUtils } from '../utils/RenderUtils.js';
 
 export class ValidationDisplay {
     constructor(characterBuilder) {

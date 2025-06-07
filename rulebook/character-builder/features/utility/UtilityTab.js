@@ -1,6 +1,6 @@
 // rulebook/character-builder/ui/tabs/UtilityTab.js
-import { EventManager } from '../shared/EventManager.js';
-import { RenderUtils } from '../shared/RenderUtils.js';
+import { EventManager } from '../../shared/utils/EventManager.js';
+import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
 import { UtilitySystem } from '../../systems/UtilitySystem.js';
 
