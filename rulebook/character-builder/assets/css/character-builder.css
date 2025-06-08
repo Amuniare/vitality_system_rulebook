@@ -614,6 +614,13 @@ input:focus, select:focus, textarea:focus {
     font-size: 0.8em;
     white-space: nowrap;
 }
+
+.purchased-item .item-cost.total-cost {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: var(--bg-primary);
+    align-self: center;
+}
 .trait-card-horizontal { display: flex; align-items: center; justify-content: space-between; min-height: 60px; margin-bottom: var(--gap-small); }
 .trait-card-horizontal .trait-stats, .trait-card-horizontal .trait-conditions { flex: 1; font-size: 0.9em; }
 .trait-card-horizontal .trait-cost { margin-left: var(--gap-medium); }
@@ -748,68 +755,6 @@ input:focus, select:focus, textarea:focus {
     font-size: 1.1em;
 }
 
-/* Unique Ability Upgrade Tags */
-.upgrade-details {
-    margin-top: var(--gap-medium);
-    padding-top: var(--gap-medium);
-    border-top: 1px solid var(--accent-secondary);
-}
-
-.upgrade-summary {
-    color: var(--text-muted);
-    font-size: 0.9em;
-    margin-bottom: var(--gap-small);
-}
-
-.upgrade-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--gap-small);
-    align-items: center;
-}
-
-.upgrade-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    background: var(--bg-primary);
-    border: 1px solid var(--accent-secondary);
-    border-radius: var(--border-radius-small);
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8em;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-}
-
-.upgrade-tag:hover {
-    border-color: var(--accent-primary);
-    background: rgba(0, 255, 255, 0.05);
-}
-
-.upgrade-tag.unknown {
-    border-color: var(--warning-color);
-    background: rgba(255, 170, 0, 0.1);
-    color: var(--warning-color);
-}
-
-.upgrade-tag .upgrade-name {
-    color: var(--accent-primary);
-    font-weight: 500;
-}
-
-.upgrade-tag .upgrade-quantity {
-    color: var(--accent-highlight);
-    font-weight: bold;
-    background: var(--bg-secondary);
-    padding: 0.125rem 0.25rem;
-    border-radius: 2px;
-    font-size: 0.9em;
-}
-
-.upgrade-tag .upgrade-cost {
-    color: var(--text-muted);
-    font-weight: 500;
-}
 
 /* --- End of tabs/_main-pool.css --- */
 

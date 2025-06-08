@@ -254,22 +254,53 @@ export class MainPoolTab {
                 actionKey = `remove-${item.category.slice(0, -1)}`;
         }
 
-        const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
-
-        // Check if this is a unique ability with upgrades
-        let upgradeDetails = '';
+        // Generate cost breakdown for unique abilities with upgrades
+        let costBoxes = '';
         if (item.category === 'uniqueAbilities' && item.originalItem?.upgrades && item.originalItem.upgrades.length > 0) {
-            upgradeDetails = this.renderUniqueAbilityUpgradeDetails(item.originalItem);
+            const abilityDef = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === item.originalItem.boonId);
+            if (abilityDef) {
+                const upgradesCost = item.originalItem.upgrades.reduce((sum, selectedUpgrade) => {
+                    const upgradeDef = abilityDef.upgrades?.find(u => u.id === selectedUpgrade.id);
+                    if (!upgradeDef) return sum;
+                    const hasQuantity = upgradeDef.per && selectedUpgrade.quantity;
+                    return sum + (hasQuantity ? selectedUpgrade.quantity * upgradeDef.cost : upgradeDef.cost);
+                }, 0);
+                const totalCost = abilityDef.baseCost + upgradesCost;
+
+                costBoxes = `
+                    <span class="item-details">${item.typeLabel}</span>
+                    <span class="item-cost">Base Cost: ${abilityDef.baseCost}p</span>
+                    ${item.originalItem.upgrades.map(selectedUpgrade => {
+                        const upgradeDef = abilityDef.upgrades?.find(u => u.id === selectedUpgrade.id);
+                        if (!upgradeDef) return '';
+                        const hasQuantity = upgradeDef.per && selectedUpgrade.quantity;
+                        const displayName = hasQuantity ? `${upgradeDef.name} ×${selectedUpgrade.quantity}` : upgradeDef.name;
+                        const cost = hasQuantity ? selectedUpgrade.quantity * upgradeDef.cost : upgradeDef.cost;
+                        return `<span class="item-cost">${displayName}: ${cost}p</span>`;
+                    }).join('')}
+                    <span class="item-cost">Total Points: ${totalCost}p</span>
+                `;
+            } else {
+                const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
+                costBoxes = `
+                    <span class="item-details">${item.typeLabel}</span>
+                    ${costText ? `<span class="item-cost">${costText}</span>` : ''}
+                `;
+            }
+        } else {
+            const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
+            costBoxes = `
+                <span class="item-details">${item.typeLabel}</span>
+                ${costText ? `<span class="item-cost">${costText}</span>` : ''}
+            `;
         }
 
         return `
-            <div class="purchased-item ${upgradeDetails ? 'has-upgrades' : ''}">
+            <div class="purchased-item">
                 <div class="item-info">
                     <span class="item-name">${item.name}</span>
-                    <span class="item-details">${item.typeLabel}</span>
-                    ${costText ? `<span class="item-cost">${costText}</span>` : ''}
+                    ${costBoxes}
                 </div>
-                ${upgradeDetails}
                 ${RenderUtils.renderButton({ 
                     text: 'Remove', 
                     variant: 'danger', 
@@ -283,40 +314,6 @@ export class MainPoolTab {
         `;
     }
 
-    renderUniqueAbilityUpgradeDetails(uniqueAbility) {
-        if (!uniqueAbility.upgrades || uniqueAbility.upgrades.length === 0) return '';
-
-        // Get the ability definition to look up upgrade names and costs
-        const abilityDef = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === uniqueAbility.boonId);
-        if (!abilityDef) return '';
-
-        const upgradeTags = uniqueAbility.upgrades.map(selectedUpgrade => {
-            const upgradeDef = abilityDef.upgrades?.find(u => u.id === selectedUpgrade.id);
-            if (!upgradeDef) return `<span class="upgrade-tag unknown">Unknown upgrade: ${selectedUpgrade.id}</span>`;
-
-            const hasQuantity = upgradeDef.per && selectedUpgrade.quantity;
-            const costText = hasQuantity 
-                ? `${selectedUpgrade.quantity}× ${upgradeDef.cost}p/${upgradeDef.per} = ${selectedUpgrade.quantity * upgradeDef.cost}p`
-                : `${upgradeDef.cost}p`;
-
-            return `
-                <span class="upgrade-tag">
-                    <span class="upgrade-name">${upgradeDef.name}</span>
-                    ${hasQuantity ? `<span class="upgrade-quantity">×${selectedUpgrade.quantity}</span>` : ''}
-                    <span class="upgrade-cost">${costText}</span>
-                </span>
-            `;
-        }).join('');
-
-        return `
-            <div class="upgrade-details">
-                <div class="upgrade-summary">Base: ${abilityDef.baseCost}p + Upgrades:</div>
-                <div class="upgrade-tags">
-                    ${upgradeTags}
-                </div>
-            </div>
-        `;
-    }
 
     calculatePointBreakdown(character, pools) {
         return {
