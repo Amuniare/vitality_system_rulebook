@@ -144,8 +144,8 @@ export class MainPoolTab {
             <div class="main-pool-breakdown">
                 <h4>Category Breakdown (${totalItems} items)</h4>
                 <div class="breakdown-grid">
-                    ${categoryData.filter(cat => cat.count > 0).map(cat => `
-                        <div class="breakdown-item">
+                    ${categoryData.map(cat => `
+                        <div class="breakdown-item ${cat.count === 0 ? 'empty' : ''}">
                             <span class="breakdown-label">${cat.label}</span>
                             <span class="breakdown-count">${cat.count}</span>
                             <span class="breakdown-cost">${cat.value > 0 ? '-' : ''}${cat.value}p</span>
@@ -210,16 +210,21 @@ export class MainPoolTab {
         if (allPurchases.length === 0) {
             return `
                 <div class="selected-main-pool-items">
-                    <h4>Selected Purchases</h4>
-                    <div class="empty-state">No main pool purchases yet. Browse the categories below to add items.</div>
+                    ${RenderUtils.renderPurchasedList([], (item) => this.renderSelectedMainPoolItem(item), { 
+                        title: 'Purchased Items',
+                        showCount: false,
+                        emptyMessage: 'No main pool purchases yet. Browse the categories below to add items.'
+                    })}
                 </div>
             `;
         }
 
         return `
             <div class="selected-main-pool-items">
-                <h4>Selected Purchases (${allPurchases.length})</h4>
-                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedMainPoolItem(item))}
+                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedMainPoolItem(item), { 
+                    title: 'Purchased Items',
+                    showCount: false
+                })}
             </div>
         `;
     }
@@ -335,6 +340,7 @@ export class MainPoolTab {
                 '[data-action="purchase-unique-ability"]': (e, el) => this.sections.uniqueAbilities.purchaseUniqueAbility(el.dataset.abilityId),
                 '[data-action="remove-unique-ability"]': (e, el) => this.sections.uniqueAbilities.removeAbility(el.dataset.boonId),
                 '[data-action="modify-unique-ability"]': (e, el) => this.sections.uniqueAbilities.modifyAbility(el.dataset.boonId),
+                '[data-action="toggle-upgrade"]': (e, el) => this.sections.uniqueAbilities.handleUpgradeToggle(el),
                 '[data-action="purchase-action-upgrade"]': (e, el) => this.sections.actions.purchaseActionUpgrade(el.dataset.actionId),
                 '[data-action="remove-action-upgrade"]': (e, el) => this.sections.actions.removeUpgrade(parseInt(el.dataset.index))
             },
@@ -345,19 +351,10 @@ export class MainPoolTab {
                      if (this.activeSection === 'flaws' && this.sections.flaws.handleStatBonusChange) {
                         this.sections.flaws.handleStatBonusChange(e, el);
                     }
-                },
-                '.unique-ability-section .upgrade-checkbox': (e, el) => {
-                    if (this.activeSection === 'uniqueAbilities' && this.sections.uniqueAbilities.handleUpgradeSelectionChange) {
-                        this.sections.uniqueAbilities.handleUpgradeSelectionChange(el);
-                    }
                 }
             },
             input: {
-                 '.unique-ability-section .upgrade-qty': (e, el) => {
-                    if (this.activeSection === 'uniqueAbilities' && this.sections.uniqueAbilities.handleUpgradeQuantityChange) {
-                        this.sections.uniqueAbilities.handleUpgradeQuantityChange(el);
-                    }
-                }
+                // Input handlers removed for unique abilities since we're using card-based selection
             }
         });
         

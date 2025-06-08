@@ -24,6 +24,26 @@ export class BasicInfoTab {
                 <p class="section-description">Enter your character's basic information to begin building.</p>
 
                 ${RenderUtils.renderFormGroup({
+                    label: 'Character Type',
+                    inputId: 'character-type-select',
+                    inputHtml: RenderUtils.renderSelect({
+                        id: 'character-type-select',
+                        value: character.characterType || "Player Character",
+                        options: [
+                            { value: "Player Character", label: "Player Character" },
+                            { value: "NPC", label: "NPC" },
+                            { value: "Villain", label: "Villain" },
+                            { value: "Minion", label: "Minion" },
+                            { value: "Ally", label: "Ally" }
+                        ],
+                        dataAttributes: { action: 'update-character-type' }
+                    }),
+                    description: "The type of character being created"
+                })}
+
+                ${this.renderPlayerNameField(character)}
+
+                ${RenderUtils.renderFormGroup({
                     label: 'Hero Name *',
                     inputId: 'character-name',
                     inputHtml: `<input type="text" id="character-name" placeholder="Enter your hero name" value="${character.name || ''}" data-action="update-char-name">`,
@@ -74,6 +94,19 @@ export class BasicInfoTab {
     }
 
 
+    renderPlayerNameField(character) {
+        // Only show player name field if character type is "Player Character"
+        if (character.characterType === "Player Character") {
+            return RenderUtils.renderFormGroup({
+                label: 'Player Name',
+                inputId: 'player-name',
+                inputHtml: `<input type="text" id="player-name" placeholder="Enter player name" value="${character.playerName || ''}" data-action="update-player-name">`,
+                description: "The name of the player controlling this character"
+            });
+        }
+        return '';
+    }
+
     getTierDescription(tier) {
         // ... (same as before)
         const descriptions = {
@@ -113,6 +146,9 @@ export class BasicInfoTab {
                 '[data-action="continue-to-archetypes"]': () => this.builder.switchTab('archetypes')
             },
             input: {
+                '[data-action="update-player-name"]': (e, element) => {
+                    this.updatePlayerName(element.value);
+                },
                 '[data-action="update-char-name"]': (e, element) => {
                     this.updateName(element.value);
                 },
@@ -121,6 +157,9 @@ export class BasicInfoTab {
                 }
             },
             change: {
+                '[data-action="update-character-type"]': (e, element) => {
+                    this.updateCharacterType(element.value);
+                },
                 '[data-action="update-tier"]': (e, element) => {
                     this.updateTier(element.value);
                 }
@@ -131,12 +170,22 @@ export class BasicInfoTab {
         console.log('✅ BasicInfoTab event listeners attached ONCE.');
     }
 
+    updatePlayerName(newPlayerName) { // Called by CharacterBuilder
+        this.builder.setCharacterPlayerName(newPlayerName);
+    }
+
     updateName(newName) { // Called by CharacterBuilder
         this.builder.setCharacterName(newName);
     }
     
     updateRealName(newRealName) { // Called by CharacterBuilder
         this.builder.setCharacterRealName(newRealName);
+    }
+    
+    updateCharacterType(newType) { // Called by CharacterBuilder
+        this.builder.setCharacterType(newType);
+        // Re-render the tab to show/hide player name field
+        this.render();
     }
     
     updateTier(newTier) { // Called by CharacterBuilder
@@ -163,7 +212,7 @@ export class BasicInfoTab {
                 <li><strong>Utility attribute points:</strong> ${tier}</li>
                 <li><strong>Main pool points:</strong> ${Math.max(0, (tier - 2) * 15)}</li>
                 <li><strong>Utility pool points:</strong> ${Math.max(0, 5 * (tier - 1))}</li>
-                <li><strong>HP (Base):</strong> 100 (Actual HP includes Endurance bonuses)</li>
+                <li><strong>HP (Base):</strong> 100 </li>
             `;
         }
     }
@@ -175,6 +224,10 @@ export class BasicInfoTab {
              tierSelect.value = this.builder.currentCharacter.tier;
              this.updateTierDisplay(this.builder.currentCharacter.tier);
         }
+         const playerNameInput = document.getElementById('player-name');
+         if(playerNameInput && this.builder.currentCharacter && playerNameInput.value !== this.builder.currentCharacter.playerName) {
+            playerNameInput.value = this.builder.currentCharacter.playerName;
+         }
          const nameInput = document.getElementById('character-name');
          if(nameInput && this.builder.currentCharacter && nameInput.value !== this.builder.currentCharacter.name) {
             nameInput.value = this.builder.currentCharacter.name;
@@ -182,6 +235,10 @@ export class BasicInfoTab {
          const realNameInput = document.getElementById('real-name');
          if(realNameInput && this.builder.currentCharacter && realNameInput.value !== this.builder.currentCharacter.realName) {
             realNameInput.value = this.builder.currentCharacter.realName;
+         }
+         const characterTypeSelect = document.getElementById('character-type-select');
+         if(characterTypeSelect && this.builder.currentCharacter && characterTypeSelect.value !== this.builder.currentCharacter.characterType) {
+            characterTypeSelect.value = this.builder.currentCharacter.characterType;
          }
     }
 }

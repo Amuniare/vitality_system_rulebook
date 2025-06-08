@@ -107,12 +107,16 @@ export class UniqueAbilitySection {
     renderUpgradeCard(upgrade, abilityId) {
         const hasQuantity = upgrade.per;
         const costDisplay = hasQuantity ? `${upgrade.cost}p/${upgrade.per}` : `${upgrade.cost}p`;
+        const isSelected = this.selectedUpgrades[abilityId]?.some(u => u.id === upgrade.id) || false;
+        const selectedQuantity = hasQuantity ? (this.selectedUpgrades[abilityId]?.find(u => u.id === upgrade.id)?.quantity || 0) : 0;
         
         return `
-            <div class="card upgrade-card clickable" 
+            <div class="card upgrade-card clickable ${isSelected ? 'selected' : ''}" 
                  data-ability-id="${abilityId}" 
                  data-upgrade-id="${upgrade.id}"
-                 data-upgrade-cost="${upgrade.cost}">
+                 data-upgrade-cost="${upgrade.cost}"
+                 data-action="toggle-upgrade"
+                 data-selected="${isSelected}">
                 <div class="card-header">
                     <h4 class="card-title">${upgrade.name}</h4>
                     <span class="card-cost">${costDisplay}</span>
@@ -120,28 +124,14 @@ export class UniqueAbilitySection {
                 <div class="card-description">${upgrade.description}</div>
                 
                 ${hasQuantity ? `
-                    <div class="upgrade-quantity-controls">
-                        <button type="button" 
-                                class="btn btn-small upgrade-decrease" 
-                                data-ability-id="${abilityId}" 
-                                data-upgrade-id="${upgrade.id}"
-                                disabled>-</button>
-                        <span class="quantity-display" 
-                              id="qty-display-${abilityId}-${upgrade.id}">0</span>
-                        <button type="button" 
-                                class="btn btn-small upgrade-increase" 
-                                data-ability-id="${abilityId}" 
-                                data-upgrade-id="${upgrade.id}">+</button>
+                    <div class="quantity-info">
+                        Selected: ${selectedQuantity}
                     </div>
-                ` : `
-                    <div class="upgrade-toggle-controls">
-                        <button type="button" 
-                                class="btn btn-small upgrade-toggle" 
-                                data-ability-id="${abilityId}" 
-                                data-upgrade-id="${upgrade.id}"
-                                data-selected="false">Add Upgrade</button>
-                    </div>
-                `}
+                ` : ''}
+                
+                <div class="selection-indicator">
+                    ${isSelected ? '✓ Selected' : 'Click to Select'}
+                </div>
             </div>
         `;
     }
@@ -149,92 +139,99 @@ export class UniqueAbilitySection {
 
     // Event handlers called by main event delegation system
     
-    handleUpgradeIncrease(button) {
-        const abilityId = button.dataset.abilityId;
-        const upgradeId = button.dataset.upgradeId;
-        const displayElement = document.getElementById(`qty-display-${abilityId}-${upgradeId}`);
-        const decreaseBtn = button.parentElement.querySelector('.upgrade-decrease');
-        
-        if (displayElement) {
-            let currentQty = parseInt(displayElement.textContent) || 0;
-            currentQty++;
-            displayElement.textContent = currentQty;
-            
-            // Enable decrease button
-            decreaseBtn.disabled = false;
-            
-            // Update card selection state
-            this.updateUpgradeCardState(abilityId, upgradeId, currentQty > 0);
-            this.updateAbilityCostDisplay(abilityId);
-        }
-    }
-
-    handleUpgradeDecrease(button) {
-        const abilityId = button.dataset.abilityId;
-        const upgradeId = button.dataset.upgradeId;
-        const displayElement = document.getElementById(`qty-display-${abilityId}-${upgradeId}`);
-        
-        if (displayElement) {
-            let currentQty = parseInt(displayElement.textContent) || 0;
-            if (currentQty > 0) {
-                currentQty--;
-                displayElement.textContent = currentQty;
-                
-                // Disable decrease button if quantity is 0
-                if (currentQty === 0) {
-                    button.disabled = true;
-                }
-                
-                // Update card selection state
-                this.updateUpgradeCardState(abilityId, upgradeId, currentQty > 0);
-                this.updateAbilityCostDisplay(abilityId);
-            }
-        }
-    }
-
-    handleUpgradeToggle(button) {
-        const abilityId = button.dataset.abilityId;
-        const upgradeId = button.dataset.upgradeId;
-        const isSelected = button.dataset.selected === 'true';
-        
-        button.dataset.selected = (!isSelected).toString();
-        button.textContent = isSelected ? 'Add Upgrade' : 'Remove Upgrade';
-        
-        // Update card selection state
-        this.updateUpgradeCardState(abilityId, upgradeId, !isSelected);
-        this.updateAbilityCostDisplay(abilityId);
-    }
-
-    handleUpgradeCardClick(card) {
+    handleUpgradeToggle(card) {
         const abilityId = card.dataset.abilityId;
         const upgradeId = card.dataset.upgradeId;
+        const isSelected = card.dataset.selected === 'true';
         
-        // Check if this is a quantity-based upgrade
-        const quantityControls = card.querySelector('.upgrade-quantity-controls');
-        const toggleControls = card.querySelector('.upgrade-toggle-controls');
+        console.log('🔍 Upgrade card clicked:', upgradeId, 'currently selected:', isSelected);
         
-        if (quantityControls) {
-            // For quantity upgrades, clicking the card acts like the + button
-            const increaseBtn = quantityControls.querySelector('.upgrade-increase');
-            if (increaseBtn) {
-                this.handleUpgradeIncrease(increaseBtn);
+        // Immediately update the card to prevent duplicate processing
+        card.dataset.selected = (!isSelected).toString();
+        
+        // Get the upgrade definition to check if it has quantity
+        const abilityDef = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === abilityId);
+        if (!abilityDef) return;
+        
+        const upgradeDef = abilityDef.upgrades.find(u => u.id === upgradeId);
+        if (!upgradeDef) return;
+        
+        // Initialize selected upgrades for this ability if needed
+        if (!this.selectedUpgrades[abilityId]) {
+            this.selectedUpgrades[abilityId] = [];
+        }
+        
+        if (!isSelected) {
+            // Adding upgrade
+            if (upgradeDef.per) {
+                // Quantity-based upgrade - add with quantity 1
+                const existingUpgrade = this.selectedUpgrades[abilityId].find(u => u.id === upgradeId);
+                if (existingUpgrade) {
+                    existingUpgrade.quantity = (existingUpgrade.quantity || 0) + 1;
+                } else {
+                    this.selectedUpgrades[abilityId].push({ id: upgradeId, quantity: 1 });
+                }
+            } else {
+                // Toggle-based upgrade - add without quantity
+                this.selectedUpgrades[abilityId].push({ id: upgradeId });
             }
-        } else if (toggleControls) {
-            // For toggle upgrades, clicking the card acts like the toggle button
-            const toggleBtn = toggleControls.querySelector('.upgrade-toggle');
-            if (toggleBtn) {
-                this.handleUpgradeToggle(toggleBtn);
+            console.log('✅ Added upgrade:', upgradeId, 'Current upgrades:', this.selectedUpgrades[abilityId]);
+        } else {
+            // Removing upgrade
+            if (upgradeDef.per) {
+                // For quantity upgrades, decrease quantity or remove if at 0
+                const existingUpgrade = this.selectedUpgrades[abilityId].find(u => u.id === upgradeId);
+                if (existingUpgrade && existingUpgrade.quantity > 1) {
+                    existingUpgrade.quantity--;
+                } else {
+                    this.selectedUpgrades[abilityId] = this.selectedUpgrades[abilityId].filter(u => u.id !== upgradeId);
+                }
+            } else {
+                // For toggle upgrades, remove completely
+                this.selectedUpgrades[abilityId] = this.selectedUpgrades[abilityId].filter(u => u.id !== upgradeId);
+            }
+            console.log('✅ Removed/decreased upgrade:', upgradeId, 'Current upgrades:', this.selectedUpgrades[abilityId]);
+        }
+        
+        this.updateAbilityCostDisplay(abilityId);
+        this.updateCardVisualState(card, !isSelected, upgradeDef);
+    }
+
+    updateCardVisualState(card, newSelectedState, upgradeDef) {
+        // Update the card's visual appearance
+        if (newSelectedState) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+        
+        // Update the selection indicator text
+        const indicator = card.querySelector('.selection-indicator');
+        if (indicator) {
+            indicator.textContent = newSelectedState ? '✓ Selected' : 'Click to Select';
+        }
+        
+        // Update quantity display for quantity-based upgrades
+        if (upgradeDef.per) {
+            const abilityId = card.dataset.abilityId;
+            const upgradeId = card.dataset.upgradeId;
+            const selectedUpgrade = this.selectedUpgrades[abilityId]?.find(u => u.id === upgradeId);
+            const quantity = selectedUpgrade?.quantity || 0;
+            
+            const quantityInfo = card.querySelector('.quantity-info');
+            if (quantityInfo) {
+                quantityInfo.textContent = `Selected: ${quantity}`;
             }
         }
     }
 
-    updateUpgradeCardState(abilityId, upgradeId, isSelected) {
-        const card = document.querySelector(`[data-ability-id="${abilityId}"][data-upgrade-id="${upgradeId}"]`);
-        if (card) {
-            if (isSelected) {
-                card.classList.add('selected');
-            } else {
-                card.classList.remove('selected');
+    refreshUpgradeUI(abilityId) {
+        // Re-render only the upgrade section for this ability
+        const upgradeSelector = document.querySelector(`[data-ability-id="${abilityId}"] .upgrade-list`);
+        if (upgradeSelector) {
+            const abilityDef = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === abilityId);
+            if (abilityDef) {
+                upgradeSelector.innerHTML = this.renderUpgradeOptions(abilityDef, abilityId);
             }
         }
     }
@@ -245,32 +242,19 @@ export class UniqueAbilitySection {
         if (!abilityDef) return;
 
         let currentTotalCost = abilityDef.baseCost;
-        const currentSelectedUpgrades = [];
+        const selectedUpgrades = this.selectedUpgrades[abilityId] || [];
 
-        // Check quantity-based upgrades
-        document.querySelectorAll(`[data-ability-id="${abilityId}"] .quantity-display`).forEach(display => {
-            const card = display.closest('.upgrade-card');
-            const upgradeId = card.dataset.upgradeId;
-            const quantity = parseInt(display.textContent) || 0;
-            
-            if (quantity > 0) {
-                const upgradeDef = abilityDef.upgrades.find(u => u.id === upgradeId);
-                if (upgradeDef) {
-                    currentTotalCost += upgradeDef.cost * quantity;
-                    currentSelectedUpgrades.push({ id: upgradeId, quantity: quantity });
-                }
-            }
-        });
-
-        // Check toggle-based upgrades
-        document.querySelectorAll(`[data-ability-id="${abilityId}"] .upgrade-toggle[data-selected="true"]`).forEach(button => {
-            const card = button.closest('.upgrade-card');
-            const upgradeId = card.dataset.upgradeId;
-            const upgradeDef = abilityDef.upgrades.find(u => u.id === upgradeId);
-            
+        // Calculate cost from selected upgrades
+        selectedUpgrades.forEach(selectedUpgrade => {
+            const upgradeDef = abilityDef.upgrades.find(u => u.id === selectedUpgrade.id);
             if (upgradeDef) {
-                currentTotalCost += upgradeDef.cost;
-                currentSelectedUpgrades.push({ id: upgradeId });
+                if (selectedUpgrade.quantity) {
+                    // Quantity-based upgrade
+                    currentTotalCost += upgradeDef.cost * selectedUpgrade.quantity;
+                } else {
+                    // Toggle-based upgrade
+                    currentTotalCost += upgradeDef.cost;
+                }
             }
         });
 
@@ -278,7 +262,6 @@ export class UniqueAbilitySection {
         if (costElement) {
             costElement.textContent = currentTotalCost;
         }
-        this.selectedUpgrades[abilityId] = currentSelectedUpgrades; // Store for purchase
     }
 
     purchaseUniqueAbility(abilityId) {
@@ -292,7 +275,7 @@ export class UniqueAbilitySection {
              // Force re-render of this section to update display
             const mainPoolTab = this.builder.tabs.mainPool;
             if(mainPoolTab && mainPoolTab.activeSection === 'uniqueAbilities') {
-                mainPoolTab.updateActiveSection();
+                mainPoolTab.updateActiveSectionUI();
             }
 
         } catch (error) {

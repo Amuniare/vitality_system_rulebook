@@ -4,6 +4,8 @@ export class VitalityCharacter {
         this.id = id || Date.now().toString();
         this.name = name;
         this.realName = "";
+        this.playerName = "";
+        this.characterType = "Player Character";
         this.tier = 4; // Starting tier
         this.folderId = folderId;
         this.version = "2.0";

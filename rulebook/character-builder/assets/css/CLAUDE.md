@@ -53,3 +53,16 @@ To make any change to the styles of the Character Builder, you **MUST** follow t
 -   **NEVER** edit ulebook/character-builder/assets/css/character-builder.css by hand.
 -   **NEVER** add @import to character-builder.css.
 -   **NEVER** add a new <link> tag for a stylesheet in character-builder.html. If you create a new partial, add it to the build script's import order instead.
+
+---
+
+### Build Script Location
+
+The CSS build script is located at: `tools/build-css.ps1`
+
+To run it from PowerShell at the project root:
+```
+. 'C:\Users\Trent\OneDrive\Documents\GitHub\vitality_system_rulebook\tools\build-css.ps1'
+```
+
+This script concatenates all partial CSS files in the correct order to rebuild `assets/css/character-builder.css`.

@@ -223,6 +223,9 @@ export class TraitPurchaseSection {
         
         console.log('🔍 Stat card clicked:', statId, 'currently selected:', isSelected);
         
+        // Immediately update the card to prevent duplicate processing
+        card.dataset.selected = (!isSelected).toString();
+        
         if (!isSelected) {
             // Adding stat
             if (this.currentTraitData.statBonuses.length < 2) {
@@ -230,6 +233,8 @@ export class TraitPurchaseSection {
                 console.log('✅ Added stat:', statId, 'Current stats:', this.currentTraitData.statBonuses);
                 this.refreshBuilderUI();
             } else {
+                // Revert the immediate change if validation fails
+                card.dataset.selected = isSelected.toString();
                 this.builder.showNotification('Maximum 2 stat bonuses allowed.', 'warning');
             }
         } else {
@@ -247,6 +252,9 @@ export class TraitPurchaseSection {
         
         console.log('🔍 Condition card clicked:', conditionId, 'cost:', tierCost, 'currently selected:', isSelected);
         
+        // Immediately update the card to prevent duplicate processing
+        card.dataset.selected = (!isSelected).toString();
+        
         if (!isSelected) {
             // Adding condition
             if (this.currentTraitData.tierCost + tierCost <= 3) {
@@ -255,6 +263,8 @@ export class TraitPurchaseSection {
                 console.log('✅ Added condition:', conditionId, 'Current conditions:', this.currentTraitData.conditions, 'Total cost:', this.currentTraitData.tierCost);
                 this.refreshBuilderUI();
             } else {
+                // Revert the immediate change if validation fails
+                card.dataset.selected = isSelected.toString();
                 this.builder.showNotification('Condition tier limit (3 points) exceeded.', 'warning');
             }
         } else {

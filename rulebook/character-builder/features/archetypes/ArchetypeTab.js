@@ -136,12 +136,6 @@ export class ArchetypeTab {
 
     renderArchetypeDetails(archetype) {
         let details = '';
-        if (archetype.effects) {
-            details += `<div class="archetype-effects"><strong>Effects:</strong> ${archetype.effects}</div>`;
-        }
-        if (archetype.restrictions) {
-            details += `<div class="archetype-restrictions"><strong>Restrictions:</strong> ${archetype.restrictions}</div>`;
-        }
         if (archetype.pointModifier) {
             details += `<div class="archetype-points"><strong>Points:</strong> ${archetype.pointModifier}</div>`;
         }

@@ -234,11 +234,22 @@ export class CharacterBuilder {
     updateCharacterHeader() {
         if (!this.currentCharacter) return;
         
-        const nameDisplay = document.getElementById('character-name-display');
-        const tierDisplay = document.getElementById('character-tier-display');
+        const mainHeading = document.getElementById('character-main-heading');
+        const playerDisplay = document.getElementById('character-player-display');
         
-        if (nameDisplay) nameDisplay.textContent = this.currentCharacter.name;
-        if (tierDisplay) tierDisplay.textContent = `Tier ${this.currentCharacter.tier}`;
+        if (mainHeading) {
+            mainHeading.textContent = `${this.currentCharacter.name} - Tier ${this.currentCharacter.tier}`;
+        }
+        if (playerDisplay) {
+            // Only show player name for Player Characters
+            if (this.currentCharacter.characterType === "Player Character") {
+                const playerText = this.currentCharacter.playerName ? `Player: ${this.currentCharacter.playerName}` : 'Player: ';
+                playerDisplay.textContent = playerText;
+                playerDisplay.style.display = '';
+            } else {
+                playerDisplay.style.display = 'none';
+            }
+        }
     }
 
     switchTab(tabName) {
@@ -474,6 +485,22 @@ export class CharacterBuilder {
     setCharacterRealName(realName) {
         if (!this.currentCharacter) return;
         this.currentCharacter.realName = realName;
+        this.updateCharacter();
+    }
+    
+    setCharacterPlayerName(playerName) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.playerName = playerName;
+        this.updateCharacter();
+    }
+    
+    setCharacterType(characterType) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.characterType = characterType;
+        // Clear player name if not a Player Character
+        if (characterType !== "Player Character") {
+            this.currentCharacter.playerName = "";
+        }
         this.updateCharacter();
     }
     
