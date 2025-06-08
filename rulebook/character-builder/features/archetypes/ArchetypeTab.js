@@ -9,7 +9,6 @@ export class ArchetypeTab {
         this.listenersAttached = false;
     }
 
-
     render() {
         const tabContent = document.getElementById('tab-archetypes');
         if (!tabContent) return;
