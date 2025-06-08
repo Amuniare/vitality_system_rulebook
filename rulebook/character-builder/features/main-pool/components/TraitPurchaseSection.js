@@ -223,9 +223,14 @@ export class TraitPurchaseSection {
     setupEventListeners() {
         // Event listeners for trait builder controls
         const container = document.querySelector('.trait-purchase-section-content');
+        console.log('🔍 TraitPurchaseSection setupEventListeners called, container found:', !!container);
         if (container) {
+            const statButtons = container.querySelectorAll('.stat-toggle');
+            const conditionButtons = container.querySelectorAll('.condition-toggle');
+            console.log('🔍 Found stat buttons:', statButtons.length, 'condition buttons:', conditionButtons.length);
+            
             // Handle stat toggle buttons
-            container.querySelectorAll('.stat-toggle').forEach(btn => {
+            statButtons.forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.handleStatToggle(e.target);
@@ -233,7 +238,7 @@ export class TraitPurchaseSection {
             });
             
             // Handle condition toggle buttons
-            container.querySelectorAll('.condition-toggle').forEach(btn => {
+            conditionButtons.forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.handleConditionToggle(e.target);
@@ -264,10 +269,13 @@ export class TraitPurchaseSection {
         const statId = button.dataset.statId;
         const isSelected = button.dataset.selected === 'true';
         
+        console.log('🔍 Stat toggle clicked:', statId, 'currently selected:', isSelected);
+        
         if (!isSelected) {
             // Adding stat
             if (this.currentTraitData.statBonuses.length < 2) {
                 this.currentTraitData.statBonuses.push(statId);
+                console.log('✅ Added stat:', statId, 'Current stats:', this.currentTraitData.statBonuses);
                 this.refreshBuilderUI();
             } else {
                 this.builder.showNotification('Maximum 2 stat bonuses allowed.', 'warning');
@@ -275,6 +283,7 @@ export class TraitPurchaseSection {
         } else {
             // Removing stat
             this.currentTraitData.statBonuses = this.currentTraitData.statBonuses.filter(s => s !== statId);
+            console.log('✅ Removed stat:', statId, 'Current stats:', this.currentTraitData.statBonuses);
             this.refreshBuilderUI();
         }
     }
@@ -284,11 +293,14 @@ export class TraitPurchaseSection {
         const tierCost = parseInt(button.dataset.tierCost);
         const isSelected = button.dataset.selected === 'true';
         
+        console.log('🔍 Condition toggle clicked:', conditionId, 'cost:', tierCost, 'currently selected:', isSelected);
+        
         if (!isSelected) {
             // Adding condition
             if (this.currentTraitData.tierCost + tierCost <= 3) {
                 this.currentTraitData.conditions.push(conditionId);
                 this.currentTraitData.tierCost += tierCost;
+                console.log('✅ Added condition:', conditionId, 'Current conditions:', this.currentTraitData.conditions, 'Total cost:', this.currentTraitData.tierCost);
                 this.refreshBuilderUI();
             } else {
                 this.builder.showNotification('Condition tier limit (3 points) exceeded.', 'warning');
@@ -297,6 +309,7 @@ export class TraitPurchaseSection {
             // Removing condition
             this.currentTraitData.conditions = this.currentTraitData.conditions.filter(c => c !== conditionId);
             this.currentTraitData.tierCost -= tierCost;
+            console.log('✅ Removed condition:', conditionId, 'Current conditions:', this.currentTraitData.conditions, 'Total cost:', this.currentTraitData.tierCost);
             this.refreshBuilderUI();
         }
     }
@@ -365,6 +378,9 @@ export class TraitPurchaseSection {
 
     handleTraitPurchase() {
         console.log('🔍 Trait purchase attempted with data:', this.currentTraitData);
+        console.log('🔍 Current trait stats:', this.currentTraitData.statBonuses);
+        console.log('🔍 Current trait conditions:', this.currentTraitData.conditions);
+        console.log('🔍 Current trait tierCost:', this.currentTraitData.tierCost);
         
         try {
             const character = this.builder.currentCharacter;
