@@ -188,7 +188,7 @@ When the simulation collapsed, the team found themselves at a destroyed hospital
 
 The session concluded with difficult family conversations and political maneuvering. Bri departed to handle her other immortal children, working with Baatar Khan to contain Hellbeast while trying to guide Achilles away from her destructive path. Blackout eliminated rival candidate Lucian Drake, while Varia prepared for a press conference to clear her name and promote her vision of mutant-human cooperation. The emergency election remained the key to Seattle's future, with the team's actions having narrowed the field to candidates who might actually represent positive change for the mutant community.
 
-# Session 14 
+### Session 14: "The Plan Moving Forward"
 
 The city reeled in the aftermath of the Hellbeast attack as political opportunists seized their moment. Mad Max Ryder and Janet Willis announced their joint mayoral campaign, built on the pain of their losses and promising law and order against the "mutant threat." Their message resonated with a frightened public, catapulting them to the top of the polls. Meanwhile, Blackout commandeered the airwaves from the refugee camps, declaring that the time for hiding was over—mutants would claim their rightful place, with or without human permission.
 
