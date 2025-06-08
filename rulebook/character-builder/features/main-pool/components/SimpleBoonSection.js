@@ -13,26 +13,17 @@ export class SimpleBoonSection {
 
         const containerHtml = `
             <div class="main-pool-category">
-                <h3>Simple Boons</h3>
+                <h3>Available Simple Boons</h3>
                 <p class="category-description">
                     Permanent abilities that change how your character functions.
                     Simple boons have fixed costs and immediate effects.
                 </p>
 
-                ${RenderUtils.renderPurchasedList(
-                    purchasedBoons,
-                    (boon, index) => this.renderPurchasedBoon(boon, index),
-                    { title: `Purchased Simple Boons (${purchasedBoons.length})`, emptyMessage: 'No simple boons purchased' }
+                ${RenderUtils.renderGrid(
+                    simpleBoons,
+                    (boon) => this.renderSimpleBoonOption(boon, character, pointInfo),
+                    { gridContainerClass: 'grid-layout boon-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
                 )}
-
-                <div class="available-items">
-                    <h4>Available Simple Boons</h4>
-                    ${RenderUtils.renderGrid(
-                        simpleBoons,
-                        (boon) => this.renderSimpleBoonOption(boon, character, pointInfo),
-                        { gridContainerClass: 'grid-layout boon-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
-                    )}
-                </div>
             </div>
         `;
         return containerHtml;

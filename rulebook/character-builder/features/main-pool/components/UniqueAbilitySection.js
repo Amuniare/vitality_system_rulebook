@@ -14,26 +14,17 @@ export class UniqueAbilitySection {
 
         const containerHtml = `
             <div class="main-pool-category">
-                <h3>Unique Abilities (Complex)</h3>
+                <h3>Available Unique Abilities</h3>
                 <p class="category-description">
                     Powerful abilities with customizable upgrades. Purchase the base ability first,
                     then add upgrades to customize its effects and power.
                 </p>
 
-                ${RenderUtils.renderPurchasedList(
-                    purchasedAbilities,
-                    (ability, index) => this.renderPurchasedAbility(ability, index),
-                    { title: `Purchased Unique Abilities (${purchasedAbilities.length})`, emptyMessage: 'No unique abilities purchased' }
+                ${RenderUtils.renderGrid(
+                    uniqueAbilities,
+                    (ability) => this.renderUniqueAbilityOption(ability, character, pointInfo),
+                    { gridContainerClass: 'grid-layout ability-grid', gridSpecificClass: 'grid-columns-1fr' }
                 )}
-
-                <div class="available-items">
-                    <h4>Available Unique Abilities</h4>
-                    ${RenderUtils.renderGrid(
-                        uniqueAbilities,
-                        (ability) => this.renderUniqueAbilityOption(ability, character, pointInfo),
-                        { gridContainerClass: 'grid-layout ability-grid', gridSpecificClass: 'grid-columns-1fr' }
-                    )}
-                </div>
             </div>
         `;
         return containerHtml;

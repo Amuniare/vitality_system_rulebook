@@ -1,4 +1,5 @@
 // rulebook/character-builder/systems/UtilitySystem.js
+// NO CHANGES REQUIRED. The existing methods support the refactored UI.
 import { GameConstants } from '../core/GameConstants.js';
 import { gameDataManager } from '../core/GameDataManager.js';
 

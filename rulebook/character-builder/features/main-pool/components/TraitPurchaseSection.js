@@ -27,12 +27,6 @@ export class TraitPurchaseSection {
                 ${this.renderSectionHeader(pointInfo)}
                 ${this.renderSectionDescription()}
 
-                ${RenderUtils.renderPurchasedList(
-                    character.mainPoolPurchases.traits,
-                    (trait, index) => this.renderPurchasedTrait(trait, index, character),
-                    { title: `Purchased Traits (${character.mainPoolPurchases.traits.length})`, emptyMessage: 'No traits purchased yet' }
-                )}
-
                 <div class="trait-builder">
                     <h5>Create New Trait</h5>
                     ${this.renderTraitBuilderContent(conditionTiersData, statOptionsData, pointInfo)}
@@ -370,14 +364,21 @@ export class TraitPurchaseSection {
     }
 
     handleTraitPurchase() {
+        console.log('🔍 Trait purchase attempted with data:', this.currentTraitData);
+        
         try {
             const character = this.builder.currentCharacter;
-            TraitFlawSystem.purchaseTrait(character, this.currentTraitData);
+            const pools = PointPoolCalculator.calculateAllPools(character);
+            console.log('🔍 Current point pools:', pools);
+            
+            const updatedCharacter = TraitFlawSystem.purchaseTrait(character, this.currentTraitData);
             this.currentTraitData = this.resetCurrentTraitData(); // Clear builder after purchase
             this.builder.updateCharacter(); // This will trigger re-render of MainPoolTab
             this.builder.showNotification('Trait purchased!', 'success');
         } catch (error) {
+            console.log('❌ Trait purchase failed:', error.message);
             this.builder.showNotification(`Failed to purchase trait: ${error.message}`, 'error');
+            // Do NOT clear the trait data or update character on error
         }
     }
 

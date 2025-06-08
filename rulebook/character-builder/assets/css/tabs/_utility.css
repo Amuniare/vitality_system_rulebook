@@ -85,3 +85,96 @@
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--gap-medium);
 }
+
+/* Utility Overview Box */
+.utility-overview-box {
+    background: var(--bg-secondary);
+    border: 2px solid var(--accent-secondary);
+    border-radius: var(--border-radius-large);
+    padding: var(--padding-large);
+    margin-bottom: var(--gap-large);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.utility-overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--gap-large);
+    padding-bottom: var(--gap-medium);
+    border-bottom: 1px solid var(--accent-secondary);
+}
+
+.utility-overview-header h3 {
+    color: var(--accent-primary);
+    margin: 0;
+    font-size: 1.4em;
+}
+
+/* Utility Category Breakdown */
+.utility-breakdown {
+    margin-bottom: var(--gap-large);
+}
+
+.utility-breakdown h4 {
+    color: var(--accent-secondary);
+    margin-bottom: var(--gap-medium);
+    font-size: 1.1em;
+}
+
+.breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--gap-medium);
+    margin-bottom: var(--gap-medium);
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-primary);
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--border-radius-medium);
+    padding: var(--padding-medium);
+    transition: all 0.2s ease;
+}
+
+.breakdown-item:hover {
+    background: rgba(0, 255, 255, 0.05);
+    border-color: var(--accent-primary);
+}
+
+.breakdown-label {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.breakdown-count {
+    color: var(--accent-primary);
+    font-weight: bold;
+    background: var(--bg-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-small);
+    font-size: 0.9em;
+}
+
+.breakdown-cost {
+    color: var(--accent-secondary);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+/* Selected Utilities within Overview Box */
+.utility-overview-box .selected-utilities {
+    background: var(--bg-primary);
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--border-radius-medium);
+    padding: var(--padding-medium);
+}
+
+.utility-overview-box .selected-utilities h4 {
+    color: var(--accent-primary);
+    margin-bottom: var(--gap-medium);
+    font-size: 1.1em;
+}

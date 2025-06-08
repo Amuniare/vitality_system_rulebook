@@ -17,12 +17,6 @@ export class FlawPurchaseSection {
                 ${this.renderSectionHeader(pointInfo)}
                 ${this.renderEconomicsNotice()}
 
-                ${RenderUtils.renderPurchasedList(
-                    character.mainPoolPurchases.flaws,
-                    (flaw, index) => this.renderPurchasedFlaw(flaw, index, character),
-                    { title: `Purchased Flaws (${character.mainPoolPurchases.flaws.length})`, emptyMessage: 'No flaws purchased yet' }
-                )}
-
                 <div class="available-flaws">
                     <h5>Available Flaws</h5>
                     ${RenderUtils.renderGrid(

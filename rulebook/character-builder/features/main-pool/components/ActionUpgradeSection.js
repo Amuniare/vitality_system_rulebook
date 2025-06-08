@@ -14,26 +14,17 @@ export class ActionUpgradeSection {
 
         const containerHtml = `
             <div class="main-pool-category">
-                <h3>Primary Action Upgrades (${GameConstants.PRIMARY_TO_QUICK_COST}p each)</h3>
+                <h3>Available Primary Action Upgrades</h3>
                 <p class="category-description">
-                    Convert any Primary Action to a Quick Action. This allows you to perform the action
+                    Convert any Primary Action to a Quick Action (${GameConstants.PRIMARY_TO_QUICK_COST}p each). This allows you to perform the action
                     as part of your Quick Action instead of using your Primary Action.
                 </p>
 
-                ${RenderUtils.renderPurchasedList(
-                    purchasedUpgrades,
-                    (upgrade, index) => this.renderPurchasedUpgrade(upgrade, index),
-                    { title: `Purchased Upgrades (${purchasedUpgrades.length})`, emptyMessage: 'No upgrades purchased' }
+                ${RenderUtils.renderGrid(
+                    availableActions,
+                    (action) => this.renderActionOption(action, character, pointInfo),
+                    { gridContainerClass: 'grid-layout action-grid', gridSpecificClass: 'grid-columns-auto-fit-250' }
                 )}
-
-                <div class="available-items">
-                    <h4>Available Actions</h4>
-                    ${RenderUtils.renderGrid(
-                        availableActions,
-                        (action) => this.renderActionOption(action, character, pointInfo),
-                        { gridContainerClass: 'grid-layout action-grid', gridSpecificClass: 'grid-columns-auto-fit-250' }
-                    )}
-                </div>
             </div>
         `;
 

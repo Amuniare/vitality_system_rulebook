@@ -8,6 +8,7 @@ import { ActionUpgradeSection } from './components/ActionUpgradeSection.js';
 import { UpdateManager } from '../../shared/utils/UpdateManager.js';
 import { EventManager } from '../../shared/utils/EventManager.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
+import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
 
 export class MainPoolTab {
     constructor(characterBuilder) {
@@ -40,7 +41,10 @@ export class MainPoolTab {
                     Use your main pool points to purchase flaws, traits, simple boons, unique abilities, and action upgrades.
                 </p>
 
-                ${this.renderPointPoolInfo(character)}
+                <!-- NEW: Main Pool Overview Box -->
+                ${this.renderMainPoolOverviewBox(character)}
+
+                <!-- Category sections for PURCHASING ONLY -->
                 ${this.renderSectionNavigation()}
                 <div class="section-content-area" id="main-pool-active-section">
                     ${this.renderActiveSectionContent(character)}
@@ -60,7 +64,7 @@ export class MainPoolTab {
         this.setupEventListeners();
     }
 
-    renderPointPoolInfo(character) {
+    renderMainPoolOverviewBox(character) {
         const pools = PointPoolCalculator.calculateAllPools(character);
         const mainPoolInfo = {
             spent: pools.totalSpent.mainPool || 0,
@@ -70,43 +74,197 @@ export class MainPoolTab {
         const breakdown = this.calculatePointBreakdown(character, pools);
 
         return `
-            <div class="point-pool-display main-pool-specific-display">
-                ${RenderUtils.renderPointDisplay(
-                    mainPoolInfo.spent,
-                    mainPoolInfo.available,
-                    'Main Pool',
-                    { showRemaining: true, variant: mainPoolInfo.remaining < 0 ? 'error' : mainPoolInfo.remaining === 0 && mainPoolInfo.spent > 0 ? 'warning' : 'default' }
-                )}
+            <div class="main-pool-overview-box">
+                <div class="main-pool-overview-header">
+                    <h3>Main Pool Overview</h3>
+                    ${RenderUtils.renderPointDisplay(
+                        mainPoolInfo.spent,
+                        mainPoolInfo.available,
+                        'Main Pool',
+                        { showRemaining: true, variant: mainPoolInfo.remaining < 0 ? 'error' : mainPoolInfo.remaining === 0 && mainPoolInfo.spent > 0 ? 'warning' : 'default' }
+                    )}
+                </div>
                 <div class="pool-sources">
                     <small>Base: ${Math.max(0, (character.tier - 2) * 15)}
                     ${character.archetypes.uniqueAbility === 'extraordinary' ? ` (+${Math.max(0, (character.tier - 2) * 15)} from Extraordinary)` : ''}
                     </small>
                 </div>
-                ${this.renderPointUsageBreakdown(breakdown)}
+                
+                ${this.renderMainPoolCategoryBreakdown(breakdown)}
+                ${this.renderSelectedMainPoolItems(character)}
             </div>
         `;
     }
 
-    renderPointUsageBreakdown(breakdown) {
-        const items = [
-            { label: 'Simple Boons', value: breakdown.simpleBoons, class: 'boon-cost' },
-            { label: 'Unique Abilities', value: breakdown.uniqueAbilities, class: 'ability-cost' },
-            { label: 'Traits', value: breakdown.traits, class: 'trait-cost' },
-            { label: 'Flaws (Cost)', value: breakdown.flaws, class: 'flaw-item-cost' },
-            { label: 'Action Upgrades', value: breakdown.actions, class: 'action-cost' },
+    renderMainPoolCategoryBreakdown(breakdown) {
+        const categories = [
+            { key: 'simpleBoons', label: 'Simple Boons', value: breakdown.simpleBoons },
+            { key: 'uniqueAbilities', label: 'Unique Abilities', value: breakdown.uniqueAbilities },
+            { key: 'traits', label: 'Traits', value: breakdown.traits },
+            { key: 'flaws', label: 'Flaws', value: breakdown.flaws },
+            { key: 'actions', label: 'Action Upgrades', value: breakdown.actions }
         ];
 
+        // Calculate counts for each category
+        const character = this.builder.currentCharacter;
+        const categoryData = categories.map(category => {
+            let count = 0;
+            switch(category.key) {
+                case 'simpleBoons':
+                    count = character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).length;
+                    break;
+                case 'uniqueAbilities':
+                    count = character.mainPoolPurchases.boons.filter(b => b.type === 'unique').length;
+                    break;
+                case 'traits':
+                    count = character.mainPoolPurchases.traits.length;
+                    break;
+                case 'flaws':
+                    count = character.mainPoolPurchases.flaws.length;
+                    break;
+                case 'actions':
+                    count = character.mainPoolPurchases.primaryActionUpgrades.length;
+                    break;
+            }
+            return { ...category, count };
+        });
+
+        const totalItems = categoryData.reduce((sum, cat) => sum + cat.count, 0);
+
+        if (totalItems === 0) {
+            return `
+                <div class="main-pool-breakdown">
+                    <h4>Category Breakdown</h4>
+                    <div class="empty-state">No main pool purchases yet.</div>
+                </div>
+            `;
+        }
+
         return `
-            <div class="pool-spending-details">
-                <h6>Point Usage Breakdown:</h6>
-                <div class="spending-grid grid-layout grid-columns-auto-fit-200">
-                    ${items.map(item => `
-                        <div class="spending-item ${item.class || ''}">
-                            <span>${item.label}:</span>
-                            <span>${item.value > 0 ? '-' : ''}${item.value}p</span>
+            <div class="main-pool-breakdown">
+                <h4>Category Breakdown (${totalItems} items)</h4>
+                <div class="breakdown-grid">
+                    ${categoryData.filter(cat => cat.count > 0).map(cat => `
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">${cat.label}</span>
+                            <span class="breakdown-count">${cat.count}</span>
+                            <span class="breakdown-cost">${cat.value > 0 ? '-' : ''}${cat.value}p</span>
                         </div>
                     `).join('')}
                 </div>
+            </div>
+        `;
+    }
+
+    renderSelectedMainPoolItems(character) {
+        const allPurchases = [];
+
+        // Gather all purchased items into a single array with type labels
+        allPurchases.push(...character.mainPoolPurchases.flaws.map((item, index) => ({
+            ...item,
+            category: 'flaws',
+            typeLabel: 'Flaw',
+            dataAttributes: {
+                'index': index
+            }
+        })));
+
+        allPurchases.push(...character.mainPoolPurchases.traits.map((item, index) => ({
+            ...item,
+            name: this.generateTraitDisplayName(item, character),
+            category: 'traits',
+            typeLabel: 'Trait',
+            dataAttributes: {
+                'index': index
+            }
+        })));
+
+        allPurchases.push(...character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).map(item => ({
+            ...item,
+            category: 'simpleBoons',
+            typeLabel: 'Simple Boon',
+            dataAttributes: {
+                'boon-id': item.boonId
+            }
+        })));
+
+        allPurchases.push(...character.mainPoolPurchases.boons.filter(b => b.type === 'unique').map(item => ({
+            ...item,
+            category: 'uniqueAbilities',
+            typeLabel: 'Unique Ability',
+            dataAttributes: {
+                'boon-id': item.boonId
+            }
+        })));
+
+        allPurchases.push(...character.mainPoolPurchases.primaryActionUpgrades.map((item, index) => ({
+            ...item,
+            name: item.actionName || item.name, // Fix for action upgrades that use actionName
+            category: 'actions',
+            typeLabel: 'Action Upgrade',
+            dataAttributes: {
+                'index': index
+            }
+        })));
+
+        if (allPurchases.length === 0) {
+            return `
+                <div class="selected-main-pool-items">
+                    <h4>Selected Purchases</h4>
+                    <div class="empty-state">No main pool purchases yet. Browse the categories below to add items.</div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="selected-main-pool-items">
+                <h4>Selected Purchases (${allPurchases.length})</h4>
+                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedMainPoolItem(item))}
+            </div>
+        `;
+    }
+
+    renderSelectedMainPoolItem(item) {
+        // Map the correct action for each category based on existing event handlers
+        let actionKey;
+        switch(item.category) {
+            case 'simpleBoons':
+                actionKey = 'remove-simple-boon';
+                break;
+            case 'uniqueAbilities':
+                actionKey = 'remove-unique-ability';
+                break;
+            case 'traits':
+                actionKey = 'remove-trait';
+                break;
+            case 'flaws':
+                actionKey = 'remove-flaw';
+                break;
+            case 'actions':
+                actionKey = 'remove-action-upgrade';
+                break;
+            default:
+                actionKey = `remove-${item.category.slice(0, -1)}`;
+        }
+
+        const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
+
+        return `
+            <div class="purchased-item">
+                <div class="item-info">
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-details">${item.typeLabel}</span>
+                    ${costText ? `<span class="item-cost">${costText}</span>` : ''}
+                </div>
+                ${RenderUtils.renderButton({ 
+                    text: 'Remove', 
+                    variant: 'danger', 
+                    size: 'small', 
+                    dataAttributes: { 
+                        action: actionKey,
+                        ...item.dataAttributes
+                    } 
+                })}
             </div>
         `;
     }
@@ -150,7 +308,7 @@ export class MainPoolTab {
             return;
         }
         
-        const container = document.querySelector('.main-pool-tab-content');
+        const container = document.getElementById('tab-mainPool');
         if (!container) return;
 
         EventManager.delegateEvents(container, {
@@ -225,36 +383,32 @@ export class MainPoolTab {
     }
 
     onCharacterUpdate() {
-        // Re-render the point pool display and the currently active section
-        const pointPoolContainer = document.querySelector('.main-pool-specific-display');
-        if (pointPoolContainer && this.builder.currentCharacter) {
-            pointPoolContainer.innerHTML = this.renderPointPoolInfoContent(this.builder.currentCharacter);
-        }
-        this.updateActiveSectionUI();
+        // Reset listeners flag since we're doing a full re-render
+        this.listenersAttached = false;
+        this.render(); // Full re-render is simplest for this tab after updates
     }
 
-    renderPointPoolInfoContent(character) {
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const mainPoolInfo = {
-            spent: pools.totalSpent.mainPool || 0,
-            available: pools.totalAvailable.mainPool || 0,
-            remaining: pools.remaining.mainPool || 0
-        };
-        const breakdown = this.calculatePointBreakdown(character, pools);
+    generateTraitDisplayName(trait, character) {
+        // Generate a descriptive name for the trait based on its stats and conditions
+        const statNames = trait.statBonuses?.map(statId => {
+            const statOptions = TraitFlawSystem.getTraitStatOptions();
+            const stat = statOptions.find(s => s.id === statId);
+            return stat ? stat.name : statId;
+        }) || [];
 
-        return `
-            ${RenderUtils.renderPointDisplay(
-                mainPoolInfo.spent,
-                mainPoolInfo.available,
-                'Main Pool',
-                { showRemaining: true, variant: mainPoolInfo.remaining < 0 ? 'error' : mainPoolInfo.remaining === 0 && mainPoolInfo.spent > 0 ? 'warning' : 'default' }
-            )}
-            <div class="pool-sources">
-                <small>Base: ${Math.max(0, (character.tier - 2) * 15)}
-                ${character.archetypes.uniqueAbility === 'extraordinary' ? ` (+${Math.max(0, (character.tier - 2) * 15)} from Extraordinary)` : ''}
-                </small>
-            </div>
-            ${this.renderPointUsageBreakdown(breakdown)}
-        `;
+        const conditionNames = trait.conditions?.map(conditionId => {
+            const tiers = TraitFlawSystem.getTraitConditionTiers();
+            for (const tier of Object.values(tiers)) {
+                const condition = tier.conditions?.find(c => c.id === conditionId);
+                if (condition) return condition.name;
+            }
+            return conditionId;
+        }) || [];
+
+        const statsText = statNames.length > 0 ? statNames.join('/') : 'Unknown Stats';
+        const conditionsText = conditionNames.length > 0 ? conditionNames.slice(0, 2).join(' & ') : 'Unknown Conditions';
+        
+        return `+${character.tier} ${statsText} when ${conditionsText}${conditionNames.length > 2 ? '...' : ''}`;
     }
+
 }
