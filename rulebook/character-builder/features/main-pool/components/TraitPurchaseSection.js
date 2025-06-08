@@ -126,17 +126,13 @@ export class TraitPurchaseSection {
         
         return `
             <div class="card trait-stat-card clickable ${isSelected ? 'selected' : ''} ${disabled ? 'disabled' : ''}"
-                 data-stat-id="${stat.id}">
+                 data-action="trait-stat-toggle"
+                 data-stat-id="${stat.id}"
+                 data-selected="${isSelected}">
                 <div class="card-header">
                     <h4 class="card-title">${stat.name}</h4>
-                    <div class="stat-toggle-controls">
-                        <button type="button" 
-                                class="btn btn-small stat-toggle" 
-                                data-stat-id="${stat.id}"
-                                data-selected="${isSelected}"
-                                ${disabled ? 'disabled' : ''}>
-                            ${isSelected ? 'Remove' : 'Add'}
-                        </button>
+                    <div class="selection-indicator">
+                        ${isSelected ? '✓ Selected' : 'Click to Select'}
                     </div>
                 </div>
                 <div class="card-description">${stat.description}</div>
@@ -181,22 +177,17 @@ export class TraitPurchaseSection {
         
         return `
             <div class="card trait-condition-card clickable ${isSelected ? 'selected' : ''} ${disabled ? 'disabled' : ''}"
+                 data-action="trait-condition-toggle"
                  data-condition-id="${condition.id}"
-                 data-tier-cost="${cost}">
+                 data-tier-cost="${cost}"
+                 data-selected="${isSelected}">
                 <div class="card-header">
                     <h4 class="card-title">${condition.name}</h4>
                     <span class="card-cost">${cost}pt</span>
                 </div>
                 <div class="card-description">${condition.description}</div>
-                <div class="condition-toggle-controls">
-                    <button type="button" 
-                            class="btn btn-small condition-toggle" 
-                            data-condition-id="${condition.id}"
-                            data-tier-cost="${cost}"
-                            data-selected="${isSelected}"
-                            ${disabled ? 'disabled' : ''}>
-                        ${isSelected ? 'Remove' : 'Add'}
-                    </button>
+                <div class="selection-indicator">
+                    ${isSelected ? '✓ Selected' : 'Click to Select'}
                 </div>
             </div>
         `;
@@ -221,55 +212,16 @@ export class TraitPurchaseSection {
     }
 
     setupEventListeners() {
-        // Event listeners for trait builder controls
-        const container = document.querySelector('.trait-purchase-section-content');
-        console.log('🔍 TraitPurchaseSection setupEventListeners called, container found:', !!container);
-        if (container) {
-            const statButtons = container.querySelectorAll('.stat-toggle');
-            const conditionButtons = container.querySelectorAll('.condition-toggle');
-            console.log('🔍 Found stat buttons:', statButtons.length, 'condition buttons:', conditionButtons.length);
-            
-            // Handle stat toggle buttons
-            statButtons.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.handleStatToggle(e.target);
-                });
-            });
-            
-            // Handle condition toggle buttons
-            conditionButtons.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.handleConditionToggle(e.target);
-                });
-            });
-            
-            // Handle stat card clicks
-            container.querySelectorAll('.trait-stat-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (!e.target.closest('button')) {
-                        this.handleStatCardClick(card);
-                    }
-                });
-            });
-            
-            // Handle condition card clicks
-            container.querySelectorAll('.trait-condition-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (!e.target.closest('button')) {
-                        this.handleConditionCardClick(card);
-                    }
-                });
-            });
-        }
+        // Event listeners are now handled by MainPoolTab's event delegation
+        // No direct listeners needed - this method is kept for compatibility but does nothing
+        console.log('✅ TraitPurchaseSection: Event delegation active, no direct listeners attached');
     }
 
-    handleStatToggle(button) {
-        const statId = button.dataset.statId;
-        const isSelected = button.dataset.selected === 'true';
+    handleStatToggle(card) {
+        const statId = card.dataset.statId;
+        const isSelected = card.dataset.selected === 'true';
         
-        console.log('🔍 Stat toggle clicked:', statId, 'currently selected:', isSelected);
+        console.log('🔍 Stat card clicked:', statId, 'currently selected:', isSelected);
         
         if (!isSelected) {
             // Adding stat
@@ -288,12 +240,12 @@ export class TraitPurchaseSection {
         }
     }
 
-    handleConditionToggle(button) {
-        const conditionId = button.dataset.conditionId;
-        const tierCost = parseInt(button.dataset.tierCost);
-        const isSelected = button.dataset.selected === 'true';
+    handleConditionToggle(card) {
+        const conditionId = card.dataset.conditionId;
+        const tierCost = parseInt(card.dataset.tierCost);
+        const isSelected = card.dataset.selected === 'true';
         
-        console.log('🔍 Condition toggle clicked:', conditionId, 'cost:', tierCost, 'currently selected:', isSelected);
+        console.log('🔍 Condition card clicked:', conditionId, 'cost:', tierCost, 'currently selected:', isSelected);
         
         if (!isSelected) {
             // Adding condition
@@ -314,40 +266,6 @@ export class TraitPurchaseSection {
         }
     }
 
-    handleStatCardClick(card) {
-        const statId = card.dataset.statId;
-        const isSelected = this.currentTraitData.statBonuses.includes(statId);
-        
-        if (!isSelected && this.currentTraitData.statBonuses.length < 2) {
-            this.currentTraitData.statBonuses.push(statId);
-            this.refreshBuilderUI();
-        } else if (isSelected) {
-            this.currentTraitData.statBonuses = this.currentTraitData.statBonuses.filter(s => s !== statId);
-            this.refreshBuilderUI();
-        } else {
-            this.builder.showNotification('Maximum 2 stat bonuses allowed.', 'warning');
-        }
-    }
-
-    handleConditionCardClick(card) {
-        const conditionId = card.dataset.conditionId;
-        const tierCost = parseInt(card.dataset.tierCost);
-        const isSelected = this.currentTraitData.conditions.includes(conditionId);
-        
-        if (!isSelected) {
-            if (this.currentTraitData.tierCost + tierCost <= 3) {
-                this.currentTraitData.conditions.push(conditionId);
-                this.currentTraitData.tierCost += tierCost;
-                this.refreshBuilderUI();
-            } else {
-                this.builder.showNotification('Condition tier limit (3 points) exceeded.', 'warning');
-            }
-        } else {
-            this.currentTraitData.conditions = this.currentTraitData.conditions.filter(c => c !== conditionId);
-            this.currentTraitData.tierCost -= tierCost;
-            this.refreshBuilderUI();
-        }
-    }
     
     refreshBuilderUI() {
         // Re-render only the trait builder part
@@ -362,11 +280,7 @@ export class TraitPurchaseSection {
                 <h5>Create New Trait</h5>
                 ${this.renderTraitBuilderContent(conditionTiersData, statOptionsData, {remaining: mainPoolRemaining})}
             `;
-            // Note: Event listeners for checkboxes within builder will be re-bound by MainPoolTab if it re-renders the whole section,
-            // or need to be re-attached here if this component manages its own complete re-render.
-            // The current setup assumes MainPoolTab handles delegation or re-renders this whole section.
-            // For isolated refreshBuilderUI, we'd need to re-call this.setupEventListeners() on the builderContainer.
-             this.setupEventListeners(); // Re-attach to the new DOM for checkboxes
+            // Event listeners are handled by MainPoolTab's event delegation - no need to re-attach
         }
     }
 
@@ -399,16 +313,34 @@ export class TraitPurchaseSection {
     }
 
     handleTraitRemoval(index) {
+        console.log('🔍 Trait removal requested for index:', index);
         const character = this.builder.currentCharacter;
+        
+        if (!character || !character.mainPoolPurchases || !character.mainPoolPurchases.traits) {
+            console.log('❌ Invalid character data for trait removal');
+            this.builder.showNotification('Invalid character data.', 'error');
+            return;
+        }
+        
         const trait = character.mainPoolPurchases.traits[index];
-        if (confirm(`Remove trait "${this.getTraitSummary(trait, character)}"? This refunds ${trait.cost}p.`)) {
-            try {
+        console.log('🔍 Found trait at index:', trait);
+        
+        if (!trait) {
+            console.log('❌ Trait not found at index:', index, 'Total traits:', character.mainPoolPurchases.traits.length);
+            this.builder.showNotification('Trait not found.', 'error');
+            return;
+        }
+        
+        try {
+            const traitSummary = this.getTraitSummary(trait, character);
+            if (confirm(`Remove trait "${traitSummary}"? This refunds ${trait.cost}p.`)) {
                 TraitFlawSystem.removeTrait(character, index);
                 this.builder.updateCharacter();
                 this.builder.showNotification('Trait removed.', 'success');
-            } catch (error) {
-                this.builder.showNotification(`Failed to remove trait: ${error.message}`, 'error');
             }
+        } catch (error) {
+            console.log('❌ Error in trait removal:', error);
+            this.builder.showNotification(`Failed to remove trait: ${error.message}`, 'error');
         }
     }
     
