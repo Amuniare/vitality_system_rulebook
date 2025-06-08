@@ -1,6 +1,5 @@
 class RulebookApp {
     constructor() {
-        this.autoLinker = new AutoLinker();
         this.init();
     }
 
@@ -9,7 +8,6 @@ class RulebookApp {
             await this.loadRulebook();
             this.generateNavigation();
             this.setupEventListeners();
-            this.logAutoLinkingStats();
         } catch (error) {
             console.error('Failed to initialize app:', error);
             document.getElementById('content').innerHTML = 
@@ -36,10 +34,6 @@ class RulebookApp {
             this.addHeadingIdsToElement(tempDiv);
             html = tempDiv.innerHTML;
             
-            // Apply auto-linking AFTER headings have IDs
-            console.log('Applying auto-linking...');
-            html = this.autoLinker.applyAutoLinking(html);
-            console.log('Auto-linking applied');
             
             document.getElementById('content').innerHTML = html;
             
@@ -102,20 +96,11 @@ class RulebookApp {
     setupEventListeners() {
         // Smooth scroll for navigation links (existing auto-links work automatically)
         document.addEventListener('click', (e) => {
-            // Handle both navigation and auto-links
-            if (e.target.matches('.nav-item, .auto-link')) {
+            // Handle navigation links
+            if (e.target.matches('.nav-item')) {
                 e.preventDefault();
                 
-                let targetId;
-                if (e.target.classList.contains('nav-item')) {
-                    targetId = e.target.getAttribute('data-target');
-                } else {
-                    // Auto-link
-                    const href = e.target.getAttribute('href');
-                    if (href && href.startsWith('#')) {
-                        targetId = href.substring(1); // Remove the #
-                    }
-                }
+                const targetId = e.target.getAttribute('data-target');
                 
                 if (targetId) {
                     const targetElement = document.getElementById(targetId);
@@ -125,14 +110,6 @@ class RulebookApp {
                             behavior: 'smooth',
                             block: 'start'
                         });
-                        
-                        // Add visual feedback for auto-linked terms
-                        if (e.target.classList.contains('auto-link')) {
-                            targetElement.classList.add('highlighted');
-                            setTimeout(() => {
-                                targetElement.classList.remove('highlighted');
-                            }, 2000);
-                        }
                     } else {
                         console.warn('Target element not found:', targetId);
                     }
@@ -150,18 +127,6 @@ class RulebookApp {
         document.body.appendChild(menuToggle);
     }
 
-    logAutoLinkingStats() {
-        const stats = this.autoLinker.getStats();
-        console.log('Auto-linking Statistics:', stats);
-        
-        // Debug: Count actual auto-links in the document
-        const autoLinks = document.querySelectorAll('.auto-link');
-        console.log('Auto-links found in document:', autoLinks.length);
-        
-        if (autoLinks.length === 0) {
-            console.warn('No auto-links were created. Check if terms are being detected.');
-        }
-    }
 }
 
 // Initialize app when DOM is ready

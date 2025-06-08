@@ -225,11 +225,9 @@
         </main>
     </div>
     
-    <script src="../../rules/viewer/auto-linker.js"></script>
     <script>
         class MutantsCampaignApp {
             constructor() {
-                this.autoLinker = new AutoLinker();
                 this.loadedTabs = new Set();
                 this.tabFiles = {
                     'overview': 'campaign-overview.md',
@@ -276,7 +274,6 @@
                     this.addHeadingIdsToElement(tempDiv);
                     html = tempDiv.innerHTML;
                     
-                    html = this.autoLinker.applyAutoLinking(html);
                     
                     tabElement.innerHTML = html;
                     this.loadedTabs.add(tabName);
