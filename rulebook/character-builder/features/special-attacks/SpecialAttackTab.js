@@ -105,24 +105,28 @@ export class SpecialAttackTab {
         }
 
         const container = document.getElementById('tab-specialAttacks');
-        if(container) {
-            EventManager.delegateEvents(container, {
-                click: { '[data-action]': (e, el) => this.handleEvent(e, el) },
-                change: { 'select[data-action]': (e, el) => this.handleEvent(e, el) },
-                input: { 
-                    'input[data-action]': (e, el) => this.handleEvent(e, el), 
-                    'textarea[data-action]': (e, el) => this.handleEvent(e, el) 
-                }
-            }, this);
-            
-            this.listenersAttached = true;
-            console.log('✅ SpecialAttackTab event listeners attached ONCE.');
-        }
+        if (!container) return;
+
+        EventManager.delegateEvents(container, {
+            click: { '[data-action]': (e, el) => this.handleEvent(e, el) },
+            change: { 'select[data-action]': (e, el) => this.handleEvent(e, el) },
+            input: { 
+                'input[data-action]': (e, el) => this.handleEvent(e, el), 
+                'textarea[data-action]': (e, el) => this.handleEvent(e, el) 
+            }
+        }, this);
+        
+        this.listenersAttached = true;
+        console.log('✅ SpecialAttackTab event listeners attached ONCE.');
     }
 
     handleEvent(e, element) {
         const { action, ...data } = element.dataset;
-        e.stopPropagation();
+        
+        // Only stop propagation for non-input events to allow normal typing behavior
+        if (e.type !== 'input') {
+            e.stopPropagation();
+        }
 
         const handlers = {
             'create-attack': () => this.createNewAttack(),
@@ -189,8 +193,15 @@ export class SpecialAttackTab {
     
     updateAttackProperty(prop, value) { 
         const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
-        if(attack) attack[prop] = value;
-        this.builder.updateCharacter(); 
+        if(attack) {
+            attack[prop] = value;
+            // Update the character timestamp and save to localStorage
+            // but don't trigger a full re-render that would lose focus
+            this.builder.currentCharacter.touch();
+            if (this.builder.library && this.builder.currentCharacter.id) {
+                this.builder.library.saveCharacter(this.builder.currentCharacter);
+            }
+        }
     }
     
     addAttackType(typeId) { 

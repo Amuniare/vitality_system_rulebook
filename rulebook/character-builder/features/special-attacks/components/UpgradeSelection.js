@@ -46,11 +46,12 @@ export class UpgradeSelection {
     }
 
     renderPurchasedUpgrade(upgrade) {
+        const costText = upgrade.cost === 0 ? 'Free' : `${upgrade.cost}p`;
         return `
             <div class="purchased-item purchased-upgrade">
                 <div class="item-info">
                     <span class="item-name">${upgrade.name}</span>
-                    <span class="item-details">${upgrade.cost}p</span>
+                    <span class="item-details">${costText}</span>
                 </div>
                 ${RenderUtils.renderButton({
                     text: '×',

@@ -26,3 +26,4 @@ docs/web_dev_logs/
 docs/data-formats.md
 .env
 mcp_server
+launch_mcp.ps1
