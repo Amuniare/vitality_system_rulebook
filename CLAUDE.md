@@ -35,3 +35,5 @@ This section defines special commands that trigger automated, multi-step process
 *   **`--process-notes [filename]`:** When you see this directive, your task is to read the specified notes file, analyze its contents, and generate a detailed feature specification in `/.claude/spec.md`. Ask clarifying questions if the notes are ambiguous.
 
 *   **`--build-from-spec`:** When you see this directive, you MUST first read and then strictly follow the instructions outlined in the **`/.claude/CLAUDE.md`** file. That file contains the protocol for transforming the `spec.md` into a full implementation plan. Do not perform any other actions until you have read and understood that protocol.
+
+*   **`--log [PhaseID] "[Log Title]"`:** This directive initiates the standard process for creating a new web development log. Upon seeing this command, you are to **immediately read the `docs/web_dev_logs/CLAUDE.md` file and strictly follow the protocol outlined within it** to generate the new log file.

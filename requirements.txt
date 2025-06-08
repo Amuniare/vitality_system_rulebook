@@ -5,3 +5,7 @@ argparse
 pathlib
 openpyxl
 
+Flask
+google-generativeai
+python-dotenv
+pyreadline3; sys_platform == 'win32'

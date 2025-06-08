@@ -22,6 +22,10 @@ wsl -d Ubuntu
 claude
 
 
+## Gemini Server
+python mcp_server/mcp_server.py
+python mcp_server/command_centre.py
+
 ## Start Server
 python -m http.server
 
