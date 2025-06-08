@@ -290,9 +290,9 @@ export class MainPoolTab {
         const abilityDef = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === uniqueAbility.boonId);
         if (!abilityDef) return '';
 
-        const upgradeItems = uniqueAbility.upgrades.map(selectedUpgrade => {
+        const upgradeTags = uniqueAbility.upgrades.map(selectedUpgrade => {
             const upgradeDef = abilityDef.upgrades?.find(u => u.id === selectedUpgrade.id);
-            if (!upgradeDef) return `<li>Unknown upgrade: ${selectedUpgrade.id}</li>`;
+            if (!upgradeDef) return `<span class="upgrade-tag unknown">Unknown upgrade: ${selectedUpgrade.id}</span>`;
 
             const hasQuantity = upgradeDef.per && selectedUpgrade.quantity;
             const costText = hasQuantity 
@@ -300,20 +300,20 @@ export class MainPoolTab {
                 : `${upgradeDef.cost}p`;
 
             return `
-                <li class="upgrade-detail">
+                <span class="upgrade-tag">
                     <span class="upgrade-name">${upgradeDef.name}</span>
                     ${hasQuantity ? `<span class="upgrade-quantity">×${selectedUpgrade.quantity}</span>` : ''}
                     <span class="upgrade-cost">${costText}</span>
-                </li>
+                </span>
             `;
         }).join('');
 
         return `
             <div class="upgrade-details">
                 <div class="upgrade-summary">Base: ${abilityDef.baseCost}p + Upgrades:</div>
-                <ul class="upgrade-list">
-                    ${upgradeItems}
-                </ul>
+                <div class="upgrade-tags">
+                    ${upgradeTags}
+                </div>
             </div>
         `;
     }
