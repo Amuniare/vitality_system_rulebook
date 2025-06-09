@@ -62,11 +62,12 @@ export class TierSystem {
         return GameConstants.BASE_HP;
     }
     
-    // Calculate limit scaling points with archetype multiplier applied to rates
+    // Calculate limit scaling points with archetype multiplier applied BEFORE diminishing buckets
     static calculateLimitScaling(limitPoints, tier, archetype = null) {
         const firstTierThreshold = tier * GameConstants.LIMIT_FIRST_TIER_MULTIPLIER;
         const secondTierThreshold = tier * GameConstants.LIMIT_SECOND_TIER_MULTIPLIER;
 
+        // Step 1: Apply archetype scaling to get effective limit points
         let archetypeMultiplier = 1.0;
         if (archetype) {
             switch(archetype) {
@@ -88,21 +89,26 @@ export class TierSystem {
             }
         }
 
-        const modifiedFirstValue = GameConstants.LIMIT_FIRST_VALUE * archetypeMultiplier;
-        const modifiedSecondValue = GameConstants.LIMIT_SECOND_VALUE * archetypeMultiplier;
-        const modifiedThirdValue = GameConstants.LIMIT_THIRD_VALUE * archetypeMultiplier;
+        const scaledLimitPoints = limitPoints * archetypeMultiplier;
+
+        // Step 2: Apply diminishing buckets to the scaled points
+        const bucketRates = {
+            first: GameConstants.LIMIT_FIRST_VALUE,    // 100%
+            second: GameConstants.LIMIT_SECOND_VALUE,  // 50%  
+            third: GameConstants.LIMIT_THIRD_VALUE     // 25%
+        };
 
         let totalValue = 0;
 
-        if (limitPoints <= firstTierThreshold) {
-            totalValue = limitPoints * modifiedFirstValue;
-        } else if (limitPoints <= firstTierThreshold + secondTierThreshold) {
-            totalValue = (firstTierThreshold * modifiedFirstValue) +
-                         ((limitPoints - firstTierThreshold) * modifiedSecondValue);
+        if (scaledLimitPoints <= firstTierThreshold) {
+            totalValue = scaledLimitPoints * bucketRates.first;
+        } else if (scaledLimitPoints <= firstTierThreshold + secondTierThreshold) {
+            totalValue = (firstTierThreshold * bucketRates.first) +
+                         ((scaledLimitPoints - firstTierThreshold) * bucketRates.second);
         } else {
-            totalValue = (firstTierThreshold * modifiedFirstValue) +
-                         (secondTierThreshold * modifiedSecondValue) +
-                         ((limitPoints - firstTierThreshold - secondTierThreshold) * modifiedThirdValue);
+            totalValue = (firstTierThreshold * bucketRates.first) +
+                         (secondTierThreshold * bucketRates.second) +
+                         ((scaledLimitPoints - firstTierThreshold - secondTierThreshold) * bucketRates.third);
         }
 
         // Round up to nearest 10 for the final points
@@ -110,7 +116,9 @@ export class TierSystem {
 
         return {
             totalValue: totalValue, // The "before rounding" value
-            finalPoints: finalPoints // The final usable points
+            finalPoints: finalPoints, // The final usable points
+            scaledLimitPoints: scaledLimitPoints, // The effective limit points after archetype scaling
+            archetypeMultiplier: archetypeMultiplier // The scaling factor used
         };
     }
     

@@ -254,33 +254,52 @@ export class MainPoolTab {
                 actionKey = `remove-${item.category.slice(0, -1)}`;
         }
 
-        // Generate cost breakdown for unique abilities with upgrades
+        // Generate cost breakdown for unique abilities
         let costBoxes = '';
-        if (item.category === 'uniqueAbilities' && item.originalItem?.upgrades && item.originalItem.upgrades.length > 0) {
-            const abilityDef = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === item.originalItem.boonId);
-            if (abilityDef) {
-                const upgradesCost = item.originalItem.upgrades.reduce((sum, selectedUpgrade) => {
-                    const upgradeDef = abilityDef.upgrades?.find(u => u.id === selectedUpgrade.id);
-                    if (!upgradeDef) return sum;
-                    const hasQuantity = upgradeDef.per && selectedUpgrade.quantity;
-                    return sum + (hasQuantity ? selectedUpgrade.quantity * upgradeDef.cost : upgradeDef.cost);
-                }, 0);
-                const totalCost = abilityDef.baseCost + upgradesCost;
-
+        if (item.category === 'uniqueAbilities') {
+            // Handle custom unique abilities
+            if (item.originalItem?.isCustom) {
                 costBoxes = `
-                    <span class="item-details">${item.typeLabel}</span>
-                    <span class="item-cost">Base Cost: ${abilityDef.baseCost}p</span>
-                    ${item.originalItem.upgrades.map(selectedUpgrade => {
-                        const upgradeDef = abilityDef.upgrades?.find(u => u.id === selectedUpgrade.id);
-                        if (!upgradeDef) return '';
-                        const hasQuantity = upgradeDef.per && selectedUpgrade.quantity;
-                        const displayName = hasQuantity ? `${upgradeDef.name} ×${selectedUpgrade.quantity}` : upgradeDef.name;
-                        const cost = hasQuantity ? selectedUpgrade.quantity * upgradeDef.cost : upgradeDef.cost;
-                        return `<span class="item-cost">${displayName}: ${cost}p</span>`;
-                    }).join('')}
-                    <span class="item-cost">Total Points: ${totalCost}p</span>
+                    <span class="item-details">${item.typeLabel} (Custom)</span>
+                    <span class="item-cost">${item.cost}p</span>
+                    <span class="item-description">${item.originalItem.description || ''}</span>
                 `;
+            } else if (item.originalItem?.upgrades && item.originalItem.upgrades.length > 0) {
+                // Handle standard unique abilities with upgrades
+                const abilityDef = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === item.originalItem.boonId);
+                if (abilityDef) {
+                    const upgradesCost = item.originalItem.upgrades.reduce((sum, selectedUpgrade) => {
+                        // Handle standard upgrades only (no more custom upgrades)
+                        const upgradeDef = abilityDef.upgrades?.find(u => u.id === selectedUpgrade.id);
+                        if (!upgradeDef) return sum;
+                        const hasQuantity = upgradeDef.per && selectedUpgrade.quantity;
+                        return sum + (hasQuantity ? selectedUpgrade.quantity * upgradeDef.cost : upgradeDef.cost);
+                    }, 0);
+                    const totalCost = abilityDef.baseCost + upgradesCost;
+
+                    costBoxes = `
+                        <span class="item-details">${item.typeLabel}</span>
+                        <span class="item-cost">Base Cost: ${abilityDef.baseCost}p</span>
+                        ${item.originalItem.upgrades.map(selectedUpgrade => {
+                            // Handle standard upgrades display only
+                            const upgradeDef = abilityDef.upgrades?.find(u => u.id === selectedUpgrade.id);
+                            if (!upgradeDef) return '';
+                            const hasQuantity = upgradeDef.per && selectedUpgrade.quantity;
+                            const displayName = hasQuantity ? `${upgradeDef.name} ×${selectedUpgrade.quantity}` : upgradeDef.name;
+                            const cost = hasQuantity ? selectedUpgrade.quantity * upgradeDef.cost : upgradeDef.cost;
+                            return `<span class="item-cost">${displayName}: ${cost}p</span>`;
+                        }).join('')}
+                        <span class="item-cost">Total Points: ${totalCost}p</span>
+                    `;
+                } else {
+                    const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
+                    costBoxes = `
+                        <span class="item-details">${item.typeLabel}</span>
+                        ${costText ? `<span class="item-cost">${costText}</span>` : ''}
+                    `;
+                }
             } else {
+                // Standard unique ability with no upgrades
                 const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
                 costBoxes = `
                     <span class="item-details">${item.typeLabel}</span>
@@ -384,6 +403,7 @@ export class MainPoolTab {
                 '[data-action="toggle-upgrade"]': (e, el) => this.sections.uniqueAbilities.handleUpgradeToggle(el),
                 '[data-action="increase-upgrade-quantity"]': (e, el) => this.sections.uniqueAbilities.handleIncreaseUpgradeQuantity(el),
                 '[data-action="decrease-upgrade-quantity"]': (e, el) => this.sections.uniqueAbilities.handleDecreaseUpgradeQuantity(el),
+                '[data-action="create-custom-unique-ability"]': (e, el) => this.sections.uniqueAbilities.handleCreateCustomUniqueAbility(),
                 '[data-action="purchase-action-upgrade"]': (e, el) => this.sections.actions.purchaseActionUpgrade(el.dataset.actionId),
                 '[data-action="remove-action-upgrade"]': (e, el) => this.sections.actions.removeUpgrade(parseInt(el.dataset.index))
             },
@@ -396,9 +416,6 @@ export class MainPoolTab {
                     }
                 }
             },
-            input: {
-                // Input handlers removed for unique abilities since we're using card-based selection
-            }
         });
         
         this.listenersAttached = true;

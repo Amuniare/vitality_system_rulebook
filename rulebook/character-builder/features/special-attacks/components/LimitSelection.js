@@ -2,6 +2,7 @@
 // FIXED: This version correctly uses hierarchical data to prevent ID mismatches and restore UI indentation.
 import { SpecialAttackSystem } from '../../../systems/SpecialAttackSystem.js';
 import { TierSystem } from '../../../core/TierSystem.js';
+import { LimitCalculator } from '../../../calculators/LimitCalculator.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class LimitSelection {
@@ -28,6 +29,7 @@ export class LimitSelection {
                 </div>
                 ${this.renderSelectedLimitsTable(attack, character)}
                 ${this.renderAvailableLimits(character, attack)}
+                ${this.renderCustomLimitCreation(character, attack)}
             </div>
         `;
     }
@@ -69,6 +71,26 @@ export class LimitSelection {
     }
     
     renderLimitTableRow(limit, index) {
+        // Handle custom limits differently
+        if (limit.isCustom) {
+            return `
+                <tr class="limit-table-row custom-limit-row">
+                    <td class="remove-cell">
+                        ${RenderUtils.renderButton({
+                            text: '×',
+                            variant: 'danger',
+                            size: 'small',
+                            dataAttributes: { action: 'remove-limit', 'limit-id': limit.id },
+                            title: `Remove ${limit.name}`
+                        })}
+                    </td>
+                    <td>${limit.name} <span class="custom-tag">(Custom)</span></td>
+                    <td class="limit-points-cell">${limit.points}</td>
+                </tr>
+            `;
+        }
+        
+        // Handle standard limits
         const limitDef = SpecialAttackSystem.getLimitById(limit.id);
         const cost = limitDef ? (typeof limitDef.cost === 'number' ? limitDef.cost : 0) : 0;
         
@@ -91,20 +113,46 @@ export class LimitSelection {
 
     renderLimitCalculationFooter(attack, character) {
         const limitPointsTotal = attack.limitPointsTotal || 0;
-        const finalUpgradePoints = attack.upgradePointsAvailable || 0; // Use available as it includes archetype points
         const fromLimits = attack.upgradePointsFromLimits || 0;
         const archetype = character.archetypes.specialAttack;
-        const archetypeMultiplier = SpecialAttackSystem.canArchetypeUseLimits(character) ? (TierSystem.calculateLimitScaling(100, character.tier, archetype).totalValue / 100) : 0;
+
+        // Get the detailed calculation breakdown using LimitCalculator
+        const breakdown = LimitCalculator.getCalculationBreakdown(limitPointsTotal, character.tier, archetype);
 
         return `
             <tr class="calculation-subtotal">
                 <td colspan="2">Limit Points Total</td>
                 <td><strong>${limitPointsTotal}</strong></td>
             </tr>
-            <tr class="calculation-multiplier">
+            <tr class="calculation-scaling">
                 <td colspan="2">Scaling Rate (from ${archetype} archetype)</td>
-                <td>×${archetypeMultiplier.toFixed(2)}</td>
+                <td>×${breakdown.archetypeMultiplier.toFixed(2)}</td>
             </tr>
+            <tr class="calculation-effective">
+                <td colspan="2">Effective Limit Points</td>
+                <td>${breakdown.scaledLimitPoints.toFixed(1)}</td>
+            </tr>
+            <tr class="calculation-breakdown-header">
+                <td colspan="3"><strong>Diminishing Returns Buckets:</strong></td>
+            </tr>
+            ${breakdown.steps.slice(3).filter(step => step.includes('Bucket')).map(step => {
+                const match = step.match(/^[\s•]*(.+?)\s*=\s*(.+)$/);
+                if (match) {
+                    return `
+                        <tr class="calculation-step">
+                            <td colspan="2">${match[1].replace(/^\s*•?\s*/, '')}</td>
+                            <td><strong>${match[2]}</strong></td>
+                        </tr>
+                    `;
+                } else {
+                    return `
+                        <tr class="calculation-step">
+                            <td colspan="2">${step.replace(/^\s*•?\s*/, '')}</td>
+                            <td></td>
+                        </tr>
+                    `;
+                }
+            }).join('')}
             <tr class="calculation-final">
                 <td colspan="2"><strong>Upgrade Points from Limits</strong></td>
                 <td><strong>${fromLimits}</strong></td>
@@ -213,6 +261,37 @@ export class LimitSelection {
                 'limit-id': limit.id
             }
         }, { cardClass: `limit-option ${cssClass}`, showStatus: false });
+    }
+
+    renderCustomLimitCreation(character, attack) {
+        return `
+            <div class="custom-limit-creation">
+                <h4>Create Custom Limit</h4>
+                <div class="custom-limit-form">
+                    <div class="form-group">
+                        <label for="custom-limit-name">Name:</label>
+                        <input type="text" id="custom-limit-name" class="custom-limit-input" placeholder="Enter limit name" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="custom-limit-description">Description:</label>
+                        <textarea id="custom-limit-description" class="custom-limit-input" rows="3" placeholder="Describe the limit's effects" maxlength="500"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="custom-limit-points">Point Value:</label>
+                        <input type="number" id="custom-limit-points" class="custom-limit-input" placeholder="Enter point value" min="1" max="100">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" 
+                                class="btn btn-primary" 
+                                id="add-custom-limit-btn" 
+                                data-action="add-custom-limit" 
+                                disabled>
+                            Add Custom Limit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     formatCategoryName(category) {

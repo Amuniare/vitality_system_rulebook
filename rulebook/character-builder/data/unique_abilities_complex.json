@@ -211,8 +211,20 @@
             "target": "living beings"
         },
         "upgrades": [
-            { "id": "increasedCharges", "name": "Increased Charges", "cost": 15, "per": "double", "description": "Double charges per X" },
-            { "id": "increasedHealing", "name": "Increased Healing", "cost": 30, "per": "double", "description": "Double HP healed per X" },
+            {
+                "id": "increasedCharges",
+                "name": "Increased Charges",
+                "cost": 15,
+                "per": "purchase", 
+                "description": "Increase charges by an additional 5 per purchase." 
+            },
+            {
+                "id": "increasedHealing",
+                "name": "Increased Healing",
+                "cost": 30,
+                "per": "purchase", 
+                "description": "Increase healing by an additional 5 × Tier HP per purchase." 
+            },
             { "id": "greaterHealing", "name": "Greater Healing", "cost": 15, "description": "Use additional charge on same target with same action" },
             { "id": "restorativeOnly", "name": "Restorative Only", "cost": 0, "description": "Removes all Conditions instead of damage" },
             { "id": "restorative", "name": "Restorative", "cost": 15, "description": "Also removes all Conditions" },

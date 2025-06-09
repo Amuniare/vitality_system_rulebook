@@ -25,6 +25,8 @@ export class UniqueAbilitySection {
                     (ability) => this.renderUniqueAbilityOption(ability, character, pointInfo),
                     { gridContainerClass: 'grid-layout ability-grid', gridSpecificClass: 'grid-columns-1fr' }
                 )}
+
+                ${this.renderCustomUniqueAbilityCreation(character, pointInfo)}
             </div>
         `;
         return containerHtml;
@@ -164,6 +166,61 @@ export class UniqueAbilitySection {
         }
     }
 
+    renderCustomUniqueAbilityCreation(character, pointInfo) {
+        const minimumCost = 5; // Minimum cost for a custom unique ability
+        const canAfford = pointInfo.remaining >= minimumCost;
+
+        return `
+            <div class="custom-unique-ability-creation">
+                <h4>Create Custom Unique Ability</h4>
+                <p class="custom-ability-description">
+                    Design your own unique ability with a custom name, description, and cost.
+                </p>
+                
+                <div class="custom-ability-form">
+                    <div class="form-group">
+                        <label for="custom-ability-name">Ability Name:</label>
+                        <input type="text" id="custom-ability-name" class="custom-ability-input" placeholder="Enter ability name" maxlength="50">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="custom-ability-category">Category:</label>
+                        <select id="custom-ability-category" class="custom-ability-input">
+                            <option value="offensive">Offensive</option>
+                            <option value="defensive">Defensive</option>
+                            <option value="utility">Utility</option>
+                            <option value="movement">Movement</option>
+                            <option value="social">Social</option>
+                            <option value="mental">Mental</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="custom-ability-description">Description:</label>
+                        <textarea id="custom-ability-description" class="custom-ability-input" rows="3" placeholder="Describe the ability's effects and mechanics" maxlength="500"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="custom-ability-cost">Point Cost:</label>
+                        <input type="number" id="custom-ability-cost" class="custom-ability-input" placeholder="Enter cost" min="${minimumCost}" max="100" value="${minimumCost}">
+                        <small class="form-help">Minimum cost: ${minimumCost} points</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        ${RenderUtils.renderButton({
+                            text: 'Create Custom Ability',
+                            variant: 'primary',
+                            size: 'medium',
+                            dataAttributes: { action: 'create-custom-unique-ability' },
+                            disabled: !canAfford,
+                            id: 'create-custom-ability-btn'
+                        })}
+                        ${!canAfford ? `<p class="error-text">Need at least ${minimumCost} points to create a custom ability.</p>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
     // Event handlers called by main event delegation system
     
@@ -249,6 +306,7 @@ export class UniqueAbilitySection {
         this.refreshUpgradeUI(abilityId);
     }
 
+
     updateCardVisualState(card, newSelectedState, upgradeDef) {
         // Update the card's visual appearance
         if (newSelectedState) {
@@ -298,6 +356,7 @@ export class UniqueAbilitySection {
 
         // Calculate cost from selected upgrades
         selectedUpgrades.forEach(selectedUpgrade => {
+            // Handle standard upgrades only
             const upgradeDef = abilityDef.upgrades.find(u => u.id === selectedUpgrade.id);
             if (upgradeDef) {
                 if (selectedUpgrade.quantity) {
@@ -356,5 +415,94 @@ export class UniqueAbilitySection {
         this.builder.showNotification(`Modify functionality for ${abilityIdToModify} not yet implemented.`, 'info');
         // This would involve pre-populating the upgrade selector with existing upgrades
         // and then calling an update method instead of purchase.
+    }
+
+    handleCreateCustomUniqueAbility() {
+        const nameInput = document.getElementById('custom-ability-name');
+        const categorySelect = document.getElementById('custom-ability-category');
+        const descriptionInput = document.getElementById('custom-ability-description');
+        const costInput = document.getElementById('custom-ability-cost');
+
+        if (!nameInput || !categorySelect || !descriptionInput || !costInput) {
+            this.builder.showNotification('Custom ability form not found', 'error');
+            return;
+        }
+
+        const abilityData = {
+            id: `custom_${Date.now()}`,
+            name: nameInput.value.trim(),
+            category: categorySelect.value,
+            description: descriptionInput.value.trim(),
+            baseCost: Number(costInput.value),
+            cost: Number(costInput.value), // For compatibility with existing system
+            upgrades: [], // Custom abilities start with no upgrades
+            isCustom: true
+        };
+
+        // Validate the custom ability data
+        const validation = this.validateCustomAbilityData(abilityData);
+        if (!validation.isValid) {
+            this.builder.showNotification(validation.errors.join(', '), 'error');
+            return;
+        }
+
+        const character = this.builder.currentCharacter;
+        try {
+            UniqueAbilitySystem.purchaseCustomUniqueAbility(character, abilityData);
+            this.builder.updateCharacter();
+            this.builder.showNotification(`Created and purchased custom ability: ${abilityData.name}!`, 'success');
+            
+            // Clear the form
+            nameInput.value = '';
+            categorySelect.value = 'offensive';
+            descriptionInput.value = '';
+            costInput.value = '5';
+            
+            // Force re-render of this section to update display
+            const mainPoolTab = this.builder.tabs.mainPool;
+            if(mainPoolTab && mainPoolTab.activeSection === 'uniqueAbilities') {
+                mainPoolTab.updateActiveSectionUI();
+            }
+
+        } catch (error) {
+            this.builder.showNotification(`Failed to create custom ability: ${error.message}`, 'error');
+        }
+    }
+
+    validateCustomAbilityData(abilityData) {
+        const errors = [];
+
+        if (!abilityData.name || abilityData.name.length < 1) {
+            errors.push('Ability name is required');
+        }
+
+        if (abilityData.name && abilityData.name.length > 50) {
+            errors.push('Ability name must be 50 characters or less');
+        }
+
+        if (!abilityData.description || abilityData.description.length < 1) {
+            errors.push('Ability description is required');
+        }
+
+        if (abilityData.description && abilityData.description.length > 500) {
+            errors.push('Ability description must be 500 characters or less');
+        }
+
+        if (!abilityData.baseCost || isNaN(abilityData.baseCost) || abilityData.baseCost < 5) {
+            errors.push('Ability cost must be at least 5 points');
+        }
+
+        if (abilityData.baseCost && abilityData.baseCost > 100) {
+            errors.push('Ability cost cannot exceed 100 points');
+        }
+
+        if (!abilityData.category) {
+            errors.push('Ability category is required');
+        }
+
+        return {
+            isValid: errors.length === 0,
+            errors: errors
+        };
     }
 }

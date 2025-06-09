@@ -44,6 +44,11 @@ export class SpecialAttackTab {
             </div>
         `;
         this.setupEventListeners();
+        
+        // Validate custom limit form after render to ensure button state is correct
+        setTimeout(() => {
+            this.validateCustomLimitForm();
+        }, 10);
     }
     
     renderAttackManagement(character) {
@@ -112,7 +117,8 @@ export class SpecialAttackTab {
             change: { 'select[data-action]': (e, el) => this.handleEvent(e, el) },
             input: { 
                 'input[data-action]': (e, el) => this.handleEvent(e, el), 
-                'textarea[data-action]': (e, el) => this.handleEvent(e, el) 
+                'textarea[data-action]': (e, el) => this.handleEvent(e, el),
+                '.custom-limit-input': (e, el) => this.validateCustomLimitForm()
             }
         }, this);
         
@@ -152,10 +158,16 @@ export class SpecialAttackTab {
             'add-limit': () => this.addLimit(data.limitId),
             'remove-limit': () => this.removeLimit(data.limitId),
             'toggle-limit-category': () => this.toggleLimitCategory(data.category),
+            'add-custom-limit': () => this.addCustomLimit(),
             
             'purchase-upgrade': () => this.purchaseUpgrade(data.upgradeId),
             'remove-upgrade': () => this.removeUpgrade(data.upgradeId),
+            'toggle-specialty': () => this.toggleUpgradeSpecialty(data.upgradeId),
             'toggle-upgrade-category': () => { this.upgradeSelection.toggleCategory(data.category); this.render(); },
+            
+            'show-custom-upgrade-form': () => this.upgradeSelection.showCustomUpgradeForm(),
+            'cancel-custom-upgrade-special-attack': () => this.upgradeSelection.cancelCustomUpgradeForm(),
+            'add-custom-upgrade-special-attack': () => this.upgradeSelection.handleAddCustomUpgrade(),
             
             'continue-to-utility': () => this.builder.switchTab('utility')
         };
@@ -277,6 +289,68 @@ export class SpecialAttackTab {
         this.render();
     }
 
+    addCustomLimit() {
+        const nameInput = document.getElementById('custom-limit-name');
+        const descriptionInput = document.getElementById('custom-limit-description');
+        const pointsInput = document.getElementById('custom-limit-points');
+        
+        if (!nameInput || !descriptionInput || !pointsInput) {
+            this.builder.showNotification('Custom limit form not found', 'error');
+            return;
+        }
+        
+        const limitData = {
+            name: nameInput.value.trim(),
+            description: descriptionInput.value.trim(),
+            points: pointsInput.value
+        };
+        
+        try {
+            SpecialAttackSystem.addCustomLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitData);
+            
+            // Clear the form
+            nameInput.value = '';
+            descriptionInput.value = '';
+            pointsInput.value = '';
+            this.validateCustomLimitForm();
+            
+            this.builder.updateCharacter();
+            this.builder.showNotification('Custom limit added successfully', 'success');
+        } catch (error) {
+            this.builder.showNotification(error.message, 'error');
+        }
+    }
+
+    validateCustomLimitForm() {
+        const nameInput = document.getElementById('custom-limit-name');
+        const descriptionInput = document.getElementById('custom-limit-description');
+        const pointsInput = document.getElementById('custom-limit-points');
+        const addButton = document.getElementById('add-custom-limit-btn');
+        
+        if (!nameInput || !descriptionInput || !pointsInput || !addButton) {
+            return;
+        }
+        
+        const name = nameInput.value.trim();
+        const description = descriptionInput.value.trim();
+        const points = pointsInput.value;
+        
+        const isValid = name.length > 0 && 
+                       description.length > 0 && 
+                       points && 
+                       !isNaN(Number(points)) && 
+                       Number(points) > 0;
+        
+        addButton.disabled = !isValid;
+        addButton.classList.toggle('disabled', !isValid);
+        
+        if (isValid) {
+            addButton.removeAttribute('disabled');
+        } else {
+            addButton.setAttribute('disabled', 'true');
+        }
+    }
+
     purchaseUpgrade(upgradeId) {
         try {
             SpecialAttackSystem.addUpgradeToAttack(this.builder.currentCharacter, this.selectedAttackIndex, upgradeId);
@@ -287,6 +361,13 @@ export class SpecialAttackTab {
     removeUpgrade(upgradeId) {
         try {
             SpecialAttackSystem.removeUpgradeFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, upgradeId);
+            this.builder.updateCharacter();
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+    }
+
+    toggleUpgradeSpecialty(upgradeId) {
+        try {
+            SpecialAttackSystem.toggleUpgradeSpecialty(this.builder.currentCharacter, this.selectedAttackIndex, upgradeId);
             this.builder.updateCharacter();
         } catch (error) { this.builder.showNotification(error.message, 'error'); }
     }

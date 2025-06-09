@@ -186,53 +186,43 @@ export class LimitCalculator {
         const firstTierThreshold = tier * GameConstants.LIMIT_FIRST_TIER_MULTIPLIER;
         const secondTierThreshold = tier * GameConstants.LIMIT_SECOND_TIER_MULTIPLIER;
 
-        let archetypeMultiplier = 1.0;
-         if (archetype) {
-            switch(archetype) {
-                case 'normal': archetypeMultiplier = tier / 6; break;
-                case 'specialist': archetypeMultiplier = tier / 3; break;
-                case 'straightforward': archetypeMultiplier = tier / 2; break;
-                default: archetypeMultiplier = 0; break;
-            }
-        }
-
-        const modifiedFirstRate = GameConstants.LIMIT_FIRST_VALUE * archetypeMultiplier;
-        const modifiedSecondRate = GameConstants.LIMIT_SECOND_VALUE * archetypeMultiplier;
-        const modifiedThirdRate = GameConstants.LIMIT_THIRD_VALUE * archetypeMultiplier;
-        
         const calculationResult = this.calculateUpgradePointsFromLimits(limitPoints, tier, archetype);
+        const scaledLimitPoints = calculationResult.scaledLimitPoints;
+        const archetypeMultiplier = calculationResult.archetypeMultiplier;
         const totalValue = calculationResult.totalValue;
         const finalPoints = calculationResult.finalPoints;
 
         const breakdown = {
             steps: [
-                `1. Sum Limit Points: ${limitPoints}`,
-                `2. Calculate Modified Rates: Base rates × ${archetypeMultiplier.toFixed(3)} (${archetype})`,
-                `3. Apply Modified Rates to DR Buckets:`,
+                `1. Raw Limit Points: ${limitPoints}`,
+                `2. Apply Archetype Scaling: ${limitPoints} × ${archetypeMultiplier.toFixed(2)} = ${scaledLimitPoints.toFixed(1)} effective points`,
+                `3. Apply Diminishing Returns Buckets:`,
             ],
             totalValue: totalValue,
-            finalPoints: finalPoints
+            finalPoints: finalPoints,
+            scaledLimitPoints: scaledLimitPoints,
+            archetypeMultiplier: archetypeMultiplier
         };
 
-        let remainingPoints = limitPoints;
+        let remainingPoints = scaledLimitPoints;
         let bucket1Points = 0, bucket2Points = 0, bucket3Points = 0;
 
         if (remainingPoints > 0) {
             bucket1Points = Math.min(remainingPoints, firstTierThreshold);
-            breakdown.steps.push(`   • Bucket 1 (${firstTierThreshold} max): ${bucket1Points} × ${modifiedFirstRate.toFixed(3)} = ${(bucket1Points * modifiedFirstRate).toFixed(2)}`);
+            breakdown.steps.push(`   • Bucket 1 (${firstTierThreshold} max): ${bucket1Points.toFixed(1)} × 100% = ${(bucket1Points * GameConstants.LIMIT_FIRST_VALUE).toFixed(1)}`);
             remainingPoints -= bucket1Points;
         }
         if (remainingPoints > 0) {
             bucket2Points = Math.min(remainingPoints, secondTierThreshold);
-            breakdown.steps.push(`   • Bucket 2 (${secondTierThreshold} max): ${bucket2Points} × ${modifiedSecondRate.toFixed(3)} = ${(bucket2Points * modifiedSecondRate).toFixed(2)}`);
+            breakdown.steps.push(`   • Bucket 2 (${secondTierThreshold} max): ${bucket2Points.toFixed(1)} × 50% = ${(bucket2Points * GameConstants.LIMIT_SECOND_VALUE).toFixed(1)}`);
             remainingPoints -= bucket2Points;
         }
         if (remainingPoints > 0) {
             bucket3Points = remainingPoints;
-            breakdown.steps.push(`   • Bucket 3 (remainder): ${bucket3Points} × ${modifiedThirdRate.toFixed(3)} = ${(bucket3Points * modifiedThirdRate).toFixed(2)}`);
+            breakdown.steps.push(`   • Bucket 3 (remainder): ${bucket3Points.toFixed(1)} × 25% = ${(bucket3Points * GameConstants.LIMIT_THIRD_VALUE).toFixed(1)}`);
         }
         
-        breakdown.steps.push(`4. Sum and Round Up: ${totalValue.toFixed(2)} → ${finalPoints} Upgrade Points`);
+        breakdown.steps.push(`4. Sum and Round Up: ${totalValue.toFixed(1)} → ${finalPoints} Upgrade Points`);
         
         return breakdown;
     }

@@ -158,10 +158,27 @@ export class SpecialAttackSystem {
         }
         
         attack.upgradePointsAvailable = attack.upgradePointsFromLimits + attack.upgradePointsFromArchetype;
+        
+        // Recalculate upgrade points spent based on actual upgrades and their specialty status
+        this._recalculateUpgradePointsSpent(character, attack);
+    }
+
+    // Helper method to recalculate upgrade points spent
+    static _recalculateUpgradePointsSpent(character, attack) {
+        let totalSpent = 0;
+        if (attack.upgrades) {
+            for (const upgrade of attack.upgrades) {
+                const upgradeData = this.getUpgradeById(upgrade.id);
+                if (upgradeData) {
+                    totalSpent += this._getActualUpgradeCost(upgradeData, character, upgrade.isSpecialty);
+                }
+            }
+        }
+        attack.upgradePointsSpent = totalSpent;
     }
 
     // NEW HELPER: Centralize cost calculation
-    static _getActualUpgradeCost(upgradeData, character) {
+    static _getActualUpgradeCost(upgradeData, character, isSpecialty = false) {
         if (!upgradeData) return 0;
         let actualCost = upgradeData.cost;
         if (typeof actualCost === 'string') {
@@ -172,6 +189,12 @@ export class SpecialAttackSystem {
                 actualCost = parseInt(actualCost) || 0;
             }
         }
+        
+        // Apply specialty discount (half cost, rounded down)
+        if (isSpecialty) {
+            actualCost = Math.floor(actualCost / 2);
+        }
+        
         return actualCost;
     }
     
@@ -199,10 +222,12 @@ export class SpecialAttackSystem {
             effect: upgradeData.effect,
             restriction: upgradeData.restriction,
             exclusion: upgradeData.exclusion,
-            originalCost: upgradeData.cost
+            originalCost: upgradeData.cost,
+            isSpecialty: false // Default to not specialty
         });
         
-        attack.upgradePointsSpent += actualCost;
+        // Recalculate points will be handled by recalculateAttackPoints
+        this.recalculateAttackPoints(character, attack);
         return attack;
     }
     
@@ -269,9 +294,10 @@ export class SpecialAttackSystem {
         const upgradeIndex = attack.upgrades.findIndex(u => u.id === upgradeId);
         if (upgradeIndex === -1) throw new Error('Upgrade not found');
         
-        const upgrade = attack.upgrades[upgradeIndex];
         attack.upgrades.splice(upgradeIndex, 1);
-        attack.upgradePointsSpent -= upgrade.cost;
+        
+        // Recalculate points spent
+        this.recalculateAttackPoints(character, attack);
         
         return attack;
     }
@@ -346,6 +372,68 @@ export class SpecialAttackSystem {
         return { isValid: errors.length === 0, errors, warnings: [] };
     }
 
+    // Add custom limit to attack
+    static addCustomLimitToAttack(character, attackIndex, limitData) {
+        const attack = character.specialAttacks[attackIndex];
+        if (!attack) {
+            throw new Error('Attack not found');
+        }
+        
+        const validation = this.validateCustomLimitData(limitData);
+        if (!validation.isValid) {
+            throw new Error(validation.errors.join(', '));
+        }
+        
+        if (!this.canArchetypeUseLimits(character)) {
+            throw new Error(`${character.archetypes.specialAttack} archetype cannot use limits`);
+        }
+        
+        const customLimit = {
+            id: `custom_${Date.now()}`,
+            name: limitData.name,
+            description: limitData.description,
+            points: Number(limitData.points),
+            isCustom: true,
+            category: 'custom',
+            type: 'custom'
+        };
+        
+        attack.limits.push(customLimit);
+        this.recalculateAttackPoints(character, attack);
+        
+        return attack;
+    }
+    
+    // Validate custom limit data
+    static validateCustomLimitData(limitData) {
+        const errors = [];
+        const warnings = [];
+        
+        if (!limitData) {
+            errors.push('Limit data is required');
+            return { isValid: false, errors, warnings };
+        }
+        
+        if (!limitData.name || typeof limitData.name !== 'string' || limitData.name.trim() === '') {
+            errors.push('Name is required and must be a non-empty string');
+        }
+        
+        if (!limitData.description || typeof limitData.description !== 'string' || limitData.description.trim() === '') {
+            errors.push('Description is required and must be a non-empty string');
+        }
+        
+        const points = Number(limitData.points);
+        if (isNaN(points) || points <= 0) {
+            errors.push('Point value must be a positive number');
+        }
+        
+        return {
+            isValid: errors.length === 0,
+            errors,
+            warnings
+        };
+    }
+
     // Remove limit from attack
     static removeLimitFromAttack(character, attackIndex, limitId) {
         const attack = character.specialAttacks[attackIndex];
@@ -403,5 +491,96 @@ export class SpecialAttackSystem {
         const archetype = character.archetypes.specialAttack;
         const noLimitsArchetypes = ['paragon', 'oneTrick', 'dualNatured', 'basic'];
         return !noLimitsArchetypes.includes(archetype);
+    }
+
+    static toggleUpgradeSpecialty(character, attackIndex, upgradeId) {
+        const attack = character.specialAttacks[attackIndex];
+        if (!attack) {
+            throw new Error('Attack not found');
+        }
+
+        const upgrade = attack.upgrades?.find(u => u.id === upgradeId);
+        if (!upgrade) {
+            throw new Error('Upgrade not found');
+        }
+
+        // Toggle the specialty status
+        upgrade.isSpecialty = !upgrade.isSpecialty;
+
+        // Recalculate points spent
+        this.recalculateAttackPoints(character, attack);
+        
+        return character;
+    }
+
+    static addCustomUpgrade(character, attackIndex, upgradeData) {
+        const attack = character.specialAttacks[attackIndex];
+        if (!attack) {
+            throw new Error('Attack not found');
+        }
+
+        // Validate the custom upgrade
+        const validation = this.validateCustomUpgrade(character, attack, upgradeData);
+        if (!validation.isValid) {
+            throw new Error(validation.errors.join(', '));
+        }
+
+        // Add the custom upgrade to the attack
+        if (!attack.upgrades) {
+            attack.upgrades = [];
+        }
+
+        const upgrade = {
+            ...upgradeData,
+            purchased: new Date().toISOString()
+        };
+
+        attack.upgrades.push(upgrade);
+
+        // Recalculate points
+        this.recalculateAttackPoints(character, attack);
+
+        return character;
+    }
+
+    static validateCustomUpgrade(character, attack, upgradeData) {
+        const errors = [];
+        const warnings = [];
+
+        if (!upgradeData) {
+            errors.push('Upgrade data is required');
+            return { isValid: false, errors, warnings };
+        }
+
+        // Check if upgrade with same name already exists
+        if (attack.upgrades?.some(u => u.name === upgradeData.name)) {
+            errors.push('An upgrade with this name already exists on this attack');
+        }
+
+        // Check if we have enough points
+        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
+        if (upgradeData.cost > remainingPoints) {
+            errors.push(`Insufficient upgrade points (need ${upgradeData.cost}, have ${remainingPoints})`);
+        }
+
+        // Basic validation
+        if (!upgradeData.name || typeof upgradeData.name !== 'string' || upgradeData.name.trim() === '') {
+            errors.push('Upgrade name is required');
+        }
+
+        if (!upgradeData.effect || typeof upgradeData.effect !== 'string' || upgradeData.effect.trim() === '') {
+            errors.push('Upgrade effect is required');
+        }
+
+        const cost = Number(upgradeData.cost);
+        if (isNaN(cost) || cost < 5) {
+            errors.push('Upgrade cost must be at least 5 points');
+        }
+
+        return {
+            isValid: errors.length === 0,
+            errors,
+            warnings
+        };
     }
 }
