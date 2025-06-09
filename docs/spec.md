@@ -1,4 +1,4 @@
-### **`/.claude/spec.md`**
+### **`.claude/spec.md`**
 
 # Feature Specification: Interactive Summary Tab Refactor
 
