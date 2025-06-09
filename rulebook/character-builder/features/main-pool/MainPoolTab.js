@@ -1,4 +1,4 @@
-// rulebook/character-builder/ui/tabs/MainPoolTab.js
+// rulebook/character-builder/features/main-pool/MainPoolTab.js
 import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
 import { FlawPurchaseSection } from './components/FlawPurchaseSection.js';
 import { TraitPurchaseSection } from './components/TraitPurchaseSection.js';
@@ -26,6 +26,9 @@ export class MainPoolTab {
     }
 
     render() {
+        // Reset listener state at the beginning of render
+        this.listenersAttached = false;
+        
         const tabContent = document.getElementById('tab-mainPool');
         if (!tabContent) return;
 
@@ -410,6 +413,9 @@ export class MainPoolTab {
             change: {
                 '.stat-checkbox': (e, el) => { if (this.activeSection === 'traits') this.sections.traits.handleStatSelection(el);},
                 '.condition-checkbox': (e, el) => { if (this.activeSection === 'traits') this.sections.traits.handleConditionSelection(el);},
+                '.variable-cost-selector': (e, el) => { 
+                    if (this.activeSection === 'traits') this.sections.traits.handleVariableCostChange(e);
+                },
                 '.flaw-purchase-section-content .stat-bonus-select': (e, el) => {
                      if (this.activeSection === 'flaws' && this.sections.flaws.handleStatBonusChange) {
                         this.sections.flaws.handleStatBonusChange(e, el);
@@ -448,9 +454,8 @@ export class MainPoolTab {
     }
 
     onCharacterUpdate() {
-        // Reset listeners flag since we're doing a full re-render
-        this.listenersAttached = false;
-        this.render(); // Full re-render is simplest for this tab after updates
+        // Just call render - it will handle the state reset
+        this.render();
     }
 
     generateTraitDisplayName(trait, character) {

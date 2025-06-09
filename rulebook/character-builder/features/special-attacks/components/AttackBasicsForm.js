@@ -55,11 +55,7 @@ export class AttackBasicsForm {
 
             ${(attack.effectTypes || []).includes('hybrid') ? this.renderHybridOrderSelector(attack) : ''}
             
-            ${hasConditionEffect ? `
-                <hr style="border-color: var(--accent-secondary); margin: 1.5rem 0 1rem;">
-                ${this.renderConditionSelector(attack, 'Basic Conditions', 'basicConditions', AttackTypeSystem.getBasicConditions())}
-                ${this.renderConditionSelector(attack, 'Advanced Conditions', 'advancedConditions', AttackTypeSystem.getAdvancedConditions())}
-            ` : ''}
+            ${hasConditionEffect ? this.renderConditionSelectors(attack) : ''}
         `;
     }
     
@@ -119,6 +115,38 @@ export class AttackBasicsForm {
                 dataAttributes: { action: 'update-hybrid-order' }
             })
         });
+    }
+
+    renderConditionSelectors(attack) {
+        const hasBasicSelections = (attack.basicConditions || []).length > 0;
+        const hasAdvancedSelections = (attack.advancedConditions || []).length > 0;
+        
+        // If neither has selections, show both dropdowns
+        if (!hasBasicSelections && !hasAdvancedSelections) {
+            return `
+                <hr style="border-color: var(--accent-secondary); margin: 1.5rem 0 1rem;">
+                ${this.renderConditionSelector(attack, 'Basic Conditions', 'basicConditions', AttackTypeSystem.getBasicConditions())}
+                ${this.renderConditionSelector(attack, 'Advanced Conditions', 'advancedConditions', AttackTypeSystem.getAdvancedConditions())}
+            `;
+        }
+        
+        // If basic has selections, only show basic (hide advanced dropdown)
+        if (hasBasicSelections) {
+            return `
+                <hr style="border-color: var(--accent-secondary); margin: 1.5rem 0 1rem;">
+                ${this.renderConditionSelector(attack, 'Basic Conditions', 'basicConditions', AttackTypeSystem.getBasicConditions())}
+            `;
+        }
+        
+        // If advanced has selections, only show advanced (hide basic dropdown)
+        if (hasAdvancedSelections) {
+            return `
+                <hr style="border-color: var(--accent-secondary); margin: 1.5rem 0 1rem;">
+                ${this.renderConditionSelector(attack, 'Advanced Conditions', 'advancedConditions', AttackTypeSystem.getAdvancedConditions())}
+            `;
+        }
+        
+        return '';
     }
 
     renderConditionSelector(attack, label, propertyKey, definitions) {

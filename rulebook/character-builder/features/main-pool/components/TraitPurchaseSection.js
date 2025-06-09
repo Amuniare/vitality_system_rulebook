@@ -1,4 +1,4 @@
-// rulebook/character-builder/ui/components/TraitPurchaseSection.js
+// rulebook/character-builder/features/main-pool/components/TraitPurchaseSection.js
 import { TraitFlawSystem } from '../../../systems/TraitFlawSystem.js';
 import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js'; // Ensure this is used
 import { EventManager } from '../../../shared/utils/EventManager.js';
@@ -65,7 +65,7 @@ export class TraitPurchaseSection {
                         <strong>Bonuses:</strong> +${character.tier} ${trait.statBonuses.map(s => this.getStatName(s)).join(`, +${character.tier} `)}
                     </div>
                     <div class="trait-conditions">
-                        <strong>When:</strong> ${this.getConditionNames(trait.conditions).join(' AND ')}
+                        <strong>When:</strong> ${this.getConditionNames(trait.conditions, Infinity, trait).join(' AND ')}
                     </div>
                     <span class="item-cost trait-item-cost">-${trait.cost}p</span>
                 </div>
@@ -209,8 +209,8 @@ export class TraitPurchaseSection {
 
     setupEventListeners() {
         // Event listeners are now handled by MainPoolTab's event delegation
-        // No direct listeners needed - this method is kept for compatibility but does nothing
-        console.log('✅ TraitPurchaseSection: Event delegation active, no direct listeners attached');
+        // Variable cost selectors are also handled by the main delegation system
+        console.log('✅ TraitPurchaseSection: Event delegation active, no direct listeners needed');
     }
 
     handleStatToggle(card) {
@@ -297,10 +297,7 @@ export class TraitPurchaseSection {
     }
 
     handleTraitPurchase() {
-        console.log('🔍 Trait purchase attempted with data:', this.currentTraitData);
-        console.log('🔍 Current trait stats:', this.currentTraitData.statBonuses);
-        console.log('🔍 Current trait conditions:', this.currentTraitData.conditions);
-        console.log('🔍 Current trait tierCost:', this.currentTraitData.tierCost);
+        console.log('Attempting trait purchase with data:', JSON.stringify(this.currentTraitData));
         
         // 1. Get current point balance
         const character = this.builder.currentCharacter;
@@ -310,25 +307,23 @@ export class TraitPurchaseSection {
         // 2. Get the cost of the item
         const itemCost = TraitFlawSystem.getTraitCost();
         
-        // 3. Check if this purchase will go over budget
+        // 3. Check if this purchase will go over budget (non-blocking)
         if (itemCost > remainingPoints) {
-            // 4. Show a non-blocking notification
             this.builder.showNotification("This purchase puts you over budget.", "warning");
         }
 
-        // 5. Proceed with the purchase REGARDLESS of the check.
+        // 4. Proceed with the purchase
         try {
-            console.log('🔍 Current point pools:', pools);
-            
-            const updatedCharacter = TraitFlawSystem.purchaseTrait(character, this.currentTraitData);
-            this.currentTraitData = this.resetCurrentTraitData(); // Clear builder after purchase
-            this.builder.updateCharacter(); // This will trigger re-render of MainPoolTab
+            TraitFlawSystem.purchaseTrait(character, this.currentTraitData);
             this.builder.showNotification('Trait purchased!', 'success');
+            
+            // FIX: Call updateCharacter() first, THEN clear the local builder state.
+            this.builder.updateCharacter(); 
+            this.handleClearBuilder();
+
         } catch (error) {
-            // This will now only catch hard rule validation errors.
-            console.log('❌ Trait purchase failed:', error.message);
+            console.log('❌ Trait purchase failed:', error.message, 'with data:', JSON.stringify(this.currentTraitData));
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
-            // Do NOT clear the trait data or update character on error
         }
     }
 
@@ -365,10 +360,10 @@ export class TraitPurchaseSection {
     }
     
     getTraitSummary(trait, character) {
-        return `+${character.tier} ${trait.statBonuses.map(s => this.getStatName(s)).join('/')} when ${this.getConditionNames(trait.conditions, 1)}...`;
+        return `+${character.tier} ${trait.statBonuses.map(s => this.getStatName(s)).join('/')} when ${this.getConditionNames(trait.conditions, 1, trait)}...`;
     }
 
-    getConditionNames(conditionIds, limit = Infinity) {
+    getConditionNames(conditionIds, limit = Infinity, trait = null) {
         const conditionTiersData = TraitFlawSystem.getTraitConditionTiers();
         const names = [];
         for (const id of conditionIds) {
@@ -376,7 +371,12 @@ export class TraitPurchaseSection {
             for (const tier of Object.values(conditionTiersData)) {
                 const cond = tier.conditions.find(c => c.id === id);
                 if (cond) {
-                    names.push(cond.name);
+                    let name = cond.name;
+                    // If this is a variable cost condition and we have a trait with variable costs, show the actual cost
+                    if (tier.cost === "Variable" && trait && trait.variableCosts && trait.variableCosts[id]) {
+                        name += ` (${trait.variableCosts[id]}pt)`;
+                    }
+                    names.push(name);
                     break;
                 }
             }

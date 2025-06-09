@@ -2,7 +2,15 @@
 
 ## Bug Fix List
 
-- display issue
+
+Create custom limit
+- add custom limit button isn't working
+- also, needs to go in a box similar to how upgrades is, it should use consistent formating
+
+
+
+
+
 
 
 

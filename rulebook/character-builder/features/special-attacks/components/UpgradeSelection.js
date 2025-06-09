@@ -15,6 +15,7 @@ export class UpgradeSelection {
 
     render(attack, character) {
         const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
+        const spentPoints = attack.upgradePointsSpent || 0;
         const archetype = character.archetypes.specialAttack;
         const isLimitsBased = ['normal', 'specialist', 'straightforward', 'sharedUses'].includes(archetype);
         
@@ -23,7 +24,7 @@ export class UpgradeSelection {
                 <div class="section-header">
                     <h4>Upgrades</h4>
                     <div class="points-remaining ${remainingPoints < 0 ? 'error-text' : ''}">
-                        Points: ${remainingPoints} / ${attack.upgradePointsAvailable || 0}
+                        Points: ${spentPoints} / ${attack.upgradePointsAvailable || 0}
                     </div>
                 </div>
                 

@@ -34,7 +34,10 @@ class GameDataManager {
             upgrades: 'data/upgrades.json',
 
             // Attributes
-            attributes: 'data/attributes.json'
+            attributes: 'data/attributes.json',
+
+            // Tiers
+            tiers: 'data/tiers.json'
 
             // GameConstants (optional future externalization)
             // gameConstantsData: 'data/game_constants_data.json',
@@ -125,6 +128,9 @@ class GameDataManager {
 
     // Attributes
     getAttributes() { return this._getData('attributes', {}); }
+
+    // Tiers
+    getTiers() { return this._getData('tiers', {}); }
 }
 
 export const gameDataManager = new GameDataManager();

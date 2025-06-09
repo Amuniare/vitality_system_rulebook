@@ -67,7 +67,7 @@ export class TraitFlawSystem {
         const warnings = [];
 
         // Validate condition tier total
-        const totalTierCost = this.calculateTraitConditionCost(traitData.conditions);
+        const totalTierCost = this.calculateTraitConditionCost(traitData.conditions, traitData.variableCosts);
         if (totalTierCost > 3) {
             errors.push(`Condition combination exceeds 3 tier limit (currently ${totalTierCost})`);
         } else if (totalTierCost <= 0 && traitData.conditions.length > 0) {
@@ -133,6 +133,7 @@ export class TraitFlawSystem {
             id: Date.now().toString(),
             conditions: traitData.conditions,
             statBonuses: traitData.statBonuses,
+            variableCosts: traitData.variableCosts || {},
             cost: traitCost,
             purchasedAt: new Date().toISOString()
         });
@@ -141,14 +142,19 @@ export class TraitFlawSystem {
     }
 
     // Calculate trait condition tier cost
-    static calculateTraitConditionCost(conditions) {
+    static calculateTraitConditionCost(conditions, variableCosts = {}) {
         const tiers = gameDataManager.getTraitConditionTiers() || {}; // MODIFIED
         let totalCost = 0;
 
         conditions.forEach(conditionId => {
             for (const tier of Object.values(tiers)) {
                 if (tier.conditions && tier.conditions.some(c => c.id === conditionId)) { // Added tier.conditions check
-                    totalCost += tier.cost;
+                    // Check if this is a variable cost condition
+                    if (tier.cost === "Variable") {
+                        totalCost += variableCosts[conditionId] || 1; // Default to 1 if not specified
+                    } else {
+                        totalCost += tier.cost;
+                    }
                     break;
                 }
             }

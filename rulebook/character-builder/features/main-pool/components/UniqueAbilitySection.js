@@ -53,17 +53,15 @@ export class UniqueAbilitySection {
 
     renderUniqueAbilityOption(ability, character, pointInfo) {
         const alreadyPurchased = character.mainPoolPurchases.boons.some(b => b.boonId === ability.id && b.type === 'unique');
-        const canAffordBase = pointInfo.remaining >= ability.baseCost;
 
         let status = 'available';
         if (alreadyPurchased) status = 'purchased';
-        else if (!canAffordBase) status = 'unaffordable';
 
         const upgradeCount = ability.upgrades?.length || 0;
         let additionalContent = `<div class="item-category">Category: ${ability.category}</div>`;
         additionalContent += `<div class="upgrade-info">${upgradeCount} upgrades available</div>`;
 
-        if (!alreadyPurchased && canAffordBase) {
+        if (!alreadyPurchased) {
             additionalContent += `
                 <div class="upgrade-preview">
                     <div class="upgrade-selector" data-ability-id="${ability.id}">
@@ -91,10 +89,10 @@ export class UniqueAbilitySection {
             description: ability.description,
             status: status, // status for the base ability purchase
             clickable: false, // Click handling is on the purchase button inside
-            disabled: alreadyPurchased || !canAffordBase, // Card disabled if purchased or can't afford base
+            disabled: alreadyPurchased, // Card disabled only if purchased
             dataAttributes: { 'ability-id': ability.id },
             additionalContent: additionalContent
-        }, { cardClass: 'ability-card complex', showStatus: !(!alreadyPurchased && canAffordBase) }); // Only show card status if not showing purchase UI
+        }, { cardClass: 'ability-card complex', showStatus: alreadyPurchased }); // Only show card status if already purchased
     }
 
     renderUpgradeOptions(ability, abilityId) {
@@ -169,58 +167,56 @@ export class UniqueAbilitySection {
 
     renderCustomUniqueAbilityCreation(character, pointInfo) {
         const minimumCost = 5; // Minimum cost for a custom unique ability
-        const canAfford = pointInfo.remaining >= minimumCost;
 
-        return `
-            <div class="custom-unique-ability-creation">
-                <h4>Create Custom Unique Ability</h4>
-                <p class="custom-ability-description">
-                    Design your own unique ability with a custom name, description, and cost.
-                </p>
+        const formContent = `
+            <div class="custom-ability-form">
+                <div class="form-group">
+                    <label for="custom-ability-name">Ability Name:</label>
+                    <input type="text" id="custom-ability-name" class="custom-ability-input" placeholder="Enter ability name" maxlength="50">
+                </div>
                 
-                <div class="custom-ability-form">
-                    <div class="form-group">
-                        <label for="custom-ability-name">Ability Name:</label>
-                        <input type="text" id="custom-ability-name" class="custom-ability-input" placeholder="Enter ability name" maxlength="50">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="custom-ability-category">Category:</label>
-                        <select id="custom-ability-category" class="custom-ability-input">
-                            <option value="offensive">Offensive</option>
-                            <option value="defensive">Defensive</option>
-                            <option value="utility">Utility</option>
-                            <option value="movement">Movement</option>
-                            <option value="social">Social</option>
-                            <option value="mental">Mental</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="custom-ability-description">Description:</label>
-                        <textarea id="custom-ability-description" class="custom-ability-input" rows="3" placeholder="Describe the ability's effects and mechanics" maxlength="500"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="custom-ability-cost">Point Cost:</label>
-                        <input type="number" id="custom-ability-cost" class="custom-ability-input" placeholder="Enter cost" min="${minimumCost}" max="100" value="${minimumCost}">
-                        <small class="form-help">Minimum cost: ${minimumCost} points</small>
-                    </div>
-                    
-                    <div class="form-actions">
-                        ${RenderUtils.renderButton({
-                            text: 'Create Custom Ability',
-                            variant: 'primary',
-                            size: 'medium',
-                            dataAttributes: { action: 'create-custom-unique-ability' },
-                            disabled: !canAfford,
-                            id: 'create-custom-ability-btn'
-                        })}
-                        ${!canAfford ? `<p class="error-text">Need at least ${minimumCost} points to create a custom ability.</p>` : ''}
-                    </div>
+                <div class="form-group">
+                    <label for="custom-ability-category">Category:</label>
+                    <select id="custom-ability-category" class="custom-ability-input">
+                        <option value="offensive">Offensive</option>
+                        <option value="defensive">Defensive</option>
+                        <option value="utility">Utility</option>
+                        <option value="movement">Movement</option>
+                        <option value="social">Social</option>
+                        <option value="mental">Mental</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="custom-ability-description">Description:</label>
+                    <textarea id="custom-ability-description" class="custom-ability-input" rows="3" placeholder="Describe the ability's effects and mechanics" maxlength="500"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="custom-ability-cost">Point Cost:</label>
+                    <input type="number" id="custom-ability-cost" class="custom-ability-input" placeholder="Enter cost" min="${minimumCost}" max="100" value="${minimumCost}">
+                    <small class="form-help">Minimum cost: ${minimumCost} points</small>
+                </div>
+                
+                <div class="form-actions">
+                    ${RenderUtils.renderButton({
+                        text: 'Create Custom Ability',
+                        variant: 'primary',
+                        size: 'medium',
+                        dataAttributes: { action: 'create-custom-unique-ability' },
+                        id: 'create-custom-ability-btn'
+                    })}
                 </div>
             </div>
         `;
+
+        return RenderUtils.renderCard({
+            title: 'Create Custom Unique Ability',
+            description: 'Design your own unique ability with a custom name, description, and cost.',
+            additionalContent: formContent,
+            clickable: false,
+            disabled: false
+        }, { cardClass: 'ability-card custom-ability-card' });
     }
 
     // Event handlers called by main event delegation system

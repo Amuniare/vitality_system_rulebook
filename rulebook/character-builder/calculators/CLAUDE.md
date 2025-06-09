@@ -14,3 +14,11 @@
 ## Golden Rule #3: Return Breakdowns
 
 -   Complex calculations (e.g., `calculateAllStats`, `calculateAllPools`) **MUST** return a result object that includes both the final calculated value and a `breakdown` object showing how the value was derived. This is critical for debugging.
+
+### The Purity Contract
+
+- **Role:** To perform pure, stateless calculations.
+- **Responsibilities:**
+    - All methods **MUST** be `static` pure functions (same input always yields same output).
+    - They calculate derived stats, point pool totals, and combat values.
+- **Forbidden:** Calculators **MUST NOT** have side effects or modify any objects passed to them. They **MUST NOT** import from `systems/` or `features/`.

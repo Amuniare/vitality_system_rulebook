@@ -16,3 +16,10 @@
 -   **FORBIDDEN:** A method like handleFlawPurchase() inside CharacterBuilder.js.
 -   **THE RULE:** If you are adding logic specific to a feature (like "what happens when I purchase a flaw"), that logic belongs in that feature's Tab.js file (e.g., MainPoolTab.js). The CharacterBuilder's event map should simply delegate the event to the appropriate tab handler.
 -   The CharacterBuilder should be kept as lean as possible. Its job is to connect the features, not to *be* the features.
+### The Orchestrator's Contract
+
+- **Role:** To initialize and coordinate the application.
+- **Responsibilities:**
+    - `app.js`: The single entry point. Ensures `GameDataManager` loads before anything else.
+    - `CharacterBuilder.js`: The central controller. Owns the single source of truth (`this.currentCharacter`). Initializes all `Tab` components. Manages the top-level event delegation map.
+- **Forbidden:** `CharacterBuilder.js` **MUST NOT** contain business logic for any specific feature. Its event handlers should be one-line delegations to the appropriate tab controller.

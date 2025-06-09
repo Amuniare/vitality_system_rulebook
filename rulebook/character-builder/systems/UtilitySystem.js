@@ -105,10 +105,16 @@ export class UtilitySystem {
             });
             masteredExpertise.forEach(expId => {
                 const expDef = this.findExpertiseDefinition(expertiseData, expId);
-                // The cost of mastered is the total, so we subtract the basic cost if it was already paid
-                const basicCost = this.getExpertiseCost(expDef?.type || 'activity', 'basic');
                 const masteredCost = this.getExpertiseCost(expDef?.type || 'activity', 'mastered');
-                spent += (masteredCost - basicCost);
+                
+                // If character already has basic level, only pay the difference
+                if (basicExpertise.includes(expId)) {
+                    const basicCost = this.getExpertiseCost(expDef?.type || 'activity', 'basic');
+                    spent += (masteredCost - basicCost);
+                } else {
+                    // If they don't have basic, pay full mastered cost
+                    spent += masteredCost;
+                }
             });
         });
 
@@ -321,5 +327,77 @@ export class UtilitySystem {
             features: ['multiLimbed'],
         };
         return multiPurchaseItems[categoryKey]?.includes(itemId) || false;
+    }
+
+    static validateCustomItemPurchase(character, customItemData) {
+        const errors = [];
+        const warnings = [];
+
+        // 1. Validate item data
+        if (!customItemData.name || customItemData.name.length < 1) {
+            errors.push('Item name is required');
+        }
+        
+        if (customItemData.name && customItemData.name.length > 50) {
+            errors.push('Item name must be 50 characters or less');
+        }
+
+        if (!customItemData.description || customItemData.description.length < 1) {
+            errors.push('Item description is required');
+        }
+
+        if (customItemData.description && customItemData.description.length > 300) {
+            errors.push('Item description must be 300 characters or less');
+        }
+
+        if (!customItemData.cost || isNaN(customItemData.cost) || customItemData.cost < 1) {
+            errors.push('Item cost must be at least 1 point');
+        }
+
+        if (customItemData.cost && customItemData.cost > 50) {
+            errors.push('Item cost cannot exceed 50 points');
+        }
+
+        if (!customItemData.category) {
+            errors.push('Item category is required');
+        }
+
+        const validCategories = ['features', 'senses', 'movement', 'descriptors'];
+        if (customItemData.category && !validCategories.includes(customItemData.category)) {
+            errors.push('Invalid item category');
+        }
+
+        // 2. Check archetype restrictions
+        const archetype = character.archetypes.utility;
+        if (archetype === 'specialized') {
+            errors.push('Specialized archetype cannot purchase custom utility items.');
+        }
+
+        return { isValid: errors.length === 0, errors, warnings, cost: customItemData.cost || 0 };
+    }
+
+    static purchaseCustomItem(character, customItemData) {
+        const validation = this.validateCustomItemPurchase(character, customItemData);
+        if (!validation.isValid) {
+            throw new Error(validation.errors.join(', '));
+        }
+
+        const categoryKey = customItemData.category;
+        
+        if (!character.utilityPurchases[categoryKey]) {
+            character.utilityPurchases[categoryKey] = [];
+        }
+
+        const customItem = {
+            id: `custom_${Date.now()}`,
+            name: customItemData.name,
+            description: customItemData.description,
+            cost: customItemData.cost,
+            isCustom: true,
+            purchased: new Date().toISOString()
+        };
+        
+        character.utilityPurchases[categoryKey].push(customItem);
+        return character;
     }
 }

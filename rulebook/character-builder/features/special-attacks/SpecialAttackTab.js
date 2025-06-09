@@ -158,7 +158,9 @@ export class SpecialAttackTab {
             'add-limit': () => this.addLimit(data.limitId),
             'remove-limit': () => this.removeLimit(data.limitId),
             'toggle-limit-category': () => this.toggleLimitCategory(data.category),
-            'add-custom-limit': () => this.addCustomLimit(),
+            'add-custom-limit': (e, el) => this.addCustomLimit(el),
+            'show-custom-limit-form': (e, el) => this.limitSelection.showCustomLimitForm(el),
+            'cancel-custom-limit-form': (e, el) => this.limitSelection.cancelCustomLimitForm(el),
             
             'purchase-upgrade': () => this.purchaseUpgrade(data.upgradeId),
             'remove-upgrade': () => this.removeUpgrade(data.upgradeId),
@@ -172,7 +174,7 @@ export class SpecialAttackTab {
             'continue-to-utility': () => this.builder.switchTab('utility')
         };
         
-        handlers[action]?.();
+        handlers[action]?.(e, element);
     }
     
     createNewAttack() {
@@ -289,13 +291,20 @@ export class SpecialAttackTab {
         this.render();
     }
 
-    addCustomLimit() {
-        const nameInput = document.getElementById('custom-limit-name');
-        const descriptionInput = document.getElementById('custom-limit-description');
-        const pointsInput = document.getElementById('custom-limit-points');
+    addCustomLimit(buttonElement) {
+        const creatorCard = buttonElement.closest('.custom-limit-creator');
+        if (!creatorCard) {
+            this.builder.showNotification('Custom limit form not found', 'error');
+            return;
+        }
+        
+        const form = creatorCard.querySelector('.custom-limit-form');
+        const nameInput = form.querySelector('.custom-limit-name');
+        const descriptionInput = form.querySelector('.custom-limit-description');
+        const pointsInput = form.querySelector('.custom-limit-points');
         
         if (!nameInput || !descriptionInput || !pointsInput) {
-            this.builder.showNotification('Custom limit form not found', 'error');
+            this.builder.showNotification('Custom limit form inputs not found', 'error');
             return;
         }
         
@@ -308,11 +317,8 @@ export class SpecialAttackTab {
         try {
             SpecialAttackSystem.addCustomLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitData);
             
-            // Clear the form
-            nameInput.value = '';
-            descriptionInput.value = '';
-            pointsInput.value = '';
-            this.validateCustomLimitForm();
+            // Hide the form and clear the fields using the scoped method
+            this.limitSelection.cancelCustomLimitForm(buttonElement);
             
             this.builder.updateCharacter();
             this.builder.showNotification('Custom limit added successfully', 'success');
@@ -322,33 +328,17 @@ export class SpecialAttackTab {
     }
 
     validateCustomLimitForm() {
-        const nameInput = document.getElementById('custom-limit-name');
-        const descriptionInput = document.getElementById('custom-limit-description');
-        const pointsInput = document.getElementById('custom-limit-points');
-        const addButton = document.getElementById('add-custom-limit-btn');
+        // Find the currently active attack tab's form
+        const tabContent = document.getElementById('tab-specialAttacks');
+        if (!tabContent) return;
         
-        if (!nameInput || !descriptionInput || !pointsInput || !addButton) {
-            return;
-        }
-        
-        const name = nameInput.value.trim();
-        const description = descriptionInput.value.trim();
-        const points = pointsInput.value;
-        
-        const isValid = name.length > 0 && 
-                       description.length > 0 && 
-                       points && 
-                       !isNaN(Number(points)) && 
-                       Number(points) > 0;
-        
-        addButton.disabled = !isValid;
-        addButton.classList.toggle('disabled', !isValid);
-        
-        if (isValid) {
-            addButton.removeAttribute('disabled');
-        } else {
-            addButton.setAttribute('disabled', 'true');
-        }
+        const forms = tabContent.querySelectorAll('.custom-limit-form');
+        forms.forEach(form => {
+            // Only validate visible forms
+            if (form.style.display !== 'none') {
+                this.limitSelection.validateCustomLimitFormScoped(form);
+            }
+        });
     }
 
     purchaseUpgrade(upgradeId) {
@@ -401,6 +391,7 @@ export class SpecialAttackTab {
     }
     
     onCharacterUpdate() {
+        this.listenersAttached = false;
         this.render();
     }
 }

@@ -15,3 +15,10 @@
 -   Every action that modifies the character should have a `validate...()` method and a `perform...()` method (e.g., `validatePurchase()` and `purchase()`).
 -   Validation methods **MUST** return a structured object: `{ isValid: boolean, errors: string[], warnings: string[] }`.
 -   "Write" methods **MUST** take the `character` object as an argument and return the modified `character` object.
+
+### The Business Logic Contract
+
+- **Role:** To encapsulate the rules of the game.
+- **Contract: Stateless is Law:** All methods **MUST** be `static`. Systems are stateless collections of functions and must not have a `constructor`.
+- **The System Workflow:** Every action should have a `validate...()` method and a `perform...()` method. "Write" methods must take the `character` object as an argument.
+- **Forbidden:** Systems **MUST NOT** interact with the DOM. They **MUST NOT** import from other `System` classes.

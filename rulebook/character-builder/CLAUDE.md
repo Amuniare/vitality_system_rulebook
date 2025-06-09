@@ -1,11 +1,3 @@
-Of course. You are correct to pause and ensure the architectural guide is flawless before proceeding. An inaccurate or outdated guide is worse than no guide at all.
-
-Based on my analysis of the codebase and your feedback, the existing `rulebook/character-builder/CLAUDE.md` was a good start but lacked the clarity, prescriptive rules, and practical examples needed for a robust architectural "constitution."
-
-Here is the complete, rewritten `rulebook/character-builder/CLAUDE.md`. This version is meticulously aligned with your current file structure and establishes a clear, authoritative set of rules to govern all future development.
-
-***
-
 # **`rulebook/character-builder/CLAUDE.md`**
 
 This document is the **Architectural Constitution** for the Vitality Character Builder. It defines the roles, responsibilities, and boundaries of each layer of the application. Adherence to these principles is mandatory to maintain a scalable, debuggable, and stable codebase.
@@ -24,9 +16,9 @@ All character modifications **MUST** follow this exact sequence. There are no ex
 
 4.  **System Call:** The `Tab` handler calls a `static` method on the appropriate `System` class (e.g., `TraitFlawSystem.purchaseFlaw(character, flawId, ...)`), passing the current character object and any other required data.
 
-5.  **Business Logic:** The `System` class performs all business logic and validation. It modifies the character object it received and returns the *newly modified character object*.
+5.  **Business Logic:** The `System` class performs all business logic and validation. It modifies the character object it received.
 
-6.  **Centralized Update:** The `Tab` handler receives the modified character and calls `this.builder.updateCharacter()`. This is the **only** way to commit changes.
+6.  **Centralized Update:** The `Tab` handler calls `this.builder.updateCharacter()`. This is the **only** way to commit changes.
 
 7.  **Re-render:** The `CharacterBuilder` saves the new character state and triggers a re-render of the necessary UI components, ensuring the interface reflects the new data.
 
@@ -36,7 +28,7 @@ All character modifications **MUST** follow this exact sequence. There are no ex
 
 ---
 
-### **The Layers of Responsibility**
+### **The Layers of Responsibility & Their Contracts**
 
 Each directory has a strict, non-negotiable role.
 
@@ -49,28 +41,18 @@ Each directory has a strict, non-negotiable role.
 
 #### `features/` - The Feature Controllers
 *   **Role:** To manage self-contained "vertical slices" of the UI (one per tab).
-*   **Responsibilities:**
-    *   Each `Tab.js` file is the controller for its feature.
-    *   It renders its own UI and the UI of its local components.
-    *   It handles all user interaction logic for its feature.
-    *   It calls `System` classes to perform actions and `this.builder.updateCharacter()` to save state.
-*   **Forbidden:** A `Tab.js` file **MUST NOT** import or call another `Tab.js` file directly. All cross-feature communication happens via the central `character` object.
+*   **Contract: The Component Re-render Contract:** Any method that re-renders its own HTML (e.g., `render()`, `onCharacterUpdate()`) **MUST** ensure that its event listeners are not duplicated. The standard pattern is `this.listenersAttached = false;` at the start of the update method, with a guard in `setupEventListeners()`.
+*   **Forbidden:** A `Tab.js` file **MUST NOT** import or call another `Tab.js` file directly.
 
 #### `systems/` - The Brains (Business Logic)
 *   **Role:** To encapsulate the rules of the game.
-*   **Responsibilities:**
-    *   All methods **MUST** be `static`. Systems are stateless collections of functions.
-    *   Methods take the `character` object as an argument, perform logic, and return the modified `character` object.
-    *   They are the only layer allowed to directly modify the character data structure.
-*   **Forbidden:** Systems **MUST NOT** know about or interact with the DOM or any UI components.
+*   **Contract: Stateless is Law:** All methods **MUST** be `static`. Systems are stateless collections of functions and must not have a `constructor`.
+*   **Forbidden:** Systems **MUST NOT** know about or interact with the DOM or any UI components. They **MUST NOT** import from other `System` classes.
 
 #### `calculators/` - The Math Engine
 *   **Role:** To perform pure, stateless calculations.
-*   **Responsibilities:**
-    *   All methods **MUST** be `static` pure functions (same input always yields same output).
-    *   They calculate derived stats, point pool totals, and combat values.
-    *   They take data (like the `character` object) and return a calculated value or object.
-*   **Forbidden:** Calculators **MUST NOT** have side effects or modify any objects passed to them. They **MUST NOT** import from `systems/` or `features/`.
+*   **Contract: The Purity Contract:** All methods **MUST** be `static` pure functions (same input always yields same output). They calculate derived stats and point pool totals.
+*   **Forbidden:** Calculators **MUST NOT** have side effects, modify any objects passed to them, or import from `systems/` or `features/`.
 
 #### `core/` - The Foundation
 *   **Role:** To manage the game's foundational data and data structures.
@@ -81,34 +63,10 @@ Each directory has a strict, non-negotiable role.
 
 #### `data/` - The Library (Game Rules)
 *   **Role:** To store all game rules, options, and content.
-*   **Responsibilities:**
-    *   To be well-structured, valid JSON files.
+*   **Contract: Data-Driven Design:** The UI should be capable of rendering content directly from these files. Avoid hardcoding game rules in the UI layer. This allows content changes without code changes.
 *   **Forbidden:** This directory **MUST NOT** contain any executable JavaScript code.
 
 #### `shared/` - The Reusable Toolkit
 *   **Role:** To provide generic, reusable UI components and utilities.
-*   **Responsibilities:**
-    *   `shared/ui/`: "Dumb" UI components that render data they are given.
-    *   `shared/utils/`: Application-agnostic utilities (`RenderUtils`, `EventManager`).
-*   **Forbidden:** Shared code **MUST NOT** contain logic specific to any one feature. A shared `Card` component doesn't know what a "flaw" is; it only knows how to render a title and description.
-
----
-
-### **How to Add a Feature (A Practical Example)**
-
-To add a "Purchase Trait" button, you would:
-
-1.  **UI (`features/main-pool/components/TraitPurchaseSection.js`):**
-    *   Use `RenderUtils.renderButton()` to create a button with `data-action="purchase-trait"`.
-
-2.  **Controller (`features/main-pool/MainPoolTab.js`):**
-    *   In `setupEventListeners()`, add an entry for `'[data-action="purchase-trait"]'` that calls a new method, `this.handleTraitPurchase()`.
-
-3.  **System (`systems/TraitFlawSystem.js`):**
-    *   Create a `static purchaseTrait(character, traitData)` method that contains all the logic for adding the trait to the `character.mainPoolPurchases` array.
-
-4.  **Connect the Layers (`features/main-pool/MainPoolTab.js`):**
-    *   The `handleTraitPurchase()` method gathers the necessary `traitData` from the UI and then calls `TraitFlawSystem.purchaseTrait(this.builder.currentCharacter, traitData)`.
-
-5.  **Update State (`features/main-pool/MainPoolTab.js`):**
-    *   After the System call, invoke `this.builder.updateCharacter()` to save the changes and trigger a UI refresh.
+*   **Contract: Standardize with `RenderUtils`:** Common UI elements (`cards`, `buttons`, `form groups`) **MUST** be generated using `shared/utils/RenderUtils.js` to ensure consistency and proper event handling via `data-action` attributes.
+*   **Forbidden:** Shared code **MUST NOT** contain logic specific to any one feature.

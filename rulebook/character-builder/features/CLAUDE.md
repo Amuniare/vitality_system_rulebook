@@ -20,3 +20,11 @@
 -   A feature **MAY** have its own components/ sub-folder (e.g., eatures/special-attacks/components/).
 -   Components in this local folder are for that feature **only**. They are not designed to be reused elsewhere.
 -   If you find yourself needing to use a component from one feature in another, that component must be refactored to be more generic and moved to the shared/ui/ directory.
+### The Vertical Slice Contract
+
+- **Role:** To manage self-contained "vertical slices" of the UI (one per tab).
+- **Responsibilities:**
+    - A `Tab.js` file is the controller for its feature. It renders its UI and handles its own user interactions.
+    - It calls `System` classes for business logic and `this.builder.updateCharacter()` to save state.
+- **The Component Re-render Contract:** Any method that re-renders HTML (e.g., `onCharacterUpdate()`) **MUST** reset its event listener attachment flag (e.g., `this.listenersAttached = false;`) at the beginning of the method to prevent creating duplicate listeners.
+- **Forbidden:** A `Tab.js` file **MUST NOT** import or call another `Tab.js` file directly.

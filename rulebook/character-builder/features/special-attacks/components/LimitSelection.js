@@ -265,29 +265,48 @@ export class LimitSelection {
 
     renderCustomLimitCreation(character, attack) {
         return `
-            <div class="custom-limit-creation">
-                <h4>Create Custom Limit</h4>
-                <div class="custom-limit-form">
-                    <div class="form-group">
-                        <label for="custom-limit-name">Name:</label>
-                        <input type="text" id="custom-limit-name" class="custom-limit-input" placeholder="Enter limit name" maxlength="50">
+            <div class="card custom-limit-creator">
+                <div class="card-header">
+                    <h4>Create Custom Limit</h4>
+                </div>
+                <div class="card-content">
+                    <div class="card-action">
+                        ${RenderUtils.renderButton({
+                            text: 'Create Custom Limit',
+                            variant: 'primary',
+                            dataAttributes: { action: 'show-custom-limit-form' }
+                        })}
                     </div>
-                    <div class="form-group">
-                        <label for="custom-limit-description">Description:</label>
-                        <textarea id="custom-limit-description" class="custom-limit-input" rows="3" placeholder="Describe the limit's effects" maxlength="500"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="custom-limit-points">Point Value:</label>
-                        <input type="number" id="custom-limit-points" class="custom-limit-input" placeholder="Enter point value" min="1" max="100">
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" 
-                                class="btn btn-primary" 
-                                id="add-custom-limit-btn" 
-                                data-action="add-custom-limit" 
-                                disabled>
-                            Add Custom Limit
-                        </button>
+                    <div class="custom-limit-form" style="display: none;">
+                        ${RenderUtils.renderFormGroup({
+                            label: 'Name:',
+                            inputHtml: `<input type="text" class="custom-limit-input custom-limit-name" placeholder="Enter limit name" maxlength="50">`
+                        })}
+                        
+                        ${RenderUtils.renderFormGroup({
+                            label: 'Description:',
+                            inputHtml: `<textarea class="custom-limit-input custom-limit-description" rows="3" placeholder="Describe the limit's effects" maxlength="500"></textarea>`
+                        })}
+                        
+                        ${RenderUtils.renderFormGroup({
+                            label: 'Point Value:',
+                            inputHtml: `<input type="number" class="custom-limit-input custom-limit-points" placeholder="Enter point value" min="1" max="100">`
+                        })}
+                        
+                        <div class="form-actions">
+                            ${RenderUtils.renderButton({
+                                text: 'Add Custom Limit',
+                                variant: 'primary',
+                                dataAttributes: { action: 'add-custom-limit' },
+                                classes: ['add-custom-limit-btn'],
+                                disabled: true
+                            })}
+                            ${RenderUtils.renderButton({
+                                text: 'Cancel',
+                                variant: 'secondary',
+                                dataAttributes: { action: 'cancel-custom-limit-form' }
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -303,6 +322,80 @@ export class LimitSelection {
             this.expandedCategories.delete(categoryKey);
         } else {
             this.expandedCategories.add(categoryKey);
+        }
+    }
+
+    showCustomLimitForm(buttonElement) {
+        const creatorCard = buttonElement.closest('.custom-limit-creator');
+        if (!creatorCard) return;
+        
+        const cardAction = creatorCard.querySelector('.card-action');
+        const form = creatorCard.querySelector('.custom-limit-form');
+        
+        if (cardAction && form) {
+            cardAction.style.display = 'none';
+            form.style.display = 'block';
+            
+            // Focus on the first input field
+            const nameInput = form.querySelector('.custom-limit-name');
+            if (nameInput) {
+                nameInput.focus();
+            }
+        }
+    }
+
+    cancelCustomLimitForm(buttonElement) {
+        const creatorCard = buttonElement.closest('.custom-limit-creator');
+        if (!creatorCard) return;
+        
+        const cardAction = creatorCard.querySelector('.card-action');
+        const form = creatorCard.querySelector('.custom-limit-form');
+        
+        if (cardAction && form) {
+            cardAction.style.display = 'block';
+            form.style.display = 'none';
+            
+            // Clear the form fields
+            const nameInput = form.querySelector('.custom-limit-name');
+            const descriptionInput = form.querySelector('.custom-limit-description');
+            const pointsInput = form.querySelector('.custom-limit-points');
+            
+            if (nameInput) nameInput.value = '';
+            if (descriptionInput) descriptionInput.value = '';
+            if (pointsInput) pointsInput.value = '';
+            
+            // Reset button state using scoped validation
+            this.validateCustomLimitFormScoped(form);
+        }
+    }
+
+    validateCustomLimitFormScoped(form) {
+        const nameInput = form.querySelector('.custom-limit-name');
+        const descriptionInput = form.querySelector('.custom-limit-description');
+        const pointsInput = form.querySelector('.custom-limit-points');
+        const addButton = form.querySelector('.add-custom-limit-btn');
+        
+        if (!nameInput || !descriptionInput || !pointsInput || !addButton) {
+            return;
+        }
+        
+        const name = nameInput.value.trim();
+        const description = descriptionInput.value.trim();
+        const points = pointsInput.value;
+        
+        const isValid = name.length > 0 && 
+                       description.length > 0 && 
+                       points && 
+                       !isNaN(Number(points)) && 
+                       Number(points) > 0;
+        
+        addButton.disabled = !isValid;
+        addButton.classList.toggle('disabled', !isValid);
+        
+        if (isValid) {
+            addButton.removeAttribute('disabled');
+        } else {
+            addButton.setAttribute('disabled', 'true');
         }
     }
 

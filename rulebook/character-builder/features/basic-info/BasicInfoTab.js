@@ -1,6 +1,7 @@
 // rulebook/character-builder/ui/tabs/BasicInfoTab.js
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 import { EventManager } from '../../shared/utils/EventManager.js';
+import { gameDataManager } from '../../core/GameDataManager.js';
 
 export class BasicInfoTab {
     constructor(characterBuilder) {
@@ -108,28 +109,13 @@ export class BasicInfoTab {
     }
 
     getTierDescription(tier) {
-        // ... (same as before)
-        const descriptions = {
-            1: "Novice", 2: "Developing", 3: "Competent", 4: "Professional", 5: "Veteran",
-            6: "Expert", 7: "Elite", 8: "Master", 9: "Legendary", 10: "World-class Expert"
-        };
-        return descriptions[tier] || "Unknown";
+        const tiers = gameDataManager.getTiers();
+        return tiers.tiers?.[tier]?.name || "Unknown";
     }
+    
     getTierFlavorText(tier) {
-        // ... (same as before)
-        const flavorTexts = {
-            1: "Just starting out on your heroic journey. You have potential but lack experience.",
-            2: "Developing your abilities and gaining confidence in your powers.",
-            3: "A competent hero who can handle most everyday threats reliably.",
-            4: "A professional hero with established capabilities and reputation.",
-            5: "A veteran hero with significant experience and refined abilities.",
-            6: "An expert hero whose skills are recognized and respected.",
-            7: "An elite hero operating at the highest levels of competence.",
-            8: "A master hero pushing the boundaries of human capability.",
-            9: "A legendary hero whose deeds inspire others and shape history.",
-            10: "A world-class expert representing the absolute pinnacle of heroic achievement."
-        };
-        return flavorTexts[tier] || "A hero of unknown caliber.";
+        const tiers = gameDataManager.getTiers();
+        return tiers.tiers?.[tier]?.description || "A hero of unknown caliber.";
     }
 
 

@@ -1,12 +1,44 @@
-[
-    { "tier": 1, "name": "Beginner", "flavor": "Just starting out on your heroic journey. You have potential but lack experience." },
-    { "tier": 2, "name": "Novice", "flavor": "Developing your abilities and gaining confidence in your powers." },
-    { "tier": 3, "name": "Developing", "flavor": "A competent hero who can handle most everyday threats reliably." },
-    { "tier": 4, "name": "Competent", "flavor": "A professional hero with established capabilities and reputation." },
-    { "tier": 5, "name": "Professional", "flavor": "A veteran hero with significant experience and refined abilities." },
-    { "tier": 6, "name": "Expert", "flavor": "An expert hero whose skills are recognized and respected." },
-    { "tier": 7, "name": "Veteran", "flavor": "An elite hero operating at the highest levels of competence." },
-    { "tier": 8, "name": "Elite", "flavor": "A master hero pushing the boundaries of human capability." },
-    { "tier": 9, "name": "Master", "flavor": "A legendary hero whose deeds inspire others and shape history." },
-    { "tier": 10, "name": "Legendary", "flavor": "A world-class expert representing the absolute pinnacle of heroic achievement." }
-  ]
+{
+  "tiers": {
+    "1": {
+      "name": "Novice",
+      "description": "Just starting out on your heroic journey. You have potential but lack experience."
+    },
+    "2": {
+      "name": "Developing",
+      "description": "Developing your abilities and gaining confidence in your powers."
+    },
+    "3": {
+      "name": "Competent",
+      "description": "A competent hero who can handle most everyday threats reliably."
+    },
+    "4": {
+      "name": "Professional",
+      "description": "A professional hero with established capabilities and reputation."
+    },
+    "5": {
+      "name": "Veteran",
+      "description": "A veteran hero with significant experience and refined abilities."
+    },
+    "6": {
+      "name": "Expert",
+      "description": "An expert hero whose skills are recognized and respected."
+    },
+    "7": {
+      "name": "Elite",
+      "description": "An elite hero operating at the highest levels of competence."
+    },
+    "8": {
+      "name": "Master",
+      "description": "A master hero pushing the boundaries of human capability."
+    },
+    "9": {
+      "name": "Legendary",
+      "description": "A legendary hero whose deeds inspire others and shape history."
+    },
+    "10": {
+      "name": "World-class Expert",
+      "description": "A world-class expert representing the absolute pinnacle of heroic achievement."
+    }
+  }
+}

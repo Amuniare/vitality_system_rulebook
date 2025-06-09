@@ -1,18 +1,31 @@
 // rulebook/character-builder/features/utility/UtilityTab.js
-// REWRITTEN to include a unified "Selected Utilities" display
+// REFACTORED to use component-based architecture
 import { EventManager } from '../../shared/utils/EventManager.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
 import { UtilitySystem } from '../../systems/UtilitySystem.js';
+import { UtilityOverviewSection } from './components/UtilityOverviewSection.js';
+import { ExpertiseSection } from './components/ExpertiseSection.js';
+import { GenericUtilitySection } from './components/GenericUtilitySection.js';
+import { CustomUtilityForm } from './components/CustomUtilityForm.js';
 
 export class UtilityTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
         this.activeCategory = 'activity-expertise';
         this.listenersAttached = false;
+        this.containerElement = null; // Track container for proper cleanup
+        
+        this.overviewSection = new UtilityOverviewSection(characterBuilder);
+        this.expertiseSection = new ExpertiseSection(characterBuilder);
+        this.genericUtilitySection = new GenericUtilitySection(characterBuilder);
+        this.customUtilityForm = new CustomUtilityForm(characterBuilder);
     }
 
     render() {
+        // Reset listener state at the beginning of render
+        this.listenersAttached = false;
+        
         const tabContent = document.getElementById('tab-utility');
         if (!tabContent) return;
         const character = this.builder.currentCharacter;
@@ -27,8 +40,8 @@ export class UtilityTab {
                 <h2>Utility Abilities</h2>
                 <p class="section-description">Purchase abilities using your utility pool points.</p>
                 
-                <!-- NEW: Utility Overview Box -->
-                ${this.renderUtilityOverviewBox(character)}
+                <!-- Utility Overview Box -->
+                ${this.overviewSection.render(character)}
 
                 <!-- Category sections for PURCHASING ONLY -->
                 ${this.renderCategoryNavigation()}
@@ -42,128 +55,6 @@ export class UtilityTab {
         this.setupEventListeners();
     }
 
-    renderUtilityOverviewBox(character) {
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const utilityPool = pools.remaining.utilityPool || 0;
-        const available = pools.totalAvailable.utilityPool || 0;
-        const spent = pools.totalSpent.utilityPool || 0;
-        
-        return `
-            <div class="utility-overview-box">
-                <div class="utility-overview-header">
-                    <h3>Utility Pool Overview</h3>
-                    ${RenderUtils.renderPointDisplay(spent, available, 'Utility Pool', {
-                        showRemaining: true,
-                        variant: utilityPool < 0 ? 'error' : (utilityPool === 0 && spent > 0 ? 'warning' : 'default')
-                    })}
-                </div>
-                
-                ${this.renderUtilityCategoryBreakdown(character)}
-                ${this.renderSelectedUtilities(character)}
-            </div>
-        `;
-    }
-
-    renderUtilityCategoryBreakdown(character) {
-        const categories = [
-            { key: 'expertise', label: 'Expertise', type: 'expertise' },
-            { key: 'features', label: 'Features', type: 'simple' },
-            { key: 'senses', label: 'Senses', type: 'simple' },
-            { key: 'movement', label: 'Movement', type: 'simple' },
-            { key: 'descriptors', label: 'Descriptors', type: 'simple' }
-        ];
-
-        const breakdown = categories.map(category => {
-            let count = 0;
-            let cost = 0;
-
-            if (category.type === 'expertise') {
-                const expertise = character.utilityPurchases.expertise || {};
-                Object.values(expertise).forEach(levels => {
-                    count += (levels.basic || []).length + (levels.mastered || []).length;
-                    cost += (levels.basic || []).length * 2 + (levels.mastered || []).length * 4;
-                });
-            } else {
-                const items = character.utilityPurchases[category.key] || [];
-                count = items.length;
-                cost = items.reduce((sum, item) => sum + (item.cost || 0), 0);
-            }
-
-            return { ...category, count, cost };
-        });
-
-        const totalItems = breakdown.reduce((sum, cat) => sum + cat.count, 0);
-
-        return `
-            <div class="utility-breakdown">
-                <h4>Category Breakdown (${totalItems} abilities)</h4>
-                <div class="breakdown-grid">
-                    ${breakdown.map(cat => `
-                        <div class="breakdown-item">
-                            <span class="breakdown-label">${cat.label}</span>
-                            <span class="breakdown-count">${cat.count}</span>
-                            <span class="breakdown-cost">${cat.cost}p</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    // NEW: Renders the unified list of all purchased utilities
-    renderSelectedUtilities(character) {
-        const allPurchases = [];
-
-        // Gather all purchased items into a single array with type labels
-        allPurchases.push(...(character.utilityPurchases.features || []).map(item => ({...item, category: 'features', typeLabel: 'Feature'})));
-        allPurchases.push(...(character.utilityPurchases.senses || []).map(item => ({...item, category: 'senses', typeLabel: 'Sense'})));
-        allPurchases.push(...(character.utilityPurchases.movement || []).map(item => ({...item, category: 'movement', typeLabel: 'Movement'})));
-        allPurchases.push(...(character.utilityPurchases.descriptors || []).map(item => ({...item, category: 'descriptors', typeLabel: 'Descriptor'})));
-
-        // Handle the nested structure of expertise
-        Object.entries(character.utilityPurchases.expertise || {}).forEach(([attribute, levels]) => {
-            (levels.basic || []).forEach(id => allPurchases.push({ id, name: id, cost: UtilitySystem.getExpertiseCost('activity', 'basic'), category: 'expertise', typeLabel: 'Expertise (Basic)', attribute, level: 'basic' }));
-            (levels.mastered || []).forEach(id => allPurchases.push({ id, name: id, cost: UtilitySystem.getExpertiseCost('activity', 'mastered'), category: 'expertise', typeLabel: 'Expertise (Mastered)', attribute, level: 'mastered' }));
-        });
-
-        if (allPurchases.length === 0) {
-            return `
-                <div class="selected-utilities">
-                    <h4>Selected Utilities</h4>
-                    <div class="empty-state">No utility abilities purchased yet. Browse the categories below to add some.</div>
-                </div>
-            `;
-        }
-        
-        return `
-            <div class="selected-utilities">
-                <h4>Selected Utilities (${allPurchases.length})</h4>
-                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedItem(item))}
-            </div>
-        `;
-    }
-
-    // NEW: Renders a single item in the unified list
-    renderSelectedItem(item) {
-        const removeData = {
-            action: 'remove-utility-item',
-            'category-key': item.category,
-            'item-id': item.id,
-            ...(item.category === 'expertise' && { 'attribute': item.attribute, 'level': item.level })
-        };
-        const costText = item.cost !== undefined ? `${item.cost}p` : '';
-
-        return `
-            <div class="purchased-item">
-                <div class="item-info">
-                    <span class="item-name">${item.name}</span>
-                    <span class="item-details">${item.typeLabel}</span>
-                    ${costText ? `<span class="item-cost">${costText}</span>` : ''}
-                </div>
-                ${RenderUtils.renderButton({ text: 'Remove', variant: 'danger', size: 'small', dataAttributes: removeData })}
-            </div>
-        `;
-    }
     
     renderCategoryNavigation() {
         const categories = [
@@ -180,161 +71,65 @@ export class UtilityTab {
 
     renderActiveCategoryContent(character) {
         const renderers = {
-            'activity-expertise': () => this.renderActivityExpertiseSection(character),
-            'situational-expertise': () => this.renderSituationalExpertiseSection(character),
-            features: () => this.renderGenericUtilitySection(character, 'features', UtilitySystem.getAvailableFeatures()),
-            senses: () => this.renderGenericUtilitySection(character, 'senses', UtilitySystem.getAvailableSenses()),
-            movement: () => this.renderGenericUtilitySection(character, 'movement', UtilitySystem.getMovementFeatures()),
-            descriptors: () => this.renderGenericUtilitySection(character, 'descriptors', UtilitySystem.getDescriptors())
+            'activity-expertise': () => this.expertiseSection.renderActivityExpertise(character),
+            'situational-expertise': () => this.expertiseSection.renderSituationalExpertise(character),
+            features: () => this.genericUtilitySection.render(character, 'features', UtilitySystem.getAvailableFeatures()),
+            senses: () => this.genericUtilitySection.render(character, 'senses', UtilitySystem.getAvailableSenses()),
+            movement: () => this.genericUtilitySection.render(character, 'movement', UtilitySystem.getMovementFeatures()),
+            descriptors: () => this.genericUtilitySection.render(character, 'descriptors', UtilitySystem.getDescriptors())
         };
         return renderers[this.activeCategory]?.() ?? `<div class="empty-state">Select a utility category.</div>`;
     }
 
-    renderActivityExpertiseSection(character) {
-        const expertiseCategories = UtilitySystem.getExpertiseCategories();
-        const availableContent = Object.entries(expertiseCategories).map(([attrKey, attrData]) =>
-            this.renderAttributeActivityExpertiseBlock(attrKey, attrData, character)
-        ).join('');
-        
-        return `
-            <div class="expertise-section">
-                <h4>Available Activity-Based Expertise</h4>
-                <p class="section-description">Skills and professions that enhance your capabilities. Basic adds your Tier to checks, Mastered adds twice your Tier.</p>
-                <div class="expertise-main-grid grid-layout grid-columns-auto-fit-300">${availableContent}</div>
-            </div>
-        `;
-    }
-
-    renderSituationalExpertiseSection(character) {
-        const expertiseCategories = UtilitySystem.getExpertiseCategories();
-        const availableContent = Object.entries(expertiseCategories).map(([attrKey, attrData]) =>
-            this.renderAttributeSituationalExpertiseBlock(attrKey, attrData, character)
-        ).join('');
-        
-        return `
-            <div class="expertise-section">
-                <h4>Available Situational Expertise</h4>
-                <p class="section-description">Circumstantial training that helps in specific situations. Basic adds your Tier to checks, Mastered adds twice your Tier.</p>
-                <div class="expertise-main-grid grid-layout grid-columns-auto-fit-300">${availableContent}</div>
-            </div>
-        `;
-    }
-
-    renderAttributeActivityExpertiseBlock(attrKey, attrData, character) {
-        const costs = UtilitySystem.getExpertiseCosts();
-        const activities = attrData.activities || [];
-        
-        if (activities.length === 0) {
-            return RenderUtils.renderCard({
-                title: `${attrKey} Activity Expertise`, titleTag: 'h4',
-                additionalContent: '<p class="empty-state-small">No activity-based expertise available for this attribute.</p>'
-            }, { cardClass: 'expertise-attribute-card' });
-        }
-
-        return RenderUtils.renderCard({
-            title: `${attrKey} Activity Expertise`, titleTag: 'h4',
-            additionalContent: `
-                <div class="expertise-subsection">
-                    <h5>Basic: ${costs.activityBased.basic.cost}p / Mastered: ${costs.activityBased.mastered.cost}p</h5>
-                    <div class="expertise-cards-grid">${activities.map(ex => this.renderSingleExpertiseOption(ex, attrKey, 'activity', character)).join('')}</div>
-                </div>`
-        }, { cardClass: 'expertise-attribute-card' });
-    }
-
-    renderAttributeSituationalExpertiseBlock(attrKey, attrData, character) {
-        const costs = UtilitySystem.getExpertiseCosts();
-        const situational = attrData.situational || [];
-        
-        if (situational.length === 0) {
-            return RenderUtils.renderCard({
-                title: `${attrKey} Situational Expertise`, titleTag: 'h4',
-                additionalContent: '<p class="empty-state-small">No situational expertise available for this attribute.</p>'
-            }, { cardClass: 'expertise-attribute-card' });
-        }
-
-        return RenderUtils.renderCard({
-            title: `${attrKey} Situational Expertise`, titleTag: 'h4',
-            additionalContent: `
-                <div class="expertise-subsection">
-                    <h5>Basic: ${costs.situational.basic.cost}p / Mastered: ${costs.situational.mastered.cost}p</h5>
-                    <div class="expertise-cards-grid">${situational.map(ex => this.renderSingleExpertiseOption(ex, attrKey, 'situational', character)).join('')}</div>
-                </div>`
-        }, { cardClass: 'expertise-attribute-card' });
-    }
-
-    renderSingleExpertiseOption(expertise, attribute, type, character) {
-        const costs = UtilitySystem.getExpertiseCosts();
-        const basicCost = costs[type === 'activity' ? 'activityBased' : 'situational'].basic.cost;
-        const masteredCost = costs[type === 'activity' ? 'activityBased' : 'situational'].mastered.cost;
-        const currentExpertise = character.utilityPurchases.expertise[attribute] || { basic: [], mastered: [] };
-        const expertiseId = expertise.id || expertise.name;
-        const isBasic = currentExpertise.basic.includes(expertiseId);
-        const isMastered = currentExpertise.mastered.includes(expertiseId);
-
-        return `
-            <div class="expertise-card">
-                <div class="expertise-card-header"><div class="expertise-name">${expertise.name}</div><div class="expertise-description">${expertise.description}</div></div>
-                <div class="expertise-card-footer">
-                    <div class="expertise-basic-section">
-                        <div class="expertise-cost-value">${basicCost}p</div>
-                        ${RenderUtils.renderButton({ text: isBasic ? '✓ Basic' : 'Purchase', variant: isBasic ? 'success' : 'primary', size: 'small', disabled: isBasic, dataAttributes: { action: 'purchase-expertise', attribute, 'expertise-id': expertiseId, 'expertise-type': type, level: 'basic' } })}
-                    </div>
-                    <div class="expertise-mastered-section">
-                        <div class="expertise-cost-value">${masteredCost}p</div>
-                        ${RenderUtils.renderButton({ text: isMastered ? '✓ Mastered' : 'Master', variant: isMastered ? 'success' : 'primary', size: 'small', disabled: !isBasic || isMastered, dataAttributes: { action: 'purchase-expertise', attribute, 'expertise-id': expertiseId, 'expertise-type': type, level: 'mastered' } })}
-                    </div>
-                </div>
-            </div>`;
-    }
-
-    // SIMPLIFIED: No longer renders purchased list
-    renderGenericUtilitySection(character, categoryKey, categoryData) {
-        const title = categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1);
-        const purchasedItems = character.utilityPurchases[categoryKey] || [];
-        let allItems = [];
-        Object.values(categoryData).forEach(tier => {
-            const itemsToAdd = tier.features || tier.senses || tier.movement || tier.descriptors;
-            if (Array.isArray(itemsToAdd)) {
-                allItems = allItems.concat(itemsToAdd.map(item => ({ ...item, cost: tier.cost ?? item.cost })));
-            }
-        });
-        const availableItems = allItems.filter(item => !purchasedItems.some(p => p.id === item.id));
-
-        return `
-            <div class="utility-generic-section">
-                <h3>Available ${title}</h3>
-                ${RenderUtils.renderGrid(
-                    availableItems,
-                    (item) => {
-                        return RenderUtils.renderCard({
-                            title: item.name, cost: item.cost, description: item.description,
-                            status: 'available',
-                            clickable: true, disabled: false,
-                            dataAttributes: { action: `purchase-item`, 'category-key': categoryKey, 'item-id': item.id }
-                        }, { cardClass: `${categoryKey.slice(0, -1)}-card`, showStatus: false });
-                    }, { gridContainerClass: 'grid-layout utility-item-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
-                )}
-            </div>`;
-    }
 
     setupEventListeners() {
         if (this.listenersAttached) return;
         
+        // First remove any existing listeners
+        this.removeEventListeners();
+        
         const container = document.querySelector('.utility-tab-content');
         if (!container) return;
 
-        EventManager.delegateEvents(container, {
-            click: {
-                '.section-tab': (e, el) => this.handleCategorySwitch(el.dataset.tab),
-                '[data-action="purchase-expertise"]': (e, el) => { e.stopPropagation(); this.handleExpertisePurchase(el); },
-                '[data-action="purchase-item"]': (e, el) => { e.stopPropagation(); this.handleGenericPurchase(el); },
-                '[data-action="remove-utility-item"]': (e, el) => { e.stopPropagation(); this.handleGenericRemove(el); },
+        // Create a single click handler that we can properly remove
+        this.clickHandler = (e) => {
+            const handlers = {
+                '.section-tab': (el) => this.handleCategorySwitch(el.dataset.tab),
+                '[data-action="purchase-expertise"]': (el) => { e.stopPropagation(); this.handleExpertisePurchase(el); },
+                '[data-action="purchase-item"]': (el) => { e.stopPropagation(); this.handleGenericPurchase(el); },
+                '[data-action="remove-utility-item"]': (el) => { e.stopPropagation(); this.handleGenericRemove(el); },
+                '[data-action="show-custom-utility-form"]': (el) => { e.stopPropagation(); this.customUtilityForm.showForm(el.dataset.categoryKey); },
+                '[data-action="cancel-custom-utility"]': (el) => { e.stopPropagation(); this.customUtilityForm.cancelForm(el.dataset.categoryKey); },
+                '[data-action="create-custom-utility"]': (el) => { e.stopPropagation(); this.handleCreateCustomUtility(el.dataset.categoryKey); },
                 '[data-action="continue-to-summary"]': () => this.builder.switchTab('summary'),
+            };
+
+            // Handle event delegation manually
+            for (const [selector, handler] of Object.entries(handlers)) {
+                const target = e.target.matches?.(selector) ? e.target : e.target.closest?.(selector);
+                if (target) {
+                    try {
+                        handler(target);
+                        break; // Only handle the first match
+                    } catch (error) {
+                        console.error(`❌ UtilityTab error for ${selector}:`, error);
+                    }
+                }
             }
-        });
-        
+        };
+
+        container.addEventListener('click', this.clickHandler);
+        this.containerElement = container;
         this.listenersAttached = true;
         console.log('✅ UtilityTab event listeners attached ONCE.');
+    }
+
+    removeEventListeners() {
+        if (this.clickHandler && this.containerElement) {
+            this.containerElement.removeEventListener('click', this.clickHandler);
+            this.clickHandler = null;
+            this.containerElement = null;
+        }
     }
     
     handleCategorySwitch(newCategory) {
@@ -377,7 +172,8 @@ export class UtilityTab {
         } catch (error) {
             // This will now only catch hard rule validation errors.
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
-            this.onCharacterUpdate(); // Re-render to fix button state on failure
+            // Don't call onCharacterUpdate here as it can cause render loops
+            element.disabled = false; // Just re-enable the button
         }
     }
 
@@ -408,7 +204,8 @@ export class UtilityTab {
         } catch (error) {
             // This will now only catch hard rule validation errors.
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
-            this.onCharacterUpdate(); // Re-render to fix button state on failure
+            // Don't call onCharacterUpdate here as it can cause render loops
+            element.disabled = false; // Just re-enable the button
         }
     }
     
@@ -443,9 +240,54 @@ export class UtilityTab {
     }
     
     onCharacterUpdate() {
-        // Reset listeners flag since we're doing a full re-render
-        this.listenersAttached = false;
-        this.render(); // Full re-render is simplest for this tab after updates
+        // Just call render - it will handle the state reset
+        this.render();
+    }
+    
+    updateOverviewSection() {
+        const overviewContainer = document.querySelector('.utility-overview-box');
+        if (overviewContainer && this.builder.currentCharacter) {
+            overviewContainer.outerHTML = this.overviewSection.render(this.builder.currentCharacter);
+        }
+    }
+
+
+    handleCreateCustomUtility(categoryKey) {
+        let customItemData;
+        try {
+            customItemData = this.customUtilityForm.getFormData(categoryKey);
+        } catch (error) {
+            this.builder.showNotification(error.message, 'error');
+            return;
+        }
+
+        // 1. Get current point balance
+        const character = this.builder.currentCharacter;
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.utilityPool;
+        
+        // 2. Get the cost of the item
+        const itemCost = customItemData.cost;
+        
+        // 3. Check if this purchase will go over budget
+        if (itemCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
+        try {
+            UtilitySystem.purchaseCustomItem(character, customItemData);
+            this.builder.updateCharacter();
+            this.builder.showNotification(`Created custom ${categoryKey.slice(0, -1)}: ${customItemData.name}!`, 'success');
+            
+            // Clear form and hide it
+            this.customUtilityForm.cancelForm(categoryKey);
+
+        } catch (error) {
+            // This will now only catch hard rule validation errors.
+            this.builder.showNotification(`Creation failed: ${error.message}`, 'error');
+        }
     }
     
     capitalizeFirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }

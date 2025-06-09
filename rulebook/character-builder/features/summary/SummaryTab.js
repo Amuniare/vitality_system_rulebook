@@ -40,7 +40,8 @@ export class SummaryTab {
                 </div>
             </div>
         `;
-        // Event listeners for buttons will be handled by CharacterBuilder via data-actions
+        
+        this.setupEventListeners();
     }
 
     renderBasicInfoCard(character) {

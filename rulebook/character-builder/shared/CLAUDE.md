@@ -21,3 +21,8 @@ The shared/ layer has two distinct parts with their own rules:
 -   Utilities in this directory (e.g., RenderUtils.js, EventManager.js) must be completely application-agnostic.
 -   RenderUtils.js should not know what a "flaw" or "trait" is; it just knows how to render a generic "card" with a title, description, and cost. It is up to the *calling feature* to provide that data.
 -   EventManager.js just knows how to delegate events; it doesn't know what the events do.
+### The Reusability Contract
+
+- **Role:** To provide generic, reusable UI components and utilities.
+- **Generic Code Only:** All code in `shared/` must be decoupled from any specific game feature. A `Card` component doesn't know what a "flaw" is, only that it has a title and description.
+- **Standardize with `RenderUtils`:** Common UI elements (`cards`, `buttons`, `form groups`) **MUST** be generated using `shared/utils/RenderUtils.js` to ensure consistency and proper event handling via `data-action` attributes.
