@@ -14,7 +14,8 @@ export class TraitPurchaseSection {
         return {
             conditions: [], // array of condition IDs
             statBonuses: [], // array of stat IDs
-            tierCost: 0 // sum of selected condition tier costs
+            tierCost: 0, // sum of selected condition tier costs
+            variableCosts: {} // map of variable condition IDs to their selected costs
         };
     }
 
@@ -156,11 +157,59 @@ export class TraitPurchaseSection {
     }
 
     renderConditionTier(tierData, sectionDisabled) {
+        const costDisplay = tierData.cost === "Variable" ? "Variable (1-3 points)" : `${tierData.cost} point${tierData.cost !== 1 ? 's' : ''} each`;
+        
         return `
             <div class="condition-tier">
-                <h7>${tierData.name} (${tierData.cost} point${tierData.cost !== 1 ? 's' : ''} each)</h7>
+                <h7>${tierData.name} (${costDisplay})</h7>
                 <div class="trait-condition-grid grid-layout grid-columns-auto-fit-280">
-                    ${tierData.conditions.map(condition => this.renderConditionCard(condition, tierData.cost, sectionDisabled)).join('')}
+                    ${tierData.conditions.map(condition => {
+                        if (tierData.cost === "Variable") {
+                            return this.renderVariableConditionCard(condition, sectionDisabled);
+                        } else {
+                            return this.renderConditionCard(condition, tierData.cost, sectionDisabled);
+                        }
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderVariableConditionCard(condition, sectionDisabled) {
+        const isSelected = this.currentTraitData.conditions.includes(condition.id);
+        const currentCost = this.currentTraitData.variableCosts[condition.id] || 1;
+        const wouldExceed = !isSelected && (this.currentTraitData.tierCost + currentCost > 3);
+        const disabled = sectionDisabled || wouldExceed;
+        
+        // Calculate button disabled states
+        const decreaseDisabled = disabled || currentCost <= 1;
+        const increaseDisabled = disabled || currentCost >= 3 || (this.currentTraitData.tierCost - (isSelected ? currentCost : 0) + currentCost + 1 > 3);
+        
+        return `
+            <div class="card trait-condition-card clickable ${isSelected ? 'selected' : ''} ${disabled ? 'disabled' : ''}"
+                 data-action="trait-condition-toggle"
+                 data-condition-id="${condition.id}"
+                 data-tier-cost="${currentCost}"
+                 data-selected="${isSelected}">
+                <div class="card-header">
+                    <h4 class="card-title">${condition.name}</h4>
+                    <div class="quantity-controls">
+                        <button type="button" 
+                                class="quantity-btn decrease-btn" 
+                                data-action="decrease-variable-trait-cost" 
+                                data-condition-id="${condition.id}"
+                                ${decreaseDisabled ? 'disabled' : ''}>-</button>
+                        <span class="quantity-display">${currentCost}pt</span>
+                        <button type="button" 
+                                class="quantity-btn increase-btn" 
+                                data-action="increase-variable-trait-cost" 
+                                data-condition-id="${condition.id}"
+                                ${increaseDisabled ? 'disabled' : ''}>+</button>
+                    </div>
+                </div>
+                <div class="card-description">${condition.description}</div>
+                <div class="selection-indicator">
+                    ${isSelected ? '✓ Selected' : 'Click to Select'}
                 </div>
             </div>
         `;
@@ -267,9 +316,64 @@ export class TraitPurchaseSection {
             // Removing condition
             this.currentTraitData.conditions = this.currentTraitData.conditions.filter(c => c !== conditionId);
             this.currentTraitData.tierCost -= tierCost;
+            // Clear variable cost if this was a variable condition
+            if (this.currentTraitData.variableCosts[conditionId]) {
+                delete this.currentTraitData.variableCosts[conditionId];
+            }
             console.log('✅ Removed condition:', conditionId, 'Current conditions:', this.currentTraitData.conditions, 'Total cost:', this.currentTraitData.tierCost);
             this.refreshBuilderUI();
         }
+    }
+
+    handleIncreaseVariableTraitCost(conditionId) {
+        const currentCost = this.currentTraitData.variableCosts[conditionId] || 1;
+        const isSelected = this.currentTraitData.conditions.includes(conditionId);
+        
+        // Calculate what the new total would be
+        const costDifference = 1;
+        const newTotalCost = this.currentTraitData.tierCost + costDifference;
+        
+        if (currentCost >= 3) {
+            this.builder.showNotification('Maximum cost for variable conditions is 3 points.', 'warning');
+            return;
+        }
+        
+        if (newTotalCost > 3) {
+            this.builder.showNotification('Condition tier limit (3 points) exceeded.', 'warning');
+            return;
+        }
+        
+        // Update the variable cost
+        this.currentTraitData.variableCosts[conditionId] = currentCost + 1;
+        
+        // Update tier cost if condition is selected
+        if (isSelected) {
+            this.currentTraitData.tierCost += costDifference;
+        }
+        
+        console.log('✅ Increased variable cost:', conditionId, 'to', this.currentTraitData.variableCosts[conditionId]);
+        this.refreshBuilderUI();
+    }
+
+    handleDecreaseVariableTraitCost(conditionId) {
+        const currentCost = this.currentTraitData.variableCosts[conditionId] || 1;
+        const isSelected = this.currentTraitData.conditions.includes(conditionId);
+        
+        if (currentCost <= 1) {
+            this.builder.showNotification('Minimum cost for variable conditions is 1 point.', 'warning');
+            return;
+        }
+        
+        // Update the variable cost
+        this.currentTraitData.variableCosts[conditionId] = currentCost - 1;
+        
+        // Update tier cost if condition is selected
+        if (isSelected) {
+            this.currentTraitData.tierCost -= 1;
+        }
+        
+        console.log('✅ Decreased variable cost:', conditionId, 'to', this.currentTraitData.variableCosts[conditionId]);
+        this.refreshBuilderUI();
     }
 
     
@@ -307,23 +411,40 @@ export class TraitPurchaseSection {
         // 2. Get the cost of the item
         const itemCost = TraitFlawSystem.getTraitCost();
         
-        // 3. Check if this purchase will go over budget (non-blocking)
+        // 3. Enhanced budget validation with detailed warnings
         if (itemCost > remainingPoints) {
-            this.builder.showNotification("This purchase puts you over budget.", "warning");
+            const deficit = itemCost - remainingPoints;
+            this.builder.showNotification(
+                `⚠️ Over Budget: This trait costs ${itemCost}p but you only have ${remainingPoints}p remaining (${deficit}p over budget). The purchase will proceed but your character will be over budget.`, 
+                "warning"
+            );
+        } else if (remainingPoints - itemCost < 10) {
+            // Advisory warning for low remaining points
+            const remaining = remainingPoints - itemCost;
+            this.builder.showNotification(
+                `💰 Low Budget Warning: After this purchase you'll have ${remaining}p remaining.`, 
+                "warning"
+            );
         }
 
-        // 4. Proceed with the purchase
+        // 4. Clear the builder state BEFORE the purchase to prevent state conflicts
+        const traitDataCopy = JSON.parse(JSON.stringify(this.currentTraitData));
+        this.currentTraitData = this.resetCurrentTraitData();
+
+        // 5. Proceed with the purchase
         try {
-            TraitFlawSystem.purchaseTrait(character, this.currentTraitData);
-            this.builder.showNotification('Trait purchased!', 'success');
+            TraitFlawSystem.purchaseTrait(character, traitDataCopy);
+            this.builder.showNotification('Trait purchased successfully!', 'success');
             
-            // FIX: Call updateCharacter() first, THEN clear the local builder state.
+            // 6. Update character (this will trigger re-render and new component instance)
             this.builder.updateCharacter(); 
-            this.handleClearBuilder();
 
         } catch (error) {
-            console.log('❌ Trait purchase failed:', error.message, 'with data:', JSON.stringify(this.currentTraitData));
+            // 7. Restore state if purchase failed
+            this.currentTraitData = traitDataCopy;
+            console.log('❌ Trait purchase failed:', error.message, 'with data:', JSON.stringify(traitDataCopy));
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
+            this.refreshBuilderUI();
         }
     }
 

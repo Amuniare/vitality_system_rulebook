@@ -3,13 +3,44 @@
 ## Bug Fix List
 
 
-Create custom limit
-- add custom limit button isn't working
-- also, needs to go in a box similar to how upgrades is, it should use consistent formating
 
+can't buy traits when over points, no validation
+sometimes it seizes up and the visuals don't update after building the first trait
 
-
-
+updateCharacter called CharacterBuilder.js:344:17
+🔄 Calculating point pools (cache miss) PointPoolCalculator.js:18:17
+✅ MainPoolTab event listeners attached ONCE. MainPoolTab.js:436:17
+✅ TraitPurchaseSection: Event delegation active, no direct listeners needed TraitPurchaseSection.js:262:17
+✅ Saved library with 1 characters CharacterLibrary.js:64:21
+✅ Saved character: New Character CharacterLibrary.js:81:17
+🔍 MainPoolTab caught trait-condition-toggle event 
+<div class="card trait-condition-card clickable  " data-action="trait-condition-toggle" data-condition-id="unhealthy2" data-tier-cost="2" data-selected="false">
+MainPoolTab.js:398:29
+🔍 Condition card clicked: unhealthy2 cost: 2 currently selected: false TraitPurchaseSection.js:298:17
+✅ Added condition: unhealthy2 Current conditions: 
+Array [ "unhealthy2" ]
+ Total cost: 2 TraitPurchaseSection.js:308:25
+🔍 MainPoolTab caught trait-condition-toggle event 
+<div class="card trait-condition-card clickable  " data-action="trait-condition-toggle" data-condition-id="unhealthy2" data-tier-cost="2" data-selected="true">
+MainPoolTab.js:398:29
+🔍 Condition card clicked: unhealthy2 cost: 2 currently selected: true TraitPurchaseSection.js:298:17
+✅ Removed condition: unhealthy2 Current conditions: 
+Array []
+ Total cost: 0 TraitPurchaseSection.js:323:21
+🔍 MainPoolTab caught trait-condition-toggle event 
+<div class="card trait-condition-card clickable  " data-action="trait-condition-toggle" data-condition-id="unhealthy2" data-tier-cost="2" data-selected="false">
+MainPoolTab.js:398:29
+🔍 Condition card clicked: unhealthy2 cost: 2 currently selected: false TraitPurchaseSection.js:298:17
+✅ Added condition: unhealthy2 Current conditions: 
+Array [ "unhealthy2" ]
+ Total cost: 2 TraitPurchaseSection.js:308:25
+🔍 MainPoolTab caught trait-condition-toggle event 
+<div class="card trait-condition-card clickable  " data-action="trait-condition-toggle" data-condition-id="unhealthy2" data-tier-cost="2" data-selected="true">
+MainPoolTab.js:398:29
+🔍 Condition card clicked: unhealthy2 cost: 2 currently selected: true TraitPurchaseSection.js:298:17
+✅ Removed condition: unhealthy2 Current conditions: 
+Array []
+ Total cost: 0
 
 
 

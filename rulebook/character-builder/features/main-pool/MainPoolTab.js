@@ -398,6 +398,18 @@ export class MainPoolTab {
                     console.log('🔍 MainPoolTab caught trait-condition-toggle event', el);
                     this.sections.traits.handleConditionToggle(el);
                 },
+                '[data-action="increase-variable-trait-cost"]': (e, el) => {
+                    if (this.activeSection === 'traits') {
+                        console.log('🔍 MainPoolTab caught increase-variable-trait-cost event', el);
+                        this.sections.traits.handleIncreaseVariableTraitCost(el.dataset.conditionId);
+                    }
+                },
+                '[data-action="decrease-variable-trait-cost"]': (e, el) => {
+                    if (this.activeSection === 'traits') {
+                        console.log('🔍 MainPoolTab caught decrease-variable-trait-cost event', el);
+                        this.sections.traits.handleDecreaseVariableTraitCost(el.dataset.conditionId);
+                    }
+                },
                 '[data-action="purchase-simple-boon"]': (e, el) => this.sections.simpleBoons.purchaseSimpleBoon(el.dataset.boonId),
                 '[data-action="remove-simple-boon"]': (e, el) => this.sections.simpleBoons.removeBoon(el.dataset.boonId),
                 '[data-action="purchase-unique-ability"]': (e, el) => this.sections.uniqueAbilities.purchaseUniqueAbility(el.dataset.abilityId),
