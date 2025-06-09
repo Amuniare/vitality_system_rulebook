@@ -1,0 +1,12 @@
+[
+    { "tier": 1, "name": "Beginner", "flavor": "Just starting out on your heroic journey. You have potential but lack experience." },
+    { "tier": 2, "name": "Novice", "flavor": "Developing your abilities and gaining confidence in your powers." },
+    { "tier": 3, "name": "Developing", "flavor": "A competent hero who can handle most everyday threats reliably." },
+    { "tier": 4, "name": "Competent", "flavor": "A professional hero with established capabilities and reputation." },
+    { "tier": 5, "name": "Professional", "flavor": "A veteran hero with significant experience and refined abilities." },
+    { "tier": 6, "name": "Expert", "flavor": "An expert hero whose skills are recognized and respected." },
+    { "tier": 7, "name": "Veteran", "flavor": "An elite hero operating at the highest levels of competence." },
+    { "tier": 8, "name": "Elite", "flavor": "A master hero pushing the boundaries of human capability." },
+    { "tier": 9, "name": "Master", "flavor": "A legendary hero whose deeds inspire others and shape history." },
+    { "tier": 10, "name": "Legendary", "flavor": "A world-class expert representing the absolute pinnacle of heroic achievement." }
+  ]
