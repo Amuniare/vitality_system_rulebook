@@ -25,14 +25,6 @@ export class SimpleBoonsSystem {
             errors.push('Boon already purchased');
         }
         
-        // Check point cost
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
-        
-        if (boon.cost > availablePoints) {
-            errors.push(`Insufficient main pool points (need ${boon.cost}, have ${availablePoints})`);
-        }
-        
         // Check conflicts with other abilities
         const conflictCheck = this.checkBoonConflicts(character, boonId);
         errors.push(...conflictCheck.errors);

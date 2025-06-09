@@ -236,13 +236,6 @@ export class SpecialAttackSystem {
         const errors = [];
         const warnings = [];
         
-        const actualCost = this._getActualUpgradeCost(upgradeData, character);
-        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
-
-        if (actualCost > remainingPoints) {
-            errors.push(`Insufficient points (need ${actualCost}, have ${remainingPoints})`);
-        }
-        
         if (attack.upgrades.some(upgrade => upgrade.id === upgradeData.id)) {
             errors.push('Already purchased');
         }
@@ -555,12 +548,6 @@ export class SpecialAttackSystem {
         // Check if upgrade with same name already exists
         if (attack.upgrades?.some(u => u.name === upgradeData.name)) {
             errors.push('An upgrade with this name already exists on this attack');
-        }
-
-        // Check if we have enough points
-        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
-        if (upgradeData.cost > remainingPoints) {
-            errors.push(`Insufficient upgrade points (need ${upgradeData.cost}, have ${remainingPoints})`);
         }
 
         // Basic validation

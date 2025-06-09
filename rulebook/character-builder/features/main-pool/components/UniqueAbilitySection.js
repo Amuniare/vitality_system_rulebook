@@ -1,5 +1,6 @@
 // rulebook/character-builder/ui/components/UniqueAbilitySection.js
 import { UniqueAbilitySystem } from '../../../systems/UniqueAbilitySystem.js';
+import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class UniqueAbilitySection {
@@ -376,8 +377,23 @@ export class UniqueAbilitySection {
     }
 
     purchaseUniqueAbility(abilityId) {
+        // 1. Get current point balance
         const character = this.builder.currentCharacter;
-        const upgradesToPurchase = this.selectedUpgrades[abilityId] || []; // Get the currently selected upgrades
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.mainPool;
+        
+        // 2. Get the cost of the item (including upgrades)
+        const upgradesToPurchase = this.selectedUpgrades[abilityId] || [];
+        const ability = UniqueAbilitySystem.getComplexUniqueAbilities().find(a => a.id === abilityId);
+        const itemCost = ability ? UniqueAbilitySystem.calculateUniqueAbilityTotalCost(ability, upgradesToPurchase) : 0;
+        
+        // 3. Check if this purchase will go over budget
+        if (itemCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
             UniqueAbilitySystem.purchaseUniqueAbility(character, abilityId, upgradesToPurchase);
             this.builder.updateCharacter();
@@ -390,7 +406,8 @@ export class UniqueAbilitySection {
             }
 
         } catch (error) {
-            this.builder.showNotification(`Failed to purchase ability: ${error.message}`, 'error');
+            // This will now only catch hard rule validation errors.
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
         }
     }
 
@@ -446,7 +463,21 @@ export class UniqueAbilitySection {
             return;
         }
 
+        // 1. Get current point balance
         const character = this.builder.currentCharacter;
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.mainPool;
+        
+        // 2. Get the cost of the item
+        const itemCost = abilityData.cost;
+        
+        // 3. Check if this purchase will go over budget
+        if (itemCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
             UniqueAbilitySystem.purchaseCustomUniqueAbility(character, abilityData);
             this.builder.updateCharacter();
@@ -465,7 +496,8 @@ export class UniqueAbilitySection {
             }
 
         } catch (error) {
-            this.builder.showNotification(`Failed to create custom ability: ${error.message}`, 'error');
+            // This will now only catch hard rule validation errors.
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
         }
     }
 

@@ -1,5 +1,6 @@
 // rulebook/character-builder/ui/components/FlawPurchaseSection.js
 import { TraitFlawSystem } from '../../../systems/TraitFlawSystem.js';
+import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js';
 import { EventManager } from '../../../shared/utils/EventManager.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
@@ -83,15 +84,13 @@ export class FlawPurchaseSection {
 
     renderFlawCard(flaw, character, statOptions, pointInfo) {
         const isAlreadyPurchased = character.mainPoolPurchases.flaws.some(f => f.flawId === flaw.id);
-        const canAfford = pointInfo.remaining >= flaw.cost;
 
         let status = 'available';
         if (isAlreadyPurchased) status = 'purchased';
-        else if (!canAfford) status = 'unaffordable';
         
         let additionalContent = '';
 
-        if (!isAlreadyPurchased && canAfford) {
+        if (!isAlreadyPurchased) {
             additionalContent += `
                 <div class="flaw-purchase-options">
                     <div class="stat-bonus-selection form-group">
@@ -121,10 +120,10 @@ export class FlawPurchaseSection {
             description: flaw.description,
             status: status, // This will be used by RenderUtils to display a status indicator
             clickable: false, // Card itself is not clickable, button inside is
-            disabled: isAlreadyPurchased || !canAfford,
+            disabled: isAlreadyPurchased,
             dataAttributes: { 'flaw-id': flaw.id }, // For main card div
             additionalContent: additionalContent
-        }, { cardClass: 'flaw-card', showCost: true, showStatus: !(!isAlreadyPurchased && canAfford) });
+        }, { cardClass: 'flaw-card', showCost: true, showStatus: !(status === 'available') });
     }
 
     setupEventListeners() {
@@ -154,13 +153,29 @@ export class FlawPurchaseSection {
             return;
         }
 
+        // 1. Get current point balance
+        const pools = PointPoolCalculator.calculateAllPools(this.builder.currentCharacter);
+        const remainingPoints = pools.remaining.mainPool;
+        
+        // 2. Get the cost of the item
+        const flaw = TraitFlawSystem.getAvailableFlaws().find(f => f.id === flawId);
+        const itemCost = flaw ? flaw.cost : 0;
+        
+        // 3. Check if this purchase will go over budget
+        if (itemCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
             const character = this.builder.currentCharacter;
             TraitFlawSystem.purchaseFlaw(character, flawId, statBonus);
             this.builder.updateCharacter(); // Triggers re-render of MainPoolTab
             this.builder.showNotification('Flaw purchased successfully!', 'success');
         } catch (error) {
-            this.builder.showNotification(`Failed to purchase flaw: ${error.message}`, 'error');
+            // This will now only catch hard rule validation errors.
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
         }
     }
 

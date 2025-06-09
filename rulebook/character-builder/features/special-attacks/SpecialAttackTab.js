@@ -352,10 +352,38 @@ export class SpecialAttackTab {
     }
 
     purchaseUpgrade(upgradeId) {
+        // 1. Get current attack and point balance
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (!attack) {
+            this.builder.showNotification('No attack selected', 'error');
+            return;
+        }
+        
+        // 2. Get the cost of the upgrade
+        const upgradeData = SpecialAttackSystem.getUpgradeById(upgradeId);
+        if (!upgradeData) {
+            this.builder.showNotification('Upgrade not found', 'error');
+            return;
+        }
+        
+        const actualCost = SpecialAttackSystem._getActualUpgradeCost(upgradeData, character);
+        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
+        
+        // 3. Check if this purchase will go over budget
+        if (actualCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
-            SpecialAttackSystem.addUpgradeToAttack(this.builder.currentCharacter, this.selectedAttackIndex, upgradeId);
+            SpecialAttackSystem.addUpgradeToAttack(character, this.selectedAttackIndex, upgradeId);
             this.builder.updateCharacter();
-        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+        } catch (error) {
+            // This will now only catch hard rule validation errors.
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
+        }
     }
 
     removeUpgrade(upgradeId) {

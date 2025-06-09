@@ -291,8 +291,6 @@ export class UtilityTab {
     renderGenericUtilitySection(character, categoryKey, categoryData) {
         const title = categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1);
         const purchasedItems = character.utilityPurchases[categoryKey] || [];
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const remainingUtilityPoints = pools.remaining.utilityPool;
         let allItems = [];
         Object.values(categoryData).forEach(tier => {
             const itemsToAdd = tier.features || tier.senses || tier.movement || tier.descriptors;
@@ -308,13 +306,12 @@ export class UtilityTab {
                 ${RenderUtils.renderGrid(
                     availableItems,
                     (item) => {
-                        const canAfford = remainingUtilityPoints >= item.cost;
                         return RenderUtils.renderCard({
                             title: item.name, cost: item.cost, description: item.description,
-                            status: canAfford ? 'available' : 'unaffordable',
-                            clickable: canAfford, disabled: !canAfford,
+                            status: 'available',
+                            clickable: true, disabled: false,
                             dataAttributes: { action: `purchase-item`, 'category-key': categoryKey, 'item-id': item.id }
-                        }, { cardClass: `${categoryKey.slice(0, -1)}-card`, showStatus: true });
+                        }, { cardClass: `${categoryKey.slice(0, -1)}-card`, showStatus: false });
                     }, { gridContainerClass: 'grid-layout utility-item-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
                 )}
             </div>`;
@@ -350,11 +347,35 @@ export class UtilityTab {
     handleExpertisePurchase(element) {
         element.disabled = true; // Prevent double-clicks
         const { attribute, expertiseId, expertiseType, level } = element.dataset;
+        
+        // 1. Get current point balance
+        const character = this.builder.currentCharacter;
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.utilityPool;
+        
+        // 2. Get the cost of the item
+        const itemCost = UtilitySystem.getExpertiseCost(expertiseType, level);
+        let actualCost = itemCost;
+        if (level === 'mastered') {
+            // Cost of mastering is the difference if basic is already owned
+            if (character.utilityPurchases.expertise[attribute]?.basic.includes(expertiseId)) {
+                actualCost -= UtilitySystem.getExpertiseCost(expertiseType, 'basic');
+            }
+        }
+        
+        // 3. Check if this purchase will go over budget
+        if (actualCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
-            UtilitySystem.purchaseExpertise(this.builder.currentCharacter, attribute, expertiseId, expertiseType, level);
+            UtilitySystem.purchaseExpertise(character, attribute, expertiseId, expertiseType, level);
             this.builder.updateCharacter();
             this.builder.showNotification(`${expertiseId} ${level} expertise purchased!`, 'success');
         } catch (error) {
+            // This will now only catch hard rule validation errors.
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
             this.onCharacterUpdate(); // Re-render to fix button state on failure
         }
@@ -363,11 +384,29 @@ export class UtilityTab {
     handleGenericPurchase(element) {
         element.disabled = true; // Prevent double-clicks
         const { categoryKey, itemId } = element.dataset;
+        
+        // 1. Get current point balance
+        const character = this.builder.currentCharacter;
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.utilityPool;
+        
+        // 2. Get the cost of the item
+        const itemDef = UtilitySystem._findItemDefinition(categoryKey, itemId);
+        const itemCost = itemDef ? itemDef.cost : 0;
+        
+        // 3. Check if this purchase will go over budget
+        if (itemCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
-            UtilitySystem.purchaseItem(this.builder.currentCharacter, categoryKey, itemId);
+            UtilitySystem.purchaseItem(character, categoryKey, itemId);
             this.builder.updateCharacter();
             this.builder.showNotification(`${this.capitalizeFirst(categoryKey.slice(0,-1))} purchased.`, 'success');
         } catch (error) {
+            // This will now only catch hard rule validation errors.
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
             this.onCharacterUpdate(); // Re-render to fix button state on failure
         }

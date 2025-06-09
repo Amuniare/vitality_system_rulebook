@@ -86,20 +86,16 @@ export class TraitPurchaseSection {
 
     renderTraitBuilderContent(conditionTiersData, statOptionsData, pointInfo) {
         const traitCost = TraitFlawSystem.getTraitCost ? TraitFlawSystem.getTraitCost() : 30;
-        const canAffordTrait = pointInfo.remaining >= traitCost;
-        const builderDisabled = !canAffordTrait;
 
-        const canPurchase = canAffordTrait &&
-                           this.currentTraitData.statBonuses.length === 2 &&
+        const canPurchase = this.currentTraitData.statBonuses.length === 2 &&
                            this.currentTraitData.conditions.length > 0 &&
                            this.currentTraitData.tierCost > 0 && this.currentTraitData.tierCost <= 3;
 
         return `
-            <div class="trait-builder-content ${builderDisabled ? 'disabled-section' : ''}">
-                ${this.renderStatSelectionStep(statOptionsData, builderDisabled)}
-                ${this.renderConditionSelectionStep(conditionTiersData, builderDisabled)}
-                ${this.renderBuilderActions(canPurchase, canAffordTrait, traitCost)}
-                ${!canAffordTrait ? RenderUtils.renderStatusIndicator('error', `Insufficient points to purchase trait (need ${traitCost}p).`, {absolutePosition:false}) : ''}
+            <div class="trait-builder-content">
+                ${this.renderStatSelectionStep(statOptionsData, false)}
+                ${this.renderConditionSelectionStep(conditionTiersData, false)}
+                ${this.renderBuilderActions(canPurchase, true, traitCost)}
             </div>
         `;
     }
@@ -306,9 +302,22 @@ export class TraitPurchaseSection {
         console.log('🔍 Current trait conditions:', this.currentTraitData.conditions);
         console.log('🔍 Current trait tierCost:', this.currentTraitData.tierCost);
         
+        // 1. Get current point balance
+        const character = this.builder.currentCharacter;
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.mainPool;
+        
+        // 2. Get the cost of the item
+        const itemCost = TraitFlawSystem.getTraitCost();
+        
+        // 3. Check if this purchase will go over budget
+        if (itemCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
-            const character = this.builder.currentCharacter;
-            const pools = PointPoolCalculator.calculateAllPools(character);
             console.log('🔍 Current point pools:', pools);
             
             const updatedCharacter = TraitFlawSystem.purchaseTrait(character, this.currentTraitData);
@@ -316,8 +325,9 @@ export class TraitPurchaseSection {
             this.builder.updateCharacter(); // This will trigger re-render of MainPoolTab
             this.builder.showNotification('Trait purchased!', 'success');
         } catch (error) {
+            // This will now only catch hard rule validation errors.
             console.log('❌ Trait purchase failed:', error.message);
-            this.builder.showNotification(`Failed to purchase trait: ${error.message}`, 'error');
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
             // Do NOT clear the trait data or update character on error
         }
     }

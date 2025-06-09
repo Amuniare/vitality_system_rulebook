@@ -25,14 +25,6 @@ export class ActionSystem {
             errors.push('Action upgrade already purchased');
         }
 
-        // Use unified point pool calculator
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
-        
-        if (GameConstants.PRIMARY_TO_QUICK_COST > availablePoints) {
-            errors.push(`Insufficient main pool points (need ${GameConstants.PRIMARY_TO_QUICK_COST}, have ${availablePoints})`);
-        }
-
         return {
             isValid: errors.length === 0,
             errors,

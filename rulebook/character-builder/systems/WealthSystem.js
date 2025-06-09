@@ -71,15 +71,6 @@ export class WealthSystem {
             errors.push('This wealth level requires narrative justification (minimum 10 characters)');
         }
         
-        // Check if can afford the cost
-        if (wealth.cost > 0) {
-            // This would be deducted from utility points or another pool
-            const availablePoints = this.calculateAvailableWealthPoints(character);
-            if (wealth.cost > availablePoints) {
-                errors.push(`Insufficient points for wealth level (need ${wealth.cost}, have ${availablePoints})`);
-            }
-        }
-        
         // Check campaign restrictions (would be set by GM)
         const campaignRestrictions = this.getCampaignWealthRestrictions();
         if (campaignRestrictions.forbidden && campaignRestrictions.forbidden.includes(wealthId)) {

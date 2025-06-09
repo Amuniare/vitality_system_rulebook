@@ -27,16 +27,6 @@ export class UniqueAbilitySystem {
             errors.push('Unique ability already purchased');
         }
         
-        // Use unified point pool calculator
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
-        
-        const totalCost = this.calculateUniqueAbilityTotalCost(ability, upgrades);
-        
-        if (totalCost > availablePoints) {
-            errors.push(`Insufficient main pool points (need ${totalCost}, have ${availablePoints})`);
-        }
-        
         // Check upgrade validity
         if (upgrades.length > 0) {
             const upgradeValidation = this.validateUniqueAbilityUpgrades(ability, upgrades);
@@ -139,14 +129,6 @@ export class UniqueAbilitySystem {
         const validation = this.validateCustomUniqueAbility(character, abilityData);
         if (!validation.isValid) {
             throw new Error(validation.errors.join(', '));
-        }
-
-        // Use unified point pool calculator
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
-        
-        if (abilityData.cost > availablePoints) {
-            throw new Error(`Insufficient main pool points (need ${abilityData.cost}, have ${availablePoints})`);
         }
         
         character.mainPoolPurchases.boons.push({

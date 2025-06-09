@@ -2,18 +2,51 @@
     "tier5": {
         "cost": 5,
         "features": [
-            {"id": "wallWalking", "name": "Wall Walking", "description": "Move on walls and ceilings at normal speed, defying gravity"},
-            {"id": "burrowing", "name": "Burrowing", "description": "Move through earth/sand/rock at half speed, create temporary tunnels"}
+            {
+                "id": "wallWalking",
+                "name": "Wall Walking",
+                "description": "Move on walls and ceilings at normal speed, defying gravity."
+            },
+            {
+                "id": "burrowing",
+                "name": "Burrowing",
+                "description": "Move through earth, sand, or loose rock at half speed, creating temporary tunnels."
+            },
+            {
+                "id": "swinging",
+                "name": "Swinging",
+                "description": "Move on any solid surface. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+."
+            },
+            {
+                "id": "superJump",
+                "name": "Super Jump",
+                "description": "Jump up to your full movement speed in one leap. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+."
+            }
         ]
     },
     "tier10": {
         "cost": 10,
         "features": [
-            {"id": "flight", "name": "Flight", "description": "Move in any direction at full speed with perfect maneuverability"},
-            {"id": "phasing", "name": "Phasing", "description": "Selectively phase through solid barriers at normal speed"},
-            {"id": "shortRangeTeleportation", "name": "Short-Range Teleportation", "description": "Instantly teleport to visible location within movement range"},
-            {"id": "portalCreation", "name": "Portal Creation", "description": "Create two linked portals as part of movement action"}
+            {
+                "id": "flight",
+                "name": "Flight",
+                "description": "Move in any direction at full speed with perfect maneuverability."
+            },
+            {
+                "id": "phasing",
+                "name": "Phasing",
+                "description": "Selectively phase through solid barriers at normal speed."
+            },
+            {
+                "id": "shortRangeTeleportation",
+                "name": "Short-Range Teleportation",
+                "description": "Instantly teleport to any visible location within your movement range."
+            },
+            {
+                "id": "portalCreation",
+                "name": "Portal Creation",
+                "description": "Create two linked portals as part of your movement action that persist until the start of your next turn."
+            }
         ]
     }
 }
-

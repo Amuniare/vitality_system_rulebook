@@ -44,14 +44,6 @@ export class TraitFlawSystem {
             errors.push('Flaw already purchased');
         }
 
-        // Use unified point pool calculator
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
-        
-        if (flaw.cost > availablePoints) {
-            errors.push(`Insufficient main pool points (need ${flaw.cost}, have ${availablePoints})`);
-        }
-
         // Validate stat bonus selection
         if (statBonus && !(gameDataManager.getGenericStatOptions() || []).some(opt => opt.id === statBonus)) { // MODIFIED
             errors.push('Invalid stat bonus selection');
@@ -73,15 +65,6 @@ export class TraitFlawSystem {
     static validateTraitPurchase(character, traitData) {
         const errors = [];
         const warnings = [];
-        const traitCost = this.getTraitCost();
-
-        // Use unified point pool calculator
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const availablePoints = pools.remaining.mainPool;
-        
-        if (traitCost > availablePoints) {
-            errors.push(`Insufficient main pool points (need ${traitCost}, have ${availablePoints})`);
-        }
 
         // Validate condition tier total
         const totalTierCost = this.calculateTraitConditionCost(traitData.conditions);

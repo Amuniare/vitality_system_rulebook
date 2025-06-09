@@ -127,42 +127,42 @@ export class UpgradeSelection {
     renderUpgradeCard(upgrade, attack, character) {
         const validation = SpecialAttackSystem.validateUpgradeAddition(character, attack, upgrade);
         const alreadyPurchased = attack.upgrades?.some(u => u.id === upgrade.id);
-        const canAfford = !validation.errors.some(e => e.startsWith('Insufficient points'));
         
         let status = 'available';
         if (alreadyPurchased) status = 'purchased';
-        else if (!validation.isValid && !canAfford) status = 'unaffordable';
         else if (!validation.isValid) status = 'conflict';
         
         const actualCost = SpecialAttackSystem._getActualUpgradeCost(upgrade, character);
+        
+        // Only disable if already purchased or has conflicts (not affordability)
+        const hasConflicts = validation.errors.some(e => !e.startsWith('Insufficient points'));
         
         return RenderUtils.renderCard({
             title: upgrade.name,
             cost: actualCost,
             description: upgrade.effect || upgrade.description,
-            clickable: validation.isValid && !alreadyPurchased,
-            disabled: !validation.isValid || alreadyPurchased,
+            clickable: !alreadyPurchased && !hasConflicts,
+            disabled: alreadyPurchased || hasConflicts,
             dataAttributes: { action: 'purchase-upgrade', 'upgrade-id': upgrade.id },
             additionalContent: `
                 ${upgrade.restriction ? `<small class="upgrade-restriction">Restriction: ${upgrade.restriction}</small>` : ''}
-                ${!validation.isValid && !alreadyPurchased ? `<small class="error-text">${validation.errors[0]}</small>` : ''}
+                ${hasConflicts && !alreadyPurchased ? `<small class="error-text">${validation.errors.find(e => !e.startsWith('Insufficient points'))}</small>` : ''}
             `
         }, { cardClass: 'upgrade-card' });
     }
 
     renderCustomUpgradeCard(attack, character) {
         const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
-        const canAfford = remainingPoints >= 5; // Minimum 5 points for custom upgrade
         
         return `
             <div class="custom-upgrade-card upgrade-card">
-                <div class="card ${canAfford ? 'available' : 'disabled'}">
+                <div class="card available">
                     <div class="card-header">
                         <h4 class="card-title">Create Custom Upgrade</h4>
                         <span class="card-cost">Variable Cost</span>
                     </div>
                     <div class="card-description">
-                        Design your own upgrade with custom name, description, and cost (5-${remainingPoints} points).
+                        Design your own upgrade with custom name, description, and cost (minimum 5 points).
                     </div>
                     
                     <div class="custom-upgrade-form" style="display: none;">
@@ -178,8 +178,8 @@ export class UpgradeSelection {
                         
                         <div class="form-group">
                             <label for="custom-upgrade-cost-${this.attackIndex}">Point Cost:</label>
-                            <input type="number" id="custom-upgrade-cost-${this.attackIndex}" class="custom-upgrade-input" placeholder="Enter cost" min="5" max="${remainingPoints}" value="5">
-                            <small class="form-help">Cost: 5-${remainingPoints} points</small>
+                            <input type="number" id="custom-upgrade-cost-${this.attackIndex}" class="custom-upgrade-input" placeholder="Enter cost" min="5" max="100" value="5">
+                            <small class="form-help">Cost: 5-100 points (will show budget warning if needed)</small>
                         </div>
                         
                         <div class="form-actions">
@@ -188,7 +188,6 @@ export class UpgradeSelection {
                                 variant: 'primary',
                                 size: 'small',
                                 dataAttributes: { action: 'add-custom-upgrade-special-attack' },
-                                disabled: !canAfford,
                                 id: `add-custom-upgrade-btn-${this.attackIndex}`
                             })}
                             ${RenderUtils.renderButton({
@@ -200,20 +199,14 @@ export class UpgradeSelection {
                         </div>
                     </div>
                     
-                    ${canAfford ? `
-                        <div class="card-action">
-                            ${RenderUtils.renderButton({
-                                text: 'Create Custom Upgrade',
-                                variant: 'primary',
-                                size: 'small',
-                                dataAttributes: { action: 'show-custom-upgrade-form' }
-                            })}
-                        </div>
-                    ` : `
-                        <div class="card-action disabled">
-                            <small class="error-text">Need at least 5 upgrade points</small>
-                        </div>
-                    `}
+                    <div class="card-action">
+                        ${RenderUtils.renderButton({
+                            text: 'Create Custom Upgrade',
+                            variant: 'primary',
+                            size: 'small',
+                            dataAttributes: { action: 'show-custom-upgrade-form' }
+                        })}
+                    </div>
                 </div>
             </div>
         `;

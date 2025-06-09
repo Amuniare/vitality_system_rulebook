@@ -143,30 +143,6 @@ export class AttributeSystem {
     static validatePointPoolsWithChange(character, changingAttribute, newValue) {
         const errors = [];
         const warnings = [];
-        const definitions = this.getAttributeDefinitions();
-        const poolType = definitions[changingAttribute].pool;
-        
-        // Create temporary character with the change
-        const tempCharacter = { ...character };
-        tempCharacter.attributes = { ...character.attributes };
-        tempCharacter.attributes[changingAttribute] = newValue;
-        
-        // Use PointPoolCalculator to validate
-        const pools = PointPoolCalculator.calculateAllPools(tempCharacter);
-        
-        if (poolType === 'combat') {
-            if (pools.remaining.combatAttributes < 0) {
-                errors.push(`Combat attributes total exceeds available points`);
-            } else if (pools.remaining.combatAttributes === 0) {
-                warnings.push('Combat attribute pool fully spent');
-            }
-        } else if (poolType === 'utility') {
-            if (pools.remaining.utilityAttributes < 0) {
-                errors.push(`Utility attributes total exceeds available points`);
-            } else if (pools.remaining.utilityAttributes === 0) {
-                warnings.push('Utility attribute pool fully spent');
-            }
-        }
         
         return { errors, warnings };
     }

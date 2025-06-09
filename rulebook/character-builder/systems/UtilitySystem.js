@@ -188,8 +188,6 @@ export class UtilitySystem {
     static validateUtilityPurchase(character, categoryKey, itemId, level = 'basic', itemType = 'activity') {
         const errors = [];
         const warnings = [];
-        const available = this.calculateUtilityPool(character);
-        const spent = this.calculateUtilityPointsSpent(character);
 
         // 1. Check for duplicates
         if (!this.canPurchaseMultiple(itemId, categoryKey)) {
@@ -202,7 +200,7 @@ export class UtilitySystem {
             }
         }
         
-        // 2. Calculate cost and check affordability
+        // 2. Calculate cost and validate item
         let cost = 0;
         if (categoryKey === 'expertise') {
             cost = this.getExpertiseCost(itemType, level);
@@ -216,10 +214,6 @@ export class UtilitySystem {
             const itemDef = this._findItemDefinition(categoryKey, itemId);
             cost = itemDef ? itemDef.cost : 0;
             if (!itemDef) errors.push(`Invalid item: ${itemId} in ${categoryKey}`);
-        }
-        
-        if (spent + cost > available) {
-            errors.push(`Insufficient utility points (need ${cost}, have ${available - spent})`);
         }
         
         // 3. Check archetype restrictions

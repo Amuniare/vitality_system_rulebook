@@ -1,5 +1,6 @@
 // rulebook/character-builder/ui/components/ActionUpgradeSection.js
 import { ActionSystem } from '../../../systems/ActionSystem.js';
+import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js';
 import { GameConstants } from '../../../core/GameConstants.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
@@ -51,22 +52,20 @@ export class ActionUpgradeSection {
 
     renderActionOption(action, character, pointInfo) {
         const alreadyPurchased = character.mainPoolPurchases.primaryActionUpgrades.some(u => u.actionId === action.id);
-        const canAfford = pointInfo.remaining >= GameConstants.PRIMARY_TO_QUICK_COST;
         
         let status = 'available';
         if (alreadyPurchased) status = 'purchased';
-        else if (!canAfford) status = 'unaffordable';
 
         return RenderUtils.renderCard({
             title: action.name,
             cost: GameConstants.PRIMARY_TO_QUICK_COST,
             description: action.description,
             status: status,
-            clickable: !alreadyPurchased && canAfford,
-            disabled: alreadyPurchased || !canAfford,
+            clickable: !alreadyPurchased,
+            disabled: alreadyPurchased,
             dataAttributes: { 'action-id': action.id, action: 'purchase-action-upgrade' }, // Added data-action
             additionalContent: `<div class="upgrade-effect">Upgrade: Use as Quick Action</div>`
-        }, { cardClass: 'action-card', showStatus: true }); // Ensure status text is shown via RenderUtils
+        }, { cardClass: 'action-card', showStatus: alreadyPurchased }); // Only show status when purchased
     }
 
 
@@ -78,13 +77,28 @@ export class ActionUpgradeSection {
     }
 
     purchaseActionUpgrade(actionId) {
+        // 1. Get current point balance
         const character = this.builder.currentCharacter;
+        const pools = PointPoolCalculator.calculateAllPools(character);
+        const remainingPoints = pools.remaining.mainPool;
+        
+        // 2. Get the cost of the item
+        const itemCost = GameConstants.PRIMARY_TO_QUICK_COST;
+        
+        // 3. Check if this purchase will go over budget
+        if (itemCost > remainingPoints) {
+            // 4. Show a non-blocking notification
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
             ActionSystem.purchaseActionUpgrade(character, actionId);
             this.builder.updateCharacter(); // This will trigger re-render via MainPoolTab/CharacterBuilder
             this.builder.showNotification(`Purchased action upgrade for ${GameConstants.PRIMARY_TO_QUICK_COST}p!`, 'success');
         } catch (error) {
-            this.builder.showNotification(`Failed to purchase upgrade: ${error.message}`, 'error');
+            // This will now only catch hard rule validation errors.
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
         }
     }
 
