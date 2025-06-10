@@ -1,44 +1,48 @@
 {
   "tiers": {
+    "0": {
+      "name": "Untrained",
+      "description": "A civilian with no special training or powers. The baseline for an ordinary person."
+    },
     "1": {
-      "name": "Novice",
-      "description": "Just starting out on your heroic journey. You have potential but lack experience."
+      "name": "Beginner",
+      "description": "Just starting out on their journey. Has potential but lacks significant experience."
     },
     "2": {
-      "name": "Developing",
-      "description": "Developing your abilities and gaining confidence in your powers."
+      "name": "Novice",
+      "description": "Has learned the basics and can handle minor threats."
     },
     "3": {
-      "name": "Competent",
-      "description": "A competent hero who can handle most everyday threats reliably."
+      "name": "Developing",
+      "description": "Actively gaining experience and developing their core abilities."
     },
     "4": {
-      "name": "Professional",
-      "description": "A professional hero with established capabilities and reputation."
+      "name": "Competent",
+      "description": "A reliable and capable individual. This is the standard starting tier for player characters."
     },
     "5": {
-      "name": "Veteran",
-      "description": "A veteran hero with significant experience and refined abilities."
+      "name": "Professional",
+      "description": "A seasoned individual with a solid reputation and a professional level of skill."
     },
     "6": {
       "name": "Expert",
-      "description": "An expert hero whose skills are recognized and respected."
+      "description": "Highly skilled and recognized as an authority in their field."
     },
     "7": {
-      "name": "Elite",
-      "description": "An elite hero operating at the highest levels of competence."
+      "name": "Veteran",
+      "description": "Has seen extensive action and has a wealth of practical experience."
     },
     "8": {
-      "name": "Master",
-      "description": "A master hero pushing the boundaries of human capability."
+      "name": "Elite",
+      "description": "Among the best in the world, operating at the highest levels of performance."
     },
     "9": {
-      "name": "Legendary",
-      "description": "A legendary hero whose deeds inspire others and shape history."
+      "name": "Master",
+      "description": "Has achieved a state of mastery that pushes the boundaries of their abilities."
     },
     "10": {
-      "name": "World-class Expert",
-      "description": "A world-class expert representing the absolute pinnacle of heroic achievement."
+      "name": "Legendary",
+      "description": "A figure of legend whose deeds and power are known far and wide."
     }
   }
 }

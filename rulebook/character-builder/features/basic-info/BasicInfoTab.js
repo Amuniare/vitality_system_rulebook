@@ -29,14 +29,8 @@ export class BasicInfoTab {
                     inputId: 'character-type-select',
                     inputHtml: RenderUtils.renderSelect({
                         id: 'character-type-select',
-                        value: character.characterType || "Player Character",
-                        options: [
-                            { value: "Player Character", label: "Player Character" },
-                            { value: "NPC", label: "NPC" },
-                            { value: "Villain", label: "Villain" },
-                            { value: "Minion", label: "Minion" },
-                            { value: "Ally", label: "Ally" }
-                        ],
+                        value: character.characterType || "player_character",
+                        options: this.getCharacterTypeOptions(),
                         dataAttributes: { action: 'update-character-type', testid: 'character-type' }
                     }),
                     description: "The type of character being created"
@@ -95,9 +89,28 @@ export class BasicInfoTab {
     }
 
 
+    getCharacterTypeOptions() {
+        const characterTypes = gameDataManager.getCharacterTypes();
+        return characterTypes.map(type => ({
+            value: type.id,
+            label: type.name
+        }));
+    }
+
+    getCharacterTypeHP() {
+        const character = this.builder.currentCharacter;
+        if (!character || !character.characterType) {
+            return 100; // Default fallback
+        }
+        
+        const characterTypes = gameDataManager.getCharacterTypes();
+        const currentType = characterTypes.find(type => type.id === character.characterType);
+        return currentType ? currentType.hp : 100;
+    }
+
     renderPlayerNameField(character) {
-        // Only show player name field if character type is "Player Character"
-        if (character.characterType === "Player Character") {
+        // Only show player name field if character type is "player_character"
+        if (character.characterType === "player_character") {
             return RenderUtils.renderFormGroup({
                 label: 'Player Name',
                 inputId: 'player-name',
@@ -170,7 +183,7 @@ export class BasicInfoTab {
     
     updateCharacterType(newType) { // Called by CharacterBuilder
         this.builder.setCharacterType(newType);
-        // Re-render the tab to show/hide player name field
+        // Re-render the tab to show/hide player name field and update HP display
         this.render();
     }
     
@@ -191,6 +204,7 @@ export class BasicInfoTab {
         const effectsList = document.getElementById('tier-effects-list');
         if (effectsList) {
              // These values should ideally come from TierSystem.js or GameConstants.js
+            const baseHP = this.getCharacterTypeHP();
             effectsList.innerHTML = `
                 <li><strong>Bonus to all actions:</strong> +${tier}</li>
                 <li><strong>Maximum attribute rank:</strong> ${tier}</li>
@@ -198,7 +212,7 @@ export class BasicInfoTab {
                 <li><strong>Utility attribute points:</strong> ${tier}</li>
                 <li><strong>Main pool points:</strong> ${Math.max(0, (tier - 2) * 15)}</li>
                 <li><strong>Utility pool points:</strong> ${Math.max(0, 5 * (tier - 1))}</li>
-                <li><strong>HP (Base):</strong> 100 </li>
+                <li><strong>HP (Base):</strong> ${baseHP}</li>
             `;
         }
     }

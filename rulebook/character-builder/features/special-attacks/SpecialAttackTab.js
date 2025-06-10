@@ -15,9 +15,12 @@ export class SpecialAttackTab {
         this.limitSelection = new LimitSelection(this);
         this.upgradeSelection = new UpgradeSelection(this);
         this.listenersAttached = false;
+        this.clickHandler = null;
+        this.containerElement = null;
     }
 
     render() {
+        this.listenersAttached = false;
         const tabContent = document.getElementById('tab-specialAttacks');
         if (!tabContent) return;
         const character = this.builder.currentCharacter;
@@ -104,23 +107,38 @@ export class SpecialAttackTab {
         `;
     }
     
-    setupEventListeners() {
-        if (this.listenersAttached) {
-            return;
+    removeEventListeners() {
+        if (this.clickHandler && this.containerElement) {
+            this.containerElement.removeEventListener('click', this.clickHandler);
+            this.containerElement.removeEventListener('change', this.clickHandler);
+            this.containerElement.removeEventListener('input', this.clickHandler);
+            this.clickHandler = null;
+            this.containerElement = null;
         }
+    }
+    
+    setupEventListeners() {
+        // Clean up old listeners first to prevent duplication
+        this.removeEventListeners();
 
         const container = document.getElementById('tab-specialAttacks');
         if (!container) return;
 
-        EventManager.delegateEvents(container, {
-            click: { '[data-action]': (e, el) => this.handleEvent(e, el) },
-            change: { 'select[data-action]': (e, el) => this.handleEvent(e, el) },
-            input: { 
-                'input[data-action]': (e, el) => this.handleEvent(e, el), 
-                'textarea[data-action]': (e, el) => this.handleEvent(e, el),
-                '.custom-limit-input': (e, el) => this.validateCustomLimitForm()
+        // Store the handler and container for proper cleanup
+        this.clickHandler = (e) => {
+            const element = e.target.closest('[data-action]');
+            if (element) {
+                this.handleEvent(e, element);
+            } else if (e.target.classList.contains('custom-limit-input')) {
+                this.validateCustomLimitForm();
             }
-        }, this);
+        };
+        this.containerElement = container;
+
+        // Attach listeners using stored properties
+        this.containerElement.addEventListener('click', this.clickHandler);
+        this.containerElement.addEventListener('change', this.clickHandler);
+        this.containerElement.addEventListener('input', this.clickHandler);
         
         this.listenersAttached = true;
         console.log('✅ SpecialAttackTab event listeners attached ONCE.');
@@ -391,7 +409,7 @@ export class SpecialAttackTab {
     }
     
     onCharacterUpdate() {
-        this.listenersAttached = false;
+        // Just call render - it will handle the state reset
         this.render();
     }
 }

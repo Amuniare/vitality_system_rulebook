@@ -36,6 +36,9 @@ class GameDataManager {
             // Attributes
             attributes: 'data/attributes.json',
 
+            // Character Types
+            characterTypes: 'data/character_type.json',
+
             // Tiers
             tiers: 'data/tiers.json'
 
@@ -128,6 +131,9 @@ class GameDataManager {
 
     // Attributes
     getAttributes() { return this._getData('attributes', {}); }
+
+    // Character Types
+    getCharacterTypes() { return this._getData('characterTypes', []); }
 
     // Tiers
     getTiers() { return this._getData('tiers', {}); }

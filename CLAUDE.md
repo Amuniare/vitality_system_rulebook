@@ -36,7 +36,7 @@ This section defines special commands that trigger automated, multi-step process
 
 *   `--build-from-spec`: When you see this directive, you MUST first read and then strictly follow the instructions outlined in the `.claude/CLAUDE.md` file. That file contains the protocol for transforming the `spec.md` into a full implementation plan. Do not perform any other actions until you have read and understood that protocol.
 
-*   `--log [src|web] [PhaseID] "[Log Title]"`: This directive initiates the standard process for creating a new development log. The first argument specifies the project area:
+*   `--log [src|web] [PhaseID] "[Degree of Sucess or Failure]"`: This directive initiates the standard process for creating a new development log. The first argument specifies the project area:
     *   `web`: Use the protocol in `docs/web_dev_logs/CLAUDE.md`.
     *   `src`: Use the protocol in `docs/src_dev_logs/CLAUDE.md`.
 
