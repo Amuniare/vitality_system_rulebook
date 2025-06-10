@@ -37,7 +37,7 @@ export class BasicInfoTab {
                             { value: "Minion", label: "Minion" },
                             { value: "Ally", label: "Ally" }
                         ],
-                        dataAttributes: { action: 'update-character-type' }
+                        dataAttributes: { action: 'update-character-type', testid: 'character-type' }
                     }),
                     description: "The type of character being created"
                 })}
@@ -47,7 +47,7 @@ export class BasicInfoTab {
                 ${RenderUtils.renderFormGroup({
                     label: 'Hero Name *',
                     inputId: 'character-name',
-                    inputHtml: `<input type="text" id="character-name" placeholder="Enter your hero name" value="${character.name || ''}" data-action="update-char-name">`,
+                    inputHtml: `<input type="text" id="character-name" data-testid="character-name" placeholder="Enter your hero name" value="${character.name || ''}" data-action="update-char-name">`,
                     description: "The name your character uses in their heroic identity"
                 })}
 
@@ -65,7 +65,7 @@ export class BasicInfoTab {
                         id: 'tier-select',
                         value: character.tier || 4,
                         options: Array.from({length: 10}, (_, i) => ({ value: i + 1, label: `${i + 1} - ${this.getTierDescription(i + 1)}`})),
-                        dataAttributes: { action: 'update-tier' }
+                        dataAttributes: { action: 'update-tier', testid: 'character-tier' }
                     }),
                     description: "Tier represents your character's overall power level and experience"
                 })}

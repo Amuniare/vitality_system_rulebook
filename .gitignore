@@ -27,5 +27,8 @@ docs/data-formats.md
 .env
 mcp_server
 launch_mcp.ps1
-tests
+tests/.env
+tests/test-results/
+tests/playwright-report/
 src_dev_logs
+tests

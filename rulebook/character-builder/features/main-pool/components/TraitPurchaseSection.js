@@ -250,7 +250,11 @@ export class TraitPurchaseSection {
                     text: `Purchase Trait (-${traitCost}p)`,
                     variant: 'primary',
                     disabled: !canPurchase,
-                    dataAttributes: { action: 'purchase-trait' }
+                    dataAttributes: { 
+                        action: 'purchase-trait',
+                        purchase: 'trait',
+                        cost: traitCost
+                    }
                 })}
             </div>
         `;

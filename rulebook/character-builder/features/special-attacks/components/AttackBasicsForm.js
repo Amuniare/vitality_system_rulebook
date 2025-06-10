@@ -31,7 +31,7 @@ export class AttackBasicsForm {
             ${RenderUtils.renderFormGroup({
                 label: 'Attack Name:',
                 inputId: `attack-name-${this.parentTab.selectedAttackIndex}`,
-                inputHtml: `<input type="text" id="attack-name-${this.parentTab.selectedAttackIndex}" value="${attack.name || ''}" placeholder="Enter attack name" data-action="update-attack-name">`
+                inputHtml: `<input type="text" id="attack-name-${this.parentTab.selectedAttackIndex}" data-testid="attack-name" value="${attack.name || ''}" placeholder="Enter attack name" data-action="update-attack-name">`
             })}
             ${RenderUtils.renderFormGroup({
                 label: 'Subtitle:',
@@ -87,7 +87,10 @@ export class AttackBasicsForm {
                 dropdownHtml = RenderUtils.renderSelect({
                     id: `${propertyKey}-select-${this.parentTab.selectedAttackIndex}`,
                     options: availableOptions,
-                    dataAttributes: { action: `add-${propertyKey.slice(0, -1)}` },
+                    dataAttributes: { 
+                        action: `add-${propertyKey.slice(0, -1)}`,
+                        testid: propertyKey === 'effectTypes' ? 'attack-type' : undefined
+                    },
                     placeholder: `Add an ${label.slice(0, -1)}...`
                 });
             }

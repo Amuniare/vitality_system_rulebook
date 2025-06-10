@@ -33,7 +33,13 @@ export class GenericUtilitySection {
                             title: item.name, cost: item.cost, description: item.description,
                             status: 'available',
                             clickable: true, disabled: false,
-                            dataAttributes: { action: `purchase-item`, 'category-key': categoryKey, 'item-id': item.id }
+                            dataAttributes: { 
+                                action: `purchase-item`, 
+                                'category-key': categoryKey, 
+                                'item-id': item.id,
+                                purchase: 'utility',
+                                cost: item.cost
+                            }
                         }, { cardClass: `${categoryKey.slice(0, -1)}-card`, showStatus: false });
                     }, { gridContainerClass: 'grid-layout utility-item-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
                 )}

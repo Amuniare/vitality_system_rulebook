@@ -77,7 +77,12 @@ export class UniqueAbilitySection {
                         text: 'Purchase Ability',
                         variant: 'primary',
                         classes: ['purchase-ability'], // Keep specific class if JS relies on it
-                        dataAttributes: { 'ability-id': ability.id, action: 'purchase-unique-ability' }
+                        dataAttributes: { 
+                            'ability-id': ability.id, 
+                            action: 'purchase-unique-ability',
+                            purchase: 'unique-ability',
+                            cost: ability.baseCost
+                        }
                     })}
                 </div>
             `;

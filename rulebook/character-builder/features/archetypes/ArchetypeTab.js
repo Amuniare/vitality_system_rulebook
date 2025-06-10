@@ -122,7 +122,10 @@ export class ArchetypeTab {
                         title: archetype.name,
                         titleTag: 'h4',
                         description: archetype.description,
-                        additionalContent: this.renderArchetypeDetails(archetype),
+                        additionalContent: this.renderArchetypeDetails(archetype) + `
+                            <input type="checkbox" data-archetype-checkbox data-category="${categoryId}" data-archetype="${archetype.id}" 
+                                   ${selectedId === archetype.id ? 'checked' : ''} style="margin-top: 10px;">
+                        `,
                         clickable: true,
                         selected: selectedId === archetype.id,
                         dataAttributes: { category: categoryId, archetype: archetype.id, action: 'select-archetype' }
@@ -160,6 +163,20 @@ export class ArchetypeTab {
                     }
                 },
                 '[data-action="continue-to-attributes"]': () => this.builder.switchTab('attributes')
+            },
+            change: {
+                '[data-archetype-checkbox]': (e, element) => {
+                    const category = element.dataset.category;
+                    const archetypeId = element.dataset.archetype;
+                    if (category && archetypeId) {
+                        if (element.checked) {
+                            this.selectArchetype(category, archetypeId);
+                        } else {
+                            // Uncheck - clear archetype selection
+                            this.selectArchetype(category, null);
+                        }
+                    }
+                }
             }
         }, this);
         
@@ -184,9 +201,16 @@ export class ArchetypeTab {
             const wasSelected = card.classList.contains('selected');
             card.classList.remove('selected');
             
+            // Update card selection
             if (card.dataset.archetype === archetypeId) {
                 card.classList.add('selected');
                 console.log(`🔍 Selected card ${index} (${card.dataset.archetype}) in ${category}`);
+            }
+            
+            // Update checkbox state
+            const checkbox = card.querySelector(`[data-archetype-checkbox][data-archetype="${card.dataset.archetype}"]`);
+            if (checkbox) {
+                checkbox.checked = (card.dataset.archetype === archetypeId);
             }
             
             console.log(`🔍 Card ${index}: ${card.dataset.archetype}, selected: ${wasSelected} -> ${card.classList.contains('selected')}`);

@@ -154,6 +154,15 @@ this.setupDebugFallbacks();
         const value = character.attributes[attrId] || 0;
         const max = character.tier;
 
+        // Map current attribute names to test-expected names for backwards compatibility
+        const testAttributeMap = {
+            'power': 'might',
+            'mobility': 'agility', 
+            'intelligence': 'intellect',
+            'awareness': 'awareness'
+        };
+        const testAttrName = testAttributeMap[attrId] || attrId;
+
         return RenderUtils.renderCard({
             title: attributeData.name,
             titleTag: 'label',
@@ -178,7 +187,7 @@ this.setupDebugFallbacks();
                         dataAttributes: { attr: attrId, change: -1, action: 'change-attribute-btn' }, 
                         disabled: value <= 0
                     })}
-                    <span class="attribute-value">${value}</span>
+                    <input type="number" class="attribute-value" data-attribute="${testAttrName}" value="${value}" min="0" max="${max}" style="width: 60px; text-align: center;">
                     ${RenderUtils.renderButton({ 
                         text: '+', 
                         classes: ['attr-btn', 'plus'], 
@@ -249,6 +258,23 @@ this.setupDebugFallbacks();
                         console.log(`🎯 Attribute slider: ${attrId} = ${newValue}`);
                         this.setAttributeViaSlider(attrId, newValue);
                     }
+                },
+                '[data-attribute]': (e, element) => {
+                    // Handle direct input on attribute number fields for tests
+                    const testAttrName = element.dataset.attribute;
+                    const newValue = parseInt(element.value) || 0;
+                    
+                    // Map test attribute names back to system attribute names
+                    const reverseMap = {
+                        'might': 'power',
+                        'agility': 'mobility', 
+                        'intellect': 'intelligence',
+                        'awareness': 'awareness'
+                    };
+                    
+                    const systemAttrName = reverseMap[testAttrName] || testAttrName;
+                    console.log(`🎯 Direct attribute input: ${testAttrName} -> ${systemAttrName} = ${newValue}`);
+                    this.setAttributeDirectly(systemAttrName, newValue);
                 }
             }
         }, this);
@@ -262,6 +288,10 @@ this.setupDebugFallbacks();
     }
 
     setAttributeViaSlider(attrId, newValue) {
+        this.builder.setAttribute(attrId, newValue);
+    }
+
+    setAttributeDirectly(attrId, newValue) {
         this.builder.setAttribute(attrId, newValue);
     }
 

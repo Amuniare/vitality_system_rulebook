@@ -448,6 +448,12 @@ export class CharacterBuilder {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.textContent = message;
+        
+        // Add test attribute for warning notifications
+        if (type === 'warning') {
+            notification.setAttribute('data-testid', 'warning-notification');
+        }
+        
         notification.style.cssText = `
             position: fixed;
             top: 20px;

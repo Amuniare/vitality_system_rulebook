@@ -61,7 +61,12 @@ export class SimpleBoonSection {
             status: status,
             clickable: !alreadyPurchased,
             disabled: alreadyPurchased,
-            dataAttributes: { 'boon-id': boon.id, action: 'purchase-simple-boon' },
+            dataAttributes: { 
+                'boon-id': boon.id, 
+                action: 'purchase-simple-boon',
+                purchase: 'boon',
+                cost: boon.cost 
+            },
             additionalContent: `<div class="item-category">Category: ${boon.category}</div>`
         }, { cardClass: 'boon-card simple', showStatus: alreadyPurchased });
     }

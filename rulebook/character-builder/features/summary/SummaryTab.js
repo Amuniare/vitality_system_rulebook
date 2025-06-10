@@ -23,7 +23,7 @@ export class SummaryTab {
         tabContent.innerHTML = `
             <div class="summary-section">
                 <h2>Character Summary</h2>
-                <div class="grid-layout grid-columns-auto-fit-300 summary-grid">
+                <div class="grid-layout grid-columns-auto-fit-300 summary-grid" data-testid="character-summary">
                     ${this.renderBasicInfoCard(character)}
                     ${this.renderArchetypesCard(character)}
                     ${this.renderAttributesCard(character)}
@@ -34,7 +34,7 @@ export class SummaryTab {
                 <div class="export-actions">
                     <h3>Export Character</h3>
                     <div class="export-buttons">
-                        ${RenderUtils.renderButton({ text: 'Export Full JSON', variant: 'secondary', dataAttributes: { action: 'export-json-summary' }})}
+                        ${RenderUtils.renderButton({ text: 'Export Full JSON', variant: 'secondary', dataAttributes: { action: 'export-json-summary', testid: 'export-json' }})}
                         ${RenderUtils.renderButton({ text: 'Print Character Sheet', variant: 'secondary', dataAttributes: { action: 'print-character' }})}
                     </div>
                 </div>
@@ -127,6 +127,17 @@ export class SummaryTab {
         const pools = this.builder.calculatePointPools(); // from CharacterBuilder
         const poolOrder = ['combatAttributes', 'utilityAttributes', 'mainPool', 'utilityPool', 'specialAttacks'];
         
+        // Calculate overall budget status
+        const totalRemaining = Object.values(pools.remaining).reduce((sum, val) => sum + val, 0);
+        let budgetIndicator = '';
+        if (totalRemaining < 0) {
+            budgetIndicator = '<div data-testid="over-budget-indicator" class="budget-status over-budget">Over Budget</div>';
+        } else if (totalRemaining === 0) {
+            budgetIndicator = '<div data-testid="exact-budget-indicator" class="budget-status exact-budget">Perfect Budget</div>';
+        } else {
+            budgetIndicator = '<div data-testid="under-budget-indicator" class="budget-status under-budget">Under Budget</div>';
+        }
+        
         const content = poolOrder.map(poolKey => {
             const name = this.formatArchetypeName(poolKey.replace('Attributes', ' Attr.')); // User-friendly name
             return `
@@ -139,7 +150,10 @@ export class SummaryTab {
 
         return RenderUtils.renderCard({
             title: 'Point Pools',
-            additionalContent: `<div class="point-pool-summary-list">${content}</div>`
+            additionalContent: `
+                ${budgetIndicator}
+                <div class="point-pool-summary-list">${content}</div>
+            `
         }, { cardClass: 'summary-pools-card', showCost: false, showStatus: false });
     }
 

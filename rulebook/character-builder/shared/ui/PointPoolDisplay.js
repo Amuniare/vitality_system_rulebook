@@ -106,8 +106,9 @@ export class PointPoolDisplay {
                 <div class="point-display-label">${label}</div>
                 <div class="point-display-values">
                     <span class="pool-spent">${spent}</span> / <span class="pool-available">${available}</span>
-                    <span class="pool-remaining ${remaining < 0 ? 'over-budget' : remaining === 0 ? 'exactly-spent' : 'under-budget'}">(${remaining >= 0 ? '+' : ''}${remaining})</span>
+                    <span class="pool-remaining ${remaining < 0 ? 'over-budget' : remaining === 0 ? 'exactly-spent' : 'under-budget'}" data-testid="remaining-points">(${remaining >= 0 ? '+' : ''}${remaining})</span>
                 </div>
+                ${remaining < 0 ? `<div class="budget-warning" data-testid="budget-warning">Over budget by ${Math.abs(remaining)} points</div>` : ''}
             </div>
         `;
     }
