@@ -45,6 +45,16 @@ Array []
 
 
 
+costs of advanced conditions added to special attacks
+
+utility section
+    Selected Utilities (16)
+    Purchased Items (16)
+    remove one of these
+    also, turn it into 2 column
+
+
+
 ## Feature Add List
 
 ### Bug Report Tool
