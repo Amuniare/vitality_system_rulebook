@@ -53,9 +53,69 @@ utility section
     remove one of these
     also, turn it into 2 column
 
+unique abilities
+    increased radius increases by 3 at a time
+
+
+upgrades weren't opening, then i clicked create new attack and 8 attacks were created
+
+Notification (success): Purchased unique ability! CharacterBuilder.js:446:17
+Notification (warning): This purchase puts you over budget. CharacterBuilder.js:446:17
+Notification (error): Purchase failed: Unique ability already purchased CharacterBuilder.js:446:17
+Notification (warning): This purchase puts you over budget. CharacterBuilder.js:446:17
+Notification (error): Purchase failed: Unique ability already purchased CharacterBuilder.js:446:17
+Notification (warning): This purchase puts you over budget. CharacterBuilder.js:446:17
+updateCharacter called CharacterBuilder.js:344:17
+🔄 Calculating point pools (cache miss) PointPoolCalculator.js:18:17
+✅ MainPoolTab event listeners attached ONCE. MainPoolTab.js:440:17
+✅ Saved library with 1 characters CharacterLibrary.js:64:21
+✅ Saved character: New Character CharacterLibrary.js:81:17
+Notification (success): Purchased action upgrade for 30p! CharacterBuilder.js:446:17
+Notification (warning): This purchase puts you over budget. CharacterBuilder.js:446:17
+Notification (error): Purchase failed: Action upgrade already purchased CharacterBuilder.js:446:17
+Notification (warning): This purchase puts you over budget. CharacterBuilder.js:446:17
+Notification (error): Purchase failed: Action upgrade already purchased CharacterBuilder.js:446:17
+Notification (warning): This purchase puts you over budget. CharacterBuilder.js:446:17
+Notification (error): Purchase failed: Action upgrade already purchased CharacterBuilder.js:446:17
+switchTab called with: specialAttacks CharacterBuilder.js:256:17
+Current character: 
+Object { id: "1749506613896", name: "New Character", realName: "", playerName: "", characterType: "Player Character", tier: 10, folderId: null, version: "2.0", created: "2025-06-09T22:03:33.896Z", lastModified: "2025-06-10T01:00:43.634Z", … }
+CharacterBuilder.js:257:17
+Tab content element for tab-specialAttacks: 
+<div id="tab-specialAttacks" class="tab-content active">
+CharacterBuilder.js:277:17
+✅ Tab content shown for specialAttacks. Classes: tab-content active CharacterBuilder.js:281:21
+Rendering specialAttacks tab... CharacterBuilder.js:294:21
+✅ SpecialAttackTab event listeners attached ONCE. SpecialAttackTab.js:126:17
+✅ specialAttacks tab rendered CharacterBuilder.js:296:21
+updateCharacter called CharacterBuilder.js:344:17
+✅ SpecialAttackTab event listeners attached ONCE. SpecialAttackTab.js:126:17
+✅ Saved library with 1 characters CharacterLibrary.js:64:21
+✅ Saved character: New Character CharacterLibrary.js:81:17
+✅ Saved library with 1 characters CharacterLibrary.js:64:21
+✅ Saved character: New Character CharacterLibrary.js:81:17
+✅ Saved library with 1 characters CharacterLibrary.js:64:21
+✅ Saved character: New Character CharacterLibrary.js:81:17
+updateCharacter called CharacterBuilder.js:344:17
+✅ SpecialAttackTab event listeners attached ONCE. SpecialAttackTab.js:126:17
+✅ Saved library with 1 characters CharacterLibrary.js:64:21
+✅ Saved character: New Character CharacterLibrary.js:81:17
+
+then i clikced create attack again a few times, then 25 attacks were created
+
+
+
+
 
 
 ## Feature Add List
+
+### NPCs Type
+- Fix so more types
+- Fix so health works
+- Add second drop down, if PC then list player names, if NPC then list factions
+- this tells it what folder it goes in
+
 
 ### Bug Report Tool
 - top right corner, submits bug reports, sends 

@@ -476,7 +476,7 @@ class CharacterUpdater:
             return False
 
     def _perform_full_update(self, json_path: Path) -> bool:
-        """Perform full character update"""
+        """Perform full character update with automatic creation if character doesn't exist"""
         logger.info("Performing full character update")
         
         try:
@@ -501,19 +501,48 @@ class CharacterUpdater:
             self.chat.send_command(f"!update-character {char_name}")
             response = self.chat.wait_for_response(timeout=30)
             
-            success = response and "Successfully updated character" in response
-            
-            if success:
+            # Check if character was found and updated successfully
+            if response and "Successfully updated character" in response:
                 logger.info(f"Full update completed successfully for: {char_name}")
+                self._cleanup_character_handout(char_name)
+                return True
+            elif response and "not found" in response:
+                # Character doesn't exist, try to create it first
+                logger.info(f"Character '{char_name}' not found, attempting to create it")
+                
+                # Send create command
+                self.chat.send_command(f"!create-character {char_name}")
+                create_response = self.chat.wait_for_response(timeout=30)
+                
+                if create_response and "Successfully created character" in create_response:
+                    logger.info(f"Successfully created character: {char_name}")
+                    
+                    # Now try to update the newly created character
+                    self.chat.send_command(f"!update-character {char_name}")
+                    update_response = self.chat.wait_for_response(timeout=30)
+                    
+                    if update_response and "Successfully updated character" in update_response:
+                        logger.info(f"Successfully updated newly created character: {char_name}")
+                        self._cleanup_character_handout(char_name)
+                        return True
+                    else:
+                        logger.error(f"Failed to update newly created character: {char_name}")
+                        if update_response:
+                            logger.error(f"Update response: {update_response}")
+                        self._cleanup_character_handout(char_name)
+                        return False
+                else:
+                    logger.error(f"Failed to create character: {char_name}")
+                    if create_response:
+                        logger.error(f"Create response: {create_response}")
+                    self._cleanup_character_handout(char_name)
+                    return False
             else:
                 logger.error(f"Full update failed for: {char_name}")
                 if response:
                     logger.error(f"Response: {response}")
-            
-            # Always cleanup the handout
-            self._cleanup_character_handout(char_name)
-            
-            return success
+                self._cleanup_character_handout(char_name)
+                return False
                     
         except Exception as e:
             logger.error(f"Full update failed: {e}")

@@ -14,6 +14,7 @@ from src.api.chat_interface import ChatInterface
 from src.character.updater import CharacterUpdater
 from src.character.api_extractor import CharacterExtractor
 from src.utils.json_utils import save_json
+from src.utils.file_utils import process_downloaded_characters # New Import
 
 # Setup logging
 setup_logging()
@@ -178,11 +179,22 @@ def color_macros():
     print("Macro coloring system not yet implemented.")
     print("This will be available after Phase 2 completion.")
 
+def process_downloads_and_prepare_for_sync():
+    """Process downloaded character files and prepare them for Roll20 sync."""
+    logger.info("Starting process to prepare downloaded characters for sync...")
+    try:
+        processed_count, failed_count = process_downloaded_characters()
+        logger.info(f"Processing complete. Prepared {processed_count} characters. Failed to process {failed_count} files.")
+        if processed_count > 0:
+            logger.info(f"You can now run 'python main.py sync' to upload them to Roll20.")
+    except Exception as e:
+        logger.error(f"An error occurred during download processing: {e}", exc_info=True)
+
 def main():
     """Main application entry"""
     parser = argparse.ArgumentParser(description="Roll20 API Automation Tool")
-    parser.add_argument("action", choices=["extract", "sync", "color-macros"], 
-                       help="Action to perform: extract all characters, sync characters from input, or color macro buttons")
+    parser.add_argument("action", choices=["extract", "sync", "color-macros", "process-downloads"], 
+                       help="Action to perform: extract all characters, sync characters from input, color macro buttons, or process downloaded characters")
     
     args = parser.parse_args()
     
@@ -193,6 +205,8 @@ def main():
         sync_characters()
     elif args.action == "color-macros":
         color_macros()
+    elif args.action == "process-downloads":
+        process_downloads_and_prepare_for_sync()
 
 if __name__ == "__main__":
     main()
