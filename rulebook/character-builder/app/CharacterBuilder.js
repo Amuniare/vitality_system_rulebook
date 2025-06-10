@@ -362,6 +362,25 @@ export class CharacterBuilder {
         }
     }
 
+    exportCharacter() {
+        const character = this.currentCharacter;
+        if (!character) {
+            this.showNotification('No character to export', 'error');
+            return;
+        }
+        
+        const dataStr = JSON.stringify(character, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${character.name.replace(/[^a-z0-9]/gi, '_')}_character.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Character exported successfully!', 'success');
+    }
+
     // Point pool calculations
     calculatePointPools() {
         if (!this.currentCharacter) {

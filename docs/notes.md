@@ -4,7 +4,11 @@
 
 
 
+### Tests
+- not currently going far enough, should be able to go through the entire doc
 
+## UI improvements
+- remove the little up down inside the attribute input
 
 
 ## Feature Add List
