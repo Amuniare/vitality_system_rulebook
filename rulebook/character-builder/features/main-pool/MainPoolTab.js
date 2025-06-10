@@ -428,9 +428,9 @@ export class MainPoolTab {
                 '.variable-cost-selector': (e, el) => { 
                     if (this.activeSection === 'traits') this.sections.traits.handleVariableCostChange(e);
                 },
-                '.flaw-purchase-section-content .stat-bonus-select': (e, el) => {
-                     if (this.activeSection === 'flaws' && this.sections.flaws.handleStatBonusChange) {
-                        this.sections.flaws.handleStatBonusChange(e, el);
+                '.stat-bonus-select': (e, el) => {
+                    if (this.activeSection === 'flaws') {
+                        this.handleFlawStatBonusChange(e, el);
                     }
                 }
             },
@@ -439,8 +439,6 @@ export class MainPoolTab {
         this.listenersAttached = true;
         console.log('✅ MainPoolTab event listeners attached ONCE.');
         
-        // Call setup for the currently active section if it has its own more complex listeners
-        this.sections[this.activeSection]?.setupEventListeners?.();
     }
 
     handleSectionSwitch(newSection) {
@@ -460,8 +458,14 @@ export class MainPoolTab {
         const contentArea = document.getElementById('main-pool-active-section');
         if (contentArea && this.builder.currentCharacter) {
             contentArea.innerHTML = this.renderActiveSectionContent(this.builder.currentCharacter);
-            // Re-run setupEventListeners for the *newly rendered content of the active section* if it has complex needs
-            this.sections[this.activeSection]?.setupEventListeners?.();
+        }
+    }
+
+    handleFlawStatBonusChange(e, el) {
+        const flawId = el.dataset.flawId;
+        const purchaseBtn = document.querySelector(`.purchase-flaw-btn[data-flaw-id="${flawId}"]`);
+        if (purchaseBtn) {
+            purchaseBtn.disabled = !el.value;
         }
     }
 

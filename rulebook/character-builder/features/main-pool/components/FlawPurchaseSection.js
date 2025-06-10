@@ -126,22 +126,6 @@ export class FlawPurchaseSection {
         }, { cardClass: 'flaw-card', showCost: true, showStatus: !(status === 'available') });
     }
 
-    setupEventListeners() {
-        // Delegate to MainPoolTab or CharacterBuilder
-        // Specific internal listeners for stat-select enabling purchase button:
-        const container = document.querySelector('.flaw-purchase-section-content'); // More specific root
-        if (container) {
-            container.addEventListener('change', (e) => {
-                if (e.target.matches('.stat-bonus-select')) {
-                    const flawId = e.target.dataset.flawId;
-                    const purchaseBtn = container.querySelector(`.purchase-flaw-btn[data-flaw-id="${flawId}"]`);
-                    if (purchaseBtn) {
-                        purchaseBtn.disabled = !e.target.value;
-                    }
-                }
-            });
-        }
-    }
 
 
     handleFlawPurchase(flawId) { // Called by MainPoolTab
