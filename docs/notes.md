@@ -14,12 +14,8 @@
 - Fix so health works
 - Add second drop down, if PC then list player names, if NPC then list factions
 - this tells it what folder it goes in
+- uses names.json
 
-
-### Bug Report Tool
-- top right corner, submits bug reports, sends 
-- might be worth doing its own file, should probs exist in top right corner
-- need to store data or receive data somehow
 
 ### Basic Attacks
 - each character should get base attacks according to their attack type and effect archetype
