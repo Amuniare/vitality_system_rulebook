@@ -41,7 +41,13 @@ Each directory has a strict, non-negotiable role.
 
 #### `features/` - The Feature Controllers
 *   **Role:** To manage self-contained "vertical slices" of the UI (one per tab).
-*   **Contract: The Component Re-render Contract:** Any method that re-renders its own HTML (e.g., `render()`, `onCharacterUpdate()`) **MUST** ensure that its event listeners are not duplicated. The standard pattern is `this.listenersAttached = false;` at the start of the update method, with a guard in `setupEventListeners()`.
+*   **Contract: The Component Re-render Contract (Revised):**
+    *   **Problem:** Re-rendering a component's HTML without properly cleaning up old event listeners will create "ghost listeners," causing actions to fire multiple times. Simple boolean flags like `listenersAttached` are insufficient and are the source of this bug.
+    *   **The Mandatory Pattern:** To prevent this, every component that re-renders itself (e.g., a Tab) **MUST** implement a full listener lifecycle:
+        1.  In the `constructor`, initialize properties to hold the listener function and its container element (e.g., `this.clickHandler = null; this.containerElement = null;`).
+        2.  Create a dedicated `removeEventListeners()` method that uses `this.containerElement.removeEventListener('click', this.clickHandler);` and then nullifies `this.clickHandler` and `this.containerElement`.
+        3.  The `setupEventListeners()` method **MUST** call `this.removeEventListeners()` at the very beginning, before attaching any new listeners.
+        4.  The `onCharacterUpdate()` method should simply call `this.render()`, which in turn handles the full `removeEventListeners` -> `renderHTML` -> `setupEventListeners` cycle.
 *   **Forbidden:** A `Tab.js` file **MUST NOT** import or call another `Tab.js` file directly.
 
 #### `systems/` - The Brains (Business Logic)

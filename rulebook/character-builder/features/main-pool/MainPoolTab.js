@@ -22,12 +22,12 @@ export class MainPoolTab {
             actions: new ActionUpgradeSection(characterBuilder)
         };
         this.activeSection = 'flaws'; // Default section
-        this.listenersAttached = false;
+        this.clickHandler = null;
+        this.changeHandler = null;
+        this.containerElement = null;
     }
 
     render() {
-        // Reset listener state at the beginning of render
-        this.listenersAttached = false;
         
         const tabContent = document.getElementById('tab-mainPool');
         if (!tabContent) return;
@@ -372,73 +372,120 @@ export class MainPoolTab {
     }
 
     setupEventListeners() {
-        if (this.listenersAttached) {
-            return;
-        }
+        // First, remove any old listeners to prevent duplication
+        this.removeEventListeners();
         
         const container = document.getElementById('tab-mainPool');
         if (!container) return;
 
-        EventManager.delegateEvents(container, {
-            click: {
-                // FIX: Change from data-section to data-tab to match RenderUtils.renderTabs()
-                '.section-tab': (e, el) => this.handleSectionSwitch(el.dataset.tab),
-                '[data-action="continue-to-special-attacks"]': () => this.builder.switchTab('specialAttacks'),
-                // Delegate actions for children components
-                '[data-action="purchase-flaw"]': (e, el) => this.sections.flaws.handleFlawPurchase(el.dataset.flawId),
-                '[data-action="remove-flaw"]': (e, el) => this.sections.flaws.handleFlawRemoval(parseInt(el.dataset.index)),
-                '[data-action="clear-trait-builder"]': () => this.sections.traits.handleClearBuilder(),
-                '[data-action="purchase-trait"]': () => this.sections.traits.handleTraitPurchase(),
-                '[data-action="remove-trait"]': (e, el) => this.sections.traits.handleTraitRemoval(parseInt(el.dataset.index)),
-                '[data-action="trait-stat-toggle"]': (e, el) => {
-                    console.log('🔍 MainPoolTab caught trait-stat-toggle event', el);
-                    this.sections.traits.handleStatToggle(el);
-                },
-                '[data-action="trait-condition-toggle"]': (e, el) => {
-                    console.log('🔍 MainPoolTab caught trait-condition-toggle event', el);
-                    this.sections.traits.handleConditionToggle(el);
-                },
-                '[data-action="increase-variable-trait-cost"]': (e, el) => {
-                    if (this.activeSection === 'traits') {
-                        console.log('🔍 MainPoolTab caught increase-variable-trait-cost event', el);
-                        this.sections.traits.handleIncreaseVariableTraitCost(el.dataset.conditionId);
-                    }
-                },
-                '[data-action="decrease-variable-trait-cost"]': (e, el) => {
-                    if (this.activeSection === 'traits') {
-                        console.log('🔍 MainPoolTab caught decrease-variable-trait-cost event', el);
-                        this.sections.traits.handleDecreaseVariableTraitCost(el.dataset.conditionId);
-                    }
-                },
-                '[data-action="purchase-simple-boon"]': (e, el) => this.sections.simpleBoons.purchaseSimpleBoon(el.dataset.boonId),
-                '[data-action="remove-simple-boon"]': (e, el) => this.sections.simpleBoons.removeBoon(el.dataset.boonId),
-                '[data-action="purchase-unique-ability"]': (e, el) => this.sections.uniqueAbilities.purchaseUniqueAbility(el.dataset.abilityId),
-                '[data-action="remove-unique-ability"]': (e, el) => this.sections.uniqueAbilities.removeAbility(el.dataset.boonId),
-                '[data-action="modify-unique-ability"]': (e, el) => this.sections.uniqueAbilities.modifyAbility(el.dataset.boonId),
-                '[data-action="toggle-upgrade"]': (e, el) => this.sections.uniqueAbilities.handleUpgradeToggle(el),
-                '[data-action="increase-upgrade-quantity"]': (e, el) => this.sections.uniqueAbilities.handleIncreaseUpgradeQuantity(el),
-                '[data-action="decrease-upgrade-quantity"]': (e, el) => this.sections.uniqueAbilities.handleDecreaseUpgradeQuantity(el),
-                '[data-action="create-custom-unique-ability"]': (e, el) => this.sections.uniqueAbilities.handleCreateCustomUniqueAbility(),
-                '[data-action="purchase-action-upgrade"]': (e, el) => this.sections.actions.purchaseActionUpgrade(el.dataset.actionId),
-                '[data-action="remove-action-upgrade"]': (e, el) => this.sections.actions.removeUpgrade(parseInt(el.dataset.index))
-            },
-            change: {
-                '.stat-checkbox': (e, el) => { if (this.activeSection === 'traits') this.sections.traits.handleStatSelection(el);},
-                '.condition-checkbox': (e, el) => { if (this.activeSection === 'traits') this.sections.traits.handleConditionSelection(el);},
-                '.variable-cost-selector': (e, el) => { 
-                    if (this.activeSection === 'traits') this.sections.traits.handleVariableCostChange(e);
-                },
-                '.stat-bonus-select': (e, el) => {
-                    if (this.activeSection === 'flaws') {
-                        this.handleFlawStatBonusChange(e, el);
-                    }
+        // Store the handler and container so it can be removed later
+        this.clickHandler = (e) => {
+            // Handle click events
+            const target = e.target.closest('[data-action], .section-tab, .stat-checkbox, .condition-checkbox, .variable-cost-selector, .stat-bonus-select');
+            if (!target) return;
+
+            if (target.classList.contains('section-tab')) {
+                this.handleSectionSwitch(target.dataset.tab);
+            } else if (target.dataset.action) {
+                const action = target.dataset.action;
+                switch (action) {
+                    case 'continue-to-special-attacks':
+                        this.builder.switchTab('specialAttacks');
+                        break;
+                    case 'purchase-flaw':
+                        this.sections.flaws.handleFlawPurchase(target.dataset.flawId);
+                        break;
+                    case 'remove-flaw':
+                        this.sections.flaws.handleFlawRemoval(parseInt(target.dataset.index));
+                        break;
+                    case 'clear-trait-builder':
+                        this.sections.traits.handleClearBuilder();
+                        break;
+                    case 'purchase-trait':
+                        this.sections.traits.handleTraitPurchase();
+                        break;
+                    case 'remove-trait':
+                        this.sections.traits.handleTraitRemoval(parseInt(target.dataset.index));
+                        break;
+                    case 'trait-stat-toggle':
+                        console.log('🔍 MainPoolTab caught trait-stat-toggle event', target);
+                        this.sections.traits.handleStatToggle(target);
+                        break;
+                    case 'trait-condition-toggle':
+                        console.log('🔍 MainPoolTab caught trait-condition-toggle event', target);
+                        this.sections.traits.handleConditionToggle(target);
+                        break;
+                    case 'increase-variable-trait-cost':
+                        if (this.activeSection === 'traits') {
+                            console.log('🔍 MainPoolTab caught increase-variable-trait-cost event', target);
+                            this.sections.traits.handleIncreaseVariableTraitCost(target.dataset.conditionId);
+                        }
+                        break;
+                    case 'decrease-variable-trait-cost':
+                        if (this.activeSection === 'traits') {
+                            console.log('🔍 MainPoolTab caught decrease-variable-trait-cost event', target);
+                            this.sections.traits.handleDecreaseVariableTraitCost(target.dataset.conditionId);
+                        }
+                        break;
+                    case 'purchase-simple-boon':
+                        this.sections.simpleBoons.purchaseSimpleBoon(target.dataset.boonId);
+                        break;
+                    case 'remove-simple-boon':
+                        this.sections.simpleBoons.removeBoon(target.dataset.boonId);
+                        break;
+                    case 'purchase-unique-ability':
+                        this.sections.uniqueAbilities.purchaseUniqueAbility(target.dataset.abilityId);
+                        break;
+                    case 'remove-unique-ability':
+                        this.sections.uniqueAbilities.removeAbility(target.dataset.boonId);
+                        break;
+                    case 'modify-unique-ability':
+                        this.sections.uniqueAbilities.modifyAbility(target.dataset.boonId);
+                        break;
+                    case 'toggle-upgrade':
+                        this.sections.uniqueAbilities.handleUpgradeToggle(target);
+                        break;
+                    case 'increase-upgrade-quantity':
+                        this.sections.uniqueAbilities.handleIncreaseUpgradeQuantity(target);
+                        break;
+                    case 'decrease-upgrade-quantity':
+                        this.sections.uniqueAbilities.handleDecreaseUpgradeQuantity(target);
+                        break;
+                    case 'create-custom-unique-ability':
+                        this.sections.uniqueAbilities.handleCreateCustomUniqueAbility();
+                        break;
+                    case 'purchase-action-upgrade':
+                        this.sections.actions.purchaseActionUpgrade(target.dataset.actionId);
+                        break;
+                    case 'remove-action-upgrade':
+                        this.sections.actions.removeUpgrade(parseInt(target.dataset.index));
+                        break;
                 }
-            },
-        });
+            }
+        };
+
+        // Store the container element reference
+        this.containerElement = container;
+
+        // Handle change events
+        this.changeHandler = (e) => {
+            const target = e.target;
+            if (target.classList.contains('stat-checkbox') && this.activeSection === 'traits') {
+                this.sections.traits.handleStatSelection(target);
+            } else if (target.classList.contains('condition-checkbox') && this.activeSection === 'traits') {
+                this.sections.traits.handleConditionSelection(target);
+            } else if (target.classList.contains('variable-cost-selector') && this.activeSection === 'traits') {
+                this.sections.traits.handleVariableCostChange(e);
+            } else if (target.classList.contains('stat-bonus-select') && this.activeSection === 'flaws') {
+                this.handleFlawStatBonusChange(e, target);
+            }
+        };
+
+        // Attach the event listeners
+        this.containerElement.addEventListener('click', this.clickHandler);
+        this.containerElement.addEventListener('change', this.changeHandler);
         
-        this.listenersAttached = true;
         console.log('✅ MainPoolTab event listeners attached ONCE.');
-        
     }
 
     handleSectionSwitch(newSection) {
@@ -472,6 +519,16 @@ export class MainPoolTab {
     onCharacterUpdate() {
         // Just call render - it will handle the state reset
         this.render();
+    }
+
+    removeEventListeners() {
+        if (this.clickHandler && this.containerElement) {
+            this.containerElement.removeEventListener('click', this.clickHandler);
+            this.containerElement.removeEventListener('change', this.changeHandler);
+            this.clickHandler = null;
+            this.changeHandler = null;
+            this.containerElement = null;
+        }
     }
 
     generateTraitDisplayName(trait, character) {
