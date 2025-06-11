@@ -55,13 +55,13 @@ export class PointPoolsSummary {
             
             if (available !== undefined) {
                 const isOverBudget = remaining < 0;
-                const itemClass = isOverBudget ? 'stat-item error-text' : 'stat-item';
+                const itemClass = isOverBudget ? 'summary-item error-text' : 'summary-item';
                 const displayName = this.getPoolDisplayName(poolKey);
                 
                 items += `
                     <div class="${itemClass}">
-                        <span>${displayName}:</span>
-                        <strong>${spent || 0} / ${available || 0} (${remaining || 0})</strong>
+                        <span class="summary-label">${displayName}</span>
+                        <span class="summary-value">${spent || 0} / ${available || 0} (${remaining || 0})</span>
                     </div>
                 `;
             }

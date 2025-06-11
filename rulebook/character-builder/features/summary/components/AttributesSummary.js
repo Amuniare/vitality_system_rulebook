@@ -3,8 +3,8 @@ export class AttributesSummary {
         // Pure display component - no state needed
     }
 
-    render(character, stats) {
-        if (!character || !stats) {
+    render(character, statBreakdowns) {
+        if (!character) {
             return `
                 <div class="card">
                     <h3>Core Attributes</h3>
@@ -23,7 +23,7 @@ export class AttributesSummary {
 
         return `
             ${this.renderCoreAttributes(character)}
-            ${this.renderCalculatedStats(stats)}
+            ${this.renderCalculatedStats(statBreakdowns)}
         `;
     }
 
@@ -34,93 +34,124 @@ export class AttributesSummary {
             <div class="card">
                 <h3>Core Attributes</h3>
                 <div class="card-content">
-                    <div class="stat-item">
-                        <span>Focus:</span>
-                        <strong>${attributes.focus || 0}</strong>
+                    <div class="summary-item">
+                        <span class="summary-label">Focus</span>
+                        <span class="summary-value">${attributes.focus || 0}</span>
                     </div>
-                    <div class="stat-item">
-                        <span>Mobility:</span>
-                        <strong>${attributes.mobility || 0}</strong>
+                    <div class="summary-item">
+                        <span class="summary-label">Mobility</span>
+                        <span class="summary-value">${attributes.mobility || 0}</span>
                     </div>
-                    <div class="stat-item">
-                        <span>Power:</span>
-                        <strong>${attributes.power || 0}</strong>
+                    <div class="summary-item">
+                        <span class="summary-label">Power</span>
+                        <span class="summary-value">${attributes.power || 0}</span>
                     </div>
-                    <div class="stat-item">
-                        <span>Endurance:</span>
-                        <strong>${attributes.endurance || 0}</strong>
+                    <div class="summary-item">
+                        <span class="summary-label">Endurance</span>
+                        <span class="summary-value">${attributes.endurance || 0}</span>
                     </div>
-                    <div class="stat-item">
-                        <span>Awareness:</span>
-                        <strong>${attributes.awareness || 0}</strong>
+                    <div class="summary-item">
+                        <span class="summary-label">Awareness</span>
+                        <span class="summary-value">${attributes.awareness || 0}</span>
                     </div>
-                    <div class="stat-item">
-                        <span>Communication:</span>
-                        <strong>${attributes.communication || 0}</strong>
+                    <div class="summary-item">
+                        <span class="summary-label">Communication</span>
+                        <span class="summary-value">${attributes.communication || 0}</span>
                     </div>
-                    <div class="stat-item">
-                        <span>Intelligence:</span>
-                        <strong>${attributes.intelligence || 0}</strong>
+                    <div class="summary-item">
+                        <span class="summary-label">Intelligence</span>
+                        <span class="summary-value">${attributes.intelligence || 0}</span>
                     </div>
                 </div>
             </div>
         `;
     }
 
-    renderCalculatedStats(stats) {
-        // Check if stats has a final property (nested structure)
-        const finalStats = stats.final || stats;
+    renderCalculatedStats(statBreakdowns) {
+        if (!statBreakdowns) {
+            return `
+                <div class="card">
+                    <h3>Calculated Stats</h3>
+                    <div class="card-content">
+                        <p>No stat breakdown data available</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        const statsOrder = ['hp', 'avoidance', 'durability', 'resolve', 'stability', 'vitality', 
+                           'accuracy', 'damage', 'conditions', 'initiative', 'movement'];
+        
+        let statItems = '';
+        
+        statsOrder.forEach(statName => {
+            const breakdown = statBreakdowns[statName];
+            if (breakdown && breakdown.length > 0) {
+                const finalValue = this.calculateFinalValue(breakdown);
+                const breakdownText = this.formatBreakdown(breakdown);
+                const unit = statName === 'movement' ? ' sp' : '';
+                
+                statItems += `
+                    <div class="stat-item-detailed">
+                        <div class="stat-main-line">
+                            <span class="summary-label">${this.getStatDisplayName(statName)}</span>
+                            <strong class="summary-value">${finalValue}${unit}</strong>
+                        </div>
+                        <div class="stat-breakdown">
+                            ${breakdownText}
+                        </div>
+                    </div>
+                `;
+            }
+        });
         
         return `
             <div class="card">
                 <h3>Calculated Stats</h3>
                 <div class="card-content">
-                    <div class="stat-item">
-                        <span>Accuracy:</span>
-                        <strong>${finalStats.accuracy || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Damage:</span>
-                        <strong>${finalStats.damage || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Conditions:</span>
-                        <strong>${finalStats.conditions || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>HP:</span>
-                        <strong>${finalStats.hp || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Avoidance:</span>
-                        <strong>${finalStats.avoidance || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Durability:</span>
-                        <strong>${finalStats.durability || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Resolve:</span>
-                        <strong>${finalStats.resolve || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Stability:</span>
-                        <strong>${finalStats.stability || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Vitality:</span>
-                        <strong>${finalStats.vitality || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Initiative:</span>
-                        <strong>${finalStats.initiative || 0}</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>Movement:</span>
-                        <strong>${finalStats.movement || 0}${finalStats.movement ? ' sp' : ''}</strong>
-                    </div>
+                    ${statItems || '<p>No calculated stats available</p>'}
                 </div>
             </div>
         `;
+    }
+    
+    // Calculate final value from breakdown array
+    calculateFinalValue(breakdown) {
+        return breakdown.reduce((total, item) => total + (item.value || 0), 0);
+    }
+    
+    // Format breakdown array into readable string
+    formatBreakdown(breakdown) {
+        if (!breakdown || breakdown.length === 0) {
+            return 'No breakdown available';
+        }
+        
+        return breakdown
+            .map(item => {
+                const value = item.value || 0;
+                const source = item.source || 'Unknown';
+                const sign = value >= 0 ? '+' : '';
+                return `${sign}${value} (${source})`;
+            })
+            .join(' ');
+    }
+    
+    // Get display name for stat
+    getStatDisplayName(statName) {
+        const displayNames = {
+            hp: 'HP',
+            avoidance: 'Avoidance',
+            durability: 'Durability',
+            resolve: 'Resolve',
+            stability: 'Stability', 
+            vitality: 'Vitality',
+            accuracy: 'Accuracy',
+            damage: 'Damage',
+            conditions: 'Conditions',
+            initiative: 'Initiative',
+            movement: 'Movement'
+        };
+        
+        return displayNames[statName] || statName;
     }
 }

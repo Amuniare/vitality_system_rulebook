@@ -74,6 +74,23 @@ This table maps a high-level application area to its main entry point file. The 
 
 ### 5.2. Recipe Book
 
+#### DATA_INTEGRITY_BUGS
+
+This section addresses bugs caused by mismatches between a component's expectations and the data it receives.
+
+**Recipe: `DATA_CONTRACT_VIOLATION`**
+
+*   **Problem:** A component or an entire tab renders as a blank white screen. The developer console shows a `TypeError`, often "Cannot read properties of undefined". This is caused by a component expecting data in one shape (e.g., `character.basicInfo.name`) when the actual data model provides it in another shape (e.g., `character.name`). This breaks the component's `render()` method, halting all subsequent HTML rendering.
+*   **Solution:** Synchronize the component's data access logic with the authoritative data model. The component must be updated to read properties from the correct paths.
+*   **Implementation Steps:** For the target file(s) identified from the mapping table and problem description, you WILL perform the following changes:
+    1.  **Identify the Data Provider:** In the parent component (usually the `...Tab.js` file), locate the line where the failing component's `render()` method is called. Examine exactly which object is being passed as an argument.
+    2.  **Identify the Data Model:** Determine the "source of truth" for the data's structure.
+        *   For character data, this is `rulebook/character-builder/core/VitalityCharacter.js`.
+        *   For game rule data (archetypes, flaws, etc.), this is the relevant JSON file in `rulebook/character-builder/data/`.
+    3.  **Find the Mismatch:** Compare the property access in the failing component's `render()` method (e.g., `character.basicInfo.tier`) with the actual property definitions in the data model file (e.g., `this.tier` in `VitalityCharacter.js`).
+    4.  **Correct the Component:** Modify the failing component's `render()` method to use the correct property access paths, removing any incorrect nesting.
+    5.  **Present the Fix:** Provide the complete, corrected file.
+
 #### LIFECYCLE_BUGS
 
 This section addresses bugs related to component state and event handling during re-renders.

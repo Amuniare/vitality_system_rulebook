@@ -403,6 +403,16 @@ export class CharacterBuilder {
         return StatCalculator.calculateAllStats(this.currentCharacter);
     }
 
+    // Get detailed stat breakdowns for Summary Tab
+    getStatBreakdowns() {
+        if (!this.currentCharacter) {
+            return {};
+        }
+        
+        const allStats = StatCalculator.calculateAllStats(this.currentCharacter);
+        return allStats.breakdown || {};
+    }
+
     // Character validation (without validator dependencies)
     validateCharacter() {
         if (!this.currentCharacter) {

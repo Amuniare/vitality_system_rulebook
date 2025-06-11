@@ -3,8 +3,8 @@ export class UtilityAbilitiesSummary {
         // Pure display component - no state needed
     }
 
-    render(character) {
-        if (!character || !character.utilityPurchases) {
+    render(utilityPurchases, utilityDefinitions) {
+        if (!utilityPurchases) {
             return `
                 <div class="card">
                     <h3>Utility & General Abilities</h3>
@@ -15,7 +15,6 @@ export class UtilityAbilitiesSummary {
             `;
         }
 
-        const utilityPurchases = character.utilityPurchases;
         const hasAnyPurchases = this.hasUtilityPurchases(utilityPurchases);
 
         if (!hasAnyPurchases) {
@@ -24,6 +23,7 @@ export class UtilityAbilitiesSummary {
                     <h3>Utility & General Abilities</h3>
                     <div class="card-content">
                         <p>No utility abilities purchased yet</p>
+                        <p class="help-text">Utility abilities will appear here once purchased in the Utility tab.</p>
                     </div>
                 </div>
             `;
@@ -33,7 +33,7 @@ export class UtilityAbilitiesSummary {
             <div class="card">
                 <h3>Utility & General Abilities</h3>
                 <div class="card-content">
-                    ${this.renderUtilityCategories(utilityPurchases)}
+                    ${this.renderUtilityCategories(utilityPurchases, utilityDefinitions)}
                 </div>
             </div>
         `;
@@ -51,7 +51,7 @@ export class UtilityAbilitiesSummary {
         });
     }
 
-    renderUtilityCategories(utilityPurchases) {
+    renderUtilityCategories(utilityPurchases, utilityDefinitions) {
         let content = '';
         
         // Define the order and display names for categories
@@ -67,47 +67,67 @@ export class UtilityAbilitiesSummary {
         Object.entries(categoryConfig).forEach(([key, displayName]) => {
             const items = utilityPurchases[key];
             if (Array.isArray(items) && items.length > 0) {
-                content += this.renderCategory(displayName, items, key);
+                const definitions = utilityDefinitions && utilityDefinitions[key] ? utilityDefinitions[key] : {};
+                content += this.renderCategory(displayName, items, key, definitions);
             }
         });
 
         return content || '<p>No utility abilities found</p>';
     }
 
-    renderCategory(categoryName, items, categoryKey) {
+    renderCategory(categoryName, items, categoryKey, definitions) {
         return `
-            <h5>${categoryName}</h5>
-            <ul>
-                ${items.map(item => this.renderItem(item, categoryKey)).join('')}
-            </ul>
+            <div class="utility-category">
+                <h5 class="utility-category-header">${categoryName}</h5>
+                <div class="utility-items">
+                    ${items.map(item => this.renderItem(item, categoryKey, definitions)).join('')}
+                </div>
+            </div>
         `;
     }
 
-    renderItem(item, categoryKey) {
+    renderItem(item, categoryKey, definitions) {
+        let itemId, itemName, itemDescription;
+        
+        // Extract item information based on structure
         if (typeof item === 'string') {
-            return `<li>${item}</li>`;
-        }
-
-        if (typeof item === 'object' && item !== null) {
+            itemId = item;
+            itemName = item;
+        } else if (typeof item === 'object' && item !== null) {
             // Handle expertise with levels
             if (categoryKey === 'expertise' && item.name && item.level) {
-                const levelDisplay = this.formatExpertiseLevel(item.level);
-                return `<li>${item.name} (${levelDisplay})</li>`;
+                itemId = item.name;
+                itemName = `${item.name} (${this.formatExpertiseLevel(item.level)})`;
+            } else {
+                itemId = item.itemId || item.name || item.ability || item.feature;
+                itemName = item.name || item.ability || item.feature || itemId;
             }
-
-            // Handle objects with name property
-            if (item.name) {
-                return `<li>${item.name}</li>`;
-            }
-
-            // Handle objects with other structure
-            if (item.ability || item.feature) {
-                return `<li>${item.ability || item.feature}</li>`;
+        } else {
+            itemId = String(item);
+            itemName = String(item);
+        }
+        
+        // Get description from definitions
+        const definition = definitions && definitions[itemId];
+        if (definition) {
+            itemDescription = definition.description;
+            // Use the definition name if available (it might be more descriptive)
+            if (definition.name && !itemName.includes('(')) {
+                itemName = definition.name;
             }
         }
-
-        // Fallback for unknown structure
-        return `<li>${String(item)}</li>`;
+        
+        // Handle special cases for expertise
+        if (categoryKey === 'expertise' && !itemDescription) {
+            itemDescription = `Expertise in ${itemId}`;
+        }
+        
+        return `
+            <div class="utility-summary-item">
+                <h5 class="utility-item-name">${itemName}</h5>
+                ${itemDescription ? `<p class="utility-description">${itemDescription}</p>` : ''}
+            </div>
+        `;
     }
 
     formatExpertiseLevel(level) {

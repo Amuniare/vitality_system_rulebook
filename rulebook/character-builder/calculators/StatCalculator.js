@@ -472,24 +472,109 @@ export class StatCalculator {
         return stats;
     }
     
-    // Generate detailed stat breakdown
+    // Generate detailed stat breakdown for Summary Tab
     static generateStatBreakdown(character, baseStats, finalStats) {
         const breakdown = {};
         
-        Object.keys(finalStats).forEach(stat => {
-            const base = baseStats[stat] || 0;
-            const final = finalStats[stat] || 0;
-            const difference = final - base;
-            
-            breakdown[stat] = {
-                base,
-                final,
-                difference,
-                sources: this.getStatSources(character, stat, difference)
-            };
+        // Focus on calculated stats that need detailed breakdowns
+        const calculatedStats = ['hp', 'avoidance', 'durability', 'resolve', 'stability', 'vitality', 
+                                'accuracy', 'damage', 'conditions', 'initiative', 'movement'];
+        
+        calculatedStats.forEach(stat => {
+            if (finalStats[stat] !== undefined) {
+                breakdown[stat] = this.generateDetailedStatBreakdown(character, stat, baseStats, finalStats);
+            }
         });
         
         return breakdown;
+    }
+    
+    // Generate detailed breakdown for a single stat
+    static generateDetailedStatBreakdown(character, statName, baseStats, finalStats) {
+        const breakdown = [];
+        const tier = character.tier;
+        const attrs = character.attributes;
+        
+        // Base calculation components
+        switch(statName) {
+            case 'hp':
+                breakdown.push({ source: 'Base', value: TierSystem.calculateBaseHP(tier) });
+                break;
+                
+            case 'avoidance':
+                breakdown.push({ source: 'Base', value: GameConstants.AVOIDANCE_BASE });
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Mobility', value: attrs.mobility });
+                break;
+                
+            case 'durability':
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Endurance', value: attrs.endurance * GameConstants.ENDURANCE_DURABILITY_MULTIPLIER });
+                break;
+                
+            case 'resolve':
+                breakdown.push({ source: 'Base', value: GameConstants.RESOLVE_BASE });
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Focus', value: attrs.focus });
+                break;
+                
+            case 'stability':
+                breakdown.push({ source: 'Base', value: GameConstants.STABILITY_BASE });
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Power', value: attrs.power });
+                break;
+                
+            case 'vitality':
+                breakdown.push({ source: 'Base', value: GameConstants.VITALITY_BASE });
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Endurance', value: attrs.endurance });
+                break;
+                
+            case 'accuracy':
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Focus', value: attrs.focus });
+                break;
+                
+            case 'damage':
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Power', value: attrs.power * GameConstants.POWER_DAMAGE_MULTIPLIER });
+                break;
+                
+            case 'conditions':
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Power', value: attrs.power });
+                break;
+                
+            case 'initiative':
+                breakdown.push({ source: 'Tier', value: tier });
+                breakdown.push({ source: 'Mobility', value: attrs.mobility });
+                breakdown.push({ source: 'Focus', value: attrs.focus });
+                breakdown.push({ source: 'Awareness', value: attrs.awareness });
+                break;
+                
+            case 'movement':
+                breakdown.push({ source: 'Base', value: TierSystem.calculateBaseMovement(tier, attrs.mobility) });
+                break;
+        }
+        
+        // Add archetype bonuses
+        const archetypeBonuses = this.getArchetypeStatBonuses(character, statName);
+        breakdown.push(...archetypeBonuses);
+        
+        // Add boon bonuses
+        const boonBonuses = this.getBoonStatBonuses(character, statName);
+        breakdown.push(...boonBonuses);
+        
+        // Add trait/flaw bonuses
+        const traitFlawBonuses = this.getTraitFlawStatBonuses(character, statName);
+        breakdown.push(...traitFlawBonuses);
+        
+        // Add flaw penalties
+        const flawPenalties = this.getFlawPenalties(character, statName);
+        breakdown.push(...flawPenalties);
+        
+        // Filter out zero values and return
+        return breakdown.filter(item => item.value !== 0);
     }
     
     // Get sources of stat modifications
@@ -527,15 +612,59 @@ export class StatCalculator {
         if (stat === 'movement') {
             switch(archetypes.movement) {
                 case 'swift':
-                    bonuses.push({ source: 'Swift archetype', value: Math.ceil(tier / 2) });
+                    bonuses.push({ source: 'Swift Archetype', value: Math.ceil(tier / 2) });
                     break;
                 case 'vanguard':
-                    bonuses.push({ source: 'Vanguard archetype', value: character.attributes.endurance });
+                    bonuses.push({ source: 'Vanguard Archetype', value: character.attributes.endurance });
                     break;
                 case 'teleportation':
-                    bonuses.push({ source: 'Teleportation penalty', value: -2 });
+                    bonuses.push({ source: 'Teleportation Penalty', value: -2 });
                     break;
             }
+        }
+        
+        // Defensive archetype contributions
+        if (archetypes.defensive) {
+            switch(archetypes.defensive) {
+                case 'stalwart':
+                    if (stat === 'avoidance') {
+                        bonuses.push({ source: 'Stalwart Penalty', value: -tier });
+                    }
+                    break;
+                case 'resilient':
+                    if (stat === 'durability') {
+                        bonuses.push({ source: 'Resilient Archetype', value: tier });
+                    }
+                    break;
+                case 'fortress':
+                    if (stat === 'resolve') {
+                        bonuses.push({ source: 'Fortress Archetype', value: tier });
+                    } else if (stat === 'stability') {
+                        bonuses.push({ source: 'Fortress Archetype', value: tier });
+                    } else if (stat === 'vitality') {
+                        bonuses.push({ source: 'Fortress Archetype', value: tier });
+                    }
+                    break;
+                case 'juggernaut':
+                    if (stat === 'hp') {
+                        bonuses.push({ source: 'Juggernaut Archetype', value: tier * 5 });
+                    }
+                    break;
+            }
+        }
+        
+        // Unique ability archetype contributions
+        if (archetypes.uniqueAbility === 'cutAbove') {
+            const cutAboveBonus = tier <= 3 ? 1 : tier <= 6 ? 2 : 3;
+            const cutAboveStats = ['accuracy', 'damage', 'conditions', 'avoidance', 'durability', 'resolve', 'stability', 'vitality', 'initiative', 'movement'];
+            if (cutAboveStats.includes(stat)) {
+                bonuses.push({ source: 'Cut Above Archetype', value: cutAboveBonus });
+            }
+        }
+        
+        // Effect type archetype contributions
+        if (archetypes.effectType === 'crowdControl' && stat === 'damage') {
+            bonuses.push({ source: 'Crowd Control Penalty', value: -tier });
         }
         
         return bonuses;
@@ -549,7 +678,18 @@ export class StatCalculator {
             switch(boon.boonId) {
                 case 'combatReflexes':
                     if (stat === 'reactions') {
-                        bonuses.push({ source: 'Combat Reflexes', value: 1 });
+                        bonuses.push({ source: 'Combat Reflexes Boon', value: 1 });
+                    }
+                    break;
+                case 'speedOfThought':
+                    if (stat === 'initiative') {
+                        // Initiative change: -awareness + (intelligence * 2)
+                        const awarenessLoss = -character.attributes.awareness;
+                        const intelligenceGain = character.attributes.intelligence * 2;
+                        const netChange = awarenessLoss + intelligenceGain;
+                        if (netChange !== 0) {
+                            bonuses.push({ source: 'Speed of Thought Boon', value: netChange });
+                        }
                     }
                     break;
             }
@@ -564,10 +704,52 @@ export class StatCalculator {
         const stackingBonuses = this.calculateStackingBonuses(character);
         
         if (stackingBonuses[stat]) {
-            bonuses.push({ source: 'Traits/Flaws (with stacking)', value: stackingBonuses[stat] });
+            // Get detailed breakdown of trait/flaw contributions
+            const traitCount = character.mainPoolPurchases.traits.filter(trait => 
+                trait.statBonuses && trait.statBonuses.includes(stat)
+            ).length;
+            
+            const flawCount = character.mainPoolPurchases.flaws.filter(flaw => 
+                flaw.statBonus === stat
+            ).length;
+            
+            if (traitCount > 0 || flawCount > 0) {
+                let sourceName = '';
+                if (traitCount > 0 && flawCount > 0) {
+                    sourceName = `Traits & Flaws (${traitCount + flawCount} total)`;
+                } else if (traitCount > 0) {
+                    sourceName = `Traits (${traitCount} total)`;
+                } else {
+                    sourceName = `Flaws (${flawCount} total)`;
+                }
+                
+                bonuses.push({ source: sourceName, value: stackingBonuses[stat] });
+            }
         }
         
         return bonuses;
+    }
+    
+    // Get flaw penalties to a stat
+    static getFlawPenalties(character, stat) {
+        const penalties = [];
+        
+        character.mainPoolPurchases.flaws.forEach(flaw => {
+            switch(flaw.flawId) {
+                case 'sickly':
+                    if (stat === 'hp') {
+                        penalties.push({ source: 'Sickly Flaw', value: -30 });
+                    }
+                    break;
+                case 'unresponsive':
+                    if (stat === 'initiative') {
+                        penalties.push({ source: 'Unresponsive Flaw', value: -character.tier });
+                    }
+                    break;
+            }
+        });
+        
+        return penalties;
     }
     
     // CACHING UTILITIES

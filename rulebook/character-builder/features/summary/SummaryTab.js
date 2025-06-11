@@ -37,22 +37,28 @@ export class SummaryTab {
         // Fetch all necessary data once at the top level (Golden Rule #1)
         const pools = this.builder.calculatePointPools();
         const stats = this.builder.calculateStats();
-        const archetypeNames = this.resolveArchetypeNames(character);
+        const statBreakdowns = this.builder.getStatBreakdowns();
+        
+        // Fetch archetype definitions with descriptions
+        const archetypeDefinitions = this.getArchetypeDefinitions(character);
+        
+        // Fetch utility definitions with descriptions
+        const utilityDefinitions = this.getUtilityDefinitions(character);
 
-        // Compose the final HTML by calling child component render methods (Golden Rule #3)
+        // Compose the final HTML using new two-column layout (Golden Rule #3)
         tabContent.innerHTML = `
             <div class="summary-section">
                 <h2>Character Summary</h2>
-                <div class="summary-grid-two-rows" data-testid="character-summary">
-                    <div class="summary-row-1 grid-layout grid-columns-auto-fit-300">
+                <div class="summary-grid-container" data-testid="character-summary">
+                    <div class="summary-left-column">
                         ${this.summaryHeader.render(character)}
                         ${this.pointPoolsSummary.render(pools)}
-                        ${this.attributesSummary.render(character, stats)}
+                        ${this.attributesSummary.render(character, statBreakdowns)}
+                        ${this.archetypesSummary.render(character.archetypes, archetypeDefinitions)}
+                        ${this.utilityAbilitiesSummary.render(character.utilityPurchases, utilityDefinitions)}
                     </div>
-                    <div class="summary-row-2 grid-layout grid-columns-auto-fit-300">
-                        ${this.archetypesSummary.render(archetypeNames)}
-                        ${this.specialAttacksSummary.render(character)}
-                        ${this.utilityAbilitiesSummary.render(character)}
+                    <div class="summary-right-column">
+                        ${this.specialAttacksSummary.render(character.specialAttacks)}
                     </div>
                 </div>
 
@@ -121,24 +127,93 @@ export class SummaryTab {
         console.log('✅ SummaryTab event listeners attached.');
     }
 
-    resolveArchetypeNames(character) {
+    // Get archetype definitions with full descriptions
+    getArchetypeDefinitions(character) {
         if (!character.archetypes) {
             return {};
         }
 
-        const archetypeNames = {};
+        const archetypeDefinitions = {};
         const allArchetypes = gameDataManager.getArchetypes();
 
         Object.entries(character.archetypes).forEach(([category, archetypeId]) => {
             if (archetypeId && allArchetypes[category]) {
                 const archetype = allArchetypes[category].find(arch => arch.id === archetypeId);
-                archetypeNames[category] = archetype ? archetype.name : archetypeId;
-            } else {
-                archetypeNames[category] = null;
+                if (archetype) {
+                    archetypeDefinitions[category] = {
+                        id: archetype.id,
+                        name: archetype.name,
+                        description: archetype.description || 'No description available'
+                    };
+                }
             }
         });
 
-        return archetypeNames;
+        return archetypeDefinitions;
+    }
+    
+    // Get utility definitions with full descriptions
+    getUtilityDefinitions(character) {
+        if (!character.utilityPurchases) {
+            return {};
+        }
+
+        const utilityDefinitions = {};
+        
+        // Get all utility data from gameDataManager
+        const featuresData = gameDataManager.getAvailableFeatures();
+        const sensesData = gameDataManager.getAvailableSenses();
+        const movementData = gameDataManager.getMovementFeatures();
+        
+        // Helper function to find a definition within tiered data
+        const findDefinitionInTiers = (tieredData, itemId, itemKey) => {
+            if (!tieredData || typeof tieredData !== 'object') return null;
+            for (const tier of Object.values(tieredData)) {
+                if (tier[itemKey] && Array.isArray(tier[itemKey])) {
+                    const item = tier[itemKey].find(i => i.id === itemId);
+                    if (item) return item;
+                }
+            }
+            return null;
+        };
+
+        // Process each utility category
+        Object.entries(character.utilityPurchases).forEach(([category, purchases]) => {
+            if (!purchases || !Array.isArray(purchases) || purchases.length === 0) return;
+            
+            utilityDefinitions[category] = {};
+            
+            purchases.forEach(purchase => {
+                let definition = null;
+                const itemId = purchase.itemId || purchase.id; // Handle different structures
+                
+                // Find the definition based on category
+                switch(category) {
+                    case 'features':
+                        definition = findDefinitionInTiers(featuresData, itemId, 'features');
+                        break;
+                    case 'senses':
+                        definition = findDefinitionInTiers(sensesData, itemId, 'senses');
+                        break;
+                    case 'movement':
+                        definition = findDefinitionInTiers(movementData, itemId, 'features'); // movement_features.json uses 'features' key
+                        break;
+                    case 'expertise':
+                        definition = { id: itemId, name: itemId, description: `Expertise in ${itemId}` };
+                        break;
+                }
+                
+                if (definition) {
+                    utilityDefinitions[category][itemId] = {
+                        id: definition.id,
+                        name: definition.name || itemId,
+                        description: definition.description || 'No description available'
+                    };
+                }
+            });
+        });
+
+        return utilityDefinitions;
     }
 
     printCharacter() {
