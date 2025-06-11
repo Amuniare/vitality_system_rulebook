@@ -99,8 +99,9 @@ export class UtilityOverviewSection {
         
         return `
             <div class="selected-utilities">
-                <h4>Selected Utilities (${allPurchases.length})</h4>
-                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedItem(item))}
+                <div class="purchased-utilities-grid">
+                    ${allPurchases.map(item => this.renderSelectedItem(item)).join('')}
+                </div>
             </div>
         `;
     }

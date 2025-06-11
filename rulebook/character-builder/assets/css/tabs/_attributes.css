@@ -24,6 +24,17 @@
     text-align: center;
     pointer-events: none;
 }
+
+/* Hide spinner arrows on number inputs */
+.attribute-controls input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+.attribute-controls input[type="number"]::-webkit-outer-spin-button,
+.attribute-controls input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Chrome, Safari, Edge */
+    margin: 0;
+}
 .attribute-slider { margin-top: var(--padding-small); }
 .attribute-slider input[type="range"] { 
     width: 100%; 

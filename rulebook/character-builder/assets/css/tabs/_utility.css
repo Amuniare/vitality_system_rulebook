@@ -178,3 +178,24 @@
     margin-bottom: var(--gap-medium);
     font-size: 1.1em;
 }
+
+/* 3-Column Grid for Purchased Utilities */
+.purchased-utilities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap-small);
+    margin-top: var(--gap-medium);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1200px) {
+    .purchased-utilities-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .purchased-utilities-grid {
+        grid-template-columns: 1fr;
+    }
+}
