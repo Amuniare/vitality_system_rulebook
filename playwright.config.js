@@ -3,10 +3,12 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './tests',
   outputDir: './tests/output/failures',
-  fullyParallel: true,
+  // MODIFICATION: Changed fullyParallel to false
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // MODIFICATION: Explicitly set workers to 1
+  workers: 1,
   reporter: 'html',
 
   use: {
