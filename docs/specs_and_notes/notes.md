@@ -60,7 +60,3 @@
 ## Notes & Summaries
 Use gemini api key to auto create notes and summaries when transcribing
 May need to use audio file as backup, transcription is rough
-
-
-
-

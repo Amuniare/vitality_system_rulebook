@@ -32,6 +32,10 @@ python -m http.server
 http://localhost:8000/rulebook/character-builder/character-builder.html
 
 
+## Testing
+npx playwright test > test_run_output.txt
+
+
 ## Documentation
 
 - **Core Concepts & Guides**
