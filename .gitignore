@@ -34,3 +34,6 @@ src_dev_logs
 tests
 node_modules
 playwright-report
+package.json
+package-lock.json
+
