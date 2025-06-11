@@ -32,3 +32,5 @@ tests/test-results/
 tests/playwright-report/
 src_dev_logs
 tests
+node_modules
+playwright-report
