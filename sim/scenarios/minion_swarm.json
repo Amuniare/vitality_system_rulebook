@@ -1,0 +1,152 @@
+{
+  "name": "Minion Swarm",
+  "description": "Multiple weak enemies that overwhelm through numbers",
+  "difficulty": "medium",
+  "scenario_type": "horde",
+  "victory_conditions": {
+    "player_victory": "Defeat all enemies",
+    "enemy_victory": "Defeat all player characters"
+  },
+  "environment": {
+    "terrain": "urban_alley",
+    "lighting": "dim",
+    "weather": "clear",
+    "special_conditions": []
+  },
+  "enemies": [
+    {
+      "type": "minion",
+      "name": "Street Thug 1",
+      "archetype": "minion",
+      "tier": 1,
+      "stats": {
+        "accuracy": 1,
+        "damage": 1,
+        "defense": 1
+      },
+      "hp": 8,
+      "special_attacks": [
+        {
+          "name": "Cheap Shot",
+          "base_damage": 2,
+          "accuracy_modifier": 1,
+          "area_effect": false,
+          "description": "A quick, dirty attack"
+        }
+      ],
+      "ai_personality": "aggressive"
+    },
+    {
+      "type": "minion",
+      "name": "Street Thug 2",
+      "archetype": "minion",
+      "tier": 1,
+      "stats": {
+        "accuracy": 1,
+        "damage": 1,
+        "defense": 1
+      },
+      "hp": 8,
+      "special_attacks": [
+        {
+          "name": "Cheap Shot",
+          "base_damage": 2,
+          "accuracy_modifier": 1,
+          "area_effect": false,
+          "description": "A quick, dirty attack"
+        }
+      ],
+      "ai_personality": "aggressive"
+    },
+    {
+      "type": "minion",
+      "name": "Street Thug 3",
+      "archetype": "minion",
+      "tier": 1,
+      "stats": {
+        "accuracy": 1,
+        "damage": 1,
+        "defense": 1
+      },
+      "hp": 8,
+      "special_attacks": [
+        {
+          "name": "Cheap Shot",
+          "base_damage": 2,
+          "accuracy_modifier": 1,
+          "area_effect": false,
+          "description": "A quick, dirty attack"
+        }
+      ],
+      "ai_personality": "aggressive"
+    },
+    {
+      "type": "minion",
+      "name": "Street Thug 4",
+      "archetype": "minion",
+      "tier": 1,
+      "stats": {
+        "accuracy": 1,
+        "damage": 1,
+        "defense": 1
+      },
+      "hp": 8,
+      "special_attacks": [
+        {
+          "name": "Cheap Shot",
+          "base_damage": 2,
+          "accuracy_modifier": 1,
+          "area_effect": false,
+          "description": "A quick, dirty attack"
+        }
+      ],
+      "ai_personality": "aggressive"
+    },
+    {
+      "type": "leader",
+      "name": "Gang Leader",
+      "archetype": "balanced",
+      "tier": 1,
+      "stats": {
+        "accuracy": 2,
+        "damage": 2,
+        "defense": 2
+      },
+      "hp": 15,
+      "special_attacks": [
+        {
+          "name": "Intimidating Shout",
+          "base_damage": 0,
+          "accuracy_modifier": 0,
+          "area_effect": true,
+          "status_effects": [
+            {
+              "type": "fear",
+              "duration": 2,
+              "magnitude": 1
+            }
+          ],
+          "description": "Reduces enemy effectiveness"
+        },
+        {
+          "name": "Power Strike",
+          "base_damage": 4,
+          "accuracy_modifier": -1,
+          "area_effect": false,
+          "description": "Heavy hitting attack"
+        }
+      ],
+      "ai_personality": "tactical"
+    }
+  ],
+  "tactical_notes": {
+    "player_strategy": "Use area attacks to handle minions quickly, focus fire on leader",
+    "enemy_strategy": "Minions swarm to overwhelm, leader provides support and pressure",
+    "key_factors": ["Action economy", "Area control", "Target prioritization"]
+  },
+  "balance_metrics": {
+    "expected_rounds": "4-6",
+    "player_stress_usage": "medium",
+    "threat_level": "moderate"
+  }
+}

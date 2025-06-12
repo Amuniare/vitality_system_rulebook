@@ -1,0 +1,126 @@
+{
+  "name": "Elite Duel",
+  "description": "Single powerful enemy that tests all aspects of character capability",
+  "difficulty": "high",
+  "scenario_type": "boss_fight",
+  "victory_conditions": {
+    "player_victory": "Defeat the elite enemy",
+    "enemy_victory": "Defeat all player characters"
+  },
+  "environment": {
+    "terrain": "rooftop",
+    "lighting": "bright",
+    "weather": "windy",
+    "special_conditions": [
+      {
+        "name": "high_winds",
+        "effect": "Ranged attacks have -1 accuracy",
+        "description": "Strong winds affect projectile attacks"
+      }
+    ]
+  },
+  "enemies": [
+    {
+      "type": "elite",
+      "name": "Corporate Enforcer",
+      "archetype": "elite",
+      "tier": 2,
+      "stats": {
+        "accuracy": 4,
+        "damage": 3,
+        "defense": 3
+      },
+      "hp": 35,
+      "stress": 15,
+      "special_attacks": [
+        {
+          "name": "Precision Strike",
+          "base_damage": 5,
+          "accuracy_modifier": 2,
+          "area_effect": false,
+          "description": "Highly accurate targeted attack"
+        },
+        {
+          "name": "Suppressing Fire",
+          "base_damage": 3,
+          "accuracy_modifier": 0,
+          "area_effect": true,
+          "status_effects": [
+            {
+              "type": "pinned",
+              "duration": 1,
+              "magnitude": 1
+            }
+          ],
+          "description": "Forces enemies to take cover"
+        },
+        {
+          "name": "Combat Stim",
+          "base_damage": 0,
+          "accuracy_modifier": 0,
+          "area_effect": false,
+          "self_target": true,
+          "status_effects": [
+            {
+              "type": "enhanced_reflexes",
+              "duration": 3,
+              "magnitude": 2
+            }
+          ],
+          "description": "Boosts combat performance temporarily"
+        },
+        {
+          "name": "Execution Attempt",
+          "base_damage": 8,
+          "accuracy_modifier": -2,
+          "area_effect": false,
+          "special_conditions": {
+            "requires_target_below_hp": 0.25,
+            "description": "Only usable against severely wounded targets"
+          },
+          "description": "Devastating attack against weakened foes"
+        }
+      ],
+      "ai_personality": "tactical",
+      "special_abilities": [
+        {
+          "name": "Combat Veteran",
+          "effect": "Immune to fear and intimidation effects",
+          "passive": true
+        },
+        {
+          "name": "Tactical Awareness",
+          "effect": "+1 to initiative and first attack each round",
+          "passive": true
+        }
+      ]
+    }
+  ],
+  "tactical_notes": {
+    "player_strategy": "Coordinate attacks, manage resources carefully, exploit openings",
+    "enemy_strategy": "Use superior stats and positioning, save powerful attacks for key moments",
+    "key_factors": ["Resource management", "Action timing", "Damage optimization"]
+  },
+  "balance_metrics": {
+    "expected_rounds": "6-10",
+    "player_stress_usage": "high",
+    "threat_level": "high"
+  },
+  "scaling": {
+    "player_count_1": {
+      "enemy_hp_modifier": 0.8,
+      "enemy_damage_modifier": 0.9,
+      "description": "Slightly reduced for solo players"
+    },
+    "player_count_2": {
+      "enemy_hp_modifier": 1.0,
+      "enemy_damage_modifier": 1.0,
+      "description": "Baseline for 2 players"
+    },
+    "player_count_3": {
+      "enemy_hp_modifier": 1.3,
+      "enemy_damage_modifier": 1.1,
+      "description": "Increased for larger groups"
+    }
+  }
+}

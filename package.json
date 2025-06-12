@@ -1,9 +1,23 @@
 {
+  "name": "vitality-simulation-engine",
+  "version": "1.0.0",
+  "description": "Vitality RPG Simulation & Optimization Engine",
+  "scripts": {
+    "generate-plans": "node tools/generate_plans.js",
+    "run-gauntlet": "python3 tools/run_gauntlet.py",
+    "analyze": "python3 analysis/analyzer.py",
+    "test": "npx playwright test",
+    "simulate": "python3 simulator/main.py"
+  },
   "devDependencies": {
     "@playwright/test": "^1.53.0"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "dotenv": "^16.5.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "python": ">=3.8.0"
   }
 }
