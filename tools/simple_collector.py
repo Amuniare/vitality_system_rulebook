@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'backend'
+DEFAULT_PRESET = 'everything'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
@@ -239,7 +239,7 @@ PRESETS = {
         'CLAUDE.md',
         'README.md',
         'requirements.txt',
-        'logs.md',
+        'docs_planning/',
         
         # Planning
         'docs_planning/',
@@ -268,7 +268,7 @@ PRESETS = {
         'CLAUDE.md',
         'README.md',
         'requirements.txt',
-        'logs.md',
+        'docs_planning/',        
         'simulation/',
     ],
 
@@ -277,7 +277,7 @@ PRESETS = {
         'CLAUDE.md',
         'README.md',
         'requirements.txt',
-        'logs.md',
+        'docs_planning/',
         'src/',
     ],
 
@@ -286,7 +286,8 @@ PRESETS = {
         'CLAUDE.md',
         'README.md',
         'requirements.txt',
-        'logs.md',
+        'docs_planning/',
+        
         'frontend/',
     ],
 
@@ -295,7 +296,7 @@ PRESETS = {
         'CLAUDE.md',
         'README.md',
         'requirements.txt',
-        'logs.md',
+        'docs_planning/',
         'frontend/character-builder/',
     ],
 
@@ -304,7 +305,7 @@ PRESETS = {
         'CLAUDE.md',
         'README.md',
         'requirements.txt',
-        'logs.md',
+        'docs_planning/',
         'frontend/character-builder/character-builder.html',
         'frontend/character-builder/CLAUDE.md',
         'frontend/character-builder/app/',
@@ -321,7 +322,7 @@ PRESETS = {
         'CLAUDE.md',
         'README.md',
         'requirements.txt',
-        'logs.md',
+        'docs_planning/',
         'src/backend/',
     ],
 
@@ -330,22 +331,24 @@ PRESETS = {
         'CLAUDE.md',
         'README.md',
         'requirements.txt',
-        'logs.md',
+        'docs_planning/',
         'src/backend/',
         'src/scriptcards/',
         'src/roll20_api/',
     ],
+
+
 
     'everything': [
         # Complete codebase collection - includes everything
         'frontend/',
         'src/',
         'simulation/',
-        'rulebook/',
-        'frontend/docs/',
-        'docs_planning/',
+
         'CLAUDE.md',
         'README.md',
+        'docs_planning/',
+        
         'requirements.txt',
         '.gitignore'
     ],
