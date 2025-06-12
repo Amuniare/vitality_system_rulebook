@@ -1,0 +1,214 @@
+{
+  "name": "Captain and Crew",
+  "description": "Mixed enemy group with one strong leader and supporting minions",
+  "difficulty": "medium-high",
+  "scenario_type": "mixed_encounter",
+  "victory_conditions": {
+    "player_victory": "Defeat all enemies",
+    "enemy_victory": "Defeat all player characters"
+  },
+  "environment": {
+    "terrain": "warehouse",
+    "lighting": "artificial",
+    "weather": "indoor",
+    "special_conditions": [
+      {
+        "name": "cover_available",
+        "effect": "Defensive positions provide +1 defense",
+        "description": "Crates and machinery provide tactical cover"
+      }
+    ]
+  },
+  "enemies": [
+    {
+      "type": "captain",
+      "name": "Security Captain",
+      "archetype": "leader",
+      "tier": 2,
+      "stats": {
+        "accuracy": 3,
+        "damage": 3,
+        "defense": 4
+      },
+      "hp": 28,
+      "stress": 12,
+      "special_attacks": [
+        {
+          "name": "Command Strike",
+          "base_damage": 4,
+          "accuracy_modifier": 1,
+          "area_effect": false,
+          "special_effects": [
+            {
+              "name": "rally_allies",
+              "effect": "All allies gain +1 accuracy next round",
+              "description": "Inspiring attack that boosts team"
+            }
+          ],
+          "description": "Attack that rallies nearby allies"
+        },
+        {
+          "name": "Defensive Formation",
+          "base_damage": 0,
+          "accuracy_modifier": 0,
+          "area_effect": false,
+          "self_target": true,
+          "status_effects": [
+            {
+              "type": "defensive_stance",
+              "duration": 2,
+              "magnitude": 2
+            }
+          ],
+          "description": "Increases defense significantly"
+        },
+        {
+          "name": "Area Denial",
+          "base_damage": 2,
+          "accuracy_modifier": 0,
+          "area_effect": true,
+          "status_effects": [
+            {
+              "type": "movement_penalty",
+              "duration": 2,
+              "magnitude": 1
+            }
+          ],
+          "description": "Controls battlefield positioning"
+        }
+      ],
+      "ai_personality": "tactical",
+      "special_abilities": [
+        {
+          "name": "Leadership",
+          "effect": "All allied minions gain +1 to all stats while captain is alive",
+          "passive": true,
+          "aura": true
+        },
+        {
+          "name": "Veteran Training",
+          "effect": "Immune to status effects that reduce accuracy",
+          "passive": true
+        }
+      ]
+    },
+    {
+      "type": "minion",
+      "name": "Security Guard 1",
+      "archetype": "balanced",
+      "tier": 1,
+      "stats": {
+        "accuracy": 2,
+        "damage": 2,
+        "defense": 2
+      },
+      "hp": 12,
+      "special_attacks": [
+        {
+          "name": "Coordinated Strike",
+          "base_damage": 3,
+          "accuracy_modifier": 0,
+          "area_effect": false,
+          "special_conditions": {
+            "requires_ally_adjacent": true,
+            "bonus_damage": 1,
+            "description": "Extra damage when fighting alongside allies"
+          },
+          "description": "More effective when coordinated with team"
+        }
+      ],
+      "ai_personality": "support"
+    },
+    {
+      "type": "minion",
+      "name": "Security Guard 2",
+      "archetype": "balanced",
+      "tier": 1,
+      "stats": {
+        "accuracy": 2,
+        "damage": 2,
+        "defense": 2
+      },
+      "hp": 12,
+      "special_attacks": [
+        {
+          "name": "Coordinated Strike",
+          "base_damage": 3,
+          "accuracy_modifier": 0,
+          "area_effect": false,
+          "special_conditions": {
+            "requires_ally_adjacent": true,
+            "bonus_damage": 1,
+            "description": "Extra damage when fighting alongside allies"
+          },
+          "description": "More effective when coordinated with team"
+        }
+      ],
+      "ai_personality": "support"
+    },
+    {
+      "type": "specialist",
+      "name": "Tech Specialist",
+      "archetype": "support",
+      "tier": 1,
+      "stats": {
+        "accuracy": 3,
+        "damage": 1,
+        "defense": 1
+      },
+      "hp": 10,
+      "special_attacks": [
+        {
+          "name": "EMP Burst",
+          "base_damage": 1,
+          "accuracy_modifier": 0,
+          "area_effect": true,
+          "status_effects": [
+            {
+              "type": "system_disruption",
+              "duration": 2,
+              "magnitude": 1
+            }
+          ],
+          "description": "Disrupts electronic equipment and abilities"
+        },
+        {
+          "name": "Emergency Repair",
+          "base_damage": 0,
+          "accuracy_modifier": 0,
+          "area_effect": false,
+          "target_ally": true,
+          "healing": 5,
+          "description": "Provides minor healing to allies"
+        }
+      ],
+      "ai_personality": "support"
+    }
+  ],
+  "tactical_notes": {
+    "player_strategy": "Decide whether to focus captain first (removes bonuses) or clear minions (reduce action economy)",
+    "enemy_strategy": "Captain provides leadership bonuses while minions support and coordinate attacks",
+    "key_factors": ["Target prioritization", "Leadership aura effects", "Positioning for cover"]
+  },
+  "balance_metrics": {
+    "expected_rounds": "5-8",
+    "player_stress_usage": "medium-high",
+    "threat_level": "moderate-high"
+  },
+  "encounter_phases": {
+    "opening": {
+      "description": "Enemies spread out and take defensive positions",
+      "special_rules": ["All enemies gain cover bonus first round"]
+    },
+    "mid_fight": {
+      "description": "Captain coordinates team attacks",
+      "trigger": "After round 2",
+      "special_rules": ["Captain uses Command Strike when possible"]
+    },
+    "desperate": {
+      "description": "Remaining enemies fight more aggressively",
+      "trigger": "When captain or 2+ minions defeated",
+      "special_rules": ["Remaining enemies gain +1 damage, -1 defense"]
+    }
+  }
+}
