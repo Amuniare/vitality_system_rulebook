@@ -230,6 +230,112 @@ PRESETS = {
         'README.md'
     ],
 
+    # ============================================================================
+    # NEW REQUESTED PRESETS
+    # ============================================================================
+
+    'root_files_planning_all_docs_claude': [
+        # Root files + planning + all docs / claude files
+        'CLAUDE.md',
+        'README.md',
+        'requirements.txt',
+        'logs.md',
+        
+        # Planning
+        'docs_planning/',
+        
+        # All docs and claude files
+        'frontend/docs/',
+        'src/docs/',
+        'simulation/docs/',
+        'frontend/character-builder/CLAUDE.md',
+        'frontend/character-builder/app/CLAUDE.md',
+        'frontend/character-builder/assets/css/CLAUDE.md',
+        'frontend/character-builder/calculators/CLAUDE.md',
+        'frontend/character-builder/core/CLAUDE.md',
+        'frontend/character-builder/features/CLAUDE.md',
+        'frontend/character-builder/shared/CLAUDE.md',
+        'frontend/character-builder/systems/CLAUDE.md',
+        'src/CLAUDE.md',
+        'src/backend/api/CLAUDE.md',
+        'src/backend/character/CLAUDE.md',
+        'src/backend/utils/CLAUDE.md',
+        'src/roll20_api/CLAUDE.md',
+    ],
+
+    'root_simulation': [
+        # Root files + simulation
+        'CLAUDE.md',
+        'README.md',
+        'requirements.txt',
+        'logs.md',
+        'simulation/',
+    ],
+
+    'root_src': [
+        # Root files + src
+        'CLAUDE.md',
+        'README.md',
+        'requirements.txt',
+        'logs.md',
+        'src/',
+    ],
+
+    'root_frontend': [
+        # Root files + frontend
+        'CLAUDE.md',
+        'README.md',
+        'requirements.txt',
+        'logs.md',
+        'frontend/',
+    ],
+
+    'root_character_builder': [
+        # Root files + character-builder
+        'CLAUDE.md',
+        'README.md',
+        'requirements.txt',
+        'logs.md',
+        'frontend/character-builder/',
+    ],
+
+    'root_character_builder_minus_data': [
+        # Root files + character-builder minus data
+        'CLAUDE.md',
+        'README.md',
+        'requirements.txt',
+        'logs.md',
+        'frontend/character-builder/character-builder.html',
+        'frontend/character-builder/CLAUDE.md',
+        'frontend/character-builder/app/',
+        'frontend/character-builder/assets/',
+        'frontend/character-builder/calculators/',
+        'frontend/character-builder/core/',
+        'frontend/character-builder/features/',
+        'frontend/character-builder/shared/',
+        'frontend/character-builder/systems/',
+    ],
+
+    'root_backend': [
+        # Root files + backend
+        'CLAUDE.md',
+        'README.md',
+        'requirements.txt',
+        'logs.md',
+        'src/backend/',
+    ],
+
+    'root_backend_scriptcards_api': [
+        # Root files + backend + scriptcards + api
+        'CLAUDE.md',
+        'README.md',
+        'requirements.txt',
+        'logs.md',
+        'src/backend/',
+        'src/scriptcards/',
+        'src/roll20_api/',
+    ],
+
     'everything': [
         # Complete codebase collection - includes everything
         'frontend/',
