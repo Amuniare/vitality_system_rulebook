@@ -1,16 +1,7 @@
 logs
 .venv
 __pycache__
-browser_profile
-archive
-tools
-codebase_overview.txt
-rulebook.docx
-extracted_characters
-templates
-sessions
 
-characters
 
 *.pyc
 *.pyo
@@ -19,24 +10,8 @@ characters
 *.sqlite3
 *.log
 codebase.txt
-backups
-character_data
-.claude
-docs/web_dev_logs/
-docs/data-formats.md
 .env
-mcp_server
-launch_mcp.ps1
-tests/.env
-tests/test-results/
-tests/playwright-report/
-src_dev_logs
-tests
-node_modules
-playwright-report
-package.json
-package-lock.json
 
-dev_logs
 mutants
-discord_transcriber.py
+browser_profile
+archive
