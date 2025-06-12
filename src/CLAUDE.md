@@ -4,7 +4,7 @@
 
 This directory (`src/`) contains the **Python-based backend automation system** for the Vitality RPG project. Its sole purpose is to interact with a live Roll20 campaign to upload and download character data.
 
-**This system is entirely separate from the JavaScript web character builder located in `rulebook/`.**
+**This system is entirely separate from the JavaScript web character builder located in `frontend/`.**
 
 The core architecture relies on:
 *   **Python 3:** The primary programming language.

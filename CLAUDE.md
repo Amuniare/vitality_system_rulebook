@@ -3,7 +3,7 @@
 ## 1. Project Overview
 
 This is a personal RPG management system with two main, independent parts:
-1.  **JavaScript Web Character Builder:** A browser-based application for creating characters for the Vitality RPG system. Located in `rulebook/character-builder/`.
+1.  **JavaScript Web Character Builder:** A browser-based application for creating characters for the Vitality RPG system. Located in `frontend/character-builder/`.
 2.  **Python Roll20 Automation:** A backend system for uploading/downloading character data to and from a Roll20 campaign. Located in `src/`.
 
 These two systems only interact through the character JSON files stored in `characters/`.
@@ -21,7 +21,7 @@ This project has a mature, specific architecture. To be effective, you **MUST** 
 **This is your entry point for any task.** Before you begin, identify which part of the project you are working on and read its master guide.
 
 -   ### For the **JavaScript Web Character Builder**:
-    > Your master guide is **`rulebook/character-builder/CLAUDE.md`**.
+    > Your master guide is **`frontend/character-builder/CLAUDE.md`**.
     > You must read it to understand the web app's architecture and data flow before touching any JS file.
 
 -   ### For the **Python Roll20 Automation**:
@@ -64,13 +64,13 @@ This table maps a high-level application area to its main entry point file. The 
 
 | Section | Entry Point File |
 |---|---|
-| "Utility Tab" | `rulebook/character-builder/features/utility/UtilityTab.js` |
-| "Main Pool Tab" | `rulebook/character-builder/features/main-pool/MainPoolTab.js` |
-| "Special Attacks Tab"| `rulebook/character-builder/features/special-attacks/SpecialAttackTab.js` |
-| "Archetypes Tab" | `rulebook/character-builder/features/archetypes/ArchetypeTab.js` |
-| "Attributes Tab" | `rulebook/character-builder/features/attributes/AttributeTab.js` |
-| "Basic Info Tab" | `rulebook/character-builder/features/basic-info/BasicInfoTab.js` |
-| "Summary Tab" | `rulebook/character-builder/features/summary/SummaryTab.js` |
+| "Utility Tab" | `frontend/character-builder/features/utility/UtilityTab.js` |
+| "Main Pool Tab" | `frontend/character-builder/features/main-pool/MainPoolTab.js` |
+| "Special Attacks Tab"| `frontend/character-builder/features/special-attacks/SpecialAttackTab.js` |
+| "Archetypes Tab" | `frontend/character-builder/features/archetypes/ArchetypeTab.js` |
+| "Attributes Tab" | `frontend/character-builder/features/attributes/AttributeTab.js` |
+| "Basic Info Tab" | `frontend/character-builder/features/basic-info/BasicInfoTab.js` |
+| "Summary Tab" | `frontend/character-builder/features/summary/SummaryTab.js` |
 
 ### 5.2. Recipe Book
 
@@ -85,8 +85,8 @@ This section addresses bugs caused by mismatches between a component's expectati
 *   **Implementation Steps:** For the target file(s) identified from the mapping table and problem description, you WILL perform the following changes:
     1.  **Identify the Data Provider:** In the parent component (usually the `...Tab.js` file), locate the line where the failing component's `render()` method is called. Examine exactly which object is being passed as an argument.
     2.  **Identify the Data Model:** Determine the "source of truth" for the data's structure.
-        *   For character data, this is `rulebook/character-builder/core/VitalityCharacter.js`.
-        *   For game rule data (archetypes, flaws, etc.), this is the relevant JSON file in `rulebook/character-builder/data/`.
+        *   For character data, this is `frontend/character-builder/core/VitalityCharacter.js`.
+        *   For game rule data (archetypes, flaws, etc.), this is the relevant JSON file in `frontend/character-builder/data/`.
     3.  **Find the Mismatch:** Compare the property access in the failing component's `render()` method (e.g., `character.basicInfo.tier`) with the actual property definitions in the data model file (e.g., `this.tier` in `VitalityCharacter.js`).
     4.  **Correct the Component:** Modify the failing component's `render()` method to use the correct property access paths, removing any incorrect nesting.
     5.  **Present the Fix:** Provide the complete, corrected file.
