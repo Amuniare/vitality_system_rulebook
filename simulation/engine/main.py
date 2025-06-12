@@ -14,12 +14,12 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 
 # Add the project root to the path so we can import our modules
-project_root = Path(__file__).parent.parent
+project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from simulator.core.character_loader import CharacterLoader, SimulationCharacter
-from simulator.core.combat_state_fixed import CombatStateMachine
-from simulator.ai.opponent_ai import OpponentAI, AIPersonality, create_ai_for_character_type
+from simulation.engine.core.character_loader import CharacterLoader, SimulationCharacter
+from simulation.engine.core.combat_state_fixed import CombatStateMachine
+from simulation.engine.ai.opponent_ai import OpponentAI, AIPersonality, create_ai_for_character_type
 
 
 class CombatSimulator:
@@ -219,9 +219,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python simulator/main.py --character characters/gen/char_001.json --scenario sim/scenarios/duel.json
-  python simulator/main.py -c char.json -s scenario.json --verbose --output results.json
-  python simulator/main.py --help
+  python simulation/engine/main.py --character characters/gen/char_001.json --scenario simulation/scenarios/duel.json
+  python simulation/engine/main.py -c char.json -s scenario.json --verbose --output results.json
+  python simulation/engine/main.py --help
         """
     )
     

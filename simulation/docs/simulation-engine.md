@@ -47,22 +47,22 @@ node tools/generate_plans.js --count 50
 **Purpose:** Executes deterministic, repeatable combat simulations based on game rules.
 
 **Components:**
-- `simulator/core/rule_engine.py` - Pure functions for combat math
-- `simulator/core/character_loader.py` - Character JSON parsing and validation
-- `simulator/core/combat_state.py` - Combat state machine and turn management
-- `simulator/ai/opponent_ai.py` - Deterministic enemy AI
-- `simulator/main.py` - Command-line interface for single simulations
+- `simulation/engine/core/rule_engine.py` - Pure functions for combat math
+- `simulation/engine/core/character_loader.py` - Character JSON parsing and validation
+- `simulation/engine/core/combat_state.py` - Combat state machine and turn management
+- `simulation/engine/ai/opponent_ai.py` - Deterministic enemy AI
+- `simulation/engine/main.py` - Command-line interface for single simulations
 
 **Usage:**
 ```bash
 # Single simulation
-npm run simulate -- --character characters/gen/char_001.json --scenario sim/scenarios/duel.json
+npm run simulate -- --character characters/gen/char_001.json --scenario simulation/scenarios/duel.json
 
 # With verbose output
-python3 simulator/main.py -c char.json -s scenario.json --verbose
+python3 simulation/engine/main.py -c char.json -s scenario.json --verbose
 
 # Validation only
-python3 simulator/main.py -c char.json -s scenario.json --validate-only
+python3 simulation/engine/main.py -c char.json -s scenario.json --validate-only
 ```
 
 ### 3. The Oracle (Performance Analyzer)
@@ -71,8 +71,8 @@ python3 simulator/main.py -c char.json -s scenario.json --validate-only
 
 **Components:**
 - `tools/run_gauntlet.py` - Mass simulation orchestrator
-- `analysis/analyzer.py` - Statistical analysis and reporting
-- `analysis/reports/` - Generated reports and visualizations
+- `simulation/analysis/analyzer.py` - Statistical analysis and reporting
+- `simulation/analysis/reports/` - Generated reports and visualizations
 
 **Usage:**
 ```bash
@@ -83,7 +83,7 @@ npm run run-gauntlet
 python3 tools/run_gauntlet.py --workers 8 --verbose
 
 # Generate analysis report
-npm run analyze -- --input gauntlet_results_20250611_123456.csv --visualizations
+npm run analyze -- --input simulation/analysis/gauntlet_results_20250611_123456.csv --visualizations
 ```
 
 ### 4. The Golem (ML Optimization) - *Future Phase*
@@ -153,7 +153,7 @@ Character files follow the VitalityCharacter.js data model:
 }
 ```
 
-### Scenario Files (`sim/scenarios/scenario_name.json`)
+### Scenario Files (`simulation/scenarios/scenario_name.json`)
 
 ```json
 {
@@ -177,7 +177,7 @@ Character files follow the VitalityCharacter.js data model:
 }
 ```
 
-### Results CSV (`analysis/gauntlet_results_TIMESTAMP.csv`)
+### Results CSV (`simulation/analysis/gauntlet_results_TIMESTAMP.csv`)
 
 ```csv
 character_id,character_name,scenario_name,victory_result,rounds_completed,total_damage_dealt,total_damage_taken,...
@@ -202,7 +202,7 @@ npm install
 
 2. **Install Python dependencies:**
 ```bash
-pip install -r sim_requirements.txt
+pip install -r simulation/requirements.txt
 ```
 
 3. **Set up environment variables:**
@@ -217,7 +217,7 @@ echo "GEMINI_API_KEY=your-api-key-here" > .env
 npm test
 
 # Test simulator
-python3 simulator/main.py --help
+python3 simulation/engine/main.py --help
 ```
 
 ## Workflow Examples
@@ -235,16 +235,16 @@ npm test
 npm run run-gauntlet
 
 # 4. Analyze results
-npm run analyze -- --input analysis/gauntlet_results_*.csv --visualizations
+npm run analyze -- --input simulation/analysis/gauntlet_results_*.csv --visualizations
 ```
 
 ### Custom Simulation
 
 ```bash
 # Create a specific character build manually, then test against scenarios
-python3 simulator/main.py \
+python3 simulation/engine/main.py \
   --character characters/gen/custom_character.json \
-  --scenario sim/scenarios/captain_and_crew.json \
+  --scenario simulation/scenarios/captain_and_crew.json \
   --verbose \
   --output custom_results.json
 ```
@@ -257,8 +257,8 @@ python3 tools/run_gauntlet.py \
   --characters-dir characters/tier2 \
   --verbose
 
-python3 analysis/analyzer.py \
-  --input analysis/gauntlet_results_*.csv \
+python3 simulation/analysis/analyzer.py \
+  --input simulation/analysis/gauntlet_results_*.csv \
   --outlier-threshold 1.5 \
   --visualizations
 ```
@@ -316,13 +316,13 @@ node tools/generate_plans.js 1 --verbose
 npm test
 
 # Check specific plan
-python3 simulator/main.py --validate-only -c char.json -s scenario.json
+python3 simulation/engine/main.py --validate-only -c char.json -s scenario.json
 ```
 
 **3. Simulation Errors**
 ```bash
 # Enable detailed logging
-python3 simulator/main.py -c char.json -s scenario.json --verbose
+python3 simulation/engine/main.py -c char.json -s scenario.json --verbose
 
 # Check character and scenario files
 python3 -c "import json; print(json.load(open('char.json')))"
@@ -331,17 +331,17 @@ python3 -c "import json; print(json.load(open('char.json')))"
 **4. Analysis Issues**
 ```bash
 # Verify CSV format
-head -5 analysis/gauntlet_results_*.csv
+head -5 simulation/analysis/gauntlet_results_*.csv
 
 # Test with smaller dataset
-python3 analysis/analyzer.py --input small_results.csv --verbose
+python3 simulation/analysis/analyzer.py --input small_results.csv --verbose
 ```
 
 ### Debugging Tools
 
 **Validation Mode:**
 ```bash
-python3 simulator/main.py --validate-only -c char.json -s scenario.json
+python3 simulation/engine/main.py --validate-only -c char.json -s scenario.json
 ```
 
 **Verbose Logging:**
@@ -351,7 +351,7 @@ python3 tools/run_gauntlet.py --verbose --sequential
 
 **Partial Analysis:**
 ```bash
-python3 analysis/analyzer.py --report-only -i results.csv
+python3 simulation/analysis/analyzer.py --report-only -i results.csv
 ```
 
 ## Success Metrics
@@ -386,9 +386,9 @@ python3 analysis/analyzer.py --report-only -i results.csv
 
 The system is designed for extensibility:
 
-- **New Scenarios:** Add JSON files to `sim/scenarios/`
+- **New Scenarios:** Add JSON files to `simulation/scenarios/`
 - **Custom AI:** Extend `OpponentAI` class with new personalities
-- **Analysis Metrics:** Add new calculations to `analyzer.py`
+- **Analysis Metrics:** Add new calculations to `simulation/analysis/analyzer.py`
 - **Export Formats:** Extend `run_gauntlet.py` output options
 
 ## Contributing
