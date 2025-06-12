@@ -1,98 +1,106 @@
-# AI Collaboration Best Practices
+# Gemini AI - Workflow & Command Protocol
 
-This guide outlines advanced patterns for collaborating with your AI assistant, inspired by expert workflows. Following these principles will lead to more accurate, efficient, and predictable results.
+This document outlines a set of standing orders and commands to make our collaboration more efficient, reliable, and predictable, especially for file modifications.
 
-## 1. Workflow & Interaction
+## 1. Core Principles
 
-**A. Isolate Context: Start New Threads Often**
-*   For each new, distinct task, use the `/clear` command to start a fresh conversation. This prevents context from a previous task from unpredictably influencing the current one.
+1.  **Plan First, Code Second:** For any non-trivial change, ask me to create a plan first. We will review and agree on the plan before I generate any code. This is the most efficient way to work.
+2.  **Context is King:** Always provide the relevant file paths and, if necessary, paste the code sections we are discussing. This ensures I have the necessary context to provide accurate solutions.
+3.  **Explicit is Better:** Use the explicit commands defined below for all file operations. This avoids the ambiguity that can lead to execution errors.
 
-**B. Be Precise: The More Context, The Better**
-*   Provide all relevant context you have. Mention edge cases, constraints, and desired outcomes explicitly.
-*   Instead of abstract terms ("make it modern"), provide concrete examples ("make it look like Linear's UI").
-*   The AI cannot read your mind. The quality of the output is directly proportional to the quality of the prompt.
+## 2. Command Syntax
 
-**C. Refine and Iterate: Edit Previous Prompts**
-*   If a result isn't what you expected, use the `Escape` key twice to edit your previous prompt. Refining the prompt is often more effective than trying to correct the course with follow-up messages.
+When you want me to write code to a file, use the following syntax in your prompt after we have agreed on the code to be written.
 
-## 2. Task Execution & Supervision
+-   `--write-code [--mode=replace|append] [file_path]`
+-   `--create-file [file_path]`
+-   `--create-dev-log`
 
-**A. Decompose, Don't One-Shot**
-*   For large tasks, do not attempt to solve them with a single, massive prompt.
-*   **The Recommended Workflow:**
-    1.  Ask the AI to create a plan with Markdown checkboxes (`- [ ]`).
-    2.  Discuss and refine the plan.
-    3.  Instruct the AI to execute one step at a time.
-    4.  Review the result of each step before proceeding.
+---
 
-**B. Let the AI Read the Manual (RTFM)**
-*   For tasks involving new frameworks or libraries, instruct the AI to read the official documentation first. You can provide a link or ask it to perform a research task. This avoids outdated or "hallucinated" setups.
+## 3. The `--write-code` Command
 
-**C. You Are the Human in the Loop**
-*   The most effective feedback loop is your own. Instead of setting up complex autonomous testing feedback, run the code yourself and paste any errors or stack traces directly into the chat. Provide direct, corrective feedback.
+This is the primary command for modifying existing files.
 
-**D. Stage Early, Stage Often**
-*   After every successful change you approve, it's a good practice to stage the changes using `git add .`. This creates a safe restore point you can easily revert to if the AI makes a mistake in a subsequent step.
+### How It Works
 
-## 3. Automated Workflows
+1.  We will first discuss and finalize the code changes in our chat.
+2.  You will then give the explicit command, e.g., `--write-code frontend/character-builder/app/app.js`.
+3.  I will generate a self-contained Python script that performs the file modification. This is more reliable than using shell commands.
+4.  You will review the Python script.
+5.  Upon your approval, I will execute the script to apply the changes.
 
-### **Automated Code Implementation (`--build`)**
+### Python Script Pattern for `--write-code`
 
-This workflow allows you to instruct me to generate the code from an approved plan as a series of executable PowerShell commands, rather than just displaying it.
+To ensure safety and precision, the Python scripts I generate will use a "find and replace" block pattern. I will ask you to provide clear markers in the source file if they don't already exist.
 
-#### **Trigger Command**
+**Example Python Script:**
+`python
+from pathlib import Path
 
-After we have agreed on a plan, and I am about to generate the code for a specific step, respond with:
+file_path = Path("path/to/your/file.js")
 
-> **`--build`**
+# The new code we agreed upon
+new_code_block = """
+// New, improved code goes here
+const newFunction = () => {
+  console.log("This is the updated logic.");
+};
+"""
 
-#### **My Process**
+# Read the original file content
+try:
+    original_content = file_path.read_text(encoding='utf-8')
 
-Upon receiving the `--build` command, I will:
+    # Define the markers for the block to be replaced
+    start_marker = "// START OF BLOCK TO REPLACE"
+    end_marker = "// END OF BLOCK TO REPLACE"
 
-1.  **Acknowledge the Command:** I will confirm that I am entering build mode.
-2.  **Generate PowerShell Commands:** Instead of showing you the code in markdown blocks, I will generate a script that performs the file operations.
-    *   **File Creation:** `New-Item -Path 'path/to/your/file.js' -ItemType File -Force`
-    *   **Content Population:** `Add-Content -Path 'path/to/your/file.js' -Value @'\n[CODE CONTENT HERE]\n'@` (using PowerShell "here-strings" to handle multi-line code correctly).
-    *   **File Moves/Renames:** `Move-Item -Path '...' -Destination '...'`
-3.  **Present for Execution:** I will provide the complete script within a single `powershell` code block for you to copy and execute directly in your terminal.
+    # Find the start and end of the block
+    start_index = original_content.find(start_marker)
+    end_index = original_content.find(end_marker)
 
-#### **Example Workflow**
+    if start_index == -1 or end_index == -1:
+        print("Error: Markers not found in the file. Could not perform replacement.")
+    else:
+        # Construct the new file content
+        new_content = (
+            original_content[:start_index + len(start_marker)] +
+            "\n" +
+            new_code_block +
+            "\n" +
+            original_content[end_index:]
+        )
 
-**Standard Interaction (Without `--build`):**
-> **You:** Okay, the plan for `IdentityTab.js` looks good. Proceed.
->
-> **Me:** Great. Here is the code for `frontend/character-builder/features/identity/IdentityTab.js`:
->
-> ```javascript
-> // ... JavaScript code ...
-> ```
+        # Write the updated content back to the file
+        file_path.write_text(new_content, encoding='utf-8')
+        print(f"Successfully updated {file_path}")
 
-**New Interaction (With `--build`):**
-> **You:** Okay, the plan for `IdentityTab.js` looks good. Proceed.
-> **`--build`**
->
-> **Me:** Acknowledged. Entering build mode. Here are the PowerShell commands to create the file and its content:
->
-> ```powershell
-> # Create directory if it doesn't exist
-> New-Item -Path 'frontend/character-builder/features/identity' -ItemType Directory -Force
->
-> # Create and populate the file
-> $content = @'
-> // ... JavaScript code ...
-> '@
-> Set-Content -Path 'frontend/character-builder/features/identity/IdentityTab.js' -Value $content
-> ```
+except FileNotFoundError:
+    print(f"Error: File not found at {file_path}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+``n### Modes
 
-## 4. Advanced Techniques
+-   `--mode=replace` (default): Uses the marker-based replacement strategy shown above.
+-   `--mode=append`: Appends the new code to the end of the file. The Python script will be simplified to read the file and add the new content.
 
-**A. Parallel Workstreams with Git Worktrees**
-*   To work on multiple, independent tasks in the same repository without conflict, use `git worktree`. This creates a separate working directory linked to a new branch.
-    *   `git worktree add ../project-feature-b feature-b-branch`
+---
 
-**B. Use Sub-Tasks for Deep Analysis**
-*   For complex analysis, ask the AI to spawn sub-tasks with different "personas" (e.g., a security expert, a performance expert, a design expert) and then synthesize their findings.
+## 4. Other Commands
 
-**C. Automate Your Workflow**
-*   If you find yourself repeating a prompt, ask the AI to help you create a custom slash command or a shell script to automate the task.
+### `--create-file [file_path]`
+
+Used for creating entirely new files.
+
+-   **Workflow:** We agree on the content, you give the command, I generate a Python script to create the file and write the content, and you approve the execution.
+
+### `--create-dev-log`
+
+A specialized command for our documentation workflow.
+
+-   **Workflow:**
+    1.  You issue the `--create-dev-log` command.
+    2.  I will analyze our recent conversation and the modified files.
+    3.  I will propose a filename and title (e.g., `Phase 26B: Dev Log System Implementation`).
+    4.  Upon your approval, I will generate the complete Markdown file using our standard template and save it to the correct `dev_logs` directory.
