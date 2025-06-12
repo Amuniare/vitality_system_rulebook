@@ -1,58 +1,98 @@
-# Vitality System - AI Development Guide (ROOT)
+# AI Collaboration Best Practices
 
-This guide outlines the principles for our collaboration on the Vitality System project. It favors a flexible, interactive workflow over rigid commands.
+This guide outlines advanced patterns for collaborating with your AI assistant, inspired by expert workflows. Following these principles will lead to more accurate, efficient, and predictable results.
 
-## 1. Project Overview
+## 1. Workflow & Interaction
 
-This is a personal RPG management system with two main, independent parts:
-1.  **JavaScript Web Character Builder:** A browser-based application for creating characters for the Vitality RPG system. Located in `frontend/character-builder/`.
-2.  **Python Roll20 Automation:** A backend system for uploading/downloading character data to and from a Roll20 campaign. Located in `src/`.
+**A. Isolate Context: Start New Threads Often**
+*   For each new, distinct task, use the `/clear` command to start a fresh conversation. This prevents context from a previous task from unpredictably influencing the current one.
 
-These two systems only interact through the character JSON files.
+**B. Be Precise: The More Context, The Better**
+*   Provide all relevant context you have. Mention edge cases, constraints, and desired outcomes explicitly.
+*   Instead of abstract terms ("make it modern"), provide concrete examples ("make it look like Linear's UI").
+*   The AI cannot read your mind. The quality of the output is directly proportional to the quality of the prompt.
 
-## 2. Collaboration Principles
+**C. Refine and Iterate: Edit Previous Prompts**
+*   If a result isn't what you expected, use the `Escape` key twice to edit your previous prompt. Refining the prompt is often more effective than trying to correct the course with follow-up messages.
 
-Let's work together as a team. To be most effective, please follow these guidelines:
+## 2. Task Execution & Supervision
 
--   **Be an Active Collaborator:** Instead of just giving commands, guide my approach. Ask me to make a plan, think through alternatives, or explain my reasoning. Course-correct me early if I'm on the wrong path.
--   **Provide Context:** Mention relevant files, business goals, or even paste in error messages. The more context I have, the better my solutions will be.
--   **Use Checklists for Complex Tasks:** For multi-step work, ask me to generate a plan with Markdown checkboxes (`- [ ]`). We can track our progress together, ensuring no steps are missed.
+**A. Decompose, Don't One-Shot**
+*   For large tasks, do not attempt to solve them with a single, massive prompt.
+*   **The Recommended Workflow:**
+    1.  Ask the AI to create a plan with Markdown checkboxes (`- [ ]`).
+    2.  Discuss and refine the plan.
+    3.  Instruct the AI to execute one step at a time.
+    4.  Review the result of each step before proceeding.
 
-## 3. Project Architecture & Local Guides
+**B. Let the AI Read the Manual (RTFM)**
+*   For tasks involving new frameworks or libraries, instruct the AI to read the official documentation first. You can provide a link or ask it to perform a research task. This avoids outdated or "hallucinated" setups.
 
-The codebase is organized into distinct sections, each with its own architectural rules. To understand these rules, **always refer to the `CLAUDE.md` file within the relevant directory.** These are your primary entry points for any task.
+**C. You Are the Human in the Loop**
+*   The most effective feedback loop is your own. Instead of setting up complex autonomous testing feedback, run the code yourself and paste any errors or stack traces directly into the chat. Provide direct, corrective feedback.
 
--   ### For the **JavaScript Web Character Builder**:
-    > Your master guide is **`frontend/character-builder/CLAUDE.md`**.
-    > It contains the architectural constitution for the entire frontend application.
+**D. Stage Early, Stage Often**
+*   After every successful change you approve, it's a good practice to stage the changes using `git add .`. This creates a safe restore point you can easily revert to if the AI makes a mistake in a subsequent step.
 
--   ### For the **Python Roll20 Automation**:
-    > Your guide is **`src/CLAUDE.md`**.
-    > It outlines the architecture of the backend system and points to further documentation in `src/docs/`.
+## 3. Automated Workflows
 
-## 4. Custom Commands & Automated Workflows
+### **Automated Code Implementation (`--build`)**
 
-This section defines special, context-aware workflows.
+This workflow allows you to instruct me to generate the code from an approved plan as a series of executable PowerShell commands, rather than just displaying it.
 
-### Creating Development Logs
+#### **Trigger Command**
 
-When you want to document the changes we've made, simply tell me: **"Create the dev log for what we just did."**
+After we have agreed on a plan, and I am about to generate the code for a specific step, respond with:
 
-I will then:
-1.  **Analyze our recent conversation and the modified files** to infer the appropriate `area` (e.g., `web` or `src`), a new `ID`, and a descriptive `Title`.
-2.  **Propose the filename and title** for your confirmation.
-3.  Upon your approval, I will **generate a new Markdown file** in the correct `dev_logs` directory, pre-filled with our standard log template.
+> **`--build`**
 
-## 5. Common Commands
+#### **My Process**
 
-Here are some essential commands for managing the project:
+Upon receiving the `--build` command, I will:
 
--   **Run the Web Character Builder:**
-    -   Start a local server: `python -m http.server`
-    -   Open: `http://localhost:8000/frontend/character-builder/character-builder.html`
+1.  **Acknowledge the Command:** I will confirm that I am entering build mode.
+2.  **Generate PowerShell Commands:** Instead of showing you the code in markdown blocks, I will generate a script that performs the file operations.
+    *   **File Creation:** `New-Item -Path 'path/to/your/file.js' -ItemType File -Force`
+    *   **Content Population:** `Add-Content -Path 'path/to/your/file.js' -Value @'\n[CODE CONTENT HERE]\n'@` (using PowerShell "here-strings" to handle multi-line code correctly).
+    *   **File Moves/Renames:** `Move-Item -Path '...' -Destination '...'`
+3.  **Present for Execution:** I will provide the complete script within a single `powershell` code block for you to copy and execute directly in your terminal.
 
--   **Upload Characters to Roll20:**
-    -   `python main.py sync`
+#### **Example Workflow**
 
--   **Run Frontend Tests (Once Implemented):**
-    -   `npm test`
+**Standard Interaction (Without `--build`):**
+> **You:** Okay, the plan for `IdentityTab.js` looks good. Proceed.
+>
+> **Me:** Great. Here is the code for `frontend/character-builder/features/identity/IdentityTab.js`:
+>
+> ```javascript
+> // ... JavaScript code ...
+> ```
+
+**New Interaction (With `--build`):**
+> **You:** Okay, the plan for `IdentityTab.js` looks good. Proceed.
+> **`--build`**
+>
+> **Me:** Acknowledged. Entering build mode. Here are the PowerShell commands to create the file and its content:
+>
+> ```powershell
+> # Create directory if it doesn't exist
+> New-Item -Path 'frontend/character-builder/features/identity' -ItemType Directory -Force
+>
+> # Create and populate the file
+> $content = @'
+> // ... JavaScript code ...
+> '@
+> Set-Content -Path 'frontend/character-builder/features/identity/IdentityTab.js' -Value $content
+> ```
+
+## 4. Advanced Techniques
+
+**A. Parallel Workstreams with Git Worktrees**
+*   To work on multiple, independent tasks in the same repository without conflict, use `git worktree`. This creates a separate working directory linked to a new branch.
+    *   `git worktree add ../project-feature-b feature-b-branch`
+
+**B. Use Sub-Tasks for Deep Analysis**
+*   For complex analysis, ask the AI to spawn sub-tasks with different "personas" (e.g., a security expert, a performance expert, a design expert) and then synthesize their findings.
+
+**C. Automate Your Workflow**
+*   If you find yourself repeating a prompt, ask the AI to help you create a custom slash command or a shell script to automate the task.

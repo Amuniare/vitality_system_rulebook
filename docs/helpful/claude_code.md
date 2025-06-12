@@ -1,21 +1,47 @@
-### 1. How to Use Me More Efficiently (Best Practices)
+# AI Collaboration Best Practices
 
-The core principle is to treat me less like a search engine and more like an active collaborator or a junior developer on your team.
+This guide outlines advanced patterns for collaborating with your AI assistant, inspired by expert workflows. Following these principles will lead to more accurate, efficient, and predictable results.
 
-**Setup & Configuration (Do this once):**
-*   **Create a `CLAUDE.md` file:** This is the most important step. Create a file named `CLAUDE.md` in the root of your project. Use it to document essential project information like:
-    *   **Common Commands:** `npm run test`, `python main.py sync`, etc. This stops me from having to search for them.
-    *   **Architectural Rules:** Briefly state the key patterns, like "All UI components must be stateless" or "Use the `RenderUtils` class for creating cards."
-    *   **File Locations:** Point out critical files, e.g., "Main entry point: `app.js`".
-*   **Customize Tools:** Use the `/permissions` command or edit `.claude/settings.json` to grant me permission for safe, common tasks you trust me with, like editing files (`Edit`) or committing changes (`Bash(git commit:*)`). This reduces the number of times I have to ask for permission.
+## 1. Workflow & Interaction
 
-**Workflow & Interaction (Do this every time):**
-*   **Give Me Context First:** Before asking me to write code, tell me which files are relevant. Use `tab-completion` to mention files, or paste in code snippets and error messages.
-*   **Plan, Then Execute:** For complex tasks, don't just ask me to "implement feature X." Instead, say: **"First, make a plan to implement feature X."** Review the plan, correct it, and then ask me to execute it. This is more efficient than having me write incorrect code and then fixing it.
-*   **Use "Think" for Complex Problems:** When you have a hard problem (e.g., "design a new caching system"), use the word "think" in your prompt. For example: **"Think hard about the best way to refactor this module."** This gives me more time and resources to come up with a better solution.
-*   **Be Specific:** Vague prompts lead to generic code. Instead of "add tests," say "write a new test case for `my_function` that covers the edge case where the input is null."
-*   **Iterate:** My first attempt might not be perfect. The most effective workflow is to ask me to write code, then provide feedback ("that's good, but now add error handling") and iterate until it's right.
+**A. Isolate Context: Start New Threads Often**
+*   For each new, distinct task, use the `/clear` command to start a fresh conversation. This prevents context from a previous task from unpredictably influencing the current one.
 
-### 2. Updating Your Architecture Files (`CLAUDE.md`)
+**B. Be Precise: The More Context, The Better**
+*   Provide all relevant context you have. Mention edge cases, constraints, and desired outcomes explicitly.
+*   Instead of abstract terms ("make it modern"), provide concrete examples ("make it look like Linear's UI").
+*   The AI cannot read your mind. The quality of the output is directly proportional to the quality of the prompt.
 
-Based on a review of your `dev_logs`, several key architectural patterns and lessons have emerged. These should absolutely be added to your `CLAUDE.md` files to ensure I (and any other developer) adhere to them.
+**C. Refine and Iterate: Edit Previous Prompts**
+*   If a result isn't what you expected, use the `Escape` key twice to edit your previous prompt. Refining the prompt is often more effective than trying to correct the course with follow-up messages.
+
+## 2. Task Execution & Supervision
+
+**A. Decompose, Don't One-Shot**
+*   For large tasks, do not attempt to solve them with a single, massive prompt.
+*   **The Recommended Workflow:**
+    1.  Ask the AI to create a plan with Markdown checkboxes (`- [ ]`).
+    2.  Discuss and refine the plan.
+    3.  Instruct the AI to execute one step at a time.
+    4.  Review the result of each step before proceeding.
+
+**B. Let the AI Read the Manual (RTFM)**
+*   For tasks involving new frameworks or libraries, instruct the AI to read the official documentation first. You can provide a link or ask it to perform a research task. This avoids outdated or "hallucinated" setups.
+
+**C. You Are the Human in the Loop**
+*   The most effective feedback loop is your own. Instead of setting up complex autonomous testing feedback, run the code yourself and paste any errors or stack traces directly into the chat. Provide direct, corrective feedback.
+
+**D. Stage Early, Stage Often**
+*   After every successful change you approve, it's a good practice to stage the changes using `git add .`. This creates a safe restore point you can easily revert to if the AI makes a mistake in a subsequent step.
+
+## 3. Advanced Techniques
+
+**A. Parallel Workstreams with Git Worktrees**
+*   To work on multiple, independent tasks in the same repository without conflict, use `git worktree`. This creates a separate working directory linked to a new branch.
+    *   `git worktree add ../project-feature-b feature-b-branch`
+
+**B. Use Sub-Tasks for Deep Analysis**
+*   For complex analysis, ask the AI to spawn sub-tasks with different "personas" (e.g., a security expert, a performance expert, a design expert) and then synthesize their findings.
+
+**C. Automate Your Workflow**
+*   If you find yourself repeating a prompt, ask the AI to help you create a custom slash command or a shell script to automate the task.

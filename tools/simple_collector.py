@@ -24,7 +24,7 @@ PRESETS = {
         '.claude/',
         'README.md',
         'requirements.txt',
-        'docs_planning/',
+        'docs/',
         '.gemini/'        
     ],
 
@@ -80,7 +80,13 @@ PRESETS = {
         'src/roll20_api/',
     ],
 
+    'front_back_end': [
+        # Complete codebase collection - includes everything
+        'frontend/',
+        'src/',
 
+        '--root'
+    ],
 
     'everything': [
         # Complete codebase collection - includes everything
@@ -88,13 +94,7 @@ PRESETS = {
         'src/',
         'simulation/',
 
-        'CLAUDE.md',
-        '.claude/',
-        'README.md',
-        'docs_planning/',
-        
-        'requirements.txt',
-        '.gitignore'
+        '--root'
     ],
 
     'overview': [
