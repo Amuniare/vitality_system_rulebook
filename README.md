@@ -1,12 +1,11 @@
 # Vitality System - RPG Campaign Management
 
-Personal campaign management system for the Vitality System RPG, featuring web-based character builder and Roll20 integration.
+Personal campaign management system for the Vitality System RPG, featuring a web-based character builder and Roll20 integration.
 
 ## Quick Start
-- **Character Building**: Open `rulebook/character-builder/character-builder.html`
-- **Roll20 Upload**: Run `python main.py` for character upload workflow
-- **Rules Reference**: See `rulebook/rules/` for complete game mechanics
-
+- **Character Building**: Open `frontend/character-builder/character-builder.html`
+- **Roll20 Upload**: Run `python main.py sync`
+- **Rules Reference**: Open `frontend/rules/index.html`
 
 ## Current Status
 - ✅ Vitality System rules complete
@@ -14,41 +13,9 @@ Personal campaign management system for the Vitality System RPG, featuring web-b
 - ✅ Web character builder (all 7 tabs fully functional)
 - 🚧 UI Polish & Final Bug Fixes
 
-
-
-## Commands for Claude Code
-wsl -d Ubuntu
-
-claude
-
-
-## Gemini Server
-python mcp_server/mcp_server.py
-python mcp_server/command_centre.py
-
-## Start Server
-python -m http.server
-
-http://localhost:8000/rulebook/character-builder/character-builder.html
-
-
-## Testing
-npx playwright test > test_run_output.txt
-
-test
-
 ## Documentation
 
-- **Core Concepts & Guides**
-  - [Development Guide](docs/development-guide.md) - Setup, common tasks, troubleshooting.
-  - [Rules for AI Collaboration](docs/rulesForAI.md) - Guidelines for AI-assisted development.
-  - [Data Formats](docs/data-formats.md) - JSON structures and character data flow.
+The primary guides for developing this project are now:
 
-- **Application Architecture**
-  - [Web Character Builder](docs/web-character-builder.md) - Overview of the frontend application.
-  - [Roll20 Integration](docs/roll20-integration.md) - Backend character upload/download workflows.
-  - [ScriptCards System](docs/scriptcards-system.md) - Macro template compression and management.
-
-- **Development Logs**
-  - [Frontend Development Logs](docs/web_dev_logs/) - Phase-by-phase history of the web character builder.
-  - [Backend Development Logs](docs/src_dev_logs/) - Session-by-session history of the Roll20 integration system.
+-   **`CLAUDE.md` (Root Directory):** The master guide for our collaboration. It outlines the project's high-level architecture and our interactive workflow. Start here for any new task.
+-   **`docs/workplan.md`:** The official project roadmap, containing both the long-term vision and the prioritized list of active features and bug fixes.
