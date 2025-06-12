@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'backend'
+DEFAULT_PRESET = 'src'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
@@ -18,34 +18,33 @@ DEFAULT_PRESET = 'backend'
 
 PRESETS = {
     'web_builder_core': [
-        'rulebook/character-builder/character-builder.html',
-        'rulebook/character-builder/app.js',
-        'rulebook/character-builder/core/',
-        'rulebook/character-builder/ui/',
-        'rulebook/character-builder/systems/',
-        'rulebook/character-builder/css/',
-        'rulebook/character-builder/calculators/',
+        'frontend/character-builder/character-builder.html',
+        'frontend/character-builder/app/',
+        'frontend/character-builder/core/',
+        'frontend/character-builder/shared/',
+        'frontend/character-builder/systems/',
+        'frontend/character-builder/assets/css/',
+        'frontend/character-builder/calculators/',
 
         'CLAUDE.md',
 
-        'docs/',
+        'frontend/docs/',
         'README.md'
     ],
 
 
 
     'web_builder_all': [
-        'rulebook/character-builder/',
-        'rulebook/rules/',
+        'frontend/character-builder/',
+        'frontend/rules/',
 
-        'tests/',
-        'package-lock.json',
-        'package.json',
-        'playwright.config.js',
+        'simulation/package-lock.json',
+        'simulation/package.json',
+        'simulation/playwright.config.js',
 
-        'docs/',
+        'frontend/docs/',
         'CLAUDE.md',
-        '.claude/',
+        'docs_planning/',
         'README.md'],
 
     'tools_transcriber': [
@@ -54,81 +53,80 @@ PRESETS = {
     ],
 
     'web_builder_most': [
-        'rulebook/character-builder/character-builder.html',
-        'rulebook/character-builder/app.js',
-        'rulebook/character-builder/core/',
-        'rulebook/character-builder/ui/',
-        'rulebook/character-builder/systems/',
-        'rulebook/character-builder/css/',
-        'rulebook/character-builder/calculators/',
+        'frontend/character-builder/character-builder.html',
+        'frontend/character-builder/app/',
+        'frontend/character-builder/core/',
+        'frontend/character-builder/shared/',
+        'frontend/character-builder/systems/',
+        'frontend/character-builder/assets/css/',
+        'frontend/character-builder/calculators/',
 
         'CLAUDE.md',
 
-        'docs/',
+        'frontend/docs/',
         'README.md'
     ],
 
     'web_builder_rules_updater': [
-        'rulebook/character-builder/core/',
-        'rulebook/character-builder/calculators/',
-        'rulebook/character-builder/data/',
+        'frontend/character-builder/core/',
+        'frontend/character-builder/calculators/',
+        'frontend/character-builder/data/',
 
-        'rulebook/rules/rulebook.md',
+        'frontend/rules/rulebook.md',
 
-        'docs/',
+        'frontend/docs/',
         'README.md'
     ],
 
     'web_builder_main_points': [
-    'rulebook/character-builder/character-builder.html',
-    'rulebook/character-builder/css/character-builder.css',
-    'rulebook/character-builder/app.js',
-    'rulebook/character-builder/ui/CharacterBuilder.js',
-    'rulebook/character-builder/ui/shared/RenderUtils.js',
-    'rulebook/character-builder/ui/shared/EventManager.js',
-    'rulebook/character-builder/ui/shared/UpdateManager.js',
-    'rulebook/character-builder/ui/components/CharacterLibrary.js',
-    'rulebook/character-builder/ui/components/CharacterTree.js',
-    'rulebook/character-builder/ui/components/PointPoolDisplay.js',
-    'rulebook/character-builder/ui/components/ValidationDisplay.js',
-    'rulebook/character-builder/ui/tabs/MainPoolTab.js',
-    'rulebook/character-builder/ui/components/FlawPurchaseSection.js',
-    'rulebook/character-builder/ui/components/TraitPurchaseSection.js',
-    'rulebook/character-builder/ui/components/SimpleBoonSection.js',
-    'rulebook/character-builder/ui/components/UniqueAbilitySection.js',
-    'rulebook/character-builder/ui/components/ActionUpgradeSection.js',
-    'rulebook/character-builder/systems/TraitFlawSystem.js',
-    'rulebook/character-builder/systems/SimpleBoonsSystem.js',
-    'rulebook/character-builder/systems/UniqueAbilitySystem.js',
-    'rulebook/character-builder/systems/ActionSystem.js',
-    'rulebook/character-builder/calculators/PointPoolCalculator.js',
-    'rulebook/character-builder/core/VitalityCharacter.js',
-    'rulebook/character-builder/core/GameConstants.js',
-    'rulebook/character-builder/core/GameDataManager.js',
-    'rulebook/character-builder/core/TierSystem.js',
-    'rulebook/character-builder/validators/CharacterValidator.js',
-    'rulebook/character-builder/ui/tabs/BasicInfoTab.js',
-    'rulebook/character-builder/ui/tabs/ArchetypeTab.js',
-    'rulebook/character-builder/ui/tabs/AttributeTab.js',
-    'rulebook/character-builder/systems/ArchetypeSystem.js',
-    'rulebook/character-builder/systems/AttributeSystem.js',
-    'rulebook/character-builder/calculators/StatCalculator.js',
-    'rulebook/character-builder/data/actions.json',
-    'rulebook/character-builder/data/archetypes.json',
-    'rulebook/character-builder/data/attack_types_definitions.json',
-    'rulebook/character-builder/data/boons_simple.json',
-    'rulebook/character-builder/data/conditions_advanced.json',
-    'rulebook/character-builder/data/conditions_basic.json',
-    'rulebook/character-builder/data/descriptors.json',
-    'rulebook/character-builder/data/effect_types_definitions.json',
-    'rulebook/character-builder/data/expertise_categories.json',
-    'rulebook/character-builder/data/features.json',
-    'rulebook/character-builder/data/flaws.json',
-    'rulebook/character-builder/data/movement_features.json',
-    'rulebook/character-builder/data/senses.json',
-    'rulebook/character-builder/data/stat_options_generic.json',
-    'rulebook/character-builder/data/trait_conditions.json',
-    'rulebook/character-builder/data/unique_abilities_complex.json',
+    'frontend/character-builder/character-builder.html',
+    'frontend/character-builder/assets/css/character-builder.css',
+    'frontend/character-builder/app/app.js',
+    'frontend/character-builder/app/CharacterBuilder.js',
+    'frontend/character-builder/shared/utils/RenderUtils.js',
+    'frontend/character-builder/shared/utils/EventManager.js',
+    'frontend/character-builder/shared/utils/UpdateManager.js',
+    'frontend/character-builder/shared/ui/CharacterLibrary.js',
+    'frontend/character-builder/shared/ui/CharacterTree.js',
+    'frontend/character-builder/shared/ui/PointPoolDisplay.js',
+    'frontend/character-builder/shared/ui/ValidationDisplay.js',
+    'frontend/character-builder/features/main-pool/MainPoolTab.js',
+    'frontend/character-builder/features/main-pool/components/FlawPurchaseSection.js',
+    'frontend/character-builder/features/main-pool/components/TraitPurchaseSection.js',
+    'frontend/character-builder/features/main-pool/components/SimpleBoonSection.js',
+    'frontend/character-builder/features/main-pool/components/UniqueAbilitySection.js',
+    'frontend/character-builder/features/main-pool/components/ActionUpgradeSection.js',
+    'frontend/character-builder/systems/TraitFlawSystem.js',
+    'frontend/character-builder/systems/SimpleBoonsSystem.js',
+    'frontend/character-builder/systems/UniqueAbilitySystem.js',
+    'frontend/character-builder/systems/ActionSystem.js',
+    'frontend/character-builder/calculators/PointPoolCalculator.js',
+    'frontend/character-builder/core/VitalityCharacter.js',
+    'frontend/character-builder/core/GameConstants.js',
+    'frontend/character-builder/core/GameDataManager.js',
+    'frontend/character-builder/core/TierSystem.js',
+    'frontend/character-builder/features/basic-info/BasicInfoTab.js',
+    'frontend/character-builder/features/archetypes/ArchetypeTab.js',
+    'frontend/character-builder/features/attributes/AttributeTab.js',
+    'frontend/character-builder/systems/ArchetypeSystem.js',
+    'frontend/character-builder/systems/AttributeSystem.js',
+    'frontend/character-builder/calculators/StatCalculator.js',
+    'frontend/character-builder/data/actions.json',
+    'frontend/character-builder/data/archetypes.json',
+    'frontend/character-builder/data/attack_types_definitions.json',
+    'frontend/character-builder/data/boons_simple.json',
+    'frontend/character-builder/data/conditions_advanced.json',
+    'frontend/character-builder/data/conditions_basic.json',
+    'frontend/character-builder/data/descriptors.json',
+    'frontend/character-builder/data/effect_types_definitions.json',
+    'frontend/character-builder/data/expertise.json',
+    'frontend/character-builder/data/features.json',
+    'frontend/character-builder/data/flaws.json',
+    'frontend/character-builder/data/movement_features.json',
+    'frontend/character-builder/data/senses.json',
+    'frontend/character-builder/data/stat_options_generic.json',
+    'frontend/character-builder/data/trait_conditions.json',
+    'frontend/character-builder/data/unique_abilities_complex.json',
 
 ],
 
@@ -139,11 +137,10 @@ PRESETS = {
 
 
     'story': [
-        'rulebook/campaign-overview/',
+        'frontend/campaigns/',
         
-        'rulebook/rules/rulebook.md',
+        'frontend/rules/rulebook.md',
 
-        'characters/schema/',
         'README.md'
         ],
 
@@ -151,10 +148,7 @@ PRESETS = {
         'src/',
         'README.md',
         'CLAUDE.md',
-        'docs/',
-        'main.py',
-        'characters/schema/',
-        'characters/'
+        'src/docs/',
 
     ],
 
@@ -162,12 +156,11 @@ PRESETS = {
     'testing_minimum': [
         # Tier 1: Absolutely Necessary (Bare Minimum)
         # The web application itself, the test framework, and the rules the AI needs.
-        'rulebook/character-builder/',
-        'rulebook/rules/rulebook.md',
-        'tests/',
-        'playwright.config.js',
-        'package.json',
-        'package-lock.json',
+        'frontend/character-builder/',
+        'frontend/rules/rulebook.md',
+        'simulation/playwright.config.js',
+        'simulation/package.json',
+        'simulation/package-lock.json',
     ],
 
     'testing_recommended': [
@@ -176,17 +169,15 @@ PRESETS = {
         # and specification documents for better context-aware solutions.
         
         # Core App & Test Framework
-        'rulebook/character-builder/',
-        'rulebook/rules/rulebook.md',
-        'tests/',
-        'playwright.config.js',
-        'package.json',
-        'package-lock.json',
+        'frontend/character-builder/',
+        'frontend/rules/rulebook.md',
+        'simulation/playwright.config.js',
+        'simulation/package.json',
+        'simulation/package-lock.json',
 
         # High-Value Documentation
-        'docs/architecture/',
-        'docs/specs_and_notes/',
-        '.claude/',
+        'frontend/docs/specs_and_notes/',
+        'docs_planning/',
         'CLAUDE.md',
         'README.md',
     ],
@@ -198,22 +189,20 @@ PRESETS = {
         # and some web dev logs
         
         # Core App & Test Framework
-        'rulebook/character-builder/',
-        'rulebook/rules/rulebook.md',
-        'tests/',
-        'playwright.config.js',
-        'package.json',
-        'package-lock.json',
+        'frontend/character-builder/',
+        'frontend/rules/rulebook.md',
+        'simulation/playwright.config.js',
+        'simulation/package.json',
+        'simulation/package-lock.json',
 
         # High-Value Documentation
-        'docs/architecture/',
-        'docs/specs_and_notes/',
-        '.claude/',
+        'frontend/docs/specs_and_notes/',
+        'docs_planning/',
         'CLAUDE.md',
         'README.md',
 
         # Logs
-        'docs/dev_logs/web_dev_logs/20-29_Phase_Testing_and_Integration',
+        'frontend/docs/dev_logs/20-29_Phase_Testing_and_Integration/',
     ],
 
 
@@ -223,99 +212,84 @@ PRESETS = {
         # This is the recommended preset for most web builder testing tasks.
         
         # Tier 1 Files
-        'rulebook/character-builder/',
-        'rulebook/rules/rulebook.md',
-        'tests/',
-        'playwright.config.js',
-        'package.json',
-        'package-lock.json',
+        'frontend/character-builder/',
+        'frontend/rules/rulebook.md',
+        'simulation/playwright.config.js',
+        'simulation/package.json',
+        'simulation/package-lock.json',
 
         # Tier 2 Files (Guides & Specs)
-        'docs/',
-        '.claude/',
+        'frontend/docs/',
+        'docs_planning/',
         'CLAUDE.md',
         'README.md'
     ],
 
     'everything': [
         # Complete codebase collection - includes everything
-        'rulebook/',
+        'frontend/',
         'src/',
-        'simulator/',
-        'sim/',
-        'tests/',
-        'docs/',
-        'characters/',
-        'analysis/',
-        '.claude/',
+        'simulation/',
+        'rulebook/',
+        'frontend/docs/',
+        'docs_planning/',
         'CLAUDE.md',
         'README.md',
-        'main.py',
         'requirements.txt',
-        'sim_requirements.txt',
-        'package.json',
-        'package-lock.json',
-        'playwright.config.js',
         '.gitignore'
     ],
 
     'overview': [
         # High-level overview - excludes deep nested files and less critical content
         # Core application files
-        'rulebook/character-builder/character-builder.html',
-        'rulebook/character-builder/app.js',
-        'rulebook/character-builder/core/',
-        'rulebook/character-builder/systems/',
-        'rulebook/character-builder/calculators/',
-        'rulebook/character-builder/data/archetypes.json',
-        'rulebook/character-builder/data/attributes.json',
-        'rulebook/character-builder/data/flaws.json',
-        'rulebook/character-builder/data/features.json',
-        'rulebook/character-builder/data/tiers.json',
+        'frontend/character-builder/character-builder.html',
+        'frontend/character-builder/app/',
+        'frontend/character-builder/core/',
+        'frontend/character-builder/systems/',
+        'frontend/character-builder/calculators/',
+        'frontend/character-builder/data/archetypes.json',
+        'frontend/character-builder/data/attributes.json',
+        'frontend/character-builder/data/flaws.json',
+        'frontend/character-builder/data/features.json',
+        'frontend/character-builder/data/tiers.json',
         
         # Main rules and docs
-        'rulebook/rules/rulebook.md',
-        'rulebook/index.html',
+        'frontend/rules/rulebook.md',
+        'frontend/index.html',
         
         # Core Python files
-        'src/api/',
-        'src/character/',
-        'src/utils/',
-        'main.py',
+        'src/backend/api/',
+        'src/backend/character/',
+        'src/backend/utils/',
         
         # Simulation core
-        'simulator/core/',
-        'simulator/main.py',
-        'sim/scenarios/',
+        'simulation/engine/core/',
+        'simulation/engine/main.py',
+        'simulation/scenarios/',
         
         # Key documentation
-        'docs/architecture/',
-        'docs/simulation-engine.md',
-        '.claude/',
+        'simulation/docs/simulation-engine.md',
+        'docs_planning/',
         'CLAUDE.md',
         'README.md',
         
         # Project config
         'requirements.txt',
-        'package.json',
-        'playwright.config.js'
+        'simulation/package.json',
+        'simulation/playwright.config.js'
     ],
 
     'sim_testing': [
         # Everything related to simulation, simulator, and testing
-        'simulator/',
-        'sim/',
-        'tests/',
-        'analysis/',
-        'main.py',
+        'simulation/',
+        'rulebook/',
         'requirements.txt',
-        'sim_requirements.txt',
-        'package.json',
-        'package-lock.json',
-        'playwright.config.js',
-        'docs/simulation-engine.md',
-        'docs/specs_and_notes/ai_testing_plan.md',
-        'docs/specs_and_notes/notes-testing.md',
+        'simulation/package.json',
+        'simulation/package-lock.json',
+        'simulation/playwright.config.js',
+        'simulation/docs/simulation-engine.md',
+        'frontend/docs/specs_and_notes/ai_testing_plan.md',
+        'frontend/docs/specs_and_notes/notes-testing.md',
         'CLAUDE.md',
         'README.md'
     ],

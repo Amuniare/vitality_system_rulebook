@@ -12,6 +12,6 @@ __pycache__
 codebase.txt
 .env
 
-mutants
+sessions
 browser_profile
 archive
