@@ -20,7 +20,7 @@ Let's work together as a team. To be most effective, please follow these guideli
 
 ## 3. Project Architecture & Local Guides
 
-The codebase is organized into distinct sections, each with its own architectural rules. To understand these rules, **always refer to the `CLAUDE.md` file within the relevant directory.** These are your entry points for any task.
+The codebase is organized into distinct sections, each with its own architectural rules. To understand these rules, **always refer to the `CLAUDE.md` file within the relevant directory.** These are your primary entry points for any task.
 
 -   ### For the **JavaScript Web Character Builder**:
     > Your master guide is **`frontend/character-builder/CLAUDE.md`**.
@@ -30,7 +30,20 @@ The codebase is organized into distinct sections, each with its own architectura
     > Your guide is **`src/CLAUDE.md`**.
     > It outlines the architecture of the backend system and points to further documentation in `src/docs/`.
 
-## 4. Common Commands
+## 4. Custom Commands & Automated Workflows
+
+This section defines special, context-aware workflows.
+
+### Creating Development Logs
+
+When you want to document the changes we've made, simply tell me: **"Create the dev log for what we just did."**
+
+I will then:
+1.  **Analyze our recent conversation and the modified files** to infer the appropriate `area` (e.g., `web` or `src`), a new `ID`, and a descriptive `Title`.
+2.  **Propose the filename and title** for your confirmation.
+3.  Upon your approval, I will **generate a new Markdown file** in the correct `dev_logs` directory, pre-filled with our standard log template.
+
+## 5. Common Commands
 
 Here are some essential commands for managing the project:
 
