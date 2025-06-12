@@ -39,3 +39,4 @@ package-lock.json
 
 dev_logs
 mutants
+transcriber.py
