@@ -4,7 +4,7 @@
 
 This is a personal RPG management system with two main, independent parts:
 1.  **JavaScript Web Character Builder:** A browser-based application for creating characters for the Vitality RPG system. Located in `frontend/character-builder/`.
-2.  **Python Roll20 Automation:** A backend system for uploading/downloading character data to and from a Roll20 campaign. Located in `src/`.
+2.  **Python Roll20 Automation:** A backend system for uploading/downloading character data to and from a Roll20 campaign. Located in `src/backend/`.
 
 These two systems only interact through the character JSON files stored in `characters/`.
 
@@ -25,8 +25,25 @@ This project has a mature, specific architecture. To be effective, you **MUST** 
     > You must read it to understand the web app's architecture and data flow before touching any JS file.
 
 -   ### For the **Python Roll20 Automation**:
-    > Your guide is **`src/CLAUDE.md`**. (Note: This file should be created when work on the Python part begins).
+    > Your guide is **`src/CLAUDE.md`**. 
+    > Additional documentation in **`src/docs/`** covers Roll20 integration, API references, and data formats.
 
+## 3.1. Documentation Structure
+
+Documentation is organized by project area:
+
+-   **`frontend/docs/`** - Web character builder documentation:
+    *   `web-character-builder.md` - Architecture overview and usage guide
+    *   `external-data-system.md` - JSON data system documentation
+    *   `specs_and_notes/` - Feature specifications and development notes
+
+-   **`src/docs/`** - Backend system documentation:
+    *   `roll20-integration.md` - Roll20 automation system overview
+    *   `development-guide.md` - Setup and development instructions
+    *   `data-formats.md` - Character JSON format specifications
+    *   `roll20_api_list.md` - Roll20 API command reference
+    *   `roll20_character_sheet_attribute_list.md` - Character sheet mappings
+    *   `scriptcards-system.md` - ScriptCards integration documentation
 
 ## 4. Special Directives and Automated Workflows
 
@@ -37,8 +54,8 @@ This section defines special commands that trigger automated, multi-step process
 *   `--build-from-spec`: When you see this directive, you MUST first read and then strictly follow the instructions outlined in the `.claude/CLAUDE.md` file. That file contains the protocol for transforming the `spec.md` into a full implementation plan. Do not perform any other actions until you have read and understood that protocol.
 
 *   `--log [src|web] [PhaseID] "[Degree of Sucess or Failure]"`: This directive initiates the standard process for creating a new development log. The first argument specifies the project area:
-    *   `web`: Use the protocol in `docs/web_dev_logs/CLAUDE.md`.
-    *   `src`: Use the protocol in `docs/src_dev_logs/CLAUDE.md`.
+    *   `web`: Create logs in `frontend/docs/dev_logs/` following web development logging protocol.
+    *   `src`: Create logs in `src/docs/dev_logs/` following backend development logging protocol.
 
 
 *   `--diagnose [section] [subsection] "[description of issue]"`: This directive initiates a structured debugging workflow. You are to follow the steps below to diagnose and propose a fix for the described issue.
