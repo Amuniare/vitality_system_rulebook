@@ -48,12 +48,12 @@ class SessionTranscriber:
             base_dir = current_dir
             print(f"📁 Fallback to current dir: {base_dir}")
         
-        self.campaign_dir = base_dir / "rulebook" / "tools" / CAMPAIGN_NAME
+        self.campaign_dir = base_dir / "data" / CAMPAIGN_NAME
         self.sessions_dir = self.campaign_dir / "sessions"
         self.sessions_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize AI processing pipeline
-        tools_dir = base_dir / "rulebook" / "tools"
+        tools_dir = base_dir / "src" / "transcriber"
         self.ai_pipeline = ProcessingPipeline(str(tools_dir))
         
         # Setup structured session directories

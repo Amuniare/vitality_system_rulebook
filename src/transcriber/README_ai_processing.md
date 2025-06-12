@@ -84,7 +84,7 @@ The AI-Enhanced Session Processing System transforms raw Discord transcripts int
 
 The system creates the following directory structure:
 ```
-rulebook/tools/mutants/sessions/
+data/mutants/sessions/
 ├── raw/          # Original transcripts
 ├── cleaned/      # AI-cleaned versions
 ├── timelines/    # Detailed breakdowns

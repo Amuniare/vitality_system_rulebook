@@ -29,15 +29,15 @@ class StatsAnalyzer:
     def __init__(self):
         """Initializes the analyzer and finds the correct paths."""
         current_dir = Path.cwd()
-        if (current_dir / "rulebook").exists():
+        if (current_dir / "data").exists():
             base_dir = current_dir
-        elif (current_dir.parent / "rulebook").exists():
+        elif (current_dir.parent / "data").exists():
             base_dir = current_dir.parent
         else:
             base_dir = current_dir
-            print(f"⚠️ Could not find 'rulebook' directory. Using current directory as base: {base_dir}")
+            print(f"⚠️ Could not find 'data' directory. Using current directory as base: {base_dir}")
         
-        self.campaign_dir = base_dir / "rulebook" / "tools" / CAMPAIGN_NAME
+        self.campaign_dir = base_dir / "data" / CAMPAIGN_NAME
         self.sessions_dir = self.campaign_dir / "sessions"
         
         print(f"📊 Stats Analyzer for campaign: {CAMPAIGN_NAME}")

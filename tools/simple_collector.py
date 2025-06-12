@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'src'
+DEFAULT_PRESET = 'backend'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
@@ -132,7 +132,12 @@ PRESETS = {
 
 
 
-
+    'backend': [
+        'src/',
+        'README.md',
+        'CLAUDE.md',
+        'logs.md'
+    ],
 
 
 
