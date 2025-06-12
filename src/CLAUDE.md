@@ -1,46 +1,134 @@
-# Vitality System - AI Development Guide (SRC)
+# Vitality System - AI Development Guide (ROOT)
 
-## 1. Core Purpose & Architecture
+This guide is the master document for our collaboration on the Vitality System project. It outlines our workflow, architectural principles, and automated processes.
 
-This directory (`src/`) contains the **Python-based backend automation system** for the Vitality RPG project. Its sole purpose is to interact with a live Roll20 campaign to upload and download character data.
+## 1. Project Overview
 
-**This system is entirely separate from the JavaScript web character builder located in `frontend/`.**
+This is a personal RPG management system with two main, independent parts:
+1.  **JavaScript Web Character Builder:** A browser-based application for creating characters for the Vitality RPG system. Located in `frontend/`.
+2.  **Python Roll20 Automation:** A backend system for uploading/downloading character data to and from a Roll20 campaign. Located in `src/`.
 
-The core architecture relies on:
-*   **Python 3:** The primary programming language.
-*   **Playwright:** For browser automation to control a Chrome instance.
-*   **Custom Roll20 API Script:** A JavaScript file (`src/roll20_api/CharacterExtractor.js`) that must be installed in the target Roll20 campaign to enable communication.
-*   **Handout-Based Data Transfer:** The primary method for moving large amounts of JSON data into and out of Roll20 to bypass chat limitations.
+These two systems only interact through the character JSON files.
 
-## 2. Golden Rules of Collaboration
+## 2. Collaboration Principles
 
-1.  **Summarize Your Plan First.** Before modifying any code in `src/`, state which files you intend to change and provide a brief, high-level overview of your approach.
-2.  **Acknowledge This Guide.** Begin your response by confirming you have read and understood the relevant `CLAUDE.md` file for the directory you are working in.
-3.  **Provide Complete, Working Files.** Do not provide partial snippets. Always return the full, ready-to-use file content.
+Let's work together as a team. To be most effective, please follow these guidelines:
 
-## 3. Directory Structure & Responsibilities
+-   **Be an Active Collaborator:** Instead of just giving commands, guide my approach. Ask me to make a plan, think through alternatives, or explain my reasoning. Course-correct me early if I'm on the wrong path.
+-   **Provide Context:** Mention relevant files, business goals, or even paste in error messages. The more context I have, the better my solutions will be.
+-   **Use Checklists for Complex Tasks:** For multi-step work, ask me to generate a plan with Markdown checkboxes (`- [ ]`). We can track our progress together, ensuring no steps are missed.
 
-This is your map to the `src` directory. Before starting any task, identify the relevant directory and consult its local `CLAUDE.md` guide.
+## 3. Project Architecture & Local Guides
 
-*   `src/`
-    *   `backend/`: **Core Backend Components.** Contains the main backend functionality.
-        *   `api/`: **Browser & Chat Interface.** Handles the direct connection to the browser and communication with the Roll20 chat log. This is the **only** layer that should use Playwright.
-        *   `char_sheet/`: **Static Assets.** Contains the HTML/CSS of the Roll20 character sheet for reference.
-        *   `character/`: **Business Logic.** Contains the Python classes that process character data (e.g., transforming, comparing, updating). This layer is browser-agnostic.
-        *   `utils/`: **Generic Utilities.** Contains reusable Python helper functions (file I/O, JSON processing, logging) that are not specific to characters or Roll20.
-    *   `excel/`: **Legacy Tools.** Contains the old Excel-based character sheet and its Python analyzer. Primarily for reference and archival.
-    *   `roll20_api/`: **Server-Side JavaScript.** Contains the `CharacterExtractor.js` script that runs *inside* the Roll20 API sandbox.
-    *   `scriptcards/`: **Static Assets.** Contains the master text template for ScriptCards macros.
-    *   `transcriber/`: **AI Processing Tools.** Contains tools for processing and analyzing campaign transcripts.
+The codebase is organized into distinct sections, each with its own architectural rules. To understand these rules, **always refer to the `CLAUDE.md` file within the relevant directory.** These local guides contain the specific "contracts" for that area of the code.
 
-## 4. Primary Data Flow (Character Upload)
+-   ### For the **JavaScript Web Character Builder**:
+    > Your master guide is **`frontend/character-builder/CLAUDE.md`**.
+    > It contains the architectural constitution for the entire frontend application.
 
-1.  A user runs `main.py` with an action (e.g., `sync`).
-2.  **`src/backend/character/updater.py`** reads a character JSON file from `characters/input/`.
-3.  **`src/backend/utils/scriptcards_templates.py`** may be used to expand compressed ability macros.
-4.  The character data is passed to **`src/backend/api/`** classes.
-5.  **`src/backend/api/connection.py`** ensures a connection to a debug-enabled Chrome instance.
-6.  **`src/backend/character/updater.py`** uses browser automation to create a temporary handout in the Roll20 journal containing the character's JSON data.
-7.  **`src/backend/api/chat_interface.py`** sends a command (e.g., `!update-character`) to the Roll20 chat.
-8.  **`src/roll20_api/CharacterExtractor.js`** receives the command, reads the data from the handout, and uses the Roll20 API to create or update the character sheet.
-9.  The process is complete, and temporary handouts are cleaned up.
+-   ### For the **Python Roll20 Automation**:
+    > Your guide is **`src/CLAUDE.md`**.
+    > It outlines the architecture of the backend system and points to further documentation in `src/docs/`.
+
+## 4. Automated Workflows
+
+This section defines special, context-aware workflows that I can execute on your command.
+
+### **Development Log Creation**
+
+This workflow standardizes our project's documentation process.
+
+#### **Trigger Command**
+
+At the end of a work session, simply tell me:
+
+> **"Create the dev log for what we just did."**
+
+#### **My Process**
+
+Upon receiving the command, I will perform the following steps:
+
+1.  **Analyze Context:** I will review our recent conversation and the list of files we've modified.
+2.  **Infer Details:**
+    *   **Area:** I'll determine if the work was on the `web` (frontend) or `src` (backend) based on the file paths.
+    *   **ID:** I'll scan the appropriate `dev_logs` directory to find the last log ID and propose the next logical one (e.g., `23A` -> `23B`).
+    *   **Title:** I'll synthesize a concise title from the main objective we accomplished.
+3.  **Propose & Confirm:** I will present the proposed filename and title for your approval before creating any files.
+4.  **Generate File:** Once you confirm, I will create the new Markdown file in the correct directory, using the standard template below.
+
+#### **Standard Log Template**
+
+This is the exact template I will use for every new development log.
+
+```markdown
+# Phase [ID]: [Title]
+
+**Date:** [I will fill this with the current date]
+**Status:** ✅ Completed | ❌ Failed | 🚧 In Progress
+**Objective:** [A brief, one-sentence goal for this development phase.]
+
+---
+
+## 1. Problem Analysis
+
+[A clear description of the problem that was being solved. What was broken? Why was this change necessary? What was the user impact or technical debt?]
+
+### Root Cause
+
+[A specific analysis of *why* the problem was occurring. Was it a logical error, a data mismatch, a race condition, or a violation of an architectural principle?]
+
+---
+
+## 2. Solution Implemented
+
+[A description of the technical solution. What was the high-level approach? What specific changes were made to the code?]
+
+### Key Changes:
+- **[Component/File]:** [Description of the specific change made.]
+- **[Component/File]:** [Description of the specific change made.]
+- **[Component/File]:** [Description of the specific change made.]
+
+\`\`\`javascript
+// A key code snippet that best illustrates the "before" and "after" of the fix.
+// BEFORE:
+const oldProblematicCode = "example";
+
+// AFTER:
+const newCorrectCode = "solution";
+\`\`\`
+
+---
+
+## 3. Architectural Impact & Lessons Learned
+
+-   **Impact:** [How did this change affect the project's overall architecture? Did it introduce new patterns, fix an anti-pattern, or improve performance/maintainability?]
+
+-   **Lessons:** [What was the key takeaway from this task? What did we learn about the codebase or our workflow that we should apply in the future?]
+
+-   **New Patterns:** [Optional: If a new reusable pattern was established (e.g., "The Advisory Budget Pattern"), define it here.]
+
+---
+
+## 4. Files Modified
+
+-   `path/to/file1.js`
+-   `path/to/file2.css`
+-   `path/to/another/file.md`
+---
+```
+
+## 5. Common Commands
+
+Here are some essential commands for managing the project:
+
+-   **Run the Web Character Builder:**
+    -   Start a local server: `python -m http.server`
+    -   Open: `http://localhost:8000/frontend/character-builder/character-builder.html`
+
+-   **Upload Characters to Roll20:**
+    -   `python main.py sync`
+
+-   **Run Frontend Tests (Once Implemented):**
+    -   `npm test`
+```
+
