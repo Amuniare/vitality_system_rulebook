@@ -1,4 +1,4 @@
-# `src/character` - The Business Logic Layer
+# `src/backend/character` - The Business Logic Layer
 
 ## 1. Core Purpose
 

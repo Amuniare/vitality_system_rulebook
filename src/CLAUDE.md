@@ -23,22 +23,24 @@ The core architecture relies on:
 This is your map to the `src` directory. Before starting any task, identify the relevant directory and consult its local `CLAUDE.md` guide.
 
 *   `src/`
-    *   `api/`: **Browser & Chat Interface.** Handles the direct connection to the browser and communication with the Roll20 chat log. This is the **only** layer that should use Playwright.
-    *   `char_sheet/`: **Static Assets.** Contains the HTML/CSS of the Roll20 character sheet for reference.
-    *   `character/`: **Business Logic.** Contains the Python classes that process character data (e.g., transforming, comparing, updating). This layer is browser-agnostic.
+    *   `backend/`: **Core Backend Components.** Contains the main backend functionality.
+        *   `api/`: **Browser & Chat Interface.** Handles the direct connection to the browser and communication with the Roll20 chat log. This is the **only** layer that should use Playwright.
+        *   `char_sheet/`: **Static Assets.** Contains the HTML/CSS of the Roll20 character sheet for reference.
+        *   `character/`: **Business Logic.** Contains the Python classes that process character data (e.g., transforming, comparing, updating). This layer is browser-agnostic.
+        *   `utils/`: **Generic Utilities.** Contains reusable Python helper functions (file I/O, JSON processing, logging) that are not specific to characters or Roll20.
     *   `excel/`: **Legacy Tools.** Contains the old Excel-based character sheet and its Python analyzer. Primarily for reference and archival.
     *   `roll20_api/`: **Server-Side JavaScript.** Contains the `CharacterExtractor.js` script that runs *inside* the Roll20 API sandbox.
     *   `scriptcards/`: **Static Assets.** Contains the master text template for ScriptCards macros.
-    *   `utils/`: **Generic Utilities.** Contains reusable Python helper functions (file I/O, JSON processing, logging) that are not specific to characters or Roll20.
+    *   `transcriber/`: **AI Processing Tools.** Contains tools for processing and analyzing campaign transcripts.
 
 ## 4. Primary Data Flow (Character Upload)
 
 1.  A user runs `main.py` with an action (e.g., `sync`).
-2.  **`src/character/updater.py`** reads a character JSON file from `characters/input/`.
-3.  **`src/utils/scriptcards_templates.py`** may be used to expand compressed ability macros.
-4.  The character data is passed to **`src/api/`** classes.
-5.  **`src/api/connection.py`** ensures a connection to a debug-enabled Chrome instance.
-6.  **`src/character/updater.py`** uses browser automation to create a temporary handout in the Roll20 journal containing the character's JSON data.
-7.  **`src/api/chat_interface.py`** sends a command (e.g., `!update-character`) to the Roll20 chat.
+2.  **`src/backend/character/updater.py`** reads a character JSON file from `characters/input/`.
+3.  **`src/backend/utils/scriptcards_templates.py`** may be used to expand compressed ability macros.
+4.  The character data is passed to **`src/backend/api/`** classes.
+5.  **`src/backend/api/connection.py`** ensures a connection to a debug-enabled Chrome instance.
+6.  **`src/backend/character/updater.py`** uses browser automation to create a temporary handout in the Roll20 journal containing the character's JSON data.
+7.  **`src/backend/api/chat_interface.py`** sends a command (e.g., `!update-character`) to the Roll20 chat.
 8.  **`src/roll20_api/CharacterExtractor.js`** receives the command, reads the data from the handout, and uses the Roll20 API to create or update the character sheet.
 9.  The process is complete, and temporary handouts are cleaned up.

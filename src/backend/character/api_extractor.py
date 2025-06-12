@@ -8,9 +8,9 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 from playwright.sync_api import Page
 
-from src.api.chat_interface import ChatInterface
-from src.utils.json_utils import save_json
-from src.utils.scriptcards_templates import ScriptCardsTemplateManager
+from src.backend.api.chat_interface import ChatInterface
+from src.backend.utils.json_utils import save_json
+from src.backend.utils.scriptcards_templates import ScriptCardsTemplateManager
 
 logger = logging.getLogger(__name__)
 
@@ -444,7 +444,7 @@ class CharacterExtractor:
                         
                         # Initialize template manager if needed
                         if not hasattr(self, 'template_manager'):
-                            from src.utils.scriptcards_templates import ScriptCardsTemplateManager
+                            from src.backend.utils.scriptcards_templates import ScriptCardsTemplateManager
                             self.template_manager = ScriptCardsTemplateManager()
                         
                         # Compress abilities in each character (with filtering)

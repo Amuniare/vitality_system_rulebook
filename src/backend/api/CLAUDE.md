@@ -1,4 +1,4 @@
-# `src/api` - The Browser Layer
+# `src/backend/api` - The Browser Layer
 
 ## 1. Core Purpose
 

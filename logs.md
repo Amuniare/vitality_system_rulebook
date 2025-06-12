@@ -2373,3 +2373,1451 @@ Of course. Here is the continuation of the consolidated development logs.
 4. **Pattern Documentation** - Record successful patterns for future component development
 
 **Status**: Special Attack UI is now fully functional with intuitive integrated selector pattern and robust error handling.
+
+
+Of course. Here is the complete, unabridged consolidation of all development logs from your project, presented in a single file for a comprehensive review.
+
+---
+# Consolidated Development Logs
+
+This file contains the full text of all development logs from the `docs/src_dev_logs/` and `docs/web_dev_logs/` directories, presented in chronological and thematic order.
+
+## ============================================================
+## Backend / Roll20 Integration Logs (src_dev_logs)
+## ============================================================
+
+---
+### **FILE: `docs/src_dev_logs/01_Hybrid_Extraction_Implementation.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-25 Hybrid Roll20 Character Extraction Implementation
+
+**ATTEMPTED:**
+- Hybrid handout + browser automation approach â†’ **Success** (API creates handouts, browser reads them)
+- ScriptCards template compression system â†’ **Failed** (spacing/formatting issues prevent template matching)
+- Method implementation guidance â†’ **Partial** (code provided but locations were unclear initially)
+
+**KEY FINDINGS:**
+- **What worked:** Hybrid approach is much faster and more reliable than individual character extraction (8 handouts vs 188 character sheets)
+- **What didn't work:** ScriptCards template compression failed due to formatting/whitespace differences between template and actual content
+- **Important discoveries:** JSON extraction from handouts works perfectly; abilities are already in JSON format; template matching needs better normalization
+
+**CURRENT STATE:**
+- Working hybrid extraction system that successfully reads all 188 characters from 8 handouts
+- Complete character data extraction including attributes, repeating sections, and abilities
+- Template compression system designed but not functional due to formatting issues
+- Handouts remain in Roll20 journal after extraction (need cleanup)
+
+**NEXT STEPS:**
+1. Fix ScriptCards template compression by improving whitespace/formatting normalization
+2. Add handout cleanup functionality (`!handout-cleanup` command after extraction)
+3. Test template compression with better string normalization
+4. Implement optional expanded ability export for debugging template matching
+
+**AVOID:**
+- Individual character sheet extraction approaches (too slow for 188 characters)
+- Making assumptions about existing methods without verification
+- Providing code without complete file locations and implementation instructions
+- Complex DOM parsing when JSON data is already available
+
+---
+### **FILE: `docs/src_dev_logs/02_Handout_Extraction_Attempt.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-25 Roll20 Character Extraction Handout Implementation
+
+**ATTEMPTED:**
+- Console-based character extraction â†’ **Failed** (Roll20 security restrictions prevent API access via browser console)
+- Fixed API detection string matching â†’ **Success** (Python now correctly detects API responses: "Found 188 total characters")
+- Handout-based extraction approach â†’ **Failed** (`!extract-all-handout` command not recognized by Roll20 API)
+- Multiple extraction test runs â†’ **Inconsistent** (API script sometimes loads, sometimes doesn't)
+
+**KEY FINDINGS:**
+- **What worked:** Roll20 API script functions correctly when loaded (confirmed by `!extract-test` responses showing 188 characters)
+- **What didn't work:** Console approach is fundamentally impossible due to Roll20's security sandboxing of API functions; handout command wasn't added to Roll20 API script
+- **Important discoveries:** API script loading is inconsistent between sessions; Python handout implementation is ready but Roll20 side needs the new command handler
+
+**CURRENT STATE:**
+- Python `CharacterExtractor` updated with handout-based logic
+- Roll20 API script exists and works for test commands but missing `!extract-all-handout` handler
+- Inconsistent API script loading causing some sessions to fail completely (showing Roll20 welcome messages instead of API responses)
+
+**NEXT STEPS:**
+1. Verify Roll20 API script is properly saved with the new `extractAllCharactersToHandout` function
+2. Add the `case '!extract-all-handout':` handler to the existing switch statement in Roll20
+3. Test API script loading consistency (ensure it loads every session)
+4. Execute complete handout-based extraction workflow
+5. Implement character update capability using similar handout approach
+
+**AVOID:**
+- Console-based extraction approaches (security limitations make this impossible)
+- Bulk chat-based extraction (8K character limits cannot be overcome)
+- Complex browser DOM manipulation for large datasets (unreliable and slow)
+- Single-character chat extraction loops (would take too long for 188 characters)
+
+---
+### **FILE: `docs/src_dev_logs/03_Initial_Extraction_API.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-25 Roll20 Character Extraction Implementation
+
+**ATTEMPTED:**
+- Custom Roll20 API Script Development â†’ **Success** (API installed and working, extracting data correctly)
+- Python Integration with Custom API â†’ **Failed** (Python not detecting API responses properly)
+- Bulk Character Extraction (all 188 at once) â†’ **Failed** (Roll20 chat message limits exceeded)
+- Character List Retrieval â†’ **Partial Success** (worked but response too long for proper parsing)
+
+**KEY FINDINGS:**
+- **What worked:** Custom Roll20 JavaScript API script successfully extracts complete character data with proper JSON structure
+- **What didn't work:** Python chat response detection logic fails to recognize API success messages; Roll20 chat has ~8K character limits making bulk extraction impossible
+- **Important discoveries:** 188 characters Ã— full data = potentially 1-10MB of JSON (far exceeds chat limits); Character-by-character processing is the only viable approach within Roll20's constraints
+
+**CURRENT STATE:**
+- Roll20 API script (`CharacterExtractor.js`) installed and functioning correctly
+- Python extractor code written but needs fixes for response detection and parsing
+- Successfully tested: `!extract-test`, `!extract-list`, `!extract-character` commands work
+- 188 characters identified and ready for extraction
+
+**NEXT STEPS:**
+1. Fix Python response detection (look for correct API response text patterns)
+2. Implement proper character-by-character processing loop
+3. Add chat archive access if needed for longer responses
+4. Test with 2-3 characters first, then scale to full 188
+5. Implement resume capability for interrupted extractions
+
+**AVOID:**
+- Bulk extraction approaches (exceeds Roll20 chat limits)
+- Complex Fetch API or ChatSetAttr parsing methods (overly complicated)
+- Processing multiple characters simultaneously (causes chat overflow)
+- Relying on DOM extraction as primary method (fragile and slow)
+
+---
+### **FILE: `docs/src_dev_logs/04_Batched_Handout_Success.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-25 Roll20 Character Extraction via Batched Handouts
+
+**ATTEMPTED:**
+- Fixed Firebase 10MB limit with reduced batch sizes (50â†’25 chars) â†’ **Success** (all 188 characters extracted across 8 handouts)
+- Fixed Blob usage error (replaced with custom UTF-8 byte calculation) â†’ **Success** (no more ReferenceError crashes)
+- Fixed Roll20 API callback errors for bio/gmnotes extraction â†’ **Success** (temporarily disabled to avoid crashes)
+- Created API commands for handout management (!handout-open, !handout-close, etc.) â†’ **Partial** (commands exist but don't work as expected)
+- Python extraction from batched handouts using API commands â†’ **Failed** (handouts don't actually open programmatically)
+- Extracted all 188 characters via batched handouts â†’ **Success** (complete JSON data stored properly)
+
+**KEY FINDINGS:**
+- **What worked:** Batch size of 25 characters keeps handouts safely under 10MB Firebase limit; all character data was successfully extracted and properly formatted as JSON; Roll20 API script runs without crashes after disabling problematic bio/gmnotes extraction
+- **What didn't work:** Roll20's !handout-open API command doesn't actually open handout dialogs programmatically - it only sends chat messages saying it opened them; browser automation still needed for reading handout content; Roll20 API requires callback functions for accessing character bio/gmnotes fields
+- **Important discoveries:** 188 characters successfully stored across 8 handouts with sizes ranging from 0.1MB to 3.9MB; extraction data is complete and includes rich character information (stats, abilities, repeating sections); Roll20 API has strict callback requirements for certain character properties; Roll20 API has limitations for UI interaction
+
+**CURRENT STATE:**
+- 188 characters successfully extracted and stored in 8 Roll20 handouts (CharacterExtractor_Data_1 through CharacterExtractor_Data_8)
+- Each handout contains properly formatted JSON with complete character data (minus bio/gmnotes fields)
+- Python can connect to Roll20 and send API commands successfully
+- Handout opening via API commands fails - Roll20 API cannot programmatically open handout dialogs
+- Character bio/gmnotes extraction disabled due to Roll20 API callback requirements
+
+**NEXT STEPS:**
+1. Implement browser automation to navigate to journal and manually open each handout
+2. Extract content from handout textareas using DOM selectors
+3. Combine all 8 handout JSON files into complete character database
+4. Alternative: Enhance Roll20 API script to return handout contents directly via chat (if size permits)
+5. Optional: Implement proper callback handling for bio/gmnotes extraction if needed
+6. Clean up handouts using !handout-cleanup once data is extracted
+
+**AVOID:**
+- Using !handout-open API commands for programmatic handout access (Roll20 API limitation)
+- Relying on Roll20 API to trigger UI interactions (handout dialogs, journal navigation)
+- Synchronous .get() calls for character bio, notes, defaulttoken, or gmnotes (requires callbacks)
+- Batch sizes over 25 characters (risk hitting Firebase 10MB limit again)
+- Using Blob for size calculations in Roll20 server environment (not available)
+- Complex handout management through API commands (browser automation more reliable)
+
+---
+### **FILE: `docs/src_dev_logs/05_Update_System_Format_Mismatch.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-26 Character Update System Testing & Format Mismatch Resolution
+
+**ATTEMPTED:**
+- Fixed abilities compression data structure mismatch (dict vs array) â†’ **Success** (updated `_compress_character_abilities` method to handle new array format)
+- Created new format Kinetic template JSON for testing â†’ **Success** (converted to flat JSON structure with indexed abilities)
+- Fixed path construction error in `main.py` â†’ **Success** (changed string to Path object for `/` operator)
+- Tested character update pipeline with new format JSON â†’ **Failed** (multiple critical issues discovered)
+- ChatSetAttr-based character uploading â†’ **Failed** (too slow, unreliable, missing features)
+
+**KEY FINDINGS:**
+- **What worked:** Successfully resolved the `"'list' object has no attribute 'items'"` error by updating compression method to handle new array format instead of dictionary format; path construction fix resolved immediate startup error
+- **What didn't work:** ChatSetAttr approach has fundamental limitations - Enter key sends premature messages during multi-line input, character naming issues, 1+ minute upload times per character, abilities aren't created at all, template expansion system doesn't work during upload process
+- **Important discoveries:** Current chat interface is too fragile for complex Roll20 operations; ChatSetAttr may not support ability creation; template expansion logic needs to be integrated into upload process, not just compression
+
+**CURRENT STATE:**
+- Extraction system works perfectly (188 characters successfully extracted with compression)
+- Data format mismatch resolved between extraction and compression systems
+- Character update system exists but is fundamentally flawed due to ChatSetAttr limitations
+- Template files ready in correct format but upload pipeline cannot handle them properly
+
+**NEXT STEPS:**
+1. Investigate Roll20 API-based character creation instead of ChatSetAttr commands
+2. Implement direct ability creation via custom Roll20 API script
+3. Integrate template expansion into upload process (expand indexed abilities before sending to Roll20)
+4. Consider batch upload approach similar to extraction method
+5. Add macro bar and token action settings to upload process
+6. Implement color coding for macro bar abilities
+
+**AVOID:**
+- ChatSetAttr for complex character updates (too slow, limited functionality, chat interface problems)
+- Multi-line chat commands through current interface (Enter key interruption issues)
+- Relying on template expansion happening during Roll20 upload (expansion must happen in Python before sending)
+- Individual character-by-character upload approaches (too slow for bulk operations)
+
+---
+### **FILE: `docs/src_dev_logs/06_JSON_Format_and_Unicode_Fixes.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-26 JSON Format & Unicode Fixes
+
+**ATTEMPTED:**
+- Unicode encoding fix (replace âœ“ with [OK]) â†’ **Success** (no more encoding errors in logs)
+- Template sheet filtering (skip MacroMule/ScriptCards_TemplateMule) â†’ **Partial** (filtering logic added but still processing)
+- Compression system cleanup (reduce logging spam) â†’ **Success** (single summary logging implemented)
+- New flat JSON format implementation â†’ **Failed** (data structure mismatch causing compression errors)
+
+**KEY FINDINGS:**
+- **What worked:** Unicode symbol replacement eliminated the primary blocking error; extraction continues successfully
+- **What didn't work:** The abilities compression system expects a dictionary but is receiving a list, causing "'list' object has no attribute 'items'" errors
+- **Important discoveries:** The system is now generating the new JSON format (abilities as array), but the compression code still expects the old format (abilities as object/dict); there's a format mismatch between the Roll20 API output and the Python compression code
+
+**CURRENT STATE:**
+- Unicode issues resolved - no more encoding crashes
+- Extraction continues and completes successfully (25 characters processed)
+- New JSON format is being generated by Roll20 API
+- Compression system is failing due to data structure mismatch (expects dict, gets list)
+- Template sheet filtering logic is in place but needs verification
+
+**NEXT STEPS:**
+1. Fix the abilities compression to handle the new array format instead of expecting a dictionary
+2. Verify that template sheets are actually being skipped during extraction
+3. Test the complete extraction process with the corrected compression logic
+4. Validate that the new flat JSON format is working as intended
+
+**AVOID:**
+- Trying to change both the JSON format and compression system simultaneously (caused data structure conflicts)
+- Assuming the compression system can handle format changes without updates (it expects specific data structures)
+- Making changes to the Roll20 API without updating the corresponding Python code to match
+
+---
+### **FILE: `docs/src_dev_logs/07_Change_Detection_Attempt.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-26 Phase 2 Change Detection Implementation
+
+**ATTEMPTED:**
+- Phase 1 core functionality implementation â†’ **Success** (creation fallback, auto-close, enhanced API commands working)
+- Phase 2 change detection system with CharacterDiffer class â†’ **Failed** (complex deep comparison logic implemented but unusable)
+- Roll20 API `!get-character-data` command for current state extraction â†’ **Partial** (command works but response parsing fails)
+- Enhanced chat interface to capture long API responses â†’ **Failed** (increased from 3 to 50 messages but still corrupted)
+- Chat response cleaning with regex to remove Roll20 formatting â†’ **Failed** (Roll20 inserts timestamps/names mid-JSON, breaking structure)
+- Unicode handling in logging â†’ **Failed** (introduced encoding errors with special characters)
+
+**KEY FINDINGS:**
+- **What worked:** Phase 1 implementations are solid - creation fallback to update, auto-close browser functionality, enhanced error handling and logging all function correctly
+- **What didn't work:** Roll20's chat system fundamentally cannot handle large JSON responses - it splits them across multiple messages and inserts chat formatting (timestamps, sender names) in the middle of JSON data, corrupting the structure
+- **Important discoveries:** Roll20 API responses can be 100K+ characters, far exceeding chat limits; chat-based data extraction is architecturally flawed for large payloads; the change detection approach via chat is not viable
+
+**CURRENT STATE:**
+- Phase 1 complete and functional (creation with fallback, auto-close, enhanced API)
+- Phase 2 change detection system exists in code but fails at runtime due to chat parsing issues
+- System successfully falls back to full updates when change detection fails
+- Multiple parsing errors and encoding issues introduced in failed attempts
+- Core update/create functionality still works despite Phase 2 failures
+
+**NEXT STEPS:**
+1. Revert Phase 2 changes that introduced errors and instability
+2. Consider alternative change detection approaches:
+   - Direct browser DOM extraction of current character sheet data
+   - File-based comparison (export current state to temp file, compare with template)
+   - Metadata-based change detection using timestamps
+   - Skip change detection entirely - full updates work fine and are reliable
+3. Focus on Phase 3 (macro coloring) as separate project once core is stable
+
+**AVOID:**
+- Chat-based extraction of large data sets from Roll20 API (chat formatting corruption makes this impossible)
+- Complex regex parsing of Roll20 chat responses spanning multiple messages
+- Over-engineering change detection when full updates are fast and reliable
+- Unicode characters in log messages that cause Windows encoding errors
+- Multi-step parsing of Roll20 API responses through chat interface
+
+---
+### **FILE: `docs/src_dev_logs/08_Update_System_HTML_Parsing_Fix.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-26 Roll20 Character Update System HTML Formatting Fix
+
+**ATTEMPTED:**
+- Direct JavaScript content injection to bypass rich text editor â†’ **Failed** (JavaScript syntax errors with illegal return statements)
+- Clipboard-based content transfer to avoid HTML formatting â†’ **Partial** (content transferred but still HTML formatted by Roll20 editor)
+- HTML tag stripping in Roll20 API before JSON parsing â†’ **Success** (fixed core parsing issue)
+- ScriptCards template integration with placeholder replacement â†’ **Success** (template loaded and abilities expanded correctly)
+- Enhanced handout cleanup for update workflows â†’ **Success** (proper cleanup implemented)
+
+**KEY FINDINGS:**
+- **What worked:** Modifying Roll20 API to strip HTML tags (`<p>`, `&nbsp;`, `<br>`, etc.) before JSON parsing solved the core issue; ScriptCards template loading and expansion works correctly; clipboard-based content transfer is reliable for data input
+- **What didn't work:** Trying to prevent HTML formatting at input level is impossible - Roll20's rich text editor ALWAYS converts plain text to HTML regardless of input method (typing, clipboard, JavaScript injection)
+- **Important discoveries:** Root cause was Roll20's editor behavior, not input method; HTML cleaning must happen on API side, not browser side; JavaScript code needs proper function wrapping to avoid syntax errors; Roll20 editor converts all content to HTML automatically
+
+**CURRENT STATE:**
+- Character update system fully functional with HTML formatting issues resolved
+- ScriptCards template (26,039 characters) successfully loaded and integrated
+- Handout creation uses clipboard method with proper fallback mechanisms
+- Roll20 API properly strips HTML tags and parses JSON character data
+- Cleanup workflows implemented for update handouts
+- Template expansion working for compressed abilities
+
+**NEXT STEPS:**
+1. Implement macro bar and token action settings during character updates
+2. Add character difference detection to only update changed characters
+3. Improve creation workflow to switch to update mode if character already exists
+4. Add macro bar color coding functionality
+5. Close browser automatically at process completion instead of waiting for user input
+6. Extract and properly handle macro bar/token action flags during extraction
+
+**AVOID:**
+- Trying to prevent HTML formatting at the browser/input level (Roll20 editor will always HTML-format content)
+- Using unscoped JavaScript code without proper function wrapping (causes "Illegal return statement" errors)
+- Relying on direct DOM content setting to bypass rich text editor (Roll20's editor processes all content)
+- Complex browser automation for handout content when API-side HTML stripping is simpler and more reliable
+
+---
+### **FILE: `docs/src_dev_logs/09_Update_System_Implementation.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-26 Roll20 Character Update System Implementation
+
+**ATTEMPTED:**
+- Enhanced Roll20 API with character update functions â†’ **Success** (API functions written, installed, and working for character/handout detection)
+- Python handout creation via browser automation â†’ **Success** (handouts created successfully with proper naming and data)
+- Fixed Roll20 API callback requirements for handout reading â†’ **Partial** (callback functions implemented but JSON parsing still fails)
+- Template expansion system for compressed abilities â†’ **Failed** (master template not available errors, system needs ScriptCards templates)
+- End-to-end character update via API commands â†’ **Failed** (JSON parsing fails due to HTML formatting in handout content)
+
+**KEY FINDINGS:**
+- **What worked:** Browser automation successfully creates handouts with correct names and saves them; Roll20 API can find characters and handouts correctly; async callback functions work for handout access
+- **What didn't work:** Roll20's Summernote rich text editor automatically converts plain JSON text to HTML with `<p>` tags, breaking JSON parsing; template expansion requires master template that doesn't exist yet
+- **Important discoveries:** Handout content preview shows `<p>CHARACTER_DATA_START</p><p>{</p>` instead of plain text, causing JSON.parse() to fail; the core data transfer concept works but HTML formatting is corrupting the JSON
+
+**CURRENT STATE:**
+- Roll20 API functions installed and functioning for character/handout operations
+- Python handout creation system works but produces HTML-formatted content instead of plain text JSON
+- Character update system reaches the JSON parsing stage but fails due to HTML formatting
+- Template expansion system exists but lacks master template for ability decompression
+
+**NEXT STEPS:**
+1. Fix handout content creation to produce plain text instead of HTML (disable rich text editor or find plain text input method)
+2. Alternative: Modify Roll20 API to strip HTML tags from handout content before JSON parsing
+3. Either load master ScriptCards template or skip template expansion temporarily for testing
+4. Test complete character update workflow once JSON parsing works
+5. Implement ability creation and attribute setting once basic update succeeds
+
+**AVOID:**
+- Using Summernote rich text editor for JSON data storage (HTML formatting breaks JSON parsing)
+- Relying on ChatSetAttr for complex character operations (too slow, limited functionality, Enter key issues)
+- Template expansion without proper master template (causes expansion failures)
+- Browser automation for individual character updates (handout approach is much faster and more reliable)
+
+---
+### **FILE: `docs/src_dev_logs/10_Core_Architecture_Refactoring.md`**
+---
+﻿## SESSION SUMMARY - 2025-05-27 Comprehensive Problem Analysis & Systematic Code Refactoring
+
+**ATTEMPTED:**
+- Comprehensive codebase problem analysis â†’ **Success** (identified 12 critical issues with detailed diagnosis)
+- Systematic rewrite of core extraction and update modules â†’ **Success** (fixed all architectural flaws)
+- Template sheet filtering implementation â†’ **Success** (consistent filtering across all components)
+- Array format compatibility fixes â†’ **Success** (resolved dict vs array mismatch in compression)
+- Resume capability implementation â†’ **Success** (state persistence for extraction and updates)
+- API reliability improvements â†’ **Success** (retry mechanism and availability checks)
+- Error handling standardization â†’ **Success** (specific exception handling added)
+- Macro bar and token action support â†’ **Success** (added to Roll20 API functions)
+
+**KEY FINDINGS:**
+- **What worked:** Systematic problem analysis identified root causes accurately; handout-based approach was architecturally sound; custom Roll20 API was the right solution; template compression system worked when properly implemented
+- **What didn't work:** Chat-based data extraction was fundamentally flawed due to Roll20's 8KB limits and automatic formatting; change detection via chat was unreliable; ChatSetAttr was too slow for bulk operations
+- **Important discoveries:** Unicode symbols cause Windows encoding errors; Roll20's rich text editor automatically converts JSON to HTML; template sheets (MacroMule/ScriptCards_TemplateMule) need consistent filtering; array vs dict format mismatches cause compression failures; Resume capability is essential for 188 character operations
+
+**CURRENT STATE:**
+- All 12 identified critical problems systematically addressed
+- Core architecture fully refactored around handout-based data transfer
+- Template sheet filtering implemented consistently across extraction, compression, and update
+- Resume capability added for both extraction and update operations
+- Array format compatibility ensured throughout compression pipeline
+- API reliability improved with retry mechanisms and availability checks
+- Macro bar and token action support fully implemented
+- Unicode issues resolved with ASCII alternatives ([OK]/[FAIL])
+
+**NEXT STEPS:**
+1. Test the refactored system with full 188 character extraction
+2. Verify resume capability works correctly if interrupted
+3. Test bulk character updates with new handout approach
+4. Validate macro bar and token action settings work properly
+5. Monitor API script loading consistency across sessions
+6. Test clipboard fallback mechanisms in different browser environments
+
+**AVOID:**
+- Chat-based data extraction for large datasets (8KB limit and formatting corruption makes this impossible)
+- Change detection via chat interface (unreliable due to formatting issues)
+- ChatSetAttr for bulk character operations (too slow, limited functionality)
+- Processing template sheets (MacroMule/ScriptCards_TemplateMule) as regular characters
+- Using Unicode symbols in logging (causes Windows encoding errors)
+- Dictionary format assumptions in compression code (Roll20 API now returns arrays)
+- Operations without resume capability (essential for large character sets)
+- Single-point-of-failure approaches without retry mechanisms (API loading can be inconsistent)
+
+## ============================================================
+## Frontend / Web Character Builder Logs (web_dev_logs)
+## ============================================================
+
+---
+### **FILE: `docs/web_dev_logs/00_Unlogged_Initial_Phases.md`**
+---
+# Phases 1-5: Foundation, Core Systems, and Integration (Unlogged)
+
+This document summarizes the foundational work completed before detailed, session-by-session logging began. This initial development established the core architecture, data systems, and primary UI components of the character builder.
+
+---
+
+### Phase 1: Foundation & Core Systems
+
+This phase laid the groundwork for the entire application, focusing on non-visual, architectural components.
+
+*   **External Data System:** The `GameDataManager` was created to handle the asynchronous loading of all game rules from external JSON files. This established the "data-driven" principle of the application. Over 15 JSON files were created in the `data/` directory, externalizing all game logic.
+*   **Core Architecture:** Shared utilities were developed to ensure consistency and avoid code duplication. This included the `EventManager` for centralized event delegation, `RenderUtils` for standardized HTML generation, and `UpdateManager` to orchestrate UI updates.
+*   **Calculation Engines:** The `calculators/` directory was established to house pure, stateless functions for all game math. This separated complex calculations (Points, Stats, Limits, Combat) from business logic and UI presentation.
+*   **Character Data Model:** The `VitalityCharacter.js` class was created as the single source of truth for a character's state, defining the complete data structure from archetypes to special attacks.
+*   **CSS Design System:** The initial `character-builder.css` stylesheet was written, establishing the application's color palette, typography, and spacing rules using CSS custom properties.
+
+---
+
+### Phase 2: Tab Implementation
+
+With the core systems in place, this phase focused on building out the primary UI structure and the most critical user-facing sections.
+
+*   **Tab Navigation:** The main 7-tab navigation system was implemented, creating the basic application flow from "Basic Info" to "Summary".
+*   **Key Tab Implementations:**
+    *   `BasicInfoTab`: For character name and tier selection.
+    *   `ArchetypeTab`: For the 7 critical archetype choices that define a character's build.
+    *   `AttributeTab`: For combat and utility attribute point allocation.
+    *   `SummaryTab`: For a final overview and export functionality.
+*   **Complex Component Scaffolding:** Initial, complex UI components like the `SpecialAttackTab` and `UtilityTab` were stubbed out, ready for more detailed implementation in later phases.
+
+---
+
+### Phase 3: Main Pool System (Partially Logged)
+
+This phase implemented the "Main Pool", one of the most complex economic systems in the character builder. This work was partially covered in later logs but the core was built here.
+
+*   **Modular Section Design:** The Main Pool tab was designed with its own sub-navigation for Flaws, Traits, Boons, and other purchases.
+*   **Flaw & Trait Economics:** The core logic for the flaw/trait system was implemented, where flaws cost points but provide stat bonuses, and traits cost points to provide conditional bonuses.
+*   **Component Creation:** The initial versions of `FlawPurchaseSection`, `TraitPurchaseSection`, and `SimpleBoonSection` were created.
+
+---
+
+### Phase 4: Component Architecture
+
+This phase focused on creating reusable, high-level UI components that provide application-wide functionality.
+
+*   **Character Library:** The `CharacterLibrary` was created to manage saving, loading, and deleting characters using browser `localStorage`.
+*   **Point Pool Display:** A dedicated `PointPoolDisplay` component was built to provide a real-time, persistent view of the character's available and spent points.
+*   **Validation Display:** The initial `ValidationDisplay` component was created to enforce the build order and report errors to the user, ensuring a valid character creation flow.
+
+---
+
+### Phase 5: System Integration
+
+This final foundational phase focused on wiring all the newly created parts together into a cohesive application.
+
+*   **Unified Data Flow:** A clear data flow was established: `GameDataManager` loads data, which is consumed by `Systems`, processed by `Calculators`, and finally displayed by `UI Components`.
+*   **Event Handling Integration:** The `EventManager` was fully integrated, with parent tabs handling delegated events from their child components using `data-action` attributes.
+*   **Update Management:** The `UpdateManager` was put in place to handle the character update lifecycle, ensuring that changes made in one part of the application correctly trigger re-renders in dependent components.
+
+---
+### **FILE: `docs/web_dev_logs/06_A_Special_Attack_Event_Handling.md`**
+---
+﻿# Phase 6: SpecialAttack Event Handling Fix *(December 7, 2025)*
+**Problem**: Special Attacks tab UI elements were not responding to user interactions
+- LimitSelection.js and AttackBasicsForm.js components had new `data-action` attributes
+- Parent SpecialAttackTab.js event handlers used camelCase but HTML used kebab-case
+- Missing handlers for modal management and form interactions
+
+**Solution**: Complete event handler refactoring
+- âœ… Fixed action name mismatch (camelCase â†’ kebab-case)
+- âœ… Added comprehensive event handlers for all interactive elements
+- âœ… Implemented proper state management pattern compliance
+- âœ… Added user notifications for all actions (success/error feedback)
+- âœ… Enhanced dropdown clearing after successful additions
+- âœ… Added modal management methods (openLimitModal, closeLimitModal)
+
+**Key Technical Insights**:
+- Event delegation requires exact string matching between HTML attributes and handler keys
+- Centralized event handling in parent components maintains component independence
+- State management pattern: System class â†’ updateCharacter() â†’ showNotification()
+- UI feedback is critical for user experience in complex forms
+
+**Functional Elements Now Working**:
+- Attack creation, selection, and deletion
+- Attack type/effect type addition and removal
+- Basic condition management
+- Limit category expansion/collapse
+- Limit addition and removal (both modal and table)
+- Upgrade purchasing and removal
+- All form inputs with real-time updates
+
+---
+### **FILE: `docs/web_dev_logs/06_B_UI_Responsiveness_and_Bug_Fixes.md`**
+---
+﻿# PHASE 6: UI RESPONSIVENESS & CRITICAL BUG FIXES *(December 6, 2025)*
+
+### **MAJOR RESPONSIVENESS IMPROVEMENTS**
+
+#### **Problem**: Multiple UI Responsiveness Issues
+- Flaw restriction yellow boxes cluttering interface
+- Add buttons using dark colors instead of white
+- Main Pool point display not updating in real-time
+- Main Pool subsections requiring tab switches to see purchases
+- Attribute +/- buttons incrementing by 2 instead of 1
+- "Component is undefined" errors during purchases
+
+#### **Root Cause Analysis**
+**1. Button Color Issues**: CSS hover states using dark `var(--accent-primary)` instead of white
+**2. Point Display Updates**: Using `outerHTML` replacement causing DOM reference issues
+**3. Subsection Updates**: Selective update system not properly handling MainPoolTab real-time updates
+**4. Double Event Binding**: Attribute buttons had both event delegation AND debug onclick handlers
+**5. Missing Components**: References to removed sidebar components causing undefined errors
+**6. Wealth System Mismatch**: Character model checking non-existent `utilityPurchases.wealth` property
+
+### **SOLUTIONS IMPLEMENTED**
+
+#### **1. Button Color Standardization**
+```css
+/* BEFORE: Dark cyan backgrounds */
+.btn-primary:hover:not(:disabled) { background: var(--accent-primary); }
+.upgrade-toggle[data-selected="true"] { background: var(--accent-primary); }
+
+/* AFTER: Clean white backgrounds */
+.btn-primary:hover:not(:disabled) { background: white; }
+.upgrade-toggle[data-selected="true"] { background: white; }
+```
+**Files**: `character-builder.css` lines 278, 285, 891, 961
+**Impact**: Consistent white button states across all UI components
+
+#### **2. Real-Time Point Display Updates**
+```javascript
+// BEFORE: Problematic outerHTML replacement
+pointPoolContainer.outerHTML = this.renderPointPoolInfo(character);
+
+// AFTER: Clean innerHTML with dedicated content method
+pointPoolContainer.innerHTML = this.renderPointPoolInfoContent(character);
+```
+**Files**: `MainPoolTab.js` lines 219-251
+**Impact**: Immediate point pool updates without DOM disruption
+
+#### **3. Force Update System for MainPoolTab**
+```javascript
+// BEFORE: Batched updates causing delays
+updates.push({ component: currentTabComponent, method: 'onCharacterUpdate' });
+
+// AFTER: Immediate updates for critical sections
+if (this.currentTab === 'mainPool') {
+    UpdateManager.forceUpdate(currentTabComponent, 'onCharacterUpdate');
+}
+```
+**Files**: `CharacterBuilder.js` lines 503-504
+**Impact**: Instantaneous subsection updates during purchases
+
+#### **4. Eliminated Double Event Binding**
+```javascript
+// BEFORE: Dual event handlers causing double increments
+dataAttributes: { action: 'change-attribute-btn' },
+onClick: `window.debugAttributeChange('${attrId}', 1)`  // PROBLEM!
+
+// AFTER: Clean single event delegation
+dataAttributes: { action: 'change-attribute-btn' }
+// onClick removed entirely
+```
+**Files**: `AttributeTab.js` lines 176-189
+**Impact**: Precise 1-point attribute increments
+
+#### **5. Fixed Component Reference Errors**
+```javascript
+// BEFORE: References to removed components
+if (changes.includes('points')) {
+    updates.push({ component: this.pointPoolDisplay });  // undefined!
+}
+
+// AFTER: Null-safe component checks
+if (changes.includes('points') && this.pointPoolDisplay) {
+    updates.push({ component: this.pointPoolDisplay });
+}
+```
+**Files**: `CharacterBuilder.js` lines 487, 491
+**Impact**: Eliminated "component is undefined" errors
+
+#### **6. Character Model Data Integrity**
+```javascript
+// BEFORE: Checking non-existent properties
+this.utilityPurchases.wealth.length > 0  // wealth doesn't exist!
+
+// AFTER: Correct property structure
+this.utilityPurchases.features.length > 0 ||
+this.utilityPurchases.senses.length > 0 ||
+(this.wealth && this.wealth.level)  // wealth is separate property
+```
+**Files**: `VitalityCharacter.js` lines 154-160
+**Impact**: Proper wealth validation without undefined errors
+
+#### **7. Universal Point Breakdown Display**
+```javascript
+// BEFORE: Filtered display hiding zero values
+.filter(item => item.value > 0)
+
+// AFTER: Always show all 5 categories
+items.map(item => `
+    <span>${item.value > 0 ? '-' : ''}${item.value}p</span>
+`)
+```
+**Files**: `MainPoolTab.js` lines 90-110
+**Impact**: Complete transparency of point allocation
+
+### **TECHNICAL INNOVATIONS**
+
+#### **Immediate Update Architecture**
+- **Selective vs. Batched Updates**: MainPoolTab uses `forceUpdate()` for critical real-time feedback
+- **DOM Reference Preservation**: `innerHTML` updates instead of `outerHTML` to maintain event bindings
+- **Content Method Separation**: Dedicated render methods for updateable sections
+
+#### **Event System Cleanup**
+- **Single Source of Truth**: Removed debug fallback handlers causing event conflicts
+- **Data-Action Patterns**: Consistent event delegation through `EventManager.delegateEvents()`
+- **Null-Safe Component Checks**: Defensive programming for removed/optional components
+
+#### **CSS Consistency Framework**
+- **White Button Standard**: Unified hover/selected states using `background: white`
+- **Color Variable Usage**: Maintaining design system while fixing specific interaction states
+- **Visual Feedback**: Consistent user experience across all interactive elements
+
+### **PERFORMANCE IMPACT**
+
+#### **Update Cycle Optimization**
+- **Real-Time Feedback**: MainPool changes now reflected instantly instead of requiring tab switches
+- **Reduced DOM Manipulation**: Targeted `innerHTML` updates vs. full element replacement
+- **Error Elimination**: No more console errors disrupting user workflows
+
+#### **User Experience Improvements**
+- **Immediate Visual Feedback**: All purchases, removals, and modifications reflect instantly
+- **Consistent Interaction Design**: White buttons provide clear interactive states
+- **Complete Information Display**: All point categories always visible for transparency
+- **Precise Controls**: Attribute buttons now increment exactly 1 point as expected
+
+### **FILES MODIFIED**
+1. `MainPoolTab.js` - Real-time updates and universal point display
+2. `CharacterBuilder.js` - Force update system and null-safe component handling
+3. `AttributeTab.js` - Double event binding elimination
+4. `VitalityCharacter.js` - Character model data integrity
+5. `character-builder.css` - Button color standardization
+
+---
+### **FILE: `docs/web_dev_logs/07_A_Data_System_Overhaul.md`**
+---
+﻿# PHASE 7: DATA SYSTEM OVERHAUL & SPECIAL ATTACK FIXES *(December 6, 2025)*
+
+### **EXTERNAL DATA INTEGRATION COMPLETIONS**
+
+#### **Problem**: Incomplete JSON Integration & UI Issues
+- Expertise section showing "undefined" values due to renamed JSON file
+- Special Attack tab blank screen from upgrade system method conflicts
+- Browse Available Upgrades button needed replacement with inline display
+- New limits.json and upgrades.json files needed integration
+
+#### **Root Cause Analysis**
+**1. File Naming Mismatch**: GameDataManager looking for `expertise_categories.json` but file renamed to `expertise.json`
+**2. JSON Structure Mismatch**: New expertise.json has nested structure incompatible with existing UI expectations
+**3. Method Signature Conflicts**: `SpecialAttackSystem.getAvailableUpgrades()` called with parameters but accepts none
+**4. Data Transformation Gap**: New JSON structures needed parsing logic to match UI expectations
+
+### **SOLUTIONS IMPLEMENTED**
+
+#### **1. Expertise System Complete Overhaul**
+```javascript
+// BEFORE: Hardcoded/undefined expertise values
+expertiseCategories: 'data/expertise_categories.json'
+
+// AFTER: Dynamic JSON transformation
+expertiseCategories: 'data/expertise.json'
+static getExpertiseCategories() {
+    // Transform nested structure to expected format
+    ['Mobility', 'Power', 'Endurance', 'Focus', 'Awareness', 'Communication', 'Intelligence'].forEach(attr => {
+        transformed[attr] = {
+            activities: types.activityBased?.categories?.[attr] || [],
+            situational: types.situational?.categories?.[attr] || []
+        };
+    });
+}
+```
+**Files**: `GameDataManager.js`, `UtilitySystem.js`, `UtilityTab.js`
+**Impact**: 47 total expertises now properly loaded (25 activity-based + 22 situational)
+
+#### **2. Expertise 4-Corner Card Layout Implementation**
+```javascript
+// NEW: Card-based layout replacing checkbox lists
+<div class="expertise-card">
+    <div class="expertise-card-header">
+        <div class="expertise-name">${expertise.name}</div>           // Top Left
+        <div class="expertise-description">${expertise.description}</div> // Top Right
+    </div>
+    <div class="expertise-card-footer">
+        <div class="expertise-basic-section">
+            <div class="expertise-cost-value">${basicCost}p</div>      // Bottom Left
+            ${purchaseButton}
+        </div>
+        <div class="expertise-mastered-section">
+            <div class="expertise-cost-value">${masteredCost}p</div>   // Bottom Right
+            ${masterButton}
+        </div>
+    </div>
+</div>
+```
+**Files**: `UtilityTab.js`, `character-builder.css`
+**Impact**: Professional card-based expertise selection with clear cost display and purchase states
+
+#### **3. Special Attack Upgrade System Integration**
+```javascript
+// BEFORE: Method conflict causing blank screen
+const upgradeCategories = SpecialAttackSystem.getAvailableUpgrades(character, attack);
+
+// AFTER: Proper method usage with grouping
+const allUpgrades = SpecialAttackSystem.getAvailableUpgrades();
+const upgradeCategories = {};
+allUpgrades.forEach(upgrade => {
+    upgradeCategories[upgrade.category] = upgradeCategories[upgrade.category] || [];
+    upgradeCategories[upgrade.category].push(upgrade);
+});
+```
+**Files**: `SpecialAttackSystem.js`, `SpecialAttackTab.js`, `CharacterBuilder.js`
+**Impact**: 24 upgrades now properly loaded (9 Accuracy + 15 Damage) with inline display replacing modal button
+
+#### **4. Limits System JSON Integration**
+```javascript
+// NEW: Complete limits.json integration
+static getAvailableLimits() {
+    // Parse hierarchical structure: main â†’ variants â†’ modifiers
+    Object.entries(limitsData).forEach(([mainCategory, categoryData]) => {
+        // Add main categories, variants, and modifiers with proper IDs
+    });
+}
+```
+**Files**: `SpecialAttackSystem.js`, `GameDataManager.js`
+**Impact**: 139 total limits available (6 main categories with full hierarchy)
+
+### **DATA INTEGRATION STATISTICS**
+
+#### **JSON Files Successfully Integrated**
+- **expertise.json**: 47 expertises (Activity: 2p basic/6p mastered, Situational: 1p basic/3p mastered)
+- **upgrades.json**: 24 upgrades including variable costs ("20 per tier")
+- **limits.json**: 139 hierarchical limits (main â†’ variant â†’ modifier structure)
+
+#### **System Architecture Improvements**
+- **Dynamic Data Transformation**: JSON structures adapted to existing UI expectations
+- **Cost Calculation Logic**: Variable costs ("per tier") properly handled in UI
+- **Hierarchical Data Support**: Parent-child relationships maintained for limits system
+- **Purchase State Management**: Smart validation (basic required before mastered)
+
+### **UI/UX ENHANCEMENTS**
+
+#### **Expertise Section Transformation**
+- **Card-Based Layout**: Professional 4-corner design with clear information hierarchy
+- **Responsive Grid**: Auto-fit cards with 280px minimum width
+- **Purchase Flow**: Separate buttons for basic/mastered with state management
+- **Cost Transparency**: Clear display of both basic and mastered costs
+
+#### **Special Attack Improvements**
+- **Inline Upgrade Display**: Replaced modal with immediate card-based selection
+- **Category Organization**: Upgrades grouped by Accuracy Bonuses and Damage Bonuses
+- **Variable Cost Support**: "20 per tier" upgrades calculate correctly based on character tier
+- **Affordability Indicators**: Real-time cost checking with disabled states for unaffordable options
+
+### **TECHNICAL INNOVATIONS**
+
+#### **JSON Structure Adaptation Pattern**
+```javascript
+// Pattern: Transform external JSON to match UI expectations
+static getExternalData() {
+    const rawData = gameDataManager.getRawData();
+    return transformToExpectedFormat(rawData);
+}
+```
+**Benefit**: Maintain UI stability while supporting evolving data structures
+
+#### **Hierarchical Data Management**
+```javascript
+// Pattern: Parent-child relationship validation
+if (limit.type === 'modifier') {
+    const hasParentVariant = attack.limits.some(l => l.id === limit.parent);
+    if (!hasParentVariant) {
+        errors.push(`Must add ${limit.parent} limit before adding modifiers`);
+    }
+}
+```
+**Benefit**: Enforce proper selection order in complex hierarchical systems
+
+### **CURRENT STATUS**
+
+#### **âœ… RESOLVED**
+- Expertise section fully functional with 47 expertises in card layout
+- Special Attack tab rendering properly with 24 upgrades and 139 limits
+- All JSON data files properly integrated and transformed
+- Consistent purchase/removal flow across all utility systems
+
+#### **ðŸš§ KNOWN REMAINING ISSUES**
+- **Special Attack Creation**: "Create Attack" button not functional (UI loads but button inactive)
+- **Event Handler Gap**: Purchase buttons work but creation workflow incomplete
+
+### **FILES MODIFIED**
+1. `GameDataManager.js` - expertise.json path fix, upgrades.json and limits.json integration
+2. `UtilitySystem.js` - expertise data transformation, cost calculation, purchase/removal methods
+3. `UtilityTab.js` - 4-corner card layout, new event handlers
+4. `SpecialAttackSystem.js` - upgrades/limits JSON integration, method signature fixes
+5. `SpecialAttackTab.js` - upgrade modal fix, inline display replacement
+6. `CharacterBuilder.js` - new event handler mappings
+7. `character-builder.css` - expertise card styling with 4-corner layout
+6. `FlawPurchaseSection.js` - Restriction text removal
+
+### **TESTING VALIDATION**
+- âœ… **Main Pool Purchases**: Instant reflection across all subsections
+- âœ… **Point Pool Display**: Real-time updates without tab switching
+- âœ… **Attribute Controls**: Precise 1-point increments/decrements
+- âœ… **Button Interactions**: Clean white hover/selected states
+- âœ… **Error-Free Operation**: No console errors during normal workflows
+- âœ… **Point Transparency**: All 5 categories always visible with accurate values
+
+### **ARCHITECTURAL LESSONS**
+
+#### **Double Event Binding Anti-Pattern**
+**Problem**: Having both event delegation AND direct onclick handlers
+**Solution**: Choose ONE event system and stick to it consistently
+**Lesson**: Debug code should never make it to production event handling
+
+#### **DOM Reference Management**
+**Problem**: `outerHTML` breaks event bindings and component references
+**Solution**: Use `innerHTML` with dedicated content-only render methods
+**Lesson**: Preserve DOM structure when possible, modify content only
+
+#### **Update System Design**
+**Problem**: Batched updates can feel sluggish for critical UI feedback
+**Solution**: Hybrid approach - immediate updates for critical paths, batching for non-critical
+**Lesson**: User perception of responsiveness trumps technical elegance
+
+#### **Component Lifecycle Management**
+**Problem**: References to removed components cause runtime errors
+**Solution**: Null-safe checks for all optional component interactions
+**Lesson**: When refactoring architecture, update ALL references consistently
+
+### **IMPACT SUMMARY**
+- **User Experience**: Dramatically improved responsiveness and consistency
+- **Developer Experience**: Clean console, predictable behavior, maintainable event system
+- **Code Quality**: Eliminated anti-patterns, improved error handling, unified update architecture
+- **Performance**: Faster UI feedback, reduced DOM manipulation, optimized update cycles
+
+This phase represents a significant maturation of the character builder's real-time responsiveness and overall polish, transforming it from functional to genuinely pleasant to use.
+
+
+## SESSION SUMMARY - Vitality System Archetype Selection Fix
+
+**ATTEMPTED:**
+- Static event handlers in CharacterBuilder.setupEventListeners() â†’ **Failed** (elements didn't exist when listeners were attached)
+- Debug logging to identify root cause â†’ **Success** (revealed timing/DOM existence issue)
+- Switch to event delegation using EventManager.delegateEvents() â†’ **Partial** (clicks detected but wrong element passed to handler)
+- Fix EventManager.delegateEvents() to pass matching element instead of e.target â†’ **Success** 
+- Add CSS pointer-events fix to prevent nested element interference â†’ **Success**
+- Comprehensive debug logging throughout selection flow â†’ **Success** (confirmed all systems working)
+
+**KEY FINDINGS:**
+- **Root cause**: Event listeners were set up during app initialization when archetype cards didn't exist in DOM yet
+- **Event delegation required**: Content is dynamically generated when tabs switch, so static `querySelectorAll()` finds 0 elements
+- **EventManager bug**: `delegateEvents()` was passing `e.target` (clicked child element) instead of the element matching the selector (parent card with data attributes)
+- **Nested element interference**: HTML structure like `<div data-*><h4>Title</h4></div>` meant clicks on `<h4>` had no data attributes
+- **All systems working correctly**: ArchetypeSystem validation, data loading via GameDataManager, and UI updates all functioned properly once events reached the right handlers
+
+**CURRENT STATE:**
+Archetype selection is **fully functional**. Users can:
+- Select archetypes from all 7 categories
+- Change existing archetype selections  
+- See immediate visual feedback (card selection highlighting)
+- Progress tracking updates correctly
+- All validation and data flow working as designed
+
+**NEXT STEPS:**
+- Continue implementing remaining character builder functionality (attributes, main pool, special attacks, utility)
+- Clean up CSS empty rulesets warnings (minor quality issue)
+- Consider removing debug logging once stable
+
+**AVOID:**
+- Using `EventManager.setupStandardListeners()` for dynamically generated content
+- Static event listener attachment during app initialization for tab content
+- Assuming `e.target` is the element with data attributes in delegated events (use `e.target.closest(selector)` result instead)
+
+
+## SESSION SUMMARY - Character Builder State Management & Validation Issues
+
+**ATTEMPTED:**
+- Reduce validation strictness (flaw-archetype conflicts) â†’ **Partial** (addressed symptoms, not root cause)
+- Fix attribute persistence with detailed event handlers â†’ **Failed** (added more complexity instead of fixing architecture)
+- Add individual debug logging and onCharacterUpdate methods â†’ **Failed** (created more bloat, didn't solve core issue)
+
+**KEY FINDINGS:**
+- **Root problem is architectural**: Inconsistent state management across the entire system
+- **Multiple competing update patterns**: UpdateManager, direct DOM manipulation, full re-renders, and manual event handling all coexisting
+- **No single source of truth**: Character state gets modified in tabs, systems, and builders without coordination
+- **Event handling is fragmented**: Mix of EventManager delegation, direct listeners, and manual setup creating conflicts
+- **Update cascading is broken**: Changes in one area don't properly propagate to others
+
+**CURRENT STATE:**
+- Archetype selection works (as shown in debug output)
+- Attribute persistence fails because of conflicting update patterns
+- Validation is overly restrictive but fixing individual rules won't solve the broader UX flow issues
+- System has grown organically with multiple approaches instead of unified architecture
+
+**NEXT STEPS:**
+1. **Identify the single update pattern** to standardize on (likely UpdateManager-based)
+2. **Create unified state mutation methods** that all components must use
+3. **Consolidate event handling** to one consistent pattern
+4. **Implement proper state persistence** at the CharacterBuilder level, not individual tabs
+
+**AVOID:**
+- Adding more individual fixes to specific components
+- Creating more onCharacterUpdate() methods
+- Adding more event handlers to CharacterBuilder
+- Piecemeal validation changes
+- Component-specific persistence logic
+
+**ARCHITECTURAL ISSUES TO ADDRESS:**
+1. **State Management**: No consistent pattern for modifying character data
+2. **Update Propagation**: Changes don't reliably cascade to dependent components  
+3. **Event Coordination**: Multiple systems handling the same events differently
+4. **Re-render Strategy**: Mix of partial updates and full re-renders causing inconsistency
+
+The real solution requires **consolidating the update architecture**, not fixing individual symptoms.
+
+## SESSION SUMMARY - Character Builder Screen Switching & Unique Ability UI Overhaul
+
+**DATE**: December 6, 2025
+
+**ATTEMPTED:**
+- Debug character creation button functionality â†’ **Success** (button was working, screen switching was failing)
+- Fix screen switching between welcome and character builder â†’ **Success** (added both CSS classes and inline styles for reliable visibility control)
+- Redesign unique ability upgrade interface â†’ **Success** (converted from checkboxes to card-based interface)
+- Implement +/- button controls for quantity upgrades â†’ **Success** (horizontal rectangular cards with quantity controls)
+
+**KEY FINDINGS:**
+- **Screen switching issues**: Browser caching prevented updated JavaScript from loading, causing old showCharacterBuilder() method to run
+- **UI consistency**: Unique abilities needed to match archetype selection pattern for better UX
+- **Event delegation works**: Main event system successfully handles complex upgrade interactions
+- **CSS + inline styles**: Using both approaches ensures reliable screen visibility changes
+
+**MAJOR IMPROVEMENTS:**
+1. **Reliable Screen Switching**: 
+   - Added comprehensive debugging with emoji indicators
+   - Implemented dual approach (CSS classes + inline styles) for screen visibility
+   - Resolved browser caching issues affecting JavaScript updates
+
+2. **Unique Ability Interface Overhaul**:
+   - Converted from vertical checkbox/input layout to horizontal card grid
+   - Implemented +/- button controls for quantity-based upgrades
+   - Added toggle buttons for single-purchase upgrades
+   - Applied archetype-style visual selection states
+   - Added hover effects and visual feedback
+
+3. **Event System Integration**:
+   - Added unique ability event handlers to main event delegation system
+   - Removed redundant local event listeners
+   - Maintained proper event propagation and context handling
+
+**CURRENT STATE:**
+- âœ… Character creation button works reliably
+- âœ… Screen switching between welcome and builder works
+- âœ… Unique abilities use clean card-based interface matching archetype selection
+- âœ… +/- buttons for quantity upgrades work correctly
+- âœ… Real-time cost calculation updates as upgrades are selected
+- âœ… Visual selection states provide clear feedback
+
+**UI IMPROVEMENTS:**
+- **Consistency**: Unique ability selection now matches archetype selection pattern
+- **Clarity**: Card-based layout is more intuitive than checkbox lists
+- **Functionality**: +/- buttons provide precise quantity control
+- **Visual Feedback**: Selected cards have distinct highlighting and hover effects
+- **Information Density**: Grid layout makes better use of screen space
+
+**NEXT STEPS:**
+- Test unique ability purchasing with new interface
+- Verify cost calculations are accurate
+- Ensure all upgrade types (with/without quantities) work correctly
+- Continue with remaining character builder features
+
+**AVOID:**
+- Relying solely on CSS classes for critical UI state changes (use inline styles as backup)
+- Ignoring browser caching when JavaScript updates don't seem to take effect
+- Inconsistent UI patterns across similar selection interfaces
+
+**ARCHITECTURAL INSIGHTS:**
+- Event delegation scales well for complex nested controls
+- Dual approaches (CSS + inline) provide robust fallbacks for UI state
+- Card-based interfaces are more intuitive than form-based interfaces for game content
+- Visual consistency across similar interactions improves overall UX
+
+## SESSION SUMMARY - UI Responsiveness Fixes & Interface Consistency
+
+**DATE**: December 6, 2025 (Continued)
+
+**ATTEMPTED:**
+- Fix Special Attacks tab blank display â†’ **Success** (removed build state blocking, added archetype fallbacks)
+- Apply unique ability card interface to Traits tab â†’ **Success** (converted checkboxes to card-based selection)
+- Fix Attributes tab responsiveness issues â†’ **Success** (added immediate UI updates)
+
+**KEY FINDINGS:**
+- **Special Attacks tab was blocking**: Build state validation was preventing tab content from showing
+- **Checkbox interfaces are outdated**: Card-based selection provides better UX and visual consistency
+- **UI responsiveness requires immediate feedback**: System updates alone cause noticeable delays
+
+**MAJOR IMPROVEMENTS:**
+1. **Special Attacks Tab Accessibility**:
+   - Removed build state blocking that prevented tab content from showing
+   - Added graceful handling for missing special attack archetypes
+   - Always show interface with helpful guidance instead of empty states
+   - Users can now create special attacks regardless of build completion
+
+2. **Traits Tab Interface Overhaul**:
+   - Converted stat selection from checkboxes to horizontal rectangular cards
+   - Converted condition selection from checkboxes to grid-based cards with cost indicators
+   - Added Add/Remove toggle buttons matching unique ability pattern
+   - Implemented card click handling and visual selection states
+   - Organized conditions by tier with clear cost visualization (1pt, 2pt, 3pt)
+
+3. **Attributes Tab Responsiveness**:
+   - Added immediate UI updates via `updateSingleAttributeDisplay()` method
+   - Fixed delay between user interaction and visual feedback
+   - Values now update instantly when clicking +/- buttons or moving sliders
+   - Button states and slider ticks update in real-time
+
+**CURRENT STATE:**
+- âœ… Special Attacks tab displays content and allows attack creation
+- âœ… Traits tab uses consistent card-based interface matching unique abilities
+- âœ… Attributes tab provides immediate visual feedback for all interactions
+- âœ… All three tabs now follow consistent UI patterns and responsiveness standards
+
+**UI CONSISTENCY ACHIEVEMENTS:**
+- **Unified Card Interface**: Unique abilities, traits (stats & conditions), and archetypes all use card-based selection
+- **Consistent Button Patterns**: Add/Remove toggles and +/- quantity controls across sections
+- **Visual Selection States**: Highlighting, hover effects, and disabled states work consistently
+- **Immediate Feedback**: All user interactions provide instant visual confirmation
+
+**NEXT STEPS:**
+- Verify all tabs maintain consistency in interaction patterns
+- Test full character creation workflow end-to-end
+- Consider applying card interface to any remaining checkbox-based sections
+
+**AVOID:**
+- Build state validation that completely blocks tab access (use guidance instead)
+- Delayed UI updates that break user feedback loops
+- Mixing checkbox and card interfaces in similar selection contexts
+- Form-based interfaces where card-based would be more intuitive
+
+**ARCHITECTURAL INSIGHTS:**
+- **Immediate UI feedback is critical**: Users expect instant visual response to interactions
+- **Interface consistency matters**: Similar selection tasks should use similar UI patterns
+- **Build state guidance > blocking**: Show helpful messages rather than preventing access
+- **Card interfaces scale better**: More flexible for complex data display than form elements
+
+---
+### **FILE: `docs/web_dev_logs/07_B_Failed_UX_Restoration_Attempt.md`**
+---
+﻿# Phase 7: Failed UX Restoration Attempt *(December 7, 2025)*
+**Problem**: User reported complete UX regression - attack/effect type selection broken, limit selection worse than before
+- Attack/effect type dropdowns not working
+- Limit cards not clickable despite modal removal
+- Overall functionality worse than previous implementation
+
+**Attempted Solutions**:
+- â Œ Added missing AttackTypeSystem methods (getAttackTypeDefinitions, getEffectTypeDefinitions, getBasicConditions)
+- â Œ Redesigned LimitSelection to remove modal approach and show limits inline
+- â Œ Enhanced AttackBasicsForm with selected type tags and conditional fields
+- â Œ Improved visual feedback and information architecture
+
+**Result**: Complete failure - "didn't fix anything, it literally didn't work at all"
+
+**Critical Analysis**:
+- **Root Cause Unknown**: Event handlers match, methods exist, but functionality still broken
+- **Data Loading Issues**: Likely problems with GameDataManager or JSON data structure
+- **Component Integration**: Possible timing or lifecycle issues between components
+- **Regression Severity**: User experience significantly worse than baseline
+
+**Key Lessons**:
+- **Never assume incremental fixes work** - always verify basic functionality first
+- **UX regression is unacceptable** - better to revert to working version
+- **Component refactoring is risky** - original modal approach may have been functionally superior
+- **User feedback is critical** - technical implementation means nothing if UX fails
+
+**Next Actions Needed**:
+1. **Emergency revert** to last known working version
+2. **Comprehensive debugging** of data flow and method calls
+3. **Console error analysis** to identify JavaScript failures
+4. **Step-by-step verification** of each interaction before making changes
+
+---
+### **FILE: `docs/web_dev_logs/08_A_Dropdown_Visibility_Improvements.md`**
+---
+﻿# Phase 8: Dropdown Visibility Improvements *(January 7, 2025)*
+**Problem**: User requested dropdown behavior improvements in Special Attacks
+- Attack type dropdowns remained visible after selection, causing UI clutter
+- Condition selectors (basic/advanced) also remained visible after selection
+- User wanted dropdowns to disappear once selections were made
+
+**Investigation**: Research into condition system architecture
+- âœ… **Analysis completed**: Basic and advanced conditions serve different purposes
+  - **Basic Conditions**: Free, universally available, simple effects
+  - **Advanced Conditions**: Cost upgrade points, specialized abilities, more powerful
+- â Œ **Cannot merge**: Different cost models and game balance implications require separation
+- âœ… **Dropdown hiding feasible**: Both types can use the same visibility logic
+
+**Solution**: Modified dropdown visibility logic in AttackBasicsForm.js
+- âœ… **Attack Types**: Changed from `(allowMultiple || selectedIds.length === 0)` to `selectedIds.length === 0`
+- âœ… **Effect Types**: Already had correct behavior, maintained existing logic
+- âœ… **Basic Conditions**: Applied same visibility logic `selectedIds.length === 0`
+- âœ… **Advanced Conditions**: Applied same visibility logic `selectedIds.length === 0`
+
+**Technical Implementation**:
+```javascript
+// OLD: Dropdown always visible for attack types (allowMultiple = true)
+if (allowMultiple || selectedIds.length === 0) {
+
+// NEW: Dropdown only visible when no selections made
+if (selectedIds.length === 0) {
+```
+
+**Result**: âœ… **Successful UX improvement**
+- All dropdowns now disappear after first selection
+- UI is cleaner and less cluttered
+- Users can still change selections by removing tags (Ã— button)
+- Maintains separation between basic/advanced conditions for game balance
+
+**Key Technical Insights**:
+- **Simple visibility logic** works across all selector types
+- **Game design constraints** (basic vs advanced conditions) must be respected
+- **Consistent UX patterns** improve user experience without breaking functionality
+- **Tag-based selection display** with removal buttons provides clear interaction model
+
+**Functional Elements Enhanced**:
+- Attack type selection with clean dropdown hiding
+- Effect type selection (maintained existing behavior)
+- Basic condition selection with dropdown hiding
+- Advanced condition selection with dropdown hiding
+- Removal functionality via Ã— buttons maintains edit capability
+
+## CURRENT IMPLEMENTATION STATUS
+
+### âœ… **Complete & Functional**
+- **All 7 Character Builder Tabs** with full functionality
+- **External Data Management** (15 JSON files, GameDataManager)
+- **Modular Component Architecture** (shared utilities, proper separation)
+- **Character Library System** (localStorage, organization, import/export)
+- **Point Pool Calculations** (real-time, accurate, validated)
+- **Character Validation** (build order, point budgets, archetype conflicts)
+
+### ðŸš§ **Known Issues & Cleanup Needed**
+- **UI Responsiveness**: Some sections still have update timing issues
+- **Validator System**: Complete system exists but marked for removal
+- **Code Organization**: Large files need modularization (SpecialAttackTab: 588 lines)
+- **Performance**: Update batching could be optimized further
+
+### ðŸ“‹ **Architecture Decisions Made**
+- **External Data**: JSON files over hardcoded data for maintainability
+- **Modular Components**: Section-based architecture over monolithic tabs
+- **Event Delegation**: data-action patterns over direct querySelector listeners
+- **Shared Utilities**: RenderUtils, EventManager, UpdateManager for consistency
+- **No Build Process**: Direct browser development for rapid iteration
+
+## DEVELOPMENT INSIGHTS
+
+### **What Worked Well**
+- External JSON data system provides excellent maintainability
+- Modular section components prevent monolithic tab files
+- Shared utility classes (RenderUtils) ensure UI consistency
+- PointPoolCalculator centralization eliminated calculation duplication
+
+### **Major Challenges Overcome**
+- Silent JavaScript import failures (missing files break entire modules)
+- Flaw economics required complete reversal of original design concept
+- Event listener timing requires careful DOM ready state management
+- Complex trait conditions needed 3-tier system with validation
+
+### **Current Focus Areas**
+1. **Modularization**: Breaking down large files (588-line SpecialAttackTab)
+2. **UI Polish**: Resolving remaining responsiveness issues
+3. **Validator Removal**: Eliminating unwanted validation architecture
+4. **Performance**: Optimizing update cycles and event handling
+
+---
+
+**Total Implementation**: ~10,000+ lines across 46 files  
+**Documentation Gap**: Most major systems implemented without corresponding logs  
+**Architecture Quality**: Sophisticated modular design with proper separation of concerns
+
+---
+---
+### **FILE: `docs/web_dev_logs/08_B_Special_Attack_JSON_Integration.md`**
+---
+﻿# PHASE 8: SPECIAL ATTACKS SYSTEM DEBUGGING & JSON INTEGRATION *(December 6, 2025)*
+
+### **MAJOR ISSUE RESOLUTION: Create Attack Button & Data System Integration**
+
+#### **Problem Discovery**
+User reported that the "Create Attack" button in Special Attacks tab wasn't working, showing only console logs with archetype selection working properly but no response to button clicks.
+
+#### **Root Cause Analysis** 
+**1. Method Name Mismatch**: SpecialAttackTab was calling non-existent `SpecialAttackSystem.validateLimitAddition()` method
+- **Actual method**: `validateLimitSelection(character, attack, limitId)`
+- **Called method**: `validateLimitAddition(character, attack, limit)` (doesn't exist)
+- **Parameter mismatch**: Passing full `limit` object instead of `limitId`
+
+**2. Legacy Data System Usage**: SpecialAttackTab still using old `LimitCalculator` instead of new JSON-based system
+- **Old system**: `LimitCalculator.getAllLimits()` with hardcoded data
+- **New system**: `SpecialAttackSystem.getAvailableLimits()` with `limits.json` data
+- **Result**: "Limit not found" errors for all limit selections
+
+**3. Incomplete JSON Integration**: Mixed usage of old and new data systems
+- **Upgrades**: Using new `upgrades.json` system correctly
+- **Limits**: Still calling legacy `LimitCalculator` methods
+- **Display**: Showing old hardcoded limits with incompatible structure
+
+### **SOLUTIONS IMPLEMENTED**
+
+#### **1. Fixed Method Call Errors**
+```javascript
+// BEFORE: Non-existent method calls
+const validation = SpecialAttackSystem.validateLimitAddition(character, attack, limit);
+
+// AFTER: Correct method calls with proper parameters
+const validation = SpecialAttackSystem.validateLimitSelection(character, attack, limit.id);
+```
+**Files**: `SpecialAttackTab.js` lines 348, 452
+**Impact**: Eliminated rendering crashes after attack creation
+
+#### **2. Completed JSON Data System Migration**
+```javascript
+// BEFORE: Legacy hardcoded data
+const allLimits = LimitCalculator.getAllLimits();
+const limitData = LimitCalculator.findLimitById(limitId);
+
+// AFTER: JSON-based data system
+const allLimits = SpecialAttackSystem.getAvailableLimits();
+// System handles limit lookup internally via gameDataManager
+```
+**Files**: `SpecialAttackTab.js` lines 298, 449
+**Impact**: Access to comprehensive 139-limit JSON dataset
+
+#### **3. Data Structure Compatibility Layer**
+```javascript
+// Handle both old stored limits (points) and new limits (cost)
+const pointsValue = limit.points || limit.cost || 0;
+const pointsDisplay = typeof pointsValue === 'number' ? `${pointsValue}p` : pointsValue;
+```
+**Files**: `SpecialAttackTab.js` lines 378-380
+**Impact**: Backward compatibility for existing characters with old limit structure
+
+#### **4. Enhanced User Guidance System**
+```javascript
+// Archetype-aware upgrade point guidance
+const isLimitsBased = ['normal', 'specialist', 'straightforward'].includes(archetype);
+${isLimitsBased ? 
+    'Add limits below to generate upgrade points for purchases.' : 
+    'No upgrade points available from archetype.'}
+```
+**Files**: `SpecialAttackTab.js` lines 415-419, 529-531
+**Impact**: Clear instructions on how to obtain upgrade points based on archetype type
+
+### **TECHNICAL DISCOVERIES**
+
+#### **Special Attack Upgrade Points System**
+**Limits-Based Archetypes** (require limits to generate points):
+- **Normal**: 1/6 multiplier (0.167 Ã— limit points Ã— tier)
+- **Specialist**: 1/3 multiplier (0.333 Ã— limit points Ã— tier) 
+- **Straightforward**: 1/2 multiplier (0.5 Ã— limit points Ã— tier)
+
+**Fixed-Point Archetypes** (automatic points based on tier):
+- **Paragon**: 10 points per tier
+- **One Trick**: 20 points per tier
+- **Dual Natured**: 15 points per tier per attack
+- **Basic**: 10 points per tier (base attacks only)
+
+**Special Systems**:
+- **Shared Uses**: Resource pool system instead of upgrade points
+
+#### **JSON Data Integration Success**
+- **139 hierarchical limits** now properly accessible (6 main categories with variants and modifiers)
+- **24 upgrades** with variable cost support ("20 per tier" calculations)
+- **Proper category grouping** for hierarchical display in UI
+- **Cost structure compatibility** between number values and "Variable" strings
+
+### **USER EXPERIENCE IMPROVEMENTS**
+
+#### **Before Fixes**
+- â Œ Create Attack button appeared broken (silent failures)
+- â Œ "Limit not found" errors for all limit selections
+- â Œ Confusing "No upgrade points available" with no explanation
+- â Œ Limited hardcoded limit selection (old system)
+
+#### **After Fixes**
+- âœ… Create Attack button works reliably with success notifications
+- âœ… Full access to 139-limit comprehensive JSON dataset
+- âœ… Clear archetype-specific guidance on obtaining upgrade points
+- âœ… Upgrades always visible for reference even when unaffordable
+- âœ… Hierarchical limit categories with expandable sections
+
+### **ARCHITECTURAL INSIGHTS**
+
+#### **Method Name Consistency Pattern**
+**Problem**: Different systems using inconsistent method naming conventions
+**Solution**: Always check actual method signatures in target system before calling
+**Lesson**: Method naming should follow predictable patterns across related systems
+
+#### **Data System Migration Strategy**
+**Problem**: Partial migration leaves mixed old/new system calls causing failures
+**Solution**: Complete migration in single pass, add compatibility layers for stored data
+**Lesson**: Data system changes require comprehensive audit of all usage points
+
+#### **User Guidance in Complex Systems**
+**Problem**: Users confused by system behavior without understanding underlying mechanics
+**Solution**: Context-aware guidance that explains system behavior based on current state
+**Lesson**: Complex systems need explanation interfaces, not just functional interfaces
+
+#### **Debug Logging Strategy**
+**Problem**: Silent failures in event systems make debugging difficult
+**Solution**: Strategic debug logging at key decision points and method entries
+**Lesson**: Debug logs should tell a story of system flow, not just mark execution points
+
+### **FILES MODIFIED**
+1. **SpecialAttackTab.js** - Method call fixes, JSON system integration, enhanced user guidance
+2. **Web development logs** - Documentation of debugging process and solutions
+
+### **TESTING VALIDATION**
+- âœ… **Create Attack button**: Works reliably with proper success notifications
+- âœ… **Limit selection**: All 139 limits selectable without "not found" errors  
+- âœ… **Upgrade display**: Shows all available upgrades with proper affordability states
+- âœ… **User guidance**: Clear instructions based on archetype type and current state
+- âœ… **Data consistency**: Both old stored characters and new characters work properly
+
+This phase successfully resolved the Special Attacks system's core functionality while completing the JSON data system integration that was partially implemented in previous phases.
+
+---
+### **FILE: `docs/web_dev_logs/08_C_Special_Attack_UI_Rewrite.md`**
+---
+﻿# PHASE 8: SPECIAL ATTACK UI COMPLETE REWRITE *(December 7, 2025)*
+
+### **Problem Analysis**
+The Phase 7 "Failed UX Restoration Attempt" created a completely broken UI:
+- Attack/effect type selection became non-functional 
+- Disconnected UI elements (separate "Selected Types" boxes) confused users
+- Event handling inconsistencies caused silent failures
+- Component integration was fragile and error-prone
+- User reported: "didn't fix anything, it literally didn't work at all"
+
+### **Complete Architectural Rewrite**
+Rather than attempting incremental fixes, performed a ground-up rewrite focusing on:
+
+#### **AttackBasicsForm.js - New Architecture**
+- âœ… **Unified Component Pattern** - Single clean component with consistent structure
+- âœ… **Generic renderIntegratedSelector()** - Reusable pattern eliminating code duplication  
+- âœ… **Integrated Tag Interface** - Selected items appear as removable tags within their sections
+- âœ… **Conditional Field Display** - Advanced conditions and hybrid order appear automatically
+- âœ… **Robust Error Handling** - Graceful fallbacks with null checking throughout
+
+#### **SpecialAttackTab.js - Simplified Event Management**
+- âœ… **Direct State Operations** - Simple array modifications instead of complex system delegation
+- âœ… **Effect Type Mutual Exclusion** - Fixed by replacing array instead of appending
+- âœ… **Consistent Action Naming** - Proper camelCase mapping (attackType, effectType, etc.)
+- âœ… **Streamlined Handlers** - One-to-one mapping between actions and methods
+- âœ… **Immediate Feedback** - Direct character updates trigger instant UI refresh
+
+### **Key Technical Breakthroughs**
+
+#### **Data-Action Attribute Mapping**
+```javascript
+// HTML: data-action="add-attackType" 
+// Handler: 'add-attackType': () => this.addAttackType(element.value)
+```
+- **Lesson**: Exact string matching required between HTML and handler keys
+- **Solution**: Consistent camelCase conversion eliminates mapping errors
+
+#### **Effect Type Single Selection**
+```javascript
+// OLD (broken): attack.effectTypes.push(typeId)
+// NEW (working): attack.effectTypes = [typeId]
+```
+- **Lesson**: Effect types are mutually exclusive, not cumulative
+- **Solution**: Array replacement maintains single selection constraint
+
+#### **Component Reusability Pattern**
+```javascript
+renderIntegratedSelector(attack, character, label, propertyKey, definitions, allowMultiple)
+```
+- **Lesson**: Generic methods eliminate duplicate code and ensure consistency
+- **Solution**: Single pattern handles attack types, effect types, and conditions
+
+### **User Experience Improvements**
+
+#### **Visual Hierarchy**
+- Clear separation between attack configuration and condition selection
+- Horizontal rule divider when condition fields appear
+- Consistent tag styling with cost indicators
+- Intuitive remove buttons (Ã—) on all selected items
+
+#### **Interaction Flow**  
+- Attack types allow multiple selections (dropdown persists)
+- Effect type allows single selection (dropdown disappears)
+- Advanced conditions appear automatically when relevant
+- Hybrid order selector shows only for hybrid effect types
+
+### **Performance & Reliability**
+
+#### **Reduced Complexity**
+- Eliminated complex component delegation chains
+- Direct state management reduces failure points
+- Simplified render logic improves performance
+- Fewer method calls reduce debugging complexity
+
+#### **Error Prevention**
+- Null checking prevents undefined property access
+- Array initialization prevents missing property errors
+- Graceful fallbacks maintain functionality with incomplete data
+- Consistent data structure validation
+
+### **Functional Validation Results**
+- âœ… **Attack Type Selection** - Multiple types with cost display working perfectly
+- âœ… **Effect Type Selection** - Single selection with proper tag display
+- âœ… **Advanced Conditions** - Automatic appearance with condition/hybrid effects
+- âœ… **Basic Conditions** - Standard condition selection functioning
+- âœ… **Hybrid Order** - Selector appears only when hybrid effect selected
+- âœ… **Tag Removal** - All remove buttons working with proper state updates
+- âœ… **Dropdown Clearing** - Selections clear dropdowns automatically
+- âœ… **Cost Display** - Free vs paid types clearly indicated
+
+### **Critical Lessons Learned**
+
+#### **Architecture Philosophy**
+- **Simple solutions often outperform complex ones** - Direct state management beat complex business logic
+- **User experience trumps technical elegance** - Working UI more important than "proper" abstraction
+- **Component reusability requires generic patterns** - Copy-paste code creates maintenance nightmares
+- **Visual hierarchy guides user behavior** - Clear separation improves usability dramatically
+
+#### **Development Process**
+- **Complete rewrites sometimes necessary** - Incremental fixes can compound problems
+- **User feedback is authoritative** - Technical implementation means nothing if UX fails
+- **Testing must cover real user workflows** - Internal testing missed integration issues
+- **Simplicity enables debugging** - Complex delegation chains hide failure points
+
+### **Next Phase Priorities**
+1. **CSS Styling Refinement** - Polish visual design and responsive behavior
+2. **Edge Case Testing** - Validate all interaction scenarios and error conditions  
+3. **Performance Monitoring** - Verify render times with complex attack configurations
+4. **Pattern Documentation** - Record successful patterns for future component development
+
+**Status**: Special Attack UI is now fully functional with intuitive integrated selector pattern and robust error handling.

@@ -1,4 +1,4 @@
-# `src/utils` - The Generic Utilities Layer
+# `src/backend/utils` - The Generic Utilities Layer
 
 ## 1. Core Purpose
 

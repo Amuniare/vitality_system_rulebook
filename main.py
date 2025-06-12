@@ -8,13 +8,13 @@ import sys
 import time
 import argparse
 
-from src.utils.logging import setup_logging
-from src.api.connection import Roll20Connection
-from src.api.chat_interface import ChatInterface
-from src.character.updater import CharacterUpdater
-from src.character.api_extractor import CharacterExtractor
-from src.utils.json_utils import save_json
-from src.utils.file_utils import process_downloaded_characters # New Import
+from src.backend.utils.logging import setup_logging
+from src.backend.api.connection import Roll20Connection
+from src.backend.api.chat_interface import ChatInterface
+from src.backend.character.updater import CharacterUpdater
+from src.backend.character.api_extractor import CharacterExtractor
+from src.backend.utils.json_utils import save_json
+from src.backend.utils.file_utils import process_downloaded_characters # New Import
 
 # Setup logging
 setup_logging()
