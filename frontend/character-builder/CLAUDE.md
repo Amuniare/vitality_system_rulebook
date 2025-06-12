@@ -61,3 +61,36 @@ Each directory has a strict, non-negotiable role.
 ### **Collaboration & Debugging**
 
 When a bug occurs or a feature needs to be implemented, please describe the issue in detail. I will analyze the relevant files based on these architectural contracts and propose a solution. Instead of using rigid commands, let's collaborate on a plan, which I can then execute.
+
+
+
+---
+
+### **Architectural Contracts (Learned from Dev Logs)**
+
+These are core principles that have been established to prevent common bugs. Adherence is mandatory.
+
+**1. The Component Re-render Contract (Stale Listener Fix)**
+- **Problem:** Event listeners were duplicating on re-renders, causing UI freezes and multiple action firings.
+- **Rule:** A simple `listenersAttached` flag is not enough. The mandatory pattern is to have dedicated `removeEventListeners()` and `setupEventListeners()` methods. The `render()` or `onCharacterUpdate()` method **must** call `removeEventListeners()` *before* attaching new ones.
+- *Reference: Dev Logs 22E, 23A, 23B*
+
+**2. The Non-Blocking Advisory Budget System**
+- **Problem:** The app was initially blocking users from making purchases they couldn't afford.
+- **Rule:** The UI should *advise, not block*. Show a warning if a user goes over budget but always allow the action to proceed.
+- *Reference: Dev Logs 18, 20A*
+
+**3. Scoped DOM Queries**
+- **Problem:** Using global queries like `document.getElementById` caused conflicts between multiple instances of the same component.
+- **Rule:** Components must use scoped queries (e.g., `container.querySelector(...)` or `element.closest(...)`) to ensure they only interact with their own DOM elements.
+- *Reference: Dev Log 22D*
+
+**4. Data-Driven Design (Single Source of Truth)**
+- **Problem:** Hardcoded data (like character types) led to inconsistencies.
+- **Rule:** All game data must be loaded from the JSON files via the `GameDataManager`. UI components should not contain hardcoded game rules.
+- *Reference: Dev Log 23C*
+
+**5. One-Way Data Flow & "Dumb" Components**
+- **Problem:** The failed Summary Tab reconstructions happened because components were trying to do their own complex calculations.
+- **Rule:** Parent components (like a `Tab`) are responsible for fetching and processing all data. They then pass that prepared data down to "dumb" child components that only handle rendering.
+- *Reference: Dev Logs 19, 24A, 25B*

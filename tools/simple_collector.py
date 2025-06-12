@@ -24,7 +24,8 @@ PRESETS = {
         '.claude/',
         'README.md',
         'requirements.txt',
-        'docs_planning/',        
+        'docs_planning/',
+        '.gemini/'        
     ],
 
     'root_simulation': [
