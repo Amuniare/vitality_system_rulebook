@@ -17,295 +17,43 @@ DEFAULT_PRESET = 'everything'
 # ============================================================================
 
 PRESETS = {
-    'web_builder_core': [
-        'frontend/character-builder/character-builder.html',
-        'frontend/character-builder/app/',
-        'frontend/character-builder/core/',
-        'frontend/character-builder/shared/',
-        'frontend/character-builder/systems/',
-        'frontend/character-builder/assets/css/',
-        'frontend/character-builder/calculators/',
 
+    'root': [
+        # Base root files that are commonly included
         'CLAUDE.md',
-
-        'frontend/docs/',
-        'README.md'
-    ],
-
-
-
-    'web_builder_all': [
-        'frontend/character-builder/',
-        'frontend/rules/',
-
-        'simulation/package-lock.json',
-        'simulation/package.json',
-        'simulation/playwright.config.js',
-
-        'frontend/docs/',
-        'CLAUDE.md',
-        'docs_planning/',
-        'README.md'],
-
-    'tools_transcriber': [
-        'src/transcriber/',
-        'README.md'
-    ],
-
-    'web_builder_most': [
-        'frontend/character-builder/character-builder.html',
-        'frontend/character-builder/app/',
-        'frontend/character-builder/core/',
-        'frontend/character-builder/shared/',
-        'frontend/character-builder/systems/',
-        'frontend/character-builder/assets/css/',
-        'frontend/character-builder/calculators/',
-
-        'CLAUDE.md',
-
-        'frontend/docs/',
-        'README.md'
-    ],
-
-    'web_builder_rules_updater': [
-        'frontend/character-builder/core/',
-        'frontend/character-builder/calculators/',
-        'frontend/character-builder/data/',
-
-        'frontend/rules/rulebook.md',
-
-        'frontend/docs/',
-        'README.md'
-    ],
-
-    'web_builder_main_points': [
-    'frontend/character-builder/character-builder.html',
-    'frontend/character-builder/assets/css/character-builder.css',
-    'frontend/character-builder/app/app.js',
-    'frontend/character-builder/app/CharacterBuilder.js',
-    'frontend/character-builder/shared/utils/RenderUtils.js',
-    'frontend/character-builder/shared/utils/EventManager.js',
-    'frontend/character-builder/shared/utils/UpdateManager.js',
-    'frontend/character-builder/shared/ui/CharacterLibrary.js',
-    'frontend/character-builder/shared/ui/CharacterTree.js',
-    'frontend/character-builder/shared/ui/PointPoolDisplay.js',
-    'frontend/character-builder/shared/ui/ValidationDisplay.js',
-    'frontend/character-builder/features/main-pool/MainPoolTab.js',
-    'frontend/character-builder/features/main-pool/components/FlawPurchaseSection.js',
-    'frontend/character-builder/features/main-pool/components/TraitPurchaseSection.js',
-    'frontend/character-builder/features/main-pool/components/SimpleBoonSection.js',
-    'frontend/character-builder/features/main-pool/components/UniqueAbilitySection.js',
-    'frontend/character-builder/features/main-pool/components/ActionUpgradeSection.js',
-    'frontend/character-builder/systems/TraitFlawSystem.js',
-    'frontend/character-builder/systems/SimpleBoonsSystem.js',
-    'frontend/character-builder/systems/UniqueAbilitySystem.js',
-    'frontend/character-builder/systems/ActionSystem.js',
-    'frontend/character-builder/calculators/PointPoolCalculator.js',
-    'frontend/character-builder/core/VitalityCharacter.js',
-    'frontend/character-builder/core/GameConstants.js',
-    'frontend/character-builder/core/GameDataManager.js',
-    'frontend/character-builder/core/TierSystem.js',
-    'frontend/character-builder/features/basic-info/BasicInfoTab.js',
-    'frontend/character-builder/features/archetypes/ArchetypeTab.js',
-    'frontend/character-builder/features/attributes/AttributeTab.js',
-    'frontend/character-builder/systems/ArchetypeSystem.js',
-    'frontend/character-builder/systems/AttributeSystem.js',
-    'frontend/character-builder/calculators/StatCalculator.js',
-    'frontend/character-builder/data/actions.json',
-    'frontend/character-builder/data/archetypes.json',
-    'frontend/character-builder/data/attack_types_definitions.json',
-    'frontend/character-builder/data/boons_simple.json',
-    'frontend/character-builder/data/conditions_advanced.json',
-    'frontend/character-builder/data/conditions_basic.json',
-    'frontend/character-builder/data/descriptors.json',
-    'frontend/character-builder/data/effect_types_definitions.json',
-    'frontend/character-builder/data/expertise.json',
-    'frontend/character-builder/data/features.json',
-    'frontend/character-builder/data/flaws.json',
-    'frontend/character-builder/data/movement_features.json',
-    'frontend/character-builder/data/senses.json',
-    'frontend/character-builder/data/stat_options_generic.json',
-    'frontend/character-builder/data/trait_conditions.json',
-    'frontend/character-builder/data/unique_abilities_complex.json',
-
-],
-
-
-
-    'backend': [
-        'src/',
-        'README.md',
-        'CLAUDE.md',
-        'logs.md'
-    ],
-
-
-
-    'story': [
-        'frontend/campaigns/',
-        
-        'frontend/rules/rulebook.md',
-
-        'README.md'
-        ],
-
-    'src': [
-        'src/',
-        'README.md',
-        'CLAUDE.md',
-        'src/docs/',
-
-    ],
-
-
-    'testing_minimum': [
-        # Tier 1: Absolutely Necessary (Bare Minimum)
-        # The web application itself, the test framework, and the rules the AI needs.
-        'frontend/character-builder/',
-        'frontend/rules/rulebook.md',
-        'simulation/playwright.config.js',
-        'simulation/package.json',
-        'simulation/package-lock.json',
-    ],
-
-    'testing_recommended': [
-        # Tier 1.5: The recommended preset for most testing tasks.
-        # Includes the bare minimum code plus the most critical architectural
-        # and specification documents for better context-aware solutions.
-        
-        # Core App & Test Framework
-        'frontend/character-builder/',
-        'frontend/rules/rulebook.md',
-        'simulation/playwright.config.js',
-        'simulation/package.json',
-        'simulation/package-lock.json',
-
-        # High-Value Documentation
-        'frontend/docs/specs_and_notes/',
-        'docs_planning/',
-        'CLAUDE.md',
-        'README.md',
-    ],
-
-    'testing_recommended_with_logs': [
-        # Tier 1.6: The recommended preset for most testing tasks.
-        # Includes the bare minimum code plus the most critical architectural
-        # and specification documents for better context-aware solutions.
-        # and some web dev logs
-        
-        # Core App & Test Framework
-        'frontend/character-builder/',
-        'frontend/rules/rulebook.md',
-        'simulation/playwright.config.js',
-        'simulation/package.json',
-        'simulation/package-lock.json',
-
-        # High-Value Documentation
-        'frontend/docs/specs_and_notes/',
-        'docs_planning/',
-        'CLAUDE.md',
-        'README.md',
-
-        # Logs
-        'frontend/docs/dev_logs/20-29_Phase_Testing_and_Integration/',
-    ],
-
-
-
-    'testing_core': [
-        # Tier 1 + Tier 2: Core files plus architectural guides.
-        # This is the recommended preset for most web builder testing tasks.
-        
-        # Tier 1 Files
-        'frontend/character-builder/',
-        'frontend/rules/rulebook.md',
-        'simulation/playwright.config.js',
-        'simulation/package.json',
-        'simulation/package-lock.json',
-
-        # Tier 2 Files (Guides & Specs)
-        'frontend/docs/',
-        'docs_planning/',
-        'CLAUDE.md',
-        'README.md'
-    ],
-
-    # ============================================================================
-    # NEW REQUESTED PRESETS
-    # ============================================================================
-
-    'root_files_planning_all_docs_claude': [
-        # Root files + planning + all docs / claude files
-        'CLAUDE.md',
+        '.claude/',
         'README.md',
         'requirements.txt',
-        'docs_planning/',
-        
-        # Planning
-        'docs_planning/',
-        
-        # All docs and claude files
-        'frontend/docs/',
-        'src/docs/',
-        'simulation/docs/',
-        'frontend/character-builder/CLAUDE.md',
-        'frontend/character-builder/app/CLAUDE.md',
-        'frontend/character-builder/assets/css/CLAUDE.md',
-        'frontend/character-builder/calculators/CLAUDE.md',
-        'frontend/character-builder/core/CLAUDE.md',
-        'frontend/character-builder/features/CLAUDE.md',
-        'frontend/character-builder/shared/CLAUDE.md',
-        'frontend/character-builder/systems/CLAUDE.md',
-        'src/CLAUDE.md',
-        'src/backend/api/CLAUDE.md',
-        'src/backend/character/CLAUDE.md',
-        'src/backend/utils/CLAUDE.md',
-        'src/roll20_api/CLAUDE.md',
+        'docs_planning/',        
     ],
 
     'root_simulation': [
         # Root files + simulation
-        'CLAUDE.md',
-        'README.md',
-        'requirements.txt',
-        'docs_planning/',        
+        '--root',
         'simulation/',
     ],
 
     'root_src': [
         # Root files + src
-        'CLAUDE.md',
-        'README.md',
-        'requirements.txt',
-        'docs_planning/',
+        '--root',
         'src/',
     ],
 
     'root_frontend': [
         # Root files + frontend
-        'CLAUDE.md',
-        'README.md',
-        'requirements.txt',
-        'docs_planning/',
-        
+        '--root',
         'frontend/',
     ],
 
     'root_character_builder': [
         # Root files + character-builder
-        'CLAUDE.md',
-        'README.md',
-        'requirements.txt',
-        'docs_planning/',
+        '--root',
         'frontend/character-builder/',
     ],
 
     'root_character_builder_minus_data': [
         # Root files + character-builder minus data
-        'CLAUDE.md',
-        'README.md',
-        'requirements.txt',
-        'docs_planning/',
+        '--root',
         'frontend/character-builder/character-builder.html',
         'frontend/character-builder/CLAUDE.md',
         'frontend/character-builder/app/',
@@ -319,19 +67,13 @@ PRESETS = {
 
     'root_backend': [
         # Root files + backend
-        'CLAUDE.md',
-        'README.md',
-        'requirements.txt',
-        'docs_planning/',
+        '--root',
         'src/backend/',
     ],
 
     'root_backend_scriptcards_api': [
         # Root files + backend + scriptcards + api
-        'CLAUDE.md',
-        'README.md',
-        'requirements.txt',
-        'docs_planning/',
+        '--root',
         'src/backend/',
         'src/scriptcards/',
         'src/roll20_api/',
@@ -346,6 +88,7 @@ PRESETS = {
         'simulation/',
 
         'CLAUDE.md',
+        '.claude/',
         'README.md',
         'docs_planning/',
         
@@ -385,6 +128,7 @@ PRESETS = {
         'simulation/docs/simulation-engine.md',
         'docs_planning/',
         'CLAUDE.md',
+        '.claude/',
         'README.md',
         
         # Project config
@@ -395,17 +139,15 @@ PRESETS = {
 
     'sim_testing': [
         # Everything related to simulation, simulator, and testing
+        '--root',
         'simulation/',
         'rulebook/',
-        'requirements.txt',
         'simulation/package.json',
         'simulation/package-lock.json',
         'simulation/playwright.config.js',
         'simulation/docs/simulation-engine.md',
         'frontend/docs/specs_and_notes/ai_testing_plan.md',
         'frontend/docs/specs_and_notes/notes-testing.md',
-        'CLAUDE.md',
-        'README.md'
     ],
 
 
@@ -475,6 +217,36 @@ def build_directory_tree():
     return "\n".join(output)
 
 # ============================================================================
+# PRESET REFERENCE RESOLVER
+# ============================================================================
+
+def resolve_preset_references(preset_name, visited=None):
+    """Resolve preset references recursively, expanding --preset_name entries."""
+    if visited is None:
+        visited = set()
+    
+    # Check for circular references
+    if preset_name in visited:
+        raise ValueError(f"Circular preset reference detected: {preset_name}")
+    
+    if preset_name not in PRESETS:
+        raise ValueError(f"Unknown preset: {preset_name}")
+    
+    visited.add(preset_name)
+    resolved_paths = []
+    
+    for item in PRESETS[preset_name]:
+        if item.startswith('--'):
+            # This is a preset reference
+            referenced_preset = item[2:]  # Remove the '--' prefix
+            resolved_paths.extend(resolve_preset_references(referenced_preset, visited.copy()))
+        else:
+            # This is a regular path
+            resolved_paths.append(item)
+    
+    return resolved_paths
+
+# ============================================================================
 # SIMPLE COLLECTOR
 # ============================================================================
 
@@ -494,7 +266,13 @@ def collect_files(preset_name):
         root_path = Path.cwd()
     os.chdir(root_path)  # Change to root directory
     
-    paths_to_include = PRESETS[preset_name]
+    # Resolve any preset references
+    try:
+        paths_to_include = resolve_preset_references(preset_name)
+    except ValueError as e:
+        print(f"Error resolving preset references: {e}")
+        return None
+    
     collected_files = set()
     
     print(f"Using preset: {preset_name}")
