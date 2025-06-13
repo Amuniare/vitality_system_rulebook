@@ -63,3 +63,11 @@ ok so Situation expertise is changed, players can buy up to 3 situational expert
 
 
 Summon extra points
+
+
+
+
+
+## SRC
+-need to fix sync issue with text names
+
