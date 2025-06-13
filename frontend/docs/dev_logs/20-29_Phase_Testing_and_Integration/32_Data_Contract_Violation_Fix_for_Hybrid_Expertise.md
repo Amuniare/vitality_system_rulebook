@@ -1,38 +1,4 @@
-import os
-from pathlib import Path
 
-# --- File 1: Session Log for Gemini's Learning ---
-
-session_log_content = """
-# Session Log: Workflow Correction and Roadmap Granularity
-
-**Date:** 2025-06-13
-
-### Goal
-To correctly diagnose and create a plan to fix the `TypeError: category.basic is undefined` bug in the character builder's expertise system.
-
-### Outcome
-The root cause was correctly identified as a Data-Contract Violation in `PointPoolCalculator.js`. However, my initial proposed plan was flawed in two ways:
-1.  I proposed executing the plan myself instead of providing a roadmap for the Director to approve, violating our established collaboration model.
-2.  My initial roadmap omitted a critical cleanup step (removing the duplicated code), making the plan incomplete.
-
-After being corrected by the Director, I provided a revised, granular roadmap that was approved and successfully executed, leading to the resolution of the bug.
-
-### Learning
-1.  **Role Adherence is Paramount:** I must consistently act as the remote **Advisor**, creating plans for the Director, not attempting to execute them myself.
-2.  **Explicit Over Implicit:** Roadmaps must be fully explicit and granular. Every significant action, including cleanup and removal of duplicated code, must be listed as a distinct step. High-level commands like `--bugfix` are useful, but the underlying plan must still be transparent.
-3.  **Correction is a Key Part of the Workflow:** The Director's role in correcting my process is not a failure state, but a core part of the collaborative loop that ensures quality and adherence to protocol. I must integrate this feedback immediately.
-"""
-
-session_log_path = Path(".gemini/logs/2025-06-13_Workflow-Correction-and-Roadmap-Granularity.md")
-session_log_path.parent.mkdir(parents=True, exist_ok=True)
-session_log_path.write_text(session_log_content, encoding='utf-8')
-print(f"Successfully created session log: {session_log_path}")
-
-
-# --- File 2: Official Dev Log for the Project ---
-
-dev_log_content = """
 # Phase 32: Data Contract Violation Fix for Hybrid Expertise System
 
 **Date:** 2025-06-13
@@ -91,10 +57,3 @@ Lessons Learned: This was a textbook example of the "Data-Contract Violation" pa
 frontend/character-builder/calculators/PointPoolCalculator.js: Replaced the buggy calculateUtilityPoolSpent method with the correct, robust logic.
 
 frontend/character-builder/systems/UtilitySystem.js: Deleted the redundant calculateUtilityPointsSpent method.
-"""
-
-dev_log_path = Path("frontend/docs/dev_logs/20-29_Phase_Testing_and_Integration/32_Data_Contract_Violation_Fix_for_Hybrid_Expertise.md")
-dev_log_path.parent.mkdir(parents=True, exist_ok=True)
-dev_log_path.write_text(dev_log_content, encoding='utf-8')
-print(f"Successfully created dev log: {dev_log_path}")
-
