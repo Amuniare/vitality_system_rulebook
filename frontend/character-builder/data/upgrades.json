@@ -148,10 +148,21 @@
       ],
       "Instant Defeat Mechanics": [
         {
-          "name": "Finishing Blow",
-          "cost": "20 per tier",
-          "effect": "If attack reduces enemy to 5×tier HP or below, enemy is defeated instead",
-          "maximum": "3 tiers purchasable, stacks multiplicatively",
+          "name": "Finishing Blow 1",
+          "cost": 20,
+          "effect": "If attack reduces enemy to 5 HP or below, enemy is defeated instead",
+          "restriction": "Cannot apply to AOE attacks"
+        },
+        {
+          "name": "Finishing Blow 2",
+          "cost": 40,
+          "effect": "If attack reduces enemy to 10 HP or below, enemy is defeated instead",
+          "restriction": "Cannot apply to AOE attacks"
+        },
+        {
+          "name": "Finishing Blow 3",
+          "cost": 60,
+          "effect": "If attack reduces enemy to 15 HP or below, enemy is defeated instead",
           "restriction": "Cannot apply to AOE attacks"
         },
         {

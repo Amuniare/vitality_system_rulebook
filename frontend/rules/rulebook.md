@@ -1208,9 +1208,9 @@ Restriction: Cannot apply to AOE attacks
 
 #### Instant Defeat Mechanics
 
-**20p per tier - Finishing Blow**  
-Effect: If attack reduces enemy to 5×tier HP or below, enemy is defeated instead  
-Maximum: 3 tiers purchasable, stacks multiplicatively  
+**20p per rank - Finishing Blow**  
+Effect: If attack reduces enemy to 5×rank HP or below, enemy is defeated instead  
+Maximum: 3 ranks purchasable, stacks multiplicatively  
 Restriction: Cannot apply to AOE attacks  
 
 **20p - Culling Strike**  
