@@ -955,6 +955,35 @@ input:focus, select:focus, textarea:focus {
     gap: var(--gap-medium);
 }
 
+/* Talent Input Styling */
+.talent-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-small);
+}
+
+.talent-input {
+    padding: var(--padding-small);
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--border-radius-small);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+}
+
+.talent-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    background: rgba(0, 255, 255, 0.05);
+    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1);
+}
+
+.talent-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
 /* Utility Overview Box */
 .utility-overview-box {
     background: var(--bg-secondary);

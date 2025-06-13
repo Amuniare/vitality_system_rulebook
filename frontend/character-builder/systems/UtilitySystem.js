@@ -96,6 +96,19 @@ export class UtilitySystem {
 
         // Expertise costs
         Object.entries(character.utilityPurchases.expertise).forEach(([attrKey, category]) => {
+            // Handle situational expertises (new format)
+            if (attrKey === 'situational' && Array.isArray(category)) {
+                category.forEach(expertise => {
+                    if (expertise.level === 'basic') {
+                        spent += this.getExpertiseCost('situational', 'basic');
+                    } else if (expertise.level === 'mastered') {
+                        spent += this.getExpertiseCost('situational', 'mastered');
+                    }
+                });
+                return;
+            }
+            
+            // Handle activity-based expertises (old format)
             const basicExpertise = Array.isArray(category.basic) ? category.basic : [];
             const masteredExpertise = Array.isArray(category.mastered) ? category.mastered : [];
 
@@ -319,6 +332,81 @@ export class UtilitySystem {
         const index = targetArray.indexOf(expertiseId);
         targetArray.splice(index, 1);
 
+        return character;
+    }
+
+    // Situational Expertise Methods
+    static addSituationalExpertise(character, attribute = 'mobility') {
+        if (!character.utilityPurchases.expertise.situational) {
+            character.utilityPurchases.expertise.situational = [];
+        }
+        
+        const maxCount = 3;
+        if (character.utilityPurchases.expertise.situational.length >= maxCount) {
+            throw new Error(`Cannot add more than ${maxCount} situational expertises`);
+        }
+        
+        const newExpertise = character.createSituationalExpertise(attribute, 'none', ['', '', '']);
+        character.utilityPurchases.expertise.situational.push(newExpertise);
+        
+        return character;
+    }
+    
+    static updateSituationalTalent(character, expertiseId, talentIndex, talentValue) {
+        // Initialize situational array if needed
+        if (!character.utilityPurchases.expertise.situational) {
+            character.utilityPurchases.expertise.situational = [];
+        }
+        
+        const expertise = character.utilityPurchases.expertise.situational.find(e => e.id === expertiseId);
+        if (!expertise) {
+            throw new Error(`Situational expertise ${expertiseId} not found`);
+        }
+        
+        if (talentIndex < 0 || talentIndex > 2) {
+            throw new Error(`Invalid talent index: ${talentIndex}`);
+        }
+        
+        expertise.talents[talentIndex] = talentValue;
+        return character;
+    }
+    
+    static purchaseSituationalExpertise(character, expertiseId, level) {
+        // Initialize situational array if needed
+        if (!character.utilityPurchases.expertise.situational) {
+            character.utilityPurchases.expertise.situational = [];
+        }
+        
+        const expertise = character.utilityPurchases.expertise.situational.find(e => e.id === expertiseId);
+        if (!expertise) {
+            throw new Error(`Situational expertise ${expertiseId} not found`);
+        }
+        
+        if (level === 'mastered' && expertise.level !== 'basic') {
+            // Auto-purchase basic first
+            expertise.level = 'basic';
+        }
+        
+        expertise.level = level;
+        return character;
+    }
+    
+    static removeSituationalExpertise(character, expertiseId) {
+        // Initialize situational array if needed
+        if (!character.utilityPurchases.expertise.situational) {
+            character.utilityPurchases.expertise.situational = [];
+        }
+        
+        if (character.utilityPurchases.expertise.situational.length === 0) {
+            throw new Error('No situational expertises found');
+        }
+        
+        const index = character.utilityPurchases.expertise.situational.findIndex(e => e.id === expertiseId);
+        if (index === -1) {
+            throw new Error(`Situational expertise ${expertiseId} not found`);
+        }
+        
+        character.utilityPurchases.expertise.situational.splice(index, 1);
         return character;
     }
     

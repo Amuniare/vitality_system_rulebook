@@ -50,13 +50,16 @@ export class VitalityCharacter {
         // Utility Purchases
         this.utilityPurchases = {
             expertise: {
+                // Activity-based expertises (unchanged)
                 awareness: { basic: [], mastered: [] },
                 communication: { basic: [], mastered: [] },
                 intelligence: { basic: [], mastered: [] },
                 focus: { basic: [], mastered: [] },
                 mobility: { basic: [], mastered: [] },
                 endurance: { basic: [], mastered: [] },
-                power: { basic: [], mastered: [] }
+                power: { basic: [], mastered: [] },
+                // New situational expertises (max 3)
+                situational: []
             },
             features: [],
             senses: [],
@@ -121,6 +124,19 @@ export class VitalityCharacter {
         return attack;
     }
     
+    // Create a situational expertise with custom talents
+    createSituationalExpertise(attribute, level = 'basic', talents = ['', '', '']) {
+        const expertise = {
+            id: Date.now().toString() + Math.random(),
+            attribute: attribute,
+            level: level,
+            talents: [...talents], // Copy array to avoid reference issues
+            purchaseDate: Date.now()
+        };
+        
+        return expertise;
+    }
+    
     // Deep clone for saving/loading
     clone() {
         return JSON.parse(JSON.stringify(this));
@@ -153,8 +169,11 @@ export class VitalityCharacter {
                                                this.specialAttacks.every(attack => attack.name && attack.name.trim() !== '');
         
         // Check utility completion
-        const hasUtilityPurchases = Object.values(this.utilityPurchases.expertise).some(exp => 
-                                      exp.basic.length > 0 || exp.mastered.length > 0) ||
+        const hasActivityBasedExpertise = ['awareness', 'communication', 'intelligence', 'focus', 'mobility', 'endurance', 'power']
+                                          .some(attr => this.utilityPurchases.expertise[attr].basic.length > 0 || 
+                                                       this.utilityPurchases.expertise[attr].mastered.length > 0);
+        const hasSituationalExpertise = this.utilityPurchases.expertise.situational.length > 0;
+        const hasUtilityPurchases = hasActivityBasedExpertise || hasSituationalExpertise ||
                                   this.utilityPurchases.features.length > 0 ||
                                   this.utilityPurchases.senses.length > 0 ||
                                   this.utilityPurchases.movement.length > 0 ||

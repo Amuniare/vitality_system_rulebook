@@ -153,6 +153,8 @@
         "situational": {
           "name": "Situational",
           "description": "When or where you excel beyond normal capability. Only applies when the context matches.",
+          "maxCount": 3,
+          "talentsPerExpertise": 3,
           "categories": {
             "Mobility": [
               {

@@ -11,8 +11,8 @@
 - not currently going far enough, should be able to go through the entire doc
 
 ## UI improvements
-- remove the little up down inside the attribute input
-
+- consistentcy
+- dark / light mode
 
 ## Feature Add List
 
@@ -55,5 +55,8 @@ Use gemini api key to auto create notes and summaries when transcribing
 May need to use audio file as backup, transcription is rough
 
 
+need to give points to shared uses
 
 
+
+ok so Situation expertise is changed, players can buy up to 3 situational expertises, each situational expertise lets you pick 3 talents, players write in a word or two, a talent a situation that they're good at, they pick 3 and that's their situational expertise.

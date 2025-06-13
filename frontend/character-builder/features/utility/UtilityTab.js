@@ -101,6 +101,9 @@ export class UtilityTab {
                 '[data-action="show-custom-utility-form"]': (el) => { e.stopPropagation(); this.customUtilityForm.showForm(el.dataset.categoryKey); },
                 '[data-action="cancel-custom-utility"]': (el) => { e.stopPropagation(); this.customUtilityForm.cancelForm(el.dataset.categoryKey); },
                 '[data-action="create-custom-utility"]': (el) => { e.stopPropagation(); this.handleCreateCustomUtility(el.dataset.categoryKey); },
+                '[data-action="create-and-purchase-situational-expertise"]': (el) => { e.stopPropagation(); this.handleCreateAndPurchaseSituationalExpertise(el); },
+                '[data-action="purchase-situational-expertise"]': (el) => { e.stopPropagation(); this.handlePurchaseSituationalExpertise(el); },
+                '[data-action="remove-situational-expertise"]': (el) => { e.stopPropagation(); this.handleRemoveSituationalExpertise(el); },
                 '[data-action="continue-to-summary"]': () => this.builder.switchTab('summary'),
             };
 
@@ -118,7 +121,15 @@ export class UtilityTab {
             }
         };
 
+        // Add input event listener for talent textboxes
+        this.inputHandler = (e) => {
+            if (e.target.matches('[data-action="update-situational-talent"]')) {
+                this.handleUpdateSituationalTalent(e.target);
+            }
+        };
+
         container.addEventListener('click', this.clickHandler);
+        container.addEventListener('input', this.inputHandler);
         this.containerElement = container;
         this.listenersAttached = true;
         console.log('✅ UtilityTab event listeners attached ONCE.');
@@ -128,6 +139,12 @@ export class UtilityTab {
         if (this.clickHandler && this.containerElement) {
             this.containerElement.removeEventListener('click', this.clickHandler);
             this.clickHandler = null;
+        }
+        if (this.inputHandler && this.containerElement) {
+            this.containerElement.removeEventListener('input', this.inputHandler);
+            this.inputHandler = null;
+        }
+        if (this.containerElement) {
             this.containerElement = null;
         }
     }
@@ -291,4 +308,141 @@ export class UtilityTab {
     }
     
     capitalizeFirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+    // Situational Expertise Handlers
+    handleCreateAndPurchaseSituationalExpertise(element) {
+        element.disabled = true;
+        const { attribute, level } = element.dataset;
+        
+        try {
+            const character = this.builder.currentCharacter;
+            
+            // Initialize and check 3-expertise limit
+            if (!character.utilityPurchases.expertise.situational) {
+                character.utilityPurchases.expertise.situational = [];
+            }
+            const situationalExpertises = character.utilityPurchases.expertise.situational;
+            if (situationalExpertises.length >= 3) {
+                this.builder.showNotification('Maximum 3 situational expertises allowed.', 'error');
+                element.disabled = false;
+                return;
+            }
+            
+            // Collect talents from the textboxes in this card
+            const card = element.closest('.expertise-card');
+            const talentInputs = card.querySelectorAll('[data-action="create-situational-talent"]');
+            const talents = Array.from(talentInputs).map(input => input.value.trim());
+            
+            // Validate that at least one talent is filled
+            if (!talents.some(t => t.length > 0)) {
+                this.builder.showNotification('Please enter at least one talent before purchasing.', 'warning');
+                element.disabled = false;
+                return;
+            }
+            
+            // Get cost for budget warning
+            const pools = PointPoolCalculator.calculateAllPools(character);
+            const remainingPoints = pools.remaining.utilityPool;
+            const itemCost = UtilitySystem.getExpertiseCost('situational', level);
+            
+            if (itemCost > remainingPoints) {
+                this.builder.showNotification("This purchase puts you over budget.", "warning");
+            }
+            
+            // Create and purchase the expertise directly (bypassing old validation)
+            const newExpertise = character.createSituationalExpertise(attribute, level, talents);
+            situationalExpertises.push(newExpertise);
+            
+            this.builder.updateCharacter();
+            this.builder.showNotification(`${attribute} situational expertise ${level} purchased!`, 'success');
+        } catch (error) {
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
+            element.disabled = false;
+        }
+    }
+
+    handleUpdateSituationalTalent(element) {
+        const { expertiseId, talentIndex } = element.dataset;
+        const talentValue = element.value;
+        
+        try {
+            const character = this.builder.currentCharacter;
+            
+            // Initialize situational array if needed
+            if (!character.utilityPurchases.expertise.situational) {
+                character.utilityPurchases.expertise.situational = [];
+            }
+            
+            UtilitySystem.updateSituationalTalent(character, expertiseId, parseInt(talentIndex), talentValue);
+            
+            // Update the display name immediately (re-render just this expertise)
+            const expertiseCard = element.closest('.expertise-card');
+            if (expertiseCard) {
+                const nameElement = expertiseCard.querySelector('.expertise-name');
+                if (nameElement) {
+                    const expertise = character.utilityPurchases.expertise.situational.find(e => e.id === expertiseId);
+                    const displayName = expertise.talents.filter(t => t && t.trim()).join(', ') || 'Untitled Expertise';
+                    nameElement.textContent = displayName;
+                }
+            }
+            
+            // Save character without full re-render to avoid losing focus
+            this.builder.currentCharacter.touch();
+        } catch (error) {
+            this.builder.showNotification(`Failed to update talent: ${error.message}`, 'error');
+        }
+    }
+
+    handlePurchaseSituationalExpertise(element) {
+        element.disabled = true;
+        const { expertiseId, level } = element.dataset;
+        
+        try {
+            const character = this.builder.currentCharacter;
+            
+            // Initialize situational array if needed
+            if (!character.utilityPurchases.expertise.situational) {
+                character.utilityPurchases.expertise.situational = [];
+            }
+            
+            // Get cost for budget warning
+            const pools = PointPoolCalculator.calculateAllPools(character);
+            const remainingPoints = pools.remaining.utilityPool;
+            const itemCost = UtilitySystem.getExpertiseCost('situational', level);
+            
+            if (itemCost > remainingPoints) {
+                this.builder.showNotification("This purchase puts you over budget.", "warning");
+            }
+            
+            UtilitySystem.purchaseSituationalExpertise(character, expertiseId, level);
+            this.builder.updateCharacter();
+            this.builder.showNotification(`Situational expertise ${level} purchased!`, 'success');
+        } catch (error) {
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
+            element.disabled = false;
+        }
+    }
+
+    handleRemoveSituationalExpertise(element) {
+        const { expertiseId } = element.dataset;
+        const character = this.builder.currentCharacter;
+        
+        // Initialize situational array if needed
+        if (!character.utilityPurchases.expertise.situational) {
+            character.utilityPurchases.expertise.situational = [];
+        }
+        
+        const expertise = character.utilityPurchases.expertise.situational.find(e => e.id === expertiseId);
+        const displayName = expertise ? expertise.talents.filter(t => t && t.trim()).join(', ') || 'Untitled Expertise' : 'Unknown';
+        
+        if (confirm(`Remove "${displayName}" situational expertise?`)) {
+            try {
+                UtilitySystem.removeSituationalExpertise(character, expertiseId);
+                this.builder.updateCharacter();
+                this.builder.showNotification('Situational expertise removed.', 'info');
+            } catch (error) {
+                this.builder.showNotification(`Removal failed: ${error.message}`, 'error');
+            }
+        }
+    }
 }
