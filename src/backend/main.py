@@ -77,7 +77,7 @@ def extract_all_characters():
             logger.error("No character data extracted!")
             return
         
-        # Save extracted data to data/characters
+        # Save extracted data to data/characters/extracted
         output_dir = Path("data") / "characters" / "extracted"
         output_dir.mkdir(parents=True, exist_ok=True)
         

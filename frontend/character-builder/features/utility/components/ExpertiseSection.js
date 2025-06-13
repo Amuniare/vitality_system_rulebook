@@ -115,18 +115,6 @@ export class ExpertiseSection {
                                data-action="create-situational-talent"
                                data-talent-index="2">
                     </div>
-                    <div class="attribute-selection">
-                        <label>Base Attribute:</label>
-                        <select class="attribute-selector" data-create-attribute>
-                            <option value="mobility">Mobility</option>
-                            <option value="power">Power</option>
-                            <option value="endurance">Endurance</option>
-                            <option value="focus" selected>Focus</option>
-                            <option value="awareness">Awareness</option>
-                            <option value="communication">Communication</option>
-                            <option value="intelligence">Intelligence</option>
-                        </select>
-                    </div>
                 </div>
                 <div class="talent-set-footer">
                     <div class="expertise-basic-section">

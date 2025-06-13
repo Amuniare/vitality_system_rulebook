@@ -333,14 +333,8 @@ export class UtilityTab {
             const talentInputs = card.querySelectorAll('[data-action="create-situational-talent"]');
             const talents = Array.from(talentInputs).map(input => input.value.trim());
             
-            // Get selected attribute
-            const attributeSelector = card.querySelector('[data-create-attribute]');
-            if (!attributeSelector) {
-                this.builder.showNotification('Could not find attribute selector. UI may be out of sync.', 'error');
-                element.disabled = false;
-                return;
-            }
-            const selectedAttribute = attributeSelector ? attributeSelector.value : 'focus';
+            // Situational expertises don't use attributes - they are situational
+            const selectedAttribute = 'situational';
             
             // Validate that at least one talent is filled
             if (!talents.some(t => t.length > 0)) {

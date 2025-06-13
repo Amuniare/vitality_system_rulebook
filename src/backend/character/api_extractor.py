@@ -146,8 +146,6 @@ class CharacterExtractor:
             character_data = self.extract_all_characters_hybrid()
             
             if character_data:
-                # Save data
-                self._save_extracted_data(character_data)
                 # Clean up extraction state after successful completion
                 if self.extraction_state_file.exists():
                     self.extraction_state_file.unlink()
@@ -530,38 +528,6 @@ class CharacterExtractor:
             
         return compressed_abilities
 
-    def _save_extracted_data(self, all_character_data: Dict[str, Any]):
-        """Save extracted character data to files"""
-        try:
-            output_dir = Path("data") / "characters"
-            output_dir.mkdir(parents=True, exist_ok=True)
-            
-            saved_count = 0
-            for char_name, char_data in all_character_data.items():
-                try:
-                    # Save compressed version
-                    safe_name = self._create_safe_filename(char_name)
-                    output_file = output_dir / f"{safe_name}.json"
-                    save_json(char_data, output_file)
-                    
-                    saved_count += 1
-                    
-                except Exception as e:
-                    logger.error(f"Failed to save character {char_name}: {e}")
-            
-            logger.info(f"Saved {saved_count}/{len(all_character_data)} characters to individual files")
-            
-            # Save combined file
-            combined_file = output_dir / "all_characters.json"
-            save_json(all_character_data, combined_file)
-            logger.info(f"Saved combined data to {combined_file}")
-            
-            # Log final compression summary
-            if hasattr(self, 'template_manager'):
-                self.template_manager.log_compression_summary()
-            
-        except Exception as e:
-            logger.error(f"Failed to save extracted data: {e}")
 
     def _create_safe_filename(self, char_name: str) -> str:
         """Create a safe filename from character name"""
