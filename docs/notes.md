@@ -70,4 +70,6 @@ Summon extra points
 
 ## SRC
 -need to fix sync issue with text names
+-need to capture folders when extracting and uploading
+
 
