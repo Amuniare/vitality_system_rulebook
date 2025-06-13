@@ -8,9 +8,9 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 from playwright.sync_api import Page
 
-from src.backend.api.chat_interface import ChatInterface
-from src.backend.utils.json_utils import save_json
-from src.backend.utils.scriptcards_templates import ScriptCardsTemplateManager
+from ..api.chat_interface import ChatInterface
+from ..utils.json_utils import save_json
+from ..utils.scriptcards_templates import ScriptCardsTemplateManager
 
 logger = logging.getLogger(__name__)
 
@@ -444,7 +444,7 @@ class CharacterExtractor:
                         
                         # Initialize template manager if needed
                         if not hasattr(self, 'template_manager'):
-                            from src.backend.utils.scriptcards_templates import ScriptCardsTemplateManager
+                            from ..utils.scriptcards_templates import ScriptCardsTemplateManager
                             self.template_manager = ScriptCardsTemplateManager()
                         
                         # Compress abilities in each character (with filtering)
@@ -533,8 +533,8 @@ class CharacterExtractor:
     def _save_extracted_data(self, all_character_data: Dict[str, Any]):
         """Save extracted character data to files"""
         try:
-            output_dir = Path("characters") / "extracted"  # Correct location
-            output_dir.mkdir(exist_ok=True)
+            output_dir = Path("data") / "characters"
+            output_dir.mkdir(parents=True, exist_ok=True)
             
             saved_count = 0
             for char_name, char_data in all_character_data.items():

@@ -97,6 +97,16 @@ PRESETS = {
         '--root'
     ],
 
+
+    'rpg_helper': [
+        # Complete codebase collection - includes everything
+        'frontend/',
+        'src/backend/',
+        'data/characters/',
+
+        '--root'
+    ],
+
     'overview': [
         # High-level overview - excludes deep nested files and less critical content
         # Core application files

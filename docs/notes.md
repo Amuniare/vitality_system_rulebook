@@ -60,3 +60,6 @@ need to give points to shared uses
 
 
 ok so Situation expertise is changed, players can buy up to 3 situational expertises, each situational expertise lets you pick 3 talents, players write in a word or two, a talent a situation that they're good at, they pick 3 and that's their situational expertise.
+
+
+Summon extra points

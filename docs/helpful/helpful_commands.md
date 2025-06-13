@@ -19,3 +19,9 @@ http://localhost:8000/rulebook/character-builder/character-builder.html
 npx playwright test > test_run_output.txt
 
 test
+
+
+
+# Make sure you are in the vitality_system_rulebook directory
+# Use the -m flag to run as a module
+python -m src.backend.main extract

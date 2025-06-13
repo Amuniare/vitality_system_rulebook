@@ -6,10 +6,10 @@ from typing import Any, Optional, Dict, List
 from pathlib import Path
 import json
 
-from src.backend.api.chat_interface import ChatInterface
-from src.backend.utils.json_utils import load_json, save_json
-from src.backend.utils.scriptcards_templates import ScriptCardsTemplateManager, expand_character_abilities
-from src.backend.character.differ import CharacterDiffer
+from ..api.chat_interface import ChatInterface
+from ..utils.json_utils import load_json, save_json
+from ..utils.scriptcards_templates import ScriptCardsTemplateManager, expand_character_abilities
+from .differ import CharacterDiffer
 
 logger = logging.getLogger(__name__)
 

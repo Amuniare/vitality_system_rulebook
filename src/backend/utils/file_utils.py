@@ -9,7 +9,7 @@ import csv
 import time
 from datetime import datetime, timedelta
 
-from src.backend.character.mapper import CharacterMapper # New Import
+from ..character.mapper import CharacterMapper # New Import
 
 logger = logging.getLogger(__name__)
 

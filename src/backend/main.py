@@ -8,13 +8,13 @@ import sys
 import time
 import argparse
 
-from src.backend.utils.logging import setup_logging
-from src.backend.api.connection import Roll20Connection
-from src.backend.api.chat_interface import ChatInterface
-from src.backend.character.updater import CharacterUpdater
-from src.backend.character.api_extractor import CharacterExtractor
-from src.backend.utils.json_utils import save_json
-from src.backend.utils.file_utils import process_downloaded_characters # New Import
+from .utils.logging import setup_logging
+from .api.connection import Roll20Connection
+from .api.chat_interface import ChatInterface
+from .character.updater import CharacterUpdater
+from .character.api_extractor import CharacterExtractor
+from .utils.json_utils import save_json
+from .utils.file_utils import process_downloaded_characters # New Import
 
 # Setup logging
 setup_logging()
@@ -77,8 +77,8 @@ def extract_all_characters():
             logger.error("No character data extracted!")
             return
         
-        # Save extracted data to characters\extracted
-        output_dir = Path("characters") / "extracted"
+        # Save extracted data to data/characters
+        output_dir = Path("data") / "characters" / "extracted"
         output_dir.mkdir(parents=True, exist_ok=True)
         
         logger.info(f"Saving extracted data to {output_dir}")
@@ -98,6 +98,13 @@ def extract_all_characters():
         logger.info(f"Saved combined data to {combined_file}")
         
         logger.info(f"Extraction complete! Successfully extracted {len(all_characters)} characters")
+        
+        # Clean up combined file after extraction
+        try:
+            combined_file.unlink()
+            logger.info(f"Deleted temporary file: {combined_file}")
+        except Exception as e:
+            logger.warning(f"Could not delete {combined_file}: {e}")
 
     except Exception as e:
         logger.error(f"Extraction error: {e}")
@@ -129,7 +136,7 @@ def sync_characters():
         updater = CharacterUpdater(chat)
         
         # Get all JSON files from characters\input
-        input_dir = Path("characters") / "input"
+        input_dir = Path("data") / "characters" / "input"
         if not input_dir.exists():
             logger.error(f"Input directory not found: {input_dir}")
             return
