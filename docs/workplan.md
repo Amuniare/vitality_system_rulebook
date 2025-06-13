@@ -9,19 +9,11 @@ This document outlines the development priorities and long-term vision for the V
 This is the prioritized list of features and fixes for the Character Builder and related tools.
 
 ### P1 - Critical Bug Fixes & UI Polish
-- [ ] **UI:** Remove the up/down spinner arrows inside number input fields (e.g., in the Attributes tab).
 - [ ] **Testing:** Expand test coverage to ensure the AI can complete the entire character creation process without logical errors.
 
 ### P2 - Core Feature Enhancements
 - [ ] **NPCs:**
-    - [ ] Add more granular NPC types (Minion, Captain, Boss, etc.).
-    - [ ] Dynamically set HP based on the selected NPC type.
     - [ ] Implement a secondary dropdown to assign NPCs to factions or PCs to players, which will determine their save folder. This will use data from `names.json`.
-- [ ] **Summary Tab:**
-    - [ ] Refactor the layout to be more structured and readable (e.g., a multi-column grid).
-    - [ ] Display detailed breakdowns for calculated stats (e.g., "Avoidance: 25 = 10 (Base) + 5 (Tier) + ...").
-    - [ ] List all purchased abilities from both the Main Pool and Utility Pool.
-    - [ ] Include full descriptions for selected archetypes.
 - [ ] **Character Bio:**
     - [ ] Add a dedicated section or tab for entering a character's biography.
     - [ ] Consider adding fields for campaign-specific information.
@@ -32,10 +24,7 @@ This is the prioritized list of features and fixes for the Character Builder and
     -   [ ] Add functionality to upload and associate a token image.
     -   [ ] Add functionality for a larger character bio image.
     -   [ ] Implement a token setup feature, potentially for multiple tokens per character.
--   **AI Transcriber:**
-    -   [ ] Integrate the Gemini API to auto-generate session notes and summaries from raw transcripts.
-    -   [ ] Consider using raw audio files as a backup if transcription quality is an issue.
--   **AI Builder:** (Scope to be defined)
+
 
 ---
 
