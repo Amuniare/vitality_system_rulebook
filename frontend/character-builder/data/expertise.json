@@ -23,7 +23,7 @@
               "effect": "Add your Tier to relevant checks when context matches"
             },
             "mastered": {
-              "cost": 3,
+              "cost": 2,
               "effect": "Add 2 × your Tier to relevant checks when context matches"
             }
           }
