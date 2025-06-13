@@ -335,6 +335,11 @@ export class UtilityTab {
             
             // Get selected attribute
             const attributeSelector = card.querySelector('[data-create-attribute]');
+            if (!attributeSelector) {
+                this.builder.showNotification('Could not find attribute selector. UI may be out of sync.', 'error');
+                element.disabled = false;
+                return;
+            }
             const selectedAttribute = attributeSelector ? attributeSelector.value : 'focus';
             
             // Validate that at least one talent is filled

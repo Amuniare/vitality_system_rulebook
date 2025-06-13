@@ -278,17 +278,44 @@ export class PointPoolCalculator {
     static calculateUtilityPoolSpent(character) {
         let spent = 0;
         
-        // Expertise
-        Object.values(character.utilityPurchases.expertise).forEach(category => {
-            spent += category.basic.length * GameConstants.EXPERTISE_ACTIVITY_BASIC;
-            spent += category.mastered.length * GameConstants.EXPERTISE_ACTIVITY_MASTERED;
+        // Defensive initialization
+        if (!character.utilityPurchases.expertise.situational) {
+            character.utilityPurchases.expertise.situational = [];
+        }
+
+        // Expertise costs
+        Object.entries(character.utilityPurchases.expertise).forEach(([attrKey, category]) => {
+            // Handle situational expertises (new format)
+            if (attrKey === 'situational' && Array.isArray(category)) {
+                category.forEach(expertise => {
+                    if (expertise.level === 'basic') {
+                        spent += GameConstants.EXPERTISE_SITUATIONAL_BASIC || 1;
+                    } else if (expertise.level === 'mastered') {
+                        spent += GameConstants.EXPERTISE_SITUATIONAL_MASTERED || 3;
+                    }
+                });
+                return;
+            }
+            
+            // Handle activity-based expertises (old format)
+            const basicExpertise = Array.isArray(category.basic) ? category.basic : [];
+            const masteredExpertise = Array.isArray(category.mastered) ? category.mastered : [];
+
+            basicExpertise.forEach(() => {
+                spent += GameConstants.EXPERTISE_ACTIVITY_BASIC;
+            });
+            masteredExpertise.forEach(() => {
+                // If they don't have basic, pay full mastered cost
+                spent += GameConstants.EXPERTISE_ACTIVITY_MASTERED;
+            });
         });
-        
-        // Features, senses, movement, descriptors
-        spent += character.utilityPurchases.features.length * 3; // Average cost
-        spent += character.utilityPurchases.senses.length * 3; // Average cost
-        spent += character.utilityPurchases.movement.length * 7; // Average cost
-        spent += character.utilityPurchases.descriptors.length * 7; // Average cost
+
+        // Other utility costs
+        ['features', 'senses', 'movement', 'descriptors'].forEach(categoryKey => {
+            (character.utilityPurchases[categoryKey] || []).forEach(purchase => {
+                spent += purchase.cost || 0;
+            });
+        });
         
         return spent;
     }

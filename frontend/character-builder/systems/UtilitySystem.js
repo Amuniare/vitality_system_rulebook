@@ -1,3 +1,4 @@
+
 // frontend/character-builder/systems/UtilitySystem.js
 // NO CHANGES REQUIRED. The existing methods support the refactored UI.
 import { GameConstants } from '../core/GameConstants.js';
@@ -89,57 +90,6 @@ export class UtilitySystem {
         return basePool + boonBonus;
     }
     
-    // Calculate points spent on utility
-    static calculateUtilityPointsSpent(character) {
-        let spent = 0;
-        const expertiseData = gameDataManager.getExpertiseCategories();
-
-        // Expertise costs
-        Object.entries(character.utilityPurchases.expertise).forEach(([attrKey, category]) => {
-            // Handle situational expertises (new format)
-            if (attrKey === 'situational' && Array.isArray(category)) {
-                category.forEach(expertise => {
-                    if (expertise.level === 'basic') {
-                        spent += this.getExpertiseCost('situational', 'basic');
-                    } else if (expertise.level === 'mastered') {
-                        spent += this.getExpertiseCost('situational', 'mastered');
-                    }
-                });
-                return;
-            }
-            
-            // Handle activity-based expertises (old format)
-            const basicExpertise = Array.isArray(category.basic) ? category.basic : [];
-            const masteredExpertise = Array.isArray(category.mastered) ? category.mastered : [];
-
-            basicExpertise.forEach(expId => {
-                const expDef = this.findExpertiseDefinition(expertiseData, expId);
-                spent += this.getExpertiseCost(expDef?.type || 'activity', 'basic');
-            });
-            masteredExpertise.forEach(expId => {
-                const expDef = this.findExpertiseDefinition(expertiseData, expId);
-                const masteredCost = this.getExpertiseCost(expDef?.type || 'activity', 'mastered');
-                
-                // If character already has basic level, only pay the difference
-                if (basicExpertise.includes(expId)) {
-                    const basicCost = this.getExpertiseCost(expDef?.type || 'activity', 'basic');
-                    spent += (masteredCost - basicCost);
-                } else {
-                    // If they don't have basic, pay full mastered cost
-                    spent += masteredCost;
-                }
-            });
-        });
-
-        // Other utility costs
-        ['features', 'senses', 'movement', 'descriptors'].forEach(categoryKey => {
-            (character.utilityPurchases[categoryKey] || []).forEach(purchase => {
-                spent += purchase.cost || 0;
-            });
-        });
-        
-        return spent;
-    }
 
     static findExpertiseDefinition(expertiseData, expertiseId) {
         if (!expertiseData || !expertiseData.Expertises || !expertiseData.Expertises.types) return null;
@@ -203,19 +153,33 @@ export class UtilitySystem {
         }
         return null;
     }
-    
     static validateUtilityPurchase(character, categoryKey, itemId, level = 'basic', itemType = 'activity') {
         const errors = [];
         const warnings = [];
 
+        // Defensive initialization
+        if (character.utilityPurchases.expertise && !character.utilityPurchases.expertise.situational) {
+            character.utilityPurchases.expertise.situational = [];
+        }
+
         // 1. Check for duplicates
         if (!this.canPurchaseMultiple(itemId, categoryKey)) {
-             const purchasedItems = categoryKey === 'expertise' 
-                ? (character.utilityPurchases.expertise[itemType] || {basic:[], mastered:[]})[level] 
-                : (character.utilityPurchases[categoryKey] || []);
-            
-            if (purchasedItems.some(item => (typeof item === 'string' ? item : item.id) === itemId)) {
-                 errors.push(`${itemId} has already been purchased.`);
+            if (categoryKey === 'expertise' && itemType === 'activity') {
+                // Find which attribute this activity expertise belongs to
+                const attribute = Object.keys(this.getExpertiseCategories()).find(attr => 
+                    this.getExpertiseCategories()[attr]?.activities.some(act => act.name === itemId)
+                );
+                if(attribute){
+                    const purchasedLevels = character.utilityPurchases.expertise[attribute] || { basic: [], mastered: [] };
+                    if ( (level === 'basic' && purchasedLevels.basic.includes(itemId)) || purchasedLevels.mastered.includes(itemId) ) {
+                         errors.push(`${itemId} has already been purchased.`);
+                    }
+                }
+            } else if (categoryKey !== 'expertise') {
+                const purchasedItems = character.utilityPurchases[categoryKey] || [];
+                if (purchasedItems.some(item => (item.id || item) === itemId)) {
+                     errors.push(`${itemId} has already been purchased.`);
+                }
             }
         }
         
@@ -223,9 +187,11 @@ export class UtilitySystem {
         let cost = 0;
         if (categoryKey === 'expertise') {
             cost = this.getExpertiseCost(itemType, level);
-            if (level === 'mastered') {
-                 // Cost of mastering is the difference if basic is already owned
-                 if (character.utilityPurchases.expertise[itemType]?.basic.includes(itemId)) {
+            if (level === 'mastered' && itemType === 'activity') {
+                const attribute = Object.keys(this.getExpertiseCategories()).find(attr => 
+                    this.getExpertiseCategories()[attr]?.activities.some(act => act.name === itemId)
+                );
+                 if (attribute && character.utilityPurchases.expertise[attribute]?.basic.includes(itemId)) {
                      cost -= this.getExpertiseCost(itemType, 'basic');
                  }
             }
@@ -246,6 +212,7 @@ export class UtilitySystem {
 
         return { isValid: errors.length === 0, errors, warnings, cost };
     }
+
 
     static purchaseItem(character, categoryKey, itemId) {
         const validation = this.validateUtilityPurchase(character, categoryKey, itemId);
@@ -337,9 +304,11 @@ export class UtilitySystem {
 
     // Situational Expertise Methods
     static addSituationalExpertise(character, attribute = 'mobility') {
+        // START OF FIX: Defensive initialization
         if (!character.utilityPurchases.expertise.situational) {
             character.utilityPurchases.expertise.situational = [];
         }
+        // END OF FIX
         
         const maxCount = 3;
         if (character.utilityPurchases.expertise.situational.length >= maxCount) {
@@ -353,10 +322,11 @@ export class UtilitySystem {
     }
     
     static updateSituationalTalent(character, expertiseId, talentIndex, talentValue) {
-        // Initialize situational array if needed
+        // START OF FIX: Defensive initialization
         if (!character.utilityPurchases.expertise.situational) {
             character.utilityPurchases.expertise.situational = [];
         }
+        // END OF FIX
         
         const expertise = character.utilityPurchases.expertise.situational.find(e => e.id === expertiseId);
         if (!expertise) {
@@ -372,12 +342,17 @@ export class UtilitySystem {
     }
     
     static purchaseSituationalExpertise(character, expertiseId, level) {
-        // Initialize situational array if needed
+        // START OF FIX: Defensive initialization
         if (!character.utilityPurchases.expertise.situational) {
             character.utilityPurchases.expertise.situational = [];
         }
+        // END OF FIX
         
         const expertise = character.utilityPurchases.expertise.situational.find(e => e.id === expertiseId);
+        
+        if (character.utilityPurchases.expertise.situational.length >= 3 && expertise.level === 'none') {
+            throw new Error('Cannot add more than 3 situational expertises');
+        }
         if (!expertise) {
             throw new Error(`Situational expertise ${expertiseId} not found`);
         }
@@ -392,10 +367,11 @@ export class UtilitySystem {
     }
     
     static removeSituationalExpertise(character, expertiseId) {
-        // Initialize situational array if needed
+        // START OF FIX: Defensive initialization
         if (!character.utilityPurchases.expertise.situational) {
             character.utilityPurchases.expertise.situational = [];
         }
+        // END OF FIX
         
         if (character.utilityPurchases.expertise.situational.length === 0) {
             throw new Error('No situational expertises found');

@@ -8,17 +8,13 @@ These are the foundational rules that govern all my actions. They supersede any 
 *   **Rule:** I will only perform the actions you explicitly request. I will not infer or bundle related tasks unless you have given me prior instruction to do so.
 *   **Context:** This is our primary safeguard against unintended changes. If you say, "Change the situational expertise system," I will not touch the activity expertise system unless you explicitly instruct me to do so. My scope of action is defined strictly by your instructions.
 
-#### **Principle 2: The Principle of Preservation (First, Do No Harm)**
 
-*   **Rule:** My default behavior is to add or modify, never to remove, unless explicitly instructed.
-*   **Context:** This prevents the accidental deletion of critical, working features. When you ask to implement a new system (like "Talent Expertise"), I will build it alongside the old one ("Situational Expertise"). I will only propose the removal of the old system as a separate, final step after you have validated that the new system is working perfectly.
-
-#### **Principle 3: The Principle of Impact Analysis**
+#### **Principle 2: The Principle of Impact Analysis**
 
 *   **Rule:** For any change that could remove or significantly alter existing functionality, I must first state my understanding of the impact and ask for your confirmation before proceeding.
 *   **Context:** This makes the consequences of any action transparent. Before executing a command that would remove the old situational expertise system, I must state: *"This action will remove the existing situational expertise UI and its related system logic from `UtilityTab.js` and `UtilitySystem.js`. The 'Situational' category will no longer appear in its current form. Proceed?"*
 
-#### **Principle 4: The Principle of Global Context**
+#### **Principle 3: The Principle of Global Context**
 
 *   **Rule:** I must consider the entire codebase (`codebase.txt`) when making changes. A modification to a shared utility, a core data structure, or a system-wide document like this one can have cascading effects that must be anticipated.
 *   **Context:** This ensures I do not make a "correct" change in one file that breaks five others. I will always consider the global implications of a local change.
@@ -31,9 +27,11 @@ To standardize and automate our documentation process, we will use the following
 
 ### Command Syntax
 
-`--create-dev-log "[Optional: Custom Title]"`
+`--create-dev-log "[Notes]"`
 
-*   **`[Optional: Custom Title]`**: If you provide a title in quotes, I will use it for the dev log. If omitted, I will generate a title based on my analysis.
+*   **`[Notes]`**: The user will provide notes on the success or failure of the task, I will use it for the dev log. From your analysis, you will generate a title.
+*   **Dev Log Template**: Use the template found here: docs\dev_log_template.md
+
 
 **Example Usage:**
 
