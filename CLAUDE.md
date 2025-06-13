@@ -1,27 +1,31 @@
-# Gemini AI - Workflow & Command Protocol
 
-This document outlines a set of standing orders and commands to make our collaboration more efficient, reliable, and predictable, especially for file modifications.
+## 1. Core Operating Principles
 
-## 1. Core Principles
+These are the foundational rules that govern all my actions. They supersede any inferred logic or assumptions.
 
-1.  **Plan First, Code Second:** For any non-trivial change, ask me to create a plan first. We will review and agree on the plan before I generate any code. This is the most efficient way to work.
-2.  **Context is King:** Always provide the relevant file paths and, if necessary, paste the code sections we are discussing. This ensures I have the necessary context to provide accurate solutions.
-3.  **Explicit is Better:** Use the explicit commands defined below for all file operations. This avoids the ambiguity that can lead to execution errors.
+#### **Principle 1: The Principle of Explicit Instruction**
 
-## 2. Command Syntax
+*   **Rule:** I will only perform the actions you explicitly request. I will not infer or bundle related tasks unless you have given me prior instruction to do so.
+*   **Context:** This is our primary safeguard against unintended changes. If you say, "Change the situational expertise system," I will not touch the activity expertise system unless you explicitly instruct me to do so. My scope of action is defined strictly by your instructions.
 
-When you want me to write code to a file, use the following syntax in your prompt after we have agreed on the code to be written.
+#### **Principle 2: The Principle of Preservation (First, Do No Harm)**
 
--   `--write-code [--mode=replace|append] [file_path]`
--   `--create-file [file_path]`
--   `--create-dev-log`
+*   **Rule:** My default behavior is to add or modify, never to remove, unless explicitly instructed.
+*   **Context:** This prevents the accidental deletion of critical, working features. When you ask to implement a new system (like "Talent Expertise"), I will build it alongside the old one ("Situational Expertise"). I will only propose the removal of the old system as a separate, final step after you have validated that the new system is working perfectly.
 
----
+#### **Principle 3: The Principle of Impact Analysis**
+
+*   **Rule:** For any change that could remove or significantly alter existing functionality, I must first state my understanding of the impact and ask for your confirmation before proceeding.
+*   **Context:** This makes the consequences of any action transparent. Before executing a command that would remove the old situational expertise system, I must state: *"This action will remove the existing situational expertise UI and its related system logic from `UtilityTab.js` and `UtilitySystem.js`. The 'Situational' category will no longer appear in its current form. Proceed?"*
+
+#### **Principle 4: The Principle of Global Context**
+
+*   **Rule:** I must consider the entire codebase (`codebase.txt`) when making changes. A modification to a shared utility, a core data structure, or a system-wide document like this one can have cascading effects that must be anticipated.
+*   **Context:** This ensures I do not make a "correct" change in one file that breaks five others. I will always consider the global implications of a local change.
 
 
 
-
-## 3. Dev Log Generation Protocol (with Contextual Directory Targeting)
+## 2. Dev Log Generation Protocol (with Contextual Directory Targeting)
 
 To standardize and automate our documentation process, we will use the following protocol for creating development logs. This ensures each log is consistent, context-rich, and filed in the correct location based on the scope of work.
 
@@ -61,7 +65,7 @@ When you issue this command, I will initiate the following automated documentati
 
 ---
 
-## 4. Bugfix Workflow Command
+## 3. Bugfix Workflow Command
 
 When we encounter a recurring bug in a specific part of the codebase, we will use the following command to initiate a structured debugging process based on our documented architectural patterns.
 
@@ -82,7 +86,7 @@ When I receive this command, my first action will be to open **`frontend/charact
 
 ---
 
-## 5. Roadmap Execution Protocol
+## 4. Roadmap Execution Protocol
 
 To initiate a structured, step-by-step execution of a development plan, use the following command. This protocol ensures a supervised, verifiable workflow.
 

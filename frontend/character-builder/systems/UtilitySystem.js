@@ -31,7 +31,7 @@ export class UtilitySystem {
     static getExpertiseCosts() {
         const expertiseData = gameDataManager.getExpertiseCategories() || {};
         return expertiseData.Expertises?.mechanics?.costs || {
-            activityBased: { basic: { cost: 2, effect: 'Add your Tier to relevant checks' }, mastered: { cost: 6, effect: 'Add 2 × your Tier to relevant checks' } },
+            activityBased: { basic: { cost: 2, effect: 'Add your Tier to relevant checks' }, mastered: { cost: 4, effect: 'Add 2 × your Tier to relevant checks' } },
             situational: { basic: { cost: 1, effect: 'Add your Tier to relevant checks when context matches' }, mastered: { cost: 3, effect: 'Add 2 × your Tier to relevant checks when context matches' } }
         };
     }

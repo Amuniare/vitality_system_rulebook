@@ -17,13 +17,13 @@
             }
           },
           "situational": {
-            "description": "When or where you excel beyond normal capability. Only applies when the context matches.",
+            "description": "Custom Talent Sets representing when or where you excel beyond normal capability. Only applies when the context matches.",
             "basic": {
               "cost": 1,
               "effect": "Add your Tier to relevant checks when context matches"
             },
             "mastered": {
-              "cost": 2,
+              "cost": 3,
               "effect": "Add 2 × your Tier to relevant checks when context matches"
             }
           }
@@ -151,8 +151,8 @@
           }
         },
         "situational": {
-          "name": "Situational",
-          "description": "When or where you excel beyond normal capability. Only applies when the context matches.",
+          "name": "Talent Sets",
+          "description": "Custom areas of specialization where you excel beyond normal capability. Each set contains three specific talents.",
           "maxCount": 3,
           "talentsPerExpertise": 3,
           "categories": {

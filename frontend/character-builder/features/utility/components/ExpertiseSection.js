@@ -28,17 +28,17 @@ export class ExpertiseSection {
         }
         const situationalExpertises = character.utilityPurchases.expertise.situational;
         const maxSituationalExpertises = 3;
-        const expertiseCategories = UtilitySystem.getExpertiseCategories();
-        
-        const availableContent = Object.entries(expertiseCategories).map(([attrKey, attrData]) =>
-            this.renderAttributeSituationalExpertiseBlock(attrKey, attrData, character)
-        ).join('');
+        const costs = UtilitySystem.getExpertiseCosts();
         
         return `
             <div class="expertise-section">
-                <h4>Situational Expertise (${situationalExpertises.length}/${maxSituationalExpertises} total)</h4>
-                <p class="section-description">Custom situational talents that help in specific circumstances. Each expertise contains 3 custom talents you define.</p>
-                <div class="expertise-main-grid grid-layout grid-columns-auto-fit-300">${availableContent}</div>
+                <h4>Talent Sets (${situationalExpertises.length}/${maxSituationalExpertises})</h4>
+                <p class="section-description">Create custom talent collections that represent your character's specialized training. Each set contains 3 talents you define. Basic level costs ${costs.situational.basic.cost}p, Mastered costs ${costs.situational.mastered.cost}p total.</p>
+                
+                <div class="talent-sets-container">
+                    ${this.renderExistingTalentSets(situationalExpertises)}
+                    ${situationalExpertises.length < maxSituationalExpertises ? this.renderCreateNewTalentSetCard() : ''}
+                </div>
             </div>
         `;
     }
@@ -64,32 +64,7 @@ export class ExpertiseSection {
         }, { cardClass: 'expertise-attribute-card' });
     }
 
-    renderAttributeSituationalExpertiseBlock(attrKey, attrData, character) {
-        const costs = UtilitySystem.getExpertiseCosts();
-        // Initialize situational array if needed
-        if (!character.utilityPurchases.expertise.situational) {
-            character.utilityPurchases.expertise.situational = [];
-        }
-        const situationalExpertises = character.utilityPurchases.expertise.situational;
-        const maxSituationalExpertises = 3;
-        
-        // Find existing expertise for this attribute, or create placeholder for new one
-        const existingExpertise = situationalExpertises.find(e => e.attribute.toLowerCase() === attrKey.toLowerCase());
-        const canPurchase = !existingExpertise && situationalExpertises.length < maxSituationalExpertises;
-
-        return RenderUtils.renderCard({
-            title: `${attrKey} Situational Expertise`, titleTag: 'h4',
-            additionalContent: `
-                <div class="expertise-subsection">
-                    <h5>Basic: ${costs.situational.basic.cost}p / Mastered: ${costs.situational.mastered.cost}p</h5>
-                    <div class="expertise-cards-grid">
-                        ${existingExpertise ? this.renderPurchasedSituationalExpertise(existingExpertise, character) : ''}
-                        ${canPurchase ? this.renderNewSituationalExpertiseCard(attrKey) : ''}
-                        ${!existingExpertise && !canPurchase ? '<p class="empty-state-small">Max situational expertises reached (3/3)</p>' : ''}
-                    </div>
-                </div>`
-        }, { cardClass: 'expertise-attribute-card' });
-    }
+    // Attribute-based situational rendering removed - use unified Talent Set interface
 
     renderSingleExpertiseOption(expertise, attribute, type, character) {
         const costs = UtilitySystem.getExpertiseCosts();
@@ -116,53 +91,64 @@ export class ExpertiseSection {
             </div>`;
     }
 
-    renderNewSituationalExpertiseCard(attribute) {
+    renderCreateNewTalentSetCard() {
+        const costs = UtilitySystem.getExpertiseCosts();
+        
         return `
-            <div class="expertise-card">
-                <div class="expertise-card-header">
-                    <div class="expertise-description">
-                        <div class="talent-inputs">
-                            <input type="text" class="talent-input" 
-                                   placeholder="Talent 1" 
-                                   data-action="create-situational-talent"
-                                   data-attribute="${attribute.toLowerCase()}"
-                                   data-talent-index="0">
-                            <input type="text" class="talent-input" 
-                                   placeholder="Talent 2" 
-                                   data-action="create-situational-talent"
-                                   data-attribute="${attribute.toLowerCase()}"
-                                   data-talent-index="1">
-                            <input type="text" class="talent-input" 
-                                   placeholder="Talent 3" 
-                                   data-action="create-situational-talent"
-                                   data-attribute="${attribute.toLowerCase()}"
-                                   data-talent-index="2">
-                        </div>
+            <div class="talent-set-card create-new">
+                <div class="talent-set-header">
+                    <h5>Create New Talent Set</h5>
+                    <p class="talent-set-description">Define three talents that represent your character's specialized training.</p>
+                </div>
+                <div class="talent-set-content">
+                    <div class="talent-inputs">
+                        <input type="text" class="talent-input" 
+                               placeholder="Talent 1 (e.g., Lock Picking)" 
+                               data-action="create-situational-talent"
+                               data-talent-index="0">
+                        <input type="text" class="talent-input" 
+                               placeholder="Talent 2 (e.g., Safe Cracking)" 
+                               data-action="create-situational-talent"
+                               data-talent-index="1">
+                        <input type="text" class="talent-input" 
+                               placeholder="Talent 3 (e.g., Alarm Bypassing)" 
+                               data-action="create-situational-talent"
+                               data-talent-index="2">
+                    </div>
+                    <div class="attribute-selection">
+                        <label>Base Attribute:</label>
+                        <select class="attribute-selector" data-create-attribute>
+                            <option value="mobility">Mobility</option>
+                            <option value="power">Power</option>
+                            <option value="endurance">Endurance</option>
+                            <option value="focus" selected>Focus</option>
+                            <option value="awareness">Awareness</option>
+                            <option value="communication">Communication</option>
+                            <option value="intelligence">Intelligence</option>
+                        </select>
                     </div>
                 </div>
-                <div class="expertise-card-footer">
+                <div class="talent-set-footer">
                     <div class="expertise-basic-section">
-                        <div class="expertise-cost-value">1p</div>
+                        <div class="expertise-cost-value">${costs.situational.basic.cost}p</div>
                         ${RenderUtils.renderButton({ 
                             text: 'Purchase Basic', 
                             variant: 'primary', 
                             size: 'small',
                             dataAttributes: { 
-                                action: 'create-and-purchase-situational-expertise', 
-                                attribute: attribute.toLowerCase(),
+                                action: 'create-and-purchase-situational-expertise',
                                 level: 'basic' 
                             } 
                         })}
                     </div>
                     <div class="expertise-mastered-section">
-                        <div class="expertise-cost-value">2p</div>
+                        <div class="expertise-cost-value">${costs.situational.mastered.cost}p</div>
                         ${RenderUtils.renderButton({ 
                             text: 'Purchase Mastered', 
                             variant: 'primary', 
                             size: 'small',
                             dataAttributes: { 
-                                action: 'create-and-purchase-situational-expertise', 
-                                attribute: attribute.toLowerCase(),
+                                action: 'create-and-purchase-situational-expertise',
                                 level: 'mastered' 
                             } 
                         })}
@@ -171,49 +157,59 @@ export class ExpertiseSection {
             </div>`;
     }
 
-    renderPurchasedSituationalExpertise(expertise, character) {
+    renderExistingTalentSets(talentSets) {
+        if (talentSets.length === 0) {
+            return '<div class="empty-state"><p>No talent sets created yet. Create your first custom talent collection below.</p></div>';
+        }
+        
+        return talentSets.map(talentSet => this.renderTalentSetCard(talentSet)).join('');
+    }
+    
+    renderTalentSetCard(expertise) {
         const costs = UtilitySystem.getExpertiseCosts();
         const basicCost = costs.situational.basic.cost;
         const masteredCost = costs.situational.mastered.cost;
         
         // Generate display name from talents (comma-separated)
-        const displayName = expertise.talents.filter(t => t && t.trim()).join(', ') || 'Untitled Expertise';
+        const displayName = expertise.talents.filter(t => t && t.trim()).join(', ') || 'Untitled Talent Set';
+        const attributeDisplay = expertise.attribute.charAt(0).toUpperCase() + expertise.attribute.slice(1);
         
         return `
-            <div class="expertise-card">
-                <div class="expertise-card-header">
-                    <div class="expertise-name">${displayName}</div>
-                    <div class="expertise-description">
-                        <div class="talent-inputs">
-                            <input type="text" class="talent-input" 
-                                   placeholder="Talent 1" 
-                                   value="${expertise.talents[0] || ''}"
-                                   data-action="update-situational-talent"
-                                   data-expertise-id="${expertise.id}"
-                                   data-talent-index="0">
-                            <input type="text" class="talent-input" 
-                                   placeholder="Talent 2" 
-                                   value="${expertise.talents[1] || ''}"
-                                   data-action="update-situational-talent"
-                                   data-expertise-id="${expertise.id}"
-                                   data-talent-index="1">
-                            <input type="text" class="talent-input" 
-                                   placeholder="Talent 3" 
-                                   value="${expertise.talents[2] || ''}"
-                                   data-action="update-situational-talent"
-                                   data-expertise-id="${expertise.id}"
-                                   data-talent-index="2">
-                        </div>
+            <div class="talent-set-card ${expertise.level}">
+                <div class="talent-set-header">
+                    <div class="talent-set-name">${displayName}</div>
+                    <div class="talent-set-attribute">${attributeDisplay} • ${expertise.level === 'basic' ? 'Basic' : expertise.level === 'mastered' ? 'Mastered' : 'Unpurchased'}</div>
+                </div>
+                <div class="talent-set-content">
+                    <div class="talent-inputs">
+                        <input type="text" class="talent-input" 
+                               placeholder="Talent 1" 
+                               value="${expertise.talents[0] || ''}"
+                               data-action="update-situational-talent"
+                               data-expertise-id="${expertise.id}"
+                               data-talent-index="0">
+                        <input type="text" class="talent-input" 
+                               placeholder="Talent 2" 
+                               value="${expertise.talents[1] || ''}"
+                               data-action="update-situational-talent"
+                               data-expertise-id="${expertise.id}"
+                               data-talent-index="1">
+                        <input type="text" class="talent-input" 
+                               placeholder="Talent 3" 
+                               value="${expertise.talents[2] || ''}"
+                               data-action="update-situational-talent"
+                               data-expertise-id="${expertise.id}"
+                               data-talent-index="2">
                     </div>
                 </div>
-                <div class="expertise-card-footer">
+                <div class="talent-set-footer">
                     <div class="expertise-basic-section">
                         <div class="expertise-cost-value">${basicCost}p</div>
                         ${RenderUtils.renderButton({ 
-                            text: expertise.level === 'basic' ? '✓ Basic' : 'Purchase', 
-                            variant: expertise.level === 'basic' ? 'success' : 'primary', 
+                            text: expertise.level === 'basic' || expertise.level === 'mastered' ? '✓ Basic' : 'Purchase Basic', 
+                            variant: expertise.level === 'basic' || expertise.level === 'mastered' ? 'success' : 'primary', 
                             size: 'small', 
-                            disabled: expertise.level !== 'none',
+                            disabled: expertise.level === 'basic' || expertise.level === 'mastered',
                             dataAttributes: { 
                                 action: 'purchase-situational-expertise', 
                                 'expertise-id': expertise.id, 
@@ -224,7 +220,7 @@ export class ExpertiseSection {
                     <div class="expertise-mastered-section">
                         <div class="expertise-cost-value">${masteredCost}p</div>
                         ${RenderUtils.renderButton({ 
-                            text: expertise.level === 'mastered' ? '✓ Mastered' : 'Master', 
+                            text: expertise.level === 'mastered' ? '✓ Mastered' : 'Upgrade to Mastered', 
                             variant: expertise.level === 'mastered' ? 'success' : 'primary', 
                             size: 'small', 
                             disabled: expertise.level !== 'basic',
@@ -237,7 +233,7 @@ export class ExpertiseSection {
                     </div>
                     <div class="expertise-remove-section">
                         ${RenderUtils.renderButton({ 
-                            text: '✕', 
+                            text: '✕ Remove', 
                             variant: 'danger', 
                             size: 'small',
                             dataAttributes: { 

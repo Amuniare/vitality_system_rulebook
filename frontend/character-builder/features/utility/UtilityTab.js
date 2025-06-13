@@ -312,7 +312,7 @@ export class UtilityTab {
     // Situational Expertise Handlers
     handleCreateAndPurchaseSituationalExpertise(element) {
         element.disabled = true;
-        const { attribute, level } = element.dataset;
+        const { level } = element.dataset;
         
         try {
             const character = this.builder.currentCharacter;
@@ -323,15 +323,19 @@ export class UtilityTab {
             }
             const situationalExpertises = character.utilityPurchases.expertise.situational;
             if (situationalExpertises.length >= 3) {
-                this.builder.showNotification('Maximum 3 situational expertises allowed.', 'error');
+                this.builder.showNotification('Maximum 3 talent sets allowed.', 'error');
                 element.disabled = false;
                 return;
             }
             
             // Collect talents from the textboxes in this card
-            const card = element.closest('.expertise-card');
+            const card = element.closest('.talent-set-card');
             const talentInputs = card.querySelectorAll('[data-action="create-situational-talent"]');
             const talents = Array.from(talentInputs).map(input => input.value.trim());
+            
+            // Get selected attribute
+            const attributeSelector = card.querySelector('[data-create-attribute]');
+            const selectedAttribute = attributeSelector ? attributeSelector.value : 'focus';
             
             // Validate that at least one talent is filled
             if (!talents.some(t => t.length > 0)) {
@@ -349,12 +353,12 @@ export class UtilityTab {
                 this.builder.showNotification("This purchase puts you over budget.", "warning");
             }
             
-            // Create and purchase the expertise directly (bypassing old validation)
-            const newExpertise = character.createSituationalExpertise(attribute, level, talents);
+            // Create and purchase the expertise directly
+            const newExpertise = character.createSituationalExpertise(selectedAttribute, level, talents);
             situationalExpertises.push(newExpertise);
             
             this.builder.updateCharacter();
-            this.builder.showNotification(`${attribute} situational expertise ${level} purchased!`, 'success');
+            this.builder.showNotification(`New talent set (${level}) created and purchased!`, 'success');
         } catch (error) {
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
             element.disabled = false;

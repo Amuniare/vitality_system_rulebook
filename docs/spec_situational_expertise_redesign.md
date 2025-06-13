@@ -1,197 +1,208 @@
-# Situational Expertise System Redesign Specification
+# Talent Expertise System Specification
 
 ## Overview
 
-This specification defines the redesign of the situational expertise system to support player-defined custom talents with enforced limits.
+The Talent Expertise System replaces the previous "Situational Expertise" system with a more flexible, player-driven approach to character specialization. This system allows players to create custom "Talent Sets" that represent their character's unique areas of expertise.
 
-## Current System Analysis
+## System Goals
 
-### Existing Implementation
-- **Structure**: Predefined situational expertises organized by 7 attributes
-- **Costs**: Basic (1 point), Mastered (2-3 points) - cost discrepancy exists
-- **Limits**: No current limit on number of situational expertises
-- **Content**: Fixed expertise names and descriptions from JSON data
+1. **Player Agency**: Allow players to define their character's specializations rather than choosing from pre-defined lists
+2. **Narrative Flexibility**: Support character concepts that don't fit into traditional skill categories
+3. **Mechanical Clarity**: Provide clear, consistent rules for custom talent creation
+4. **Balanced Limitations**: Maintain game balance through point costs and quantity limits
 
-### Key Files
-- `frontend/character-builder/data/expertise.json` - Data definitions
-- `frontend/character-builder/features/utility/components/ExpertiseSection.js` - UI component
-- `frontend/character-builder/systems/UtilitySystem.js` - Business logic
-- `frontend/character-builder/core/VitalityCharacter.js` - Character data model
+## Rules & Mechanics
 
-## New System Requirements
+### Core Concept
+- Players create up to **3 Talent Sets** per character
+- Each Talent Set contains **3 custom talents** defined by the player
+- Each Talent Set is associated with one of the 7 core attributes
+- Talent Sets can be purchased at **Basic** (1 point) or **Mastered** (3 points total) levels
 
-### Core Rules
-1. **Maximum Limit**: Players can purchase up to 3 situational expertises total
-2. **Custom Talents**: Each situational expertise contains 3 player-defined talents
-3. **Talent Format**: Each talent is 1-2 words describing a situation the character excels in
-4. **Player Input**: Players write their own talent descriptions during purchase
+### Cost Structure
+- **Basic Level**: 1 utility point
+  - Effect: Add your Tier to relevant checks when talents apply
+- **Mastered Level**: 3 utility points total (2 additional points to upgrade from Basic)
+  - Effect: Add 2 × your Tier to relevant checks when talents apply
 
-### Example
-```
-Situational Expertise #1: Combat Situations
-- Talents: "Ambush", "Flanking", "Retreating"
+### Limitations
+- **Maximum 3 Talent Sets** per character
+- Each talent must be a specific, discrete capability
+- Talents should be situational/contextual rather than universal
 
-Situational Expertise #2: Social Encounters  
-- Talents: "Negotiation", "Intimidation", "Deception"
+### Attribute Association
+Each Talent Set must be associated with one core attribute:
+- **Mobility**: Movement, positioning, terrain navigation
+- **Power**: Physical force, strength-based activities
+- **Endurance**: Stamina, resistance, persistence
+- **Focus**: Precision tasks, crafting, technical skills
+- **Awareness**: Perception, investigation, tracking
+- **Communication**: Social interaction, deception, leadership
+- **Intelligence**: Analysis, planning, knowledge application
 
-Situational Expertise #3: Exploration
-- Talents: "Tracking", "Climbing", "Stealth"
-```
+## Data Structure
 
-## Technical Specifications
-
-### Data Structure Changes
-
-#### Character Data Model
+### Character Data Model
 ```javascript
-this.utilityPurchases = {
-  expertise: {
+character.utilityPurchases.expertise = {
     situational: [
-      {
-        id: "situational_1",
-        level: "basic", // or "mastered"
-        talents: ["Ambush", "Flanking", "Retreating"],
-        attribute: "power", // which attribute category this falls under
-        purchaseDate: timestamp
-      },
-      // ... up to 3 total
-    ],
-    // Keep existing activity-based structure unchanged
-    awareness: { basic: [], mastered: [] },
-    // ... other attributes
-  }
+        {
+            id: "unique_timestamp_id",
+            attribute: "focus",
+            level: "basic" | "mastered" | "none",
+            talents: ["Lock Picking", "Safe Cracking", "Alarm Bypassing"],
+            purchaseDate: timestamp
+        }
+    ]
 }
 ```
 
-#### JSON Data Updates
+### Game Data (expertise.json)
 ```json
 {
-  "Expertises": {
-    "types": {
-      "situational": {
-        "maxCount": 3,
-        "talentsPerExpertise": 3,
-        "categories": {
-          // Keep existing attribute categories for organization
+    "Expertises": {
+        "description": "Players create custom 'Talent Sets'...",
+        "mechanics": {
+            "costs": {
+                "situational": {
+                    "basic": { "cost": 1, "effect": "Add your Tier to relevant checks when context matches" },
+                    "mastered": { "cost": 3, "effect": "Add 2 × your Tier to relevant checks when context matches" }
+                }
+            }
+        },
+        "types": {
+            "situational": {
+                "name": "Talent Sets",
+                "maxCount": 3,
+                "talentsPerExpertise": 3,
+                "categories": {
+                    // Reference examples by attribute for inspiration
+                }
+            }
         }
-      }
     }
-  }
 }
 ```
 
-### UI Implementation
+## User Interface Flow
 
-#### New Components
-1. **SituationalExpertiseManager**
-   - Shows count: "2/3 Situational Expertises"
-   - Lists purchased expertises with custom talents
-   - "Create New" button (disabled when at limit)
+### Creation Process
+1. **Navigate to Utility Tab → Situational Expertise**
+2. **Click "Create New Talent Set" card**
+3. **Fill in 3 talent text inputs** (e.g., "Lock Picking", "Safe Cracking", "Alarm Bypassing")
+4. **Select base attribute** from dropdown (Focus, Awareness, etc.)
+5. **Choose purchase level**: Basic (1p) or Mastered (3p)
+6. **Confirm purchase** - talent set is created and purchased
 
-2. **SituationalExpertiseCreator** (Modal/Form)
-   - Attribute selection dropdown
-   - 3 talent input fields with validation
-   - Basic/Mastered level selection
-   - Cost display and purchase confirmation
-
-3. **SituationalExpertiseCard**
-   - Shows custom talents
-   - Edit functionality (if enabled)
-   - Remove/refund option
-
-#### User Flow
-1. Player clicks "Create New Situational Expertise"
-2. Modal opens with form:
-   - Select attribute category (Mobility, Power, etc.)
-   - Enter 3 talent names
-   - Choose basic or mastered level
-   - Confirm purchase
-3. System validates and creates expertise
-4. UI updates to show new expertise and remaining count
+### Management
+- **Edit talents**: Click in talent text fields to modify names
+- **Upgrade level**: Purchase "Mastered" upgrade for existing Basic sets
+- **Remove sets**: Delete entire talent sets with remove button
+- **View summary**: All talent sets appear on Summary tab with individual talent tags
 
 ### Validation Rules
+- Minimum 1 talent required before purchase
+- Maximum 3 talent sets per character
+- Each talent set must have a selected attribute
+- Budget warnings (non-blocking) when exceeding utility points
 
-#### Hard Constraints
-1. **Expertise Limit**: Maximum 3 situational expertises per character
-2. **Talent Count**: Exactly 3 talents required per expertise
-3. **Archetype Restrictions**: Maintain existing restrictions
+## Technical Implementation
 
-#### Advisory Warnings
-1. **Budget**: Warn if purchase exceeds utility pool
+### System Methods (UtilitySystem.js)
+- `addSituationalExpertise(character, attribute)` - Create new talent set
+- `updateSituationalTalent(character, expertiseId, talentIndex, talentValue)` - Edit talent names
+- `purchaseSituationalExpertise(character, expertiseId, level)` - Buy/upgrade talent set
+- `removeSituationalExpertise(character, expertiseId)` - Delete talent set
 
-### Cost Resolution
+### UI Components (ExpertiseSection.js)
+- `renderSituationalExpertise()` - Main talent set interface
+- `renderCreateNewTalentSetCard()` - Creation form with attribute selector
+- `renderTalentSetCard()` - Display existing talent sets with edit capabilities
 
-#### Decision Required
-Current discrepancy between JSON and constants:
-- JSON: Basic (1), Mastered (2)
-- Constants: Basic (1), Mastered (3)
+### Event Handlers (UtilityTab.js)
+- `handleCreateAndPurchaseSituationalExpertise()` - Process new talent set creation
+- `handleUpdateSituationalTalent()` - Real-time talent name updates
+- `handlePurchaseSituationalExpertise()` - Level upgrades
+- `handleRemoveSituationalExpertise()` - Deletion with confirmation
 
-**Recommendation**: Use JSON values (1/2) for consistency with documentation.
+### Summary Display (UtilityAbilitiesSummary.js)
+- `renderTalentSets()` - Summary section for all talent sets
+- `renderTalentSet()` - Individual talent set with attribute and level info
+- Visual talent tags showing individual talent names
 
-### Migration Strategy
+## Examples
 
-#### Existing Characters
-1. **Legacy Support**: Keep existing predefined situational expertises functional
-2. **Migration Option**: Provide tool to convert existing to new format
-3. **Grandfathering**: Existing characters can exceed 3-expertise limit until they modify
+### Example 1: Urban Infiltrator
+- **Attribute**: Focus
+- **Talents**: ["Lock Picking", "Security Systems", "Silent Entry"]
+- **Level**: Mastered (3 points)
+- **Usage**: When infiltrating buildings, add 2 × Tier to relevant Focus checks
 
-#### Data Migration
-```javascript
-// Convert existing purchases to new format
-const migrateSituationalExpertise = (oldPurchases) => {
-  return oldPurchases.map(expertise => ({
-    id: generateId(),
-    level: expertise.level,
-    talents: [expertise.name, "General", "Applicable"], // Default conversion
-    attribute: expertise.attribute,
-    purchaseDate: Date.now()
-  }));
-};
-```
+### Example 2: Wilderness Tracker
+- **Attribute**: Awareness
+- **Talents**: ["Animal Signs", "Weather Reading", "Trail Following"]
+- **Level**: Basic (1 point)
+- **Usage**: When tracking in wilderness, add Tier to relevant Awareness checks
 
-## Implementation Phases
+### Example 3: Social Manipulator
+- **Attribute**: Communication
+- **Talents**: ["Reading Body Language", "Emotional Leverage", "Information Gathering"]
+- **Level**: Basic (1 point)
+- **Usage**: When manipulating people, add Tier to relevant Communication checks
 
-### Phase 1: Data Foundation
-- [ ] Update character data model to support custom talents
-- [ ] Resolve cost discrepancy between JSON and constants
-- [ ] Update expertise.json with new structure
+## Migration from Old System
 
-### Phase 2: UI Development
-- [ ] Replace predefined situational cards with editable talent textboxes
-- [ ] Add 3-expertise limit counter display
-- [ ] Implement refund functionality (same as existing system)
-- [ ] Show "Add New Situational Expertise" button when under limit
+### Data Migration
+- Old activity-based expertise: Removed entirely
+- Old situational expertise: Preserved if using new format
+- Characters with old data: Gracefully handle missing properties
 
-### Phase 3: Integration
-- [ ] Update summary displays to show custom talents
-- [ ] Modify export/import to handle custom talent data
-- [ ] Ensure archetype restrictions still apply
+### UI Changes
+- Activity-based expertise tab: Shows deprecation message
+- Situational expertise: Complete redesign with unified interface
+- Summary display: Updated to show custom talent names
 
-### Phase 4: Testing & Polish
-- [ ] Test with existing characters
-- [ ] Verify refund system works
-- [ ] Edge case testing (empty talents, etc.)
+### Backward Compatibility
+- Old save files: Don't crash, show migration notice
+- Missing data: Initialize empty arrays properly
+- Validation: Handle both old and new data structures during transition
 
-## Open Questions
+## Testing Checklist
 
-1. **Edit Functionality**: Should players be able to modify talent names after purchase? Yes, leave them as open textboxes
-2. **Refund Policy**: Can situational expertises be sold back? yes, just like everything else
-3. **Duplicate Prevention**: Should system prevent similar talent names? no
-4. **Attribute Enforcement**: Must talents relate to the selected attribute category? no relation, they just have the same point cost at situational expertises, also the same name
-5. **Character Limits**: Any restrictions on special characters or profanity? no
+### Core Functionality
+- [ ] Can create new Talent Set at Basic level (1 point)
+- [ ] Can create new Talent Set at Mastered level (3 points)
+- [ ] Three talent text inputs are editable
+- [ ] Attribute selector works correctly
+- [ ] Maximum 3 Talent Sets enforced
 
-## Success Criteria
+### Level Management
+- [ ] Can upgrade Basic to Mastered (2 additional points)
+- [ ] Cannot downgrade from Mastered to Basic
+- [ ] Level display updates correctly in UI
 
-1. Players can create exactly 3 situational expertises with custom talents
-2. Only enforce 3-expertise limit (no additional validation rules needed)
-3. Existing characters continue to function without breaking
-4. UI clearly shows limits and provides good user experience
-5. System maintains performance with custom data storage
+### Data Persistence
+- [ ] Talent name changes save automatically
+- [ ] Character data persists across page refreshes
+- [ ] Summary tab displays custom talent names
+- [ ] Point calculations include talent set costs
 
-## Technical Risks
+### Edge Cases
+- [ ] Can create talent set with only 1 talent filled
+- [ ] Can remove talent sets and get point refund
+- [ ] Budget warnings appear but don't block purchases
+- [ ] Old characters without new data structure don't crash
 
-1. **Simple Text Storage**: Custom talents are just text fields with no special validation needed
-2. **Storage Size**: Custom text increases character data size 
-3. **Migration Complexity**: Converting existing data without loss
-4. **UI Complexity**: Managing dynamic content vs. static cards
-5. **Export Format**: Ensuring custom data survives import/export cycles
+## Future Enhancements
+
+### Potential Additions
+- **Talent Categories**: Group talents by theme or profession
+- **Shared Talent Libraries**: Common talent collections for inspiration
+- **Import/Export**: Share talent sets between characters
+- **Advanced Validation**: Check for overpowered or inappropriate talents
+
+### Balance Considerations
+- **Point Cost Adjustment**: Monitor if 1p/3p costs are appropriate
+- **Talent Scope**: Guidelines for appropriate talent breadth
+- **Stacking Rules**: Clarify how multiple talent sets interact
+- **GM Tools**: Interface for reviewing and approving custom talents

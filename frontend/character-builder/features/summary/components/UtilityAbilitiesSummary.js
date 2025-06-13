@@ -44,8 +44,16 @@ export class UtilityAbilitiesSummary {
             return false;
         }
 
-        // Check if any category has purchases
-        return Object.keys(utilityPurchases).some(category => {
+        // Check expertise (situational talent sets)
+        if (utilityPurchases.expertise && 
+            utilityPurchases.expertise.situational && 
+            Array.isArray(utilityPurchases.expertise.situational) && 
+            utilityPurchases.expertise.situational.length > 0) {
+            return true;
+        }
+
+        // Check other utility categories
+        return ['features', 'senses', 'movement', 'descriptors'].some(category => {
             const items = utilityPurchases[category];
             return Array.isArray(items) && items.length > 0;
         });
@@ -54,14 +62,20 @@ export class UtilityAbilitiesSummary {
     renderUtilityCategories(utilityPurchases, utilityDefinitions) {
         let content = '';
         
-        // Define the order and display names for categories
+        // Handle Talent Sets (new expertise system)
+        if (utilityPurchases.expertise && 
+            utilityPurchases.expertise.situational && 
+            Array.isArray(utilityPurchases.expertise.situational) && 
+            utilityPurchases.expertise.situational.length > 0) {
+            content += this.renderTalentSets(utilityPurchases.expertise.situational);
+        }
+
+        // Define the order and display names for other categories
         const categoryConfig = {
-            expertise: 'Expertise',
             features: 'Features',
             senses: 'Senses',
             movement: 'Movement Features',
-            generic: 'Generic Utilities',
-            custom: 'Custom Abilities'
+            descriptors: 'Descriptors'
         };
 
         Object.entries(categoryConfig).forEach(([key, displayName]) => {
@@ -86,6 +100,32 @@ export class UtilityAbilitiesSummary {
         `;
     }
 
+    renderTalentSets(talentSets) {
+        return `
+            <div class="utility-category">
+                <h5 class="utility-category-header">Talent Sets</h5>
+                <div class="utility-items">
+                    ${talentSets.map(talentSet => this.renderTalentSet(talentSet)).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderTalentSet(talentSet) {
+        const displayName = talentSet.talents.filter(t => t && t.trim()).join(', ') || 'Untitled Talent Set';
+        const attributeDisplay = talentSet.attribute.charAt(0).toUpperCase() + talentSet.attribute.slice(1);
+        const levelDisplay = this.formatExpertiseLevel(talentSet.level);
+        const hasLevel = talentSet.level && talentSet.level !== 'none';
+        
+        return `
+            <div class="utility-summary-item talent-set-item">
+                <h5 class="utility-item-name">${displayName}${hasLevel ? ` (${levelDisplay})` : ''}</h5>
+                <p class="utility-description">${attributeDisplay}-based talent set${hasLevel ? '' : ' (unpurchased)'}</p>
+                ${talentSet.talents.length > 0 ? `<div class="talent-list">${talentSet.talents.filter(t => t && t.trim()).map(talent => `<span class="talent-tag">${talent}</span>`).join('')}</div>` : ''}
+            </div>
+        `;
+    }
+
     renderItem(item, categoryKey, definitions) {
         let itemId, itemName, itemDescription;
         
@@ -94,14 +134,8 @@ export class UtilityAbilitiesSummary {
             itemId = item;
             itemName = item;
         } else if (typeof item === 'object' && item !== null) {
-            // Handle expertise with levels
-            if (categoryKey === 'expertise' && item.name && item.level) {
-                itemId = item.name;
-                itemName = `${item.name} (${this.formatExpertiseLevel(item.level)})`;
-            } else {
-                itemId = item.itemId || item.name || item.ability || item.feature;
-                itemName = item.name || item.ability || item.feature || itemId;
-            }
+            itemId = item.itemId || item.name || item.ability || item.feature;
+            itemName = item.name || item.ability || item.feature || itemId;
         } else {
             itemId = String(item);
             itemName = String(item);
@@ -117,11 +151,6 @@ export class UtilityAbilitiesSummary {
             }
         }
         
-        // Handle special cases for expertise
-        if (categoryKey === 'expertise' && !itemDescription) {
-            itemDescription = `Expertise in ${itemId}`;
-        }
-        
         return `
             <div class="utility-summary-item">
                 <h5 class="utility-item-name">${itemName}</h5>
@@ -132,11 +161,9 @@ export class UtilityAbilitiesSummary {
 
     formatExpertiseLevel(level) {
         const levelMap = {
-            'novice': 'Novice',
-            'practiced': 'Practiced', 
-            'expert': 'Expert',
-            'master': 'Master',
-            'mastered': 'Mastered'
+            'basic': 'Basic',
+            'mastered': 'Mastered',
+            'none': 'Unpurchased'
         };
 
         return levelMap[level?.toLowerCase()] || level || 'Unknown Level';
