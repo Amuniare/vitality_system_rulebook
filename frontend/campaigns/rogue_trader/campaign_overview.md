@@ -14,25 +14,31 @@
 
 ---
 
+
 ## BACKGROUND & MANDATE
 
 **Dame Venecia of House Delatorae**  
 *Daughter of Venecian Delatorae, Protector of the Lost City of Venece, Guardian of Cadia, Knight Errant of the Imperium, Champion of the 12th Black Crusade, Slayer of Demons, The Armless Terror, The Mad Rogue Trader*
 
-Four years ago during the 13th Black Crusade, Dame Venecia piloted her Imperial Knight into the Warp to save a High Lord's son. She returned grievously wounded (missing arms, eye, hair whitened) but successful. The Inquisition branded her suspect for surviving Warp exposure. To protect her from execution while keeping her away from Terra, the grateful High Lord granted her a Rogue Trader Warrant.
+Four years ago during the 13th Black Crusade, Dame Venecia piloted her Imperial Knight into the Warp to save a High Lord's son. She returned grievously wounded (missing arms, eye, hair whitened) but successful. The Inquisition branded her suspect for surviving Warp exposure. To protect her from execution while keeping her away from Terra, the grateful High Lord granted her a Rogue Trader Warrant with a unique mandate.
 
 **Current Status:** Four years of dangerous operations have built her reputation - she rescued stranded Imperial Guard from daemon worlds, cleansed corrupted shrine worlds, and made controversial deals with xenos to recover Imperial prisoners. Not well tolerated by the Inquisition, but grudgingly respected by those who know her deeds.
 
-**The Warp-Touched Mandate:**  
+**The Original Warp-Touched Mandate (999.M41):**  
 Dame Venecia must venture into dangerous and unexplored regions that others refuse to investigate, with particular focus on recovering Imperial assets from Warp-corrupted or lost territories. This mandate requires her to cleanse corruption where possible and salvage what can be saved when cleansing fails.
 
-**Secondary Stipulations:**
-- **Trade Authority**: Establish trade enclaves on frontier worlds and maintain trading rights with xenos, but all profit gains must be donated to Imperial causes within one Terran year
-- **Technology Acquisition**: Maintain trading rights with Adeptus Mechanicus for Warp-resistant tech and acquire any artifacts that can help the psykers of the Empire
-- **Military Recruitment**: Authority to recruit from units that survived Warp exposure and employ unsanctioned psykers, but must serve as executor for final wishes of any Space Marines encountered in Warp-touched regions
-- **Redemption Obligation**: Must attempt to recover and "rehabilitate" any Imperial personnel found in Warp-corrupted territories, regardless of their current condition or allegiances
-- **Knowledge Preservation**: Must catalog and preserve any Imperial records, technology, or cultural artifacts discovered in Warp-touched regions, even if their contents are questionable or dangerous
+**The Primarch's Call & Specialized Directive (003.M42):**
+When Roboute Guilliman summoned hundreds of Rogue Traders to Terra, he tasked them with establishing supply lines and resource acquisition in regions too dangerous for normal Imperial forces. **Dame Venecia received a specialized version of this mandate - where other Rogue Traders venture into hostile but stable territories, she must extract what the Crusade needs from Warp-corrupted space itself.** Her unique survival of Warp exposure and four years of experience in tainted regions make her a viable option for recovering vital resources from territories consumed by Chaos corruption.
 
+**Updated Mandate Stipulations:**
+- **Warp Resource Extraction**: Establish extraction operations in Warp-corrupted territories to supply Crusade needs, prioritizing materials and assets that cannot be acquired through conventional means
+- **Trade Authority**: Create trade networks spanning frontier territories and xenos space to feed Crusade operations. Financial returns must be used to support and serve Crusade interests
+- **Technology Acquisition**: Maintain trading rights with Adeptus Mechanicus for Warp-resistant tech and acquire any artifacts that can help the psykers of the Empire, with priority for battlefield technologies urgently needed by Crusade forces
+- **Military Recruitment**: Authority to recruit from units that survived Warp exposure and employ unsanctioned psykers, but must serve as executor for final wishes of any Space Marines encountered in Warp-touched regions. Establish garrison forces for reclaimed territories
+- **Redemption Obligation**: Must attempt to recover and "rehabilitate" any Imperial personnel found in Warp-corrupted territories, regardless of their current condition or allegiances. Assess recovered personnel for immediate Crusade service capability
+- **Knowledge Preservation**: Must catalog and preserve any Imperial records, technology, or cultural artifacts discovered in Warp-touched regions, even if their contents are questionable or dangerous. Forward strategic intelligence to Crusade command within acceptable security protocols
+
+**Timeline Pressure:** Six months to establish first functional Crusade supply operation from Warp-touched resources, one year for full extraction network. 
 ---
 
 ## SHIP & FLEET INFORMATION
