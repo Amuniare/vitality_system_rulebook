@@ -1,0 +1,233 @@
+/*
+ * Theme: Warrant of Trade
+ * Description: A theme that styles the page to look like an ancient, official Imperial document.
+ * Version: 1.0
+ */
+
+/* ---------------------------------- */
+/* 1. FONT IMPORTS & ROOT VARIABLES   */
+/* ---------------------------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Uncial+Antiqua&display=swap');
+
+:root {
+    --font-primary-gothic: 'Uncial Antiqua', cursive;
+    --font-secondary-serif: 'IM Fell English', serif;
+
+    --color-parchment: #fdf5e6;
+    --color-text-dark: #3c2f2f;
+    --color-header-crimson: #7a0000;
+    --color-accent-gold: #cfa32b;
+    --color-border-dark: #a58d5e;
+    --color-shadow: rgba(0, 0, 0, 0.2);
+}
+
+/* ---------------------------------- */
+/* 2. BASE & LAYOUT STYLES            */
+/* ---------------------------------- */
+
+body.theme-warrant {
+    background-color: #3a3a3a; /* A dark, neutral background to make the parchment pop */
+    background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png'); /* Subtle texture */
+    color: var(--color-text-dark);
+    font-family: var(--font-secondary-serif);
+}
+
+/* Replaces .hub-container for better context */
+.warrant-container {
+    max-width: 1400px; /* More flexible width */
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--color-parchment);
+    border: 3px solid var(--color-border-dark);
+    border-radius: 5px;
+    box-shadow: 0 10px 40px var(--color-shadow);
+}
+
+/* ---------------------------------- */
+/* 3. HEADER & TITLE                  */
+/* ---------------------------------- */
+
+.hub-header {
+    text-align: center;
+    border-bottom: 4px double var(--color-border-dark);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.hub-header h1 {
+    font-family: var(--font-primary-gothic);
+    font-size: 4rem;
+    color: var(--color-header-crimson);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    margin: 0;
+}
+
+.hub-header p {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--color-text-dark);
+    opacity: 0.8;
+}
+
+/* ---------------------------------- */
+/* 4. NAVIGATION (TABS AS CHAPTERS)   */
+/* ---------------------------------- */
+
+.tab-container {
+    background: none;
+    border: none;
+    margin-bottom: 2rem;
+}
+
+.tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border-dark);
+}
+
+.tab-button {
+    font-family: var(--font-primary-gothic);
+    font-size: 1.3rem;
+    color: var(--color-text-dark);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.tab-button:hover {
+    color: var(--color-header-crimson);
+    opacity: 1;
+}
+
+.tab-button.active {
+    color: var(--color-header-crimson);
+    border-bottom-color: var(--color-accent-gold);
+    opacity: 1;
+    font-weight: bold;
+}
+
+/* ---------------------------------- */
+/* 5. CONTENT AREA                    */
+/* ---------------------------------- */
+
+.tab-content {
+    background: none;
+    border: none;
+    padding: 1rem 0; /* Reduced padding as the container has it now */
+    box-shadow: none;
+}
+
+.tab-pane.active {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ---------------------------------- */
+/* 6. TYPOGRAPHY & ELEMENTS           */
+/* ---------------------------------- */
+
+.tab-pane h1, .tab-pane h2, .tab-pane h3 {
+    font-family: var(--font-primary-gothic);
+    color: var(--color-header-crimson);
+}
+
+.tab-pane h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border-dark);
+}
+
+.tab-pane h2 {
+    font-size: 2rem;
+    margin-top: 2rem;
+}
+
+.tab-pane p, .tab-pane li {
+    font-family: var(--font-secondary-serif);
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--color-text-dark);
+}
+
+.tab-pane ul, .tab-pane ol {
+    padding-left: 2rem;
+}
+
+.tab-pane strong {
+    font-weight: bold;
+    color: var(--color-header-crimson);
+}
+
+hr {
+    border: none;
+    height: 3px;
+    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="%23cfa32b"><path d="M0 5h3l2-5 2 5h93zM0 5h3l2 5 2-5h93z"/></g></svg>');
+    background-size: 50px;
+    margin: 2rem 0;
+    opacity: 0.5;
+}
+
+/* ---------------------------------- */
+/* 7. SIDEBAR                         */
+/* ---------------------------------- */
+
+.sidebar {
+    background: rgba(60, 47, 47, 0.05); /* Faint color to blend with parchment */
+    border-right: 2px solid var(--color-border-dark);
+    box-shadow: none;
+}
+
+.sidebar-header {
+    border-bottom-color: var(--color-border-dark);
+}
+
+.sidebar-header h2 {
+    color: var(--color-header-crimson);
+}
+
+.sidebar-header p {
+    color: var(--color-text-dark);
+}
+
+.nav-item {
+    color: var(--color-text-dark);
+    padding-left: 15px;
+    border-left-width: 4px;
+}
+
+.nav-item:hover {
+    background-color: rgba(122, 0, 0, 0.05);
+    border-left-color: var(--color-accent-gold);
+}
+
+.nav-item.h1 {
+    color: var(--color-header-crimson);
+}
+
+.nav-item.h3 {
+    color: var(--color-text-dark);
+    opacity: 0.8;
+}
+
+.nav-link {
+    background-color: transparent;
+    border: 1px solid var(--color-border-dark);
+    color: var(--color-text-dark);
+}
+
+.nav-link:hover {
+    background-color: var(--color-header-crimson);
+    border-color: var(--color-header-crimson);
+    color: var(--color-parchment);
+}
