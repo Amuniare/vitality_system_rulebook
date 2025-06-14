@@ -1,7 +1,7 @@
 /*
  * Theme: Warrant of Trade
  * Description: A theme that styles the page to look like an ancient, official Imperial document.
- * Version: 1.1 - Removed heading borders
+ * Version: 1.2 - Fixed tab visibility and improved text readability.
  */
 
 /* ---------------------------------- */
@@ -11,11 +11,13 @@
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Uncial+Antiqua&display=swap');
 
 :root {
-    --font-primary-gothic: 'Uncial+Antiqua', cursive;
-    --font-secondary-serif: 'IM Fell English', serif;
+    --font-primary-gothic: 'Uncial Antiqua', cursive;
+    /* UPDATED: Switched secondary font to a safer, more readable stack */
+    --font-secondary-serif: Georgia, 'Times New Roman', Times, serif;
 
     --color-parchment: #fdf5e6;
-    --color-text-dark: #3c2f2f;
+    /* UPDATED: Darkened the text color for better contrast */
+    --color-text-dark: #2a2121; 
     --color-header-crimson: #7a0000;
     --color-accent-gold: #cfa32b;
     --color-border-dark: #a58d5e;
@@ -27,15 +29,14 @@
 /* ---------------------------------- */
 
 body.theme-warrant {
-    background-color: #3a3a3a; /* A dark, neutral background to make the parchment pop */
-    background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png'); /* Subtle texture */
+    background-color: #3a3a3a;
+    background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
     color: var(--color-text-dark);
-    font-family: var(--font-secondary-serif);
+    font-family: var(--font-secondary-serif); /* Use the new readable font */
 }
 
-/* Replaces .hub-container for better context */
 .warrant-container {
-    max-width: 1400px; /* More flexible width */
+    max-width: 1400px;
     margin: 2rem auto;
     padding: 2rem;
     background: var(--color-parchment);
@@ -119,11 +120,17 @@ body.theme-warrant {
 .tab-content {
     background: none;
     border: none;
-    padding: 1rem 0; /* Reduced padding as the container has it now */
+    padding: 1rem 0;
     box-shadow: none;
 }
 
+/* --- CRITICAL FIX: Hide inactive tabs --- */
+.tab-pane {
+    display: none;
+}
+
 .tab-pane.active {
+    display: block;
     animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -139,7 +146,6 @@ body.theme-warrant {
 .tab-pane h1, .tab-pane h2, .tab-pane h3 {
     font-family: var(--font-primary-gothic);
     color: var(--color-header-crimson);
-    /* --- FIX: REMOVED THE BLUE BARS --- */
     border-left: none; 
     padding-left: 0;   
 }
@@ -159,8 +165,11 @@ body.theme-warrant {
 .tab-pane p, .tab-pane li {
     font-family: var(--font-secondary-serif);
     font-size: 1.1rem;
-    line-height: 1.7;
+    /* UPDATED: Increased line-height for better readability */
+    line-height: 1.8; 
     color: var(--color-text-dark);
+    /* UPDATED: Changed from justify to left for readability */
+    text-align: left; 
 }
 
 .tab-pane ul, .tab-pane ol {
@@ -186,7 +195,7 @@ hr {
 /* ---------------------------------- */
 
 .sidebar {
-    background: rgba(60, 47, 47, 0.05); /* Faint color to blend with parchment */
+    background: rgba(60, 47, 47, 0.05);
     border-right: 2px solid var(--color-border-dark);
     box-shadow: none;
 }
