@@ -1487,9 +1487,9 @@ What you're exceptionally good at doing. Always applies when performing the rele
 - **Research** – Investigating topics, gathering data, or studying deeply
 - **Problem Solving** – Applying logic and creativity to overcome challenges
 
-### Situational
+### Situational Talents
 
-When or where you excel beyond normal capability. Only applies when the context matches.
+Work with your GM to build up to 3 custom Talents that help flesh out your character. Talents can only apply when the context matches. Here are some sample Talents.
 
 #### Mobility
 - **Vertical Environments** – Comfortable in areas with ladders, walls, cliffs, or scaffolding
