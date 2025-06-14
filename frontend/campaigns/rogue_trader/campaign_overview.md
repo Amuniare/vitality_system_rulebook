@@ -38,8 +38,9 @@ When Roboute Guilliman summoned hundreds of Rogue Traders to Terra, he tasked th
 - **Redemption Obligation**: Must attempt to recover and "rehabilitate" any Imperial personnel found in Warp-corrupted territories, regardless of their current condition or allegiances. Assess recovered personnel for immediate Crusade service capability
 - **Knowledge Preservation**: Must catalog and preserve any Imperial records, technology, or cultural artifacts discovered in Warp-touched regions, even if their contents are questionable or dangerous. Forward strategic intelligence to Crusade command within acceptable security protocols
 
-**Timeline Pressure:** 
+**Timeline Pressure:**
 Six months to establish first functional Crusade supply operation from Warp-touched resources, one year for full extraction network. 
+
 ---
 
 ## SHIP & FLEET INFORMATION
