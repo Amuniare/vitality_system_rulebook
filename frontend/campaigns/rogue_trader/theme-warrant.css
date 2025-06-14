@@ -1,7 +1,7 @@
 /*
  * Theme: Warrant of Trade
  * Description: A theme that styles the page to look like an ancient, official Imperial document.
- * Version: 1.0
+ * Version: 1.1 - Removed heading borders
  */
 
 /* ---------------------------------- */
@@ -11,7 +11,7 @@
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Uncial+Antiqua&display=swap');
 
 :root {
-    --font-primary-gothic: 'Uncial Antiqua', cursive;
+    --font-primary-gothic: 'Uncial+Antiqua', cursive;
     --font-secondary-serif: 'IM Fell English', serif;
 
     --color-parchment: #fdf5e6;
@@ -139,6 +139,9 @@ body.theme-warrant {
 .tab-pane h1, .tab-pane h2, .tab-pane h3 {
     font-family: var(--font-primary-gothic);
     color: var(--color-header-crimson);
+    /* --- FIX: REMOVED THE BLUE BARS --- */
+    border-left: none; 
+    padding-left: 0;   
 }
 
 .tab-pane h1 {
