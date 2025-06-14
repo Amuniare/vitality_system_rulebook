@@ -1,5 +1,3 @@
-I'll help you expand that timeline to be more comprehensive and accessible to newcomers. Here's an extended version that goes deeper into the past and further into the future:
-
 # WARHAMMER 40K TIMELINE: THE FALL OF CADIA ERA
 *A Complete Guide to the Galaxy's Darkest Hour*
 
