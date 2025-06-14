@@ -1,0 +1,58 @@
+{
+    "tier1": {
+        "cost": 1,
+        "name": "Tier 1 Conditions (Easy to maintain)",
+        "conditions": [
+            { "id": "rooted", "name": "Rooted", "description": "Cannot move this turn" },
+            { "id": "longDistanceFighter", "name": "Long Distance Fighter", "description": "No enemies within 5 spaces" },
+            { "id": "unhealthy1", "name": "Unhealthy 1", "description": "25+ points below max HP" },
+            { "id": "irregular1", "name": "Irregular 1", "description": "Roll d20, DC 5 to activate each turn" },
+            { "id": "vengeful", "name": "Vengeful", "description": "Been hit since last turn" },
+            { "id": "careful", "name": "Careful", "description": "Not damaged since last turn" },
+            { "id": "passive", "name": "Passive", "description": "Not attacked since last turn" },
+            { "id": "steady", "name": "Steady", "description": "Turn 3 or later" },
+            { "id": "relentless", "name": "Relentless", "description": "Dealt damage to enemy last turn" },
+            { "id": "overwhelm", "name": "Overwhelm", "description": "Dealt damage to enemy this turn" },
+            { "id": "infection", "name": "Infection", "description": "Applied Condition this turn" },
+            { "id": "infected", "name": "Infected", "description": "Applied Condition last turn" },
+            { "id": "temporary3", "name": "Temporary 3", "description": "Activate for 3 turns, recharges after 1 minute rest" }
+        ]
+    },
+    "tier2": {
+        "cost": 2,
+        "name": "Tier 2 Conditions (Moderately difficult)",
+        "conditions": [
+            { "id": "timid", "name": "Timid", "description": "At max HP with no conditions" },
+            { "id": "revenge", "name": "Revenge", "description": "Been damaged since last turn" },
+            { "id": "unbreakable", "name": "Unbreakable", "description": "Been hit but took no damage since last turn" },
+            { "id": "unhealthy2", "name": "Unhealthy 2", "description": "75+ points below max HP" },
+            { "id": "untouchable", "name": "Untouchable", "description": "All attacks missed since last turn" },
+            { "id": "slaughter", "name": "Slaughter", "description": "Defeated enemy last turn" },
+            { "id": "onslaught", "name": "Onslaught", "description": "Defeated enemy this turn" },
+            { "id": "patient", "name": "Patient", "description": "Turn 5 or later" },
+            { "id": "temporary2", "name": "Temporary 2", "description": "Activate for 2 turns, recharges after 1 minute rest" }
+        ]
+    },
+    "tier3": {
+        "cost": 3,
+        "name": "Tier 3 Conditions (Hardest to maintain)",
+        "conditions": [
+            { "id": "quickdraw", "name": "Quickdraw", "description": "First 2 rounds of combat" },
+            { "id": "temporary1", "name": "Temporary 1", "description": "Activate for 1 turn, recharges after 1 minute rest" },
+            { "id": "irregular2", "name": "Irregular 2", "description": "Roll d20, DC 10 to activate each turn" },
+            { "id": "nearDeath", "name": "Near Death", "description": "At 0 Hit Points" },
+            { "id": "dangerous", "name": "Dangerous", "description": "No allies within 15 spaces, no civilians within 30 spaces" },
+            { "id": "avenger", "name": "Avenger", "description": "Ally unconscious or great peril occurred" }
+        ]
+    },
+    "variable": {
+        "cost": "Variable",
+        "name": "Variable Conditions (Discuss with GM)",
+        "conditions": [
+            { "id": "environment", "name": "Environment", "description": "Specific locations (electricity, water, urban, forest)" },
+            { "id": "time", "name": "Time", "description": "Specific times (night, full moon, day)" },
+            { "id": "weather", "name": "Weather", "description": "Specific weather (stormy, sunny, cloudy)" },
+            { "id": "descriptor", "name": "Descriptor", "description": "Specific damage types (hit with energy)" }
+        ]
+    }
+}

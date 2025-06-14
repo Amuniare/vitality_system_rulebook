@@ -1,0 +1,84 @@
+{
+  "cleanup_processor": {
+    "system_prompt": "You are an expert at cleaning and contextualizing RPG session transcripts. Your task is to transform raw Discord chat logs into clean, readable transcripts while preserving all meaningful content and adding necessary context.",
+    "user_prompt_template": "Clean this RPG session transcript for the Mutants campaign. This is session {session_number} taking place in {campaign_setting}.\n\nCampaign Context:\n{campaign_context}\n\nCharacter Information:\n{character_info}\n\nPrevious Session Summary:\n{previous_session_summary}\n\nRaw Transcript:\n{raw_transcript}\n\nInstructions:\n1. Remove Discord formatting artifacts (timestamps, user IDs, bot messages)\n2. Convert abbreviated names to full character names using the character list\n3. Clean up typos and formatting while preserving the original meaning\n4. Add context for game mechanics references (dice rolls, abilities, etc.)\n5. Clarify pronouns and unclear references using campaign knowledge\n6. Maintain chronological order and preserve all meaningful dialogue\n7. Add brief contextual notes in [brackets] where helpful for clarity\n8. Preserve player out-of-character discussions that affect the game\n\nOutput a clean, readable transcript that maintains the session's flow and content while being accessible to someone reviewing it later.",
+    "variables": [
+      "session_number",
+      "campaign_setting", 
+      "campaign_context",
+      "character_info",
+      "previous_session_summary",
+      "raw_transcript"
+    ]
+  },
+  "timeline_processor": {
+    "system_prompt": "You are an expert at analyzing RPG sessions to create detailed event timelines. Your task is to break down cleaned session transcripts into comprehensive chronological bullet points that capture all significant events, decisions, and developments.",
+    "user_prompt_template": "Create a detailed timeline for this Mutants campaign session. Generate 50-150 bullet points covering all significant events.\n\nSession Information:\n- Session Number: {session_number}\n- Campaign: {campaign_setting}\n- Date: {session_date}\n\nCampaign Context:\n{campaign_context}\n\nCharacter Information:\n{character_info}\n\nCleaned Transcript:\n{cleaned_transcript}\n\nCreate a chronological timeline with bullet points covering:\n\n**Character Actions & Decisions:**\n- Power usage and combat sequences\n- Social interactions and relationship developments\n- Strategic planning and tactical decisions\n- Character growth moments and revelations\n\n**NPC Interactions:**\n- Dialogue with important NPCs\n- Information gathering from contacts\n- Faction representatives and their agendas\n- Enemy encounters and confrontations\n\n**Plot Developments:**\n- Story revelations and clues discovered\n- Mission objectives and outcomes\n- Faction politics and power shifts\n- Consequences of previous actions\n\n**Game Mechanics:**\n- Dice rolls and their narrative impact\n- Power evolution and tier advancement\n- Resource management (health, stress, etc.)\n- Environmental challenges overcome\n\n**World Building:**\n- New locations explored\n- Setting details revealed\n- Timeline progression in the campaign world\n- Background events affecting the larger story\n\nFormat each bullet point as:\n• [Timestamp/Scene]: Brief description of event with key participants\n\nEnsure comprehensive coverage while maintaining chronological accuracy.",
+    "variables": [
+      "session_number",
+      "campaign_setting",
+      "session_date", 
+      "campaign_context",
+      "character_info",
+      "cleaned_transcript"
+    ]
+  },
+  "notes_processor": {
+    "system_prompt": "You are an expert at creating concise GM session notes. Your task is to distill detailed session timelines into 5-10 key bullet points that capture the most important developments for a Game Master's reference.",
+    "user_prompt_template": "Create GM session notes from this detailed timeline for session {session_number} of the Mutants campaign.\n\nCampaign Context:\n{campaign_context}\n\nCharacter Information:\n{character_info}\n\nDetailed Timeline:\n{detailed_timeline}\n\nCreate 5-10 concise bullet points focusing on:\n\n**Priority 1 - Critical Plot Points:**\n- Major story revelations or breakthroughs\n- Significant faction developments\n- World-changing events or consequences\n\n**Priority 2 - Character Development:**\n- Important character growth or relationship changes\n- Power evolution or tier advancement\n- Key personal revelations or decisions\n\n**Priority 3 - Ongoing Threads:**\n- Unresolved plot hooks or mysteries\n- Future complications or consequences set up\n- Faction relationships that need follow-up\n\n**Priority 4 - Mechanical Outcomes:**\n- Important resource changes\n- New abilities or limitations established\n- Environmental or setting changes\n\nFormat:\n• **[Category]:** Concise description with key names and outcomes\n\nEach bullet point should be immediately useful for a GM preparing the next session or referencing past events. Focus on actionable information and ongoing implications rather than play-by-play details.",
+    "variables": [
+      "session_number",
+      "campaign_context",
+      "character_info", 
+      "detailed_timeline"
+    ]
+  },
+  "summary_processor": {
+    "system_prompt": "You are an expert at creating engaging narrative summaries of RPG sessions. Your task is to transform session notes into compelling 3-paragraph prose that captures the drama, character development, and story progression of the session.",
+    "user_prompt_template": "Create a narrative summary for session {session_number} of the Mutants campaign using these session notes.\n\nCampaign Context:\n{campaign_context}\n\nCharacter Information:\n{character_info}\n\nSession Notes:\n{session_notes}\n\nDetailed Timeline (for reference):\n{detailed_timeline}\n\nWrite exactly 3 paragraphs following this structure:\n\n**Paragraph 1 - Session Opening & Main Events:**\nSet the scene and describe the primary events of the session. Include the initial situation, major challenges faced, and key actions taken by the characters. Focus on the dramatic tension and main plot developments.\n\n**Paragraph 2 - Character Interactions & Development:**\nHighlight significant character moments, relationship developments, and personal growth. Include important dialogue, character decisions that reveal personality, and how the PCs worked together (or against each other). Emphasize emotional beats and character agency.\n\n**Paragraph 3 - Resolution & Setup:**\nDescribe how the session's main conflicts were resolved (or left unresolved), immediate consequences of the characters' actions, and how events set up future sessions. Include any cliffhangers, new complications, or questions raised for future exploration.\n\n**Style Guidelines:**\n- Write in engaging, dramatic prose suitable for a campaign journal\n- Use character names and codenames appropriately\n- Include specific details that make the events feel real and impactful\n- Maintain the tone and themes of the Mutants campaign\n- Focus on player agency and character choices\n- End with forward momentum toward future sessions\n\nCreate a summary that players would enjoy reading to remember the session and that captures the excitement of the story being told.",
+    "variables": [
+      "session_number",
+      "campaign_context",
+      "character_info",
+      "session_notes", 
+      "detailed_timeline"
+    ]
+  },
+  "context_management": {
+    "character_reference_template": "**Active Characters:**\n{active_characters}\n\n**Missing/Compromised:**\n{missing_characters}\n\n**Key NPCs:**\n{key_npcs}",
+    "campaign_summary_template": "**Setting:** {setting}\n**Current Crisis:** {current_crisis}\n**Major Factions:** {major_factions}\n**Key Themes:** {themes}",
+    "continuity_template": "**Recent Major Events:**\n{recent_events}\n\n**Ongoing Threads:**\n{ongoing_threads}\n\n**Unresolved Questions:**\n{unresolved_questions}"
+  },
+  "error_handling": {
+    "insufficient_content": "The provided transcript appears to be too short or lacks sufficient content for meaningful processing. Please ensure the transcript contains substantial session content including character dialogue, actions, and story development.",
+    "character_identification_failure": "Unable to identify key characters in this transcript. Please verify that character names match the campaign context or provide additional character identification information.",
+    "context_mismatch": "The session content appears to conflict with the provided campaign context. Please verify the session number, campaign setting, or character information.",
+    "processing_timeout": "Processing took longer than expected. This may indicate an unusually complex session or temporary API issues. Consider breaking the session into smaller segments or retrying the operation."
+  },
+  "quality_validation": {
+    "minimum_timeline_items": 50,
+    "maximum_timeline_items": 150,
+    "required_notes_count": {"min": 5, "max": 20},
+    "required_summary_paragraphs": 3,
+    "required_elements": {
+      "timeline": ["character_actions", "npc_interactions", "plot_developments", "game_mechanics"],
+      "notes": ["plot_points", "character_development", "ongoing_threads"],
+      "summary": ["session_opening", "character_interactions", "resolution_setup"]
+    }
+  },
+  "output_formatting": {
+    "timeline_bullet": "• [{timestamp}]: {description}",
+    "notes_bullet": "• **{category}:** {description}",
+    "file_naming": {
+      "cleaned": "session-{session_number:02d}-cleaned.txt",
+      "timeline": "session-{session_number:02d}-timeline.md", 
+      "notes": "session-{session_number:02d}-notes.md",
+      "summary": "session-{session_number:02d}-summary.md"
+    },
+    "headers": {
+      "timeline": "# Session {session_number} Timeline - {session_date}\n\n## {campaign_name}\n\n",
+      "notes": "# Session {session_number} GM Notes - {session_date}\n\n## Key Developments\n\n",
+      "summary": "# Session {session_number} Summary - {session_date}\n\n## {campaign_name}\n\n"
+    }
+  }
+}

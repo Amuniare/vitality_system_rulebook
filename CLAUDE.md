@@ -1,132 +1,113 @@
-# CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## 1. Core Operating Principles
 
-## Project Overview
+These are the foundational rules that govern all my actions. They supersede any inferred logic or assumptions.
 
-This is a Vitality System RPG campaign management tool with two main components:
-1. **Python Roll20 Automation Backend** - Automates character upload/download to/from Roll20 via browser automation
-2. **Web Character Builder** - JavaScript-based browser application for creating and editing characters
+#### **Principle 1: The Principle of Explicit Instruction**
 
-## Key Commands
+*   **Rule:** I will only perform the actions you explicitly request. I will not infer or bundle related tasks unless you have given me prior instruction to do so.
+*   **Context:** This is our primary safeguard against unintended changes. If you say, "Change the situational expertise system," I will not touch the activity expertise system unless you explicitly instruct me to do so. My scope of action is defined strictly by your instructions.
 
-### Python Backend (Roll20 Integration)
-```bash
-# Install dependencies
-pip install -r requirements.txt
 
-# Extract all characters from Roll20 to JSON
-python main.py extract
+#### **Principle 2: The Principle of Impact Analysis**
 
-# Upload characters from input directory to Roll20
-python main.py sync
+*   **Rule:** For any change that could remove or significantly alter existing functionality, I must first state my understanding of the impact and ask for your confirmation before proceeding.
+*   **Context:** This makes the consequences of any action transparent. Before executing a command that would remove the old situational expertise system, I must state: *"This action will remove the existing situational expertise UI and its related system logic from `UtilityTab.js` and `UtilitySystem.js`. The 'Situational' category will no longer appear in its current form. Proceed?"*
 
-# Setup Chrome for browser automation (required before running main.py)
-# Windows:
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir=C:\temp\chrome-debug
-# Linux/Mac: 
-google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-debug
-```
+#### **Principle 3: The Principle of Global Context**
 
-### Web Character Builder
-```bash
-# No build process - open directly in browser
-# File: rulebook/character-builder/character-builder.html
+*   **Rule:** I must consider the entire codebase (`codebase.txt`) when making changes. A modification to a shared utility, a core data structure, or a system-wide document like this one can have cascading effects that must be anticipated.
+*   **Context:** This ensures I do not make a "correct" change in one file that breaks five others. I will always consider the global implications of a local change.
 
-# Or serve locally for development
-python -m http.server 8000
-# Then open: http://localhost:8000/rulebook/character-builder/
-```
 
-## Architecture Overview
 
-### Python Backend (`src/`)
-- **main.py** - Entry point with extract/sync commands
-- **api/** - Roll20 browser automation using Playwright
-  - `connection.py` - Browser connection management
-  - `chat_interface.py` - Roll20 chat window automation
-  - `commands.py` - Roll20 API command execution
-- **character/** - Character data processing
-  - `updater.py` - Upload characters to Roll20
-  - `api_extractor.py` - Download characters from Roll20
-  - `mapper.py` - Convert between JSON formats
-- **utils/** - Shared utilities (logging, JSON handling, ScriptCards templates)
+## 2. Dev Log Generation Protocol (with Contextual Directory Targeting)
 
-### Web Character Builder (`rulebook/character-builder/`)
-- **Modular ES6 Architecture** - No build process, uses native ES6 modules
-- **app.js** - Main application entry point and initialization
-- **core/** - Core game logic and data models
-  - `VitalityCharacter.js` - Main character data model with build state tracking
-  - `GameDataManager.js` - Centralized data loading from JSON files
-  - `TierSystem.js`, `DiceSystem.js` - Game mechanics
-- **systems/** - Feature-specific logic (archetypes, traits, abilities, etc.)
-- **ui/** - User interface components organized by tabs and sections
-- **data/** - Static JSON files with game rules data (archetypes, boons, etc.)
+To standardize and automate our documentation process, we will use the following protocol for creating development logs. This ensures each log is consistent, context-rich, and filed in the correct location based on the scope of work.
 
-### Character Data Flow
-1. **Web Builder** creates characters → saves to localStorage + optional JSON export
-2. **Python Backend** reads JSON files from `characters/input/` → uploads to Roll20
-3. **Roll20** stores characters → can be extracted back to JSON via `main.py extract`
+### Command Syntax
 
-### Build Order Enforcement
-The character builder enforces a specific build order via `buildState` tracking:
-1. Archetypes (movement, attack type, etc.) - must be completed first
-2. Attributes - unlocked after archetypes
-3. Main Pool purchases - unlocked after attributes  
-4. Special Attacks - unlocked after main pool
-5. Utility purchases - final step
+`--create-dev-log "[Notes]"`
 
-## Data Management
+*   **`[Notes]`**: The user will provide notes on the success or failure of the task, I will use it for the dev log. From your analysis, you will generate a title.
+*   **Dev Log Template**: Use the template found here: docs\dev_log_template.md
 
-### Character Storage Locations
-- `characters/extracted/` - Characters downloaded from Roll20
-- `characters/input/` - Characters ready for Roll20 upload
-- Web builder localStorage - Browser-based character library
 
-### Game Data Files
-All game rules data is stored as JSON in `rulebook/character-builder/data/`:
-- Loaded asynchronously by GameDataManager during app initialization
-- No build process - direct file editing takes effect on browser refresh
-- Files include: archetypes.json, boons_simple.json, features.json, etc.
+**Example Usage:**
 
-## Development Notes
+*   `--create-dev-log "Resolved Data Contract Violation in Summary Tab"`
+*   `--create-dev-log`
 
-### Roll20 Integration Requirements
-- Chrome browser with debugging port enabled
-- Roll20 campaign with GM access
-- API script installation required for full functionality
+### Workflow
 
-### Web Builder Development
-- Pure JavaScript ES6 modules - no transpilation or bundling
-- Character validation happens real-time with detailed error reporting
-- Point pool calculations are dynamic based on tier and archetype selections
-- Component-based UI architecture with event-driven updates
+When you issue this command, I will initiate the following automated documentation sequence:
 
-### Character JSON Structure
-Characters use a structured format with:
-- Core metadata (name, tier, version)
-- Archetypes (movement, attack types, abilities)
-- Attributes (combat + utility stats)
-- Purchases (boons, traits, flaws, special attacks)
-- Calculated stats and validation results
+1.  **Acknowledge and Analyze:** I will confirm that I am entering Dev Log Generation Mode. My first action will be to perform a comprehensive analysis of our recent conversation history and the `git diff` of modified files.
+    *   **Crucially, I will determine the primary work directory (`frontend` or `src`) based on the paths of the modified files.** This deterministic logic will dictate the location of the dev log.
 
-## Development History & Lessons Learned
+2.  **Propose a Plan:** Based on my analysis, I will present a clear proposal for the dev log, which will include:
+    *   **Proposed File Path:** A generated, full, and sequential file path. This path will be determined by the primary work directory and the next numerical phase. For example: `frontend/docs/dev_logs/30-39_New_Phase/30A_Talent_Expertise_System.md`.
+    *   **Directory Creation:** The plan will explicitly state if a new phase directory (e.g., `30-39_...`) needs to be created.
+    *   **Proposed Title:** A descriptive title for the log.
+    *   **Summary of Work:** A brief, bulleted list of the key changes to be documented.
 
-**IMPORTANT**: Before working on the web character builder, review both:
+3.  **Await Approval:** I will stop and wait for your explicit approval of this plan. No file or directory will be written until you confirm all details are correct.
 
-1. **`docs/rulesForAI.md`** - Critical AI development guidelines including:
-   - Code style requirements and restrictions  
-   - File modification policies
-   - Documentation creation rules
-   - UI/UX design principles specific to this project
+4.  **Generate and Create:** Upon your approval, I will execute the plan:
+    *   First, I will create the target directory if it does not already exist.
+    *   Second, I will generate the full Markdown content for the dev log, meticulously following our standard template.
+    *   Finally, I will use our file creation protocol to write the complete content to the approved file path.
 
-2. **`docs/web_dev_logs.md`** - Technical implementation insights including:
-   - Critical architectural insights and lessons learned
-   - Known issues and their solutions
-   - Event handling patterns that work vs. those that don't
-   - UI consistency guidelines
-   - Browser caching issues and debugging strategies
-   - Successful implementation patterns to follow
-   - Common pitfalls to avoid
+5.  **Confirm and Conclude:** I will output a final confirmation message stating that the dev log has been successfully created, and I will provide the full path to the new file for your records.
 
-The combination of AI rules and development logs provides comprehensive guidance for maintaining code quality, following project conventions, and avoiding both technical and procedural mistakes.
+
+---
+
+## 3. Bugfix Workflow Command
+
+When we encounter a recurring bug in a specific part of the codebase, we will use the following command to initiate a structured debugging process based on our documented architectural patterns.
+
+### Command Syntax
+
+`--bugfix [recipe_name]: "[problem_description]"`
+
+*   **`[recipe_name]`**: The name of the solution pattern to apply (e.g., `Data-Contract-Violation`, `Stale-Listener-Lifecycle`).
+*   **`"[problem_description]"`**: A concise description of the bug's symptoms (e.g., "Situational expertise purchase fails with 'category.basic is undefined'").
+
+### Workflow
+
+When I receive this command, my first action will be to open **`frontend/character-builder/CLAUDE.md`** and locate the specified recipe. I will then use that recipe's principles to analyze the problem and propose a step-by-step plan for the fix.
+
+**Example Usage:**
+`--bugfix Data-Contract-Violation: "Situational expertise purchase fails with 'category.basic is undefined'"`
+
+
+---
+
+## 4. Roadmap Execution Protocol
+
+To initiate a structured, step-by-step execution of a development plan, use the following command. This protocol ensures a supervised, verifiable workflow.
+
+### Command Syntax
+
+`--follow-roadmap [file_path]`
+
+*   **`[file_path]`**: The relative path to the `roadmap.md` file to be executed.
+
+**Example Usage:**
+`--follow-roadmap docs/roadmap.md`
+
+### Workflow
+
+When I receive this command, I will enter a strict execution mode and adhere to the following sequence for **every single step** in the roadmap:
+
+1.  **Acknowledge and Load:** My first response will be to confirm that I am entering Roadmap Execution Mode. I will read the specified `roadmap.md` file and display its full content for your review, highlighting the first unchecked task.
+2.  **State Intent for ONE Step:** I will explicitly state which step I am about to begin. For example: *"I will now begin Step 1.1: Analyze Character Data Model."* I will not execute anything yet.
+3.  **Await Confirmation:** I will stop and wait for your explicit command to proceed (e.g., "continue", "proceed", "ok").
+4.  **Execute a Single Step:** Once you give the confirmation, I will execute **only the single step I just stated**. This may involve reading a file, proposing code, or generating a command.
+5.  **Present Results and Await Next Command:** After completing the step, I will present the results (e.g., the file content, the proposed code, the `git diff`). I will then stop and wait for your next command. I will not automatically proceed to the next step.
+6.  **Proceed to Next Step:** Only when you give the next "continue" or "proceed" command will I move to the next unchecked item in the roadmap and repeat this process from Step 2.
+
+This rigid, step-by-step protocol ensures that you have full control and verification at every stage of the implementation, aligning perfectly with the core principles of our collaboration.
+
+

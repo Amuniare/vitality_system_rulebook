@@ -275,8 +275,7 @@
     --?[$AttackType] -eq 3 -and [$EffectPenaltyApplied] -eq 0|&ConditionsStringModifiers;+ - [*S:char_tier] [Direct]
     --?[$AttackType] -eq 3|=EffectPenaltyApplied; 1
 
-    --?[$AttackType] -eq 4 -and [$EffectPenaltyApplied] -eq 0|&DamageStringModifiers;+ - [*S:char_tier] [AOE]
-    --?[$AttackType] -eq 4 -and [$EffectPenaltyApplied] -eq 0|&ConditionsStringModifiers;+ - [*S:char_tier] [AOE]
+    --?[$AttackType] -eq 4 -and [$EffectPenaltyApplied] -eq 0|&AccuracyStringModifiers;+ - [*S:char_tier] [AOE]
     --?[$AttackType] -eq 4|=EffectPenaltyApplied; 1
 
     --?[$AttackType] -eq 5 -and [$EffectPenaltyApplied] -eq 0|&DamageStringModifiers;+ - [*S:char_tier] [AOE Direct]

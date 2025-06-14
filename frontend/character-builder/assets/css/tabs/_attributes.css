@@ -1,0 +1,47 @@
+.attribute-pool { margin-bottom: 2rem; }
+.pool-status {
+    margin-bottom: var(--gap-medium);
+    padding: var(--padding-small);
+    border-radius: var(--border-radius-medium);
+    background: var(--bg-primary);
+}
+.attribute-item { padding: var(--padding-medium); }
+.attribute-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--padding-small); }
+.attribute-controls {
+    pointer-events: auto !important;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-medium);
+    justify-content: center;
+    margin: var(--padding-medium) 0;
+}
+.attribute-controls * { pointer-events: auto !important; }
+.attribute-value { 
+    font-size: 1.2em; 
+    font-weight: bold; 
+    color: var(--accent-primary); 
+    min-width: 2em; 
+    text-align: center;
+    pointer-events: none;
+}
+
+/* Hide spinner arrows on number inputs */
+.attribute-controls input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+.attribute-controls input[type="number"]::-webkit-outer-spin-button,
+.attribute-controls input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Chrome, Safari, Edge */
+    margin: 0;
+}
+.attribute-slider { margin-top: var(--padding-small); }
+.attribute-slider input[type="range"] { 
+    width: 100%; 
+    height: 6px; 
+    background: var(--accent-secondary); 
+    outline: none; 
+    border-radius: 3px; 
+    padding: 0;
+    pointer-events: auto !important;
+}

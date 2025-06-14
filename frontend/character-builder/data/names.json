@@ -1,0 +1,23 @@
+{
+    "players": [
+      "Diego",
+      "Emmanuel",
+      "Fred",
+      "Jubb",
+      "Nick",
+      "Trent"
+    ],
+    "factions": [
+      "Player NPCs",
+      "Cops",
+      "Corporations",
+      "Criminals",
+      "Establishment Heroes",
+      "Media",
+      "Mutant Villains",
+      "Peaceful Mutant Orgs",
+      "Politicians",
+      "Radical Mutant Extremists",
+      "Vigilantees"
+    ]
+  }

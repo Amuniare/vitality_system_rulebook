@@ -1,0 +1,6 @@
+.coming-soon { text-align: center; padding: 2rem; color: var(--text-muted); }
+.coming-soon h3 { color: var(--accent-primary); margin-bottom: var(--gap-medium); }
+.section-description { color: var(--text-muted); margin-bottom: var(--gap-large); line-height: 1.5; }
+.next-step { margin-top: 2rem; padding-top: var(--padding-medium); border-top: 1px solid var(--accent-secondary); text-align: center; }
+.empty-state { color: var(--text-muted); font-style: italic; text-align: center; padding: var(--padding-medium); }
+.hidden { display: none !important; }

@@ -1,26 +1,22 @@
 # Vitality System - RPG Campaign Management
 
-Personal campaign management system for the Vitality System RPG, featuring web-based character builder and Roll20 integration.
+Personal campaign management system for the Vitality System RPG, featuring a web-based character builder and Roll20 integration.
 
 ## Quick Start
-- **Character Building**: Open `rulebook/character-builder/character-builder.html`
-- **Roll20 Upload**: Run `python main.py` for character upload workflow
-- **Rules Reference**: See `rulebook/rules/` for complete game mechanics
-
-## Documentation
-- [Web Character Builder](docs/web-character-builder.md) - Browser-based character creation
-- [Roll20 Integration](docs/roll20-integration.md) - Character upload/download workflows  
-- [Development Guide](docs/development-guide.md) - Setup, common tasks, troubleshooting
-- [ScriptCards System](docs/scriptcards-system.md) - Template compression and ability management
-- [Data Formats](docs/data-formats.md) - JSON structures and character data flow
+- **Character Building**: Open `frontend/character-builder/character-builder.html`
+- **Roll20 Upload**: Run `python main.py sync`
+- **Rules Reference**: Open `frontend/rules/index.html`
 
 ## Current Status
 - ✅ Vitality System rules complete
 - ✅ Roll20 character upload working
-- 🚧 Web character builder (basic info + archetypes complete)
-- 🚧 Special attacks, main pool, utility tabs in development
+- ✅ Web character builder (all 7 tabs fully functional)
+- 🚧 UI Polish & Final Bug Fixes
 
+## Documentation
 
-wsl -d Ubuntu
+The primary guides for developing this project are now:
 
-claude
+-   **`CLAUDE.md` (Root Directory):** The master guide for our collaboration. It outlines the project's high-level architecture and our interactive workflow. Start here for any new task.
+-   **`docs/workplan.md`:** The official project roadmap, containing both the long-term vision and the prioritized list of active features and bug fixes.
+-   **`.gemini/instructions.md`:** Context, guidelines, rules and commands for the gemini AI.

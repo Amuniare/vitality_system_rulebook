@@ -1,0 +1,6 @@
+.archetype-category { margin-bottom: 2rem; }
+.archetype-category .category-description { margin-bottom: var(--gap-medium); }
+.archetype-card h4 { color: var(--accent-primary); margin-bottom: var(--padding-small); }
+.archetype-progress { text-align: center; margin-bottom: var(--gap-medium); font-weight: bold; color: var(--accent-primary); }
+.archetype-card * { pointer-events: none; }
+.archetype-card { pointer-events: auto; }

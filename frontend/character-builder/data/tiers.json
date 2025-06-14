@@ -1,0 +1,48 @@
+{
+  "tiers": {
+    "0": {
+      "name": "Untrained",
+      "description": "A civilian with no special training or powers. The baseline for an ordinary person."
+    },
+    "1": {
+      "name": "Beginner",
+      "description": "Just starting out on their journey. Has potential but lacks significant experience."
+    },
+    "2": {
+      "name": "Novice",
+      "description": "Has learned the basics and can handle minor threats."
+    },
+    "3": {
+      "name": "Developing",
+      "description": "Actively gaining experience and developing their core abilities."
+    },
+    "4": {
+      "name": "Competent",
+      "description": "A reliable and capable individual. This is the standard starting tier for player characters."
+    },
+    "5": {
+      "name": "Professional",
+      "description": "A seasoned individual with a solid reputation and a professional level of skill."
+    },
+    "6": {
+      "name": "Expert",
+      "description": "Highly skilled and recognized as an authority in their field."
+    },
+    "7": {
+      "name": "Veteran",
+      "description": "Has seen extensive action and has a wealth of practical experience."
+    },
+    "8": {
+      "name": "Elite",
+      "description": "Among the best in the world, operating at the highest levels of performance."
+    },
+    "9": {
+      "name": "Master",
+      "description": "Has achieved a state of mastery that pushes the boundaries of their abilities."
+    },
+    "10": {
+      "name": "Legendary",
+      "description": "A figure of legend whose deeds and power are known far and wide."
+    }
+  }
+}

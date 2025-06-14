@@ -1,16 +1,7 @@
 logs
 .venv
 __pycache__
-browser_profile
-archive
-tools
-codebase_overview.txt
-rulebook.docx
-extracted_characters
-templates
-sessions
 
-characters
 
 *.pyc
 *.pyo
@@ -19,6 +10,12 @@ characters
 *.sqlite3
 *.log
 codebase.txt
-backups
-character_data
+.env
+
+sessions
+browser_profile
+archive
+data
 .claude
+.gemini
+

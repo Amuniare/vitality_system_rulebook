@@ -1,135 +1,48 @@
-## PROJECT STATUS OVERVIEW
+# Vitality System - Project Workplan & Roadmap
 
-**Current Reality:** Personal campaign management system in active development. Core systems partially functional but need completion before expansion.
-
-**Working Components:**
-- ✅ **RPG Rules**: Complete (2,100+ lines)
-- ✅ **Roll20 Upload**: JSON → Roll20 works 
-- ✅ **Web Builder Foundation**: Campaigns and rules sections working
-- ✅ **ScriptCards Template System**: Performance optimized and functional
-- ✅ **Character Data Structure**: JSON format established
-
-**In Development:**
-- 🚧 **Web Character Builder**: Archetypes and attributes mostly done, main pool/special attacks/utility tabs needed
-- 🚧 **Point Pool Calculations**: Implemented but untested due to incomplete tabs
-- 🚧 **Roll20 Integration**: Upload works, extraction is legacy/maintenance
-
-**Not Yet Accessible:**
-- ❌ Users cannot currently access/use the tools
-- ❌ Web builder tabs incomplete (main pool, special attacks, utility)
-- ❌ No deployment workflow established
+This document outlines the development priorities and long-term vision for the Vitality System.
 
 ---
 
-## REVISED DEVELOPMENT PRIORITIES
+## Part 1: Active Feature Roadmap (Short-Term Goals)
 
-### PHASE 1: CORE FUNCTIONALITY COMPLETION (Next 4-6 weeks)
-**Goal:** Make the system actually usable for campaign management
+This is the prioritized list of features and fixes for the Character Builder and related tools.
 
-#### 1.1 Web Character Builder Completion
-- [✅] **Main Pool Tab**: Traits, flaws, boons purchasing system
-- [✅] **Special Attacks Tab**: Limits system and upgrade selection  
-- [ ] **Utility Tab**: Expertise, features, senses, descriptors
-- [ ] **Validation System**: Complete build order enforcement
-- [ ] **Character Export**: JSON download for Roll20 upload
+### P1 - Critical Bug Fixes & UI Polish
+- [ ] **Testing:** Expand test coverage to ensure the AI can complete the entire character creation process without logical errors.
 
-#### 1.2 Essential Tools Development
-- [✅] **Documentation System** 
-  - Small main README + focused component docs
-  - Development guide for common tasks
-  - Data format documentation
+### P2 - Core Feature Enhancements
+- [ ] **NPCs:**
+    - [ ] Implement a secondary dropdown to assign NPCs to factions or PCs to players, which will determine their save folder. This will use data from `names.json`.
+- [ ] **Character Bio:**
+    - [ ] Add a dedicated section or tab for entering a character's biography.
+    - [ ] Consider adding fields for campaign-specific information.
 
-#### 1.3 Roll20 Integration Stability
-- [ ] **Upload Pipeline**: Ensure JSON → Roll20 reliability
-- [ ] **Error Handling**: Better failure recovery and logging
-- [ ] **Template Sheet Filtering**: Consistent exclusion of MacroMule/ScriptCards_TemplateMule
+### P3 - New Feature Development
+- [ ] **Basic Attacks:** Implement a system where characters automatically gain basic attacks based on their selected Attack Type and Effect Type archetypes.
+-   **Image Management:**
+    -   [ ] Add functionality to upload and associate a token image.
+    -   [ ] Add functionality for a larger character bio image.
+    -   [ ] Implement a token setup feature, potentially for multiple tokens per character.
 
----
-
-### PHASE 2: CAMPAIGN MANAGEMENT TOOLS (4-8 weeks)
-**Goal:** Build tools for ongoing campaign operations
-
-#### 2.1 Character Management Enhancements
-- [ ] **Character Art Upload**: Automated art upload to Roll20 characters
-- [ ] **Character Bio Upload**: Sync character backgrounds and notes
-- [ ] **Macro Button Management**: Create and color-code macro bar abilities
-- [ ] **Bulk Character Operations**: Update multiple characters efficiently
-
-#### 2.2 Data Management Improvements  
-- [ ] **Character Library**: Better organization and search
-- [ ] **Backup Systems**: Automated character data backups
-- [ ] **Import/Export Tools**: Character sharing between campaigns
-- [ ] **Data Validation**: Comprehensive character data verification
 
 ---
 
-### PHASE 3: USER EXPERIENCE & DEPLOYMENT (4-6 weeks) 
-**Goal:** Make tools accessible to players and GM
+## Part 2: Long-Term Vision - The Simulation & Optimization Engine
 
-#### 3.1 Web Builder Polish
-- [ ] **Character Templates**: Pre-built character archetypes
-- [ ] **Import Characters**: Load existing Roll20 characters for editing
-- [ ] **Advanced Validation**: Complex rule checking and warnings
-- [ ] **Character Comparison**: Side-by-side character analysis
+This is the ultimate goal for the project: a closed-loop system for game balancing.
 
-#### 3.2 Deployment & Access
-- [ ] **Local Server Setup**: Simple way to run web builder locally
-- [ ] **Player Access**: Method for players to use character builder
-- [ ] **GM Tools Interface**: Streamlined Roll20 integration for GM
-- [ ] **Documentation for Users**: Player and GM guides
+-   **Phase 1: The Character Foundry (Data Generation & Validation)**
+    -   **Objective:** To perfect and scale the character generation process, creating a large, validated dataset of character JSON files.
 
----
+-   **Phase 2: The Crucible (Combat Simulation Engine)**
+    -   **Objective:** To build a headless, scriptable combat simulator in Python that can execute a fight based on the rules defined in `rulebook.md`.
 
-### PHASE 4: ADVANCED FEATURES (Future/Optional)
-**Goal:** Enhanced campaign management capabilities
+-   **Phase 3: The Gauntlet (Running Mass Simulations)**
+    -   **Objective:** To automate the process of running every generated character through every defined combat scenario and logging the results.
 
-#### 4.1 Advanced Roll20 Integration
-- [ ] **Bidirectional Sync**: Roll20 ↔ Web Builder synchronization
-- [ ] **Live Updates**: Real-time character updates during sessions
-- [ ] **Campaign Analytics**: Character progression tracking
-- [ ] **Session Tools**: Automated session prep and cleanup
+-   **Phase 4: The Oracle (Analysis and Balance Insights)**
+    -   **Objective:** To analyze the simulation data to answer the core question: "What makes a character good?"
 
-#### 4.2 System Expansion (Low Priority)
-- [ ] **Additional Upgrades**: Expand from 25 to 60+ upgrades (original workplan goal)
-- [ ] **Advanced Conditions**: Enhanced status effect system
-- [ ] **Campaign Templates**: Pre-built campaign setups
-- [ ] **Character Progression**: Automated leveling and advancement
-
----
-
-## IMMEDIATE ACTION ITEMS (Next 2 weeks)
-
-### Week 1: Documentation & ScriptCards Tool
-- [ ] Create updated README.md with current project status
-- [ ] Write focused documentation for each system component
-- [ ] Implement standalone ScriptCards update script
-- [ ] Test script with backup of character data
-
-### Week 2: Web Builder Critical Path
-- [ ] Complete main pool tab implementation
-- [ ] Fix point pool calculation validation
-- [ ] Test complete character creation workflow
-- [ ] Implement character export functionality
-
----
-
-## SUCCESS METRICS
-
-**Phase 1 Complete When:**
-- Players can create complete characters in web builder
-- Characters export correctly to JSON
-- JSON files upload successfully to Roll20
-- ScriptCards update script maintains 188 characters without data loss
-
-**Phase 2 Complete When:**  
-- GM can upload character art/bios efficiently
-- Macro buttons are automatically created and colored
-- Character data is backed up and recoverable
-- Campaign operations are streamlined
-
-**Phase 3 Complete When:**
-- Players have access to character builder
-- GM tools are intuitive and reliable
-- System is documented for ongoing use
-- No technical barriers to regular campaign management
-
+-   **Phase 5: The Golem (AI-Driven Optimization)**
+    -   **Objective:** To use the insights from the analysis to train a machine learning model that can intelligently design optimized characters.

@@ -1,0 +1,275 @@
+{
+  "campaign_info": {
+    "name": "Mutants Campaign",
+    "setting": "Seattle, 2030",
+    "current_date": "October 2030",
+    "world_state": "Martial law following Mayor Calloway's assassination at the gala attack",
+    "game_system": "Vitality RPG System",
+    "themes": [
+      "Appearance - visible divide between passing and obvious mutants",
+      "Double Life - civilian identity vs vigilante operations",
+      "Mutant Excellence - impossible standards of being 'one of the good ones'",
+      "The Trolley Problem - difficult moral choices with no perfect solutions",
+      "Systems of Inequality - institutional discrimination through licensing and corporate control"
+    ]
+  },
+  "player_characters": {
+    "active": [
+      {
+        "name": "Henry Luc Lavere",
+        "codename": "Marquis",
+        "player": "Diego",
+        "powers": "Osteokinesis - bone manipulation, growth, and reshaping",
+        "tier": "Advanced",
+        "background": "Born in Martinique, raised by Bri after father disappeared",
+        "family": "Son of immortal Bri, half-brother to Hellbeast, related to Achillas and Baatar Khan",
+        "status": "In hiding with MLF after Galvanize ultimatum expired",
+        "relationships": "Dating Cecilia Monroe, building personal faction within MLF",
+        "faction": "MLF - fully committed, recruited multiple new members"
+      },
+      {
+        "name": "Lucille Fantana",
+        "codename": "Statuesque", 
+        "player": "Jubb",
+        "powers": "Marble body control, stone-to-marble transformation, sensing abilities",
+        "background": "Born in Paris after mutant rebellion, raised by MLF community",
+        "family": "Sister to Vivienne (Project Element composite hero)",
+        "status": "Active MLF leadership, works with Angel's New Christians",
+        "faction": "MLF leadership, building political alliances"
+      },
+      {
+        "name": "William O'Connor",
+        "codename": "The Vagrant",
+        "player": "Nick", 
+        "powers": "Fear manipulation, supernatural stealth, emotional suppression",
+        "background": "63-year-old homeless mutant, guardian to Salt and Pepper twins",
+        "status": "Grieving Pepper's death, blames Apollo for gala explosion",
+        "motivation": "Opposing experimental programs after losing Pepper",
+        "faction": "Independent but coordinates with team"
+      },
+      {
+        "name": "Mason Rhodes",
+        "codename": "Bloodflow",
+        "player": "Trent",
+        "powers": "Blood manipulation, memory reading through blood contact, hexing abilities",
+        "background": "EMT dedicated to preserving life while operating as vigilante",
+        "family": "Sister Darlene works at Freaks with blood manipulation",
+        "status": "ULMH training while maintaining underground medical network",
+        "faction": "Bridge between registered and unregistered communities"
+      },
+      {
+        "name": "Bri Sato",
+        "codename": "Immortal",
+        "player": "Emmanuel (previous campaign)",
+        "powers": "Immortal regeneration, ancient knowledge, combat experience",
+        "background": "3000+ year old immortal, Princess Briseis from Trojan War",
+        "family": "Mother to Henry, Baatar Khan, Hellbeast; connected to Achillas",
+        "status": "Recently staying with Baatar Khan, maternal concern for Henry"
+      }
+    ],
+    "missing_compromised": [
+      {
+        "name": "Varia Khan",
+        "codename": "Neo-Sentinel",
+        "player": "Emmanuel",
+        "powers": "Technomancy, Override-level technology interface",
+        "status": "HOSTILE - ROGUE - controlling Sentinel robot army",
+        "threat_level": "Existential danger to entire city",
+        "family": "Created by/daughter of Baatar Khan"
+      },
+      {
+        "name": "Florian Gravy",
+        "codename": "Hoovertronic", 
+        "player": "Fred",
+        "powers": "Sound manipulation, media influence",
+        "status": "DECEASED - killed during election candidate meeting",
+        "background": "Journalist turned activist, killed Maxwell Ryder before being shot"
+      }
+    ]
+  },
+  "major_npcs": {
+    "ulmh_heroes": [
+      {
+        "name": "Apollo",
+        "powers": "Atomic flame powers, ancient/godlike origins",
+        "status": "Missing since gala attack",
+        "background": "Claims to be mythological god, 10,000 BC origins"
+      },
+      {
+        "name": "Ambassador", 
+        "powers": "Telepathic abilities",
+        "status": "Active, overseeing Tartarus rehabilitation programs",
+        "role": "Government liaison, hero licensing"
+      },
+      {
+        "name": "Nova Gale",
+        "powers": "Wind manipulation and flight",
+        "status": "Active but questioning ULMH ethics"
+      },
+      {
+        "name": "Guardian Flux",
+        "powers": "Energy constructs",
+        "status": "Active, corporate-sponsored hero"
+      },
+      {
+        "name": "Radiant",
+        "powers": "Light-based abilities",
+        "status": "Active, Protectorate Seattle leader"
+      }
+    ],
+    "mlf_operatives": [
+      {
+        "name": "Serena Kleist",
+        "codename": "Blizzard",
+        "powers": "Snowstorm generation, martial combat",
+        "status": "Active leader of Seattle New MLF cell",
+        "background": "Daughter of Everest Kleist, raised by uncle Frostbite"
+      },
+      {
+        "name": "Unity",
+        "status": "MLF mayoral candidate",
+        "role": "Political representative for mutant interests"
+      }
+    ],
+    "corporate_figures": [
+      {
+        "name": "Baatar Khan",
+        "organization": "Khan Corp",
+        "role": "Research corporation with government ties",
+        "family": "Father to Varia Khan, son of Bri"
+      }
+    ],
+    "other_important": [
+      {
+        "name": "Cecilia Monroe",
+        "relationship": "Dating Henry/Marquis",
+        "faction": "MLF"
+      },
+      {
+        "name": "Darlene Rhodes",
+        "relationship": "Mason's sister",
+        "powers": "Blood manipulation",
+        "workplace": "Freaks"
+      },
+      {
+        "name": "Salt",
+        "status": "Twin protected by Vagrant",
+        "background": "Military experiment survivor"
+      },
+      {
+        "name": "Pepper", 
+        "status": "DECEASED - Twin formerly protected by Vagrant",
+        "background": "Military experiment survivor, death motivates Vagrant"
+      }
+    ]
+  },
+  "major_factions": {
+    "ulmh": {
+      "full_name": "Union of Licensed Mutant Heroes",
+      "description": "Government-sanctioned hero organization controlling mutant licensing",
+      "status": "Leadership vacuum following Apollo's disappearance",
+      "facilities": ["Tartarus underwater rehabilitation facility"],
+      "licensing_paths": ["Expensive independent", "Corporate-sponsored"]
+    },
+    "mlf": {
+      "full_name": "Mutant Liberation Front", 
+      "description": "Revolutionary organization fighting for mutant equality and autonomy",
+      "leader": "Serena Kleist (Blizzard) in Seattle",
+      "operations": "Underground network of safe houses and support services",
+      "political_activity": "Unity running as mayoral candidate"
+    },
+    "corporations": [
+      {
+        "name": "Khan Corp",
+        "focus": "Research corporation with government program ties"
+      },
+      {
+        "name": "Vanguard Industries", 
+        "focus": "Military-industrial developing anti-mutant technology"
+      },
+      {
+        "name": "Altheon Technologies",
+        "focus": "Biotech conducting secret mutant experiments"
+      },
+      {
+        "name": "GeneSys Corporation",
+        "focus": "Social platform secretly harvesting mutant data"
+      }
+    ]
+  },
+  "current_crisis": {
+    "martial_law": {
+      "cause": "Mayor Brenda Calloway assassination at gala attack",
+      "authority": "Seattle Police Department given emergency powers", 
+      "structure": "City divided into controlled districts with checkpoints",
+      "election": "Emergency mayoral election scheduled October 22nd, 2030"
+    },
+    "refugee_crisis": {
+      "cause": "Massive influx of mutant refugees from neighboring cities",
+      "conditions": "Makeshift camps, overcrowded shelters, underground networks",
+      "tensions": "Growing anti-refugee sentiment from resource competition"
+    },
+    "evolution_plague": {
+      "spread": "Disease spreading rapidly among refugee populations",
+      "mortality": "90% fatal to mutants, 99% fatal to humans",
+      "effects": "Survivors experience dramatic power evolution",
+      "origins": "Unclear - possibly natural, engineered, or stress-triggered",
+      "consequences": "Justification for quarantine and increased control"
+    }
+  },
+  "key_locations": {
+    "seattle_districts": "City divided into controlled districts with checkpoints",
+    "tartarus_facility": "ULMH underwater facility for rehabilitation programs",
+    "mlf_safe_houses": "Underground network throughout the city",
+    "refugee_camps": "Makeshift camps in parks and abandoned buildings",
+    "tunnel_networks": "Extensive underground system known to Vagrant"
+  },
+  "override_legacy": {
+    "technology_impact": {
+      "hardening_required": "All electronics require hardening against interference",
+      "persistent_echo": "Ghost presence in systems causing unpredictable disruption", 
+      "regression": "Forced technological regression of approximately 20 years",
+      "hybrid_systems": "Mechanical-digital hybrids now standard for critical infrastructure"
+    },
+    "detection_control": {
+      "technopathic_sensing": "Technopathic mutants can sense Override presence",
+      "specialized_equipment": "Designed to counter mutant abilities",
+      "surveillance_systems": "Adapted for mutant detection and monitoring",
+      "emergency_protocols": "Preparations for potential future Override-level events"
+    }
+  },
+  "game_mechanics": {
+    "system_name": "Vitality RPG System",
+    "power_tiers": ["Basic", "Advanced", "Expert", "Master"],
+    "core_stats": ["Physical", "Mental", "Social"],
+    "key_mechanics": [
+      "Tier advancement through experience and story progression",
+      "Power evolution based on character development",
+      "Factional reputation and relationships",
+      "Licensing requirements and corporate sponsorship",
+      "Vigilante operations vs official hero work"
+    ]
+  },
+  "session_continuity": {
+    "recent_major_events": [
+      "Gala attack and Mayor Calloway's assassination",
+      "Apollo's disappearance after revealing true form", 
+      "Varia Khan's transformation into Neo-Sentinel threat",
+      "Pepper's death motivating Vagrant's vendetta",
+      "Florian's killing spree at candidate meeting",
+      "Galvanize's ultimatum to Henry/Marquis",
+      "Evolution Plague outbreak among refugees",
+      "Emergency election campaign beginning"
+    ],
+    "ongoing_threads": [
+      "Neo-Sentinel's control over city and Sentinel army",
+      "Evolution Plague investigation and containment",
+      "Emergency mayoral election with Unity as MLF candidate",
+      "District X referendum for autonomous mutant zone",
+      "Underground medical network expansion by Mason",
+      "MLF safe house network growth under Serena's leadership",
+      "ULMH rehabilitation programs at Tartarus facility",
+      "Corporate conspiracy investigations"
+    ]
+  }
+}
