@@ -414,7 +414,7 @@ These represent mundane impairments that any character can apply through Base At
 - Maximum customization flexibility
 
 **Specialist**
-- Must select 3 specific Limits for all attacks
+- All limits selected must be applied to all attacks
 - Limits provide Points × (Tier ÷ 3)
 - Higher return but restricted playstyle
 
