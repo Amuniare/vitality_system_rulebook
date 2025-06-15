@@ -501,7 +501,7 @@ These represent mundane impairments that any character can apply through Base At
 - **Penalty:** -Tier to ALL Damage and Condition rolls
 - **Rule:** When combined with Direct or Area attacks, only the Hybrid penalty applies
 
-### **Basic Conditions**  
+### **BASIC CONDITIONS**  
 These represent mundane impairments that any character can apply through Base Attacks. All Basic Conditions either take effect instantly or last until the **end of your next turn** if they have a duration unless otherwise specified.
   - **Disarm (Stability)**: Forces the target to drop something they're holding. The dropped item can be picked up as a Quick Action. You may attempt to launch the item in any direction a number of spaces equal to how successful your roll was assuming you have the Cpacity to move it. 
 
