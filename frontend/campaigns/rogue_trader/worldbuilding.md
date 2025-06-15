@@ -1,8 +1,3 @@
-# WARHAMMER 40K TIMELINE: THE FALL OF CADIA ERA
-*A Complete Guide to the Galaxy's Darkest Hour*
-
----
-
 ## WHAT IS WARHAMMER 40k?
 
 The campaign is set in 009.M42 (the 9th year of the 42nd millennium), which would be approximately 41,009 years from our current era. Humanity has spread across the galaxy but lives under the fascist Imperium of Man - a brutal theocracy that worships the undying God-Emperor. For 10,000 years, the Imperium has fought endless wars against:

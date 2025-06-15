@@ -1,5 +1,5 @@
 # ROGUE TRADER CAMPAIGN: THE ETERNAL VIGIL
-*A Warhammer 40,000 Campaign of Power, Corruption, and Discovery*
+*A Warhammer 40k Rogue Trader Campaign*
 
 ---
 
