@@ -3,9 +3,9 @@
 
 ---
 
-## WHAT IS WARHAMMER 40,000?
+## WHAT IS WARHAMMER 40k?
 
-The year is 40,000 AD. Humanity has spread across the galaxy but lives under the fascist Imperium of Man - a brutal theocracy that worships the undying God-Emperor. For 10,000 years, the Imperium has fought endless wars against:
+The campaign is set in 009.M42 (the 9th year of the 42nd millennium), which would be approximately 41,009 years from our current era. Humanity has spread across the galaxy but lives under the fascist Imperium of Man - a brutal theocracy that worships the undying God-Emperor. For 10,000 years, the Imperium has fought endless wars against:
 
 - **Chaos**: The four Dark Gods of the Warp (hell dimension) and their followers, including traitor Space Marines
 - **Xenos**: Alien races like the Orks (space orcs), Tyranids (space locusts), and Eldar (space elves)
@@ -15,7 +15,7 @@ The year is 40,000 AD. Humanity has spread across the galaxy but lives under the
 - **The Warp**: A parallel dimension of pure psychic energy and emotion, home to demons and Chaos Gods
 - **Space Marines**: Genetically enhanced super-soldiers, humanity's greatest warriors
 - **Primarchs**: The Emperor's 18 demigod sons who led the Space Marines (9 turned traitor 10,000 years ago)
-- **Rogue Traders**: Individuals with ancient warrants giving them authority to trade and explore beyond Imperial borders
+- **Rogue Traders**: Individuals with warrant of trade, giving them authority to trade and explore beyond Imperial borders
 - **The Astronomican**: A psychic lighthouse powered by the Emperor's will that allows faster-than-light travel
 
 ---
