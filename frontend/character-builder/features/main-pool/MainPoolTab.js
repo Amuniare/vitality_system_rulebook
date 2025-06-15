@@ -24,6 +24,7 @@ export class MainPoolTab {
         this.activeSection = 'flaws'; // Default section
         this.clickHandler = null;
         this.changeHandler = null;
+        this.inputHandler = null;
         this.containerElement = null;
     }
 
@@ -451,6 +452,9 @@ export class MainPoolTab {
                     case 'decrease-upgrade-quantity':
                         this.sections.uniqueAbilities.handleDecreaseUpgradeQuantity(target);
                         break;
+                    case 'set-upgrade-quantity':
+                        this.sections.uniqueAbilities.handleSetUpgradeQuantity(target);
+                        break;
                     case 'create-custom-unique-ability':
                         this.sections.uniqueAbilities.handleCreateCustomUniqueAbility();
                         break;
@@ -481,9 +485,20 @@ export class MainPoolTab {
             }
         };
 
+        // Handle input events (for number inputs)
+        this.inputHandler = (e) => {
+            const target = e.target;
+            const action = target.dataset.action;
+            
+            if (action === 'set-upgrade-quantity' && this.activeSection === 'uniqueAbilities') {
+                this.sections.uniqueAbilities.handleSetUpgradeQuantity(target);
+            }
+        };
+
         // Attach the event listeners
         this.containerElement.addEventListener('click', this.clickHandler);
         this.containerElement.addEventListener('change', this.changeHandler);
+        this.containerElement.addEventListener('input', this.inputHandler);
         
         console.log('✅ MainPoolTab event listeners attached ONCE.');
     }
@@ -525,8 +540,10 @@ export class MainPoolTab {
         if (this.clickHandler && this.containerElement) {
             this.containerElement.removeEventListener('click', this.clickHandler);
             this.containerElement.removeEventListener('change', this.changeHandler);
+            this.containerElement.removeEventListener('input', this.inputHandler);
             this.clickHandler = null;
             this.changeHandler = null;
+            this.inputHandler = null;
             this.containerElement = null;
         }
     }

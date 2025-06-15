@@ -71,6 +71,7 @@ body {
 .grid-columns-auto-fit-300 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .grid-columns-auto-fit-320 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
 .grid-columns-1fr { grid-template-columns: 1fr; }
+.grid-columns-2fr { grid-template-columns: 1fr 1fr; }
 
 /* Character Header Styles */
 .character-header {
@@ -168,6 +169,31 @@ body {
     min-width: 32px;
     text-align: center;
     font-size: 0.85em;
+}
+
+.quantity-input {
+    width: 50px;
+    padding: 0.25rem;
+    border: 1px solid var(--accent-secondary);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-radius: var(--border-radius-small);
+    font-size: 0.8em;
+    text-align: center;
+    font-weight: bold;
+    -moz-appearance: textfield; /* Hide spinners in Firefox */
+}
+
+.quantity-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+/* Hide spinners in Chrome, Safari, Edge */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 .attr-btn {
     width: 30px;
@@ -689,6 +715,32 @@ input:focus, select:focus, textarea:focus {
 .selection-summary { background: var(--bg-secondary); border: 1px solid var(--accent-primary); padding: var(--padding-medium); color: var(--accent-primary); font-weight: bold; margin-top: var(--gap-large); border-radius: var(--border-radius-medium); }
 .tier-budget { background: var(--bg-secondary); border: 1px solid var(--accent-secondary); padding: var(--padding-medium); color: var(--text-light); font-weight: bold; margin-bottom: var(--gap-large); border-radius: var(--border-radius-medium); }
 .builder-actions { display: flex; justify-content: space-between; align-items: center; margin-top: var(--gap-large); padding-top: var(--padding-medium); border-top: 1px solid var(--accent-secondary); }
+
+.upgrade-preview .purchase-actions { 
+    display: flex !important; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: var(--gap-medium); 
+    margin-top: var(--gap-medium); 
+    padding-top: var(--padding-small); 
+    border-top: 1px solid var(--accent-secondary); 
+}
+
+.upgrade-preview .purchase-actions .total-cost {
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-primary);
+    padding: var(--padding-small);
+    border-radius: var(--border-radius-small);
+    color: var(--accent-primary);
+    font-weight: bold;
+    font-size: 0.9em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.upgrade-preview .purchase-actions .btn {
+    flex-shrink: 0;
+}
 .trait-builder-content .form-group, .unique-ability-section .form-group { margin-bottom: var(--gap-large); }
 .point-pool-display { background: var(--bg-primary); border: 1px solid var(--accent-primary); padding: var(--padding-large); margin-bottom: 2rem; }
 .pool-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--gap-medium); padding-bottom: var(--gap-medium); border-bottom: 1px solid var(--accent-secondary); }

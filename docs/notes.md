@@ -5,6 +5,12 @@
 ## Archetypes
 - Versitile master, does it affect price
 - cut above?
+- are they affecting
+
+
+
+
+
 
 
 ### Tests
@@ -13,6 +19,7 @@
 ## UI improvements
 - consistentcy
 - dark / light mode
+- Talent Looks weird
 
 ## Feature Add List
 
@@ -66,10 +73,12 @@ Summon extra points
 
 
 
+## Voice chat 
+Discord bot records convo as audio file
 
 
 ## SRC
--need to fix sync issue with text names
+-need to fix main.py sync issue with text names
 -need to capture folders when extracting and uploading
 
 

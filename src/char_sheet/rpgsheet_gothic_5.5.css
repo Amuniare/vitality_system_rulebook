@@ -1,0 +1,937 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+    --bg-primary: #2F2F2F;           /* Deep cathedral shadow */
+    --bg-secondary: #3A3A3A;         /* Dark stone */
+    --accent-primary: #CD7F32;       /* Burnished bronze */
+    --accent-secondary: #8B4513;     /* Dark bronze */
+    --accent-highlight: #DAA520;     /* Light bronze */
+    --text-light: #FFFACD;           /* Warm candlelight */
+    --text-muted: #A0A0A0;           /* Stone gray */
+    --border-color: #CD7F32;         /* Bronze border */
+    --shadow-color: rgba(205, 127, 50, 0.2);
+    --grid-width: 800px;
+    --input-appearance: textfield;
+}
+
+/* Then use it in the number input style */
+.ui-dialog .charsheet input[type=number] {
+    -moz-appearance: var(--input-appearance);
+    appearance: var(--input-appearance);
+    background: var(--bg-primary);
+    border: 1px solid var(--accent-primary);
+    color: var(--text-light);
+    text-align: center;
+    width: 4em;
+    height: 2em;
+    padding: 0;
+}
+
+/* Base Styles */
+.charsheet {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--text-light);
+    background: var(--bg-primary);
+    background-image: 
+        linear-gradient(45deg, rgba(205, 127, 50, 0.02) 0%, transparent 25%, rgba(205, 127, 50, 0.01) 50%, transparent 75%, rgba(205, 127, 50, 0.02) 100%),
+        radial-gradient(circle at 20% 30%, rgba(205, 127, 50, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(205, 127, 50, 0.02) 0%, transparent 40%),
+        linear-gradient(135deg, rgba(47, 47, 47, 0.8) 0%, rgba(58, 58, 58, 0.6) 25%, rgba(47, 47, 47, 0.9) 50%, rgba(58, 58, 58, 0.7) 75%, rgba(47, 47, 47, 0.8) 100%);
+}
+
+/* Main Layout */
+main {
+    display: grid;
+    width: var(--grid-width);
+    grid-template-rows: 80px auto 40px;
+    grid-template-areas: 
+        "header"
+        "basics"
+        "buttons";
+    gap: 0.75rem;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+/* Section Visibility Controls */
+.tabs:not([value="combat"]) ~ .combat,
+.tabs:not([value="utility"]) ~ .utility,
+.tabs:not([value="other"]) ~ .other,
+.tabs:not([value="notes"]) ~ .notes {
+    display: none;
+}
+
+/* Show active sections */
+.tabs[value="combat"] ~ .combat,
+.tabs[value="utility"] ~ .utility,
+.tabs[value="other"] ~ .other,
+.tabs[value="notes"] ~ .notes {
+    display: grid;
+    width: var(--grid-width);
+    margin: 0.25rem auto;
+}
+
+/* Common Section Styles */
+div.header, 
+div.buttons, 
+div.stats, 
+div.defenses, 
+div.settings, 
+div.attacks, 
+div.traits, 
+div.uniques, 
+div.expertises, 
+div.notes, 
+div.features, 
+div.other {
+    border: 2px solid var(--accent-primary);
+    background: linear-gradient(135deg, 
+        rgba(58, 58, 58, 0.9) 0%, 
+        rgba(47, 47, 47, 0.95) 25%, 
+        rgba(58, 58, 58, 0.85) 50%, 
+        rgba(47, 47, 47, 0.9) 75%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    box-shadow: 
+        0 0 25px rgba(205, 127, 50, 0.15),
+        inset 0 0 15px rgba(205, 127, 50, 0.08),
+        inset 2px 2px 5px rgba(0, 0, 0, 0.3),
+        inset -2px -2px 5px rgba(255, 250, 205, 0.05);
+    backdrop-filter: blur(5px);
+    border-radius: 2px;
+}
+
+/* Additional padding for specific sections */
+div.expertises,
+div.features,
+div.traits,
+div.bonuses,
+div.uniques {
+    padding: 1.25rem;
+}
+
+/* Heading Styles - Carved Stone Effect */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-light);
+    text-shadow: 
+        0 0 12px var(--accent-primary),
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        -1px -1px 2px rgba(255, 250, 205, 0.1);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    margin-bottom: .75rem;
+    font-weight: 600;
+}
+
+/* Header Section */
+div.header {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    column-gap: .5rem;
+    font-family: 'Cinzel', serif;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 2px solid var(--accent-primary);
+    padding: 0.5rem;
+    background: linear-gradient(180deg, 
+        rgba(58, 58, 58, 0.95) 0%, 
+        rgba(47, 47, 47, 0.98) 100%);
+    box-shadow: 
+        0 4px 15px rgba(205, 127, 50, 0.2),
+        inset 0 2px 8px rgba(0, 0, 0, 0.4),
+        inset 0 -2px 4px rgba(255, 250, 205, 0.08);
+}
+
+/* Ensure all direct children of header are centered */
+div.header > * {
+    justify-self: center;
+    text-align: center;
+}
+
+/* Basics Section */
+div.basics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas: "stats defenses settings";
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 2px solid var(--accent-primary);
+    background: linear-gradient(135deg, 
+        rgba(58, 58, 58, 0.9) 0%, 
+        rgba(47, 47, 47, 0.95) 100%);
+    height: auto;
+    min-height: 260px;
+    box-shadow: 
+        0 0 20px rgba(205, 127, 50, 0.15),
+        inset 0 0 10px rgba(205, 127, 50, 0.05),
+        inset 3px 3px 8px rgba(0, 0, 0, 0.3),
+        inset -3px -3px 8px rgba(255, 250, 205, 0.05);
+}
+
+/* Stats Section */
+div.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+    grid-area: stats;
+    align-content: start;
+}
+
+/* First column content */
+div.stats > *:nth-child(2n+1) {
+    justify-self: start;
+    text-align: left;
+}
+
+/* Other columns content */
+div.stats > *:not(:nth-child(2n+1)) {
+    justify-self: center;
+    text-align: center;
+}
+
+/* Defenses Section */
+div.defenses {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+    grid-area: defenses;
+    align-content: start;
+}
+
+/* First column content */
+div.defenses > *:nth-child(4n+1) {
+    justify-self: start;
+    text-align: left;
+}
+
+/* Other columns content */
+div.defenses > *:not(:nth-child(4n+1)) {
+    justify-self: center;
+    text-align: center;
+}
+
+/* Settings Section */
+div.settings {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+    grid-area: settings;
+    align-content: start;
+}
+
+/* First column content */
+div.settings > *:nth-child(4n+1) {
+    justify-self: start;
+    text-align: left;
+}
+
+/* Other columns content */
+div.settings > *:not(:nth-child(4n+1)) {
+    justify-self: center;
+    text-align: center;
+}
+
+/* Buttons Section */
+div.buttons {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0;
+}
+
+div.buttons button {
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    color: var(--text-light);
+    border: 2px solid var(--accent-primary);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.9em;
+    box-shadow: 
+        0 0 10px var(--shadow-color),
+        inset 1px 1px 3px rgba(255, 250, 205, 0.1),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+div.buttons button:hover {
+    background: linear-gradient(135deg, 
+        rgba(205, 127, 50, 0.8) 0%, 
+        rgba(139, 69, 19, 0.9) 100%);
+    color: var(--text-light);
+    box-shadow: 
+        0 0 20px var(--accent-primary),
+        inset 1px 1px 3px rgba(255, 250, 205, 0.2),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Combat and Utility Sections */
+div.combat, 
+div.utility{
+    width: var(--grid-width);
+    margin: 0.5rem;
+    box-sizing: border-box;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    padding: 1rem;
+    min-height: 400px;
+    border: 2px solid var(--accent-primary);
+}
+
+div.notes,
+div.other {
+    width: var(--grid-width);
+    margin: 0.5rem;
+    box-sizing: border-box;
+    align-content: first baseline;
+    gap: 0.5rem;
+    padding: 1rem;
+    min-height: 400px;
+}
+
+/* The 4 Sections within Combat and Utility Tabs */
+div.expertises,
+div.features,
+div.traits,
+div.uniques {
+    gap: .5rem;
+}
+
+/* Expertises Container */
+div.expertises {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+/* Main heading (h4) */
+div.expertises > h4 {
+    margin: 0 0 0.5rem 0;
+}
+
+/* Style the h5 headings */
+div.expertises > h5 {
+    margin: -3.2rem 0 0 8rem;
+    padding: 0;
+    line-height: 2rem;
+}
+
+/* Details section */
+div.expertises > details {
+    margin: 0;
+    width: 100%;
+}
+
+/* Expertise details grid */
+.expertises-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ensure checkbox and text input alignment */
+.expertises-grid input[type="checkbox"] {
+    align-self: center;
+    justify-self: left;
+}
+
+.expertises-grid input[type="text"] {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Form Elements - Stone Carved Effect */
+.charsheet textarea {
+    width: 97%;
+    min-height: 100px;
+    margin: .5rem;
+    resize: vertical;
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    color: var(--text-light);
+    border: 2px solid var(--accent-primary);
+    box-shadow: 
+        inset 2px 2px 6px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 3px rgba(255, 250, 205, 0.08);
+}
+
+.charsheet button[type=roll] {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--accent-primary);
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    color: var(--accent-primary);
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    transition: all 0.3s ease;
+    box-shadow: 
+        inset 1px 1px 3px rgba(255, 250, 205, 0.1),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.charsheet input[type=number],
+.charsheet input[type=text] {
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    border: 2px solid var(--accent-primary);
+    color: var(--text-light);
+    border-radius: 0;
+    padding: 0.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.08);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.charsheet input[type=text] {
+    width: 15em;
+    height: 2em;
+}
+
+.charsheet input[type=checkbox] {
+    width: 1.5em;
+    height: 1.5em;
+    appearance: none;
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    border: 2px solid var(--accent-primary);
+    cursor: pointer;
+    position: relative;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.08);
+}
+
+.charsheet input[type=checkbox]:checked::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0.8em;
+    height: 0.8em;
+    background: radial-gradient(circle, 
+        var(--accent-primary) 0%, 
+        var(--accent-secondary) 100%);
+    box-shadow: 
+        0 0 8px var(--accent-primary),
+        inset 1px 1px 2px rgba(255, 250, 205, 0.3);
+}
+
+select {
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    border: 2px solid var(--accent-primary);
+    color: var(--text-light);
+    padding: 0.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    border-radius: 0;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.08);
+}
+
+/* Repeating Button Changes */
+.repcontrol .repcontrol_add,
+.repcontrol .repcontrol_edit,
+.repcontrol .repcontrol_del {
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    color: var(--accent-primary);
+    border: 2px solid var(--accent-primary);
+    margin-left: 5px;
+    margin-right: 5px;
+    height: 24px;
+    font-size: 0.9em;
+    line-height: 24px;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    box-shadow: 
+        0 0 10px var(--shadow-color),
+        inset 1px 1px 2px rgba(255, 250, 205, 0.1),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.repcontrol .repcontrol_add:hover,
+.repcontrol .repcontrol_edit:hover,
+.repcontrol .repcontrol_del:hover {
+    background: linear-gradient(135deg, 
+        rgba(205, 127, 50, 0.8) 0%, 
+        rgba(139, 69, 19, 0.9) 100%);
+    color: var(--text-light);
+    box-shadow: 
+        0 0 15px var(--accent-primary),
+        inset 1px 1px 3px rgba(255, 250, 205, 0.2),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Specific colors for different actions */
+.repcontrol .repcontrol_add {
+    color: var(--accent-primary);
+}
+
+.repcontrol .repcontrol_edit {
+    color: var(--accent-highlight);
+}
+
+.repcontrol .repcontrol_del {
+    color: #8B0000;
+    border-color: #8B0000;
+}
+
+.repcontrol .repcontrol_del:hover {
+    background: linear-gradient(135deg, 
+        rgba(139, 0, 0, 0.8) 0%, 
+        rgba(100, 0, 0, 0.9) 100%);
+    box-shadow: 0 0 15px rgba(139, 0, 0, 0.5);
+}
+
+/* Expertise Grid Layouts */
+/* Base styles shared across all grid types */
+.expertises-grid,
+.bonuses-grid,
+.attacks-grid {
+    background: linear-gradient(135deg, 
+        rgba(58, 58, 58, 0.9) 0%, 
+        rgba(47, 47, 47, 0.95) 100%);
+    position: relative;
+    border: 2px solid var(--accent-primary);
+    box-shadow: 
+        inset 2px 2px 6px rgba(0, 0, 0, 0.3),
+        inset -2px -2px 4px rgba(255, 250, 205, 0.05);
+}
+
+/* Expertise Grid Layouts */
+.expertises-grid,
+.bonuses-grid,
+.attacks-grid {
+    background: linear-gradient(135deg, 
+        rgba(58, 58, 58, 0.9) 0%, 
+        rgba(47, 47, 47, 0.95) 100%);
+    position: relative;
+}
+
+.bonuses-grid,
+.attacks-grid {
+    border: 2px solid var(--accent-primary);
+}
+
+/* Compact Attacks Grid - 4 Column Horizontal Layout */
+.attacks-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    padding: 0.75rem;
+    margin: 0.25rem;
+    border: 2px solid var(--accent-primary);
+    background: linear-gradient(135deg, 
+        rgba(58, 58, 58, 0.9) 0%, 
+        rgba(47, 47, 47, 0.95) 100%);
+    box-shadow: 
+        inset 2px 2px 6px rgba(0, 0, 0, 0.3),
+        inset -2px -2px 4px rgba(255, 250, 205, 0.05);
+}
+
+/* Horizontal label + input layout */
+.attacks-grid-compact label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-light);
+    font-size: 1rem;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin: 0;
+    padding: 0.25rem;
+    white-space: nowrap;
+    min-width: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Input styling for horizontal layout */
+.attacks-grid-compact input[type="number"] {
+    width: 3rem;
+    height: 1.8rem;
+    padding: 0;
+    margin-left: 0.5rem;
+    text-align: center;
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    border: 2px solid var(--accent-primary);
+    color: var(--text-light);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    flex-shrink: 0;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.08);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Remove spinner buttons */
+.attacks-grid-compact input[type="number"]::-webkit-inner-spin-button,
+.attacks-grid-compact input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Interactive states */
+.attacks-grid-compact input[type="number"]:hover,
+.attacks-grid-compact input[type="number"]:focus {
+    border-color: var(--accent-highlight);
+    box-shadow: 
+        0 0 12px var(--accent-primary),
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.12);
+    outline: none;
+}
+
+/* Expertise Grid */
+.expertises-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+    padding: 0.5rem;
+    border: 0px solid var(--accent-primary);
+}
+
+/* Bonus Grid */
+.bonuses-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    padding: 0.75rem;
+    margin: 0.25rem;
+}
+
+/* Typography for bonus grid */
+.bonuses-grid label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin: 0;
+    padding: 0.5rem 0;
+    gap: 0.75rem;
+    line-height: 1.2;
+    min-height: 3rem;
+    justify-content: flex-end;
+    white-space: nowrap;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Input styling for bonus grid */
+.bonuses-grid input[type="number"] {
+    width: 3rem;
+    height: 2rem;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    border: 2px solid var(--accent-primary);
+    color: var(--text-light);
+    font-family: 'Cormorant Garamond', serif;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.08);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Attacks Grid */
+.attacks-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin: 0.25rem;
+}
+
+/* Typography for attacks grid */
+.attacks-grid label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: 0;
+    margin: 0;
+    padding: 0.5rem 0;
+    gap: 0.75rem;
+    line-height: 1.2;
+    min-height: 3rem;
+    justify-content: flex-end;
+    white-space: nowrap;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Input styling for attacks grid */
+.attacks-grid input[type="number"] {
+    width: 3rem;
+    height: 2rem;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    border: 2px solid var(--accent-primary);
+    color: var(--text-light);
+    font-family: 'Cormorant Garamond', serif;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.08);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Multi-word label handling */
+.attacks-grid label span,
+.bonuses-grid label span {
+    display: block;
+    white-space: normal;
+    width: 100%;
+}
+
+/* Remove spinner buttons */
+.attacks-grid input[type="number"]::-webkit-inner-spin-button,
+.attacks-grid input[type="number"]::-webkit-outer-spin-button,
+.bonuses-grid input[type="number"]::-webkit-inner-spin-button,
+.bonuses-grid input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Interactive states */
+.attacks-grid input[type="number"]:hover,
+.attacks-grid input[type="number"]:focus,
+.bonuses-grid input[type="number"]:hover,
+.bonuses-grid input[type="number"]:focus {
+    border-color: var(--accent-highlight);
+    box-shadow: 
+        0 0 12px var(--accent-primary),
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.12);
+    outline: none;
+}
+
+/* Roll Template Styles */
+.sheet-rolltemplate-rolls {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.sheet-rolltemplate-rolls .sheet-container {
+    border: 2px solid #CD7F32;
+    border-radius: 0;
+    box-shadow:
+        0 0 0 1px rgba(205, 127, 50, 0.3),
+        0 0 30px rgba(205, 127, 50, 0.2),
+        0 0 50px rgba(205, 127, 50, 0.1),
+        inset 0 0 30px rgba(205, 127, 50, 0.05),
+        inset 3px 3px 8px rgba(0, 0, 0, 0.3),
+        inset -3px -3px 8px rgba(255, 250, 205, 0.05);
+    position: relative;
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    margin: 2px;
+}
+
+.sheet-rolltemplate-rolls .sheet-header {
+    background: linear-gradient(180deg, 
+        rgba(58, 58, 58, 0.95) 0%, 
+        rgba(47, 47, 47, 0.98) 100%);
+    color: #CD7F32;
+    text-align: left;
+    text-transform: uppercase;
+    padding: 12px 15px;
+    border-bottom: 2px solid #CD7F32;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.08em;
+    position: relative;
+    box-shadow: 
+        0 2px 20px rgba(205, 127, 50, 0.1),
+        0 4px 30px rgba(205, 127, 50, 0.05),
+        inset 0 2px 6px rgba(0, 0, 0, 0.4),
+        inset 0 -2px 3px rgba(255, 250, 205, 0.08);
+}
+
+.sheet-rolltemplate-rolls .sheet-title,
+.sheet-rolltemplate-rolls .sheet-name {
+    font-size: 1.2em;
+    font-weight: normal;
+    color: #CD7F32;
+    text-shadow: 
+        0 0 12px rgba(205, 127, 50, 0.5),
+        0 0 20px rgba(205, 127, 50, 0.3),
+        0 0 30px rgba(205, 127, 50, 0.1),
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.sheet-rolltemplate-rolls .sheet-subtitle {
+    font-size: 0.9em;
+    color: rgba(205, 127, 50, 0.7);
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+    text-shadow: 
+        0 0 15px rgba(205, 127, 50, 0.2),
+        1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.sheet-rolltemplate-rolls .inlinerollresult.fullfail,
+.sheet-rolltemplate-rolls .inlinerollresult.fullcrit,
+.sheet-rolltemplate-rolls .inlinerollresult.importantroll{
+    border: 2px solid #2F2F2F;
+}
+
+.sheet-rolltemplate-rolls .inlinerollresult {
+    color: #FFFACD;
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    border: 2px solid #2F2F2F;
+    box-shadow: 
+        inset 1px 1px 3px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.08);
+}
+
+.sheet-rolltemplate-rolls .sheet-content {
+    display: grid;
+    color: #FFFACD;
+    background: linear-gradient(135deg, 
+        rgba(47, 47, 47, 0.95) 0%, 
+        rgba(58, 58, 58, 0.9) 100%);
+    grid-template-columns: auto auto;
+    line-height: 1.6em;
+    position: relative;
+    gap: 4px;
+    padding: 10px;
+    box-shadow: 
+        inset 0 2px 20px rgba(0, 0, 0, 0.5),
+        inset 0 0 30px rgba(205, 127, 50, 0.03);
+}
+
+.sheet-rolltemplate-rolls .sheet-content > div {
+    padding: 8px 12px;
+    position: relative;
+}
+
+.sheet-rolltemplate-rolls .sheet-content .sheet-key {
+    font-weight: normal;
+    padding-right: 15px;
+    text-align: right;
+    color: #CD7F32;
+    letter-spacing: 0.08em;
+    text-shadow: 
+        0 0 10px rgba(205, 127, 50, 0.4),
+        0 0 20px rgba(205, 127, 50, 0.2),
+        1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.sheet-rolltemplate-rolls .sheet-content :nth-child(4n+3),
+.sheet-rolltemplate-rolls .sheet-content :nth-child(4n) {
+    background: rgba(205, 127, 50, 0.03);
+    border: 0px solid rgba(205, 127, 50, 0.15);
+    box-shadow: 
+        inset 0 0 20px rgba(205, 127, 50, 0.03),
+        0 0 15px rgba(205, 127, 50, 0.05);
+}
+
+/* Hover and Focus States */
+input:focus,
+select:focus,
+button:focus {
+    outline: none;
+    border-color: var(--accent-highlight);
+    box-shadow: 
+        0 0 15px var(--accent-primary),
+        inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 250, 205, 0.12);
+}
+
+button:hover,
+input[type="checkbox"]:hover {
+    border-color: var(--accent-highlight);
+    box-shadow: 
+        0 0 15px var(--accent-primary),
+        inset 1px 1px 3px rgba(255, 250, 205, 0.15),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* Hidden Element Styles */
+.invisible-preserve-layout {
+    visibility: hidden;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.5rem;
+    position: relative;
+    box-shadow: inset 0 0 0 1px rgba(205, 127, 50, 0.05);
+}
+
+/* Media Queries */
+@media (max-width: 800px) {
+    main,
+    div.combat,
+    div.utility,
+    div.notes,
+    div.other {
+        width: 100%;
+        padding: 0.5rem;
+        margin: 0.5rem;
+    }
+    
+    .attacks-grid,
+    .bonuses-grid {
+        grid-template-columns: 1fr;
+    }
+}

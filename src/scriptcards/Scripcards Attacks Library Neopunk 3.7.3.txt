@@ -3,14 +3,14 @@
     +++snlib+++
     --#sourcetoken| @{character_id}
 
-    --Rbyindex|[*S:character_id];repeating_attacks;{number}
+    --Rbyindex|[*S:character_id];repeating_attacks;0
 
 
   --/| ###################################################################################################
   --/| Formatting
   --/| ###################################################################################################
 
-    --#overridetemplate| neopunk
+    --#overridetemplate| hologram
 
     --#hideTitleCard| 0
 
@@ -27,7 +27,7 @@
     --#subtitleFontFace| Quicksand
     --#subtitleFontSize| 16px
     --#subtitleFontColor| #00ffff
-    --#subtitleSeparator|
+    --#subtitleSeparator| 
 
     --/| Emote Settings
     --#emoteBackground| #000000
@@ -61,6 +61,7 @@
     --#buttonBorderColor| #00ffff
 
     --/| Dice Settings
+    --#diceFontFace| Quicksand
     --#diceFontSize| 2.5em
     --#diceFontColor| #ffffff
     --#rollHilightLineHeight| 1.8em
@@ -73,8 +74,8 @@
     --#useHollowDice| 1
 
     --/| Output Settings
-    --#outputtagprefix|
-    --#outputcontentprefix|
+    --#outputtagprefix| <span>
+    --#outputcontentprefix| <span>
 
 
 
@@ -102,7 +103,6 @@
   --/| ==========Attack Basic Variables==========
     --&AttackName| [*R:AttackName]
     --#leftsub| [*R:leftsub]
-    --&AttackDetails| [*R:AttackDetails]
     --=AttackType| [*R:AttackType]
 
     --=RollCN| [*R:RollCN]
@@ -191,11 +191,8 @@
     --=ExtraAttack| [*R:ExtraAttack]
 
     --&AccuracyStringModifiers| [*R:AccuracyStringModifiers]
-    --&AccuracyStringModifiers|[&AccuracyStringModifiers:NoNull]
     --&DamageStringModifiers| [*R:DamageStringModifiers]
-    --&DamageStringModifiers|[&DamageStringModifiers:NoNull]
     --&ConditionsStringModifiers| [*R:ConditionsStringModifiers]
-    --&ConditionsStringModifiers|[&ConditionsStringModifiers:NoNull]
 
 
 
@@ -248,7 +245,11 @@
     --?[$ReliableEffect] -eq 1|&DamageDice; 4d6kh3
     --?[$ReliableEffect] -eq 2|&DamageDice; 5d6kh3
     --?[$ReliableEffect] -eq 3|&DamageDice; 6d6kh3
+    --?[$EnhancedEffect] -eq 1|&DamageDice; 4d6
+
     --?[$EnhancedEffect] -eq 1 -and [$ReliableEffect] -eq 1|&DamageDice; 5d6kh4
+
+
 
     --?[$ConsistentEffect] -eq 1|&DamageDice;+r<1
     --&DamageDice|+!
@@ -330,6 +331,8 @@
 
     --~testvar|array;getfirst;SC_SelectedTokens
     --:loop|
+
+    --=EnemyCnFailAmount| 0 
 
     --=AccuracyDice| [&AccuracyDice]
 
@@ -414,34 +417,28 @@
       --&AttackNotes|+ Bonus from Setup Enemy,
     --:PassSetupDefenses|
 
-    --?[&MarkerStunnedExists] -ne 1|PassStunnedBonus
-      --&AttackNotes|+ Bonus from Stunned Enemy,
-    --:PassStunnedBonus|
+    --?[&MarkerStunnedExists] -eq 1|&AttackNotes;+ Bonus from Stunned Enemy,
     --?[&MarkerStunnedExists] -eq 1|=EnemyAV; 0
     --?[&MarkerStunnedExists] -eq 1|=AccuracyCriticalRange; 2
 
-    --?[&MarkerProneExists] -ne 1|PassProneBonus
-      --&AttackNotes|+ Bonus from Prone Enemy,
-    --:PassProneBonus|
+    --?[&MarkerProneExists] -eq 1|&AttackNotes;+ Bonus from Prone Enemy,
     --?[&MarkerProneExists] -eq 1|&AccuracyRollString;+ +5 [Prone]
+
 
 
   --/| ==========Attack Roll==========
     --=AccuracyRoll| [&AccuracyRollString]
 
     --/| CRITICAL
-      --?[$AccuracyRoll.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1|PassCriticalHit
-        --&AttackNotes|+ Critical Hit,
-      --:PassCriticalHit|
-      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&DamageRollString;+  +[*S:char_tier] [CRITICAL HIT]
-      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL HIT]
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&AttackNotes;+ Critical Hit,
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&DamageRollString;+  +[*S:char_tier] [CRITICAL HIT]
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL HIT]
 
     --/| POWERFUL CRITICAL
-      --?[$AccuracyRoll.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1 -or [$PowerfulCritical] -ne 1|PassPowerfulCritical
-        --&AttackNotes|+ Powerful Critical Applied,
-      --:PassPowerfulCritical|
-      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&DamageRollString;+  +[*S:char_tier] [Powerful Critical]
-      --?[$AccuracyRoll.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [Powerful Critical]
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&AttackNotes;+ Powerful Critical Applied,
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&DamageRollString;+  +[*S:char_tier] [Powerful Critical]
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [Powerful Critical]
+
 
     --/| ==========NEW CRITICAL EFFECTS==========
     --?[$AccuracyRoll.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1 -or [$Ricochet] -ne 1|PassRicochetNote
@@ -570,10 +567,12 @@
 
   --/| ==========Damage Total And Application==========
 
-    --+Damage Total| [r][$DamageAmount] [/r]
+
+    --+Damage Total| [r] [$DamageAmount] [/r]
 
     --=DamageAmount| [$DamageAmount] {NEGATE}
-    -->LibSN_APPLY_DAMAGE_OR_HEALING|[&testvar];3;[$DamageAmount];1;0;1
+    -->LibSN_APPLY_DAMAGE_OR_HEALING|[&testvar];3;[$DamageAmount];0;0;1
+
 
     --=RemainingHP| [*[&testvar]:t-bar3_value]
 
@@ -624,140 +623,142 @@
 
   --/| ==========Conditions Section==========
 
+    --?[$RollCN] -lt 1|SkipTheConditionsBlock
 
-    --?[$EffectType] -ne 1|PassDisarm
-      --?[$EnemyCnFailAmount] -lt 0|PassDisarm
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];all-for-one
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one;Blank, 1
-      --?[$LastingCondition] -eq 0 -or [$EnemyCnFailAmount] -lt 10|PassDisarmLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one
-      --:PassDisarmLasting|
-      --+Applying| Disarm to [*[&testvar]:character_name]
-    --:PassDisarm|
+      --?[$EffectType] -ne 1|PassDisarm
+        --?[$EnemyCnFailAmount] -lt 0|PassDisarm
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];all-for-one
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one;Blank, 1
+        --?[$LastingCondition] -eq 0 -or [$EnemyCnFailAmount] -lt 10|PassDisarmLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one
+        --:PassDisarmLasting|
+        --+Applying| Disarm to [*[&testvar]:character_name]
+      --:PassDisarm|
 
-    --?[$EffectType] -ne 2|PassGrab
-      --?[$EnemyCnFailAmount] -lt 0|PassGrab
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];grab
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassGrabLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab
-      --:PassGrabLasting|
-      --+Applying| Grab to [*[&testvar]:character_name]
-    --:PassGrab|
+      --?[$EffectType] -ne 2|PassGrab
+        --?[$EnemyCnFailAmount] -lt 0|PassGrab
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];grab
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassGrabLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab
+        --:PassGrabLasting|
+        --+Applying| Grab to [*[&testvar]:character_name]
+      --:PassGrab|
 
-    --?[$EffectType] -ne 3|PassShove
-      --?[$EnemyCnFailAmount] -lt 0|PassShove
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];back-pain
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassShoveLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain
-      --:PassShoveLasting|
-      --+Applying| Shove to [*[&testvar]:character_name]
-    --:PassShove|
+      --?[$EffectType] -ne 3|PassShove
+        --?[$EnemyCnFailAmount] -lt 0|PassShove
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];back-pain
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassShoveLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain
+        --:PassShoveLasting|
+        --+Applying| Shove to [*[&testvar]:character_name]
+      --:PassShove|
 
-    --?[$EffectType] -ne 4|PassDaze
-      --?[$EnemyCnFailAmount] -lt 0|PassDaze
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];pummeled
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDazeLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled
-      --:PassDazeLasting|
-      --+Applying| Daze to [*[&testvar]:character_name]
-    --:PassDaze|
+      --?[$EffectType] -ne 4|PassDaze
+        --?[$EnemyCnFailAmount] -lt 0|PassDaze
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];pummeled
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDazeLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled
+        --:PassDazeLasting|
+        --+Applying| Daze to [*[&testvar]:character_name]
+      --:PassDaze|
 
-    --?[$EffectType] -ne 5|PassBlind
-      --?[$EnemyCnFailAmount] -lt 0|PassBlind
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];bleeding-eye
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassBlindLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye
-      --:PassBlindLasting|
-      --+Applying| Blind to [*[&testvar]:character_name]
-    --:PassBlind|
+      --?[$EffectType] -ne 5|PassBlind
+        --?[$EnemyCnFailAmount] -lt 0|PassBlind
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];bleeding-eye
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassBlindLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye
+        --:PassBlindLasting|
+        --+Applying| Blind to [*[&testvar]:character_name]
+      --:PassBlind|
 
-    --?[$EffectType] -ne 6|PassTaunt
-      --?[$EnemyCnFailAmount] -lt 0|PassTaunt
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];screaming
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassTauntLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming
-      --:PassTauntLasting|
-      --+Applying| Taunt to [*[&testvar]:character_name]
-    --:PassTaunt|
+      --?[$EffectType] -ne 6|PassTaunt
+        --?[$EnemyCnFailAmount] -lt 0|PassTaunt
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];screaming
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassTauntLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming
+        --:PassTauntLasting|
+        --+Applying| Taunt to [*[&testvar]:character_name]
+      --:PassTaunt|
 
-    --?[$EffectType] -ne 7|PassSetup
-      --?[$EnemyCnFailAmount] -lt 0|PassSetup
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];archery-target
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];archery-target;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassSetupLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];archery-target
-      --:PassSetupLasting|
-      --+Applying| Setup to [*[&testvar]:character_name]
-    --:PassSetup|
+      --?[$EffectType] -ne 7|PassSetup
+        --?[$EnemyCnFailAmount] -lt 0|PassSetup
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];archery-target
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];archery-target;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassSetupLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];archery-target
+        --:PassSetupLasting|
+        --+Applying| Setup to [*[&testvar]:character_name]
+      --:PassSetup|
 
-    --?[$EffectType] -ne 8|PassControl
-      --?[$EnemyCnFailAmount] -lt 0|PassControl
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];broken-skull
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassControlLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull
-      --:PassControlLasting|
-      --+Applying| Control to [*[&testvar]:character_name]
-    --:PassControl|
+      --?[$EffectType] -ne 8|PassControl
+        --?[$EnemyCnFailAmount] -lt 0|PassControl
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];broken-skull
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassControlLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull
+        --:PassControlLasting|
+        --+Applying| Control to [*[&testvar]:character_name]
+      --:PassControl|
 
-    --?[$EffectType] -ne 9|PassStun
-      --?[$EnemyCnFailAmount] -lt 0|PassStun
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];lightning-helix
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassStunLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix
-      --:PassStunLasting|
-      --+Applying| Stun to [*[&testvar]:character_name]
-    --:PassStun|
+      --?[$EffectType] -ne 9|PassStun
+        --?[$EnemyCnFailAmount] -lt 0|PassStun
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];lightning-helix
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassStunLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix
+        --:PassStunLasting|
+        --+Applying| Stun to [*[&testvar]:character_name]
+      --:PassStun|
 
-    --?[$EffectType] -ne 10|PassWeaken
-      --?[$EnemyCnFailAmount] -lt 0|PassWeaken
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];radioactive
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassWeakenLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive
-      --:PassWeakenLasting|
-      --+Applying| Weaken to [*[&testvar]:character_name]
-    --:PassWeaken|
+      --?[$EffectType] -ne 10|PassWeaken
+        --?[$EnemyCnFailAmount] -lt 0|PassWeaken
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];radioactive
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassWeakenLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive
+        --:PassWeakenLasting|
+        --+Applying| Weaken to [*[&testvar]:character_name]
+      --:PassWeaken|
 
-    --?[$EffectType] -ne 11|PassDisableSpecials
-      --?[$EnemyCnFailAmount] -lt 0|PassDisableSpecials
-      -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];frozen-orb
-      -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb;Blank, 1
-      --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDisableSpecialsLasting
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb
-      --:PassDisableSpecialsLasting|
-      --+Applying| Disable Specials to [*[&testvar]:character_name]
-    --:PassDisableSpecials|
+      --?[$EffectType] -ne 11|PassDisableSpecials
+        --?[$EnemyCnFailAmount] -lt 0|PassDisableSpecials
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];frozen-orb
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDisableSpecialsLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb
+        --:PassDisableSpecialsLasting|
+        --+Applying| Disable Specials to [*[&testvar]:character_name]
+      --:PassDisableSpecials|
 
-    --?[$Cursed] -eq 0|PassCursed
-      --=RemainingHP| [*[&testvar]:t-bar3_value]
-      --=CursedThreshold| [$EnemyCnFailAmount]*2-[$RemainingHP]
-      --?[$CursedThreshold] -lt 0|PassCursed
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];[&Cursed]
-        --+Applying| Cursed to [*[&testvar]:character_name]
-    --:PassCursed|
+      --?[$Cursed] -eq 0|PassCursed
+        --=RemainingHP| [*[&testvar]:t-bar3_value]
+        --=CursedThreshold| [$EnemyCnFailAmount]*2-[$RemainingHP]
+        --?[$CursedThreshold] -lt 0|PassCursed
+          -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];[&Cursed]
+          --+Applying| Cursed to [*[&testvar]:character_name]
+      --:PassCursed|
 
-    --?[$OverwhelmingAffliction] -eq 0|PassOverwhelmingAffliction
-      --=OverwhelmingAfflictionThreshold| -[*[&testvar]:char_tier]*3+[$EnemyCnFailAmount]
-      --?[$OverwhelmingAfflictionThreshold] -lt 0|PassOverwhelmingAffliction
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];[&OverwhelmingAffliction]
-        --+Applying| Overwhelming Affliction to [*[&testvar]:character_name]
-    --:PassOverwhelmingAffliction|
+      --?[$OverwhelmingAffliction] -eq 0|PassOverwhelmingAffliction
+        --=OverwhelmingAfflictionThreshold| -[*[&testvar]:char_tier]*3+[$EnemyCnFailAmount]
+        --?[$OverwhelmingAfflictionThreshold] -lt 0|PassOverwhelmingAffliction
+          -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];[&OverwhelmingAffliction]
+          --+Applying| Overwhelming Affliction to [*[&testvar]:character_name]
+      --:PassOverwhelmingAffliction|
 
-    --/| ==========NEW CONDITION EFFECTS==========
-    --?[$CollateralCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 0|PassCollateralConditionNote
-      --&AttackNotes|+ Collateral Condition triggered - 3-space burst,
-    --:PassCollateralConditionNote|
-    --?[$Contagious] -ne 1 -or [$EnemyCnFailAmount] -lt 0|PassContagiousNote
-      --&AttackNotes|+ Contagious triggered - spreads to nearest enemy,
-    --:PassContagiousNote|
+      --/| ==========NEW CONDITION EFFECTS==========
+      --?[$CollateralCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 0|PassCollateralConditionNote
+        --&AttackNotes|+ Collateral Condition triggered - 3-space burst,
+      --:PassCollateralConditionNote|
+      --?[$Contagious] -ne 1 -or [$EnemyCnFailAmount] -lt 0|PassContagiousNote
+        --&AttackNotes|+ Contagious triggered - spreads to nearest enemy,
+      --:PassContagiousNote|
 
+    --:SkipTheConditionsBlock|
 
   --/| ==========END OF FOR LOOP ==========
 
@@ -803,11 +804,12 @@
     --:PassMartialArtistNote|
 
     --+|[br]
-    --+Attack Notes| [&AttackNotes] [br]
-    --+Attack Details| [&AttackDetails]
+    --+Attack Notes| [&AttackNotes] 
+
+    --+Attack Details| [*R:AttackDetails]
 
 
-
+    
 
 
 

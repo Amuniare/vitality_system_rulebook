@@ -25,6 +25,7 @@
 .grid-columns-auto-fit-300 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
 .grid-columns-auto-fit-320 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
 .grid-columns-1fr { grid-template-columns: 1fr; }
+.grid-columns-2fr { grid-template-columns: 1fr 1fr; }
 
 /* Character Header Styles */
 .character-header {

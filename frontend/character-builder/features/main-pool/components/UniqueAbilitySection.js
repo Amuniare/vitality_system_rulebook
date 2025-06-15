@@ -24,7 +24,7 @@ export class UniqueAbilitySection {
                 ${RenderUtils.renderGrid(
                     uniqueAbilities,
                     (ability) => this.renderUniqueAbilityOption(ability, character, pointInfo),
-                    { gridContainerClass: 'grid-layout ability-grid', gridSpecificClass: 'grid-columns-1fr' }
+                    { gridContainerClass: 'grid-layout ability-grid', gridSpecificClass: 'grid-columns-2fr' }
                 )}
 
                 ${this.renderCustomUniqueAbilityCreation(character, pointInfo)}
@@ -69,21 +69,23 @@ export class UniqueAbilitySection {
                         <div class="upgrade-list">
                             ${this.renderUpgradeOptions(ability, ability.id)}
                         </div>
-                        <div class="total-cost">
-                            Total Cost: <span id="total-cost-${ability.id}">${ability.baseCost}</span>p
+                        <div class="purchase-actions">
+                            <div class="total-cost">
+                                Total Cost: <span id="total-cost-${ability.id}">${ability.baseCost}</span>p
+                            </div>
+                            ${RenderUtils.renderButton({
+                                text: 'Purchase Ability',
+                                variant: 'primary',
+                                classes: ['purchase-ability'], // Keep specific class if JS relies on it
+                                dataAttributes: { 
+                                    'ability-id': ability.id, 
+                                    action: 'purchase-unique-ability',
+                                    purchase: 'unique-ability',
+                                    cost: ability.baseCost
+                                }
+                            })}
                         </div>
                     </div>
-                    ${RenderUtils.renderButton({
-                        text: 'Purchase Ability',
-                        variant: 'primary',
-                        classes: ['purchase-ability'], // Keep specific class if JS relies on it
-                        dataAttributes: { 
-                            'ability-id': ability.id, 
-                            action: 'purchase-unique-ability',
-                            purchase: 'unique-ability',
-                            cost: ability.baseCost
-                        }
-                    })}
                 </div>
             `;
         }
@@ -111,18 +113,29 @@ export class UniqueAbilitySection {
     }
 
     renderUpgradeCard(upgrade, abilityId) {
-        const hasQuantity = upgrade.per;
-        const costDisplay = hasQuantity ? `${upgrade.cost}p/${upgrade.per}` : `${upgrade.cost}p`;
+        const hasQuantity = upgrade.per || upgrade.cost === "variable";
         const isSelected = this.selectedUpgrades[abilityId]?.some(u => u.id === upgrade.id) || false;
         const selectedQuantity = hasQuantity ? (this.selectedUpgrades[abilityId]?.find(u => u.id === upgrade.id)?.quantity || 0) : 0;
         
+        // Handle cost display for different types
+        let costDisplay;
+        let actualCost = upgrade.cost;
+        if (upgrade.cost === "variable") {
+            costDisplay = "Variable cost";
+            actualCost = selectedQuantity; // For variable cost, the quantity IS the cost
+        } else if (hasQuantity) {
+            costDisplay = `${upgrade.cost}p/${upgrade.per}`;
+        } else {
+            costDisplay = `${upgrade.cost}p`;
+        }
+        
         if (hasQuantity) {
-            // Render quantifiable upgrade with +/- controls
+            // Render quantifiable upgrade with +/- controls and number input
             return `
                 <div class="card upgrade-card quantifiable ${selectedQuantity > 0 ? 'selected' : ''}" 
                      data-ability-id="${abilityId}" 
                      data-upgrade-id="${upgrade.id}"
-                     data-upgrade-cost="${upgrade.cost}">
+                     data-upgrade-cost="${actualCost}">
                     <div class="card-header">
                         <h4 class="card-title">${upgrade.name}</h4>
                         <span class="card-cost">${costDisplay}</span>
@@ -135,7 +148,13 @@ export class UniqueAbilitySection {
                                 data-ability-id="${abilityId}"
                                 data-upgrade-id="${upgrade.id}"
                                 ${selectedQuantity <= 0 ? 'disabled' : ''}>−</button>
-                        <span class="quantity-display">${selectedQuantity}</span>
+                        <input type="number" 
+                               class="quantity-input"
+                               value="${selectedQuantity}"
+                               min="0"
+                               data-action="set-upgrade-quantity"
+                               data-ability-id="${abilityId}"
+                               data-upgrade-id="${upgrade.id}">
                         <button class="quantity-btn plus" 
                                 data-action="increase-upgrade-quantity"
                                 data-ability-id="${abilityId}"
@@ -143,7 +162,7 @@ export class UniqueAbilitySection {
                     </div>
                     
                     <div class="quantity-info">
-                        ${selectedQuantity > 0 ? `Selected: ${selectedQuantity} (${selectedQuantity * upgrade.cost}p total)` : 'None selected'}
+                        ${this.renderQuantityInfo(upgrade, selectedQuantity)}
                     </div>
                 </div>
             `;
@@ -167,6 +186,18 @@ export class UniqueAbilitySection {
                     </div>
                 </div>
             `;
+        }
+    }
+
+    renderQuantityInfo(upgrade, selectedQuantity) {
+        if (selectedQuantity <= 0) {
+            return 'None selected';
+        }
+        
+        if (upgrade.cost === "variable") {
+            return `Selected: ${selectedQuantity} (${selectedQuantity}p total)`;
+        } else {
+            return `Selected: ${selectedQuantity} (${selectedQuantity * upgrade.cost}p total)`;
         }
     }
 
@@ -308,6 +339,40 @@ export class UniqueAbilitySection {
         this.refreshUpgradeUI(abilityId);
     }
 
+    handleSetUpgradeQuantity(input) {
+        const abilityId = input.dataset.abilityId;
+        const upgradeId = input.dataset.upgradeId;
+        const newQuantity = parseInt(input.value) || 0;
+        
+        console.log('🔍 Setting quantity for upgrade:', upgradeId, 'to:', newQuantity);
+        
+        // Initialize selected upgrades for this ability if needed
+        if (!this.selectedUpgrades[abilityId]) {
+            this.selectedUpgrades[abilityId] = [];
+        }
+        
+        const existingUpgrade = this.selectedUpgrades[abilityId].find(u => u.id === upgradeId);
+        
+        if (newQuantity <= 0) {
+            // Remove upgrade if quantity is 0 or negative
+            if (existingUpgrade) {
+                this.selectedUpgrades[abilityId] = this.selectedUpgrades[abilityId].filter(u => u.id !== upgradeId);
+            }
+        } else {
+            // Set or update the quantity
+            if (existingUpgrade) {
+                existingUpgrade.quantity = newQuantity;
+            } else {
+                this.selectedUpgrades[abilityId].push({ id: upgradeId, quantity: newQuantity });
+            }
+        }
+        
+        console.log('✅ Set quantity:', upgradeId, 'to:', newQuantity, 'Current upgrades:', this.selectedUpgrades[abilityId]);
+        
+        this.updateAbilityCostDisplay(abilityId);
+        this.refreshUpgradeUI(abilityId);
+    }
+
 
     updateCardVisualState(card, newSelectedState, upgradeDef) {
         // Update the card's visual appearance
@@ -358,11 +423,13 @@ export class UniqueAbilitySection {
 
         // Calculate cost from selected upgrades
         selectedUpgrades.forEach(selectedUpgrade => {
-            // Handle standard upgrades only
             const upgradeDef = abilityDef.upgrades.find(u => u.id === selectedUpgrade.id);
             if (upgradeDef) {
-                if (selectedUpgrade.quantity) {
-                    // Quantity-based upgrade
+                if (upgradeDef.cost === "variable") {
+                    // Variable cost upgrade - the quantity IS the cost
+                    currentTotalCost += selectedUpgrade.quantity || 0;
+                } else if (selectedUpgrade.quantity) {
+                    // Quantity-based upgrade with fixed cost per unit
                     currentTotalCost += upgradeDef.cost * selectedUpgrade.quantity;
                 } else {
                     // Toggle-based upgrade

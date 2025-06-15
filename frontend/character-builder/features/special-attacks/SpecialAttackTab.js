@@ -92,17 +92,67 @@ export class SpecialAttackTab {
         const attack = character.specialAttacks[this.selectedAttackIndex];
         if (!attack) return '';
         
+        const archetype = character.archetypes.specialAttack;
+        
         return `
             <div class="attack-builder card">
                 ${this.attackBasicsForm.render(attack, character)}
                 <div class="attack-builder-columns">
-                    <div class="limits-column">
-                        ${this.limitSelection.render(attack, character)}
-                    </div>
-                    <div class="upgrades-column">
-                        ${this.upgradeSelection.render(attack, character)}
+                    ${archetype === 'sharedUses' ? 
+                        this._renderSharedUsesAttackUI(attack, character) : 
+                        this._renderDefaultAttackUI(attack, character)
+                    }
+                </div>
+            </div>
+        `;
+    }
+    
+    _renderDefaultAttackUI(attack, character) {
+        return `
+            <div class="limits-column">
+                ${this.limitSelection.render(attack, character)}
+            </div>
+            <div class="upgrades-column">
+                ${this.upgradeSelection.render(attack, character)}
+            </div>
+        `;
+    }
+    
+    _renderSharedUsesAttackUI(attack, character) {
+        const useCostSelected = attack.useCost && attack.useCost > 0;
+        const upgradesDisabled = !useCostSelected;
+        
+        return `
+            <div class="use-cost-column">
+                <div class="use-cost-selector">
+                    <h3>Use Cost</h3>
+                    <p class="section-description">Select the cost for this attack (1-3 uses).</p>
+                    <div class="use-cost-options">
+                        ${[1, 2, 3].map(cost => `
+                            <div class="card clickable ${attack.useCost === cost ? 'selected' : ''}" 
+                                 data-action="select-use-cost" data-cost="${cost}">
+                                <input type="radio" name="use-cost-${attack.id}" value="${cost}" 
+                                       ${attack.useCost === cost ? 'checked' : ''} 
+                                       style="display: none;">
+                                <div class="card-header">
+                                    <div class="card-title">${cost} Use${cost > 1 ? 's' : ''}</div>
+                                    <div class="card-cost">${character.tier * 5 * cost} points</div>
+                                </div>
+                                <div class="card-description">
+                                    ${cost === 1 ? 'Single-use attack with moderate power' : 
+                                      cost === 2 ? 'Moderate cost attack with good power' : 
+                                      'High cost attack with maximum power'}
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
+            </div>
+            <div class="upgrades-column ${upgradesDisabled ? 'disabled' : ''}">
+                ${upgradesDisabled ? 
+                    '<div class="disabled-message"><p>Select a Use Cost to enable upgrades</p></div>' :
+                    this.upgradeSelection.render(attack, character)
+                }
             </div>
         `;
     }
@@ -126,7 +176,8 @@ export class SpecialAttackTab {
 
         // Store the handler and container for proper cleanup
         this.clickHandler = (e) => {
-            const element = e.target.closest('[data-action]');
+            // For radio buttons and other inputs, check the target itself first
+            let element = e.target.hasAttribute('data-action') ? e.target : e.target.closest('[data-action]');
             if (element) {
                 this.handleEvent(e, element);
             } else if (e.target.classList.contains('custom-limit-input')) {
@@ -172,6 +223,8 @@ export class SpecialAttackTab {
             'remove-advancedCondition': () => this.removeCondition(data.id, true),
             
             'update-hybrid-order': () => this.updateAttackProperty('hybridOrder', element.value),
+            
+            'select-use-cost': () => this.selectUseCost(parseInt(data.cost)),
             
             'add-limit': () => this.addLimit(data.limitId),
             'remove-limit': () => this.removeLimit(data.limitId),
@@ -233,6 +286,18 @@ export class SpecialAttackTab {
             if (this.builder.library && this.builder.currentCharacter.id) {
                 this.builder.library.saveCharacter(this.builder.currentCharacter);
             }
+        }
+    }
+    
+    selectUseCost(cost) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.useCost = cost;
+            // Immediately recalculate this attack's points
+            SpecialAttackSystem.recalculateAttackPoints(character, attack);
+            // Trigger full recalculation and re-render
+            this.builder.updateCharacter();
         }
     }
     

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rogue Trader Campaign - Vitality System</title>
+    <!-- The original stylesheet is kept for base structure -->
+    <link rel="stylesheet" href="../../rules/viewer/style.css">
+    <!-- The new theme stylesheet is added to override and enhance -->
+    <link rel="stylesheet" href="theme-warrant.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Removed embedded styles as they are now in theme-warrant.css -->
+
+</head>
+<!-- Added a class to the body to scope the theme -->
+<body class="theme-warrant">
+    <!-- Changed the main container class to match the theme -->
+    <div class="warrant-container">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Rogue Trader Campaign</h2>
+                <p>The Eternal Vigil</p>
+                
+                <div class="nav-links">
+                    <a href="../../index.html" class="nav-link">Hub Home</a>
+                    <a href="../../rules/index.html" class="nav-link">Rulebook</a>
+                    <a href="../../character-builder/character-builder.html" class="nav-link">Character Builder</a>
+                    <a href="../index.html" class="nav-link">All Campaigns</a>
+                </div>
+            </div>
+
+            <div class="nav-content" id="nav-content">
+                <div class="loading">Loading navigation...</div>
+            </div>
+        </nav>
+        
+        <main class="content" id="content">
+            <!-- The header is now part of the main container -->
+            <header class="hub-header">
+                <h1>Rogue Trader Campaign: The Eternal Vigil</h1>
+                <p>A Warhammer 40,000 Campaign of Power, Corruption, and Discovery</p>
+            </header>
+
+            <div class="tab-container">
+                <ul class="tab-nav">
+                    <li><button class="tab-button active" data-tab="overview">Campaign Overview</button></li>
+                    <li><button class="tab-button" data-tab="timeline">Timeline</button></li>
+                    <li><button class="tab-button" data-tab="lore">Lore Basics</button></li>
+                    <li><button class="tab-button" data-tab="worldbuilding">World Building</button></li>
+                    <li><button class="tab-button" data-tab="npcs">NPCs</button></li>
+                    <li><button class="tab-button" data-tab="characters">Player Characters</button></li>
+                    <li><button class="tab-button" data-tab="notes">Session Notes</button></li>
+                    <li><button class="tab-button" data-tab="summaries">Session Summaries</button></li>
+                </ul>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="overview-tab">
+                    <div class="loading-tab">Loading campaign overview...</div>
+                </div>
+                <div class="tab-pane" id="timeline-tab">
+                    <div class="loading-tab">Loading timeline...</div>
+                </div>
+                <div class="tab-pane" id="lore-tab">
+                    <div class="loading-tab">Loading lore basics...</div>
+                </div>
+                <div class="tab-pane" id="worldbuilding-tab">
+                    <div class="loading-tab">Loading world building...</div>
+                </div>
+                <div class="tab-pane" id="npcs-tab">
+                    <div class="loading-tab">Loading NPCs...</div>
+                </div>
+                <div class="tab-pane" id="characters-tab">
+                    <div class="loading-tab">Loading player characters...</div>
+                </div>
+                <div class="tab-pane" id="notes-tab">
+                    <div class="loading-tab">Loading session notes...</div>
+                </div>
+                <div class="tab-pane" id="summaries-tab">
+                    <div class="loading-tab">Loading session summaries...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // Existing JavaScript remains unchanged
+        class RogueTraderCampaignApp {
+            constructor() {
+                this.loadedTabs = new Set();
+                this.tabFiles = {
+                    'overview': 'campaign_overview.md',
+                    'timeline': 'timeline.md',
+                    'lore': 'warhammer_lore_basics.md',
+                    'worldbuilding': 'worldbuilding.md',
+                    'npcs': 'npcs.md',
+                    'characters': 'player-characters.md',
+                    'notes': 'session-notes.md',
+                    'summaries': 'session-summaries.md',
+                };
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.loadTab('overview');
+                    this.setupEventListeners();
+                    this.generateNavigationForActiveTab();
+                } catch (error) {
+                    console.error('Failed to initialize campaign:', error);
+                    document.getElementById('content').innerHTML = 
+                        '<div class="error">Failed to load campaign lore. Please try refreshing the page.</div>';
+                }
+            }
+
+            async loadTab(tabName) {
+                if (this.loadedTabs.has(tabName)) {
+                    return;
+                }
+
+                const filename = this.tabFiles[tabName];
+                const tabElement = document.getElementById(`${tabName}-tab`);
+                
+                try {
+                    const response = await fetch(filename);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const markdown = await response.text();
+                    let html = marked.parse(markdown);
+                    
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    this.addHeadingIdsToElement(tempDiv);
+                    html = tempDiv.innerHTML;
+                    
+                    
+                    tabElement.innerHTML = html;
+                    this.loadedTabs.add(tabName);
+                    
+                } catch (error) {
+                    tabElement.innerHTML = `<div class="error">Failed to load ${tabName}: ${error.message}</div>`;
+                }
+            }
+
+            addHeadingIdsToElement(element) {
+                const headings = element.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                headings.forEach((heading, index) => {
+                    if (!heading.id) {
+                        heading.id = this.createSlug(heading.textContent) + '-' + index;
+                    }
+                });
+            }
+
+            createSlug(text) {
+                return text
+                    .toLowerCase()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .trim();
+            }
+
+            generateNavigationForActiveTab() {
+                const activeTab = document.querySelector('.tab-pane.active');
+                if (!activeTab) return;
+                const headings = activeTab.querySelectorAll('h1, h2, h3');
+                const navContent = document.getElementById('nav-content');
+                
+                if (headings.length === 0) {
+                    navContent.innerHTML = '<div class="loading">No headings found</div>';
+                    return;
+                }
+
+                let navHTML = '';
+                headings.forEach(heading => {
+                    const level = heading.tagName.toLowerCase();
+                    const text = heading.textContent;
+                    const id = heading.id;
+                    
+                    navHTML += `
+                        <a href="#${id}" class="nav-item ${level}" data-target="${id}">
+                            ${text}
+                        </a>
+                    `;
+                });
+
+                navContent.innerHTML = navHTML;
+            }
+
+            setupEventListeners() {
+                document.addEventListener('click', async (e) => {
+                    if (e.target.matches('.tab-button')) {
+                        e.preventDefault();
+                        const tabName = e.target.getAttribute('data-tab');
+                        
+                        await this.loadTab(tabName);
+                        
+                        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        
+                        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                        document.getElementById(`${tabName}-tab`).classList.add('active');
+                        
+                        this.generateNavigationForActiveTab();
+                    }
+                    
+                    if (e.target.matches('.nav-item')) {
+                        e.preventDefault();
+                        const targetId = e.target.getAttribute('data-target');
+                        if (targetId) {
+                            const targetElement = document.getElementById(targetId);
+                            if (targetElement) {
+                                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }
+                    }
+                });
+
+                const menuToggle = document.createElement('button');
+                menuToggle.className = 'menu-toggle';
+                menuToggle.innerHTML = '☰ Menu';
+                menuToggle.addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.toggle('open');
+                });
+                document.body.appendChild(menuToggle);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new RogueTraderCampaignApp();
+        });
+    </script>
+</body>
+</html>

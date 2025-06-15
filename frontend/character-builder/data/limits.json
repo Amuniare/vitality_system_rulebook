@@ -1,14 +1,14 @@
 {
     "Charge-Up": {
-      "cost": 10,
+      "cost": 30,
       "description": "Must use Primary Action on consecutive turns to charge before using attack",
       "variants": {
         "Extended Charge": {
-          "cost": 30,
+          "cost": 40,
           "description": "Must charge for two turns before using",
           "modifiers": {
             "Triple Charge": {
-              "cost": 40,
+              "cost": 50,
               "description": "Must charge three turns before using"
             },
             "Cascade Failure": {

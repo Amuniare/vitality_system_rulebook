@@ -71,6 +71,31 @@
     text-align: center;
     font-size: 0.85em;
 }
+
+.quantity-input {
+    width: 50px;
+    padding: 0.25rem;
+    border: 1px solid var(--accent-secondary);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-radius: var(--border-radius-small);
+    font-size: 0.8em;
+    text-align: center;
+    font-weight: bold;
+    -moz-appearance: textfield; /* Hide spinners in Firefox */
+}
+
+.quantity-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+/* Hide spinners in Chrome, Safari, Edge */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 .attr-btn {
     width: 30px;
     height: 30px;

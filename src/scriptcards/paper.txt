@@ -1,0 +1,7 @@
+boxcode::{div style='color: #000; background-image: url(https://i.imgur.com/8Mm94QY.png); background-size: 100% 100%; background-color: transparent; display: block; text-align: left; font-size: 14px; padding: 5px 8px 8px 5px; margin-bottom: 2px; font-family: 'Times New Roman', serif; white-space: pre-wrap;'}||
+titlecode::{div style='color: #58170D; background-color: transparent: display: block; text-align: Center; line-height:24px; font-size: 24px; padding: 5px; margin: 5px 3px 0px 3px; font-family: Luminari,"Times New Roman", serif; white-space: pre-wrap;'}||
+textcode::{/div}{div}{div style='text-align:left; font-size: 14px !important; font-family: "Times New Roman", serif; padding:3px;'}||
+buttonwrapper::{div style='display:block'}||
+buttonstyle::style='display:inline-block; color:#7e2d40; background-color: transparent;padding: 0px; border: none'||
+subtitlestyle::font-size:12pt; font-family:Times New Roman, serif; color:#564C4C;||
+footer::
