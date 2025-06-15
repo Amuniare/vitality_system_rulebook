@@ -20,9 +20,9 @@
 **Dame Venecia of House Delatorae**  
 *Daughter of Venecian Delatorae, Protector of the Lost City of Venece, Guardian of Cadia, Knight Errant of the Imperium, Champion of the 12th Black Crusade, Slayer of Demons, The Armless Terror, The Mad Rogue Trader*
 
-Four years ago during the 13th Black Crusade, Dame Venecia piloted her Imperial Knight into the Warp to save a High Lord's son. She returned grievously wounded (missing arms, hair whitened, eyes now a vibrant purple rather than typical Cadian coloring) but successful. The Inquisition branded her suspect for surviving Warp exposure. To protect her from execution while keeping her away from Terra, the grateful High Lord granted her a warrant of trade, making her a rogue trader.
+Ten years ago during the 13th Black Crusade, Dame Venecia piloted her Imperial Knight into the Warp to save a High Lord's son. She returned grievously wounded (missing arms, hair whitened, eyes now a vibrant purple rather than typical Cadian coloring) but successful. The Inquisition branded her suspect for surviving Warp exposure. To protect her from execution while keeping her away from Terra, the grateful High Lord granted her a warrant of trade, making her a rogue trader.
 
-**Current Status:** Four years of dangerous operations have built her reputation - she rescued stranded Imperial Guard from daemon worlds, cleansed corrupted shrine worlds, and made controversial deals with xenos to recover Imperial prisoners. Not well tolerated by the Inquisition, but grudgingly respected by those who know her deeds.
+**Current Status:** A decade of dangerous operations have built her reputation - she rescued stranded Imperial Guard from daemon worlds, cleansed corrupted shrine worlds, and made controversial deals with xenos to recover Imperial prisoners. Not well tolerated by the Inquisition, but grudgingly respected by those who know her deeds.
 
 **The Warrant of Trade Mandate (999.M41):**  
 When Roboute Guilliman summoned hundreds of Rogue Traders to Terra, he tasked them with establishing supply lines and resource acquisition in regions too dangerous for normal Imperial forces. 
