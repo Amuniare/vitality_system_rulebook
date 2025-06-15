@@ -892,11 +892,11 @@ You cannot take a limit, if you are unlikely or unable to suffer the downside, o
 ##  LIMITS SYSTEM 
 
 ### **Charge-Up**
-**Cost**: 10p
+**Cost**: 40p
 *Must use Primary Action on consecutive turns to charge before using attack*
 
-+30p **Extended Charge** Must charge for two turns before using
-* +40p **Triple Charge** Must charge three turns before using
++50p **Extended Charge** Must charge for two turns before using
+* +60p **Triple Charge** Must charge three turns before using
 * +50p **Cascade Failure** If interrupted during any charge turn, lose ability for rest of combat
 * +30p **Escalating Exposure** Each charge turn reduces your Durability by 2
 
