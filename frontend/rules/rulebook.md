@@ -898,22 +898,22 @@ You cannot take a limit, if you are unlikely or unable to suffer the downside, o
 +50p **Extended Charge** Must charge for two turns before using
 * +60p **Triple Charge** Must charge three turns before using
 * +50p **Cascade Failure** If interrupted during any charge turn, lose ability for rest of combat
-* +30p **Escalating Exposure** Each charge turn reduces your Durability by 2
+* +50p **Escalating Exposure** Each charge turn reduces your Durability by 5
 
-+10p **Rooted While Charging** Cannot move between charge-up and release
++20p **Rooted While Charging** Cannot move between charge-up and release
 * +30p **Immobilized** Cannot move until end of turn after releasing attack
-* +20p **Anchored** If moved from position by any effect, lose charge
+* +30p **Anchored** If moved from position by any effect, lose charge
 * +50p **Melee** The attack you are making is a melee attack
 
 +40p **Concentration** Lose charge if you take damage or gain conditions
-* +40p **Fragile Concentration** Concentration breaks if any character moves adjacent to you 
-* +50p **Cascade Failure** If concentration broken, you cannot attempt any attack with Concentration for rest of combat
-* +30p **Proximity Sensitivity** Concentration breaks if any character moves within 5 spaces of you
+* +50p **Fragile Concentration** Concentration breaks if any character moves adjacent to you 
+* +60p **Cascade Failure** If concentration broken, you cannot attempt any attack with Concentration for rest of combat
+* +60p **Proximity Sensitivity** Concentration breaks if any character moves within 5 spaces of you
 
-+20p **Exposed While Charging** Avoidance reduced by 2×Tier while charging
-* +50p **Fragile** Avoidance becomes 0 while charging, all attacks are critical hits
-* +30p **Beacon** All enemies within 30 spaces know your exact location while charging
-* +40p **Vulnerable** Take double damage from all sources while charging
++40p **Exposed While Charging** Avoidance reduced by 2×Tier while charging
+* +80p **Fragile** Avoidance becomes 0 while charging, all attacks are critical hits
+* +40p **Beacon** All enemies within 30 spaces know your exact location while charging
+* +60p **Vulnerable** Take double damage from all sources while charging
 
 +Variable **Power Lock** Disable specific defensive ability while charging, gain points equal to that ability's cost
 * +30p **Extended Lock** Disabled ability remains unusable until end of next turn
