@@ -1188,9 +1188,10 @@ Banned Combination: Cannot combine with Heavy Strike or Headshot
 Effect: Target takes identical damage again at end of your next 2 turns  
 Duration: 2 additional damage instances  
 
-**50p - Environmental**  
-Effect: All hexes hit by attack become hazardous terrain, until the start of your next turn  
+**40p per rank - Environmental**  
+Effect: All hexes hit by attack become hazardous terrain, until the start of your next turn, each rank after the first is an extra turn.  
 Hazard Effect: Deal attack's Damage and Condition to any character entering or ending turn in affected spaces  
+Restriction: Cannot have precise.
 
 #### Utility Effects
 
@@ -1206,7 +1207,7 @@ Restriction: Cannot apply to AOE attacks
 
 **20p per rank - Finishing Blow**  
 Effect: If attack reduces enemy to 5×rank HP or below, enemy is defeated instead  
-Maximum: 3 ranks purchasable, stacks multiplicatively  
+Maximum: 3 ranks purchasable
 Restriction: Cannot apply to AOE attacks  
 
 **20p - Culling Strike**  

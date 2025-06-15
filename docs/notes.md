@@ -9,8 +9,20 @@
 
 
 
+basic attack needs to be able to build special attack
+rules were updated, point costs changed, some descriptions changed
+    specialist updated
 
-
+    Blitz down to 10p, just too many other better things to take than this for 20p. 18sp for maybe a plus 3 but always wasting 20p is ass
+    Explosive Critical should clarify "if it would also his them"
+    Enhanced Effect maybe down to 40p, don't feel strongly
+    Reliable Effect shouldn't say "and condition rolls" that's just advantage on conditions
+    Bleed to 60p 
+    Environmental, now has ranks
+    Remove splash damage, too annoying and weak. Already have explosive and environmental
+    Menacing, "within 3 space of target"
+    Analyzing bonus resets if you change targets
+    Extra Attack to 50p and gains once per turn limit
 
 
 ### Tests
@@ -81,4 +93,11 @@ Discord bot records convo as audio file
 -need to fix main.py sync issue with text names
 -need to capture folders when extracting and uploading
 
+
+## Tools
+Captures screenshots of screen
+
+
+## Points
+Adjustment
 
