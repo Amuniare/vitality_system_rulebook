@@ -835,6 +835,12 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 **Breaking Down the Math (Tier 5 Example):**
 - **250 Points of Limits:** 50×1.0 + 100×0.5 + 100×0.25 = 125 upgrade points
 
+**Limit Restrictions:**
+You cannot take a limit, if you are unlikely or unable to suffer the downside, or if more than half of the effect of the limit is mitigated by other means.
+**Examples:**
+- Charge-Up / Extended Charge-Up, and Cooldown 2
+- Cooldown 3 and Reserves 3
+
 ### **ATTACK & EFFECT TYPE ACCESS**
 **Free Access:** Use Attack and Effect Types from your chosen Archetypes  
 
@@ -925,8 +931,8 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 **Cost**: 10p
 *Can only be used 3 times per combat. Regain all uses after combat ends*
 
-+10p **Reserves 2** Reduce to 2 uses per combat
-* +30p **Reserves 1** Reduce to 1 use per combat
++20p **Reserves 2** Reduce to 2 uses per combat
+* +40p **Reserves 1** Reduce to 1 use per combat
 * +50p **Fragile Reserve** Each time you take damage, lose 1 use
 * +50p **Critical Failure** If you roll a natural 1 on any d20, lose 1 use
 
@@ -940,8 +946,8 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 * +50p **Damage Cascade** Taking 10+ damage in single attack causes loss of 1 use
 * +50p **Condition Trigger** Gaining any Advanced Condition causes loss of all remaining uses
 
-+20p **Shared Pool** Multiple special attacks share same use pool, total uses divided among them, +1 use for each special attack added
-* +30p **Reserves 1** Reduce pool by 1 use
++20p **Shared Pool** Multiple special attacks share same use pool, total uses divided among them, +1 use to the pool for each special attack added
+* +20p **Reduced Reserves** Reduce pool by 1 use
 * +40p **Pool Drain** If any attack in pool misses, remove an extra use
 * +30p **Cascade Lock** If any attack in pool misses, no attacks in pool can be used for 1 turn
 
@@ -961,23 +967,21 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 **Cost**: 10p
 *Cannot use again for 1 turn after use*
 
-+10p **Cooldown 2** Cannot use again for 2 turns after use
-* +20p **Cooldown 3** Cannot use again for 3 turns after use
-* +50p **Permanent Injury** Each use increases cooldown by 1 turn permanently 
++20p **Cooldown 2** Cannot use again for 2 turns after use
+* +30p **Cooldown 3** Cannot use again for 3 turns after use
+* +50p **Permanent Injury** Each use of this attack, permanantly increases the cooldown period increases by 1 turn
 * +40p **Fates** Roll a d4-1 when the attack is made, the cooldown is extended by the result
 
-+20p **Failure Extension** If attack misses or fails effect, cooldown increases by 2 turns
-* +40p **Cascade Extension** If attack fails, all your special attacks gain +1 turn cooldown
-* +40p **Attrition** Take 10 damage for each turn spent on cooldown
++20p **Failure Extension** If attack misses or fails effect, cooldown period increases by 1 turn
+* +30p **Doubling Failure** If attack misses or fails effect, cooldown period increases by 1 turn
 
-+30p **Shared Cooldown** 3 special attacks share same cooldown timer
-* +30p **Pool Interference** When one attack is on cooldown, all others have +1 turn added
-* +50p **System Lock** If any shared attack fails, entire pool gains +2 turn cooldown
-* +50p **Cascade Shutdown** One attack failing puts all shared attacks on 5-turn cooldown
++20p **Shared Cooldown** Choose 2 other of your special attacks, they can't be used while you are cooling down from this attack
+* +30p **Increased Cooldown** Choose 1 of your more special attacks, they can't be used while you are cooling down from this attack
+* +40p **Mass Cooldown** All of your special attacks cannot be used while you are cooling down from this attack
 
 +20p **Conditional Reset** Must wait cooldown period then expend a quick action to regain special attack
 * +50p **Combat Victory** Instead of quick action, you need to expend an action
-* +40p **Environmental** Cooldown only resets in specific location/weather/time
+* +Variable **Environmental** Cooldown only resets in specific location/weather/time (discuss with GM)
 * +50p **Ally Dependent** Ally must use specific action to reset your cooldown
 
 +40p **Trigger Extension** Taking damage or gaining conditions adds 1 turn to current cooldown
@@ -988,34 +992,31 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 
 
 ### **RELIABILITY**
-**Cost**: 20p
+**Cost**: 30p
 *Roll d20 before use; if under 5, attack fails and action is wasted*
 
-+20p **Unreliable 10** Must roll 10+ or attack fails
-* +30p **Unreliable 15** Must roll 15+ or attack fails
-* +50p **Unreliable 20** Must roll 20 or attack fails
++50p **Unreliable 10** Must roll 10+ or attack fails
+* +100p **Unreliable 15** Must roll 15+ or attack fails
+* +200p **Unreliable 20** Must roll 20 or attack fails
 * +50p **Double Check** Must make reliability check twice, both must succeed
 
 +30p **Stress Breakdown** Reliability DC increases by 1 each turn of combat
 * +50p **Rapid Degradation** Reliability DC increases by an additional 1 each turn of combat
-* +50p **Permanent Decay** Each failed check permanently increases future DCs by 5
+* +40p **Health Dependent** DC increases by 1 for every 10 HP missing
+* +40p **Fearful** DC increases by 5 if an enemy is adjacent to you
 
-+10p **Equipment Dependent** You have a specific, noticeable and disarmable item, in order to do any attack
-* +30p **Fragile Gear** If you fail the Unreliable roll, the item breaks and won't be fixed until you spend 8 hours, or meet another specified condition (discuss with GM)
-* +50p **Maintenance** Equipment breaks if attack fails, requires action to repair
-
-+40p **Health Dependent** DC increases by 1 for every 10 HP missing
-* +50p **System Failure** Automatic failure when below 25 HP
++30p **Equipment Dependent** You have a specific, noticeable and disarmable item, in order to do any attack. There needs to be a reason, you wouldn't always have this item on you. (discuss with GM)
+* +50p **Fragile Gear** If you fail the Unreliable roll, the item breaks and won't be fixed until you spend 8 hours, or meet another specified condition (discuss with GM)
+* +30p **Maintenance** Equipment breaks if attack fails, requires action to repair
 
 +50p **Cascading Failure** Each failure increases next reliability DC by 5
-* +50p **Accelerated Decay** Each failure increases DC by 10 instead of 5
 * +50p **Spread Effect** Failed checks increase DC for all your special attacks
-* +50p **Critical Cascade** Three failures in combat make ability unusable for rest of session
+* +50p **Critical Cascade** Failures in combat make ability unusable for rest of session
 
-+30p **Failure Backlash** When unreliable roll fails, take 15 damage when attack fails
-* +50p **Self Damage** When unreliable roll fails, take an additional 15 damage when attack fails
-* +50p **Condition Infliction** When unreliable roll fails, gain Stun condition
-* +Variable **Exhaustion** When unreliable roll fails, you must spend an effort or fall unconscious
++30p **Failure Backlash** When unreliable roll fails, take 15 damage
+* +40p **Self Damage** When unreliable roll fails, take an additional 15 damage
+* +60p **Condition Infliction** When unreliable roll fails, gain Stun condition, until the start of your next turn
+* +100p **Exhaustive** When unreliable roll fails, you must spend an effort or fall unconscious
 
 
 

@@ -40,6 +40,9 @@ The application was not designed to load and render dynamic forms from campaign-
 4.  **Implement Dynamic "Identity" Tab:** Create a new `IdentityTab.js` that dynamically renders the questionnaire from the loaded JSON data, including dropdowns for each question.
 5.  **Implement Conditional "Other" Fields:** For each dropdown, add an "Other..." option. An event listener will show a hidden text input field when "Other..." is selected, allowing for custom player answers.
 
+**Other notes:**
+There are two bios on the player side, there are visible to players and visible to GM
+
 ---
 
 ### **Project 3: Core Feature Enhancements & UI Polish**
