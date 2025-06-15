@@ -105,6 +105,9 @@ export class VitalityCharacter {
             upgradePointsAvailable: 0,
             upgradePointsSpent: 0,
             
+            // Shared Uses archetype support
+            useCost: null,
+            
             // Upgrades purchased
             upgrades: [],
             

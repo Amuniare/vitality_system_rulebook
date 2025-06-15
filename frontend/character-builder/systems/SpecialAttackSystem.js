@@ -144,20 +144,34 @@ export class SpecialAttackSystem {
         
         attack.limitPointsTotal = attack.limits.reduce((total, limit) => total + (Number(limit.points) || 0), 0);
         
-        if (pointMethod.method === 'limits') {
-            const calculationResult = TierSystem.calculateLimitScaling(attack.limitPointsTotal, character.tier, archetype);
-            attack.upgradePointsFromLimits = calculationResult.finalPoints;
+        // Handle SharedUses archetype with resource-cost model
+        if (archetype === 'sharedUses') {
+            attack.upgradePointsFromLimits = 0; // SharedUses doesn't use limits
+            attack.upgradePointsFromArchetype = 0; // Reset archetype points
+            
+            // Calculate points based on use cost: tier * 5 * useCost
+            if (attack.useCost && attack.useCost > 0) {
+                attack.upgradePointsAvailable = character.tier * 5 * attack.useCost;
+            } else {
+                attack.upgradePointsAvailable = 0; // No points until use cost is selected
+            }
         } else {
-            attack.upgradePointsFromLimits = 0;
+            // Original logic for all other archetypes
+            if (pointMethod.method === 'limits') {
+                const calculationResult = TierSystem.calculateLimitScaling(attack.limitPointsTotal, character.tier, archetype);
+                attack.upgradePointsFromLimits = calculationResult.finalPoints;
+            } else {
+                attack.upgradePointsFromLimits = 0;
+            }
+            
+            if (pointMethod.method === 'fixed') {
+                attack.upgradePointsFromArchetype = pointMethod.points;
+            } else {
+                attack.upgradePointsFromArchetype = 0;
+            }
+            
+            attack.upgradePointsAvailable = attack.upgradePointsFromLimits + attack.upgradePointsFromArchetype;
         }
-        
-        if (pointMethod.method === 'fixed') {
-            attack.upgradePointsFromArchetype = pointMethod.points;
-        } else {
-            attack.upgradePointsFromArchetype = 0;
-        }
-        
-        attack.upgradePointsAvailable = attack.upgradePointsFromLimits + attack.upgradePointsFromArchetype;
         
         // Recalculate upgrade points spent based on actual upgrades and their specialty status
         this._recalculateUpgradePointsSpent(character, attack);

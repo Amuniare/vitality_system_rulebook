@@ -94,7 +94,8 @@ Prototype long-range exploration cruiser with enhanced Warp drives and sensor ar
 
 ---
 
-## NPC CREATION (2 Per Player)
+## NPC CREATION 
+Each player will bring 2 NPCs, they are a part of the crew of the ship. 
 
 **Connection and Role:**
 - **Blood Bond Specialist** - Family/sworn companion with unique skills
