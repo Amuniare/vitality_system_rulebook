@@ -54,8 +54,12 @@ Prototype long-range exploration cruiser with enhanced Warp drives and sensor ar
 ---
 
 ## CHARACTER CREATION
+*Choose from the options provided or create your own responses that fit your character concept.*
+
 
 ### **Heir Ambition:**
+*What drives your desire to inherit Dame Venecia's dynasty and warrant of trade?*
+
 - **Legacy Builder** - Create something that will outlast you and change the galaxy
 - **Power Seeker** - Crave authority and influence of dynasty leadership  
 - **Duty Bound** - Feel obligated to carry on the dynasty's mission
@@ -63,18 +67,25 @@ Prototype long-range exploration cruiser with enhanced Warp drives and sensor ar
 - **Idealist** - Use dynasty power to make the Imperium better
 
 ### **Your Bond with the Rogue Trader:**
+*How did you come to serve under Dame Venecia and what is your relationship with her?*
+
 - **The Loyal Retainer** - Served from Knight House days, bound by blood debt from Cadia
 - **The Ambitious Partner** - Joined early Rogue Trader years, splitting risks and rewards as equals
 - **The Reluctant Ally** - Recent recruit with hidden agenda but mutual necessity
 - **The Shared Visionary** - Both work toward same long-term Imperial goal
 
 ### **Which Mandate Do You Most Want to Accomplish?**
-- **Trade & Diplomacy Focus** - Establish profitable trade enclaves in new regions
-- **Technology & Artifacts Focus** - Acquire game-changing Warp-resistant technology
-- **Military Recruitment Focus** - Build elite force from Warp exposure survivors
-- **Redemption Mission Focus** - Successfully rehabilitate corrupted Imperial personnel
+*Which aspect of the warrant's mission most aligns with your personal goals and expertise?*
+
+- **Supply Line Focus** - Establish and maintain supply lines for Crusade forces in the most dangerous regions
+- **Asset Recovery Focus** - Cleanse corruption and salvage Imperial assets from Warp-touched territories  
+- **Technology Acquisition Focus** - Acquire Warp-resistant tech and psyker artifacts for the Crusade
+- **Military Recruitment Focus** - Build elite forces from Warp exposure survivors and unsanctioned psykers
+
+
 
 ### **Core Character Questions:**
+*Essential background elements that define your character's personality and history.*
 
 **What drove you to leave your previous life?**
 - **Ambition Unfulfilled** / **Scandal or Disgrace** / **Loyalty Transferred** / **Necessity**
@@ -88,7 +99,7 @@ Prototype long-range exploration cruiser with enhanced Warp drives and sensor ar
 ---
 
 ## NPC CREATION 
-Each player will bring 2 NPCs, they are a part of the crew of the ship. 
+*Each player creates 2 NPCs who serve as key crew members aboard the Eternal Vigil.*
 
 **Connection and Role:**
 - **Blood Bond Specialist** - Family/sworn companion with unique skills
