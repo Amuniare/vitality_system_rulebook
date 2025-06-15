@@ -1,4 +1,4 @@
-*Warhammer 40k: Rogue Trader*
+*Born from necessity in the galaxy's darkest hour, your Rogue Trader dynasty serves as Guilliman's extended hand beyond Imperial borders. This comprehensive overview establishes your mandate, vessel, crew composition, and the character concepts that will guide your operations in the fractured Imperium.*
 
 ---
 

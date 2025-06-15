@@ -1,3 +1,9 @@
+
+*From the ending of the Macharian Crusade to the opening of the Great Rift, witness the cascading failures that brought the Imperium to its knees. This chronological record traces the critical events from 990.M41 through 009.M42, showing how each crisis created the desperate conditions that now demand Rogue Trader intervention.*
+
+---
+
+
 ## THE LONG DECLINE (990-995.M41)
 
 ### **990.M41 - The Macharian Crusade Ends**

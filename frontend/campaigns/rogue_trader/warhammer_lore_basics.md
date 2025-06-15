@@ -1,5 +1,10 @@
+*The Imperium of Man spans a million worlds, yet ignorance remains humanity's greatest enemy. Learn the core concepts that separate survival from damnation: Warp travel mechanics, Space Marine capabilities, and the ever-present threat of Chaos corruption that lurks in every shadow.*
 
+---
+
+## Key Concepts
 The campaign is set in 009.M42 (the 9th year of the 42nd millennium), which would be approximately 41,009 years from our current era. Humanity has spread across the galaxy but lives under the fascist Imperium of Man - a brutal theocracy that worships the undying God-Emperor. For 10,000 years, the Imperium has fought endless wars against:
+
 
 - **Chaos**: The four Dark Gods of the Warp (hell dimension) and their followers, including traitor Space Marines
 - **Xenos**: Alien races like the Orks (space orcs), Tyranids (space locusts), and Eldar (space elves)

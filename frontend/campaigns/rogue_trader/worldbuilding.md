@@ -1,4 +1,6 @@
-The Great Rift has shattered the galaxy, creating unprecedented dangers and opportunities for Rogue Trader dynasties. This comprehensive guide covers the essential knowledge needed to navigate the post-Cicatrix Maledictum galaxy, where ancient powers clash amid the twilight of the 41st Millennium.
+*The Great Rift has shattered the galaxy, creating unprecedented dangers and opportunities for Rogue Trader dynasties. This comprehensive guide covers the essential knowledge needed to navigate the post-Cicatrix Maledictum galaxy, where ancient powers clash amid the twilight of the 41st Millennium.*
+
+---
 
 ## Imperial Core: The Foundation of Human Civilization
 
