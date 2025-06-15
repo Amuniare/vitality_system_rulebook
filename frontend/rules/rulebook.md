@@ -1122,12 +1122,12 @@ Usage: Enhances critical hit effect roll strength
 Effect: When Accuracy exceeds target Avoidance by 5+, add half the difference to Effect roll  
 Usage: Rewards high accuracy against low-defense targets  
 
-**20p - Blitz**  
+**10p - Blitz**  
 Effect: +1 Accuracy per 6 spaces moved toward target this turn  
 Usage: Mobile attacker bonus, stacks with movement  
 
 **20p - Ricochet**  
-Effect: Critical hits trigger additional attack against different target within range  
+Effect: Critical hits trigger an additional attack against a different target within range  
 Restriction: Secondary attack cannot crit from target being Stunned  
 Exclusion: Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet  
 
@@ -1137,7 +1137,7 @@ Restriction: Secondary attack cannot crit from target being Stunned
 Exclusion: Cannot trigger from Ricochet, Explosive Critical, or other Double-Tap  
 
 **40p - Explosive Critical**  
-Effect: Critical hits trigger attack against all enemies within 3 spaces of target  
+Effect: Critical hits trigger attack against all enemies within 3 spaces of target if it would also hit them  
 Restriction: Cannot apply to AOE attacks, secondary attacks cannot crit from Stun  
 Exclusion: Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical  
 
@@ -1156,14 +1156,14 @@ Usage: Basic damage/accuracy trade-off
 Effect: Replace 3d6 damage roll with flat 15 damage  
 Usage: Eliminates damage variance for consistent output  
 
-**50p - Enhanced Effect**  
+**40p - Enhanced Effect**  
 Effect: Add one additional damage die to damage rolls  
 Usage: Increases damage potential and average  
 
 #### Dice Manipulation
 
 **10p - Reliable Effect**  
-Effect: Roll extra die on damage and condition rolls, drop lowest result  
+Effect: Roll an extra damage die, drop lowest result  
 
 **20p - Consistent Effect**  
 Effect: Reroll all 1s on damage dice  
@@ -1184,17 +1184,13 @@ Banned Combination: Cannot combine with Heavy Strike or Headshot
 
 #### Damage Over Time and Area
 
-**50p - Bleed**  
+**60p - Bleed**  
 Effect: Target takes identical damage again at end of your next 2 turns  
 Duration: 2 additional damage instances  
 
-**20p - Splash Damage**  
-Effect: Adjacent targets take Tier+1d6 damage if Attack roll would hit their Avoidance  
-Usage: Applies to Melee and Ranged attacks only  
-
 **50p - Environmental**  
-Effect: All hexes hit by attack become hazardous terrain  
-Hazard Effect: Deal attack's Damage and Condition to any character entering or ending turn in hex  
+Effect: All hexes hit by attack become hazardous terrain, until the start of your next turn  
+Hazard Effect: Deal attack's Damage and Condition to any character entering or ending turn in affected spaces  
 
 #### Utility Effects
 
@@ -1302,23 +1298,23 @@ Restriction: Cannot apply to AOE attacks
 #### Tactical Enhancements
 
 **30p - Menacing**  
-Effect: Reducing enemy to 0 HP allows Intimidation attempt against all enemies within 3 spaces  
+Effect: Reducing enemy to 0 HP allows Intimidation attempt against all enemies within 3 spaces of the target  
 Surrender Threshold: Enemies with HP ≤ Intimidation bonus surrender  
 
 **30p - Disengage**  
 Effect: Successful hit prevents opportunity attacks from all hit targets until end of turn  
 
-**60p - Extra Attack**  
+**50p - Extra Attack**  
 Effect: Successful hit with successful effect allows identical attack against same target  
-Usage: Must hit and succeed on both Accuracy and Effect  
+Usage: Must hit and succeed on both Accuracy and Effect
+Frequency: Once per turn maximum   
 
 #### Sequential Attack Systems
 
 **20p - Analyzing Strike**  
 Effect: +1 to chosen stat (Accuracy/Damage/Conditions) per previous Analyzing Strike against same target  
 Maximum Bonus: Equal to Tier  
-Reset Condition: Bonus resets if you skip attacking target for one turn  
-Limitation: Only one target can have Analyzing Strike bonus at any time  
+Reset Condition: Bonus resets if you skip attacking target for one turn or activate it on another target 
 
 **30p - Follow-Up Strike**  
 Effect: Successful hit with successful effect allows one Base Attack against same target  
