@@ -1,6 +1,3 @@
-## The Warhammer 40k Timeline
-
-
 ## THE LONG DECLINE (990-995.M41)
 
 ### **990.M41 - The Macharian Crusade Ends**

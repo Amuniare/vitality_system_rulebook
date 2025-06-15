@@ -1,5 +1,3 @@
-# Comprehensive Warhammer 40k Campaign Guide for Rogue Traders in 009.M42
-
 The Great Rift has shattered the galaxy, creating unprecedented dangers and opportunities for Rogue Trader dynasties. This comprehensive guide covers the essential knowledge needed to navigate the post-Cicatrix Maledictum galaxy, where ancient powers clash amid the twilight of the 41st Millennium.
 
 ## Imperial Core: The Foundation of Human Civilization

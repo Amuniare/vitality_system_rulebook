@@ -1,5 +1,4 @@
-# ROGUE TRADER CAMPAIGN: THE ETERNAL VIGIL
-*A Warhammer 40k Rogue Trader Campaign*
+*Warhammer 40k: Rogue Trader*
 
 ---
 
