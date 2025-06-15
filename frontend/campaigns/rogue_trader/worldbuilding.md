@@ -1,215 +1,227 @@
-## WHAT IS WARHAMMER 40k?
+# Comprehensive Warhammer 40k Campaign Guide for Rogue Traders in 009.M42
 
-The campaign is set in 009.M42 (the 9th year of the 42nd millennium), which would be approximately 41,009 years from our current era. Humanity has spread across the galaxy but lives under the fascist Imperium of Man - a brutal theocracy that worships the undying God-Emperor. For 10,000 years, the Imperium has fought endless wars against:
+The Great Rift has shattered the galaxy, creating unprecedented dangers and opportunities for Rogue Trader dynasties. This comprehensive guide covers the essential knowledge needed to navigate the post-Cicatrix Maledictum galaxy, where ancient powers clash amid the twilight of the 41st Millennium.
 
-- **Chaos**: The four Dark Gods of the Warp (hell dimension) and their followers, including traitor Space Marines
-- **Xenos**: Alien races like the Orks (space orcs), Tyranids (space locusts), and Eldar (space elves)
-- **Internal Threats**: Heretics, mutants, and anyone who questions Imperial orthodoxy
+## Imperial Core: The Foundation of Human Civilization
 
-**Key Concepts:**
-- **The Warp**: A parallel dimension of pure psychic energy and emotion, home to demons and Chaos Gods
-- **Space Marines**: Genetically enhanced super-soldiers, humanity's greatest warriors
-- **Primarchs**: The Emperor's 18 demigod sons who led the Space Marines (9 turned traitor 10,000 years ago)
-- **Rogue Traders**: Individuals with warrant of trade, giving them authority to trade and explore beyond Imperial borders
-- **The Astronomican**: A psychic lighthouse powered by the Emperor's will that allows faster-than-light travel
+### The Emperor of Mankind
+The Master of Mankind sits upon the Golden Throne, physically dead yet spiritually transcendent after 10,000 years of torment. **His psychic will extends across hundreds of billions of worlds**, maintaining the Astronomican and battling Chaos Gods in the Warp. Roboute Guilliman describes Him as having lost His humanity, becoming cold and distant—a divine force rather than a benevolent father. The Emperor's potential awakening grows stronger with the Great Rift's power, possibly marking the end of the current era.
 
----
+**For Rogue Traders**: Your Warrant of Trade derives its ultimate authority from His name. The Emperor's guidance through Tarot readings can influence major decisions, while religious devotion to Him provides crucial protection against Chaos corruption during dangerous Warp journeys.
 
-## THE LONG DECLINE (990-995.M41)
+### The Golden Throne
+This Dark Age relic slowly fails with mechanisms beyond current Imperial understanding. The Throne now requires **exponentially increasing psyker sacrifices**—4,000 daily compared to 1,000 in early M41. Dark Eldar provided temporary repairs in exchange for access and slaves, delaying failure by centuries. The Talisman of Seven Hammers serves as a dead man's switch—if the Throne fails, Terra dies with it.
 
-### **990.M41 - The Macharian Crusade Ends**
-The largest Imperial military campaign in millennia concludes with the conquest of nearly 1,000 worlds. However, the crusade's leader Lord Solar Macharius dies, and his generals immediately begin fighting each other for control. The "Macharian Heresy" civil war divides the newly conquered territories and wastes the crusade's gains.
+**For Rogue Traders**: Its potential failure timeline affects all long-term strategic planning. Technology that could extend its function would be of incalculable value. The Throne's critical status creates opportunities for those willing to take extreme risks in pursuit of solutions.
 
-### **991.M41 - The Badab War**
-Several Space Marine chapters rebel against Imperial taxation and oversight. The resulting war between loyalist and rebel Space Marines devastates multiple star systems and sets dangerous precedents for future conflicts.
+### The Astronomican
+The psychic lighthouse's range has shrunk from 70,000 to 50,000 light years due to increased Warp instability. During the Noctis Aeterna, the beacon went dark for varying periods—33 days on Terra, months or years elsewhere. **Regions of Imperium Nihilus still cannot detect the beacon**, forcing dangerous blind jumps. Ironically, the same beacon that enables human expansion also draws Tyranid hive fleets to the galaxy.
 
-### **992.M41 - Waaagh! Ghazkull Begins**
-The largest Ork invasion in centuries begins as Warlord Ghazghkull Thraka launches a multi-system campaign. Millions of Imperial Guard are deployed to contain the green tide.
+**For Rogue Traders**: Range limitations create effective Imperial borders and define where you can operate safely. Regions beyond beacon range offer high-risk, high-reward opportunities. Alternative navigation methods like Webway access would be revolutionary for your operations.
 
-### **993.M41 - The Reign of Blood Memories**
-As the Imperium struggles with multiple wars, many remember the recent "Reign of Blood" - a century-long period when the insane High Lord Goge Vandire nearly destroyed the Imperium from within. Trust in Imperial leadership remains fragile.
+### Imperial Cult & Ecclesiarchy
+The Adeptus Ministorum faces theological crisis with Guilliman's return and his apparent stance against the Emperor's divinity. The organization adapts by worshipping Guilliman as a living saint while maintaining the Emperor's godhood. **Enhanced power in Dark Imperium regions** where Imperial authority is weakened provides new opportunities for missionary work.
 
-### **994.M41 - Hive Fleet Behemoth Approaches**
-Long-range Imperial scouts detect the first Tyranid hive fleet approaching the galaxy. Few understand the true horror that approaches - an alien swarm that devours entire worlds, leaving nothing but barren rock.
+**For Rogue Traders**: Religious authority legitimizes conquests and trading agreements. The Ecclesiarchy provides personnel, funding, and military support. Theological flexibility allows adaptation of local beliefs to Imperial framework, making world integration easier.
 
-### **994.M41 - The Damocles Gulf Campaign**
-First major Imperial contact with the Tau Empire (a young, technologically advanced alien civilization). The campaign ends in stalemate, but reveals another rising threat to Imperial expansion.
+### Imperial Technology Doctrine
+The Adeptus Mechanicus clings to Standard Template Constructs while forbidding innovation. Some Forge Worlds isolated in the Dark Imperium develop dangerous independence. **Desperate attempts to repair the Golden Throne lead to forbidden research**, while Primaris Marine technology represents rare approved innovation under Belisarius Cawl's influence.
 
----
+**For Rogue Traders**: Beyond Imperial borders, you can legally trade certain xenotech and develop new designs. The critical need for solutions to the Golden Throne failure creates unprecedented opportunities for technological discovery and trade.
 
-## THE STORM GATHERS (995-999.M41)
+## Imperial Factions: The Imperium's Defenders
 
-### **995.M41 - The Gothic War Ends**
-A 12-year campaign against Abaddon the Despoiler's Chaos fleets concludes. Abaddon - the leader of the Black Legion and most powerful Chaos Space Marine warlord - retreats after testing Imperial defenses and gathering intelligence. Imperial forces claim victory, but Abaddon has learned what he needs for his true assault.
+### Space Marines & Primaris Marines
+The Great Rift devastated the Adeptus Astartes—**nearly half of all 1,000 Chapters remain unaccounted for** with twelve homeworlds confirmed destroyed. The Ultima Founding created hundreds of new all-Primaris Chapters, while 94% of surviving Chapters accepted Primaris reinforcements. The dangerous Rubicon Primaris procedure allows Firstborn Marines to cross the threshold.
 
-### **996.M41 - The First Tyrannic War**
-Hive Fleet Behemoth invades the galaxy's eastern rim. The Tyranids - bio-engineered aliens that consume all biomass - devour dozens of worlds before being stopped at terrible cost. The Space Marine Ultramarines chapter suffers devastating losses, including the death of their beloved Captain.
+**For Rogue Traders**: Space Marine detachments are extremely rare but invaluable. Some Chapters enter mutual benefit pacts with powerful dynasties. Post-Rift desperation may increase cooperation possibilities, though they never serve directly under Warrant authority.
 
-### **997.M41 - The Second War for Armageddon**
-Ork Warlord Ghazghkull Thraka invades the hive world Armageddon with the largest Ork force in Imperial history. The war drags on for years, consuming vast Imperial resources and revealing the Imperium's strategic exhaustion.
+### Imperial Guard/Astra Militarum
+Massive mobilization on unprecedented scale has created critical manpower shortages, with entire hive cities conscripted. Cadia's fall devastated Guard morale and identity. **Stretched forces leave many worlds undefended** as regiments deploy to crusades across the galaxy.
 
-### **998.M41 - The Octarius War Begins**
-The Imperium deliberately starts a war between Tyranids and Orks by guiding Hive Fleet Kraken into Ork territory. Both alien races consume each other in endless battle, but the survivor will be stronger than either was alone.
+**For Rogue Traders**: Veterans provide excellent recruitment opportunities. Some regiments are available for hire by wealthy dynasties. Guard forces can provide security for trade routes and participate in joint operations beyond Imperial borders.
 
-### **998.M41 - Signs and Portents**
-Across the galaxy, psykers (humans with psychic powers) report disturbing visions of coming darkness. Warp storms increase in frequency and violence. The Astronomican - the psychic lighthouse that guides Imperial ships through faster-than-light travel - begins flickering intermittently. Chaos cultists emerge from hiding on hundreds of worlds.
+### Adeptus Mechanicus
+All Forge Worlds ordered to increase production to unprecedented levels, **stripping entire star systems for raw materials**. Seven major Forge Worlds destroyed entirely. Many Explorator fleets cut off from home bases, creating opportunities for independent agreements.
 
-### **998.M41 - The Thirteenth Founding**
-A new generation of Space Marine chapters is created to replace losses from constant warfare. However, many of these chapters suffer from genetic instability and mysterious curses, suggesting something is wrong with the Emperor's genetic legacy.
+**For Rogue Traders**: Essential for ship maintenance and advanced technology. Tech-priests are invaluable for void operations. Long-standing ancient pacts obligate Mechanicus supply to Rogue Traders, making you among their five major trading partners.
 
-### **999.M41 - The Time of Ending**
-Imperial scholars declare this the "Time of Ending" as apocalyptic events multiply across the galaxy. Three more Tyranid hive fleets are detected approaching from different directions. Chaos incursions reach levels unseen since the Horus Heresy 10,000 years ago.
+### Inquisition
+The Psychic Awakening has dramatically increased heretical and xenos threats. **Massive daemon incursions require expanded Ordo Malleus response**. Crisis conditions have broadened Inquisitorial powers, with Ordo Malleus now assigned jurisdiction over Navigator Houses.
 
----
+**For Rogue Traders**: The Inquisition can investigate and sanction your activities but also offers partnership opportunities against xenos and heretical threats. Joint operations provide valuable intelligence about frontier threats.
 
-## THE 13TH BLACK CRUSADE (999.M41)
+### Rogue Traders
+Nearly 100 Rogue Traders summoned to Macragge by Guilliman highlights your critical role in reconnecting isolated Imperial worlds. **Emergency conditions increase operational independence** while creating new frontiers to explore.
 
-### **Early 999.M41 - The Despoiler's Gambit**
-Abaddon the Despoiler launches his 13th and largest Black Crusade from the Eye of Terror - a massive Warp storm where Chaos Space Marines have gathered strength for 10,000 years. Unlike his previous 12 crusades, this one targets Cadia specifically - the fortress world that guards the only stable route from Chaos territory into Imperial space.
+**For Rogue Traders**: The Great Rift has created unprecedented opportunities for exploration and profit. Your unique legal authority to operate beyond Imperial borders becomes more valuable than ever in the divided galaxy.
 
-### **Mid 999.M41 - The Cadian Gate**
-Cadia is the most heavily fortified world in the galaxy, covered in massive fortress-cities and defended by the famous Cadian Shock Troops - the finest soldiers in the Imperial Guard. For generations, every Cadian has trained for this moment. The planet's motto: "Cadia Stands."
+### Navigator Houses (Navis Nobilite)
+The only means of reliable long-range Warp travel makes Navigators even more valuable under disrupted conditions. Traditional Houses compete with Shrouded Houses and Renegade Houses for influence. **Current leader Francisco M'edici leads the Paternova authority**.
 
-### **Mid 999.M41 - First Assaults Repelled**
-Initial Chaos assaults are repelled by Cadia's defenders. Daemon armies and traitor Space Marines crash against the planet's void shields and fortress walls. Lord Castellan Creed, Cadia's military commander, coordinates a masterful defense.
+**For Rogue Traders**: Absolutely critical for any long-range operations. Different Houses offer different services and capabilities. Free Charter Navigators provide complete service autonomy but command premium prices.
 
-### **Late 999.M41 - Imperial Reinforcements**
-Space Marine chapters, Imperial Guard regiments, and Imperial Navy fleets rush to reinforce Cadia. The largest Imperial military gathering in centuries assembles in the Cadian system.
+## Chaos: The Eternal Enemy
 
-### **Late 999.M41 - The Will of Eternity**
-Abaddon captures an ancient fortress-ship called the Will of Eternity and uses it to attack Cadia directly from orbit. The planet's void shields begin failing under the massive vessel's assault.
+### The Warp
+The Immaterium has become far more dangerous post-Great Rift. **Warp storms proliferate across the galaxy** while time flows inconsistently across regions. The Psychic Awakening enhances psychic phenomena and increases psyker numbers. Reality becomes increasingly malleable and responsive to thought and emotion.
 
-### **Late 999.M41 - Heroes Fall**
-Many Imperial champions die defending Cadia. Saint Celestine, a living saint of the Emperor, is killed in battle but later resurrected by divine intervention. Entire Space Marine chapters are wiped out defending key positions.
+**For Rogue Traders**: Warp rifts may reveal previously inaccessible systems but carry extreme daemon risks. Increased psychic activity threatens crew corruption. Proper Gellar Field maintenance becomes literally life-or-death critical.
 
-### **Late 999.M41 - Desperate Measures**
-As defeat becomes inevitable, Imperial commanders authorize previously forbidden tactics. Some heroes attempt impossible rescue missions into the Warp itself. Others make deals with xenos races or use forbidden technology.
+### Chaos Gods
+**Khorne** benefits enormously from galaxy-wide warfare, making him currently the strongest god. **Tzeentch** gains power from the Psychic Awakening and increased sorcery use. **Nurgle** currently weakest but benefits from Great Rift despair. **Slaanesh** exploits desperation and extremes driven by galactic warfare.
 
-### **End 999.M41 - The Planet Broke Before the Guard Did**
-Facing inevitable defeat, Abaddon crashes the Will of Eternity directly into Cadia's surface. The planet literally breaks apart, its core destabilized. The fortress world that held back Chaos for 10,000 years is destroyed, but the Cadian Guard fight to the last man. Their final message: "Cadia stands... in our hearts."
+**For Rogue Traders**: Each god offers different corruption risks and opportunities. Khornate artifacts provide combat advantages but risk uncontrolled violence. Tzeentchian knowledge comes with mutation risks. Nurglite followers prove extremely resilient but spread plague. Slaaneshi items enhance social skills but lead to depravity.
 
----
+### The Eye of Terror & Daemon Worlds
+The Eye remains the largest stable Warp rift but no longer unique due to new rifts galaxy-wide. **Daemon worlds proliferated significantly following the Great Rift**, each reflecting their ruler's nature and dominant Chaos God influence.
 
-## THE GREAT RIFT OPENS (000-001.M42)
+**For Rogue Traders**: These regions offer unique resources impossible to create elsewhere but carry extreme corruption risks. Daemon-forged weapons and forbidden knowledge command astronomical prices among those willing to trade in such materials.
 
-### **000.M42 - Birth of the Cicatrix Maledictum**
-Cadia's destruction creates a massive Warp rift called the Cicatrix Maledictum (Great Rift) that bisects the entire galaxy. This permanent tear in reality stretches from the Eye of Terror to the galaxy's far rim, cutting the Imperium in half.
+### Black Legion
+Under Abaddon's leadership, the Black Legion achieved their greatest victory by destroying Cadia and creating the Great Rift. **Currently prosecuting multiple major campaigns** including the War of Beasts on Vigilus and the Arks of Omen Campaign. They maintain the most numerous and well-equipped Traitor Legion.
 
-### **000.M42 - The Noctis Aeterna Begins**
-The "Blackness" - a period where the Astronomican fails across huge regions of space. Without the psychic lighthouse, faster-than-light travel becomes nearly impossible. Millions of worlds are isolated and defenseless. Some systems experience centuries of subjective time while others freeze in temporal stasis.
+**For Rogue Traders**: The primary Chaos threat likely to intercept expeditions. Their raids generate flows of stolen Imperial artifacts into black markets. Information on Black Legion movements proves extremely valuable to Imperial authorities.
 
-### **000.M42 - Daemon Worlds Multiply**
-With the barrier between reality and the Warp permanently weakened, entire planets are consumed by Chaos corruption. Daemons manifest freely across the galaxy. Some worlds are transformed into hellscapes where physics no longer applies.
+### Death Guard & Mortarion
+Established the Scourge Stars domain north of Ultramar and launched the Plague Wars against Guilliman's forces. **Mortarion has resumed direct control** after millennia of absence, consolidating territorial gains while spreading plague outbreaks galaxy-wide.
 
-### **000.M42 - The Imperium Divided**
-The galaxy is split into Imperium Sanctus (the "light" side where Terra remains) and Imperium Nihilus (the "dark" side cut off by the Great Rift). Communication between the two halves becomes sporadic at best.
+**For Rogue Traders**: Death Guard presence creates profitable quarantine-running opportunities. Medical supplies command premium prices in affected regions. Plague strains prove valuable for research but carry extreme dangers.
 
-### **001.M42 - The Gathering Storm**
-Three major events converge across the galaxy:
-- Magnus the Red (traitor Primarch and daemon prince) leads a massive assault on the Space Wolves' homeworld
-- The Ynnari (Eldar death cult) begin their plan to awaken Ynnead, their god of death
-- Belisarius Cawl (ancient tech-priest) prepares technologies hidden for 10,000 years
+### Thousand Sons & Magnus the Red
+Successfully relocated their Planet of Sorcerers from the Eye of Terror to orbit above restored Prospero. **Greatly empowered by galaxy-wide psychic awakening**, they conduct major campaigns in the Stygius Sector while performing rituals on their restored homeworld.
 
-### **001.M42 - The Siege of Terra (Second)**
-For the first time since the Horus Heresy 10,000 years ago, Chaos forces actually reach Terra itself. The Imperial Palace's outer defenses are breached by daemon armies before the attack is finally repelled.
+**For Rogue Traders**: Possess extensive archives of prohibited lore and powerful warp-touched artifacts. Information about future events might be available through intermediaries, though acquiring such knowledge risks damnation.
 
-### **001.M42 - The Primarch Returns**
-Roboute Guilliman, Primarch of the Ultramarines and one of the Emperor's surviving loyal sons, is revived from 10,000 years of near-death stasis. His resurrection requires cooperation between Imperial forces and Eldar, creating controversy but hope.
+## Xenos Factions: Alien Threats and Opportunities
 
----
+### Orks & Ghazghkull Thraka
+**Ghazghkull was killed by Ragnar Blackmane but resurrected by Mad Dok Grotsnik** in a larger, more powerful body. Now commands over 5 million Greenskin warships in "Da Great Waaagh!" His psychic presence draws Orks from light-years away, creating unprecedented unity among the normally fractious species.
 
-## THE INDOMITUS CRUSADE (001-005.M42)
+**For Rogue Traders**: Small raids can rapidly escalate into massive Waaagh!s. Limited trade opportunities exist for "shiny" technology. Orks make aggressive scavengers, competing for battlefield debris and wrecked ships.
 
-### **001.M42 - The Indomitus Crusade Launches**
-Guilliman launches the largest military campaign since the Great Crusade 10,000 years ago. He deploys the Primaris Space Marines - a new generation of enhanced super-soldiers created by Belisarius Cawl using improved versions of the Emperor's genetic templates.
+### Tyranids & Hive Fleets
+**Current fleets may only be "scouting forces"** with the main invasion still approaching from intergalactic space. The Strategic Collective projects 500% mobilization increase needed within a century. Hive Fleet Leviathan splits into multiple tendrils pushing toward Terra.
 
-### **001.M42 - The Plague Wars Begin**
-Mortarion (traitor Primarch and daemon prince of Nurgle) leads massive plague fleets against Guilliman's home realm of Ultramar. Entire star systems are consumed by supernatural diseases that turn worlds into rotting hellscapes.
+**For Rogue Traders**: Absolute existential threat to all organic life. Advance warning of fleet movements provides extremely valuable intelligence. Dead worlds stripped by Tyranids may contain rare minerals exposed by bio-consumption.
 
-### **002.M42 - Primaris Integration**
-The new Primaris Marines begin reinforcing existing Space Marine chapters across the galaxy. Some chapters welcome these reinforcements, while others view them with suspicion for their different creation methods and potential loyalty to Guilliman over their own chapter traditions.
+### Eldar/Aeldari
+**The Ynnari faction formed under prophet Yvraine** seeking to fully awaken Ynnead. They helped resurrect Guilliman, creating unprecedented Imperial alliance. All major Craftworlds dispatch forces across the galaxy to manipulate fate according to their prophecies.
 
-### **002.M42 - The War of Beasts**
-Massive Ork invasions exploit Imperial weakness. The largest Waaagh! in millennia sweeps across multiple sectors, with some Ork forces actually growing stronger by fighting the enhanced Chaos forces.
+**For Rogue Traders**: May offer alliance against greater threats. Advanced technology potentially available through careful negotiation. Ynnari prove more willing to work with humans than traditional Craftworlds.
 
-### **002.M42 - Chaos Ascendant**
-Chaos Space Marine warbands raid freely across Imperial space. Many worlds that survived the initial crisis fall to secondary attacks. The Death Guard spreads Nurgle's plagues, the Thousand Sons corrupt psykers, and the World Eaters slaughter entire populations in Khorne's name.
+### Dark Eldar/Drukhari
+**Increased raiding activity exploits opportunities** provided by the Great Rift. Commorragh experiences "Great Dysjunction" with increased civil war between pro- and anti-Ynnari factions. Supreme Overlord Vect opposes the Ynnari movement.
 
-### **003.M42 - The Vigilus Campaign**
-The crucial world of Vigilus becomes a focal point for multiple conflicts as Imperial, Chaos, Ork, and Genestealer Cult forces battle for control of a key strategic position near the Great Rift.
+**For Rogue Traders**: Black market trade possible through intermediaries. Information brokerage opportunities—they know much about galactic movements. Raid risks increase as they target prestigious captives.
 
-### **003.M42 - The Psychic Awakening**
-Psykers across the galaxy experience a dramatic increase in their powers. While this provides new opportunities, it also creates massive dangers as untrained psykers become gateways for daemonic possession.
+### Tau Empire
+**Fourth Sphere expedition trauma** created uncharacteristically xenophobic survivors, while the Fifth Sphere launches under Commander Shadowsun. Internal tensions exist between pragmatic Fifth Sphere forces and traumatized Fourth Sphere veterans.
 
-### **004.M42 - The Devastation of Baal**
-Hive Fleet Leviathan attacks the Blood Angels' homeworld of Baal. The planet is saved only by the unexpected arrival of the Great Rift, which destroys most of the Tyranid fleet - but also corrupts the planet's environment.
+**For Rogue Traders**: Most reasonable xenos faction for negotiation and trade. Advanced technology potentially available. Highest trade potential among all xenos factions, especially in pre-Fourth Sphere territories.
 
-### **004.M42 - The War in the Rift**
-Imperial forces begin establishing footholds within the Great Rift itself, discovering that some regions can be traversed despite the Warp storms. These expeditions face constant daemon attacks and reality distortions.
+### Necrons & The Silent King
+**Szarekh returned to the galaxy** after encountering Tyranids in intergalactic space. Massive awakening of Tomb Worlds proceeds across the galaxy. The Silent King seeks to unite dynasties against the Tyranid threat while harvesting blackstone for anti-Warp pylons.
 
----
+**For Rogue Traders**: Consider all organic life inferior and will exterminate colonies to reclaim worlds. Ancient knowledge of galactic threats might be obtainable. Technology advantage makes direct confrontation suicidal.
 
-## THE RESOURCE CRISIS ERA (003-010.M42)
+## Key Figures: Architects of the 42nd Millennium
 
-### **003.M42 - The Logistical Nightmare**
-The Indomitus Crusade's massive scale creates unprecedented supply challenges. Traditional manufacturing worlds are cut off by the Great Rift. Forge Worlds struggle to produce enough equipment for the new Primaris Marines while maintaining existing forces.
+### Abaddon the Despoiler
+Now titles himself "Warmaster of the Imperium Nihilus" following his 13th Black Crusade success. **Rules over the dark half of the Imperium**, commanding larger territory than Horus ever held. Commands the largest Chaos Space Marine force in existence.
 
-### **003.M42 - The Rogue Trader Summons** 
-Guilliman calls hundreds of Rogue Traders to Terra, desperate for alternative supply lines. He tasks them with establishing resource acquisition networks in regions too dangerous for normal Imperial forces - including Warp-corrupted territories that others refuse to enter.
+### Roboute Guilliman
+**Lord Commander of the Imperium and Imperial Regent**, the de facto ruler in the Emperor's name. Leading the Indomitus Crusade to stabilize territory after the Great Rift. Can issue orders to Rogue Traders and potentially revoke Warrants of Trade.
 
-### **004.M42 - The Frontier Wars**
-Rogue Traders and their fleets begin operations across the galaxy's most dangerous regions. Some succeed in establishing profitable trade routes, while others disappear entirely into the darkness beyond Imperial space.
+### Belisarius Cawl
+**Prime Conduit of the Omnissiah**, creator of Primaris Marines and key figure in Guilliman's resurrection. Currently working to close the Great Rift using Necron blackstone technology. Possesses vast knowledge accumulated over millennia.
 
-### **004.M42 - Xenos Alliances**
-Out of necessity, some Imperial forces begin making temporary alliances with previously hostile alien races. These controversial partnerships create tensions within the Imperium but provide crucial resources and intelligence.
+### Yvraine (Daughter of Shades)
+**Leader of the Ynnari faction** seeking to unite all Aeldari in service to Ynnead. Actively pursues Croneswords to fully awaken the God of the Dead. May work with pragmatic Rogue Traders against Chaos threats.
 
-### **005.M42 - The Silent King Returns**
-The Necrons' ultimate leader, the Silent King, returns to the galaxy after 60 million years in exile. His arrival creates new conflicts but also unexpected opportunities as some Necron dynasties prove willing to negotiate rather than simply exterminate all life.
+### Eldrad Ulthran
+**Ancient Farseer of Craftworld Ulthwé**, now allied with the Ynnari despite previous conflicts. Master manipulator capable of seeing potential futures and engineering outcomes across centuries.
 
-### **005.M42 - The Warp Stabilization Projects**
-Tech-priests and Imperial psykers begin developing new technologies to stabilize Warp travel near the Great Rift. These experimental systems are dangerous but necessary for maintaining communication and supply lines.
+### Saint Celestine
+**The Imperium's most prominent Living Saint**, recently instrumental in the Fall of Cadia and Guilliman's resurrection. Immortal warrior who can resurrect herself and others, appearing at crucial moments to inspire the faithful.
 
-### **006.M42 - The Tau Expansion**
-The Tau Empire launches its Fifth Sphere Expansion, taking advantage of Imperial weakness to conquer new worlds. Their advanced technology and relatively benevolent rule attracts some human populations away from Imperial control.
+## Major Events & Locations: Strategic Focal Points
 
-### **006.M42 - The Genestealer Uprising**
-Genestealer Cults - alien parasites that infect human populations over generations - simultaneously revolt on hundreds of worlds. These uprisings reveal that Tyranid infiltration is far more extensive than previously believed.
+### Fall of Cadia
+**Planet destroyed when Abaddon crashed the Blackstone Fortress** into it during the 13th Black Crusade. Loss of Blackstone Pylons allowed Eye of Terror expansion, creating the Great Rift. Approximately 3 million Cadians evacuated to "New Cadia" on Chaeros.
 
-### **007.M42 - The Dark Imperium Doctrine**
-Guilliman officially recognizes the division of the Imperium, establishing separate command structures for Imperium Sanctus and Imperium Nihilus. This controversial decision is necessary but weakens central authority.
+**For Rogue Traders**: Elite Cadian veterans available for recruitment. High demand for military equipment in refugee settlements. Daemon-infested ruins pose extreme risks but may contain valuable artifacts.
 
-### **007.M42 - The Torchbearer Fleets**
-Massive supply convoys attempt to cross the Great Rift, carrying Primaris Marines and advanced technology to the isolated regions of Imperium Nihilus. Most fail, but the few that succeed provide crucial reinforcement to beleaguered worlds.
+### The Great Rift/Cicatrix Maledictum
+**Galaxy-spanning Warp storm** stretching from the Eye of Terror to the Eastern Fringe, dividing the Imperium into Sanctus and Nihilus. Only stable passages are the Nachmund Gauntlet and Attilan Gate. Creates temporal distortions where time flows differently.
 
-### **008.M42 - The Charadon Campaign**
-A massive Imperial offensive attempts to establish a permanent corridor through the Great Rift. The campaign involves millions of troops and hundreds of Space Marine chapters, but faces constant daemon attacks and reality storms.
+**For Rogue Traders**: New Warp routes opened on Imperial space fringes. Isolation creates monopoly trading opportunities. Premium pricing for goods crossing the Rift. Massive demand for basic supplies in cut-off systems.
 
-### **008.M42 - The Rise of the Prophets**
-Across the galaxy, charismatic leaders claiming divine inspiration begin gathering followers. Some are genuine Imperial saints, others are Chaos cultists, and many fall somewhere between. These movements destabilize traditional Imperial authority structures.
+### Blackstone Fortresses
+**Planetoid-sized structures built from Noctilith** with anti-Warp properties. Several controlled by Chaos forces. Each contains internal Webway passages and autonomous defensive systems. Can function as reality-tearing superweapons when fully activated.
 
-### **009.M42 - The Tyranid Adaptation**
-The surviving Tyranid hive fleets begin showing new adaptations specifically designed to counter Primaris Marines and Imperial technology. The aliens' rapid evolution suggests they are learning from every encounter.
+**For Rogue Traders**: Archeotech salvage opportunities command premium prices. Navigation services to fortress locations prove highly valuable. Any recovered blackstone material has enormous worth.
 
-### **009.M42 - The Warding of Baal Secundus**
-Imperial psykers successfully create a massive psychic barrier around an entire star system, proving that large-scale Warp manipulation is possible. However, the effort requires enormous sacrifice and may have attracted unwanted attention from the Warp's inhabitants.
+### Hive Cities
+**Self-contained arcologies housing billions** serve as primary manufacturing hubs. Increased importance for war production in the divided Imperium. Resource strain and refugee influxes create security concerns and gang warfare.
 
+**For Rogue Traders**: Consistent demand for food imports and raw materials. Large-scale contracts for manufactured goods export. Recruitment opportunities for specialized workers and gang fighters.
 
+### Forge Worlds
+**Planets completely controlled by Tech-Priests** ramped up to maximum production. Resource shortages lead to stripping entire star systems. **Seven major Forge Worlds destroyed** entirely. Increased autonomy due to communication disruption.
 
-## Warp Travel
+**For Rogue Traders**: Exclusive contracts for rare material procurement. Technology trading and archeotech exchange opportunities. Premium pricing for advanced technology and long-term supply contracts.
 
-The time differences between real space and warpspace are quite drastic. Not only does time pass at different rates in both kinds of space, but it also passes at very variable rates. Until a ship finishes its jump, it is impossible for a ship's crew to know exactly how long their journey has taken. Time passing in real space is referred to as real time. Time passing on board a spacecraft is referred to as warp time. The relationship between real time and warp time is shown on the chart below.
+## Core Concepts: Essential Knowledge for Operations
 
-| Light Years | Minimum Warp Time | Maximum Warp Time | Minimum Real Time | Maximum Real Time |
-|-------------|-------------------|-------------------|-------------------|-------------------|
-| 1           | 2 mins           | 6 mins           | 43 mins          | 4½ hrs           |
-| 5           | 7 mins           | 30 mins          | 3½ hrs           | 1 day            |
-| 10          | 14 mins          | 1 hour           | 7 hrs            | 2 days           |
-| 50          | 1¼ hrs           | 4¼ hrs           | 1½ days          | 9 days           |
-| 100         | 2¼ hrs           | 9½ hrs           | 3 days           | 3 weeks          |
-| 500         | 12 hrs           | 2 days           | 2 weeks          | 3 months         |
-| 1,000       | 1 day            | 4 days           | 1 month          | 6 months         |
-| 5,000       | 5 days           | 3 weeks          | 5 months         | 3 years          |
+### Psykers & Psychic Powers
+The **Psychic Awakening dramatically increases psyker emergence** in unprecedented numbers. Previously dormant mutations now activate, making anyone potentially psychic. Enhanced powers carry higher corruption and possession risks due to strengthened Warp energies.
 
-So, for example, a 100 light year jump will seem to take from 2¼ to 9½ hours to a spaceship's crew, but between 3 days and 3 weeks will have passed in real space. These times do not include journey times out to and from jump points on the edge of the star systems. It takes from days to weeks of travel at sub-light speeds to reach a drop from the spaceship's starting planet, and a similar time to re-enter the destination system.
+**For Rogue Traders**: Essential crew members (Navigators, Astropaths) but require constant monitoring. Regular screening necessary to detect manifestations among existing crew. Emergency response teams must be equipped with blessed weapons.
 
-The Imperium is approximately 75 thousand light years from edge to edge. A journey of this length would take between 75 and 300 days in warp time, and between 6 years and 40 years real time.
+### Gellar Fields & Warp Travel
+**Increased strain from Great Rift effects** makes Warp travel more dangerous with frequent field fluctuations. Field failures now more catastrophic due to increased daemon activity. Multiple redundancies essential for crew survival.
+
+**For Rogue Traders**: Life-or-death technology requiring constant tech-priest oversight. Higher-grade fields provide better protection. Route planning must avoid high-risk Warp areas. Maintain larger inventories of sanctified components.
+
+### Ynnari
+**Religious movement seeking to fully awaken Ynnead** to save the Aeldari without species extinction. Now opposed by powerful enemies including Asdrubael Vect. Grey Knights actively purge Ynnari cults as daemonic threats.
+
+**For Rogue Traders**: Unpredictable allies against Chaos but cooperation risks Inquisitorial investigation. May provide Webway navigation assistance and advanced technology. Intelligence on Chaos operations potentially available.
+
+### Genestealer Cults
+**Accelerated spread through refugee flows** from Great Rift disasters. Enhanced infiltration exploits chaos and instability. Some cults now operate across multiple star systems rather than single worlds.
+
+**For Rogue Traders**: Large crew populations ideal infection targets. Regular medical screening essential but later generations nearly undetectable. Quarantine protocols necessary for new crew members.
+
+### Waaagh! Culture
+**More Waaagh!s than ever recorded** due to galactic instability. Opportunistic expansion exploits Imperial weakness. **Psychic awakening may strengthen Waaagh! fields**. Successful campaigns attract more Orks through exponential growth.
+
+**For Rogue Traders**: Small raids can rapidly escalate into massive threats. Limited trade opportunities exist for technology. Quick escalation protocols necessary as numbers multiply rapidly.
+
+## Strategic Recommendations for 009.M42 Operations
+
+### Immediate Priorities
+1. **Secure reliable Navigator contracts** - absolutely critical for operations
+2. **Establish Mechanicus relationships** - essential for ship maintenance
+3. **Develop information networks** - knowledge equals profit and survival
+4. **Upgrade Gellar Field systems** - enhanced protection necessary
+5. **Screen all personnel** - detect psykers and cult infiltration
+
+### Opportunity Assessment
+The Great Rift creates unprecedented opportunities for ambitious dynasties:
+- **Monopoly establishment** in isolated regions
+- **Premium pricing** for basic supplies across the divide
+- **Technology recovery** from abandoned Imperial worlds
+- **Alliance building** with desperate factions
+- **Resource exploitation** in contested territories
+
+### Risk Management
+Enhanced supernatural dangers require adaptive strategies:
+- **Daemon countermeasures** standard equipment
+- **Corruption monitoring** continuous crew assessment  
+- **Emergency protocols** for Warp-related incidents
+- **Backup systems** for all critical ship functions
+- **Intelligence gathering** on factional movements
+
+The galaxy burns, but from its ashes rise opportunities for those bold enough to seize them. Your Warrant of Trade grants authority to speak with the Emperor's voice—use it wisely in these dark times, for the choices you make will echo through the ages.

@@ -45,6 +45,8 @@
             <div class="tab-container">
                 <ul class="tab-nav">
                     <li><button class="tab-button active" data-tab="overview">Campaign Overview</button></li>
+                    <li><button class="tab-button" data-tab="timeline">Timeline</button></li>
+                    <li><button class="tab-button" data-tab="lore">Lore Basics</button></li>
                     <li><button class="tab-button" data-tab="worldbuilding">World Building</button></li>
                     <li><button class="tab-button" data-tab="npcs">NPCs</button></li>
                     <li><button class="tab-button" data-tab="characters">Player Characters</button></li>
@@ -56,6 +58,12 @@
             <div class="tab-content">
                 <div class="tab-pane active" id="overview-tab">
                     <div class="loading-tab">Loading campaign overview...</div>
+                </div>
+                <div class="tab-pane" id="timeline-tab">
+                    <div class="loading-tab">Loading timeline...</div>
+                </div>
+                <div class="tab-pane" id="lore-tab">
+                    <div class="loading-tab">Loading lore basics...</div>
                 </div>
                 <div class="tab-pane" id="worldbuilding-tab">
                     <div class="loading-tab">Loading world building...</div>
@@ -83,6 +91,8 @@
                 this.loadedTabs = new Set();
                 this.tabFiles = {
                     'overview': 'campaign_overview.md',
+                    'timeline': 'timeline.md',
+                    'lore': 'warhammer_lore_basics.md',
                     'worldbuilding': 'worldbuilding.md',
                     'npcs': 'npcs.md',
                     'characters': 'player-characters.md',
