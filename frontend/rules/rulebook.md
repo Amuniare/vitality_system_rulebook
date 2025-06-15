@@ -891,7 +891,7 @@ You cannot take a limit, if you are unlikely or unable to suffer the downside, o
 
 ##  LIMITS SYSTEM 
 
-### **CHARGE-UP**
+### **Charge-Up**
 **Cost**: 10p
 *Must use Primary Action on consecutive turns to charge before using attack*
 
@@ -927,50 +927,41 @@ You cannot take a limit, if you are unlikely or unable to suffer the downside, o
 
 
 
-### **RESERVES**
+### **Reserves**
 **Cost**: 10p
 *Can only be used 3 times per combat. Regain all uses after combat ends*
 
 +20p **Reserves 2** Reduce to 2 uses per combat
 * +40p **Reserves 1** Reduce to 1 use per combat
-* +50p **Fragile Reserve** Each time you take damage, lose 1 use
-* +50p **Critical Failure** If you roll a natural 1 on any d20, lose 1 use
+* +20p **Extended Recovery** Regain uses after full rest instead of after combat, once per day
 
-+30p **Extended Recovery** Regain uses after full rest instead of after combat, once per day
-* +30p **Preparation** You need to spend 8 hours of time preparing, to recover uses
-* +50p **Weekly Preparation** Can only regain uses once per week
-* +30p **Slow Recovery** Regain only 1 use per rest period instead of all uses
 
-+30p **Volatile Uses** External factors can cause unexpected use loss
-* +30p **Proximity Loss** Lose 1 use when enemy ends turn adjacent to you
-* +50p **Damage Cascade** Taking 10+ damage in single attack causes loss of 1 use
-* +50p **Condition Trigger** Gaining any Advanced Condition causes loss of all remaining uses
++20p **Volatile Uses** Each time you take damage, lose 1 use
+* +30p **Condition Trigger** Each time you gain a condition, lose 1 use
+* +30p **Critical Failure** If you roll a natural 1 on any d20, lose 1 use
+* +40p **Life Drain** If out of uses, and you would lose 1, take 15 damage instead
 
 +20p **Shared Pool** Multiple special attacks share same use pool, total uses divided among them, +1 use to the pool for each special attack added
 * +20p **Reduced Reserves** Reduce pool by 1 use
 * +40p **Pool Drain** If any attack in pool misses, remove an extra use
 * +30p **Cascade Lock** If any attack in pool misses, no attacks in pool can be used for 1 turn
 
-+40p **Resource Drain** When out of uses, cannot take Quick Actions
-* +40p **Stat Drain** When out of uses, subtract Tier from Accuracy and Damage
-* +50p **Life Drain** When out of uses, take 10 damage at start of each turn, until you hit 0 hp
-* +50p **Movement Lock** When out of uses, Movement reduced by your Tier
 
-+30p **Usage Prerequisites** Cannot use until turn 3 of combat
++30p **Steady** Cannot use until turn 3 of combat
+* +30p **Patient** Cannot use until 5 of combat
 * +30p **Unhealthy** Must be below half HP to use
-* +40p **Melee** Must be adjacent to enemy to use  
-* +50p **Target History** Can only target enemies you have not attacked this combat
+* +60p **Timid** Cannot use unless you are at full hit points and are not affected by any conditions
 
 
 
-### **COOLDOWN**
+### **Cooldown**
 **Cost**: 10p
 *Cannot use again for 1 turn after use*
 
 +20p **Cooldown 2** Cannot use again for 2 turns after use
 * +30p **Cooldown 3** Cannot use again for 3 turns after use
-* +50p **Permanent Injury** Each use of this attack, permanantly increases the cooldown period increases by 1 turn
-* +40p **Fates** Roll a d4-1 when the attack is made, the cooldown is extended by the result
+* +40p **Permanent Injury** Each use of this limit, permanantly increases all cooldown cooldown periods by 1 turn, until you take a full rest
+* +50p **Fates** Roll a d4-1 when the attack is made, the cooldown is extended by the result
 
 +20p **Failure Extension** If attack misses or fails effect, cooldown period increases by 1 turn
 * +30p **Doubling Failure** If attack misses or fails effect, cooldown period increases by 1 turn
@@ -979,19 +970,15 @@ You cannot take a limit, if you are unlikely or unable to suffer the downside, o
 * +30p **Increased Cooldown** Choose 1 of your more special attacks, they can't be used while you are cooling down from this attack
 * +40p **Mass Cooldown** All of your special attacks cannot be used while you are cooling down from this attack
 
-+20p **Conditional Reset** Must wait cooldown period then expend a quick action to regain special attack
-* +50p **Combat Victory** Instead of quick action, you need to expend an action
-* +Variable **Environmental** Cooldown only resets in specific location/weather/time (discuss with GM)
-* +50p **Ally Dependent** Ally must use specific action to reset your cooldown
++40p **Death Proximity** Cooldown increases by 1 turn for every 25 HP below maximum
+* +60p **Trigger Extension** Taking damage or gaining conditions adds 1 turn to current cooldown
+* +40p **Condition Spiral** Conditions aquired last until the end of your cooldown period
 
-+40p **Trigger Extension** Taking damage or gaining conditions adds 1 turn to current cooldown
-* +40p **Damage Cascade** Taking damage or gaining conditions adds an additional turn to current cooldown
-* +50p **Condition Spiral** Conditions last until the end of your cooldown period
-* +50p **Death Proximity** Cooldown increases by 1 turn for every 25 HP below maximum
++30p **Healthy** Your cooldowns don't go down unless you are above 50 HP and not affected by any advanced conditions
+* +50p **Pinnacle of Health** Your cooldowns don't go down unless you are at max HP and not affected by any conditions
+* +50p **Timid** You cannot use this attack unless you are at max HP and not affected by any conditions
 
-
-
-### **RELIABILITY**
+### **Unreliable**
 **Cost**: 30p
 *Roll d20 before use; if under 5, attack fails and action is wasted*
 
@@ -1013,80 +1000,67 @@ You cannot take a limit, if you are unlikely or unable to suffer the downside, o
 * +50p **Spread Effect** Failed checks increase DC for all your special attacks
 * +50p **Critical Cascade** Failures in combat make ability unusable for rest of session
 
-+30p **Failure Backlash** When unreliable roll fails, take 15 damage
-* +40p **Self Damage** When unreliable roll fails, take an additional 15 damage
-* +60p **Condition Infliction** When unreliable roll fails, gain Stun condition, until the start of your next turn
++30p **Attrition** When unreliable roll fails, take 15 damage
+* +40p **Attrition 2** When unreliable roll fails, take an additional 15 damage
+* +60p **Concussive Kickback** When unreliable roll fails, gain Stun condition, until the start of your next turn
 * +100p **Exhaustive** When unreliable roll fails, you must spend an effort or fall unconscious
 
 
 
-### **SEQUENTIAL**
-**Cost**: 20p
+### **Combo Move**
+**Cost**: 30p
 *You must have hit an enemy on your last turn*
 
-+10p **Combat History** You must have hit an enemy on your last turn
-* +20p **Damage History** You must have done damage on your last turn
-* +30p **Kill History** You must have defeated an enemy on your last turn
-* +40p **Perfect History** You must have critically hit on your last turn
++40p **Revenge** You must have done damage on inflicted a condition on your last turn
+* +50p **Kill History** You must have defeated an enemy on your last turn
+* +50p **Perfect Opening** You must have critically hit on your last turn
+* +50p **Follow-Up** You must hit the same enemy as you did last turn
 
-+20p **Action Chain** Must use Aim, Empower, or Refine Action this turn before use
-* +40p **Double Chain** Must use two different Primary Actions this turn before use
-* +50p **Perfect Chain** All prerequisite actions this turn must succeed or this fails
-* +50p **Specific Chain** Must use one specific Primary Action chosen at character creation
 
-+30p **Target History** Can only target enemies you have not damaged this combat
-* +50p **Fresh Targets Only** Can only target enemies no ally has damaged this combat
-* +40p **Finishing Move** Can only target enemies with 25 HP or below
-* +50p **Hunter Restriction** Can only target one specific enemy type chosen at character creation
++20p **Switch Hitter** Can only target enemies you have not damaged this combat
+* +50p **First Blood** Can only target enemies no ally has damaged this combat
+* +40p **Finishing Move** Can only target enemies below half max HP
 
-+40p **Ally Setup** Adjacent ally must have attacked this turn for you to use this
-* +50p **Coordination** Ally must target same enemy you're about to attack this turn
-* +50p **Sacrifice** Ally must have taken 10+ damage this turn for you to use this
-* +50p **Perfect Teamwork** Ally's attack must have hit for your attack to work
++30p **Ally Setup** Ally must have hit the same enemy you're about to attack this turn
+* +40p **Coordination** Ally attack must have damaged or inflicted a condition on the same enemy you're about to attack this turn
+* +40p **Perfect Teamwork** Must be a specific Ally, chosen when limit taken
 
-+20p **Combat Gate** Cannot use until turn 3 of combat
-* +30p **Late Entry** Cannot use until turn 5 of combat
-* +50p **Escalation** Cannot use until someone has taken 20+ damage this combat
++30p **Steady** Cannot use until turn 3 of combat
+* +50p **Patient** Cannot use until turn 5 of combat
+
++30p **Escalation** Cannot use until an ally is below half HP
 * +50p **Desperation** Cannot use until ally is unconscious
 
 +20p **Set Up** Must have hit with a specific special attack (chosen when limit taken)
-* +30p **Solid Set Up** Must have damaged with a specific special attack (chosen when limit taken)
-* +40p **Perfect Set Up** Must have critically hit with specific special attack
-* +50p **Applied Condition** Must have applied condition with specific special attack
+* +60p **Solid Set Up** Must have damaged or inflicted a condition with a specific special attack (chosen when limit taken)
+* +70p **Perfect Opening** Must have critically hit with specific special attack
 
 
 
-### **HEALTH STATE**
-**Cost**: 10p
+### **Unhealthy**
+**Cost**: 20p
 *Can only use when below max HP*
 
-+30p **Critical State** Can only use when at 75 HP or below
-* +40p **Death's Door** Can only use when at 50 HP or below
-* +50p **Last Breath** Can only use when at 25 HP or below
-* +50p **Zero Hour** Can only use when at 0 HP or below
++30p **Unhealthy 2** Can only use when at 75 HP or below
+* +40p **Unhealthy 3** Can only use when at 50 HP or below
+* +50p **Unhealthy 4** Can only use when at 25 HP or below
+* +50p **Unhealthy 5** Can only use when at 0 HP or below
 
-+10p **Fresh Wound** Must have taken 10+ damage this turn to use
-* +30p **Significant Trauma** Must have taken 25+ damage this turn to use
-* +20p **Recent Pain** Must have taken damage within last 2 turns to use
-* +40p **Continuous Suffering** Must take 5+ damage every turn or lose access, unusable for 2 turns
++30p **Fresh Wound 1** Must have taken 15+ damage since the end of your last turn to use
+* +40p **Fresh Wound 2** Must have taken 30+ damage since the end of your last turn to use
+* +50p **Continuous Suffering** Must have taken damage on every turn for the last 3 turns, cannot be caused by Attrition
+* +40p **Condition Lock** Must be afflicted by a condition
 
-+30p **Blood Price** Each use costs 15 HP, paid after attack resolves
-* +40p **Escalating Price** Each successive use costs additional 15 HP (15, 30, 45, etc.)
-* +50p **Vital Sacrifice** Each use permanently reduces maximum HP by 10
-* +50p **Life Force** Each use costs half your current HP (minimum 10)
++20p **Attrition 1** Each use costs 15 HP, paid after attack resolves
+* +30p **Attrition X** Each successive use costs additional 15 HP (15, 30, 45, etc.)
+* +80p **Concussed** You become stunned until the end of your next turn
 
-+40p **Last Resort** Can only use when ally is at 25 HP or below
-* +50p **Desperation** Can only use when 2+ allies are at 25 HP or below
-* +50p **Avenge** Can when an ally is unconscious
-* +50p **Final Stand** Can only use when 2+ allies are unconscious
++60p **Desperation** Can only use when an ally is at 25 HP or below
+* +80p **Last Resort** Can only use when 2+ allies are at 25 HP or below
+* +100p **Avenger** Can when an ally is unconscious
 
-+20p **Condition Lock** Can only use while affected by any Condition, can't be inflicted by an ally or yourself
-* +40p **Multiple Afflictions** Must be affected by 2+ different conditions
-* +50p **Deterioration** Each use extends all your conditions by 1 turn
 
-+20p **Timid** Can only use when at max HP, instead of when below max HP
-* +30p **Pristine** Can only use when at max HP and no conditions
-* +50p **Perfect Moment** Can only use when at max HP and all enemies have missed you this turn
+
 
 
 
