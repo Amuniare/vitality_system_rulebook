@@ -35,7 +35,6 @@ When Roboute Guilliman summoned hundreds of Rogue Traders to Terra, he tasked th
 - **Trade Authority**: Create trade networks spanning frontier territories and xenos space to feed Crusade operations. Financial returns must be used to support and serve Crusade interests
 - **Technology Acquisition**: Maintain trading rights with Adeptus Mechanicus for Warp-resistant tech and acquire any artifacts that can help the psykers of the Empire, with priority for battlefield technologies urgently needed by Crusade forces
 - **Military Recruitment**: Authority to recruit from units that survived Warp exposure and employ unsanctioned psykers, but must serve as executor for final wishes of any Space Marines encountered in Warp-touched regions. Establish garrison forces for reclaimed territories
-- **Redemption Obligation**: Must attempt to recover and "rehabilitate" any Imperial personnel found in Warp-corrupted territories, regardless of their current condition or allegiances. Assess recovered personnel for immediate Crusade service capability
 - **Knowledge Preservation**: Must catalog and preserve any Imperial records, technology, or cultural artifacts discovered in Warp-touched regions, even if their contents are questionable or dangerous. Forward strategic intelligence to Crusade command within acceptable security protocols
 
 **Timeline Pressure:**
