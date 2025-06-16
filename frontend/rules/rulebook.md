@@ -234,8 +234,8 @@ These represent mundane impairments that any character can apply through Base At
 - **30p Upgrade:** Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.
 
 **Carry Action**
-- **Base:** Pick up and move willing characters or objects with you during your movement. If the target's total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
-- **15p Upgrade:** Move at full speed regardless of weight.
+- **Base:** Pick up and move willing characters or objects with you during your movement. If the targets total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
+- **15p Upgrade:**  
 
 **Protect Action**
 - **Base:** You can use a reaction to make the next non-direct attack that would hit an adjacent ally hit you instead.
@@ -251,7 +251,7 @@ These represent mundane impairments that any character can apply through Base At
 **Hide Action:** 
 - Conceal your presence with a Stealth Check vs searchers Perception while outside their direct perception.
 - **Stealth Attack:** While Hidden from a target you ignore their base Tier Avoidance bonus.
-- **Stealth Defense:** Failed Perception vs Stealth = automatic miss
+- **Stealth Defense:** A character can take an action to attempt to figure out where you have Hidden by making a Perception check against your Stealth check. If found you are no longer considered hidden.
 
 **Prepare Action:** Delay action until specified trigger (GM determines if specific enough)
 
@@ -1615,6 +1615,9 @@ You have access to a home that supports more than just yourself.
 
 #### Physical Features (3p)
 
+**Super Strength**
+Add your Tier to your Capacity score.
+
 **Mystic Guardian**
 You can create temporary magical guardians or constructs that can complete simple tasks. These guardians can act as watchmen, couriers, or assistants in problem-solving tasks.
 
@@ -1777,7 +1780,7 @@ Temporarily render objects or areas unnoticed by others. May require Stealth che
 You're very bossy and like to tell others how to do things. If you can spend one minute explaining how to do something better, another character can add your Intelligence to any check, provided they follow your advice.
 
 **Bard**
-You can sing a tune to help inspire others. You give a +4 bonus to any check for one minute, a number of times per day equal to your Communication score.
+You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Communication score can add your Tier to a skill check declared before they roll.
 
 #### Specialized Features (5p)
 
