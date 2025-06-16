@@ -87,13 +87,22 @@ Prototype long-range exploration cruiser with enhanced Warp drives and sensor ar
 *Essential background elements that define your character's personality and history.*
 
 **What drove you to leave your previous life?**
-- **Ambition Unfulfilled** / **Scandal or Disgrace** / **Loyalty Transferred** / **Necessity**
+- Ambition Unfulfilled 
+- Scandal or Disgrace 
+- Loyalty Transferred 
+- Necessity
 
 **How do you handle authority and moral compromises?**
-- Respect hierarchy, refuse compromise / Question authority, small compromises for greater good / Challenge authority, pragmatic solutions / Ignore authority unless beneficial
+- Respect hierarchy, refuse compromise 
+- Question authority, small compromises for greater good 
+- Challenge authority, pragmatic solutions 
+- Ignore authority unless beneficial
 
 **How do others see you?**
-- Reliable and trustworthy / Dangerous but useful / Ambitious and driven / Mysterious and unpredictable
+- Reliable and trustworthy 
+- Dangerous but useful 
+- Ambitious and driven 
+- Mysterious and unpredictable
 
 ---
 

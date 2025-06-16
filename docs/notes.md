@@ -14,3 +14,5 @@ More information needs to be inluded in the site description box
 Text boxes within special attacks don't update until a button is pressed
 
 
+jack of all trades preventing purchasing of tier 2
+
