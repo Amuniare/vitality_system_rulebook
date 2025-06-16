@@ -1,84 +1,16 @@
-# Notes
-
-## Bug Fix List
-
-## Archetypes
-- Versitile master, does it affect price
-- cut above?
-- are they affecting
+## ui fixes
+- whether or not something gets to buy limits, should be in data
+- or if it has a variable price, that should be a feature in data not in the card itself
+- and how that information is presented, card or drowdown ect, shouldn't that also be in data?
 
 
 
 
 
-
-
-### Tests
-- not currently going far enough, should be able to go through the entire doc
-
-## UI improvements
-- consistentcy
-- dark / light mode
-- Talent Looks weird
-
-## Feature Add List
-
-### NPCs Type
-- Fix so more types
-- Fix so health works
-- Add second drop down, if PC then list player names, if NPC then list factions
-- this tells it what folder it goes in
-- uses names.json
-
-
-### Basic Attacks
-- each character should get base attacks according to their attack type and effect archetype
-    - for basic achetype, they'll be able to add upgrades to these
-
-
-### Summary Tab Refactor
-- and then the things that aren't always active the player can click them on and off to toggle them
-- generally, its just text strings, given that this is a character sheet, im thinking a table within each box makes the most sense for a more structured look; right now, a good start would be to replace ":" and "/" and "(" with as columns within the boxes that they're in
-
-
-
-### BIO
-- able to add character bio
-- maybe some campaign specific options
-
-### Images
-- Token image
-- Bio image
-- Token Setup
-- Multiple token Setup
-
-
-## AI Builder
-
-
-
-## Notes & Summaries
-Use gemini api key to auto create notes and summaries when transcribing
-May need to use audio file as backup, transcription is rough
-
-
-need to give points to shared uses
-
-
-
-ok so Situation expertise is changed, players can buy up to 3 situational expertises, each situational expertise lets you pick 3 talents, players write in a word or two, a talent a situation that they're good at, they pick 3 and that's their situational expertise.
-
-
-Summon extra points
-
-
-
-## Voice chat 
-Discord bot records convo as audio file
-
-
-## SRC
--need to fix main.py sync issue with text names
--need to capture folders when extracting and uploading
+EFFECT TYPE HYBRID COST WRONG
+Create Custom Sense Button doesn't work
+More information needs to be inluded in the site description box
+90% of the text from the rulebook should be on the site
+Text boxes within special attacks don't update until a button is pressed
 
 
