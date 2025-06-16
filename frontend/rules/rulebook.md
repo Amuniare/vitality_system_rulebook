@@ -235,7 +235,7 @@ These represent mundane impairments that any character can apply through Base At
 
 **Carry Action**
 - **Base:** Pick up and move willing characters or objects with you during your movement. If the targets total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
-- **15p Upgrade:**  
+- **15p Upgrade:** No movement speed penalty and once you've taken this action once on a turn, you can continue to reuse it for free until the end of this turn. 
 
 **Protect Action**
 - **Base:** You can use a reaction to make the next non-direct attack that would hit an adjacent ally hit you instead.
