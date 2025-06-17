@@ -456,20 +456,14 @@ These represent mundane impairments that any character can apply through Base At
 ### **UTILITY ARCHETYPES**
 *Defines non-combat capabilities and specialized skills*
 
-**Specialized**
-- Gain double Tier bonus for one core stat
-- Cannot purchase additional Expertise
-- Base utility pool: 5 × (Tier - 2)
+**Practical**  
+Select 3 skills, you add your Tier twice to any skill checks made using those skills
 
-**Practical** 
-- Standard access to all utility options
-- No restrictions or bonuses
-- Base utility pool: 5 × (Tier - 1)
+**Specialized**  
+Choose an Attribute, you add your Tier twice to any skill checks made using that Attribute
 
-**Jack of All Trades**
-- Adds Tier bonus to ALL skill checks
-- Cannot purchase specialized Expertise  
-- Base utility pool: 5 × (Tier - 2)
+**Jack of All Trades**  
+You add your Tier once to all skill checks
 
 
 # SECTION 4: ATTACK AND EFFECT TYPES
@@ -644,7 +638,7 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 
 **Biohacker (0p)** → All conditions you inflict target Vitality resistance instead
 
-**Utilitarian (15p)** → Gain 10 extra points for Expertise, Features, Senses, and Descriptors
+**Utilitarian (15p)** → Gain 10 extra points for Features, Senses, Movement Abilities, and Descriptors
 
 
 
@@ -1394,36 +1388,17 @@ Selection: Choose Accuracy, Damage, or Conditions when purchasing
 
 # SECTION 8: UTILITY ABILITIES
 
-These abilities represent your character's capabilities outside of combat. The Vitality System divides these into two distinct categories: **Expertises** and **Features**.
+These abilities represent your character's capabilities outside of combat. 
 
 **Point Pools**
-- Utility Points: 5 × (Tier - 1)
-- Can be spent on Expertises, Features, Senses, or Descriptors
+- Utility Points: 5 × (Tier - 2)
+- Can be spend on Features, Senses, Movement Abilites, or Descriptors
 
 
 
-## Expertises
+## Skills
 
-Specialized knowledge, training, or unique abilities that enhance your effectiveness within existing skill categories. Expertises can represent peak human achievement, superhuman talent, or distinctive capabilities that improve standard actions.
-Expertises add to rolls you can already make. They provide bonuses to existing skill check opportunities rather than creating new ones.
-
-### Expertise Mechanics
-- **Stacking**: You can only apply two levels of expertise to any skill check two levels per individual expertise.
-- **Custom Expertises**: Players may propose custom expertises tied to a core stat with GM approval
-
-#### Activity-Based Expertises
-**Cost: Basic (2p) / Mastered (6p)**
-- **Basic**: Add your Tier to relevant checks
-- **Mastered**: Add 2 × your Tier to relevant checks
-
-#### Situational Expertises  
-**Cost: Basic (1p) / Mastered (3p)**
-- **Basic**: Add your Tier to relevant checks when context matches
-- **Mastered**: Add 2 × your Tier to relevant checks when context matches
-
-### Activity-Based
-
-What you're exceptionally good at doing. Always applies when performing the relevant activity.
+Specialized knowledge, training, or unique abilities that enhance your effectiveness at a task. Skills can represent peak human achievement, superhuman talent, or distinctive capabilities that improve standard actions.
 
 #### Mobility
 - **Climbing** – Navigating vertical terrain with speed and control
@@ -1464,12 +1439,10 @@ What you're exceptionally good at doing. Always applies when performing the rele
 - **Research** – Investigating topics, gathering data, or studying deeply
 - **Problem Solving** – Applying logic and creativity to overcome challenges
 
-### Situational Talents
+### Talents
 
     
-Work with your GM to build up to 3 custom Talents that help flesh out your character. You can only purchase one set of Talents. Talents can only apply when the context matches. 
-
-**Cost:** 1p allows your to add your Tier once to checks made using one of your Talents. 3p allows you to add your Tier twice instead.
+Each character also has 2 Talents, specific task that they are good at such as cooking or military history. You add your Tier twice to skill checks made regarding your Talent. Work with your GM to determine your Talents.
 
 Here are some sample Talents: 
 
@@ -1542,6 +1515,10 @@ Make Communication checks to converse with specific animal types and sense the h
 
 **Weather Prediction**
 Make Intelligence checks to accurately predict weather patterns up to 24 hours in advance.
+
+
+**Ancestral Knowledge** 
+You can communicate with ancestral spirits for guidance. 
 
 #### Mental Features (3p)
 
@@ -1637,6 +1614,9 @@ You are able to inflict complex, lasting, and nearly incurable curses on others.
 
 #### Physical Features (10p)
 
+**Chameleon**
+ You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters. 
+
 **Reality Revision**
 Make Intelligence checks to make minor alterations to recent events (within the last hour), changing their outcomes. Work with GM to establish limitations and consequences.
 
@@ -1717,6 +1697,12 @@ Make Communication checks to understand and communicate in any language, includi
 
 **Debt**
 Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect.
+
+**Linguist** 
+You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don’t know, you can attempt to decipher its meaning over time using intelligence. 
+
+**Speak with Animals** 
+You can telepathically communicate with animals, and they can respond in kind. For 1 less point, you may instead communicate with only one specific type of animal. 
 
 #### Social Features (3p)
 
