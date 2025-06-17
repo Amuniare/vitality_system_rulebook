@@ -1,16 +1,72 @@
 [
-    { "id": "base_attack", "name": "Base Attack", "description": "Your basic attack action" },
-    { "id": "dodge", "name": "Dodge Action", "description": "Add Tier to Avoidance for one turn" },
-    { "id": "brace", "name": "Brace Action", "description": "Add Tier to Durability for one turn" },
-    { "id": "fortify", "name": "Fortify Action", "description": "Add Tier to all Resistances for one turn" },
-    { "id": "aim", "name": "Aim Action", "description": "Add Tier to next Accuracy Check" },
-    { "id": "empower", "name": "Empower Action", "description": "Add Tier to next Damage Roll" },
-    { "id": "refine", "name": "Refine Action", "description": "Add Tier to next Condition Check" },
-    { "id": "assist", "name": "Assist Action", "description": "Give ally Tier bonus to their next roll" },
-    { "id": "carry", "name": "Carry Action", "description": "Move character or heavy object" },
-    { "id": "protect", "name": "Protect Action", "description": "Redirect attacks to yourself" },
-    { "id": "use", "name": "Use Action", "description": "Interact with complex objects" },
-    { "id": "hasten", "name": "Hasten Action", "description": "Move again at full speed" },
-    { "id": "hide", "name": "Hide Action", "description": "Attempt to conceal yourself" },
-    { "id": "prepare", "name": "Prepare Action", "description": "Delay action until trigger" }
+    {
+        "id": "base_attack",
+        "name": "Base Attack",
+        "description": "Your default combat action, available to everyone. It can be used to apply Damage or a Basic Condition."
+    },
+    {
+        "id": "dodge",
+        "name": "Dodge Action",
+        "description": "Add your Tier to your Avoidance score until the start of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "brace",
+        "name": "Brace Action",
+        "description": "Add your Tier to your Durability score until the start of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "fortify",
+        "name": "Fortify Action",
+        "description": "Add your Tier to all of your Resistances (Resolve, Stability, Vitality) until the start of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "aim",
+        "name": "Aim Action",
+        "description": "Add your Tier to your next Accuracy Check before the end of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "empower",
+        "name": "Empower Action",
+        "description": "Add your Tier to your next Damage Roll before the end of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "refine",
+        "name": "Refine Action",
+        "description": "Add your Tier to your next Condition Check before the end of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "assist",
+        "name": "Assist Action",
+        "description": "An adjacent ally can add your Tier bonus to their next Accuracy Check, Damage Roll, or Condition Check before the end of their next turn."
+    },
+    {
+        "id": "carry",
+        "name": "Carry Action",
+        "description": "Pick up and move willing characters or objects with you during your movement. If the target's total weight is greater than your Capacity score, you must succeed a Power check and can only move at half speed."
+    },
+    {
+        "id": "protect",
+        "name": "Protect Action",
+        "description": "As a reaction, you can make the next non-direct attack that would hit an adjacent ally hit you instead."
+    },
+    {
+        "id": "use",
+        "name": "Use Action",
+        "description": "Interact with complex environmental objects like cars, computers, or heavy machinery."
+    },
+    {
+        "id": "hasten",
+        "name": "Hasten Action",
+        "description": "You can move up to your full Movement Speed again."
+    },
+    {
+        "id": "hide",
+        "name": "Hide Action",
+        "description": "Conceal your presence with a Stealth Check vs. a searcher's Perception while outside their direct perception. Attacking while hidden grants bonuses."
+    },
+    {
+        "id": "prepare",
+        "name": "Prepare Action",
+        "description": "Delay your action until a specified trigger occurs. The GM determines if the specified scenario is specific enough."
+    }
 ]

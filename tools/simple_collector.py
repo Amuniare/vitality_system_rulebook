@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'rogue_trader'
+DEFAULT_PRESET = 'everything'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
