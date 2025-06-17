@@ -1,65 +1,331 @@
-from pathlib import Path
+import json
 
-def recreate_scriptcard_templates():
-    """
-    Creates or overwrites ScriptCards templates with corrected footer content.
-    This script is designed to be run from the project's root directory.
-    """
-    script_dir = Path('src/scriptcards')
-    script_dir.mkdir(parents=True, exist_ok=True)
-    print(f"Ensured directory exists: {script_dir}")
+features_data = {
+  "tier1": {
+    "cost": 1,
+    "features": [
+      {
+        "id": "aquatic",
+        "name": "Aquatic",
+        "description": "Swim at full speed in any aquatic environment. You are unaffected by water temperature, pressure, or current when swimming."
+      },
+      {
+        "id": "debt",
+        "name": "Debt",
+        "description": "Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect."
+      },
+      {
+        "id": "linguist",
+        "name": "Linguist",
+        "description": "You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don’t know, you can attempt to decipher its meaning over time using intelligence."
+      },
+      {
+        "id": "lock",
+        "name": "Lock",
+        "description": "You can place a protective barrier around a container or room. Your bonus to resist someone breaking into the container or room is 3 × your Intelligence. You can only have one lock active at a time, but you can disable and activate a new one at any time from anywhere."
+      },
+      {
+        "id": "multiLimbed",
+        "name": "Multi-limbed",
+        "description": "You have additional limbs. Each purchase of this feature grants you one extra limb."
+      },
+      {
+        "id": "parkourMastery",
+        "name": "Parkour Mastery",
+        "description": "Navigate urban environments using walls, buildings, and obstacles as movement paths automatically."
+      },
+      {
+        "id": "personalVehicle",
+        "name": "Personal Vehicle",
+        "description": "You own a vehicle that allows you to travel quickly."
+      },
+      {
+        "id": "speakWithAnimals",
+        "name": "Speak with Animals",
+        "description": "You can telepathically communicate with animals, and they can respond in kind. For 1 less point, you may instead communicate with only one specific type of animal."
+      },
+      {
+        "id": "theProphesiedOne",
+        "name": "The Prophesied One",
+        "description": "A prophecy involves you. Those who believe in it will go to great lengths to assist you. Work with the GM to determine the prophecy's nature and cost."
+      },
+      {
+        "id": "waterWalking",
+        "name": "Water Walking",
+        "description": "Walk on any liquid surface as if it were solid ground automatically."
+      }
+    ]
+  },
+  "tier3": {
+    "cost": 3,
+    "features": [
+      {
+        "id": "lightSleeper",
+        "name": "Light Sleeper",
+        "description": "You do not require sleep and are passively aware of your surroundings even while resting. Your Awareness checks are not reduced while resting, and you can remain alert during the party's rest periods. You still require the same rest duration to recover HP, Efforts, and ability uses."
+      },
+      {
+        "id": "assistant",
+        "name": "Assistant",
+        "description": "You can call upon your personal assistant to help with mundane activities such as a butler, driver, or secretary. The assistant can handle routine tasks, carry out errands, and serve as a go-between for important social interactions, offering access to otherwise unavailable opportunities."
+      },
+      {
+        "id": "juryRigging",
+        "name": "Jury Rigging",
+        "description": "You can repair or modify the function of any item or object without using materials. However, the repair is temporary and will break again at the end of the session or after intense use. The quality and duration of your repair is based on an Intelligence check determined by the GM."
+      },
+      {
+        "id": "distinguishedBackground",
+        "name": "Distinguished Background",
+        "description": "Your distinct heritage, noble birth, or foreign origin marks you as notable wherever you go. This grants you respect and curiosity that can open doors to influential individuals, exclusive events, and valuable information. However, it also makes you memorable and may create unwanted attention or suspicion depending on local politics and attitudes."
+      },
+      {
+        "id": "ancestralKnowledge",
+        "name": "Ancestral Knowledge",
+        "description": "You can communicate with ancestral spirits for guidance."
+      },
+      {
+        "id": "auraticSway",
+        "name": "Auratic Sway",
+        "description": "Emits a subtle aura that affects emotions or moods in the immediate vicinity. You can make an Intimidation or Communication check against everyone nearby to slightly alter their mood or emotions."
+      },
+      {
+        "id": "dreamwalker",
+        "name": "Dreamwalker",
+        "description": "You can enter and interact with dreams."
+      },
+      {
+        "id": "elasticMovement",
+        "name": "Elastic Movement",
+        "description": "Stretch your limbs to reach distant objects or compress your body to fit through spaces one-quarter your normal size automatically."
+      },
+      {
+        "id": "fallProof",
+        "name": "Fall Proof",
+        "description": "Completely negate fall damage from any height automatically."
+      },
+      {
+        "id": "forbiddance",
+        "name": "Forbiddance",
+        "description": "Once per rest, over the course of an hour, you may create a ward that protects up to a 100 by 100 space area from observation, teleportation, and communication through the barrier. Choose one category of being (work with GM to define). Chosen creatures take (10 + Focus or Power) damage per turn spent in the area. The ward lasts one day. If you use this feature every day for 100 days in the same spot, the effect becomes permanent."
+      },
+      {
+        "id": "glyphOfWarding",
+        "name": "Glyph of Warding",
+        "description": "It takes one hour to set up the trap, and you may set it to release one of your special attacks. The glyph may not be moved from where it was set up. You can have a number of active traps equal to your Intelligence score. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness or Intelligence check against double your Intelligence to detect."
+      },
+      {
+        "id": "mysticGuardian",
+        "name": "Mystic Guardian",
+        "description": "You can create temporary magical guardians or constructs that can complete simple tasks. These guardians can act as watchmen, couriers, or assistants in problem-solving tasks."
+      },
+      {
+        "id": "objectEncryption",
+        "name": "Object Encryption",
+        "description": "You can seal items in a protective field to prevent tampering."
+      },
+      {
+        "id": "prodigy",
+        "name": "Prodigy",
+        "description": "After 4 hour of focused study, gain Tier bonus to checks involving that specific topic until next rest."
+      },
+      {
+        "id": "safeHouse",
+        "name": "Safe House",
+        "description": "You have access to a home that supports more than just yourself."
+      },
+      {
+        "id": "socialNetwork",
+        "name": "Social Network",
+        "description": "You have extensive connections with various influential individuals. These connections can provide critical assistance, such as opening doors to exclusive events, securing resources, or obtaining valuable information."
+      },
+      {
+        "id": "spiritualBind",
+        "name": "Spiritual Bind",
+        "description": "You can temporarily bind yourself to an object or location, granting limited influence, observation, or protection."
+      },
+      {
+        "id": "sponsor",
+        "name": "Sponsor",
+        "description": "Someone has invested a great deal of time and/or money to get you where you are. You have greater access to resources, and they are inclined to protect their investment. However, you are beholden to them, and they might cut their losses if things get too dicey."
+      },
+      {
+        "id": "streetwiseNetwork",
+        "name": "Streetwise Network",
+        "description": "You have connections throughout various segments of society, providing you with valuable information about local people and places wherever you travel."
+      },
+      {
+        "id": "superStrength",
+        "name": "Super Strength",
+        "description": "Add your Tier to your Capacity score."
+      },
+      {
+        "id": "temporalEcho",
+        "name": "Temporal Echo",
+        "description": "You can temporarily replay past events regarding persons, places, and objects. This ability allows you to uncover secrets, retrace steps, or resolve mysteries tied to your surroundings."
+      },
+      {
+        "id": "underworldConnection",
+        "name": "Underworld Connection",
+        "description": "You maintain a reliable contact within the criminal underworld who can facilitate communication and deliver messages discreetly across long distances. Your connection can also provide contraband, information, or covert assistance."
+      },
+      {
+        "id": "wellConnected",
+        "name": "Well Connected",
+        "description": "Once per session, if you say, \"I Know a Guy,\" workshop with the GM to create an NPC who can help you with a specific task. GM secretly determines your relationship strength. Based on your history and request difficulty, they'll decide what favor or payment is required."
+      },
+      {
+        "id": "stealthGuidance",
+        "name": "Stealth Guidance",
+        "description": "You can add your Awareness score to the Stealth checks of any allies within 3 spaces of you that you designate. This ability helps your team move undetected while you coordinate their movements and watch for threats."
+      },
+      {
+        "id": "familiar",
+        "name": "Familiar",
+        "description": "You have a small-sized creature or construct that obeys your commands. You can see through its senses and control its movement. It uses your skills for any checks; if it's a creature, it uses your Awareness instead of Mobility. It cannot take actions other than skill checks. It has 0 in all combat stats, and if it takes damage, it is destroyed and cannot be resummoned until after a full rest. The familiar can scout dangerous areas, retrieve objects, or act as a distraction."
+      },
+      {
+        "id": "streetPerformer",
+        "name": "Street Performer",
+        "description": "You can always find opportunities to earn money and resources through performances, hustling, or social connections. Make a Communication check to acquire money or secure free lodging and meals. The GM determines the difficulty based on the amount needed and local circumstances. Success may involve entertaining crowds, making deals, or leveraging social networks."
+      },
+      {
+        "id": "masterSculptor",
+        "name": "Master Sculptor",
+        "description": "Choose a specific material (stone, metal, wood, clay, etc.). You can precisely shape, mold, or alter that material at rapid pace, working on up to 8 cubic meters per minute. This allows you to create tools, artistic works, or modify existing structures made of your chosen material without requiring traditional crafting tools."
+      },
+      {
+        "id": "materialShaping",
+        "name": "Material Shaping",
+        "description": "You can temporarily transform mundane materials and objects into different forms. Convert one material into another similar material, or reshape an object into a different object of similar size and density. You cannot create complex mechanical devices or change the fundamental properties of materials (turning wood into metal, etc.)."
+      }
+    ]
+  },
+  "tier5": {
+    "cost": 5,
+    "features": [
+      {
+        "id": "quantumPocket",
+        "name": "Quantum Pocket",
+        "description": "You can store and retrieve objects in a subspace storage. This ability allows you to carry large or dangerous items without arousing suspicion or taking up inventory space."
+      },
+      {
+        "id": "alchemist",
+        "name": "Alchemist",
+        "description": "You are a master of creating experimental tinctures and tonics. The concoctions work a single time to accomplish a specific goal. You will need time to gather the required ingredients, requiring an Intelligence or Awareness check to forage or rolling a d100 and Communication to purchase. The GM will decide the DCs, the amount of time it takes, and any costs."
+      },
+      {
+        "id": "bard",
+        "name": "Bard",
+        "description": "You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Communication score can add your Tier to a skill check declared before they roll."
+      },
+      {
+        "id": "corruption",
+        "name": "Corruption",
+        "description": "Work with GM to establish corruption mechanics. When taking this feature, choose a trigger condition that grants significant power bonuses but risks permanent character corruption through failed resistance rolls."
+      },
+      {
+        "id": "astralProjection",
+        "name": "Astral Projection",
+        "description": "While resting, you can travel to other locations using a spectral form. You are visible but intangible while astral projecting, able to move through solid objects and observe your surroundings. You can return to your body at will from any distance. You can use this form to gather information or travel to otherwise unreachable places."
+      },
+      {
+        "id": "enhancedProcessing",
+        "name": "Enhanced Processing",
+        "description": "Think and perceive at extremely accelerated speeds while performing hundreds of simple mental tasks simultaneously. This allows you to process information, analyze situations, and react with superhuman mental velocity while tracking multiple variables in complex problems."
+      },
+      {
+        "id": "molecularManipulation",
+        "name": "Molecular Manipulation",
+        "description": "You can convert one mundane material into another mundane material of similar density and hardness. Wood can become plastic, stone can become metal, or cloth can become leather."
+      },
+      {
+        "id": "hexer",
+        "name": "Hexer",
+        "description": "You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions."
+      },
+      {
+        "id": "inventor",
+        "name": "Inventor",
+        "description": "You can create technological inventions. These inventions work a single time and to accomplish a specific goal. The GM will determine the Intelligence check difficulty based on the setting. It will take a number of hours of active downtime equal to the difficulty minus 10. Requires a suitable lab or workshop."
+      },
+      {
+        "id": "knowItAll",
+        "name": "Know It All",
+        "description": "You're very bossy and like to tell others how to do things. If you can spend one minute explaining how to do something better, another character can add your Intelligence to any check, provided they follow your advice."
+      },
+      {
+        "id": "longRangeTeleportation",
+        "name": "Long-Range Teleportation",
+        "description": "Teleport to any location that you can clearly visualize or have previously visited automatically after spending at least 1 minute in preparation, the longer the distance the greater the amount of time it takes."
+      },
+      {
+        "id": "perceptionFilter",
+        "name": "Perception Filter",
+        "description": "Temporarily render objects or areas unnoticed by others. May require Stealth checks."
+      },
+      {
+        "id": "ritualist",
+        "name": "Ritualist",
+        "description": "You can create magical rituals. These rituals work a single time and to accomplish a specific goal. The GM will determine the check difficulty based on the setting. It will take one uninterrupted hour to complete and may require special ingredients, such as a specific location, blood, or a rare object."
+      },
+      {
+        "id": "mindReading",
+        "name": "Mind Reading",
+        "description": "Make an Intelligence or Awareness check to attempt to read a target's mind that you can see. The GM determines the difficulty based on the target's mental defenses and what information you're seeking. Success reveals the desired thoughts, memories, or knowledge the target possesses."
+      },
+      {
+        "id": "telepath",
+        "name": "Telepath",
+        "description": "You can communicate telepathically with any sentient being you can see or are familiar with across unlimited distances. They can communicate back if willing. You can maintain simultaneous mental links with a number of beings equal to your Intelligence score. Additionally, you can:\n- Share complex memories, emotions, or sensory experiences\n- Establish permanent mental bonds that persist even when unconscious\n- Create group mental networks allowing all linked minds to communicate\n- Attempt to influence thoughts and emotions of willing or weakened minds"
+      }
+    ]
+  },
+  "tier10": {
+    "cost": 10,
+    "features": [
+      {
+        "id": "bleedingEdge",
+        "name": "Bleeding Edge",
+        "description": "Your technology is the most advanced and powerful there is, allowing you greater feats beyond what normal technology can accomplish. However, it can only be repaired, maintained, modified, or upgraded using very specific or hard-to-find tools, methods, or materials."
+      },
+      {
+        "id": "chameleon",
+        "name": "Chameleon",
+        "description": "You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters."
+      },
+      {
+        "id": "consciousnessProjection",
+        "name": "Consciousness Projection",
+        "description": "You can project your consciousness to other locations simultaneously, experiencing multiple places at once. Work with GM to establish specific limitations and duration."
+      },
+      {
+        "id": "immortality",
+        "name": "Immortality",
+        "description": "You are immortal, you can be killed but you will return to life after 24 hours. Work with the GM to establish a limitation for said immortality, a way in which you can truly be killed. Additionally, determine where you return and if there are any changes that affect you."
+      },
+      {
+        "id": "perfectSanctuary",
+        "name": "Perfect Sanctuary",
+        "description": "Create an impenetrable zone around you and your allies for a short duration. Nothing can enter or leave this zone without your permission. Work with GM to establish specific limitations and duration."
+      },
+      {
+        "id": "selfSacrifice",
+        "name": "Self-Sacrifice",
+        "description": "As you activate this feature, increase your Tier by 4, for 6 rounds. At the end of the 6 rounds, you die. May change the penalty and/or bonus for something equivalent, discuss with GM. Cannot use if you have abilities that prevent death."
+      },
+      {
+        "id": "timeTravel",
+        "name": "Time Travel",
+        "description": "Move forward or backward through time automatically after spending 1 hour in preparation. Work with GM to determine limitations and potential paradox consequences."
+      }
+    ]
+  }
+}
 
-    # --- Template Content Definitions ---
-    # Each template has a non-breaking space ( ) added to its footer
-    # to prevent the 'undefined' error in Roll20.
+file_path = "frontend/character-builder/data/features.json"
 
-    templates = {
-        "bridge_holo_display.txt": """boxcode::{div style='background-color: #051120; border: 2px solid #00ffff; box-shadow: 0 0 10px #00ffff; display: block; text-align: left; padding: 5px; margin-bottom: 2px; color: #a9d1ff; font-family: "Orbitron", sans-serif; white-space: pre-wrap; line-height: 1.4em'}||
-titlecode::{div style='background-color: #051120; margin: 0.5em 1em 0 1em; padding-bottom: 0.5em; font-size: 18px; font-family: "Orbitron", sans-serif; color: #00ffff; display: block; font-weight: normal; text-transform: uppercase; letter-spacing: 0.1em; text-shadow: 0 0 10px #00ffff; border-bottom: 1px solid #00ffff'}||
-textcode::{/div}{div}{div style='font-weight: normal; display: block; margin: 0 1em 0 1em; color: #a9d1ff; font-family: "Orbitron", sans-serif; font-size: 14px; letter-spacing: 0.5px;'}||
-buttonwrapper::{div style='display: block; text-align: center; margin-top: 5px;'}||
-buttonstyle::style='background-color: #051120; color: #00ffff; border: 1px solid #00ffff; padding: 2px 8px; text-transform: uppercase;'||
-footer::{/div}{/div}{div style='position: relative'}{div style='position: absolute; bottom: 5px; left: 3px; right: 3px; height: 20px; background-color: #051120; z-index: 999'} {/div}{/div}||""",
+with open(file_path, 'w', encoding='utf-8') as f:
+    json.dump(features_data, f, indent=4)
 
-        "mechanicus_cogitator.txt": """boxcode::{div style='background-color: #1a1a1a; border: 2px solid #9d1c1c; box-shadow: 0 0 5px #9d1c1c; display: block; text-align: left; padding: 5px; margin-bottom: 2px; color: #c4c4c4; font-family: "Courier New", monospace; white-space: pre-wrap; line-height: 1.4em'}||
-titlecode::{div style='background-color: #1a1a1a; margin: 0.5em 1em 0 1em; padding-bottom: 0.5em; font-size: 18px; font-family: "Courier New", monospace; color: #ff4136; display: block; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; text-shadow: 0 0 8px #ff4136; border-bottom: 1px solid #9d1c1c'}||
-textcode::{/div}{div}{div style='font-weight: normal; display: block; margin: 0 1em 0 1em; color: #f0e68c; font-family: "Courier New", monospace; font-size: 13px'}||
-buttonwrapper::{div style='display: block; text-align: center; margin-top: 5px;'}||
-buttonstyle::style='background-color: #333; color: #ff4136; border: 1px solid #9d1c1c; padding: 2px 8px;'||
-footer::{/div}{/div}{div style='position: relative'}{div style='position: absolute; bottom: 5px; left: 3px; right: 3px; height: 20px; background-color: #1a1a1a; z-index: 999'} {/div}{/div}||""",
-
-        "navigator_chart.txt": """boxcode::{div style='background-color: #0a0a23; border: 2px solid #ffd700; box-shadow: 0 0 8px #b8860b; display: block; text-align: left; padding: 5px; margin-bottom: 2px; color: #fff8e1; font-family: "Cinzel", serif; white-space: pre-wrap; line-height: 1.4em'}||
-titlecode::{div style='background-color: #0a0a23; margin: 0.5em 1em 0 1em; padding-bottom: 0.5em; font-size: 18px; font-family: "Cinzel", serif; color: #ffd700; display: block; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; text-shadow: 0 0 10px #b8860b; border-bottom: 1px solid #b8860b'}||
-textcode::{/div}{div}{div style='font-weight: normal; display: block; margin: 0 1em 0 1em; color: #fff8e1; font-family: "Cinzel", serif; font-size: 14px;'}||
-buttonwrapper::{div style='display: block; text-align: center; margin-top: 5px;'}||
-buttonstyle::style='background-color: transparent; color: #ffd700; border: 1px solid #b8860b; padding: 2px 8px;'||
-footer::{/div}{/div}{div style='position: relative'}{div style='position: absolute; bottom: 5px; left: 3px; right: 3px; height: 20px; background-color: #0a0a23; z-index: 999'} {/div}{/div}||""",
-
-        "warrant_of_trade.txt": """boxcode::{div style='background-color: #fdf5e6; border: 2px solid #5a0000; box-shadow: 0 0 10px #5a0000; display: block; text-align: left; padding: 5px; margin-bottom: 2px; color: #3d2b1f; font-family: Georgia, serif; white-space: pre-wrap; line-height: 1.4em'}||
-titlecode::{div style='background-color: #fdf5e6; margin: 0.5em 1em 0 1em; padding-bottom: 0.5em; font-size: 18px; font-family: "Uncial Antiqua", cursive; color: #5a0000; display: block; font-weight: normal; text-transform: uppercase; letter-spacing: 0.1em; text-shadow: 0 0 10px #7a0000; border-bottom: 3px double #7a0000'}||
-textcode::{/div}{div}{div style='font-weight: normal; display: block; margin: 0 1em 0 1em; color: #3d2b1f; font-family: "IM Fell English", serif; font-size: 14px'}||
-buttonwrapper::{div style='display: block; text-align: center; margin-top: 5px;'}||
-buttonstyle::style='background-color: #fdf5e6; color: #5a0000; border: 1px solid #5a0000; padding: 2px 8px; font-family: "Uncial Antiqua", cursive;'||
-footer::{/div}{/div}{div style='position: relative'}{div style='position: absolute; bottom: 5px; left: 3px; right: 3px; height: 20px; background-color: #fdf5e6; z-index: 999'} {/div}{/div}||""",
-
-        "xenos_cipher.txt": """boxcode::{div style='background-color: #1c002b; border: 2px solid #33ff00; box-shadow: 0 0 15px #4b0082; display: block; text-align: left; padding: 5px; margin-bottom: 2px; color: #c792ea; font-family: monospace; white-space: pre-wrap; line-height: 1.4em'}||
-titlecode::{div style='background-color: #1c002b; margin: 0.5em 1em 0 1em; padding-bottom: 0.5em; font-size: 18px; font-family: serif; color: #33ff00; display: block; font-weight: normal; font-style: italic; text-transform: uppercase; letter-spacing: 0.1em; text-shadow: 0 0 5px #33ff00; border-bottom: 1px solid #4b0082'}||
-textcode::{/div}{div}{div style='font-weight: normal; display: block; margin: 0 1em 0 1em; color: #c792ea; font-family: monospace; font-size: 13px;'}||
-buttonwrapper::{div style='display: block; text-align: center; margin-top: 5px;'}||
-buttonstyle::style='background-color: #4b0082; color: #33ff00; border: none; padding: 3px 10px; text-transform: lowercase;'||
-footer::{/div}{/div}{div style='position: relative'}{div style='position: absolute; bottom: 5px; left: 3px; right: 3px; height: 20px; background-color: #1c002b; z-index: 999'} {/div}{/div}||"""
-    }
-
-    print("Recreating ScriptCard templates...")
-    for filename, content in templates.items():
-        try:
-            file_path = script_dir / filename
-            file_path.write_text(content.strip(), encoding='utf-8')
-            print(f"✅ Successfully created/updated: {file_path}")
-        except Exception as e:
-            print(f"❌ Error creating {filename}: {e}")
-
-    print("\nProcess complete.")
-
-if __name__ == "__main__":
-    recreate_scriptcard_templates()
+print(f"Successfully updated {file_path}")
