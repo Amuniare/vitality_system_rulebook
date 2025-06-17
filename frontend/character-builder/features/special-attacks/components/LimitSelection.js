@@ -264,51 +264,48 @@ export class LimitSelection {
     }
 
     renderCustomLimitCreation(character, attack) {
+        const isExpanded = this.expandedCategories.has('custom');
         return `
-            <div class="card custom-limit-creator">
-                <div class="card-header">
-                    <h4>Create Custom Limit</h4>
+            <div class="limit-category custom-limit-category">
+                <div class="limit-category-header" data-action="toggle-limit-category" data-category="custom">
+                    <span class="category-expand-icon">${isExpanded ? '▼' : '▶'}</span>
+                    <h5 class="category-name">Create Custom Limit</h5>
                 </div>
-                <div class="card-content">
-                    <div class="card-action">
-                        ${RenderUtils.renderButton({
-                            text: 'Create Custom Limit',
-                            variant: 'primary',
-                            dataAttributes: { action: 'show-custom-limit-form' }
-                        })}
-                    </div>
-                    <div class="custom-limit-form" style="display: none;">
-                        ${RenderUtils.renderFormGroup({
-                            label: 'Name:',
-                            inputHtml: `<input type="text" class="custom-limit-input custom-limit-name" placeholder="Enter limit name" maxlength="50">`
-                        })}
-                        
-                        ${RenderUtils.renderFormGroup({
-                            label: 'Description:',
-                            inputHtml: `<textarea class="custom-limit-input custom-limit-description" rows="3" placeholder="Describe the limit's effects" maxlength="500"></textarea>`
-                        })}
-                        
-                        ${RenderUtils.renderFormGroup({
-                            label: 'Point Value:',
-                            inputHtml: `<input type="number" class="custom-limit-input custom-limit-points" placeholder="Enter point value" min="1" max="100">`
-                        })}
-                        
-                        <div class="form-actions">
-                            ${RenderUtils.renderButton({
-                                text: 'Add Custom Limit',
-                                variant: 'primary',
-                                dataAttributes: { action: 'add-custom-limit' },
-                                classes: ['add-custom-limit-btn'],
-                                disabled: true
+                ${isExpanded ? `
+                    <div class="limit-category-content">
+                        <div class="custom-limit-form">
+                            ${RenderUtils.renderFormGroup({
+                                label: 'Name:',
+                                inputHtml: `<input type="text" class="custom-limit-input custom-limit-name" placeholder="Enter limit name" maxlength="50">`
                             })}
-                            ${RenderUtils.renderButton({
-                                text: 'Cancel',
-                                variant: 'secondary',
-                                dataAttributes: { action: 'cancel-custom-limit-form' }
+                            
+                            ${RenderUtils.renderFormGroup({
+                                label: 'Description:',
+                                inputHtml: `<textarea class="custom-limit-input custom-limit-description" rows="3" placeholder="Describe the limit's effects" maxlength="500"></textarea>`
                             })}
+                            
+                            ${RenderUtils.renderFormGroup({
+                                label: 'Point Value:',
+                                inputHtml: `<input type="number" class="custom-limit-input custom-limit-points" placeholder="Enter point value" min="1" max="100">`
+                            })}
+                            
+                            <div class="form-actions">
+                                ${RenderUtils.renderButton({
+                                    text: 'Add Custom Limit',
+                                    variant: 'primary',
+                                    dataAttributes: { action: 'add-custom-limit' },
+                                    classes: ['add-custom-limit-btn'],
+                                    disabled: true
+                                })}
+                                ${RenderUtils.renderButton({
+                                    text: 'Cancel',
+                                    variant: 'secondary',
+                                    dataAttributes: { action: 'cancel-custom-limit-form' }
+                                })}
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    </div>` : ''
+                }
             </div>
         `;
     }
@@ -320,56 +317,39 @@ export class LimitSelection {
     toggleCategory(categoryKey) {
         if (this.expandedCategories.has(categoryKey)) {
             this.expandedCategories.delete(categoryKey);
+            // Clear custom form when collapsing
+            if (categoryKey === 'custom') {
+                this.clearCustomLimitForm();
+            }
         } else {
             this.expandedCategories.add(categoryKey);
         }
     }
-
-    showCustomLimitForm(buttonElement) {
-        const creatorCard = buttonElement.closest('.custom-limit-creator');
-        if (!creatorCard) return;
-        
-        const cardAction = creatorCard.querySelector('.card-action');
-        const form = creatorCard.querySelector('.custom-limit-form');
-        
-        if (cardAction && form) {
-            cardAction.style.display = 'none';
-            form.style.display = 'block';
-            
-            // Focus on the first input field
-            const nameInput = form.querySelector('.custom-limit-name');
-            if (nameInput) {
-                nameInput.focus();
+    
+    clearCustomLimitForm() {
+        // Clear the form fields when category is collapsed
+        setTimeout(() => {
+            const form = document.querySelector('.custom-limit-category .custom-limit-form');
+            if (form) {
+                const nameInput = form.querySelector('.custom-limit-name');
+                const descriptionInput = form.querySelector('.custom-limit-description');
+                const pointsInput = form.querySelector('.custom-limit-points');
+                
+                if (nameInput) nameInput.value = '';
+                if (descriptionInput) descriptionInput.value = '';
+                if (pointsInput) pointsInput.value = '';
+                
+                this.validateCustomLimitFormScoped(form);
             }
-        }
+        }, 100);
     }
 
-    cancelCustomLimitForm(buttonElement) {
-        const creatorCard = buttonElement.closest('.custom-limit-creator');
-        if (!creatorCard) return;
-        
-        const cardAction = creatorCard.querySelector('.card-action');
-        const form = creatorCard.querySelector('.custom-limit-form');
-        
-        if (cardAction && form) {
-            cardAction.style.display = 'block';
-            form.style.display = 'none';
-            
-            // Clear the form fields
-            const nameInput = form.querySelector('.custom-limit-name');
-            const descriptionInput = form.querySelector('.custom-limit-description');
-            const pointsInput = form.querySelector('.custom-limit-points');
-            
-            if (nameInput) nameInput.value = '';
-            if (descriptionInput) descriptionInput.value = '';
-            if (pointsInput) pointsInput.value = '';
-            
-            // Reset button state using scoped validation
-            this.validateCustomLimitFormScoped(form);
-        }
-    }
 
-    validateCustomLimitFormScoped(form) {
+    validateCustomLimitFormScoped(container = null) {
+        // If no specific container provided, find the form within the expanded custom category
+        const form = container || document.querySelector('.custom-limit-category .custom-limit-form');
+        if (!form) return;
+        
         const nameInput = form.querySelector('.custom-limit-name');
         const descriptionInput = form.querySelector('.custom-limit-description');
         const pointsInput = form.querySelector('.custom-limit-points');

@@ -275,4 +275,43 @@ export class RenderUtils {
             </div>
         `;
     }
+
+    // Render an info icon with tooltip
+    static renderInfoIcon(text, options = {}) {
+        const {
+            iconClass = 'info-icon',
+            tooltipClass = 'tooltip-content',
+            size = 'small'
+        } = options;
+
+        return `
+            <span class="tooltip-wrapper">
+                <i class="${iconClass} ${iconClass}--${size}" data-tooltip="${this.escapeHtml(text)}">ℹ</i>
+                <div class="${tooltipClass}">${text}</div>
+            </span>
+        `;
+    }
+
+    // Escape HTML for safe attribute values
+    static escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML.replace(/"/g, '&quot;');
+    }
+
+    // Get tooltip text for common concepts
+    static getTooltipText(concept) {
+        const tooltips = {
+            'archetypes': 'Archetypes define your character\'s fundamental approach and provide point modifiers and restrictions. Select one from each of the 7 categories.',
+            'attributes': 'Attributes represent what type of things your character is good at in combat and utility situations.',
+            'focus': 'Your character\'s precision, fighting skill, and mental fortitude. Adds to your Accuracy Checks, Initiative Checks, and Resolve Score.',
+            'power': 'Your character\'s strength both physically and/or with their powers. Adds to your Damage Rolls, Condition Checks, Capacity Score, and Stability Score.',
+            'mobility': 'Your character\'s speed and reflexes. Adds to your Movement Speed, Initiative, and Avoidance Score.',
+            'endurance': 'Your character\'s physical toughness and fortitude. Adds to your Survival Checks, Vitality Score, and Durability Score.',
+            'awareness': 'Your character\'s ability to notice things in the world. Also adds to your Initiative. Awareness players will have an easier time picking up on things already set in the narrative.',
+            'communication': 'Your character\'s social skills. Communication players are able to better shape the narrative to their goals such as persuading a truce between two warring factions.',
+            'intelligence': 'Your character\'s knowledge and reasoning. Intelligence players are able to unlock paths previously inaccessible such as hacking into a database.'
+        };
+        return tooltips[concept.toLowerCase()] || '';
+    }
 }

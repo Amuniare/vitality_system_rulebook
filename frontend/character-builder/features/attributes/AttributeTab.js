@@ -29,7 +29,7 @@ export class AttributeTab {
         this.setupDebugFallbacks();
         tabContent.innerHTML = `
             <div class="attributes-section">
-                <h2>Assign Attributes</h2>
+                <h2>Assign Attributes ${RenderUtils.renderInfoIcon(RenderUtils.getTooltipText('attributes'))}</h2>
                 <p class="section-description">
                     Allocate your attribute points across combat and utility attributes.
                     Each attribute cannot exceed your tier (${character.tier}).
@@ -109,7 +109,7 @@ export class AttributeTab {
         const testAttrName = testAttributeMap[attrId] || attrId;
 
         return RenderUtils.renderCard({
-            title: attributeData.name,
+            title: `${attributeData.name} ${RenderUtils.renderInfoIcon(RenderUtils.getTooltipText(attrId))}`,
             titleTag: 'label',
             description: `
                 <div class="attribute-description">

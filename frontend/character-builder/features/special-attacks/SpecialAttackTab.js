@@ -230,8 +230,7 @@ export class SpecialAttackTab {
             'remove-limit': () => this.removeLimit(data.limitId),
             'toggle-limit-category': () => this.toggleLimitCategory(data.category),
             'add-custom-limit': (e, el) => this.addCustomLimit(el),
-            'show-custom-limit-form': (e, el) => this.limitSelection.showCustomLimitForm(el),
-            'cancel-custom-limit-form': (e, el) => this.limitSelection.cancelCustomLimitForm(el),
+            'cancel-custom-limit-form': () => this.limitSelection.clearCustomLimitForm(),
             
             'purchase-upgrade': () => this.purchaseUpgrade(data.upgradeId),
             'remove-upgrade': () => this.removeUpgrade(data.upgradeId),

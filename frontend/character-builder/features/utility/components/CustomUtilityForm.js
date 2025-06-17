@@ -60,7 +60,8 @@ export class CustomUtilityForm {
             description: `Design your own custom ${categoryName.toLowerCase()} ability.`,
             additionalContent: formContent,
             clickable: false,
-            disabled: false
+            disabled: false,
+            dataAttributes: { 'category-key': categoryKey }
         }, { cardClass: `custom-utility-card ${categoryKey.slice(0, -1)}-card` });
     }
 

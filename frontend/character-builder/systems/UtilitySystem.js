@@ -206,9 +206,6 @@ export class UtilitySystem {
         if (archetype === 'specialized' && categoryKey === 'expertise') {
             errors.push('Specialized archetype cannot purchase Expertise.');
         }
-        if (archetype === 'jackOfAllTrades' && categoryKey === 'expertise' && level === 'mastered') {
-            errors.push('Jack of All Trades cannot purchase Mastered expertise.');
-        }
 
         return { isValid: errors.length === 0, errors, warnings, cost };
     }

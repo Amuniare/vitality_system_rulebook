@@ -297,17 +297,18 @@ export class PointPoolCalculator {
                 return;
             }
             
-            // Handle activity-based expertises (old format)
-            const basicExpertise = Array.isArray(category.basic) ? category.basic : [];
-            const masteredExpertise = Array.isArray(category.mastered) ? category.mastered : [];
+            // Handle activity-based expertises (old format) - defensive check
+            if (category && typeof category === 'object' && !Array.isArray(category) && category.basic && category.mastered) {
+                const basicExpertise = Array.isArray(category.basic) ? category.basic : [];
+                const masteredExpertise = Array.isArray(category.mastered) ? category.mastered : [];
 
-            basicExpertise.forEach(() => {
-                spent += GameConstants.EXPERTISE_ACTIVITY_BASIC;
-            });
-            masteredExpertise.forEach(() => {
-                // If they don't have basic, pay full mastered cost
-                spent += GameConstants.EXPERTISE_ACTIVITY_MASTERED;
-            });
+                basicExpertise.forEach(() => {
+                    spent += GameConstants.EXPERTISE_ACTIVITY_BASIC || 2;
+                });
+                masteredExpertise.forEach(() => {
+                    spent += GameConstants.EXPERTISE_ACTIVITY_MASTERED || 4;
+                });
+            }
         });
 
         // Other utility costs

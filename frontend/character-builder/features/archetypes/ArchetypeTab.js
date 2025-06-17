@@ -41,7 +41,7 @@ export class ArchetypeTab {
     
         tabContent.innerHTML = `
             <div class="archetypes-section">
-                <h2>Choose Archetypes</h2>
+                <h2>Choose Archetypes ${RenderUtils.renderInfoIcon(RenderUtils.getTooltipText('archetypes'))}</h2>
                 <p class="section-description">
                     Select one archetype from each of the 7 categories. These choices define your character's
                     fundamental approach and provide point modifiers and restrictions.

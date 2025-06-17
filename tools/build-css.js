@@ -15,6 +15,7 @@ const cssPartials = [
     'components/_cards.css',
     'components/_forms.css',
     'components/_tabs.css',
+    'components/_tooltips.css',
 
     // 3. Tab-specific styles
     'tabs/_welcome-screen.css',
