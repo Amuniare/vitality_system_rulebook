@@ -1466,7 +1466,14 @@ What you're exceptionally good at doing. Always applies when performing the rele
 
 ### Situational Talents
 
-Work with your GM to build up to 3 custom Talents that help flesh out your character. Talents can only apply when the context matches. Here are some sample Talents.
+    
+Work with your GM to build up to 3 custom Talents that help flesh out your character. You can only purchase one set of Talents. Talents can only apply when the context matches. 
+
+**Cost:** 1p allows your to add your Tier once to checks made using one of your Talents. 3p allows you to add your Tier twice instead.
+
+Here are some sample Talents: 
+
+
 
 #### Mobility
 - **Vertical Environments** – Comfortable in areas with ladders, walls, cliffs, or scaffolding
