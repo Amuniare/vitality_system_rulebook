@@ -3,6 +3,16 @@
         "cost": 1,
         "features": [
             {
+                "id": "eideticMemory",
+                "name": "Eidetic Memory",
+                "description": "You can recall any information you've previously encountered with perfect accuracy."
+            },
+            {
+                "id": "naturalCommunication",
+                "name": "Natural Communication",
+                "description": "You can converse with specific animal types and sense the health, needs, and recent history of plants. They respond with their level of intelligence and knowledge."
+            },
+            {
                 "id": "aquatic",
                 "name": "Aquatic",
                 "description": "Swim at full speed in any aquatic environment. You are unaffected by water temperature, pressure, or current when swimming."
@@ -76,6 +86,26 @@
                 "id": "distinguishedBackground",
                 "name": "Distinguished Background",
                 "description": "Your distinct heritage, noble birth, or foreign origin marks you as notable wherever you go. This grants you respect and curiosity that can open doors to influential individuals, exclusive events, and valuable information. However, it also makes you memorable and may create unwanted attention or suspicion depending on local politics and attitudes."
+            },
+            {
+                "id": "psychicLink",
+                "name": "Psychic Link",
+                "description": "You can share or transfer memories with a touch, or form a temporary psychic connection with another being. This can be used for strategic coordination, emotional support, or unique insight."
+            },
+            {
+                "id": "psychometry",
+                "name": "Psychometry",
+                "description": "You can perceive the recent history and emotional imprints of objects through touch."
+            },
+            {
+                "id": "spiritCommunication",
+                "name": "Spirit Communication",
+                "description": "You can speak with the spirits of the recently deceased in the immediate area."
+            },
+            {
+                "id": "technopathy",
+                "name": "Technopathy",
+                "description": "You can interface directly with electronic devices and understand their functions/data."
             },
             {
                 "id": "ancestralKnowledge",
@@ -218,6 +248,16 @@
                 "description": "You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Communication score can add your Tier to a skill check declared before they roll."
             },
             {
+                "id": "memoryManipulation",
+                "name": "Memory Manipulation",
+                "description": "You can view, modify, or implant memories in willing or unconscious subjects. Cannot be used on actively resisting targets."
+            },
+            {
+                "id": "consciousnessTransfer",
+                "name": "Consciousness Transfer",
+                "description": "You can temporarily swap consciousness with willing participants."
+            },
+            {
                 "id": "corruption",
                 "name": "Corruption",
                 "description": "Work with GM to establish corruption mechanics. When taking this feature, choose a trigger condition that grants significant power bonuses but risks permanent character corruption through failed resistance rolls."
@@ -241,6 +281,11 @@
                 "id": "hexer",
                 "name": "Hexer",
                 "description": "You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions."
+            },
+            {
+                "id": "hiddenTrap",
+                "name": "Hidden Trap",
+                "description": "It takes one hour to set up the trap, and you may set it to release one of your special attacks. You can set a number of traps equal to your Awareness per rest. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness check against double your Awareness to detect and a Mobility check to disarm or avoid."
             },
             {
                 "id": "inventor",
@@ -316,6 +361,11 @@
                 "id": "timeTravel",
                 "name": "Time Travel",
                 "description": "Move forward or backward through time automatically after spending 1 hour in preparation. Work with GM to determine limitations and potential paradox consequences."
+            },
+            {
+                "id": "realityRevision",
+                "name": "Reality Revision",
+                "description": "You can make minor alterations to recent events (within the last hour), changing their outcomes. Work with GM to establish limitations and consequences."
             }
         ]
     }
