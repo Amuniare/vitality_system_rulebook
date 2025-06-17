@@ -1,4 +1,4 @@
-// PointPoolCalculator.js - REFACTORED with caching and unified calculations
+// frontend/character-builder/calculators/PointPoolCalculator.js - REFACTORED with caching and unified calculations
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
 
@@ -119,16 +119,12 @@ export class PointPoolCalculator {
         return basePool;
     }
     
-    // Utility pool calculation based on archetype
+    // Utility pool calculation based on the new universal formula
     static calculateUtilityPool(tier, utilityArchetype) {
-        switch(utilityArchetype) {
-            case 'specialized':
-            case 'jackOfAllTrades':
-                return Math.max(0, GameConstants.UTILITY_POOL_MULTIPLIER * (tier - GameConstants.UTILITY_POOL_SPECIALIZED_BASE));
-            case 'practical':
-            default:
-                return Math.max(0, GameConstants.UTILITY_POOL_MULTIPLIER * (tier - GameConstants.UTILITY_POOL_PRACTICAL_BASE));
-        }
+        // The new rule is a universal formula: 5 * (Tier - 2)
+        // This is independent of the selected utility archetype.
+        // GameConstants.UTILITY_POOL_SPECIALIZED_BASE is 2, so we can use that.
+        return Math.max(0, GameConstants.UTILITY_POOL_MULTIPLIER * (tier - GameConstants.UTILITY_POOL_SPECIALIZED_BASE));
     }
     
     // Calculate special attack pools for all attacks
@@ -277,41 +273,9 @@ export class PointPoolCalculator {
     // Calculate utility pool spent
     static calculateUtilityPoolSpent(character) {
         let spent = 0;
-        
-        // Defensive initialization
-        if (!character.utilityPurchases.expertise.situational) {
-            character.utilityPurchases.expertise.situational = [];
-        }
 
-        // Expertise costs
-        Object.entries(character.utilityPurchases.expertise).forEach(([attrKey, category]) => {
-            // Handle situational expertises (new format)
-            if (attrKey === 'situational' && Array.isArray(category)) {
-                category.forEach(expertise => {
-                    if (expertise.level === 'basic') {
-                        spent += GameConstants.EXPERTISE_SITUATIONAL_BASIC || 1;
-                    } else if (expertise.level === 'mastered') {
-                        spent += GameConstants.EXPERTISE_SITUATIONAL_MASTERED || 3;
-                    }
-                });
-                return;
-            }
-            
-            // Handle activity-based expertises (old format) - defensive check
-            if (category && typeof category === 'object' && !Array.isArray(category) && category.basic && category.mastered) {
-                const basicExpertise = Array.isArray(category.basic) ? category.basic : [];
-                const masteredExpertise = Array.isArray(category.mastered) ? category.mastered : [];
-
-                basicExpertise.forEach(() => {
-                    spent += GameConstants.EXPERTISE_ACTIVITY_BASIC || 2;
-                });
-                masteredExpertise.forEach(() => {
-                    spent += GameConstants.EXPERTISE_ACTIVITY_MASTERED || 4;
-                });
-            }
-        });
-
-        // Other utility costs
+        // This method now only calculates spending for generic utility items,
+        // as the old expertise system is being removed.
         ['features', 'senses', 'movement', 'descriptors'].forEach(categoryKey => {
             (character.utilityPurchases[categoryKey] || []).forEach(purchase => {
                 spent += purchase.cost || 0;

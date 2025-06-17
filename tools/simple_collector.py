@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'everything'
+DEFAULT_PRESET = 'root_character_builder'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
@@ -50,6 +50,7 @@ PRESETS = {
         # Root files + character-builder
         '--root',
         'frontend/character-builder/',
+        'frontend/rules/rulebook.md'
     ],
 
     'root_character_builder_minus_data': [

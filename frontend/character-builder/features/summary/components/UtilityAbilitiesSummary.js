@@ -1,29 +1,32 @@
+// frontend/character-builder/features/summary/components/UtilityAbilitiesSummary.js
+import { gameDataManager } from '../../../core/GameDataManager.js';
+
 export class UtilityAbilitiesSummary {
     constructor() {
         // Pure display component - no state needed
     }
 
-    render(utilityPurchases, utilityDefinitions) {
-        if (!utilityPurchases) {
+    render(character) {
+        if (!character) {
             return `
                 <div class="card">
-                    <h3>Utility & General Abilities</h3>
+                    <h3>Utility & Talents</h3>
                     <div class="card-content">
-                        <p>No utility purchase data available</p>
+                        <p>No character data available</p>
                     </div>
                 </div>
             `;
         }
 
-        const hasAnyPurchases = this.hasUtilityPurchases(utilityPurchases);
+        const hasAnyPurchases = this.hasUtilityPurchases(character);
 
         if (!hasAnyPurchases) {
             return `
                 <div class="card">
-                    <h3>Utility & General Abilities</h3>
+                    <h3>Utility & Talents</h3>
                     <div class="card-content">
-                        <p>No utility abilities purchased yet</p>
-                        <p class="help-text">Utility abilities will appear here once purchased in the Utility tab.</p>
+                        <p>No utility abilities or talents defined yet.</p>
+                        <p class="help-text">Abilities will appear here once defined in the Utility tab.</p>
                     </div>
                 </div>
             `;
@@ -31,141 +34,116 @@ export class UtilityAbilitiesSummary {
 
         return `
             <div class="card">
-                <h3>Utility & General Abilities</h3>
+                <h3>Utility & Talents</h3>
                 <div class="card-content">
-                    ${this.renderUtilityCategories(utilityPurchases, utilityDefinitions)}
+                    ${this.renderTalents(character.talents)}
+                    ${this.renderUtilityArchetype(character)}
+                    ${this.renderUtilityPurchases(character.utilityPurchases)}
                 </div>
             </div>
         `;
     }
 
-    hasUtilityPurchases(utilityPurchases) {
-        if (!utilityPurchases || typeof utilityPurchases !== 'object') {
-            return false;
-        }
+    hasUtilityPurchases(character) {
+        if (!character) return false;
 
-        // Check expertise (situational talent sets)
-        if (utilityPurchases.expertise && 
-            utilityPurchases.expertise.situational && 
-            Array.isArray(utilityPurchases.expertise.situational) && 
-            utilityPurchases.expertise.situational.length > 0) {
-            return true;
-        }
+        const hasTalents = character.talents?.some(t => t && t.trim() !== '');
+        const hasArchetype = !!character.archetypes?.utility;
+        const hasPurchases = Object.values(character.utilityPurchases || {}).some(category => Array.isArray(category) && category.length > 0);
 
-        // Check other utility categories
-        return ['features', 'senses', 'movement', 'descriptors'].some(category => {
-            const items = utilityPurchases[category];
-            return Array.isArray(items) && items.length > 0;
-        });
+        return hasTalents || hasArchetype || hasPurchases;
     }
 
-    renderUtilityCategories(utilityPurchases, utilityDefinitions) {
-        let content = '';
-        
-        // Handle Talent Sets (new expertise system)
-        if (utilityPurchases.expertise && 
-            utilityPurchases.expertise.situational && 
-            Array.isArray(utilityPurchases.expertise.situational) && 
-            utilityPurchases.expertise.situational.length > 0) {
-            content += this.renderTalentSets(utilityPurchases.expertise.situational);
+    renderTalents(talents) {
+        if (!talents || talents.length === 0 || talents.every(t => !t || t.trim() === '')) {
+            return '';
         }
 
-        // Define the order and display names for other categories
+        return `
+            <div class="utility-category">
+                <h5 class="utility-category-header">Talents</h5>
+                <div class="utility-items">
+                    ${talents.map((talent, index) => `
+                        <div class="utility-summary-item">
+                            <h5 class="utility-item-name">Talent ${index + 1}: ${talent || '<em>Not Set</em>'}</h5>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    renderUtilityArchetype(character) {
+        const archetypeId = character.archetypes?.utility;
+        if (!archetypeId) return '';
+
+        const archetypes = gameDataManager.getArchetypesForCategory('utility') || [];
+        const archetype = archetypes.find(a => a.id === archetypeId);
+        if (!archetype) return '';
+        
+        let configDetails = '';
+        const selections = character.utilityArchetypeSelections;
+        if (archetypeId === 'practical' && selections.practicalSkills?.length > 0) {
+            const skillNames = selections.practicalSkills.map(skillId => {
+                const skill = (gameDataManager.getSkills() || []).find(s => s.id === skillId);
+                return skill ? skill.name : skillId;
+            });
+            configDetails = `Skills: ${skillNames.join(', ')}`;
+        } else if (archetypeId === 'specialized' && selections.specializedAttribute) {
+            const attributes = gameDataManager.getAttributes();
+            const allAttributes = [...(attributes.combat || []), ...(attributes.utility || [])];
+            const attr = allAttributes.find(a => a.id === selections.specializedAttribute);
+            configDetails = `Attribute: ${attr ? attr.name : selections.specializedAttribute}`;
+        }
+        
+        return `
+            <div class="utility-category">
+                <h5 class="utility-category-header">Utility Archetype</h5>
+                <div class="utility-summary-item">
+                    <h5 class="utility-item-name">${archetype.name}</h5>
+                    <p class="utility-description">${archetype.description}</p>
+                    ${configDetails ? `<p class="utility-config-details"><strong>Selection:</strong> ${configDetails}</p>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    renderUtilityPurchases(utilityPurchases) {
+        let content = '';
         const categoryConfig = {
             features: 'Features',
             senses: 'Senses',
-            movement: 'Movement Features',
+            movement: 'Movement',
             descriptors: 'Descriptors'
         };
 
         Object.entries(categoryConfig).forEach(([key, displayName]) => {
             const items = utilityPurchases[key];
             if (Array.isArray(items) && items.length > 0) {
-                const definitions = utilityDefinitions && utilityDefinitions[key] ? utilityDefinitions[key] : {};
-                content += this.renderCategory(displayName, items, key, definitions);
+                content += this.renderCategory(displayName, items);
             }
         });
 
-        return content || '<p>No utility abilities found</p>';
+        return content;
     }
 
-    renderCategory(categoryName, items, categoryKey, definitions) {
+    renderCategory(categoryName, items) {
         return `
             <div class="utility-category">
                 <h5 class="utility-category-header">${categoryName}</h5>
                 <div class="utility-items">
-                    ${items.map(item => this.renderItem(item, categoryKey, definitions)).join('')}
+                    ${items.map(item => this.renderItem(item)).join('')}
                 </div>
             </div>
         `;
     }
 
-    renderTalentSets(talentSets) {
-        return `
-            <div class="utility-category">
-                <h5 class="utility-category-header">Talent Sets</h5>
-                <div class="utility-items">
-                    ${talentSets.map(talentSet => this.renderTalentSet(talentSet)).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    renderTalentSet(talentSet) {
-        const displayName = talentSet.talents.filter(t => t && t.trim()).join(', ') || 'Untitled Talent Set';
-        const attributeDisplay = talentSet.attribute.charAt(0).toUpperCase() + talentSet.attribute.slice(1);
-        const levelDisplay = this.formatExpertiseLevel(talentSet.level);
-        const hasLevel = talentSet.level && talentSet.level !== 'none';
-        
-        return `
-            <div class="utility-summary-item talent-set-item">
-                <h5 class="utility-item-name">${displayName}${hasLevel ? ` (${levelDisplay})` : ''}</h5>
-                <p class="utility-description">${attributeDisplay}-based talent set${hasLevel ? '' : ' (unpurchased)'}</p>
-                ${talentSet.talents.length > 0 ? `<div class="talent-list">${talentSet.talents.filter(t => t && t.trim()).map(talent => `<span class="talent-tag">${talent}</span>`).join('')}</div>` : ''}
-            </div>
-        `;
-    }
-
-    renderItem(item, categoryKey, definitions) {
-        let itemId, itemName, itemDescription;
-        
-        // Extract item information based on structure
-        if (typeof item === 'string') {
-            itemId = item;
-            itemName = item;
-        } else if (typeof item === 'object' && item !== null) {
-            itemId = item.itemId || item.name || item.ability || item.feature;
-            itemName = item.name || item.ability || item.feature || itemId;
-        } else {
-            itemId = String(item);
-            itemName = String(item);
-        }
-        
-        // Get description from definitions
-        const definition = definitions && definitions[itemId];
-        if (definition) {
-            itemDescription = definition.description;
-            // Use the definition name if available (it might be more descriptive)
-            if (definition.name && !itemName.includes('(')) {
-                itemName = definition.name;
-            }
-        }
-        
+    renderItem(item) {
         return `
             <div class="utility-summary-item">
-                <h5 class="utility-item-name">${itemName}</h5>
-                ${itemDescription ? `<p class="utility-description">${itemDescription}</p>` : ''}
+                <h5 class="utility-item-name">${item.name} (${item.cost}p)</h5>
+                ${item.description ? `<p class="utility-description">${item.description}</p>` : ''}
             </div>
         `;
-    }
-
-    formatExpertiseLevel(level) {
-        const levelMap = {
-            'basic': 'Basic',
-            'mastered': 'Mastered',
-            'none': 'Unpurchased'
-        };
-
-        return levelMap[level?.toLowerCase()] || level || 'Unknown Level';
     }
 }

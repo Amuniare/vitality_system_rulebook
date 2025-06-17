@@ -28,6 +28,7 @@ class GameDataManager {
             availableSenses: 'data/senses.json',     // Tiered structure
             movementFeatures: 'data/movement_features.json', // Tiered structure
             descriptors: 'data/descriptors.json',      // Tiered structure
+            skills: 'data/skills.json', // ADDED
 
             // Special Attack Limits and Upgrades
             limits: 'data/limits.json',
@@ -125,6 +126,7 @@ class GameDataManager {
     getAvailableSenses() { return this._getData('availableSenses', {}); }
     getMovementFeatures() { return this._getData('movementFeatures', {}); }
     getDescriptors() { return this._getData('descriptors', {}); }
+    getSkills() { return this._getData('skills', []); } // ADDED
 
     getLimits() { return this._getData('limits', {}); }
     getUpgrades() { return this._getData('upgrades', {}); }

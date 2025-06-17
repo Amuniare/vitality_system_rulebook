@@ -1,0 +1,54 @@
+{
+  "questionnaire": [
+    {
+      "id": "heir_ambition",
+      "question": "What drives your desire to inherit the dynasty's warrant of trade?",
+      "type": "dropdown",
+      "options": [
+        "Legacy Builder - To create something that will outlast you.",
+        "Power Seeker - To crave authority and influence.",
+        "Duty Bound - To carry on the dynasty's mission.",
+        "Survivor - To gain the protection and resources leadership provides.",
+        "Idealist - To use the dynasty's power to make the Imperium better.",
+        "Other"
+      ]
+    },
+    {
+      "id": "bond_with_trader",
+      "question": "What is your bond with the Rogue Trader, Dame Venecia?",
+      "type": "dropdown",
+      "options": [
+        "The Loyal Retainer - Served from her Knight House days, bound by a blood debt from Cadia.",
+        "The Ambitious Partner - Joined her early on, splitting risks and rewards as equals.",
+        "The Reluctant Ally - A recent recruit with a hidden agenda, bound by mutual necessity.",
+        "The Shared Visionary - You both work toward the same long-term goal for the Imperium.",
+        "Other"
+      ]
+    },
+    {
+      "id": "mandate_focus",
+      "question": "Which aspect of the warrant's mandate do you most want to accomplish?",
+      "type": "dropdown",
+      "options": [
+        "Supply Line Establishment - To maintain supply lines in the most dangerous regions.",
+        "Asset Recovery & Cleansing - To cleanse corruption and salvage assets from lost territories.",
+        "Technology Acquisition - To acquire Warp-resistant tech and psyker artifacts for the Crusade.",
+        "Military Recruitment - To build elite forces from Warp exposure survivors and unsanctioned psykers.",
+        "Other"
+      ]
+    },
+    {
+      "id": "background_motivation",
+      "question": "What drove you to leave your previous life?",
+      "type": "textarea",
+      "placeholder": "Describe the scandal, unfulfilled ambition, or necessity that led you here..."
+    },
+    {
+      "id": "gm_notes",
+      "question": "GM-Only Notes & Secrets",
+      "type": "textarea",
+      "gmOnly": true,
+      "placeholder": "Enter any character secrets, hidden agendas, or notes visible only to the Game Master."
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-// StatCalculator.js - REFACTORED with incremental updates and caching
+// frontend/character-builder/calculators/StatCalculator.js - REFACTORED with incremental updates and caching
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
 
@@ -139,7 +139,7 @@ export class StatCalculator {
         
         return {
             skillBonus: tier + this.getUtilityArchetypeBonus(character),
-            expertiseBonus: this.calculateExpertiseBonus(character)
+            expertiseBonus: 0 // Old expertise system removed
         };
     }
     
@@ -243,15 +243,8 @@ export class StatCalculator {
                 break;
         }
         
-        // Utility Archetype Bonuses
-        switch(archetypes.utility) {
-            case 'specialized':
-                stats.chosenStatDoubleBonus = tier * 2;
-                break;
-            case 'jackOfAllTrades':
-                stats.skillBonus += tier;
-                break;
-        }
+        // Utility Archetype Bonuses are now GM adjudicated and do not affect calculated stats.
+        // The old logic has been removed.
         
         return stats;
     }
@@ -330,22 +323,12 @@ export class StatCalculator {
     
     // Get utility archetype bonus
     static getUtilityArchetypeBonus(character) {
+        // This is for the "Jack of All Trades" bonus.
+        // It's a general skill bonus, not tied to expertise.
         if (character.archetypes.utility === 'jackOfAllTrades') {
-            return character.tier; // Additional tier bonus
+            return character.tier; // Additional tier bonus to all skill checks
         }
         return 0;
-    }
-    
-    // Calculate expertise bonus from utility purchases
-    static calculateExpertiseBonus(character) {
-        let bonus = 0;
-        
-        Object.values(character.utilityPurchases.expertise).forEach(category => {
-            bonus += category.basic.length; // Basic expertise gives +1
-            bonus += category.mastered.length * 2; // Mastered gives +2
-        });
-        
-        return bonus;
     }
     
     // Apply boon effects to stats

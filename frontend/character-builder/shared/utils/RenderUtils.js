@@ -9,6 +9,7 @@ export class RenderUtils {
             status, // e.g., 'purchased', 'unaffordable', 'available', or custom
             clickable = false,
             disabled = false,
+            selected = false, // Added default value
             dataAttributes = {},
             additionalContent = ''
         } = data;
@@ -25,13 +26,15 @@ export class RenderUtils {
             .join(' ');
 
         const baseCardClass = 'card';
-        const statusClass = status ? `status-${status}` : ''; // Used for specific status styling if needed
+        const statusClass = status ? `status-${status}` : '';
 
+        // THE FIX IS HERE: The 'selected' class is now added conditionally.
         const classes = [
             baseCardClass,
             cardClass,
-            clickable && !disabled ? 'clickable' : '', // Clickable only if not disabled
+            clickable && !disabled ? 'clickable' : '',
             disabled ? 'disabled' : '',
+            selected ? 'selected' : '', // <-- THIS LINE WAS MISSING
             statusClass
         ].filter(Boolean).join(' ');
 
@@ -296,7 +299,7 @@ export class RenderUtils {
     static escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
-        return div.innerHTML.replace(/"/g, '&quot;');
+        return div.innerHTML.replace(/"/g, '"');
     }
 
     // Get tooltip text for common concepts
