@@ -33,7 +33,7 @@ export class ExpertiseSection {
         return `
             <div class="expertise-section">
                 <h4>Talent Sets (${situationalExpertises.length}/${maxSituationalExpertises})</h4>
-                <p class="section-description">Create custom talent collections that represent your character's specialized training. Each set contains 3 talents you define. Basic level costs ${costs.situational.basic.cost}p, the upgrade to Mastered costs ${costs.situational.mastered.cost}p.</p>
+                <p class="section-description">Create custom talent collections that represent your character's specialized training. You can purchase a single set, which contains 3 talents you define. Basic level costs ${costs.situational.basic.cost}p, the upgrade to Mastered costs ${costs.situational.mastered.cost}p.</p>
                 
                 <div class="talent-sets-container">
                     ${this.renderExistingTalentSets(situationalExpertises)}
