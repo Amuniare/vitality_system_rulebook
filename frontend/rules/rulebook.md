@@ -1530,6 +1530,19 @@ Walk on any liquid surface as if it were solid ground automatically.
 
 ### **3 Point Features**
 
+**Light Sleeper**
+You do not require sleep and are passively aware of your surroundings even while resting. Your Awareness checks are not reduced while resting, and you can remain alert during the party's rest periods. You still require the same rest duration to recover HP, Efforts, and ability uses.
+
+**Assistant**
+You can call upon your personal assistant to help with mundane activities such as a butler, driver, or secretary. The assistant can handle routine tasks, carry out errands, and serve as a go-between for important social interactions, offering access to otherwise unavailable opportunities.
+
+**Jury Rigging**
+You can repair or modify the function of any item or object without using materials. However, the repair is temporary and will break again at the end of the session or after intense use. The quality and duration of your repair is based on an Intelligence check determined by the GM.
+
+**Distinguished Background**
+Your distinct heritage, noble birth, or foreign origin marks you as notable wherever you go. This grants you respect and curiosity that can open doors to influential individuals, exclusive events, and valuable information. However, it also makes you memorable and may create unwanted attention or suspicion depending on local politics and attitudes.
+
+
 **Ancestral Knowledge**
 You can communicate with ancestral spirits for guidance.
 
@@ -1558,7 +1571,7 @@ You can create temporary magical guardians or constructs that can complete simpl
 You can seal items in a protective field to prevent tampering.
 
 **Prodigy**
-After 1 hour of focused study, gain Tier bonus to checks involving that specific topic until next rest.
+After 4 hour of focused study, gain Tier bonus to checks involving that specific topic until next rest.
 
 
 
@@ -1604,11 +1617,11 @@ You can sing a tune to help inspire others. For the next hour, a number of prese
 **Corruption**
 Work with GM to establish corruption mechanics. When taking this feature, choose a trigger condition that grants significant power bonuses but risks permanent character corruption through failed resistance rolls.
 
+
+
 **Enhanced Processing**
 Think and perceive at extremely accelerated speeds while performing hundreds of simple mental tasks simultaneously. This allows you to process information, analyze situations, and react with superhuman mental velocity while tracking multiple variables in complex problems.
 
-**Gravity Control**
-Alter your personal gravity automatically, allowing you to walk on any surface or float in mid-air for up to 1 minute.
 
 **Hexer**
 You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions.
@@ -1631,6 +1644,16 @@ Temporarily render objects or areas unnoticed by others. May require Stealth che
 **Ritualist**
 You can create magical rituals. These rituals work a single time and to accomplish a specific goal. The GM will determine the check difficulty based on the setting. It will take one uninterrupted hour to complete and may require special ingredients, such as a specific location, blood, or a rare object.
 
+**Mind Reading**
+Make an Intelligence or Awareness check to attempt to read a target's mind that you can see. The GM determines the difficulty based on the target's mental defenses and what information you're seeking. Success reveals the desired thoughts, memories, or knowledge the target possesses.
+
+**Telepath**
+You can communicate telepathically with any sentient being you can see or are familiar with across unlimited distances. They can communicate back if willing. You can maintain simultaneous mental links with a number of beings equal to your Intelligence score. Additionally, you can:
+- Share complex memories, emotions, or sensory experiences
+- Establish permanent mental bonds that persist even when unconscious
+- Create group mental networks allowing all linked minds to communicate
+- Attempt to influence thoughts and emotions of willing or weakened minds
+
 ### **10 Point Features**
 
 **Bleeding Edge**
@@ -1639,8 +1662,7 @@ Your technology is the most advanced and powerful there is, allowing you greater
 **Chameleon**
 You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters.
 
-**Consciousness Network**
-Make Communication checks to link multiple minds into a temporary collective consciousness, sharing all thoughts and knowledge.
+
 
 **Consciousness Projection**
 You can project your consciousness to other locations simultaneously, experiencing multiple places at once. Work with GM to establish specific limitations and duration.
@@ -1980,3 +2002,8 @@ Heroes with immense wealth, such as billionaires, royalty, or corporate executiv
 
 
 
+
+
+
+
+Here are the requested features:
