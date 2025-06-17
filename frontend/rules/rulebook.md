@@ -1494,7 +1494,6 @@ Abilities that enable entirely new categories of actions and checks impossible t
 
 **Cost Structure:** 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
 
-# FEATURES
 
 ### **1 Point Features**
 
