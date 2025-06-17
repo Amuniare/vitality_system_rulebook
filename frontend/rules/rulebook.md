@@ -1495,13 +1495,9 @@ Abilities that enable entirely new categories of actions and checks impossible t
 **Cost Structure:** 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
 
 
+Here are the features organized alphabetically within their point categories:
+
 ### **1 Point Features**
-
-**Eidetic Memory**
-You can recall any information you've previously encountered with perfect accuracy.
-
-**Natural Communication**
-You can converse with specific animal types and sense the health, needs, and recent history of plants. They respond with their level of intelligence and knowledge.
 
 **Aquatic**
 Swim at full speed in any aquatic environment. You are unaffected by water temperature, pressure, or current when swimming.
@@ -1509,6 +1505,8 @@ Swim at full speed in any aquatic environment. You are unaffected by water tempe
 **Debt**
 Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect.
 
+**Eidetic Memory**
+You can recall any information you've previously encountered with perfect accuracy.
 
 **Linguist** 
 You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don't know, you can attempt to decipher its meaning over time using intelligence.
@@ -1518,6 +1516,9 @@ You can place a protective barrier around a container or room. Your bonus to res
 
 **Multi-limbed**
 You have additional limbs. Each purchase of this feature grants you one extra limb.
+
+**Natural Communication**
+You can converse with specific animal types and sense the health, needs, and recent history of plants. They respond with their level of intelligence and knowledge.
 
 **Parkour Mastery**
 Navigate urban environments using walls, buildings, and obstacles as movement paths automatically.
@@ -1536,37 +1537,17 @@ Walk on any liquid surface as if it were solid ground automatically.
 
 ### **3 Point Features**
 
-**Light Sleeper**
-You do not require sleep and are passively aware of your surroundings even while resting. Your Awareness checks are not reduced while resting, and you can remain alert during the party's rest periods. You still require the same rest duration to recover HP, Efforts, and ability uses.
+**Ancestral Knowledge**
+You can communicate with ancestral spirits for guidance.
 
 **Assistant**
 You can call upon your personal assistant to help with mundane activities such as a butler, driver, or secretary. The assistant can handle routine tasks, carry out errands, and serve as a go-between for important social interactions, offering access to otherwise unavailable opportunities.
 
-**Jury Rigging**
-You can repair or modify the function of any item or object without using materials. However, the repair is temporary and will break again at the end of the session or after intense use. The quality and duration of your repair is based on an Intelligence check determined by the GM.
+**Auratic Sway**
+Emits a subtle aura that affects emotions or moods in the immediate vicinity. You can make an Intimidation or Communication check against everyone nearby to slightly alter their mood or emotions.
 
 **Distinguished Background**
 Your distinct heritage, noble birth, or foreign origin marks you as notable wherever you go. This grants you respect and curiosity that can open doors to influential individuals, exclusive events, and valuable information. However, it also makes you memorable and may create unwanted attention or suspicion depending on local politics and attitudes.
-
-**Psychic Link**
-You can share or transfer memories with a touch, or form a temporary psychic connection with another being. This can be used for strategic coordination, emotional support, or unique insight.
-
-**Psychometry**
-You can perceive the recent history and emotional imprints of objects through touch.
-
-**Spirit Communication**
-You can speak with the spirits of the recently deceased in the immediate area.
-
-**Technopathy**
-You can interface directly with electronic devices and understand their functions/data.
-
-
-
-**Ancestral Knowledge**
-You can communicate with ancestral spirits for guidance.
-
-**Auratic Sway**
-Emits a subtle aura that affects emotions or moods in the immediate vicinity. You can make an Intimidation or Communication check against everyone nearby to slightly alter their mood or emotions.
 
 **Dreamwalker**
 You can enter and interact with dreams.
@@ -1577,11 +1558,26 @@ Stretch your limbs to reach distant objects or compress your body to fit through
 **Fall Proof**
 Completely negate fall damage from any height automatically.
 
+**Familiar**
+You have a small-sized creature or construct that obeys your commands. You can see through its senses and control its movement. It uses your skills for any checks; if it's a creature, it uses your Awareness instead of Mobility. It cannot take actions other than skill checks. It has 0 in all combat stats, and if it takes damage, it is destroyed and cannot be resummoned until after a full rest. The familiar can scout dangerous areas, retrieve objects, or act as a distraction.
+
 **Forbiddance**
 Once per rest, over the course of an hour, you may create a ward that protects up to a 100 by 100 space area from observation, teleportation, and communication through the barrier. Choose one category of being (work with GM to define). Chosen creatures take (10 + Focus or Power) damage per turn spent in the area. The ward lasts one day. If you use this feature every day for 100 days in the same spot, the effect becomes permanent.
 
 **Glyph of Warding**
 It takes one hour to set up the trap, and you may set it to release one of your special attacks. The glyph may not be moved from where it was set up. You can have a number of active traps equal to your Intelligence score. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness or Intelligence check against double your Intelligence to detect.
+
+**Jury Rigging**
+You can repair or modify the function of any item or object without using materials. However, the repair is temporary and will break again at the end of the session or after intense use. The quality and duration of your repair is based on an Intelligence check determined by the GM.
+
+**Light Sleeper**
+You do not require sleep and are passively aware of your surroundings even while resting. Your Awareness checks are not reduced while resting, and you can remain alert during the party's rest periods. You still require the same rest duration to recover HP, Efforts, and ability uses.
+
+**Master Sculptor**
+Choose a specific material (stone, metal, wood, clay, etc.). You can precisely shape, mold, or alter that material at rapid pace, working on up to 8 cubic meters per minute. This allows you to create tools, artistic works, or modify existing structures made of your chosen material without requiring traditional crafting tools.
+
+**Material Shaping**
+You can temporarily transform mundane materials and objects into different forms. Convert one material into another similar material, or reshape an object into a different object of similar size and density. You cannot create complex mechanical devices or change the fundamental properties of materials (turning wood into metal, etc.).
 
 **Mystic Guardian**
 You can create temporary magical guardians or constructs that can complete simple tasks. These guardians can act as watchmen, couriers, or assistants in problem-solving tasks.
@@ -1592,7 +1588,14 @@ You can seal items in a protective field to prevent tampering.
 **Prodigy**
 After 4 hour of focused study, gain Tier bonus to checks involving that specific topic until next rest.
 
+**Prophet**
+You receive visions of a future that may or may not happen. Once per session, you may attempt to force one of these visions. Roll a d100; the higher the number, the more accurate and less vague the vision becomes.
 
+**Psychic Link**
+You can share or transfer memories with a touch, or form a temporary psychic connection with another being. This can be used for strategic coordination, emotional support, or unique insight.
+
+**Psychometry**
+You can perceive the recent history and emotional imprints of objects through touch.
 
 **Safe House**
 You have access to a home that supports more than just yourself.
@@ -1600,17 +1603,29 @@ You have access to a home that supports more than just yourself.
 **Social Network**
 You have extensive connections with various influential individuals. These connections can provide critical assistance, such as opening doors to exclusive events, securing resources, or obtaining valuable information.
 
+**Spirit Communication**
+You can speak with the spirits of the recently deceased in the immediate area.
+
 **Spiritual Bind**
 You can temporarily bind yourself to an object or location, granting limited influence, observation, or protection.
 
 **Sponsor**
 Someone has invested a great deal of time and/or money to get you where you are. You have greater access to resources, and they are inclined to protect their investment. However, you are beholden to them, and they might cut their losses if things get too dicey.
 
+**Stealth Guidance**
+You can add your Awareness score to the Stealth checks of any allies within 3 spaces of you that you designate. This ability helps your team move undetected while you coordinate their movements and watch for threats.
+
+**Street Performer**
+You can always find opportunities to earn money and resources through performances, hustling, or social connections. Make a Communication check to acquire money or secure free lodging and meals. The GM determines the difficulty based on the amount needed and local circumstances. Success may involve entertaining crowds, making deals, or leveraging social networks.
+
 **Streetwise Network**
 You have connections throughout various segments of society, providing you with valuable information about local people and places wherever you travel.
 
 **Super Strength**
 Add your Tier to your Capacity score.
+
+**Technopathy**
+You can interface directly with electronic devices and understand their functions/data.
 
 **Temporal Echo**
 You can temporarily replay past events regarding persons, places, and objects. This ability allows you to uncover secrets, retrace steps, or resolve mysteries tied to your surroundings.
@@ -1621,35 +1636,16 @@ You maintain a reliable contact within the criminal underworld who can facilitat
 **Well Connected**
 Once per session, if you say, "I Know a Guy," workshop with the GM to create an NPC who can help you with a specific task. GM secretly determines your relationship strength. Based on your history and request difficulty, they'll decide what favor or payment is required.
 
-**Stealth Guidance**
-You can add your Awareness score to the Stealth checks of any allies within 3 spaces of you that you designate. This ability helps your team move undetected while you coordinate their movements and watch for threats.
-
-**Familiar**
-You have a small-sized creature or construct that obeys your commands. You can see through its senses and control its movement. It uses your skills for any checks; if it's a creature, it uses your Awareness instead of Mobility. It cannot take actions other than skill checks. It has 0 in all combat stats, and if it takes damage, it is destroyed and cannot be resummoned until after a full rest. The familiar can scout dangerous areas, retrieve objects, or act as a distraction.
-
-**Street Performer**
-You can always find opportunities to earn money and resources through performances, hustling, or social connections. Make a Communication check to acquire money or secure free lodging and meals. The GM determines the difficulty based on the amount needed and local circumstances. Success may involve entertaining crowds, making deals, or leveraging social networks.
-
-**Master Sculptor**
-Choose a specific material (stone, metal, wood, clay, etc.). You can precisely shape, mold, or alter that material at rapid pace, working on up to 8 cubic meters per minute. This allows you to create tools, artistic works, or modify existing structures made of your chosen material without requiring traditional crafting tools.
-
-**Material Shaping**
-You can temporarily transform mundane materials and objects into different forms. Convert one material into another similar material, or reshape an object into a different object of similar size and density. You cannot create complex mechanical devices or change the fundamental properties of materials (turning wood into metal, etc.).
-
 ### **5 Point Features**
-
-**Quantum Pocket**
-You can store and retrieve objects in a subspace storage. This ability allows you to carry large or dangerous items without arousing suspicion or taking up inventory space.
 
 **Alchemist**
 You are a master of creating experimental tinctures and tonics. The concoctions work a single time to accomplish a specific goal. You will need time to gather the required ingredients, requiring an Intelligence or Awareness check to forage or rolling a d100 and Communication to purchase. The GM will decide the DCs, the amount of time it takes, and any costs.
 
+**Astral Projection**
+While resting, you can travel to other locations using a spectral form. You are visible but intangible while astral projecting, able to move through solid objects and observe your surroundings. You can return to your body at will from any distance. You can use this form to gather information or travel to otherwise unreachable places.
+
 **Bard**
 You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Communication score can add your Tier to a skill check declared before they roll.
-
-
-**Memory Manipulation**
-You can view, modify, or implant memories in willing or unconscious subjects. Cannot be used on actively resisting targets.
 
 **Consciousness Transfer**
 You can temporarily swap consciousness with willing participants.
@@ -1657,20 +1653,17 @@ You can temporarily swap consciousness with willing participants.
 **Corruption**
 Work with GM to establish corruption mechanics. When taking this feature, choose a trigger condition that grants significant power bonuses but risks permanent character corruption through failed resistance rolls.
 
-**Astral Projection**
-While resting, you can travel to other locations using a spectral form. You are visible but intangible while astral projecting, able to move through solid objects and observe your surroundings. You can return to your body at will from any distance. You can use this form to gather information or travel to otherwise unreachable places.
-
 **Enhanced Processing**
 Think and perceive at extremely accelerated speeds while performing hundreds of simple mental tasks simultaneously. This allows you to process information, analyze situations, and react with superhuman mental velocity while tracking multiple variables in complex problems.
-
-**Molecular Manipulation**
-You can convert one mundane material into another mundane material of similar density and hardness. Wood can become plastic, stone can become metal, or cloth can become leather. 
 
 **Hexer**
 You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions.
 
 **Hidden Trap**
 It takes one hour to set up the trap, and you may set it to release one of your special attacks. You can set a number of traps equal to your Awareness per rest. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness check against double your Awareness to detect and a Mobility check to disarm or avoid.
+
+**Immortality**
+You are immortal, you can be killed but you will return to life after 24 hours. Work with the GM to establish a limitation for said immortality, a way in which you can truly be killed. Additionally, determine where you return and if there are any changes that affect you.
 
 **Inventor**
 You can create technological inventions. These inventions work a single time and to accomplish a specific goal. The GM will determine the Intelligence check difficulty based on the setting. It will take a number of hours of active downtime equal to the difficulty minus 10. Requires a suitable lab or workshop.
@@ -1681,14 +1674,29 @@ You're very bossy and like to tell others how to do things. If you can spend one
 **Long-Range Teleportation**
 Teleport to any location that you can clearly visualize or have previously visited automatically after spending at least 1 minute in preparation, the longer the distance the greater the amount of time it takes.
 
+**Memory Manipulation**
+You can view, modify, or implant memories in willing or unconscious subjects. Cannot be used on actively resisting targets.
+
+**Mind Reading**
+Make an Intelligence or Awareness check to attempt to read a target's mind that you can see. The GM determines the difficulty based on the target's mental defenses and what information you're seeking. Success reveals the desired thoughts, memories, or knowledge the target possesses.
+
+**Molecular Manipulation**
+You can convert one mundane material into another mundane material of similar density and hardness. Wood can become plastic, stone can become metal, or cloth can become leather.
+
 **Perception Filter**
 Temporarily render objects or areas unnoticed by others. May require Stealth checks.
+
+**Quantum Pocket**
+You can store and retrieve objects in a subspace storage. This ability allows you to carry large or dangerous items without arousing suspicion or taking up inventory space.
 
 **Ritualist**
 You can create magical rituals. These rituals work a single time and to accomplish a specific goal. The GM will determine the check difficulty based on the setting. It will take one uninterrupted hour to complete and may require special ingredients, such as a specific location, blood, or a rare object.
 
-**Mind Reading**
-Make an Intelligence or Awareness check to attempt to read a target's mind that you can see. The GM determines the difficulty based on the target's mental defenses and what information you're seeking. Success reveals the desired thoughts, memories, or knowledge the target possesses.
+**Self-Sacrifice**
+As you activate this feature, increase your Tier by 4, for 6 rounds. At the end of the 6 rounds, you die. May change the penalty and/or bonus for something equivalent, discuss with GM. Cannot use if you have abilities that prevent death.
+
+**Telekinesis**
+You can move and manipulate objects at a distance using mental force. You can affect objects within your line of sight. The weight limit is based on your Capacity score: light objects effortlessly, medium objects with concentration, and heavy objects requiring significant effort.
 
 **Telepath**
 You can communicate telepathically with any sentient being you can see or are familiar with across unlimited distances. They can communicate back if willing. You can maintain simultaneous mental links with a number of beings equal to your Intelligence score. Additionally, you can:
@@ -1705,31 +1713,20 @@ Your technology is the most advanced and powerful there is, allowing you greater
 **Chameleon**
 You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters.
 
-
-
 **Consciousness Projection**
 You can project your consciousness to other locations simultaneously, experiencing multiple places at once. Work with GM to establish specific limitations and duration.
 
-
-**Immortality**
-You are immortal, you can be killed but you will return to life after 24 hours. Work with the GM to establish a limitation for said immortality, a way in which you can truly be killed. Additionally, determine where you return and if there are any changes that affect you.
+**Hive Mind**
+You can link multiple minds into a temporary collective consciousness, sharing all thoughts and knowledge.
 
 **Perfect Sanctuary**
 Create an impenetrable zone around you and your allies for a short duration. Nothing can enter or leave this zone without your permission. Work with GM to establish specific limitations and duration.
 
-**Self-Sacrifice**
-As you activate this feature, increase your Tier by 4, for 6 rounds. At the end of the 6 rounds, you die. May change the penalty and/or bonus for something equivalent, discuss with GM. Cannot use if you have abilities that prevent death.
-
-**Time Travel**
-Move forward or backward through time automatically after spending 1 hour in preparation. Work with GM to determine limitations and potential paradox consequences.
-
-
 **Reality Revision**
 You can make minor alterations to recent events (within the last hour), changing their outcomes. Work with GM to establish limitations and consequences.
 
-
-
-
+**Time Travel**
+Move forward or backward through time automatically after spending 1 hour in preparation. Work with GM to determine limitations and potential paradox consequences.
 
 ## Senses
 
