@@ -1494,155 +1494,59 @@ Abilities that enable entirely new categories of actions and checks impossible t
 
 **Cost Structure:** 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
 
+# FEATURES
 
+### **1 Point Features**
 
-### Mental/Psychic Powers
+**Aquatic**
+Swim at full speed in any aquatic environment. You are unaffected by water temperature, pressure, or current when swimming.
 
-#### Mental Features (1p)
+**Debt**
+Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect.
 
-**Material Sense** 
-Make Awareness checks to identify the composition, age, and origin of objects by touch.
+**Fall Protection**
+Automatically reduce fall damage by half after calculating Durability. Automatic for falls under 10 feet.
 
-**Perfect Senses**
-Make Awareness checks to identify sounds, voices, or musical notes with supernatural precision. Make Intelligence checks to know the exact time, date, or duration of events without external references. Make Intelligence checks to determine exact location, direction, and distance to any place you've been before.
-
-**Eidetic Memory**
-Make Intelligence checks to recall any information you've previously encountered with perfect accuracy.
-
-**Natural Communication**
-Make Communication checks to converse with specific animal types and sense the health, needs, and recent history of plants. They respond with their level of intelligence and knowledge.
-
-**Weather Prediction**
-Make Intelligence checks to accurately predict weather patterns up to 24 hours in advance.
-
-
-**Ancestral Knowledge** 
-You can communicate with ancestral spirits for guidance. 
-
-#### Mental Features (3p)
-
-**Telepathy**
-Make Communication checks to establish two-way mental communication with any intelligent being regardless of distance or barriers. No range limitations and allows deep mental contact.
-
-**Psychometry**
-Make Intelligence checks to perceive the recent history and emotional imprints of objects through touch.
-
-**Dream Walking**
-Make Communication checks to enter and interact with the dreams of sleeping individuals you can see.
-
-**Spirit Communication**
-Make Communication checks to speak with the spirits of the recently deceased in the immediate area.
-
-**Technopathy**
-Make Intelligence checks to interface directly with electronic devices and understand their functions/data.
-
-**Psychic Link**
-You can share or transfer memories with a touch, or form a temporary psychic connection with another being. This connection can be used for strategic coordination, emotional support, or unique insight into the other's thoughts and intentions.
-
-
-#### Mental Features (5p)
-
-**Mind-Reading**
-Make Communication checks to read surface thoughts of conscious beings within line of sight. Range limited to visual contact and surface-level thoughts only.
-
-**Memory Manipulation**
-Make Communication checks to view, modify, or implant memories in willing or unconscious subjects. Cannot be used on actively resisting targets.
-
-**Consciousness Transfer**
-Make Communication checks to temporarily swap consciousness with willing participants.
-
-#### Mental Features (10p) 
-
-**True Precognition**
-Make Intelligence checks to perceive detailed future events up to days in advance, with accuracy based on roll success.
-
-**Consciousness Network**
-Make Communication checks to link multiple minds into a temporary collective consciousness, sharing all thoughts and knowledge.
-
-**Quantum Consciousness**
-Make Awareness checks to exist in multiple probable states simultaneously, experiencing different possible realities.
-
-
-
-### Physical Enhancements
-
-#### Physical Features (1p)
-
-**Multi-limbed**
-You have additional limbs. Each purchase of this feature grants you one extra limb.
-
-**Personal Vehicle**
-You own a vehicle that allows you to travel quickly.
-
-**Stable Housing**
-You have access to a home that supports more than just yourself.
-
-#### Physical Features (3p)
-
-**Super Strength**
-Add your Tier to your Capacity score.
-
-**Mystic Guardian**
-You can create temporary magical guardians or constructs that can complete simple tasks. These guardians can act as watchmen, couriers, or assistants in problem-solving tasks.
-
-**Spiritual Bind**
-You can temporarily bind yourself to an object or location, granting limited influence, observation, or protection.
-
-**Auratic Sway**
-Emits a subtle aura that affects emotions or moods in the immediate vicinity. You can make an Intimidation or Communication check against everyone nearby to slightly alter their mood or emotions.
-
-**Supernatural Intuition**
-You can sense the presence of supernatural beings and forces. This ability can act as an early warning system or guide your party toward hidden dangers or opportunities.
-
-**Temporal Echo**
-You can temporarily replay past events regarding persons, places, and objects. This ability allows you to uncover secrets, retrace steps, or resolve mysteries tied to your surroundings.
-
-#### Physical Features (5p)
-
-
-
-**Probability Control**
-Make Intelligence checks to subtly influence probability, making unlikely events more or less likely to occur. Work with GM to determine scope and limitations.
-
-**Reality Anchoring**
-Make Intelligence checks to stabilize local reality, preventing supernatural alterations or dimensional instabilities.
-
-**Hexer**
-You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions.
-
-#### Physical Features (10p)
-
-**Chameleon**
- You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters. 
-
-**Reality Revision**
-Make Intelligence checks to make minor alterations to recent events (within the last hour), changing their outcomes. Work with GM to establish limitations and consequences.
-
-**Time Manipulation**
-Make Intelligence checks to slow, accelerate, or briefly pause time in localized areas around yourself. Work with GM to determine specific capabilities and narrative impact.
-
-**Causal Manipulation**
-Make Intelligence checks to alter cause-and-effect relationships, making effects occur without their normal causes. Work with GM to establish specific limitations and consequences.
-
-**Immortality**
-You are immortal, you can be killed but you will return to life after 24 hours. Work with the GM to establish a limitation for said immortality, a way in which you can truly be killed. Additionally, determine where you return and if there are any changes that affect you.
-
-**Self-Sacrifice**
-As you activate this feature, increase your Tier by 4, for 6 rounds. At the end of the 6 rounds, you die. May change the penalty and/or bonus for something equivalent, discuss with GM. Cannot use if you have abilities that prevent death.
-
-
-
-### Crafting/Creation Abilities
-
-#### Crafting Features (1p) 
+**Linguist** 
+You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don't know, you can attempt to decipher its meaning over time using intelligence.
 
 **Lock**
 You can place a protective barrier around a container or room. Your bonus to resist someone breaking into the container or room is 3 × your Intelligence. You can only have one lock active at a time, but you can disable and activate a new one at any time from anywhere.
 
-**Object Encryption**
-You can seal items in a protective field to prevent tampering.
+**Multi-limbed**
+You have additional limbs. Each purchase of this feature grants you one extra limb.
 
-#### Crafting Features (3p) 
+**Parkour Mastery**
+Navigate urban environments using walls, buildings, and obstacles as movement paths automatically.
+
+**Personal Vehicle**
+You own a vehicle that allows you to travel quickly.
+
+**Speak with Animals** 
+You can telepathically communicate with animals, and they can respond in kind. For 1 less point, you may instead communicate with only one specific type of animal.
+
+**The Prophesied One**
+A prophecy involves you. Those who believe in it will go to great lengths to assist you. Work with the GM to determine the prophecy's nature and cost.
+
+**Water Walking**
+Walk on any liquid surface as if it were solid ground automatically.
+
+### **3 Point Features**
+
+**Ancestral Knowledge**
+You can communicate with ancestral spirits for guidance.
+
+**Auratic Sway**
+Emits a subtle aura that affects emotions or moods in the immediate vicinity. You can make an Intimidation or Communication check against everyone nearby to slightly alter their mood or emotions.
+
+**Dreamwalker**
+You can enter and interact with dreams.
+
+**Elastic Movement**
+Stretch your limbs to reach distant objects or compress your body to fit through spaces one-quarter your normal size automatically.
+
+**Fall Proof**
+Completely negate fall damage from any height automatically.
 
 **Forbiddance**
 Once per rest, over the course of an hour, you may create a ward that protects up to a 100 by 100 space area from observation, teleportation, and communication through the barrier. Choose one category of being (work with GM to define). Chosen creatures take (10 + Focus or Power) damage per turn spent in the area. The ward lasts one day. If you use this feature every day for 100 days in the same spot, the effect becomes permanent.
@@ -1650,59 +1554,26 @@ Once per rest, over the course of an hour, you may create a ward that protects u
 **Glyph of Warding**
 It takes one hour to set up the trap, and you may set it to release one of your special attacks. The glyph may not be moved from where it was set up. You can have a number of active traps equal to your Intelligence score. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness or Intelligence check against double your Intelligence to detect.
 
+**Mystic Guardian**
+You can create temporary magical guardians or constructs that can complete simple tasks. These guardians can act as watchmen, couriers, or assistants in problem-solving tasks.
+
+**Object Encryption**
+You can seal items in a protective field to prevent tampering.
+
+**Prodigy**
+After 1 hour of focused study, gain Tier bonus to checks involving that specific topic until next rest.
+
 **Quantum Pocket**
 You can store and retrieve objects in a subspace storage. This ability allows you to carry large or dangerous items without arousing suspicion or taking up inventory space.
 
-**Alchemist**
-You are a master of creating experimental tinctures and tonics. The concoctions work a single time to accomplish a specific goal. You will need time to gather the required ingredients, requiring an Intelligence or Awareness check to forage or rolling a d100 and Communication to purchase. The GM will decide the DCs, the amount of time it takes, and any costs.
+**Safe House**
+You have access to a home that supports more than just yourself.
 
-**Ritualist**
-You can create magical rituals. These rituals work a single time and to accomplish a specific goal. The GM will determine the check difficulty based on the setting. It will take one uninterrupted hour to complete and may require special ingredients, such as a specific location, blood, or a rare object.
+**Social Network**
+You have extensive connections with various influential individuals. These connections can provide critical assistance, such as opening doors to exclusive events, securing resources, or obtaining valuable information.
 
-**Inventor**
-You can create technological inventions. These inventions work a single time and to accomplish a specific goal. The GM will determine the Intelligence check difficulty based on the setting. It will take a number of hours of active downtime equal to the difficulty minus 10. Requires a suitable lab or workshop.
-
-#### Crafting Features (5p) 
-
-**Matter Manipulation**
-Make Intelligence checks to temporarily convert one mundane material into another, or transform one object into another similar object requiring the same weight and density. Work with GM to establish duration and material limitations.
-
-**Molecular Control**
-Make Intelligence checks to rearrange molecular structures of small objects, changing their properties or form. Work with GM to determine scope and limitations.
-
-**Dimensional Storage**
-Make Intelligence checks to create pocket dimensions for storing objects without weight or bulk.
-
-**Hidden Trap**
-It takes one hour to set up the trap, and you may set it to release one of your special attacks. You can set a number of traps equal to your Awareness per rest. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness check against double your Awareness to detect and a Mobility check to disarm or avoid.
-
-**Bleeding Edge**
-Your technology is the most advanced and powerful there is, allowing you greater feats beyond what normal technology can accomplish. However, it can only be repaired, maintained, modified, or upgraded using very specific or hard-to-find tools, methods, or materials.
-
-#### Crafting Features (10p) 
-
-**Matter Creation**
-Make Intelligence checks to create small amounts of any non-living matter from quantum foam. Work with GM to establish limitations and energy requirements.
-
-**Universal Translation**
-Make Communication checks to understand and communicate in any language, including alien or interdimensional tongues.
-
-
-
-### Social/Network Features
-
-#### Social Features (1p)
-
-**Debt**
-Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect.
-
-**Linguist** 
-You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don’t know, you can attempt to decipher its meaning over time using intelligence. 
-
-**Speak with Animals** 
-You can telepathically communicate with animals, and they can respond in kind. For 1 less point, you may instead communicate with only one specific type of animal. 
-
-#### Social Features (3p)
+**Spiritual Bind**
+You can temporarily bind yourself to an object or location, granting limited influence, observation, or protection.
 
 **Sponsor**
 Someone has invested a great deal of time and/or money to get you where you are. You have greater access to resources, and they are inclined to protect their investment. However, you are beholden to them, and they might cut their losses if things get too dicey.
@@ -1710,76 +1581,90 @@ Someone has invested a great deal of time and/or money to get you where you are.
 **Streetwise Network**
 You have connections throughout various segments of society, providing you with valuable information about local people and places wherever you travel.
 
+**Super Strength**
+Add your Tier to your Capacity score.
+
+**Temporal Echo**
+You can temporarily replay past events regarding persons, places, and objects. This ability allows you to uncover secrets, retrace steps, or resolve mysteries tied to your surroundings.
+
 **Underworld Connection**
 You maintain a reliable contact within the criminal underworld who can facilitate communication and deliver messages discreetly across long distances. Your connection can also provide contraband, information, or covert assistance.
 
 **Well Connected**
 Once per session, if you say, "I Know a Guy," workshop with the GM to create an NPC who can help you with a specific task. GM secretly determines your relationship strength. Based on your history and request difficulty, they'll decide what favor or payment is required.
 
-**Social Network**
-You have extensive connections with various influential individuals. These connections can provide critical assistance, such as opening doors to exclusive events, securing resources, or obtaining valuable information.
+### **5 Point Features**
 
-
-
-### Unique/Specialized Features
-
-#### Specialized Features (1p)
-
-**The Prophesied One**
-A prophecy involves you. Those who believe in it will go to great lengths to assist you. Work with the GM to determine the prophecy's nature and cost.
-
-#### Specialized Features (3p)
-
-**Ancestral Knowledge**
-You can communicate with ancestral spirits for guidance.
-
-**Dreamwalker**
-You can enter and interact with dreams.
-
-**Divine Insight**
-You occasionally glimpse alternate dimensions, supernatural realms, and otherworldly realities.
-
-**Prodigy**
-After 1 hour of focused study, gain Tier bonus to checks involving that specific topic until next rest.
-
-**Future Sight**
-You receive visions of a future that may or may not happen. Once per session, you may attempt to force one of these visions. Roll a 1d100; the higher the number, the more accurate and less vague the vision becomes.
-
-**Perception Filter**
-Temporarily render objects or areas unnoticed by others. May require Stealth checks.
-
-**Know It All**
-You're very bossy and like to tell others how to do things. If you can spend one minute explaining how to do something better, another character can add your Intelligence to any check, provided they follow your advice.
+**Alchemist**
+You are a master of creating experimental tinctures and tonics. The concoctions work a single time to accomplish a specific goal. You will need time to gather the required ingredients, requiring an Intelligence or Awareness check to forage or rolling a d100 and Communication to purchase. The GM will decide the DCs, the amount of time it takes, and any costs.
 
 **Bard**
 You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Communication score can add your Tier to a skill check declared before they roll.
 
-#### Specialized Features (5p)
-
-**Time Perception**
-Make Awareness checks to perceive the flow of time differently, seeing events in slow motion or experiencing accelerated time.
-
-**Dimensional Sight**
-Make Awareness checks to see into parallel dimensions, alternate realities, or through dimensional barriers.
-
-**Perfect Sanctuary**
-Create an impenetrable zone around you and your allies for a short duration. Nothing can enter or leave this zone without your permission. Work with GM to establish specific limitations and duration.
+**Burrowing** 
+Move through earth, sand, or loose rock at half speed. You create temporary tunnels that collapse after you pass unless you spend a Primary Action to make them permanent.
 
 **Corruption**
 Work with GM to establish corruption mechanics. When taking this feature, choose a trigger condition that grants significant power bonuses but risks permanent character corruption through failed resistance rolls.
 
-**Simultaneous Processing**
-You can perform hundreds of simple mental tasks simultaneously. This feature allows for unique problem-solving opportunities, such as tracking multiple variables in puzzles or analyzing large amounts of data.
+**Enhanced Processing**
+Think and perceive at extremely accelerated speeds while performing hundreds of simple mental tasks simultaneously. This allows you to process information, analyze situations, and react with superhuman mental velocity while tracking multiple variables in complex problems.
 
-#### Specialized Features (10p)
+**Gravity Control**
+Alter your personal gravity automatically, allowing you to walk on any surface or float in mid-air for up to 1 minute.
 
-**Dimensional Travel**
-Make Mobility checks to open portals to alternate dimensions, parallel Earths, or entirely different realities. Work with GM to establish specific limitations and requirements.
+**Hexer**
+You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions.
 
-**Reality Programming**
-Make Intelligence checks to temporarily alter the fundamental laws of physics in a small area around yourself. Work with GM to determine scope and limitations.
+**Hidden Trap**
+It takes one hour to set up the trap, and you may set it to release one of your special attacks. You can set a number of traps equal to your Awareness per rest. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness check against double your Awareness to detect and a Mobility check to disarm or avoid.
 
+**Inventor**
+You can create technological inventions. These inventions work a single time and to accomplish a specific goal. The GM will determine the Intelligence check difficulty based on the setting. It will take a number of hours of active downtime equal to the difficulty minus 10. Requires a suitable lab or workshop.
 
+**Know It All**
+You're very bossy and like to tell others how to do things. If you can spend one minute explaining how to do something better, another character can add your Intelligence to any check, provided they follow your advice.
+
+**Long-Range Teleportation**
+Teleport to any location on Earth that you can clearly visualize or have previously visited automatically after spending 1 minute in preparation.
+
+**Perception Filter**
+Temporarily render objects or areas unnoticed by others. May require Stealth checks.
+
+**Ritualist**
+You can create magical rituals. These rituals work a single time and to accomplish a specific goal. The GM will determine the check difficulty based on the setting. It will take one uninterrupted hour to complete and may require special ingredients, such as a specific location, blood, or a rare object.
+
+### **10 Point Features**
+
+**Bleeding Edge**
+Your technology is the most advanced and powerful there is, allowing you greater feats beyond what normal technology can accomplish. However, it can only be repaired, maintained, modified, or upgraded using very specific or hard-to-find tools, methods, or materials.
+
+**Chameleon**
+You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters.
+
+**Consciousness Network**
+Make Communication checks to link multiple minds into a temporary collective consciousness, sharing all thoughts and knowledge.
+
+**Consciousness Projection**
+You can project your consciousness to other locations simultaneously, experiencing multiple places at once. Work with GM to establish specific limitations and duration.
+
+**Dimensional Storage**
+Make Intelligence checks to create pocket dimensions for storing objects without weight or bulk.
+
+**Immortality**
+You are immortal, you can be killed but you will return to life after 24 hours. Work with the GM to establish a limitation for said immortality, a way in which you can truly be killed. Additionally, determine where you return and if there are any changes that affect you.
+
+**Perfect Sanctuary**
+Create an impenetrable zone around you and your allies for a short duration. Nothing can enter or leave this zone without your permission. Work with GM to establish specific limitations and duration.
+
+**Phasing**
+Selectively phase parts of your body or your entire body through solid barriers. You can move through walls, floors, and other solid objects at normal speed. You must end your movement in an unoccupied space.
+
+**Self-Sacrifice**
+As you activate this feature, increase your Tier by 4, for 6 rounds. At the end of the 6 rounds, you die. May change the penalty and/or bonus for something equivalent, discuss with GM. Cannot use if you have abilities that prevent death.
+
+**Time Travel**
+Move forward or backward through time automatically after spending 1 hour in preparation. Work with GM to determine limitations and potential paradox consequences.
 
 ## Senses
 
@@ -1807,9 +1692,6 @@ Make Awareness checks to detect minute textures, vibrations, or temperature diff
 **Magnetic Sense**
 Make Awareness checks to determine cardinal directions and detect magnetic fields or metal objects.
 
-**Lie Detection**
-Make Awareness checks to detect when someone is deliberately lying or withholding truth.
-
 **Scent Tracking**
 Make Awareness checks to follow trails by scent, even hours or days old.
 
@@ -1833,8 +1715,7 @@ Make Awareness checks to perceive emotional states, health conditions, and super
 **Time Sense**
 Make Awareness checks to perceive temporal distortions, time dilation effects, or chronological inconsistencies.
 
-**Precognitive Flashes**
-Make Awareness checks to glimpse potential outcomes of immediate actions (next few seconds).
+
 
 ### Senses (5p)
 
@@ -1853,19 +1734,21 @@ Make Awareness checks to sense all living creatures within Tier × 100 Sp, regar
 **Energy Sight**
 Make Awareness checks to see all forms of energy (electrical, magical, radioactive) as visible spectrums.
 
+**Precognition**
+Make Awareness checks to glimpse potential futures.
+
 ### Senses (10p)
 
-**Omniscient Sight**
-Make Awareness checks to perceive events occurring anywhere on Earth that you can clearly visualize.
 
-**Temporal Vision**
-Make Awareness checks to see past or future states of objects and locations with perfect clarity.
+**Scrying**
+Make Awareness checks to remotely view any location you can clearly visualize or have previously visited. You can see and hear as if you were present at that location. Range is unlimited but clarity decreases with distance and unfamiliarity.
 
-**Quantum Perception**
-Make Awareness checks to perceive probability clouds, quantum states, and potential realities simultaneously.
+**Aura Analysis** 
+Make Awareness checks to perceive detailed information about any living being's powers, health status, emotional state, recent activities, and supernatural nature. This reveals their capabilities, conditions, and recent significant experiences through their personal aura.
 
-**Universal Detection**
-Make Awareness checks to sense any specific type of phenomenon anywhere within a city-sized area.
+**Truth Sight**
+Make Awareness checks to see through all forms of deception, illusion, disguise, and concealment. This reveals the true nature of people, objects, and situations, cutting through magical and mundane forms of misdirection.
+
 
 ### Unique Senses
 
@@ -1903,63 +1786,6 @@ Instantly teleport to any visible location within your movement range. This move
 
 **Portal Creation**
 Create two linked portals as part of your movement action. Each portal occupies one space and can be placed anywhere within your movement range. Your movement is consumed equal to the total distance between both portal locations. Any creature or object can move through either portal to instantly emerge from the other. Portals persist until the start of your next turn or until you create new ones. Only one pair of portals can exist at a time.
-
-## Movement Features
-
-Enhanced locomotion capabilities that enable checks for movement types impossible through normal human means. Movement Features expand how and where you can travel through skill checks and preparation.
-
-**Core Principle:** Movement Features allow you to make checks to travel in ways that would be impossible with normal human locomotion. They require skill checks, preparation time, or both.
-
-**Point Cost:** Based on scope, range, and utility applications enabled.
-
-### Movement Features (1p)
-
-**Water Walking**
-Make Mobility checks to walk on any liquid surface as if it were solid ground. The surface must support your weight based on its viscosity and your movement speed.
-
-**Perfect Balance**
-Make Mobility checks to walk across narrow surfaces, tightropes, or unstable terrain without falling. Width restrictions and environmental hazards affect check difficulty.
-
-**Parkour Mastery**
-Make Mobility checks to navigate urban environments using walls, buildings, and obstacles as movement paths. Complex routes require higher check difficulties.
-
-**Fall Protection**
-Make Mobility checks when falling to reduce damage by half after calculating Durability. Automatic for falls under 10 feet.
-
-**Aquatic**
-Make Mobility checks to swim at full speed in any aquatic environment. You are unaffected by water temperature, pressure, or current when swimming.
-
-### Movement Features (3p)
-
-**Fall Proof**
-Make Mobility checks to completely negate fall damage from any height. Failure results in normal fall damage calculations.
-
-**Elastic Movement**
-Make Mobility checks to stretch your limbs to reach distant objects or compress your body to fit through spaces one-quarter your normal size.
-
-### Movement Features (5p)
-
-**Long-Range Teleportation**
-Make Mobility checks after spending 1 minute in preparation to teleport to any location on Earth that you can clearly visualize or have previously visited. Check difficulty increases with distance and unfamiliarity.
-
-**Interdimensional Travel**
-Make Mobility checks after spending 10 minutes in preparation to travel between parallel dimensions or alternate realities. GM determines available destinations and check difficulties.
-
-**Gravity Control**
-Make Mobility checks to alter your personal gravity, allowing you to walk on any surface or float in mid-air for up to 1 minute. Maintaining control requires concentration.
-
-### Movement Features (10p)
-
-**Time Travel**
-Make Mobility checks after spending 1 hour in preparation to move forward or backward through time. Check difficulty increases with temporal distance. GM determines limitations and potential paradox consequences.
-
-**Astral Travel**
-Make Awareness checks after spending 10 minutes in preparation to project yourself across infinite distances as incorporeal consciousness. Your physical body remains vulnerable while projecting.
-
-**Omnipresence**
-Make Awareness checks after spending 1 hour in preparation to exist simultaneously in up to Tier different locations for up to 10 minutes. Maintaining multiple presences requires concentration checks each turn.
-
-
 
 ## Descriptors
 
