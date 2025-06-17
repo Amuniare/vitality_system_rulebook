@@ -1504,8 +1504,6 @@ Swim at full speed in any aquatic environment. You are unaffected by water tempe
 **Debt**
 Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect.
 
-**Fall Protection**
-Automatically reduce fall damage by half after calculating Durability. Automatic for falls under 10 feet.
 
 **Linguist** 
 You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don't know, you can attempt to decipher its meaning over time using intelligence.
@@ -1563,8 +1561,7 @@ You can seal items in a protective field to prevent tampering.
 **Prodigy**
 After 1 hour of focused study, gain Tier bonus to checks involving that specific topic until next rest.
 
-**Quantum Pocket**
-You can store and retrieve objects in a subspace storage. This ability allows you to carry large or dangerous items without arousing suspicion or taking up inventory space.
+
 
 **Safe House**
 You have access to a home that supports more than just yourself.
@@ -1595,14 +1592,15 @@ Once per session, if you say, "I Know a Guy," workshop with the GM to create an 
 
 ### **5 Point Features**
 
+**Quantum Pocket**
+You can store and retrieve objects in a subspace storage. This ability allows you to carry large or dangerous items without arousing suspicion or taking up inventory space.
+
 **Alchemist**
 You are a master of creating experimental tinctures and tonics. The concoctions work a single time to accomplish a specific goal. You will need time to gather the required ingredients, requiring an Intelligence or Awareness check to forage or rolling a d100 and Communication to purchase. The GM will decide the DCs, the amount of time it takes, and any costs.
 
 **Bard**
 You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Communication score can add your Tier to a skill check declared before they roll.
 
-**Burrowing** 
-Move through earth, sand, or loose rock at half speed. You create temporary tunnels that collapse after you pass unless you spend a Primary Action to make them permanent.
 
 **Corruption**
 Work with GM to establish corruption mechanics. When taking this feature, choose a trigger condition that grants significant power bonuses but risks permanent character corruption through failed resistance rolls.
@@ -1648,17 +1646,12 @@ Make Communication checks to link multiple minds into a temporary collective con
 **Consciousness Projection**
 You can project your consciousness to other locations simultaneously, experiencing multiple places at once. Work with GM to establish specific limitations and duration.
 
-**Dimensional Storage**
-Make Intelligence checks to create pocket dimensions for storing objects without weight or bulk.
 
 **Immortality**
 You are immortal, you can be killed but you will return to life after 24 hours. Work with the GM to establish a limitation for said immortality, a way in which you can truly be killed. Additionally, determine where you return and if there are any changes that affect you.
 
 **Perfect Sanctuary**
 Create an impenetrable zone around you and your allies for a short duration. Nothing can enter or leave this zone without your permission. Work with GM to establish specific limitations and duration.
-
-**Phasing**
-Selectively phase parts of your body or your entire body through solid barriers. You can move through walls, floors, and other solid objects at normal speed. You must end your movement in an unoccupied space.
 
 **Self-Sacrifice**
 As you activate this feature, increase your Tier by 4, for 6 rounds. At the end of the 6 rounds, you die. May change the penalty and/or bonus for something equivalent, discuss with GM. Cannot use if you have abilities that prevent death.
@@ -1674,8 +1667,6 @@ Enhanced perceptual capabilities that enable Awareness checks impossible through
 
 ### Senses (1p)
 
-**Infrared Vision**
-See heat signatures through barriers up to 10cm thick. Each additional purchase increases penetration by 10x (10cm → 1m → 10m → 100m). Certain hyperdense materials may be challenging.
 
 **Darkvision**
 Make Awareness checks to see clearly in complete darkness as if it were dim light.
