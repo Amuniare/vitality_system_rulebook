@@ -1,75 +1,97 @@
 // frontend/character-builder/systems/ActionSystem.js
-import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js';
-import { GameConstants } from '../core/GameConstants.js';
-import { gameDataManager } from '../core/GameDataManager.js'; // ADDED
+import { gameDataManager } from '../core/GameDataManager.js';
 
 export class ActionSystem {
-    // Get all available primary actions
-    static getAvailableActions() {
-        return gameDataManager.getActions() || []; // MODIFIED
+    // Get all available action upgrades as a flat list
+    static getAvailableActionUpgrades() {
+        return gameDataManager.getActions() || [];
     }
 
-    // Validate action upgrade purchase
-    static validateActionUpgrade(character, actionId) {
+    // Get the number of free Quick Action selections for Versatile Master
+    static getVersatileMasterSlots(character) {
+        if (character.archetypes.uniqueAbility === 'versatileMaster') {
+            // The rule is "half your Tier rounded up"
+            return Math.ceil((character.tier || 0) / 2);
+        }
+        return 0;
+    }
+
+    // Validate if an upgrade can be purchased or selected
+    static validateActionUpgrade(character, upgradeId) {
         const errors = [];
-        const warnings = [];
-
-        const action = (gameDataManager.getActions() || []).find(a => a.id === actionId); // MODIFIED
-        if (!action) {
-            errors.push(`Invalid action: ${actionId}`);
-            return { isValid: false, errors, warnings };
+        const upgrade = this.getAvailableActionUpgrades().find(u => u.id === upgradeId);
+        if (!upgrade) {
+            errors.push(`Invalid action upgrade: ${upgradeId}`);
+            return { isValid: false, errors };
         }
 
-        // Check if already purchased
-        if (character.mainPoolPurchases.primaryActionUpgrades.some(u => u.actionId === actionId)) {
-            errors.push('Action upgrade already purchased');
+        // Check if already owned (either as a free selection or a paid purchase)
+        const isAlreadyOwnedAsFree = upgrade.isQuickActionUpgrade && character.versatileMasterSelections?.includes(upgrade.baseActionId);
+        const isAlreadyPurchased = character.mainPoolPurchases.primaryActionUpgrades.some(p => p.id === upgrade.id);
+
+        if (isAlreadyOwnedAsFree) {
+            errors.push('Already selected for free by Versatile Master.');
+        } else if (isAlreadyPurchased) {
+            errors.push('Upgrade already purchased.');
         }
 
-        return {
-            isValid: errors.length === 0,
-            errors,
-            warnings
-        };
+        return { isValid: errors.length === 0, errors };
     }
 
-    // Purchase action upgrade
-    static purchaseActionUpgrade(character, actionId) {
-        const validation = this.validateActionUpgrade(character, actionId);
+    // Purchase an action upgrade
+    static purchaseActionUpgrade(character, upgradeId) {
+        const validation = this.validateActionUpgrade(character, upgradeId);
         if (!validation.isValid) {
             throw new Error(validation.errors.join(', '));
         }
 
-        const action = (gameDataManager.getActions() || []).find(a => a.id === actionId); // MODIFIED
+        const upgrade = this.getAvailableActionUpgrades().find(u => u.id === upgradeId);
+        if (!upgrade) throw new Error('Upgrade definition not found.');
 
-        const upgrade = {
-            actionId: actionId,
-            actionName: action.name,
-            cost: GameConstants.PRIMARY_TO_QUICK_COST,
-            purchased: new Date().toISOString()
+        // Handle Versatile Master logic for free Quick Action upgrades
+        if (upgrade.isQuickActionUpgrade && character.archetypes.uniqueAbility === 'versatileMaster') {
+            const totalSlots = this.getVersatileMasterSlots(character);
+            const usedSlots = character.versatileMasterSelections.length;
+
+            if (usedSlots < totalSlots) {
+                // This is a free selection
+                character.versatileMasterSelections.push(upgrade.baseActionId);
+                return character; // No points spent, no item added to purchases
+            }
+        }
+        
+        // If not a free selection, it's a paid purchase
+        const purchaseRecord = {
+            id: upgrade.id,
+            name: upgrade.name,
+            cost: upgrade.cost,
+            isQuickActionUpgrade: upgrade.isQuickActionUpgrade,
+            baseActionId: upgrade.baseActionId,
+            purchasedAt: new Date().toISOString()
         };
-
-        character.mainPoolPurchases.primaryActionUpgrades.push(upgrade);
+        character.mainPoolPurchases.primaryActionUpgrades.push(purchaseRecord);
+        
         return character;
     }
 
-    // Remove action upgrade
-    static removeActionUpgrade(character, actionId) {
-        const index = character.mainPoolPurchases.primaryActionUpgrades.findIndex(u => u.actionId === actionId);
-        if (index === -1) {
-            throw new Error('Action upgrade not found');
+    // Remove an action upgrade
+    static removeActionUpgrade(character, upgradeId) {
+        const upgrade = this.getAvailableActionUpgrades().find(u => u.id === upgradeId);
+        if (!upgrade) throw new Error('Upgrade definition not found.');
+
+        // If it was a free selection from Versatile Master
+        if (upgrade.isQuickActionUpgrade && character.versatileMasterSelections?.includes(upgrade.baseActionId)) {
+            character.versatileMasterSelections = character.versatileMasterSelections.filter(id => id !== upgrade.baseActionId);
+            return character;
         }
 
-        character.mainPoolPurchases.primaryActionUpgrades.splice(index, 1);
-        return character;
-    }
+        // If it was a paid purchase
+        const index = character.mainPoolPurchases.primaryActionUpgrades.findIndex(u => u.id === upgradeId);
+        if (index > -1) {
+            character.mainPoolPurchases.primaryActionUpgrades.splice(index, 1);
+            return character;
+        }
 
-    // Get action upgrade summary
-    static getActionUpgradeSummary(character) {
-        return character.mainPoolPurchases.primaryActionUpgrades.map(upgrade => ({
-            actionId: upgrade.actionId,
-            actionName: upgrade.actionName,
-            cost: upgrade.cost,
-            purchased: upgrade.purchased
-        }));
+        throw new Error('Action upgrade not found on character.');
     }
 }

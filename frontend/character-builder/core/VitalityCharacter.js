@@ -1,3 +1,4 @@
+// frontend/character-builder/core/VitalityCharacter.js
 // VitalityCharacter.js - Core character data model
 export class VitalityCharacter {
     constructor(id = null, name = "New Character", folderId = null) {
@@ -8,7 +9,7 @@ export class VitalityCharacter {
         this.characterType = "Player Character";
         this.tier = 4; // Starting tier
         this.folderId = folderId;
-        this.version = "2.1-rework"; // Version bump for new system
+        this.version = "2.2-action-rework"; // Version bump for new system
         this.created = new Date().toISOString();
         this.lastModified = new Date().toISOString();
         
@@ -23,7 +24,7 @@ export class VitalityCharacter {
             utility: null
         };
 
-        // NEW: Talents and Utility Archetype Selections
+        // Talents and Utility Archetype Selections
         this.talents = ["", ""]; // Each character gets 2 talents
         this.utilityArchetypeSelections = {
             practicalSkills: [],       // For 'Practical' archetype
@@ -48,13 +49,17 @@ export class VitalityCharacter {
             boons: [], // Various costs from main pool
             traits: [], // 30p each, conditional bonuses
             flaws: [], // Give 30p each, restrictions
-            primaryActionUpgrades: [] // 30p to make Primary → Quick
+            // Stores action upgrades that were paid for with points
+            primaryActionUpgrades: [] 
         };
+
+        // NEW: Stores the baseActionId of free Quick Action selections from Versatile Master
+        this.versatileMasterSelections = [];
         
         // Special Attacks - each has own limits and points
         this.specialAttacks = [];
         
-        // Utility Purchases - EXPERTISE REMOVED, now just generic purchases
+        // Utility Purchases
         this.utilityPurchases = {
             features: [],
             senses: [],
@@ -154,11 +159,7 @@ export class VitalityCharacter {
                                                this.specialAttacks.every(attack => attack.name && attack.name.trim() !== '');
         
         // Check utility completion
-        const hasUtilityPurchases = this.utilityPurchases.features.length > 0 ||
-                                  this.utilityPurchases.senses.length > 0 ||
-                                  this.utilityPurchases.movement.length > 0 ||
-                                  this.utilityPurchases.descriptors.length > 0 ||
-                                  (this.wealth && this.wealth.level);
+        const hasUtilityPurchases = Object.values(this.utilityPurchases).some(cat => cat.length > 0);
         this.buildState.utilityComplete = hasUtilityPurchases;
     }
     

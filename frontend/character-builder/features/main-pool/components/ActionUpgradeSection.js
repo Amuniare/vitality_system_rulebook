@@ -1,7 +1,7 @@
+
 // frontend/character-builder/features/main-pool/components/ActionUpgradeSection.js
 import { ActionSystem } from '../../../systems/ActionSystem.js';
 import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js';
-import { GameConstants } from '../../../core/GameConstants.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
 export class ActionUpgradeSection {
@@ -10,107 +10,142 @@ export class ActionUpgradeSection {
     }
 
     render(character, pointInfo) {
-        const availableActions = ActionSystem.getAvailableActions();
-        const purchasedUpgrades = character.mainPoolPurchases.primaryActionUpgrades;
+        const availableUpgrades = ActionSystem.getAvailableActionUpgrades();
+        const totalVMSlots = ActionSystem.getVersatileMasterSlots(character);
+        const usedVMSlots = character.versatileMasterSelections?.length || 0;
+        
+        let versatileMasterInfo = '';
+        if (totalVMSlots > 0) {
+            versatileMasterInfo = `
+                <div class="archetype-info-box">
+                    <strong>Versatile Master:</strong> You have ${totalVMSlots - usedVMSlots} of ${totalVMSlots} free Quick Action selections remaining.
+                </div>
+            `;
+        }
 
         const containerHtml = `
             <div class="main-pool-category">
-                <h3>Available Primary Action Upgrades</h3>
+                <h3>Available Action Upgrades</h3>
                 <p class="category-description">
-                    Convert any Primary Action to a Quick Action (${GameConstants.PRIMARY_TO_QUICK_COST}p each). This allows you to perform the action
-                    as part of your Quick Action instead of using your Primary Action.
+                    Purchase upgrades to enhance your character's standard actions. Some actions can be converted to Quick Actions, while others gain entirely new effects.
                 </p>
-
+                ${versatileMasterInfo}
                 ${RenderUtils.renderGrid(
-                    availableActions,
-                    (action) => this.renderActionOption(action, character, pointInfo),
-                    { gridContainerClass: 'grid-layout action-grid', gridSpecificClass: 'grid-columns-auto-fit-250' }
+                    availableUpgrades,
+                    (upgrade) => this.renderActionUpgradeCard(upgrade, character, pointInfo),
+                    { gridContainerClass: 'grid-layout action-upgrade-grid', gridSpecificClass: 'grid-columns-auto-fit-320' }
                 )}
             </div>
         `;
-
         return containerHtml;
     }
 
-    renderPurchasedUpgrade(upgrade, index) {
-        return `
-            <div class="purchased-item">
-                <div class="item-info">
-                    <span class="item-name">${upgrade.actionName} → Quick Action</span>
-                    <span class="item-details">${GameConstants.PRIMARY_TO_QUICK_COST}p</span>
-                </div>
-                ${RenderUtils.renderButton({
-                    text: 'Remove',
-                    variant: 'danger',
-                    size: 'small',
-                    classes: ['remove-upgrade'], // Keep specific class if JS relies on it
-                    dataAttributes: { index: index, action: 'remove-action-upgrade' } // Added data-action
-                })}
+    _getActionCardState(upgrade, character) {
+        const totalVMSlots = ActionSystem.getVersatileMasterSlots(character);
+        const ownedVMSlots = character.versatileMasterSelections || [];
+        const freeVMSlotsRemaining = totalVMSlots - ownedVMSlots.length;
+
+        const isQuickAction = upgrade.isQuickActionUpgrade;
+        const isOwnedAsFree = isQuickAction && ownedVMSlots.includes(upgrade.baseActionId);
+        const isOwnedAsPaid = character.mainPoolPurchases.primaryActionUpgrades.some(p => p.id === upgrade.id);
+        const isOwned = isOwnedAsFree || isOwnedAsPaid;
+
+        if (isOwned) {
+            return {
+                isOwned: true,
+                cost: isOwnedAsFree ? 0 : upgrade.cost,
+                statusText: 'Click to Remove',
+                action: 'remove-action-upgrade'
+            };
+        }
+
+        if (isQuickAction && freeVMSlotsRemaining > 0) {
+            return {
+                isOwned: false,
+                cost: 0,
+                statusText: 'Click to Select for Free',
+                action: 'purchase-action-upgrade'
+            };
+        }
+
+        return {
+            isOwned: false,
+            cost: upgrade.cost,
+            statusText: 'Click to Purchase',
+            action: 'purchase-action-upgrade'
+        };
+    }
+
+    renderActionUpgradeCard(upgrade, character, pointInfo) {
+        const state = this._getActionCardState(upgrade, character);
+
+        const descriptionContent = `
+            <div class="base-action-context">
+                <strong>Base Action: ${upgrade.baseActionName}</strong>
+                <p><small>${upgrade.baseActionDescription}</small></p>
+            </div>
+            <div class="upgrade-description">
+                <strong>Upgrade Effect:</strong> ${upgrade.description}
             </div>
         `;
-    }
 
-    renderActionOption(action, character, pointInfo) {
-        const alreadyPurchased = character.mainPoolPurchases.primaryActionUpgrades.some(u => u.actionId === action.id);
-        
-        let status = 'available';
-        if (alreadyPurchased) status = 'purchased';
+        const additionalContent = `
+            ${descriptionContent}
+            <div class="selection-indicator">${state.statusText}</div>
+        `;
 
         return RenderUtils.renderCard({
-            title: action.name,
-            cost: GameConstants.PRIMARY_TO_QUICK_COST,
-            description: action.description,
-            status: status,
-            clickable: !alreadyPurchased,
-            disabled: alreadyPurchased,
-            dataAttributes: { 'action-id': action.id, action: 'purchase-action-upgrade' }, // Added data-action
-            additionalContent: `<div class="upgrade-effect">Upgrade: Use as Quick Action</div>`
-        }, { cardClass: 'action-card', showStatus: alreadyPurchased }); // Only show status when purchased
+            title: upgrade.name,
+            cost: state.cost, // Pass numeric cost
+            description: '', 
+            clickable: true,
+            selected: state.isOwned,
+            dataAttributes: { 
+                action: state.action,
+                'upgrade-id': upgrade.id 
+            },
+            additionalContent: additionalContent
+        }, { cardClass: 'action-upgrade-card', showCost: true });
     }
-
-
-    setupEventListeners() {
-        // EventManager will handle this based on data-action attributes
-        // No specific querySelectors needed here if EventManager is used at a higher level (e.g., MainPoolTab)
-        // If this section is rendered into a container that MainPoolTab then sets listeners on,
-        // ensure data-action attributes are correctly used.
-    }
-
-    purchaseActionUpgrade(actionId) {
-        // 1. Get current point balance
+    
+    purchaseActionUpgrade(upgradeId) {
         const character = this.builder.currentCharacter;
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const remainingPoints = pools.remaining.mainPool;
-        
-        // 2. Get the cost of the item
-        const itemCost = GameConstants.PRIMARY_TO_QUICK_COST;
-        
-        // 3. Check if this purchase will go over budget
-        if (itemCost > remainingPoints) {
-            // 4. Show a non-blocking notification
-            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        const upgrade = ActionSystem.getAvailableActionUpgrades().find(u => u.id === upgradeId);
+        if (!upgrade) {
+            this.builder.showNotification('Upgrade not found.', 'error');
+            return;
         }
-
-        // 5. Proceed with the purchase REGARDLESS of the check.
-        try {
-            ActionSystem.purchaseActionUpgrade(character, actionId);
-            this.builder.updateCharacter(); // This will trigger re-render via MainPoolTab/CharacterBuilder
-            this.builder.showNotification(`Purchased action upgrade for ${GameConstants.PRIMARY_TO_QUICK_COST}p!`, 'success');
-        } catch (error) {
-            // This will now only catch hard rule validation errors.
-            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
-        }
-    }
-
-    removeUpgrade(index) {
-        const character = this.builder.currentCharacter;
-        try {
-            if (index >= 0 && index < character.mainPoolPurchases.primaryActionUpgrades.length) {
-                const upgrade = character.mainPoolPurchases.primaryActionUpgrades[index];
-                ActionSystem.removeActionUpgrade(character, upgrade.actionId); // Assuming system handles by ID
-                this.builder.updateCharacter();
-                this.builder.showNotification(`Removed ${upgrade.actionName} upgrade`, 'info');
+        
+        const state = this._getActionCardState(upgrade, character);
+        if (state.cost > 0) { // Only check budget for paid items
+            const pools = PointPoolCalculator.calculateAllPools(character);
+            const remainingPoints = pools.remaining.mainPool;
+            if (upgrade.cost > remainingPoints) {
+                this.builder.showNotification("This purchase puts you over budget.", "warning");
             }
+        }
+
+        try {
+            ActionSystem.purchaseActionUpgrade(character, upgradeId);
+            this.builder.updateCharacter();
+            this.builder.showNotification(`Acquired upgrade: ${upgrade.name}!`, 'success');
+        } catch (error) {
+            this.builder.showNotification(`Failed to acquire upgrade: ${error.message}`, 'error');
+        }
+    }
+
+    removeUpgrade(upgradeId) {
+        const character = this.builder.currentCharacter;
+        const upgrade = ActionSystem.getAvailableActionUpgrades().find(u => u.id === upgradeId);
+        if (!upgrade) {
+            this.builder.showNotification('Upgrade not found.', 'error');
+            return;
+        }
+
+        try {
+            ActionSystem.removeActionUpgrade(character, upgradeId);
+            this.builder.updateCharacter();
+            this.builder.showNotification(`Removed upgrade: ${upgrade.name}`, 'info');
         } catch (error) {
             this.builder.showNotification(`Failed to remove upgrade: ${error.message}`, 'error');
         }
