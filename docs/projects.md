@@ -1,28 +1,4 @@
-### **Master Implementation Plan: V2.2 Full System Overhaul**
 
-This document outlines the comprehensive plan to address all outstanding feature requests, bug fixes, and new system implementations for the Vitality project. The work is broken down into ten distinct projects, ordered by priority and dependency.
-
----
-
-### **Project 1: Data & Rulebook Integrity Overhaul**
-
-#### **Problem Statement**
-The application's core data files are out of sync with the official `rulebook.md`, leading to mechanical inconsistencies. Additionally, the "Basic" Special Attack archetype is functionally useless as it prevents players from upgrading their most fundamental attacks.
-
-#### **Root Cause**
-Manual updates to the rulebook were not propagated to the JSON data files. The "Basic" archetype was designed to prevent creating *new* special attacks but overlooked the need for players to *upgrade* their default base attack.
-
-#### **Implementation Steps**
-
-1.  **Full Rulebook Data Integrity Audit:**
-    *   **Action:** Systematically review the entire `frontend/rules/rulebook.md` document and cross-reference every rule, cost, and description against all 15+ JSON files in `frontend/character-builder/data/`.
-    *   **Details:** All discrepancies, including but not limited to the noted changes for Blitz, Enhanced Effect, and Bleed, will be corrected in the JSON files to ensure they are the single source of truth.
-
-2.  **"Basic Attack" Workaround Implementation:**
-    *   **Action:** Modify the logic associated with the "Basic" Special Attack Archetype.
-    *   **Details:** Instead of blocking all special attack creation, the archetype will now permit the creation of **exactly one** special attack. This slot will represent the character's "Base Attack," allowing it to be modified with the existing upgrade system until a dedicated system is built in Project 8.
-
----
 
 ### **Project 2: Character Identity & Presentation**
 
