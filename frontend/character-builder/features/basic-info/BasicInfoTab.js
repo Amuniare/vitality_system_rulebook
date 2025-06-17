@@ -38,6 +38,8 @@ export class BasicInfoTab {
 
                 ${this.renderPlayerNameField(character)}
 
+                ${this.renderCharacterSubTypeField(character)}
+
                 ${RenderUtils.renderFormGroup({
                     label: 'Hero Name *',
                     inputId: 'character-name',
@@ -74,11 +76,11 @@ export class BasicInfoTab {
                 </div>
 
                 <div class="next-step">
-                    <p><strong>Next Step:</strong> Choose your 7 archetype categories to define your character's core abilities.</p>
+                    <p><strong>Next Step:</strong> Define your character's background and motivations.</p>
                     ${RenderUtils.renderButton({
-                        text: 'Continue to Archetypes →',
+                        text: 'Continue to Identity →',
                         variant: 'primary',
-                        dataAttributes: { action: 'continue-to-archetypes' }
+                        dataAttributes: { action: 'continue-to-identity' }
                     })}
                 </div>
             </div>
@@ -105,7 +107,16 @@ export class BasicInfoTab {
         
         const characterTypes = gameDataManager.getCharacterTypes();
         const currentType = characterTypes.find(type => type.id === character.characterType);
-        return currentType ? currentType.hp : 100;
+        
+        if (!currentType) return 100;
+        
+        // If it's "other" type, check for sub-type
+        if (character.characterType === "other" && character.characterSubType) {
+            const subType = currentType.subTypes?.find(sub => sub.id === character.characterSubType);
+            return subType ? subType.hp : currentType.hp;
+        }
+        
+        return currentType.hp;
     }
 
     renderPlayerNameField(character) {
@@ -116,6 +127,34 @@ export class BasicInfoTab {
                 inputId: 'player-name',
                 inputHtml: `<input type="text" id="player-name" placeholder="Enter player name" value="${character.playerName || ''}" data-action="update-player-name">`,
                 description: "The name of the player controlling this character"
+            });
+        }
+        return '';
+    }
+
+    renderCharacterSubTypeField(character) {
+        // Only show sub-type field if character type is "other"
+        if (character.characterType === "other") {
+            const characterTypes = gameDataManager.getCharacterTypes();
+            const otherType = characterTypes.find(type => type.id === "other");
+            const subTypeOptions = otherType?.subTypes?.map(subType => ({
+                value: subType.id,
+                label: subType.name
+            })) || [];
+
+            // Add empty option
+            subTypeOptions.unshift({ value: "", label: "Select Sub-Type..." });
+
+            return RenderUtils.renderFormGroup({
+                label: 'Character Sub-Type *',
+                inputId: 'character-subtype-select',
+                inputHtml: RenderUtils.renderSelect({
+                    id: 'character-subtype-select',
+                    value: character.characterSubType || "",
+                    options: subTypeOptions,
+                    dataAttributes: { action: 'update-character-subtype', testid: 'character-subtype' }
+                }),
+                description: "The specific type of non-player character"
             });
         }
         return '';
@@ -142,7 +181,7 @@ export class BasicInfoTab {
         
         EventManager.delegateEvents(container, {
             click: {
-                '[data-action="continue-to-archetypes"]': () => this.builder.switchTab('archetypes')
+                '[data-action="continue-to-identity"]': () => this.builder.switchTab('identity')
             },
             input: {
                 '[data-action="update-player-name"]': (e, element) => {
@@ -158,6 +197,9 @@ export class BasicInfoTab {
             change: {
                 '[data-action="update-character-type"]': (e, element) => {
                     this.updateCharacterType(element.value);
+                },
+                '[data-action="update-character-subtype"]': (e, element) => {
+                    this.updateCharacterSubType(element.value);
                 },
                 '[data-action="update-tier"]': (e, element) => {
                     this.updateTier(element.value);
@@ -183,8 +225,13 @@ export class BasicInfoTab {
     
     updateCharacterType(newType) { // Called by CharacterBuilder
         this.builder.setCharacterType(newType);
-        // Re-render the tab to show/hide player name field and update HP display
+        // Re-render the tab to show/hide player name field and sub-type field
         this.render();
+    }
+    
+    updateCharacterSubType(newSubType) { // Called by CharacterBuilder
+        this.builder.setCharacterSubType(newSubType);
+        this.updateTierDisplay(this.builder.currentCharacter.tier);
     }
     
     updateTier(newTier) { // Called by CharacterBuilder
@@ -239,6 +286,10 @@ export class BasicInfoTab {
          const characterTypeSelect = document.getElementById('character-type-select');
          if(characterTypeSelect && this.builder.currentCharacter && characterTypeSelect.value !== this.builder.currentCharacter.characterType) {
             characterTypeSelect.value = this.builder.currentCharacter.characterType;
+         }
+         const characterSubTypeSelect = document.getElementById('character-subtype-select');
+         if(characterSubTypeSelect && this.builder.currentCharacter && characterSubTypeSelect.value !== this.builder.currentCharacter.characterSubType) {
+            characterSubTypeSelect.value = this.builder.currentCharacter.characterSubType || "";
          }
     }
 }

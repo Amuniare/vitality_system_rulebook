@@ -41,7 +41,10 @@ class GameDataManager {
             characterTypes: 'data/character_type.json',
 
             // Tiers
-            tiers: 'data/tiers.json'
+            tiers: 'data/tiers.json',
+
+            // Biography questionnaire
+            bio: 'data/bio.json'
 
             // GameConstants (optional future externalization)
             // gameConstantsData: 'data/game_constants_data.json',
@@ -139,6 +142,9 @@ class GameDataManager {
 
     // Tiers
     getTiers() { return this._getData('tiers', {}); }
+
+    // Biography questionnaire
+    getBio() { return this._getData('bio', { questionnaire: [] }); }
 }
 
 export const gameDataManager = new GameDataManager();

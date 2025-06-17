@@ -8,7 +8,7 @@
 
 
 EFFECT TYPE HYBRID COST WRONG
-Create Custom Sense Button doesn't work
+Create Custom Sense/descriptor Button doesn't work
 More information needs to be inluded in the site description box
 90% of the text from the rulebook should be on the site
 Text boxes within special attacks don't update until a button is pressed

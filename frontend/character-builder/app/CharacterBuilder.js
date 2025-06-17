@@ -5,6 +5,7 @@ import { CharacterLibrary } from '../shared/ui/CharacterLibrary.js';
 
 // Import all tabs
 import { BasicInfoTab } from '../features/basic-info/BasicInfoTab.js';
+import { IdentityTab } from '../features/identity/IdentityTab.js';
 import { ArchetypeTab } from '../features/archetypes/ArchetypeTab.js';
 import { AttributeTab } from '../features/attributes/AttributeTab.js';
 import { MainPoolTab } from '../features/main-pool/MainPoolTab.js';
@@ -106,6 +107,7 @@ export class CharacterBuilder {
         
         this.tabs = {
             basicInfo: new BasicInfoTab(this),
+            identity: new IdentityTab(this),
             archetypes: new ArchetypeTab(this),
             attributes: new AttributeTab(this),
             mainPool: new MainPoolTab(this),
@@ -242,7 +244,7 @@ export class CharacterBuilder {
         }
         if (playerDisplay) {
             // Only show player name for Player Characters
-            if (this.currentCharacter.characterType === "Player Character") {
+            if (this.currentCharacter.characterType === "player_character") {
                 const playerText = this.currentCharacter.playerName ? `Player: ${this.currentCharacter.playerName}` : 'Player: ';
                 playerDisplay.textContent = playerText;
                 playerDisplay.style.display = '';
@@ -357,8 +359,13 @@ export class CharacterBuilder {
         }
         
         // Save character automatically to localStorage if library exists
-        if (this.library && this.currentCharacter.id) {
+        if (this.library && this.currentCharacter) {
+            if (!this.currentCharacter.id) {
+                // Ensure character has an ID before saving
+                this.currentCharacter.id = Date.now().toString();
+            }
             this.library.saveCharacter(this.currentCharacter);
+            console.log('Character saved to library:', this.currentCharacter.name);
         }
     }
 
@@ -533,15 +540,32 @@ export class CharacterBuilder {
         if (!this.currentCharacter) return;
         this.currentCharacter.characterType = characterType;
         // Clear player name if not a Player Character
-        if (characterType !== "Player Character") {
+        if (characterType !== "player_character") {
             this.currentCharacter.playerName = "";
         }
+        // Clear sub-type if not "other"
+        if (characterType !== "other") {
+            this.currentCharacter.characterSubType = null;
+        }
+        this.updateCharacter();
+    }
+    
+    setCharacterSubType(subType) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.characterSubType = subType;
         this.updateCharacter();
     }
     
     setCharacterTier(tier) {
         if (!this.currentCharacter) return;
         this.currentCharacter.tier = parseInt(tier);
+        this.updateCharacter();
+    }
+    
+    // Biography detail management
+    setBiographyDetail(questionId, value) {
+        if (!this.currentCharacter) return;
+        this.currentCharacter.biographyDetails[questionId] = value;
         this.updateCharacter();
     }
     

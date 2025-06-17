@@ -19,6 +19,7 @@ const cssPartials = [
 
     // 3. Tab-specific styles
     'tabs/_welcome-screen.css',
+    'tabs/_identity.css',
     'tabs/_archetypes.css',
     'tabs/_attributes.css',
     'tabs/_main-pool.css',

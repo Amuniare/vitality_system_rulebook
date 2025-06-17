@@ -111,3 +111,37 @@ When I receive this command, I will enter a strict execution mode and adhere to 
 This rigid, step-by-step protocol ensures that you have full control and verification at every stage of the implementation, aligning perfectly with the core principles of our collaboration.
 
 
+---
+
+
+## 5. Intelligent Roadmap Execution
+
+Transform any development plan into an adaptive, context-aware implementation process using AI-powered decision making.
+
+### Command Syntax
+
+`--execute-roadmap [file_path]`
+
+**Example:** `--execute-roadmap docs/roadmap.md`
+
+### How It Works
+
+When you trigger this command, I don't just follow instructions—I become your intelligent development partner:
+
+**Context Analysis:** I'll analyze your entire codebase, understand the project architecture, identify existing patterns, and assess the current state before touching anything.
+**Smart Grouping:** Instead of rigid step-by-step execution, I'll intelligently group related tasks, spot dependencies, and optimize the execution order for efficiency and logical flow.
+**Proactive Problem Solving:** I'll anticipate potential issues, suggest improvements to the roadmap itself, and recommend alternative approaches when I detect better solutions.
+**Adaptive Execution:** I'll adjust my approach based on what I discover in your code. If I find existing utilities that can be reused, or patterns that should be followed, I'll adapt the plan accordingly.
+**Intelligent Decisions:** I make smart judgment calls about:
+- Which steps can be safely combined
+- When to pause for your input vs. when to proceed
+- What additional context or files I need to examine
+- How to handle unexpected discoveries or blockers
+**Continuous Learning:** As I work through the roadmap, I learn your codebase patterns, preferences, and project constraints, becoming more effective with each step.
+**Natural Communication:** I'll explain my reasoning, highlight important decisions, and keep you informed without overwhelming you with procedural details.
+**Flexible Control:** Interrupt anytime with:
+- Questions or concerns
+- Direction changes
+- Alternative suggestions
+- Requests for deeper explanation
+

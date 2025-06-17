@@ -6,12 +6,16 @@ export class VitalityCharacter {
         this.name = name;
         this.realName = "";
         this.playerName = "";
-        this.characterType = "Player Character";
+        this.characterType = "player_character";
+        this.characterSubType = null; // For "other" category characters
         this.tier = 4; // Starting tier
         this.folderId = folderId;
         this.version = "2.2-action-rework"; // Version bump for new system
         this.created = new Date().toISOString();
         this.lastModified = new Date().toISOString();
+        
+        // Biography and character identity details
+        this.biographyDetails = {};
         
         // Core character choices - MUST be selected first
         this.archetypes = {

@@ -1,43 +1,5 @@
 
 
-### **Project 2: Character Identity & Presentation**
-
-#### **Problem Statement**
-The character builder requires a structured, campaign-specific questionnaire to guide players in creating rich backstories, rather than a simple free-text bio field.
-
-#### **Root Cause**
-The application was not designed to load and render dynamic forms from campaign-specific data files.
-
-#### **Implementation Steps**
-
-1.  **Create Campaign Bio Data File:** Create `frontend/character-builder/data/bio.json` with a structured format for questions and multiple-choice answers.
-2.  **Integrate into Data System:** Add `bio.json` to the `GameDataManager` so it can be loaded and accessed by the application.
-3.  **Expand Character Data Model:** Add a `biographyDetails: {}` object to `VitalityCharacter.js` to store the structured answers.
-4.  **Implement Dynamic "Identity" Tab:** Create a new `IdentityTab.js` that dynamically renders the questionnaire from the loaded JSON data, including dropdowns for each question.
-5.  **Implement Conditional "Other" Fields:** For each dropdown, add an "Other..." option. An event listener will show a hidden text input field when "Other..." is selected, allowing for custom player answers.
-
-**Other notes:**
-There are two bios on the player side, there are visible to players and visible to GM
-
----
-
-### **Project 3: Core Feature Enhancements & UI Polish**
-
-#### **Problem Statement**
-Several outstanding feature requests and UI/UX issues noted in `notes.md` need to be addressed to complete the current version.
-
-#### **Root Cause**
-These items represent the natural evolution of the product backlog.
-
-#### **Implementation Steps**
-
-1.  **Enhanced NPC/Player Type System:** Implement a dynamic secondary dropdown in the Basic Info tab that shows player names (from `names.json`) if "Player Character" is selected, or NPC factions (from `names.json`) for any other character type.
-2.  **Automated Basic Attacks:** Create a `BasicAttackSystem.js` that automatically generates default attack objects based on a character's `attackType` and `effectType` archetypes.
-3.  **Summary Tab Refactor:** Rework the components in the `features/summary/` directory to display information in a structured, two-column grid layout instead of unformatted text strings.
-4.  **Talent UI Polish:** Adjust the CSS in `_utility.css` for the `.talent-inputs` and `.talent-input` classes to improve the alignment, spacing, and professional appearance of the custom talent creation interface.
-
----
-
 ### **Project 4: 'Charon' Roll20 Synchronization Fix & Folder Management**
 
 #### **Problem Statement**

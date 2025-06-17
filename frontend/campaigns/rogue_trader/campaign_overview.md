@@ -87,22 +87,22 @@ Prototype long-range exploration cruiser with enhanced Warp drives and sensor ar
 *Essential background elements that define your character's personality and history.*
 
 **What drove you to leave your previous life?**
-- Ambition Unfulfilled 
-- Scandal or Disgrace 
-- Loyalty Transferred 
-- Necessity
+- **Ambition Unfulfilled** - Your talents and vision exceeded what your previous station could offer; you needed the freedom and resources of a Rogue Trader dynasty to achieve your true potential
+- **Scandal or Disgrace** - A failure, betrayal, or forbidden act forced you from your former life; serving Dame Venecia offers redemption or escape from consequences
+- **Loyalty Transferred** - You followed someone you served into exile, or discovered a cause more worthy than your previous allegiances
+- **Necessity** - Circumstances beyond your control - war, corruption, or political upheaval - left you with no choice but to seek new purpose among the stars
 
 **How do you handle authority and moral compromises?**
-- Respect hierarchy, refuse compromise 
-- Question authority, small compromises for greater good 
-- Challenge authority, pragmatic solutions 
-- Ignore authority unless beneficial
+- **Respect hierarchy, refuse compromise** - You follow Imperial doctrine and chain of command absolutely; some lines must never be crossed regardless of cost
+- **Question authority, small compromises for greater good** - You believe in the Imperial cause but think independently; willing to bend rules when innocent lives hang in the balance
+- **Challenge authority, pragmatic solutions** - You prioritize results over protocol; authority must be earned and rules exist to serve the mission, not hinder it
+- **Ignore authority unless beneficial** - You serve your own interests first; orders and moral restrictions only matter when they align with your personal goals
 
 **How do others see you?**
-- Reliable and trustworthy 
-- Dangerous but useful 
-- Ambitious and driven 
-- Mysterious and unpredictable
+- **Reliable and trustworthy** - Colleagues depend on your word and competence; you're known for keeping promises and delivering results
+- **Dangerous but useful** - Others fear your methods or past but recognize your effectiveness; they need you even if they don't like you
+- **Ambitious and driven** - People see your hunger for advancement and achievement; they respect your determination but watch for signs you might step on them
+- **Mysterious and unpredictable** - You keep your true thoughts hidden and your actions surprise others; allies and enemies alike struggle to anticipate your moves
 
 ---
 
