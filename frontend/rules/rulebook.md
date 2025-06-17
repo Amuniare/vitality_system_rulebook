@@ -1497,6 +1497,12 @@ Abilities that enable entirely new categories of actions and checks impossible t
 
 ### **1 Point Features**
 
+**Eidetic Memory**
+You can recall any information you've previously encountered with perfect accuracy.
+
+**Natural Communication**
+You can converse with specific animal types and sense the health, needs, and recent history of plants. They respond with their level of intelligence and knowledge.
+
 **Aquatic**
 Swim at full speed in any aquatic environment. You are unaffected by water temperature, pressure, or current when swimming.
 
@@ -1541,6 +1547,19 @@ You can repair or modify the function of any item or object without using materi
 
 **Distinguished Background**
 Your distinct heritage, noble birth, or foreign origin marks you as notable wherever you go. This grants you respect and curiosity that can open doors to influential individuals, exclusive events, and valuable information. However, it also makes you memorable and may create unwanted attention or suspicion depending on local politics and attitudes.
+
+**Psychic Link**
+You can share or transfer memories with a touch, or form a temporary psychic connection with another being. This can be used for strategic coordination, emotional support, or unique insight.
+
+**Psychometry**
+You can perceive the recent history and emotional imprints of objects through touch.
+
+**Spirit Communication**
+You can speak with the spirits of the recently deceased in the immediate area.
+
+**Technopathy**
+You can interface directly with electronic devices and understand their functions/data.
+
 
 
 **Ancestral Knowledge**
@@ -1629,6 +1648,12 @@ You are a master of creating experimental tinctures and tonics. The concoctions 
 You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Communication score can add your Tier to a skill check declared before they roll.
 
 
+**Memory Manipulation**
+You can view, modify, or implant memories in willing or unconscious subjects. Cannot be used on actively resisting targets.
+
+**Consciousness Transfer**
+You can temporarily swap consciousness with willing participants.
+
 **Corruption**
 Work with GM to establish corruption mechanics. When taking this feature, choose a trigger condition that grants significant power bonuses but risks permanent character corruption through failed resistance rolls.
 
@@ -1697,6 +1722,14 @@ As you activate this feature, increase your Tier by 4, for 6 rounds. At the end 
 
 **Time Travel**
 Move forward or backward through time automatically after spending 1 hour in preparation. Work with GM to determine limitations and potential paradox consequences.
+
+
+**Reality Revision**
+You can make minor alterations to recent events (within the last hour), changing their outcomes. Work with GM to establish limitations and consequences.
+
+
+
+
 
 ## Senses
 
@@ -1778,6 +1811,8 @@ Make Awareness checks to perceive detailed information about any living being's 
 
 **Truth Sight**
 Make Awareness checks to see through all forms of deception, illusion, disguise, and concealment. This reveals the true nature of people, objects, and situations, cutting through magical and mundane forms of misdirection.
+
+
 
 
 ### Unique Senses
@@ -2012,16 +2047,3 @@ Heroes with immense wealth, such as billionaires, royalty, or corporate executiv
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-Here are the requested features:
