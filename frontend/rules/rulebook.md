@@ -1626,7 +1626,7 @@ You can create technological inventions. These inventions work a single time and
 You're very bossy and like to tell others how to do things. If you can spend one minute explaining how to do something better, another character can add your Intelligence to any check, provided they follow your advice.
 
 **Long-Range Teleportation**
-Teleport to any location on Earth that you can clearly visualize or have previously visited automatically after spending 1 minute in preparation.
+Teleport to any location that you can clearly visualize or have previously visited automatically after spending at least 1 minute in preparation, the longer the distance the greater the amount of time it takes.
 
 **Perception Filter**
 Temporarily render objects or areas unnoticed by others. May require Stealth checks.
