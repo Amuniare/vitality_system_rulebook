@@ -1,91 +1,191 @@
-Of course. I will focus exclusively on Project 2: Character Identity & Presentation.
+Of course. Here is a detailed specification document to address all the identified issues, including the UI/UX improvements for the condition selectors.
 
-Based on my analysis of `docs/projects.md` and the provided codebase, here is a breakdown of the problems we need to solve and a step-by-step plan to implement the feature.
+---
+
+## Project Spec: Special Attack System Integrity & UI Refinement
+
+**Objective:** To resolve critical data contract violations, implement missing features, and enhance the user interface within the Special Attacks tab of the character builder.
 
 ### 1. Problem Identification
 
-The core issue is that the character builder currently lacks a dedicated system for capturing structured, narrative-focused character information. It relies on a few simple text fields in the `BasicInfoTab`, which is insufficient for the rich backstories required by the campaign.
+The current implementation of the Special Attacks tab suffers from several issues that prevent it from functioning as intended by the rulebook:
 
-This breaks down into several technical problems:
+1.  **Data Integrity Issues:**
+    *   **Free Advanced Conditions:** All Advanced Conditions are incorrectly priced at 0 points due to a data contract violation.
+    *   **Free Direct Area Attack:** The "Direct Area" attack type is incorrectly priced at 0 points for the same reason.
+    *   **Missing Generic Upgrades:** The entire category of "Generic Attack Upgrades" (e.g., Extended Range, Precise) is absent from the UI.
 
-1.  **Missing Data Source:** The application has no data file to define the campaign-specific biography questions. The planned `frontend/character-builder/data/bio.json` exists in the codebase but is not yet integrated.
-2.  **Data Loading Gap:** The `GameDataManager` in `frontend/character-builder/core/GameDataManager.js` is unaware of `bio.json` and has no method to load or provide its content to the application.
-3.  **Inadequate Character Model:** The `VitalityCharacter` class in `frontend/character-builder/core/VitalityCharacter.js` lacks a dedicated property to store the structured answers to the new questionnaire. A simple text field won't work.
-4.  **No UI Feature:** There is no "Identity" tab. The existing `BasicInfoTab` is for mechanical data (name, tier) and is the wrong place for this new, dynamic form. A new feature module needs to be created.
-5.  **Lack of Dynamic Rendering:** The new tab must be ableto build a form dynamically from the loaded `bio.json` data, creating different input types (dropdowns, text areas) as specified.
-6.  **State Management Deficiency:** There is no mechanism to capture user input from this new dynamic form and save it to the character object in a structured way.
-7.  **Navigation and Integration:** The new tab is not integrated into the main application's navigation (`character-builder.html`) or the central controller (`CharacterBuilder.js`).
+2.  **Logic & UI Deficiencies:**
+    *   **Archetype Rules Not Enforced:** The "Effect Type" dropdown does not dynamically update or restrict options based on the character's selected `effectType` archetype.
+    *   **Poor Condition UI:** The use of two separate, static dropdowns for Basic and Advanced conditions is confusing, clutters the interface, and does not prevent users from selecting both, which is an invalid state.
 
-### 2. Implementation Plan
+### 2. Root Cause Analysis
 
-To solve these problems, we will follow the implementation steps outlined in `projects.md`, but with more specific technical details.
+*   **Data Contract Violations:** The systems (`AttackTypeSystem.js`) are programmed to read a `cost` property from `data/conditions_advanced.json` and a `costKey` from `data/attack_types_definitions.json`. These properties are either missing or named incorrectly in the data files, causing the system to default their cost to 0.
+*   **Incomplete Data:** The `data/upgrades.json` file is missing the entire "Generic Attack Upgrades" category and its associated items, leaving the data-driven UI with nothing to render.
+*   **Logic Gap:** The `AttackBasicsForm.js` component lacks the necessary logic to check the character's archetype and filter the "Effect Type" options accordingly.
+*   **Poor UI Design:** The condition selection was implemented with a simple, non-dynamic approach that does not provide a good user experience or enforce game rules effectively.
+
+### 3. Implementation Plan
+
+This plan is broken into three phases: correcting the data layer, implementing the UI/UX overhaul, and finally, updating the system logic to use the corrected data and UI.
 
 ---
 
-#### **Phase 1: Data Layer Foundation**
+#### **Phase 1: Data Layer Correction**
 
-This phase establishes the data contract for the new feature.
+*   **Step 1.1: Add Costs to Advanced Conditions**
+    *   **File:** `frontend/character-builder/data/conditions_advanced.json`
+    *   **Action:** Add a `"cost": [value]` property to each condition object, using the values from the rulebook.
+    *   **Example Snippet:**
+        ```json
+        // BEFORE
+        {
+            "id": "control",
+            "name": "Control",
+            "resistance": "resolve",
+            ...
+        }
 
-*   **Step 1.1: Integrate `bio.json` into the Data Manager**
-    *   **File:** `frontend/character-builder/core/GameDataManager.js`
+        // AFTER
+        {
+            "id": "control",
+            "name": "Control",
+            "cost": 30, // Add this line
+            "resistance": "resolve",
+            ...
+        }
+        ```
+    *   **Verification:** The `addCondition` logic in `AttackTypeSystem.js` will now correctly read this cost.
+
+*   **Step 1.2: Fix Direct Area Attack Cost Key**
+    *   **File:** `frontend/character-builder/data/attack_types_definitions.json`
+    *   **Action:** In the `area_direct` object, rename the `baseCostKey` property to `costKey`.
+    *   **Example Snippet:**
+        ```json
+        // BEFORE
+        "area_direct": {
+            "id": "area_direct",
+            "name": "Direct Area Attack",
+            "baseCostKey": "direct_area", // Incorrect key
+            ...
+        }
+
+        // AFTER
+        "area_direct": {
+            "id": "area_direct",
+            "name": "Direct Area Attack",
+            "costKey": "direct_area", // Correct key
+            ...
+        }
+        ```
+
+*   **Step 1.3: Implement Generic Attack Upgrades**
+    *   **File:** `frontend/character-builder/data/upgrades.json`
+    *   **Action:** Add a new top-level category named `"Generic Attack Upgrades"` to the JSON file and populate it with the missing upgrades from the rulebook.
+    *   **Example Snippet (to be added):**
+        ```json
+        {
+          "Upgrades": {
+            // ... existing categories ...
+            "Generic Attack Upgrades": [
+              {
+                "id": "extended_range",
+                "name": "Extended Range",
+                "cost": 10,
+                "effect": "Ranged attacks reach 30 spaces instead of 15.",
+                "category": "Generic Attack Upgrades"
+              },
+              {
+                "id": "precise_aoe",
+                "name": "Precise",
+                "cost": 30,
+                "effect": "Choose which targets are affected by Area attacks.",
+                "category": "Generic Attack Upgrades"
+              },
+              {
+                "id": "hybrid_attack",
+                "name": "Hybrid",
+                "cost": 30,
+                "effect": "Attack becomes Hybrid, inflicting both a Condition and Damage with a -Tier penalty to both rolls.",
+                "category": "Generic Attack Upgrades"
+              }
+              // ... add other generic upgrades ...
+            ]
+          },
+          "bannedCombinations": [ /* ... */ ]
+        }
+        ```
+
+---
+
+#### **Phase 2: UI/UX Refinement - Integrated Condition Selector**
+
+*   **Step 2.1: Redesign the Condition Selection UI**
+    *   **File:** `frontend/character-builder/features/special-attacks/components/AttackBasicsForm.js`
     *   **Action:**
-        1.  Add `'bio': 'data/bio.json'` to the `this.dataFiles` object.
-        2.  Create a new getter method: `getBio() { return this._getData('bio', { questionnaire: [] }); }`. This will provide the questionnaire data to the rest of the application.
+        1.  Create a new method, `renderConditionSelectors`, that replaces the two separate dropdowns with a single, integrated component.
+        2.  This component will display currently selected conditions (basic or advanced) as "tags" with a remove button.
+        3.  If no conditions are selected, it will display dropdowns for *both* Basic and Advanced conditions.
+        4.  Crucially, once a Basic condition is selected, the Advanced condition dropdown **must be hidden or disabled**, and vice versa. This enforces the rule that an attack can have one type or the other, but not both.
+    *   **Logic:** The `renderConditionSelectors` method will check `attack.basicConditions.length` and `attack.advancedConditions.length` to decide which UI elements to render.
 
-*   **Step 1.2: Update the Character Model**
-    *   **File:** `frontend/character-builder/core/VitalityCharacter.js`
-    *   **Action:** In the `constructor`, add a new property to hold the structured answers: `this.biographyDetails = {};`. This will store answers keyed by the question `id` from `bio.json`.
-
----
-
-#### **Phase 2: UI and Feature Implementation**
-
-This phase builds the new user-facing tab.
-
-*   **Step 2.1: Create the New "Identity" Tab**
-    *   **Action:** Create a new file: `frontend/character-builder/features/identity/IdentityTab.js`.
-    *   **Content:** This file will contain the `IdentityTab` class, which will be responsible for rendering the questionnaire and handling user input. It will follow the standard tab structure with `constructor`, `render`, and `setupEventListeners` methods.
-
-*   **Step 2.2: Implement Dynamic Form Rendering in `IdentityTab.js`**
-    *   **File:** `frontend/character-builder/features/identity/IdentityTab.js`
-    *   **Action:** Implement the `render()` method.
-        1.  It will call `gameDataManager.getBio()` to get the questions.
-        2.  It will iterate through the `questionnaire` array.
-        3.  For each question, it will use a `switch` statement on `question.type` to dynamically generate the correct HTML using `RenderUtils` (e.g., `RenderUtils.renderSelect` for `dropdown`, a standard `textarea` for `textarea`).
-        4.  It will handle the `gmOnly` flag by adding a specific class or data attribute to the form group for potential future styling.
-        5.  For dropdowns, it will render a corresponding hidden text input for the "Other..." option.
-
-*   **Step 2.3: Implement Event Handling in `IdentityTab.js`**
-    *   **File:** `frontend/character-builder/features/identity/IdentityTab.js`
-    *   **Action:** Implement `setupEventListeners()` using `EventManager.delegateEvents`.
-        1.  Listen for `change` on dropdowns. If the selected value is "Other", it will un-hide the associated text input. Otherwise, it will hide it.
-        2.  Listen for `input` on all form elements (`select`, `textarea`, `input[type=text]`). This event will trigger the state update.
+*   **Step 2.2: Add Supporting CSS**
+    *   **File:** `frontend/character-builder/assets/css/tabs/_special-attacks.css`
+    *   **Action:** Add new CSS rules to style the tag-based UI.
+    *   **Example CSS:**
+        ```css
+        .integrated-selector { /* Container for tags and dropdown */ }
+        .selected-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .tag { background: var(--accent-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; display: flex; align-items: center; }
+        .tag button { background: none; border: none; color: white; cursor: pointer; margin-left: 0.5rem; }
+        ```
 
 ---
 
-#### **Phase 3: Integration and State Management**
+#### **Phase 3: System Logic Implementation**
 
-This phase connects the new feature to the core application.
+*   **Step 3.1: Enforce Effect Type Archetype Rules**
+    *   **File:** `frontend/character-builder/features/special-attacks/components/AttackBasicsForm.js`
+    *   **Action:** Modify the method that renders the "Effect Type" selector.
+        1.  Before rendering, get the character's `effectType` archetype (`character.archetypes.effectType`).
+        2.  Filter the list of available effect types based on the archetype.
+        3.  If archetype is `damageSpecialist`, only pass the "Damage Only" option to `RenderUtils.renderSelect`.
+        4.  If archetype is `hybridSpecialist`, pre-select "Hybrid" and make the dropdown `disabled`.
+        5.  If archetype is `crowdControl`, all options are available, but this is a good place to add a UI warning about the damage penalty if needed.
 
-*   **Step 3.1: Implement State Update Logic**
-    *   **File:** `frontend/character-builder/features/identity/IdentityTab.js`
-    *   **Action:** Create a handler method `handleBioUpdate(element)` that is called by the event listener.
-        1.  It will extract the question `id` and the `value` from the input element.
-        2.  It will call a new method on the main builder: `this.builder.setBiographyDetail(questionId, value)`.
+*   **Step 3.2: Ensure Advanced Condition Costs are Deducted**
+    *   **File:** `frontend/character-builder/systems/AttackTypeSystem.js`
+    *   **Action:** Review and update the `addConditionToAttack` method.
+    *   **Logic Check:** Ensure that when `isAdvanced` is true, the code correctly reads `condition.cost` from the definition object (which will now exist thanks to Phase 1) and subtracts it from the attack's available upgrade points.
 
-*   **Step 3.2: Centralize State Modification**
-    *   **File:** `frontend/character-builder/app/CharacterBuilder.js`
-    *   **Action:** Create the new method `setBiographyDetail(questionId, value)`.
-        1.  This method will update the character object: `this.currentCharacter.biographyDetails[questionId] = value;`.
-        2.  It will then call `this.updateCharacter()` to persist the change and trigger a re-render of any necessary components, adhering to our one-way data flow architecture.
+---
 
-*   **Step 3.3: Integrate the Tab into the Application**
-    *   **File 1:** `frontend/character-builder/character-builder.html`
-        *   **Action:** Add a new button to the `.tab-navigation` div: `<button class="tab-btn" data-tab="identity">Identity</button>`. I will place it after "Basic Info".
-    *   **File 2:** `frontend/character-builder/app/CharacterBuilder.js`
-        *   **Action:**
-            1.  `import { IdentityTab } from '../features/identity/IdentityTab.js';`
-            2.  In `initializeTabs()`, add `'identity': new IdentityTab(this)` to the `this.tabs` object.
-    *   **File 3:** `frontend/character-builder/assets/css/character-builder.css`
-        *   **Action:** We will need to add an empty partial `_identity.css` and add it to the `build-css.js` script to ensure our CSS architecture remains consistent, even if no new styles are immediately needed.
+### 4. Verification Plan
 
+After implementation, the following manual tests must pass to confirm the fixes:
+
+1.  **Advanced Condition Cost:**
+    *   Create a special attack and give it upgrade points via limits.
+    *   Select an Advanced Condition (e.g., "Stun").
+    *   **Expected Result:** 20 points should be deducted from the attack's available upgrade points.
+
+2.  **Generic Upgrades:**
+    *   Navigate to the "Upgrades" section for a special attack.
+    *   **Expected Result:** A new category, "Generic Attack Upgrades," should be visible, containing "Extended Range," "Precise," etc. Purchasing one should deduct the correct point cost.
+
+3.  **Direct Area Attack Cost:**
+    *   Create a special attack.
+    *   Select the "Direct Area" attack type from the dropdown.
+    *   **Expected Result:** The attack's point cost should increase by 60 points.
+
+4.  **Effect Type Archetype Enforcement:**
+    *   Create a new character and select the "Damage Specialist" `effectType` archetype.
+    *   Navigate to the Special Attacks tab and create an attack.
+    *   **Expected Result:** The "Effect Type" selector should either be locked to "Damage Only" or only present that as an option.
+
+5.  **Condition UI/UX:**
+    *   Create a special attack.
+    *   **Expected Result:** See both "Add Basic Condition" and "Add Advanced Condition" dropdowns.
+    *   Select a Basic Condition (e.g., "Daze").
+    *   **Expected Result:** The selected
