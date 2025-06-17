@@ -16,3 +16,8 @@ Text boxes within special attacks don't update until a button is pressed
 
 jack of all trades preventing purchasing of tier 2
 
+
+data needs to change
+
+
+
