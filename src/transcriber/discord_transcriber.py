@@ -48,7 +48,7 @@ class SessionTranscriber:
             base_dir = current_dir
             print(f"📁 Fallback to current dir: {base_dir}")
         
-        self.campaign_dir = base_dir / "data" / CAMPAIGN_NAME
+        self.campaign_dir = base_dir / "all_data" / CAMPAIGN_NAME
         self.sessions_dir = self.campaign_dir / "sessions"
         self.sessions_dir.mkdir(parents=True, exist_ok=True)
         

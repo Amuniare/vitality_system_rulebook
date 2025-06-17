@@ -78,7 +78,7 @@ def extract_all_characters():
             return
         
         # Save extracted data to data/characters/extracted
-        output_dir = Path("data") / "characters" / "extracted"
+        output_dir = Path("all_data") / "characters" / "extracted"
         output_dir.mkdir(parents=True, exist_ok=True)
         
         logger.info(f"Saving extracted data to {output_dir}")
@@ -136,7 +136,7 @@ def sync_characters():
         updater = CharacterUpdater(chat)
         
         # Get all JSON files from characters\input
-        input_dir = Path("data") / "characters" / "input"
+        input_dir = Path("all_data") / "characters" / "input"
         if not input_dir.exists():
             logger.error(f"Input directory not found: {input_dir}")
             return

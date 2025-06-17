@@ -179,7 +179,7 @@ You fall 20 spaces at the end of each of your turns. Fall damage is equal to the
 
 
 
-### PRIMARY ACTIONS
+### **PRIMARY ACTIONS**
 All characters can take these actions at base, no special training or abilities required.
 
 Upgrade Options:
@@ -218,7 +218,6 @@ These represent mundane impairments that any character can apply through Base At
 - *Damage Roll:* 3d6 + Tier + (Power × 1.5) - Target's Durability  
 - *Condition Check:* 1d20 + Tier + Power vs Target's Resistance 
 4. **Apply Results** → Reduce HP by damage taken or apply condition effect
-
 
 
 **Defensive Actions**
