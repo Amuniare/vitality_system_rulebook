@@ -1602,6 +1602,21 @@ You maintain a reliable contact within the criminal underworld who can facilitat
 **Well Connected**
 Once per session, if you say, "I Know a Guy," workshop with the GM to create an NPC who can help you with a specific task. GM secretly determines your relationship strength. Based on your history and request difficulty, they'll decide what favor or payment is required.
 
+**Stealth Guidance**
+You can add your Awareness score to the Stealth checks of any allies within 3 spaces of you that you designate. This ability helps your team move undetected while you coordinate their movements and watch for threats.
+
+**Familiar**
+You have a small-sized creature or construct that obeys your commands. You can see through its senses and control its movement. It uses your skills for any checks; if it's a creature, it uses your Awareness instead of Mobility. It cannot take actions other than skill checks. It has 0 in all combat stats, and if it takes damage, it is destroyed and cannot be resummoned until after a full rest. The familiar can scout dangerous areas, retrieve objects, or act as a distraction.
+
+**Street Performer**
+You can always find opportunities to earn money and resources through performances, hustling, or social connections. Make a Communication check to acquire money or secure free lodging and meals. The GM determines the difficulty based on the amount needed and local circumstances. Success may involve entertaining crowds, making deals, or leveraging social networks.
+
+**Master Sculptor**
+Choose a specific material (stone, metal, wood, clay, etc.). You can precisely shape, mold, or alter that material at rapid pace, working on up to 8 cubic meters per minute. This allows you to create tools, artistic works, or modify existing structures made of your chosen material without requiring traditional crafting tools.
+
+**Material Shaping**
+You can temporarily transform mundane materials and objects into different forms. Convert one material into another similar material, or reshape an object into a different object of similar size and density. You cannot create complex mechanical devices or change the fundamental properties of materials (turning wood into metal, etc.).
+
 ### **5 Point Features**
 
 **Quantum Pocket**
@@ -1617,11 +1632,14 @@ You can sing a tune to help inspire others. For the next hour, a number of prese
 **Corruption**
 Work with GM to establish corruption mechanics. When taking this feature, choose a trigger condition that grants significant power bonuses but risks permanent character corruption through failed resistance rolls.
 
-
+**Astral Projection**
+While resting, you can travel to other locations using a spectral form. You are visible but intangible while astral projecting, able to move through solid objects and observe your surroundings. You can return to your body at will from any distance. You can use this form to gather information or travel to otherwise unreachable places.
 
 **Enhanced Processing**
 Think and perceive at extremely accelerated speeds while performing hundreds of simple mental tasks simultaneously. This allows you to process information, analyze situations, and react with superhuman mental velocity while tracking multiple variables in complex problems.
 
+**Molecular Manipulation**
+You can convert one mundane material into another mundane material of similar density and hardness. Wood can become plastic, stone can become metal, or cloth can become leather. 
 
 **Hexer**
 You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions.
