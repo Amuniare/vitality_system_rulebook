@@ -19,3 +19,5 @@ all_data
 .claude
 .gemini
 
+simple_collector.py
+update.py
