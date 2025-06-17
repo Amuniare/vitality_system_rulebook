@@ -11,28 +11,28 @@
         "name": "Grab",
         "resistance": "stability",
         "duration": "Until broken",
-        "description": "The target cannot move. As an Action the target can make a Stability check against the Condition roll to break free early or as part of their movement to drag you with them following the rules for Capacity."
+        "description": "The target cannot move. As an Action, the target can make a Stability check against the Condition roll to break free early, or as part of their movement to drag you with them following the rules for Capacity."
     },
     {
         "id": "shove",
         "name": "Shove",
         "resistance": "stability",
         "duration": "Instant",
-        "description": "Push or pull the target (Condition roll - Resistance) spaces. Collisions deal falling damage to both entities and you can expend 5 Shoving spaces to knock the target prone."
+        "description": "Push or pull the target a number of spaces equal to (Condition roll - Resistance). Collisions deal falling damage to both entities and you can expend 5 shoving spaces to knock the target prone."
     },
     {
         "id": "prone",
         "name": "Prone",
         "resistance": null,
         "duration": "Until stood up",
-        "description": "Adjacent attacks against you gain +Tier to Accuracy, ranged attacks against you suffer -Tier to Accuracy, standing cost 3 movement spaces."
+        "description": "Adjacent attacks against you gain +Tier to Accuracy, ranged attacks against you suffer -Tier to Accuracy. Standing costs 3 movement spaces."
     },
     {
         "id": "blind",
         "name": "Blind",
         "resistance": "vitality",
         "duration": "Until the end of your next turn",
-        "description": "Targets treats all others as visually Hidden. Hidden attackers ignore the target's base Tier Avoidance bonus. When attacking you must roll a Perception check vs the target's Stealth check, the attack is assumed to have missed on a failure."
+        "description": "Target treats all others as visually Hidden. Hidden attackers ignore the target's base Tier Avoidance bonus. When attacking, you must roll a Perception check vs the target's Stealth check; the attack is assumed to have missed on a failure."
     },
     {
         "id": "daze",
@@ -53,6 +53,6 @@
         "name": "Taunt",
         "resistance": "resolve",
         "duration": "Until the end of your next turn",
-        "description": "Target's suffer a reduction to their Accuracy checks equal to double your Tier against all targets other than you."
+        "description": "Target suffers a reduction to their Accuracy checks equal to double your Tier against all targets other than you."
     }
 ]

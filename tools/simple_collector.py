@@ -161,7 +161,10 @@ PRESETS = {
         'frontend/docs/specs_and_notes/notes-testing.md',
     ],
 
-
+    'rogue_trader': [
+        # Complete codebase collection - includes everything
+        'frontend/campaigns/rogue_trader/',
+    ],
 
 
 
