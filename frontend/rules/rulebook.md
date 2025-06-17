@@ -677,6 +677,7 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
   - **Squad Sight (30p)** → Your allies can also see through your Aura.
 - **Bolster Aura** → Allies in your radius receive the benefit of a Fighting Action, chosen when you purchase this ability. This bonus can stack with their own Fighting Actions and excludes you.
   - **Passive Buff (30p/x)** → Pick an additional Fighting Action to also be active at the same time per x.
+  - **Self Care** (15p) → You also benefit from your Bolster but cannot stack with your own Fighting Actions.
 
 ### **CREATE WALL**
 *Temporary battlefield structure creation*
