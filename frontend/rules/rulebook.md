@@ -1600,8 +1600,7 @@ You can temporarily replay past events regarding persons, places, and objects. T
 
 #### Physical Features (5p)
 
-**Quantum Tunneling**
-Make Mobility checks to teleport through solid barriers by exploiting quantum mechanics (short range). Work with GM to establish specific range and material limitations.
+
 
 **Probability Control**
 Make Intelligence checks to subtly influence probability, making unlikely events more or less likely to occur. Work with GM to determine scope and limitations.

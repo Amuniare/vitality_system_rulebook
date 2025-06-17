@@ -107,7 +107,7 @@ Prototype long-range exploration cruiser with enhanced Warp drives and sensor ar
 ---
 
 ## NPC CREATION 
-*Each player creates 2 NPCs who serve as key crew members aboard the Eternal Vigil.*
+*Each player creates 2 NPCs who serve as key crew members aboard the Eternal Vigil. Choose from the options provided or create your own responses that fit your character concept.*
 
 **Connection and Role:**
 - **Blood Bond Specialist** - Family/sworn companion with unique skills

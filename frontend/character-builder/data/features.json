@@ -13,7 +13,9 @@
             { "id": "lock", "name": "Lock", "description": "You can place a protective barrier around a container or room. Your bonus to resist someone breaking into it is 3 × your Intelligence. You can only have one lock active at a time, but can disable and activate a new one at any time from anywhere." },
             { "id": "objectEncryption", "name": "Object Encryption", "description": "You can seal items in a protective field to prevent tampering." },
             { "id": "debt", "name": "Debt", "description": "Someone owes you something. Work with the GM to determine the nature of the debt and what benefits you might gain when attempting to collect." },
-            { "id": "theProphesiedOne", "name": "The Prophesied One", "description": "A prophecy involves you. Those who believe in it will go to great lengths to assist you. Work with the GM to determine the prophecy's nature and cost." }
+            { "id": "theProphesiedOne", "name": "The Prophesied One", "description": "A prophecy involves you. Those who believe in it will go to great lengths to assist you. Work with the GM to determine the prophecy's nature and cost." },
+            { "id": "linguist", "name": "Linguist", "description": "You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don’t know, you can attempt to decipher its meaning over time using intelligence." },
+            { "id": "speakWithAnimals", "name": "Speak with Animals", "description": "You can telepathically communicate with animals, and they can respond in kind. For 1 less point, you may instead communicate with only one specific type of animal." }
         ]
     },
     "tier3": {
@@ -48,7 +50,8 @@
             { "id": "futureSight", "name": "Future Sight", "description": "You receive visions of a future that may or may not happen. Once per session, you may attempt to force one of these visions. Roll a d100; the higher the number, the more accurate and less vague the vision becomes." },
             { "id": "perceptionFilter", "name": "Perception Filter", "description": "Temporarily render objects or areas unnoticed by others. May require Stealth checks." },
             { "id": "knowItAll", "name": "Know It All", "description": "If you spend one minute explaining how to do something better, another character can add your Intelligence to any check, provided they follow your advice." },
-            { "id": "bard", "name": "Bard", "description": "You can sing a tune to inspire others, giving a +4 bonus to any check for one minute, a number of times per day equal to your Communication score." }
+            { "id": "bard", "name": "Bard", "description": "You can sing a tune to inspire others, giving a +4 bonus to any check for one minute, a number of times per day equal to your Communication score." },
+            { "id": "superStrength", "name": "Super Strength", "description": "Add your Tier to your Capacity score." }
         ]
     },
     "tier5": {
@@ -87,7 +90,8 @@
             { "id": "matterCreation", "name": "Matter Creation", "description": "Make Intelligence checks to create small amounts of any non-living matter from quantum foam. Work with GM to establish limitations and energy requirements." },
             { "id": "universalTranslation", "name": "Universal Translation", "description": "Make Communication checks to understand and communicate in any language, including alien or interdimensional tongues." },
             { "id": "dimensionalTravel", "name": "Dimensional Travel", "description": "Make Mobility checks to open portals to alternate dimensions, parallel Earths, or entirely different realities. Work with GM to establish specific limitations and requirements." },
-            { "id": "realityProgramming", "name": "Reality Programming", "description": "Make Intelligence checks to temporarily alter the fundamental laws of physics in a small area around yourself. Work with GM to determine scope and limitations." }
+            { "id": "realityProgramming", "name": "Reality Programming", "description": "Make Intelligence checks to temporarily alter the fundamental laws of physics in a small area around yourself. Work with GM to determine scope and limitations." },
+            { "id": "chameleon", "name": "Chameleon", "description": "You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters." }
         ]
     }
 }
