@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'everything'
+DEFAULT_PRESET = 'rogue_trader'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
@@ -161,7 +161,10 @@ PRESETS = {
         'frontend/docs/specs_and_notes/notes-testing.md',
     ],
 
-
+    'rogue_trader': [
+        # Complete codebase collection - includes everything
+        'frontend/campaigns/rogue_trader/',
+    ],
 
 
 
