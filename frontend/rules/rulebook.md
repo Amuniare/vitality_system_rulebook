@@ -675,8 +675,8 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
   - **Precise (15p)** → Only attacks chosen targets
 - **Obscuring Aura** → Provides visual cover, sight-based abilities prevented, attacks through the aura suffer -Tier penalty to Accuracy. You can see through your Aura and are unpenealized.
   - **Squad Sight (30p)** → Your allies can also see through your Aura.
-- **Bolster Aura** → Allies in radius receive benefit of your Fighting Actions
-  - **Passive Buff (30p/x)** → You and allies in the Aura are always under the effect of X specified Fighting Actions. This bonus stacks for allies but not your own Fighting Actions.
+- **Bolster Aura** → Allies in your radius receive the benefit of a Fighting Action, chosen when you purchase this ability. This bonus can stack with their own Fighting Actions and excludes you.
+  - **Passive Buff (30p/x)** → Pick an additional Fighting Action to also be active at the same time per x.
 
 ### **CREATE WALL**
 *Temporary battlefield structure creation*
