@@ -17,7 +17,7 @@
           }
         },
         "situational": {
-          "description": "Custom Talent Sets representing when or where you excel beyond normal capability. Only applies when the context matches.",
+          "description": "Custom Talent Sets representing when or where you excel beyond normal capability. Only applies when the context matches. You can only purchase 1 set of talents.",
           "basic": {
             "cost": 1,
             "effect": "Add your Tier to relevant checks when context matches"
