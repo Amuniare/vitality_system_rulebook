@@ -128,6 +128,10 @@ You can only use 2 Efforts per rest, a 3rd one can be used but will knock you un
 8. Up to 250000 lbs
 9. Up to 500000 lbs
 10. Up to 1 million lbs → each additional rank doubles the weight
+
+
+### **Falling**
+You fall 20 spaces at the end of each of your turns. Fall damage is equal to the number of spaces fallen or moved to a maximum of 150.
  
 
 ### **STACKING BONUSES & RULE INTERACTIONS**
