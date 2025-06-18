@@ -284,7 +284,7 @@
         {
             "id": "specialized",
             "name": "Specialized",
-            "description": "Gain double Tier bonus for one chosen core stat. Cannot purchase additional Expertise. Utility pool: 5 × (Tier - 2).",
+            "description": "Gain double Tier bonus for one chosen core stat. Cannot purchase additional Expertise. ",
             "effects": [
                 { "type": "stat_bonus", "stat": "chosen_core", "bonus": "tier*2" }
             ],
@@ -293,13 +293,13 @@
         {
             "id": "practical",
             "name": "Practical",
-            "description": "Standard access to all utility options with no restrictions or bonuses. Utility pool: 5 × (Tier - 1).",
+            "description": "Select 3 skills to gain procifientcy in, each granting a 2 x Tier bonus to checks. ",
             "effects": []
         },
         {
             "id": "jackOfAllTrades",
             "name": "Jack of All Trades",
-            "description": "Adds Tier bonus to ALL skill checks. Cannot purchase specialized Expertise. Utility pool: 5 × (Tier - 2).",
+            "description": "Adds Tier bonus to ALL skill checks. Cannot purchase specialized Expertise. ",
             "effects": [
                 { "type": "stat_bonus", "stat": "all_skill_checks", "bonus": "tier" }
             ],
