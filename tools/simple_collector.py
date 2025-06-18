@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'root_character_builder'
+DEFAULT_PRESET = 'rogue_trader'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
