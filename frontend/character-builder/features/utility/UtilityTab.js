@@ -6,11 +6,13 @@ import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
 import { UtilitySystem } from '../../systems/UtilitySystem.js';
 import { gameDataManager } from '../../core/GameDataManager.js';
 import { GenericUtilitySection } from './components/GenericUtilitySection.js';
+import { UtilityOverviewSection } from './components/UtilityOverviewSection.js';
 
 export class UtilityTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
         this.genericUtilitySection = new GenericUtilitySection(characterBuilder);
+        this.utilityOverviewSection = new UtilityOverviewSection(characterBuilder);
         this.activePurchaseCategory = 'features';
         this.listenersAttached = false;
         this.containerElement = null;
@@ -41,6 +43,8 @@ export class UtilityTab {
                 
                 ${this.renderTalentsSection(character)}
                 ${this.renderUtilityArchetypeSection(character)}
+                
+                ${this.utilityOverviewSection.render(character)}
                 
                 <div class="utility-pool-purchases card">
                     <h3>Utility Pool Purchases</h3>
@@ -218,6 +222,9 @@ export class UtilityTab {
                 case 'purchase-item':
                     this.handleGenericPurchase(target.closest('.card'));
                     break;
+                case 'remove-utility-item':
+                    this.handleRemoveUtilityItem(target);
+                    break;
                 case 'continue-to-summary':
                     this.builder.switchTab('summary');
                     break;
@@ -288,6 +295,17 @@ export class UtilityTab {
         } catch (error) {
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
             element.disabled = false;
+        }
+    }
+
+    handleRemoveUtilityItem(element) {
+        const { categoryKey, itemId } = element.dataset;
+        
+        try {
+            UtilitySystem.removeItem(this.builder.currentCharacter, categoryKey, itemId);
+            this.builder.updateCharacter();
+        } catch (error) {
+            this.builder.showNotification(`Remove failed: ${error.message}`, 'error');
         }
     }
 
