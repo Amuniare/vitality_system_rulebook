@@ -1,573 +1,724 @@
 from pathlib import Path
 
-# --- File 1: ActionUpgradeSection.js ---
-file_path_1 = Path("frontend/character-builder/features/main-pool/components/ActionUpgradeSection.js")
+# --- File 1: frontend/character-builder/features/special-attacks/components/AttackBasicsForm.js ---
 
-new_content_1 = """
-// frontend/character-builder/features/main-pool/components/ActionUpgradeSection.js
-import { ActionSystem } from '../../../systems/ActionSystem.js';
-import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js';
+file_path_1 = Path("frontend/character-builder/features/special-attacks/components/AttackBasicsForm.js")
+
+# The new code for AttackBasicsForm.js
+new_code_1 = """
+// frontend/character-builder/features/special-attacks/components/AttackBasicsForm.js
+import { AttackTypeSystem } from '../../../systems/AttackTypeSystem.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
-export class ActionUpgradeSection {
-    constructor(characterBuilder) {
-        this.builder = characterBuilder;
+export class AttackBasicsForm {
+    constructor(parentTab) {
+        this.parentTab = parentTab;
     }
 
-    render(character, pointInfo) {
-        const availableUpgrades = ActionSystem.getAvailableActionUpgrades();
-        const totalVMSlots = ActionSystem.getVersatileMasterSlots(character);
-        const usedVMSlots = character.versatileMasterSelections?.length || 0;
-        
-        let versatileMasterInfo = '';
-        if (totalVMSlots > 0) {
-            versatileMasterInfo = `
-                <div class="archetype-info-box">
-                    <strong>Versatile Master:</strong> You have ${totalVMSlots - usedVMSlots} of ${totalVMSlots} free Quick Action selections remaining.
+    render(attack, character) {
+        if (!attack || !character) {
+            return `<div class="error-text">Attack data not available.</div>`;
+        }
+
+        return `
+            <div class="attack-basics-form">
+                <div class="attack-basics-columns">
+                    <div class="attack-basics-left">
+                        ${this.renderNameAndDetailFields(attack)}
+                    </div>
+                    <div class="attack-basics-right">
+                        ${this.renderTypeAndConditionSelectors(attack, character)}
+                    </div>
                 </div>
-            `;
-        }
-
-        const containerHtml = `
-            <div class="main-pool-category">
-                <h3>Available Action Upgrades</h3>
-                <p class="category-description">
-                    Purchase upgrades to enhance your character's standard actions. Some actions can be converted to Quick Actions, while others gain entirely new effects.
-                </p>
-                ${versatileMasterInfo}
-                ${RenderUtils.renderGrid(
-                    availableUpgrades,
-                    (upgrade) => this.renderActionUpgradeCard(upgrade, character, pointInfo),
-                    { gridContainerClass: 'grid-layout action-upgrade-grid', gridSpecificClass: 'grid-columns-auto-fit-320' }
-                )}
             </div>
         `;
-        return containerHtml;
     }
 
-    _getActionCardState(upgrade, character) {
-        const totalVMSlots = ActionSystem.getVersatileMasterSlots(character);
-        const ownedVMSlots = character.versatileMasterSelections || [];
-        const freeVMSlotsRemaining = totalVMSlots - ownedVMSlots.length;
-
-        const isQuickAction = upgrade.isQuickActionUpgrade;
-        const isOwnedAsFree = isQuickAction && ownedVMSlots.includes(upgrade.baseActionId);
-        const isOwnedAsPaid = character.mainPoolPurchases.primaryActionUpgrades.some(p => p.id === upgrade.id);
-        const isOwned = isOwnedAsFree || isOwnedAsPaid;
-
-        if (isOwned) {
-            return {
-                isOwned: true,
-                cost: isOwnedAsFree ? 0 : upgrade.cost,
-                statusText: 'Click to Remove',
-                action: 'remove-action-upgrade'
-            };
-        }
-
-        if (isQuickAction && freeVMSlotsRemaining > 0) {
-            return {
-                isOwned: false,
-                cost: 0,
-                statusText: 'Click to Select for Free',
-                action: 'purchase-action-upgrade'
-            };
-        }
-
-        return {
-            isOwned: false,
-            cost: upgrade.cost,
-            statusText: 'Click to Purchase',
-            action: 'purchase-action-upgrade'
-        };
+    renderNameAndDetailFields(attack) {
+        return `
+            ${RenderUtils.renderFormGroup({
+                label: 'Attack Name:',
+                inputId: `attack-name-${this.parentTab.selectedAttackIndex}`,
+                inputHtml: `<input type="text" id="attack-name-${this.parentTab.selectedAttackIndex}" data-testid="attack-name" value="${attack.name || ''}" placeholder="Enter attack name" data-action="update-attack-name">`
+            })}
+            ${RenderUtils.renderFormGroup({
+                label: 'Subtitle:',
+                inputId: `attack-subtitle-${this.parentTab.selectedAttackIndex}`,
+                inputHtml: `<input type="text" id="attack-subtitle-${this.parentTab.selectedAttackIndex}" value="${attack.subtitle || ''}" placeholder="e.g., Ranged Physical" data-action="update-attack-subtitle">`
+            })}
+            ${RenderUtils.renderFormGroup({
+                label: 'Details:',
+                inputId: `attack-details-${this.parentTab.selectedAttackIndex}`,
+                inputHtml: `<textarea id="attack-details-${this.parentTab.selectedAttackIndex}" placeholder="Describe the attack's appearance and function." data-action="update-attack-details" rows="4">${attack.description || ''}</textarea>`
+            })}
+        `;
     }
 
-    renderActionUpgradeCard(upgrade, character, pointInfo) {
-        const state = this._getActionCardState(upgrade, character);
+    renderTypeAndConditionSelectors(attack, character) {
+        const hasConditionEffect = (attack.effectTypes || []).some(e => ['condition', 'hybrid'].includes(e));
 
-        const descriptionContent = `
-            <div class="base-action-context">
-                <strong>Base Action: ${upgrade.baseActionName}</strong>
-                <p><small>${upgrade.baseActionDescription}</small></p>
-            </div>
-            <div class="upgrade-description">
-                <strong>Upgrade Effect:</strong> ${upgrade.description}
-            </div>
+        return `
+            ${this.renderIntegratedSelector(attack, character, 'Attack Types', 'attackTypes', AttackTypeSystem.getAttackTypeDefinitions(), false)}
+            ${this.renderIntegratedSelector(attack, character, 'Effect Type', 'effectTypes', AttackTypeSystem.getEffectTypeDefinitions(), false)}
+
+            ${(attack.effectTypes || []).includes('hybrid') ? this.renderHybridOrderSelector(attack) : ''}
+            
+            ${hasConditionEffect ? this.renderConditionSelectors(attack) : ''}
         `;
-
-        const additionalContent = `
-            ${descriptionContent}
-            <div class="selection-indicator">${state.statusText}</div>
-        `;
-
-        return RenderUtils.renderCard({
-            title: upgrade.name,
-            cost: state.cost, // Pass numeric cost
-            description: '', 
-            clickable: true,
-            selected: state.isOwned,
-            dataAttributes: { 
-                action: state.action,
-                'upgrade-id': upgrade.id 
-            },
-            additionalContent: additionalContent
-        }, { cardClass: 'action-upgrade-card', showCost: true });
     }
     
-    purchaseActionUpgrade(upgradeId) {
-        const character = this.builder.currentCharacter;
-        const upgrade = ActionSystem.getAvailableActionUpgrades().find(u => u.id === upgradeId);
-        if (!upgrade) {
-            this.builder.showNotification('Upgrade not found.', 'error');
-            return;
+    renderIntegratedSelector(attack, character, label, propertyKey, definitions, allowMultiple) {
+        // Normalize selectedIds to always be an array
+        const selectedValue = attack[propertyKey];
+        const selectedIds = Array.isArray(selectedValue) ? selectedValue : (selectedValue ? [selectedValue] : []);
+
+        let allOptions = Object.values(definitions || {});
+        
+        if (propertyKey === 'effectTypes' && character.archetypes?.effectType) {
+            allOptions = this.filterEffectTypesByArchetype(allOptions, character.archetypes.effectType);
         }
         
-        const state = this._getActionCardState(upgrade, character);
-        if (state.cost > 0) { // Only check budget for paid items
-            const pools = PointPoolCalculator.calculateAllPools(character);
-            const remainingPoints = pools.remaining.mainPool;
-            if (upgrade.cost > remainingPoints) {
-                this.builder.showNotification("This purchase puts you over budget.", "warning");
+        const freeTypes = propertyKey === 'attackTypes' ? (AttackTypeSystem.getFreeAttackTypesFromArchetype?.(character) || []) : [];
+
+        const tagsHtml = allowMultiple ? selectedIds.map(id => {
+            const def = allOptions.find(o => o.id === id);
+            const isFree = freeTypes.includes(id);
+            const costText = (propertyKey === 'attackTypes' && isFree) ? 'Free' : `${def?.cost || 0}p`;
+            return `<span class="tag attack-type-tag">
+                ${def?.name || id} (${costText})
+                <button data-action="remove-${propertyKey.slice(0, -1)}" data-id="${id}" title="Remove">×</button>
+            </span>`;
+        }).join('') : '';
+
+        let dropdownHtml = '';
+        const optionsForDropdown = allOptions.map(type => ({
+            value: type.id,
+            label: `${type.name} (${(propertyKey === 'attackTypes' && freeTypes.includes(type.id)) ? 'Free' : `${type.cost || 0}p`})`
+        }));
+        
+        // For multi-select, filter out already selected options. For single-select, show all.
+        const finalDropdownOptions = allowMultiple ? optionsForDropdown.filter(opt => !selectedIds.includes(opt.value)) : optionsForDropdown;
+        
+        const shouldShowDropdown = allowMultiple ? (finalDropdownOptions.length > 0) : (optionsForDropdown.length > 0);
+        
+        if (shouldShowDropdown) {
+            const isHybridSpecialist = propertyKey === 'effectTypes' && character.archetypes?.effectType === 'hybridSpecialist';
+
+            if (isHybridSpecialist && allOptions.length === 1 && allOptions[0].id === 'hybrid') {
+                 dropdownHtml = `<div class="archetype-restriction-message" style="font-style: italic; color: var(--accent-secondary); margin-top: var(--gap-small);">
+                    As a Hybrid Specialist, all attacks must be Hybrid type.
+                </div>`;
+            } else {
+                const currentValue = allowMultiple ? '' : (selectedIds[0] || '');
+                
+                dropdownHtml = RenderUtils.renderSelect({
+                    id: `${propertyKey}-select-${this.parentTab.selectedAttackIndex}`,
+                    options: finalDropdownOptions,
+                    value: currentValue,
+                    dataAttributes: {
+                        action: `set-${propertyKey.slice(0, -1)}`, // Use a 'set' action for clarity
+                        testid: propertyKey === 'effectTypes' ? 'attack-type' : (propertyKey === 'attackTypes' ? 'attack-type-select' : undefined)
+                    },
+                    placeholder: `Select ${label.slice(0, -1)}...`
+                });
+            }
+        }
+        
+        return `
+            <div class="form-group integrated-selector">
+                <label>${label}</label>
+                <div class="selected-tags">${tagsHtml}</div>
+                ${dropdownHtml}
+            </div>
+        `;
+    }
+
+    renderHybridOrderSelector(attack) {
+        return RenderUtils.renderFormGroup({
+            label: 'Hybrid Order:',
+            inputHtml: RenderUtils.renderSelect({
+                id: `hybrid-order-${this.parentTab.selectedAttackIndex}`,
+                options: [
+                    { value: 'damage-first', label: 'Damage then Conditions' },
+                    { value: 'conditions-first', label: 'Conditions then Damage' }
+                ],
+                value: attack.hybridOrder || 'damage-first',
+                dataAttributes: { action: 'update-hybrid-order' }
+            })
+        });
+    }
+
+    renderConditionSelectors(attack) {
+        const hasBasicSelections = (attack.basicConditions || []).length > 0;
+        const hasAdvancedSelections = (attack.advancedConditions || []).length > 0;
+        
+        // If neither has selections, show both dropdowns
+        if (!hasBasicSelections && !hasAdvancedSelections) {
+            return `
+                <hr style="border-color: var(--accent-secondary); margin: 1.5rem 0 1rem;">
+                ${this.renderConditionSelector(attack, 'Basic Conditions', 'basicConditions', AttackTypeSystem.getBasicConditions())}
+                ${this.renderConditionSelector(attack, 'Advanced Conditions', 'advancedConditions', AttackTypeSystem.getAdvancedConditions())}
+            `;
+        }
+        
+        // If basic has selections, only show basic (hide advanced dropdown)
+        if (hasBasicSelections) {
+            return `
+                <hr style="border-color: var(--accent-secondary); margin: 1.5rem 0 1rem;">
+                ${this.renderConditionSelector(attack, 'Basic Conditions', 'basicConditions', AttackTypeSystem.getBasicConditions())}
+            `;
+        }
+        
+        // If advanced has selections, only show advanced (hide basic dropdown)
+        if (hasAdvancedSelections) {
+            return `
+                <hr style="border-color: var(--accent-secondary); margin: 1.5rem 0 1rem;">
+                ${this.renderConditionSelector(attack, 'Advanced Conditions', 'advancedConditions', AttackTypeSystem.getAdvancedConditions())}
+            `;
+        }
+        
+        return '';
+    }
+
+    renderConditionSelector(attack, label, propertyKey, definitions) {
+        const selectedIds = attack[propertyKey] || [];
+        const allDefinitions = definitions || [];
+
+        const tagsHtml = selectedIds.map(id => {
+            const def = allDefinitions.find(d => d.id === id);
+            return `<span class="tag condition-tag">
+                ${def?.name || id}${def?.cost ? ` (${def.cost}p)` : ''}
+                <button data-action="remove-${propertyKey.slice(0, -1)}" data-id="${id}">×</button>
+            </span>`;
+        }).join('');
+
+        let dropdownHtml = '';
+        if (selectedIds.length === 0) {
+            const availableOptions = allDefinitions
+                .filter(c => !selectedIds.includes(c.id))
+                .map(c => ({ value: c.id, label: `${c.name}${c.cost ? ` (${c.cost}p)` : ''}` }));
+
+            if (availableOptions.length > 0) {
+                dropdownHtml = RenderUtils.renderSelect({
+                    id: `${propertyKey}-select-${this.parentTab.selectedAttackIndex}`,
+                    options: availableOptions,
+                    value: '', // Explicitly set to empty to reset after selection
+                    dataAttributes: { action: `add-${propertyKey.slice(0, -1)}` },
+                    placeholder: `Add a ${label.slice(0, -1)}...`
+                });
             }
         }
 
-        try {
-            ActionSystem.purchaseActionUpgrade(character, upgradeId);
-            this.builder.updateCharacter();
-            this.builder.showNotification(`Acquired upgrade: ${upgrade.name}!`, 'success');
-        } catch (error) {
-            this.builder.showNotification(`Failed to acquire upgrade: ${error.message}`, 'error');
-        }
+        return `
+            <div class="form-group integrated-selector">
+                <label>${label}</label>
+                <div class="selected-tags">${tagsHtml}</div>
+                ${dropdownHtml}
+            </div>
+        `;
     }
 
-    removeUpgrade(upgradeId) {
-        const character = this.builder.currentCharacter;
-        const upgrade = ActionSystem.getAvailableActionUpgrades().find(u => u.id === upgradeId);
-        if (!upgrade) {
-            this.builder.showNotification('Upgrade not found.', 'error');
-            return;
-        }
-
-        try {
-            ActionSystem.removeActionUpgrade(character, upgradeId);
-            this.builder.updateCharacter();
-            this.builder.showNotification(`Removed upgrade: ${upgrade.name}`, 'info');
-        } catch (error) {
-            this.builder.showNotification(`Failed to remove upgrade: ${error.message}`, 'error');
+    filterEffectTypesByArchetype(effectTypes, archetypeId) {
+        switch (archetypeId) {
+            case 'damageSpecialist':
+                // Only allow damage type
+                return effectTypes.filter(type => type.id === 'damage');
+                
+            case 'hybridSpecialist':
+                // Only allow hybrid type (should be pre-selected and disabled)
+                return effectTypes.filter(type => type.id === 'hybrid');
+                
+            case 'crowdControl':
+                // Allow all effect types
+                return effectTypes;
+                
+            default:
+                // If no effect type archetype or unknown archetype, allow all
+                return effectTypes;
         }
     }
 }
 """
 
-# --- File 2: MainPoolTab.js ---
-file_path_2 = Path("frontend/character-builder/features/main-pool/MainPoolTab.js")
+# --- File 2: frontend/character-builder/features/special-attacks/SpecialAttackTab.js ---
 
-new_content_2 = """
-// frontend/character-builder/features/main-pool/MainPoolTab.js
-import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
-import { FlawPurchaseSection } from './components/FlawPurchaseSection.js';
-import { TraitPurchaseSection } from './components/TraitPurchaseSection.js';
-import { SimpleBoonSection } from './components/SimpleBoonSection.js';
-import { UniqueAbilitySection } from './components/UniqueAbilitySection.js';
-import { ActionUpgradeSection } from './components/ActionUpgradeSection.js';
-import { UpdateManager } from '../../shared/utils/UpdateManager.js';
-import { EventManager } from '../../shared/utils/EventManager.js';
+file_path_2 = Path("frontend/character-builder/features/special-attacks/SpecialAttackTab.js")
+
+# The new code for SpecialAttackTab.js
+new_code_2 = """
+// frontend/character-builder/features/special-attacks/SpecialAttackTab.js
+import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
+import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
-import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
-import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
-import { ActionSystem } from '../../systems/ActionSystem.js'; // Import ActionSystem
+import { EventManager } from '../../shared/utils/EventManager.js';
+import { AttackBasicsForm } from './components/AttackBasicsForm.js';
+import { LimitSelection } from './components/LimitSelection.js';
+import { UpgradeSelection } from './components/UpgradeSelection.js';
 
-export class MainPoolTab {
+export class SpecialAttackTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
-        this.sections = {
-            flaws: new FlawPurchaseSection(characterBuilder),
-            traits: new TraitPurchaseSection(characterBuilder),
-            simpleBoons: new SimpleBoonSection(characterBuilder),
-            uniqueAbilities: new UniqueAbilitySection(characterBuilder),
-            actions: new ActionUpgradeSection(characterBuilder)
-        };
-        this.activeSection = 'flaws'; // Default section
+        this.selectedAttackIndex = 0;
+        this.attackBasicsForm = new AttackBasicsForm(this);
+        this.limitSelection = new LimitSelection(this);
+        this.upgradeSelection = new UpgradeSelection(this);
+        this.listenersAttached = false;
         this.clickHandler = null;
-        this.changeHandler = null;
-        this.inputHandler = null;
         this.containerElement = null;
     }
 
     render() {
-        
-        const tabContent = document.getElementById('tab-mainPool');
+        this.listenersAttached = false;
+        const tabContent = document.getElementById('tab-specialAttacks');
         if (!tabContent) return;
-
         const character = this.builder.currentCharacter;
         if (!character) {
-            tabContent.innerHTML = "<p>No character selected or previous steps incomplete.</p>";
+            tabContent.innerHTML = "<p>No character loaded.</p>";
             return;
         }
-
+        
         tabContent.innerHTML = `
-            <div class="main-pool-tab-content">
-                <h2>Main Pool Purchases</h2>
-                <p class="section-description">
-                    Use your main pool points to purchase flaws, traits, simple boons, unique abilities, and action upgrades.
-                </p>
-
-                <!-- NEW: Main Pool Overview Box -->
-                ${this.renderMainPoolOverviewBox(character)}
-
-                <!-- Category sections for PURCHASING ONLY -->
-                ${this.renderSectionNavigation()}
-                <div class="section-content-area" id="main-pool-active-section">
-                    ${this.renderActiveSectionContent(character)}
-                </div>
-
+            <div class="special-attacks-section">
+                <h2>Special Attacks</h2>
+                <p class="section-description">Create unique combat abilities using limits and upgrades.</p>
+                ${this.renderAttackManagement(character)}
+                ${character.specialAttacks.length > 0 ?
+                    this.renderAttackBuilder(character) :
+                    '<div class="empty-state">Create your first special attack to begin building.</div>'}
                 <div class="next-step">
-                    <p><strong>Next Step:</strong> Create your special attacks using limits and upgrades.</p>
                     ${RenderUtils.renderButton({
-                        text: 'Continue to Special Attacks →',
+                        text: 'Continue to Utility →',
                         variant: 'primary',
-                        dataAttributes: { action: 'continue-to-special-attacks' }
+                        dataAttributes: { action: 'continue-to-utility' }
                     })}
                 </div>
             </div>
         `;
-
         this.setupEventListeners();
-    }
-
-    renderMainPoolOverviewBox(character) {
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const mainPoolInfo = {
-            spent: pools.totalSpent.mainPool || 0,
-            available: pools.totalAvailable.mainPool || 0,
-            remaining: pools.remaining.mainPool || 0
-        };
-        const breakdown = this.calculatePointBreakdown(character, pools);
-
-        return `
-            <div class="main-pool-overview-box">
-                <div class="main-pool-overview-header">
-                    <h3>Main Pool Overview</h3>
-                    ${RenderUtils.renderPointDisplay(
-                        mainPoolInfo.spent,
-                        mainPoolInfo.available,
-                        'Main Pool',
-                        { showRemaining: true, variant: mainPoolInfo.remaining < 0 ? 'error' : mainPoolInfo.remaining === 0 && mainPoolInfo.spent > 0 ? 'warning' : 'default' }
-                    )}
-                </div>
-                <div class="pool-sources">
-                    <small>Base: ${Math.max(0, (character.tier - 2) * 15)}
-                    ${character.archetypes.uniqueAbility === 'extraordinary' ? ` (+${Math.max(0, (character.tier - 2) * 15)} from Extraordinary)` : ''}
-                    </small>
-                </div>
-                
-                ${this.renderMainPoolCategoryBreakdown(breakdown)}
-                ${this.renderSelectedMainPoolItems(character)}
-            </div>
-        `;
-    }
-
-    renderMainPoolCategoryBreakdown(breakdown) {
-        const categories = [
-            { key: 'simpleBoons', label: 'Simple Boons', value: breakdown.simpleBoons },
-            { key: 'uniqueAbilities', label: 'Unique Abilities', value: breakdown.uniqueAbilities },
-            { key: 'traits', label: 'Traits', value: breakdown.traits },
-            { key: 'flaws', label: 'Flaws', value: breakdown.flaws },
-            { key: 'actions', label: 'Action Upgrades', value: breakdown.actions }
-        ];
-
-        // Calculate counts for each category
-        const character = this.builder.currentCharacter;
-        const categoryData = categories.map(category => {
-            let count = 0;
-            switch(category.key) {
-                case 'simpleBoons':
-                    count = character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).length;
-                    break;
-                case 'uniqueAbilities':
-                    count = character.mainPoolPurchases.boons.filter(b => b.type === 'unique').length;
-                    break;
-                case 'traits':
-                    count = character.mainPoolPurchases.traits.length;
-                    break;
-                case 'flaws':
-                    count = character.mainPoolPurchases.flaws.length;
-                    break;
-                case 'actions':
-                    // COMBINED COUNT: Paid + Free
-                    count = character.mainPoolPurchases.primaryActionUpgrades.length + (character.versatileMasterSelections || []).length;
-                    break;
-            }
-            return { ...category, count };
-        });
-
-        const totalItems = categoryData.reduce((sum, cat) => sum + cat.count, 0);
-
-        if (totalItems === 0) {
-            return `
-                <div class="main-pool-breakdown">
-                    <h4>Category Breakdown</h4>
-                    <div class="empty-state">No main pool purchases yet.</div>
-                </div>
-            `;
-        }
-
-        return `
-            <div class="main-pool-breakdown">
-                <h4>Category Breakdown (${totalItems} items)</h4>
-                <div class="breakdown-grid">
-                    ${categoryData.map(cat => `
-                        <div class="breakdown-item ${cat.count === 0 ? 'empty' : ''}">
-                            <span class="breakdown-label">${cat.label}</span>
-                            <span class="breakdown-count">${cat.count}</span>
-                            <span class="breakdown-cost">${cat.value > 0 ? '-' : ''}${cat.value}p</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    renderSelectedMainPoolItems(character) {
-        const allPurchases = [];
-
-        // Paid Action Upgrades
-        allPurchases.push(...character.mainPoolPurchases.primaryActionUpgrades.map((item, index) => ({
-            ...item,
-            name: item.actionName || item.name,
-            category: 'actions',
-            typeLabel: 'Action Upgrade',
-            isFreeSelection: false,
-            dataAttributes: { 'upgrade-id': item.id }
-        })));
         
-        // Free Versatile Master Selections
-        const versatileMasterSelections = character.versatileMasterSelections || [];
-        const allActionUpgrades = ActionSystem.getAvailableActionUpgrades();
-        versatileMasterSelections.forEach(baseActionId => {
-            const upgrade = allActionUpgrades.find(u => u.baseActionId === baseActionId && u.isQuickActionUpgrade);
-            if (upgrade) {
-                allPurchases.push({
-                    id: upgrade.id,
-                    name: upgrade.name,
-                    cost: 0,
-                    category: 'actions',
-                    typeLabel: 'Action Upgrade',
-                    isFreeSelection: true,
-                    dataAttributes: { 'upgrade-id': upgrade.id }
-                });
-            }
-        });
-
-        allPurchases.push(...character.mainPoolPurchases.flaws.map((item, index) => ({
-            ...item, category: 'flaws', typeLabel: 'Flaw', dataAttributes: { 'index': index }
-        })));
-        allPurchases.push(...character.mainPoolPurchases.traits.map((item, index) => ({
-            ...item, name: this.generateTraitDisplayName(item, character), category: 'traits', typeLabel: 'Trait', dataAttributes: { 'index': index }
-        })));
-        allPurchases.push(...character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).map(item => ({
-            ...item, category: 'simpleBoons', typeLabel: 'Simple Boon', dataAttributes: { 'boon-id': item.boonId }
-        })));
-        allPurchases.push(...character.mainPoolPurchases.boons.filter(b => b.type === 'unique').map(item => ({
-            ...item, category: 'uniqueAbilities', typeLabel: 'Unique Ability', originalItem: item, dataAttributes: { 'boon-id': item.boonId }
-        })));
-
-        return `
-            <div class="selected-main-pool-items">
-                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedMainPoolItem(item), { 
-                    title: 'Purchased Items', showCount: false, emptyMessage: 'No main pool purchases yet.'
-                })}
-            </div>
-        `;
-    }
-
-    renderSelectedMainPoolItem(item) {
-        let actionKey;
-        switch(item.category) {
-            case 'actions': actionKey = 'remove-action-upgrade'; break;
-            case 'simpleBoons': actionKey = 'remove-simple-boon'; break;
-            case 'uniqueAbilities': actionKey = 'remove-unique-ability'; break;
-            case 'traits': actionKey = 'remove-trait'; break;
-            case 'flaws': actionKey = 'remove-flaw'; break;
-            default: actionKey = `remove-${item.category.slice(0, -1)}`;
-        }
-
-        let costBoxes = '';
-        if (item.category === 'uniqueAbilities') {
-            // Complex rendering logic for unique abilities... (omitted for brevity, assume it's correct)
-            const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
-            costBoxes = `<span class="item-details">${item.typeLabel}</span>${costText ? `<span class="item-cost">${costText}</span>` : ''}`;
-        } else {
-            const costText = item.isFreeSelection ? 'Free (Archetype)' : (item.cost !== undefined ? `${Math.abs(item.cost)}p` : '');
-            costBoxes = `<span class="item-details">${item.typeLabel}</span>${costText ? `<span class="item-cost">${costText}</span>` : ''}`;
-        }
-
-        return `
-            <div class="purchased-item">
-                <div class="item-info">
-                    <span class="item-name">${item.name}</span>
-                    ${costBoxes}
-                </div>
-                ${RenderUtils.renderButton({ 
-                    text: 'Remove', variant: 'danger', size: 'small', dataAttributes: { action: actionKey, ...item.dataAttributes } 
-                })}
-            </div>
-        `;
-    }
-
-    calculatePointBreakdown(character, pools) {
-        // This logic remains the same
-        return {
-            simpleBoons: character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).reduce((sum, b) => sum + (b.cost || 0), 0),
-            uniqueAbilities: character.mainPoolPurchases.boons.filter(b => b.type === 'unique').reduce((sum, b) => sum + (b.cost || 0), 0),
-            traits: character.mainPoolPurchases.traits.reduce((sum, t) => sum + (t.cost || 0), 0),
-            flaws: character.mainPoolPurchases.flaws.reduce((sum, f) => sum + (f.cost || 0), 0),
-            actions: character.mainPoolPurchases.primaryActionUpgrades.reduce((sum, a) => sum + (a.cost || 0), 0),
-        };
-    }
-
-    renderSectionNavigation() {
-        // This logic remains the same
-        const sectionTabsConfig = [
-            { id: 'flaws', label: 'Flaws' },
-            { id: 'traits', label: 'Traits' },
-            { id: 'simpleBoons', label: 'Simple Boons' },
-            { id: 'uniqueAbilities', label: 'Unique Abilities' },
-            { id: 'actions', label: 'Action Upgrades' }
-        ];
-        return RenderUtils.renderTabs(sectionTabsConfig, this.activeSection, { navClass: 'section-tabs', tabButtonClass: 'section-tab' });
-    }
-
-    renderActiveSectionContent(character) {
-        // This logic remains the same
-        const sectionComponent = this.sections[this.activeSection];
-        if (!sectionComponent) return '<p class="error-text">Error: Selected section not found.</p>';
-
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const mainPoolInfo = {
-            spent: pools.totalSpent.mainPool || 0,
-            available: pools.totalAvailable.mainPool || 0,
-            remaining: pools.remaining.mainPool || 0
-        };
-        return sectionComponent.render(character, mainPoolInfo);
-    }
-
-    setupEventListeners() {
-        // This logic remains the same
-        this.removeEventListeners();
-        const container = document.getElementById('tab-mainPool');
-        if (!container) return;
-        this.containerElement = container;
-        this.clickHandler = (e) => {
-            const target = e.target.closest('[data-action], .section-tab');
-            if (!target) return;
-            if (target.classList.contains('section-tab')) {
-                this.handleSectionSwitch(target.dataset.tab);
-            } else if (target.dataset.action) {
-                this.handleAction(target);
-            }
-        };
-        container.addEventListener('click', this.clickHandler);
-        container.addEventListener('change', this.clickHandler);
-        container.addEventListener('input', this.clickHandler);
-        console.log('✅ MainPoolTab event listeners attached ONCE.');
-    }
-
-    handleAction(target) {
-        const { action, ...data } = target.dataset;
-        const handlers = {
-            'continue-to-special-attacks': () => this.builder.switchTab('specialAttacks'),
-            'purchase-flaw': () => this.sections.flaws.handleFlawPurchase(data.flawId),
-            'remove-flaw': () => this.sections.flaws.handleFlawRemoval(parseInt(data.index)),
-            'clear-trait-builder': () => this.sections.traits.handleClearBuilder(),
-            'purchase-trait': () => this.sections.traits.handleTraitPurchase(),
-            'remove-trait': () => this.sections.traits.handleTraitRemoval(parseInt(data.index)),
-            'trait-stat-toggle': () => this.sections.traits.handleStatToggle(target),
-            'trait-condition-toggle': () => this.sections.traits.handleConditionToggle(target),
-            'increase-variable-trait-cost': () => this.sections.traits.handleIncreaseVariableTraitCost(data.conditionId),
-            'decrease-variable-trait-cost': () => this.sections.traits.handleDecreaseVariableTraitCost(data.conditionId),
-            'purchase-simple-boon': () => this.sections.simpleBoons.purchaseSimpleBoon(data.boonId),
-            'remove-simple-boon': () => this.sections.simpleBoons.removeBoon(data.boonId),
-            'purchase-unique-ability': () => this.sections.uniqueAbilities.purchaseUniqueAbility(data.abilityId),
-            'remove-unique-ability': () => this.sections.uniqueAbilities.removeAbility(data.boonId),
-            'modify-unique-ability': () => this.sections.uniqueAbilities.modifyAbility(data.boonId),
-            'toggle-upgrade': () => this.sections.uniqueAbilities.handleUpgradeToggle(target),
-            'increase-upgrade-quantity': () => this.sections.uniqueAbilities.handleIncreaseUpgradeQuantity(target),
-            'decrease-upgrade-quantity': () => this.sections.uniqueAbilities.handleDecreaseUpgradeQuantity(target),
-            'set-upgrade-quantity': () => this.sections.uniqueAbilities.handleSetUpgradeQuantity(target),
-            'create-custom-unique-ability': () => this.sections.uniqueAbilities.handleCreateCustomUniqueAbility(),
-            'purchase-action-upgrade': () => this.sections.actions.purchaseActionUpgrade(data.upgradeId),
-            'remove-action-upgrade': () => this.sections.actions.removeUpgrade(data.upgradeId)
-        };
-        handlers[action]?.();
+        // Validate custom limit form after render to ensure button state is correct
+        setTimeout(() => {
+            this.validateCustomLimitForm();
+        }, 10);
     }
     
-    handleSectionSwitch(newSection) {
-        // This logic remains the same
-        if (newSection && newSection !== this.activeSection) {
-            this.activeSection = newSection;
-            this.updateActiveSectionUI();
-        }
+    renderAttackManagement(character) {
+        const canCreate = SpecialAttackSystem.validateCanCreateAttack(character);
+        return `
+            <div class="attack-management">
+                <div class="attack-list-header">
+                    <h3>Attacks (${character.specialAttacks.length})</h3>
+                    ${RenderUtils.renderButton({
+                        text: '+ Create Attack', variant: 'primary', disabled: !canCreate.isValid,
+                        dataAttributes: { action: 'create-attack' }, title: canCreate.isValid ? 'Create new' : (canCreate.errors[0] || '')
+                    })}
+                </div>
+                <div class="attack-tabs-container">
+                    ${character.specialAttacks.map((attack, index) => this.renderAttackTab(attack, index)).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    renderAttackTab(attack, index) {
+        return `
+            <div class="attack-tab ${index === this.selectedAttackIndex ? 'active' : ''}" data-action="select-attack-tab" data-attack-index="${index}">
+                <span class="attack-tab-name">${attack.name || `Attack ${index + 1}`}</span>
+                <span class="attack-tab-points">${attack.upgradePointsSpent || 0}/${attack.upgradePointsAvailable || 0}p</span>
+                ${RenderUtils.renderButton({
+                    text: '×',
+                    variant: 'danger',
+                    size: 'small',
+                    classes: ['delete-attack-btn'],
+                    dataAttributes: { action: 'delete-attack', index }
+                })}
+            </div>
+        `;
     }
 
-    updateActiveSectionUI() {
-        // This logic remains the same
-        document.querySelectorAll('.main-pool-tab-content .section-tab').forEach(tab => {
-            tab.classList.toggle('active', tab.dataset.tab === this.activeSection);
-        });
-        const contentArea = document.getElementById('main-pool-active-section');
-        if (contentArea && this.builder.currentCharacter) {
-            contentArea.innerHTML = this.renderActiveSectionContent(this.builder.currentCharacter);
-        }
+    renderAttackBuilder(character) {
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (!attack) return '';
+        
+        const archetype = character.archetypes.specialAttack;
+        
+        return `
+            <div class="attack-builder card">
+                ${this.attackBasicsForm.render(attack, character)}
+                <div class="attack-builder-columns">
+                    ${archetype === 'sharedUses' ? 
+                        this._renderSharedUsesAttackUI(attack, character) : 
+                        this._renderDefaultAttackUI(attack, character)
+                    }
+                </div>
+            </div>
+        `;
     }
-
-    onCharacterUpdate() {
-        // This logic remains the same
-        this.render();
+    
+    _renderDefaultAttackUI(attack, character) {
+        return `
+            <div class="limits-column">
+                ${this.limitSelection.render(attack, character)}
+            </div>
+            <div class="upgrades-column">
+                ${this.upgradeSelection.render(attack, character)}
+            </div>
+        `;
     }
-
+    
+    _renderSharedUsesAttackUI(attack, character) {
+        const useCostSelected = attack.useCost && attack.useCost > 0;
+        const upgradesDisabled = !useCostSelected;
+        
+        return `
+            <div class="use-cost-column">
+                <div class="use-cost-selector">
+                    <h3>Use Cost</h3>
+                    <p class="section-description">Select the cost for this attack (1-3 uses).</p>
+                    <div class="use-cost-options">
+                        ${[1, 2, 3].map(cost => `
+                            <div class="card clickable ${attack.useCost === cost ? 'selected' : ''}" 
+                                 data-action="select-use-cost" data-cost="${cost}">
+                                <input type="radio" name="use-cost-${attack.id}" value="${cost}" 
+                                       ${attack.useCost === cost ? 'checked' : ''} 
+                                       style="display: none;">
+                                <div class="card-header">
+                                    <div class="card-title">${cost} Use${cost > 1 ? 's' : ''}</div>
+                                    <div class="card-cost">${character.tier * 5 * cost} points</div>
+                                </div>
+                                <div class="card-description">
+                                    ${cost === 1 ? 'Single-use attack with moderate power' : 
+                                      cost === 2 ? 'Moderate cost attack with good power' : 
+                                      'High cost attack with maximum power'}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+            <div class="upgrades-column ${upgradesDisabled ? 'disabled' : ''}">
+                ${upgradesDisabled ? 
+                    '<div class="disabled-message"><p>Select a Use Cost to enable upgrades</p></div>' :
+                    this.upgradeSelection.render(attack, character)
+                }
+            </div>
+        `;
+    }
+    
     removeEventListeners() {
-        // This logic remains the same
         if (this.clickHandler && this.containerElement) {
             this.containerElement.removeEventListener('click', this.clickHandler);
             this.containerElement.removeEventListener('change', this.clickHandler);
             this.containerElement.removeEventListener('input', this.clickHandler);
             this.clickHandler = null;
-            this.changeHandler = null;
-            this.inputHandler = null;
             this.containerElement = null;
         }
     }
+    
+    setupEventListeners() {
+        // Clean up old listeners first to prevent duplication
+        this.removeEventListeners();
 
-    generateTraitDisplayName(trait, character) {
-        // This logic remains the same
-        const statNames = trait.statBonuses?.map(statId => {
-            const statOptions = TraitFlawSystem.getTraitStatOptions();
-            const stat = statOptions.find(s => s.id === statId);
-            return stat ? stat.name : statId;
-        }) || [];
-        const conditionNames = trait.conditions?.map(conditionId => {
-            const tiers = TraitFlawSystem.getTraitConditionTiers();
-            for (const tier of Object.values(tiers)) {
-                const condition = tier.conditions?.find(c => c.id === conditionId);
-                if (condition) return condition.name;
+        const container = document.getElementById('tab-specialAttacks');
+        if (!container) return;
+
+        // Store the handler and container for proper cleanup
+        this.clickHandler = (e) => {
+            // For radio buttons and other inputs, check the target itself first
+            let element = e.target.hasAttribute('data-action') ? e.target : e.target.closest('[data-action]');
+            if (element) {
+                this.handleEvent(e, element);
+            } else if (e.target.classList.contains('custom-limit-input')) {
+                this.validateCustomLimitForm();
             }
-            return conditionId;
-        }) || [];
-        const statsText = statNames.length > 0 ? statNames.join('/') : 'Unknown Stats';
-        const conditionsText = conditionNames.length > 0 ? conditionNames.slice(0, 2).join(' & ') : 'Unknown Conditions';
-        return `+${character.tier} ${statsText} when ${conditionsText}${conditionNames.length > 2 ? '...' : ''}`;
+        };
+        this.containerElement = container;
+
+        // Attach listeners using stored properties
+        this.containerElement.addEventListener('click', this.clickHandler);
+        this.containerElement.addEventListener('change', this.clickHandler);
+        this.containerElement.addEventListener('input', this.clickHandler);
+        
+        this.listenersAttached = true;
+        console.log('✅ SpecialAttackTab event listeners attached ONCE.');
+    }
+
+    handleEvent(e, element) {
+        const { action, ...data } = element.dataset;
+        
+        if (element.tagName === 'SELECT' && e.type === 'click') {
+            return;
+        }
+        
+        if (e.type !== 'input') {
+            e.stopPropagation();
+        }
+
+        const handlers = {
+            'create-attack': () => this.createNewAttack(),
+            'select-attack-tab': () => this.selectAttack(parseInt(data.attackIndex)),
+            'delete-attack': () => this.deleteAttack(parseInt(data.index)),
+            
+            'update-attack-name': () => this.updateAttackProperty('name', element.value),
+            'update-attack-subtitle': () => this.updateAttackProperty('subtitle', element.value),
+            'update-attack-details': () => this.updateAttackProperty('description', element.value),
+            
+            'set-attackType': () => this.setAttackType(element.value),
+            'set-effectType': () => this.setEffectType(element.value),
+            
+            'add-basicCondition': () => this.addCondition(element.value, false),
+            'remove-basicCondition': () => this.removeCondition(data.id, false),
+            'add-advancedCondition': () => this.addCondition(element.value, true),
+            'remove-advancedCondition': () => this.removeCondition(data.id, true),
+            
+            'update-hybrid-order': () => this.updateAttackProperty('hybridOrder', element.value),
+            
+            'select-use-cost': () => this.selectUseCost(parseInt(data.cost)),
+            
+            'add-limit': () => this.addLimit(data.limitId),
+            'remove-limit': () => this.removeLimit(data.limitId),
+            'toggle-limit-category': () => this.toggleLimitCategory(data.category),
+            'add-custom-limit': (e, el) => this.addCustomLimit(el),
+            'cancel-custom-limit-form': () => this.limitSelection.clearCustomLimitForm(),
+            
+            'purchase-upgrade': () => this.purchaseUpgrade(data.upgradeId),
+            'remove-upgrade': () => this.removeUpgrade(data.upgradeId),
+            'toggle-specialty': () => this.toggleUpgradeSpecialty(data.upgradeId),
+            'toggle-upgrade-category': () => { this.upgradeSelection.toggleCategory(data.category); this.render(); },
+            
+            'show-custom-upgrade-form': () => this.upgradeSelection.showCustomUpgradeForm(),
+            'cancel-custom-upgrade-special-attack': () => this.upgradeSelection.cancelCustomUpgradeForm(),
+            'add-custom-upgrade-special-attack': () => this.upgradeSelection.handleAddCustomUpgrade(),
+            
+            'continue-to-utility': () => this.builder.switchTab('utility')
+        };
+        
+        handlers[action]?.(e, element);
+    }
+    
+    createNewAttack() {
+        const character = this.builder.currentCharacter;
+        try {
+            const newAttack = SpecialAttackSystem.createSpecialAttack(character);
+            character.specialAttacks.push(newAttack);
+            this.selectedAttackIndex = character.specialAttacks.length - 1;
+            this.builder.updateCharacter();
+        } catch(e) { this.builder.showNotification(e.message, 'error'); }
+    }
+    
+    selectAttack(index) {
+        if (index !== this.selectedAttackIndex) {
+            this.selectedAttackIndex = index;
+            this.render();
+        }
+    }
+    
+    deleteAttack(index) {
+        if(isNaN(index)) return;
+        if(confirm('Are you sure you want to delete this attack?')){
+            SpecialAttackSystem.deleteSpecialAttack(this.builder.currentCharacter, index);
+            if (this.selectedAttackIndex >= this.builder.currentCharacter.specialAttacks.length) {
+                this.selectedAttackIndex = Math.max(0, this.builder.currentCharacter.specialAttacks.length - 1);
+            }
+            this.builder.updateCharacter();
+        }
+    }
+    
+    updateAttackProperty(prop, value) { 
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if(attack) {
+            attack[prop] = value;
+            this.builder.currentCharacter.touch();
+            if (this.builder.library && this.builder.currentCharacter.id) {
+                this.builder.library.saveCharacter(this.builder.currentCharacter);
+            }
+        }
+    }
+    
+    selectUseCost(cost) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            attack.useCost = cost;
+            SpecialAttackSystem.recalculateAttackPoints(character, attack);
+            this.builder.updateCharacter();
+        }
+    }
+    
+    setAttackType(newTypeId) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (!attack) return;
+        
+        const oldTypeId = (attack.attackTypes && attack.attackTypes.length > 0) ? attack.attackTypes[0] : null;
+        if (oldTypeId === newTypeId) return;
+
+        // Replace the existing type with the new one
+        attack.attackTypes = newTypeId ? [newTypeId] : [];
+        
+        SpecialAttackSystem.recalculateAttackPoints(character, attack);
+        this.builder.updateCharacter();
+    }
+
+    setEffectType(newTypeId) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (!attack) return;
+
+        const oldTypeId = (attack.effectTypes && attack.effectTypes.length > 0) ? attack.effectTypes[0] : null;
+        if (oldTypeId === newTypeId) return;
+        
+        attack.effectTypes = newTypeId ? [newTypeId] : [];
+
+        SpecialAttackSystem.recalculateAttackPoints(character, attack);
+        this.builder.updateCharacter();
+    }
+    
+    addCondition(conditionId, isAdvanced) {
+        if (!conditionId) return;
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
+            if (!attack[arrayKey]) attack[arrayKey] = [];
+            if (!attack[arrayKey].includes(conditionId)) {
+                attack[arrayKey].push(conditionId);
+                this.builder.updateCharacter();
+            }
+        }
+    }
+
+    removeCondition(conditionId, isAdvanced) {
+        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        if(attack) {
+            const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
+            if(attack[arrayKey]) attack[arrayKey] = attack[arrayKey].filter(id => id !== conditionId);
+            this.builder.updateCharacter();
+        }
+    }
+    
+    addLimit(limitId) {
+        try {
+            SpecialAttackSystem.addLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitId);
+            this.builder.updateCharacter();
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+    }
+
+    removeLimit(limitId) {
+        try {
+            SpecialAttackSystem.removeLimitFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitId);
+            this.builder.updateCharacter();
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+    }
+
+    toggleLimitCategory(category) {
+        this.limitSelection.toggleCategory(category);
+        this.render();
+    }
+
+    addCustomLimit(buttonElement) {
+        const creatorCard = buttonElement.closest('.custom-limit-creator');
+        if (!creatorCard) {
+            this.builder.showNotification('Custom limit form not found', 'error');
+            return;
+        }
+        
+        const form = creatorCard.querySelector('.custom-limit-form');
+        const nameInput = form.querySelector('.custom-limit-name');
+        const descriptionInput = form.querySelector('.custom-limit-description');
+        const pointsInput = form.querySelector('.custom-limit-points');
+        
+        if (!nameInput || !descriptionInput || !pointsInput) {
+            this.builder.showNotification('Custom limit form inputs not found', 'error');
+            return;
+        }
+        
+        const limitData = {
+            name: nameInput.value.trim(),
+            description: descriptionInput.value.trim(),
+            points: pointsInput.value
+        };
+        
+        try {
+            SpecialAttackSystem.addCustomLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitData);
+            
+            this.limitSelection.cancelCustomLimitForm(buttonElement);
+            
+            this.builder.updateCharacter();
+            this.builder.showNotification('Custom limit added successfully', 'success');
+        } catch (error) {
+            this.builder.showNotification(error.message, 'error');
+        }
+    }
+
+    validateCustomLimitForm() {
+        const tabContent = document.getElementById('tab-specialAttacks');
+        if (!tabContent) return;
+        
+        const forms = tabContent.querySelectorAll('.custom-limit-form');
+        forms.forEach(form => {
+            if (form.style.display !== 'none') {
+                this.limitSelection.validateCustomLimitFormScoped(form);
+            }
+        });
+    }
+
+    purchaseUpgrade(upgradeId) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (!attack) {
+            this.builder.showNotification('No attack selected', 'error');
+            return;
+        }
+        
+        const upgradeData = SpecialAttackSystem.getUpgradeById(upgradeId);
+        if (!upgradeData) {
+            this.builder.showNotification('Upgrade not found', 'error');
+            return;
+        }
+        
+        const actualCost = SpecialAttackSystem._getActualUpgradeCost(upgradeData, character);
+        const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
+        
+        if (actualCost > remainingPoints) {
+            this.builder.showNotification("This purchase puts you over budget.", "warning");
+        }
+
+        try {
+            SpecialAttackSystem.addUpgradeToAttack(character, this.selectedAttackIndex, upgradeId);
+            this.builder.updateCharacter();
+        } catch (error) {
+            this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
+        }
+    }
+
+    removeUpgrade(upgradeId) {
+        try {
+            SpecialAttackSystem.removeUpgradeFromAttack(this.builder.currentCharacter, this.selectedAttackIndex, upgradeId);
+            this.builder.updateCharacter();
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+    }
+
+    toggleUpgradeSpecialty(upgradeId) {
+        try {
+            SpecialAttackSystem.toggleUpgradeSpecialty(this.builder.currentCharacter, this.selectedAttackIndex, upgradeId);
+            this.builder.updateCharacter();
+        } catch (error) { this.builder.showNotification(error.message, 'error'); }
+    }
+    
+    onCharacterUpdate() {
+        this.render();
     }
 }
 """
 
 try:
-    # Write the first file
-    file_path_1.write_text(new_content_1, encoding='utf-8')
-    print(f"Successfully refactored and updated {file_path_1}")
+    # Write the updated content for the first file
+    file_path_1.write_text(new_code_1, encoding='utf-8')
+    print(f"Successfully updated {file_path_1}")
 
-    # Write the second file
-    file_path_2.write_text(new_content_2, encoding='utf-8')
-    print(f"Successfully refactored and updated {file_path_2}")
+    # Write the updated content for the second file
+    file_path_2.write_text(new_code_2, encoding='utf-8')
+    print(f"Successfully updated {file_path_2}")
 
 except FileNotFoundError as e:
     print(f"Error: File not found at {e.filename}")

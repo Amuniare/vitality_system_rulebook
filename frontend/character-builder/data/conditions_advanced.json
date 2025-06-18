@@ -2,6 +2,7 @@
     {
         "id": "control",
         "name": "Control",
+        "cost": 30,
         "resistance": "resolve",
         "duration": "Until the start of your next turn",
         "description": "You control the target on their next turn. Common uses are making them attack, protect you, or become Stunned. If you or an ally attack them, the Control ends."
@@ -9,6 +10,7 @@
     {
         "id": "stun",
         "name": "Stun",
+        "cost": 20,
         "resistance": [
             "resolve",
             "vitality"
@@ -19,6 +21,7 @@
     {
         "id": "weaken",
         "name": "Weaken",
+        "cost": 30,
         "resistance": "vitality",
         "duration": "Permanent (does not stack)",
         "description": "Reduce the chosen stat by your Tier: Accuracy, Damage, Conditions, Avoidance, Durability, or All Resistances. This effect does not expire, but the target cannot be affected by more than one instance of Weaken.",
@@ -35,6 +38,7 @@
     {
         "id": "disableSpecials",
         "name": "Disable Specials",
+        "cost": 20,
         "resistance": [
             "resolve",
             "vitality"
@@ -53,6 +57,7 @@
     {
         "id": "frighten",
         "name": "Frighten",
+        "cost": 10,
         "resistance": "resolve",
         "duration": "Until the start of your next turn",
         "description": "The target must move away from you and can only take the Hasten or Hide Actions. If there is nowhere to run or hide, they may take the Dodge or Brace Actions."
@@ -60,6 +65,7 @@
     {
         "id": "enthrall",
         "name": "Enthrall",
+        "cost": 15,
         "resistance": "resolve",
         "duration": "Until the start of your next turn",
         "description": "The target must defend you."
@@ -67,6 +73,7 @@
     {
         "id": "frenzy",
         "name": "Frenzy",
+        "cost": 15,
         "resistance": "resolve",
         "duration": "Until the start of your next turn",
         "description": "Target attacks the nearest character indiscriminately."

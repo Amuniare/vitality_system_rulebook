@@ -2,6 +2,7 @@
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
 import { ArchetypeSystem } from './ArchetypeSystem.js';
+import { AttackTypeSystem } from './AttackTypeSystem.js';
 import { gameDataManager } from '../core/GameDataManager.js';
 
 export class SpecialAttackSystem {
@@ -180,6 +181,8 @@ export class SpecialAttackSystem {
     // Helper method to recalculate upgrade points spent
     static _recalculateUpgradePointsSpent(character, attack) {
         let totalSpent = 0;
+        
+        // Calculate upgrade costs
         if (attack.upgrades) {
             for (const upgrade of attack.upgrades) {
                 const upgradeData = this.getUpgradeById(upgrade.id);
@@ -188,6 +191,10 @@ export class SpecialAttackSystem {
                 }
             }
         }
+        
+        // Add attack type, effect type, and advanced condition costs
+        totalSpent += AttackTypeSystem.calculateAttackTypeCosts(character, attack);
+        
         attack.upgradePointsSpent = totalSpent;
     }
 

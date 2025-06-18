@@ -1,3 +1,4 @@
+
 // frontend/character-builder/features/special-attacks/SpecialAttackTab.js
 import { SpecialAttackSystem } from '../../systems/SpecialAttackSystem.js';
 import { AttackTypeSystem } from '../../systems/AttackTypeSystem.js';
@@ -198,7 +199,10 @@ export class SpecialAttackTab {
     handleEvent(e, element) {
         const { action, ...data } = element.dataset;
         
-        // Only stop propagation for non-input events to allow normal typing behavior
+        if (element.tagName === 'SELECT' && e.type === 'click') {
+            return;
+        }
+        
         if (e.type !== 'input') {
             e.stopPropagation();
         }
@@ -212,14 +216,12 @@ export class SpecialAttackTab {
             'update-attack-subtitle': () => this.updateAttackProperty('subtitle', element.value),
             'update-attack-details': () => this.updateAttackProperty('description', element.value),
             
-            'add-attackType': () => this.addAttackType(element.value),
-            'remove-attackType': () => this.removeAttackType(data.id),
-            'add-effectType': () => this.addEffectType(element.value),
-            'remove-effectType': () => this.removeEffectType(data.id),
+            'set-attackType': () => this.setAttackType(element.value),
+            'set-effectType': () => this.setEffectType(element.value),
             
-            'add-basicCondition': () => this.addCondition(element.value, false),
+            'set-basicCondition': () => this.setCondition(element.value, false),
             'remove-basicCondition': () => this.removeCondition(data.id, false),
-            'add-advancedCondition': () => this.addCondition(element.value, true),
+            'set-advancedCondition': () => this.setCondition(element.value, true),
             'remove-advancedCondition': () => this.removeCondition(data.id, true),
             
             'update-hybrid-order': () => this.updateAttackProperty('hybridOrder', element.value),
@@ -279,8 +281,6 @@ export class SpecialAttackTab {
         const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
         if(attack) {
             attack[prop] = value;
-            // Update the character timestamp and save to localStorage
-            // but don't trigger a full re-render that would lose focus
             this.builder.currentCharacter.touch();
             if (this.builder.library && this.builder.currentCharacter.id) {
                 this.builder.library.saveCharacter(this.builder.currentCharacter);
@@ -293,45 +293,54 @@ export class SpecialAttackTab {
         const attack = character.specialAttacks[this.selectedAttackIndex];
         if (attack) {
             attack.useCost = cost;
-            // Immediately recalculate this attack's points
             SpecialAttackSystem.recalculateAttackPoints(character, attack);
-            // Trigger full recalculation and re-render
             this.builder.updateCharacter();
         }
     }
     
-    addAttackType(typeId) { 
-        if (!typeId) return;
-        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
-        if (attack && !attack.attackTypes.includes(typeId)) {
-            attack.attackTypes.push(typeId);
-            this.builder.updateCharacter();
-        }
-    }
+    setAttackType(newTypeId) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (!attack) return;
+        
+        const oldTypeId = (attack.attackTypes && attack.attackTypes.length > 0) ? attack.attackTypes[0] : null;
+        if (oldTypeId === newTypeId) return;
 
-    removeAttackType(typeId) {
-        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
-        if(attack) attack.attackTypes = (attack.attackTypes || []).filter(id => id !== typeId);
+        // Replace the existing type with the new one
+        attack.attackTypes = newTypeId ? [newTypeId] : [];
+        
+        SpecialAttackSystem.recalculateAttackPoints(character, attack);
         this.builder.updateCharacter();
     }
 
-    addEffectType(typeId) {
-        if (!typeId) return;
-        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
-        if(attack) {
-            attack.effectTypes = [typeId];
-            this.builder.updateCharacter();
-        }
-    }
+    setEffectType(newTypeId) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (!attack) return;
 
-    removeEffectType(typeId) {
-        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
-        if(attack) {
-            attack.effectTypes = [];
-            this.builder.updateCharacter();
-        }
+        const oldTypeId = (attack.effectTypes && attack.effectTypes.length > 0) ? attack.effectTypes[0] : null;
+        if (oldTypeId === newTypeId) return;
+        
+        attack.effectTypes = newTypeId ? [newTypeId] : [];
+
+        SpecialAttackSystem.recalculateAttackPoints(character, attack);
+        this.builder.updateCharacter();
     }
     
+    setCondition(conditionId, isAdvanced) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (!attack) return;
+        
+        const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
+        
+        // Set single condition (like attack/effect types)
+        attack[arrayKey] = conditionId ? [conditionId] : [];
+        
+        SpecialAttackSystem.recalculateAttackPoints(character, attack);
+        this.builder.updateCharacter();
+    }
+
     addCondition(conditionId, isAdvanced) {
         if (!conditionId) return;
         const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
@@ -346,10 +355,12 @@ export class SpecialAttackTab {
     }
 
     removeCondition(conditionId, isAdvanced) {
-        const attack = this.builder.currentCharacter.specialAttacks[this.selectedAttackIndex];
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
         if(attack) {
             const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
             if(attack[arrayKey]) attack[arrayKey] = attack[arrayKey].filter(id => id !== conditionId);
+            SpecialAttackSystem.recalculateAttackPoints(character, attack);
             this.builder.updateCharacter();
         }
     }
@@ -399,7 +410,6 @@ export class SpecialAttackTab {
         try {
             SpecialAttackSystem.addCustomLimitToAttack(this.builder.currentCharacter, this.selectedAttackIndex, limitData);
             
-            // Hide the form and clear the fields using the scoped method
             this.limitSelection.cancelCustomLimitForm(buttonElement);
             
             this.builder.updateCharacter();
@@ -410,13 +420,11 @@ export class SpecialAttackTab {
     }
 
     validateCustomLimitForm() {
-        // Find the currently active attack tab's form
         const tabContent = document.getElementById('tab-specialAttacks');
         if (!tabContent) return;
         
         const forms = tabContent.querySelectorAll('.custom-limit-form');
         forms.forEach(form => {
-            // Only validate visible forms
             if (form.style.display !== 'none') {
                 this.limitSelection.validateCustomLimitFormScoped(form);
             }
@@ -424,7 +432,6 @@ export class SpecialAttackTab {
     }
 
     purchaseUpgrade(upgradeId) {
-        // 1. Get current attack and point balance
         const character = this.builder.currentCharacter;
         const attack = character.specialAttacks[this.selectedAttackIndex];
         if (!attack) {
@@ -432,7 +439,6 @@ export class SpecialAttackTab {
             return;
         }
         
-        // 2. Get the cost of the upgrade
         const upgradeData = SpecialAttackSystem.getUpgradeById(upgradeId);
         if (!upgradeData) {
             this.builder.showNotification('Upgrade not found', 'error');
@@ -442,18 +448,14 @@ export class SpecialAttackTab {
         const actualCost = SpecialAttackSystem._getActualUpgradeCost(upgradeData, character);
         const remainingPoints = (attack.upgradePointsAvailable || 0) - (attack.upgradePointsSpent || 0);
         
-        // 3. Check if this purchase will go over budget
         if (actualCost > remainingPoints) {
-            // 4. Show a non-blocking notification
             this.builder.showNotification("This purchase puts you over budget.", "warning");
         }
 
-        // 5. Proceed with the purchase REGARDLESS of the check.
         try {
             SpecialAttackSystem.addUpgradeToAttack(character, this.selectedAttackIndex, upgradeId);
             this.builder.updateCharacter();
         } catch (error) {
-            // This will now only catch hard rule validation errors.
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
         }
     }
@@ -473,7 +475,6 @@ export class SpecialAttackTab {
     }
     
     onCharacterUpdate() {
-        // Just call render - it will handle the state reset
         this.render();
     }
 }

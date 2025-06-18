@@ -209,6 +209,35 @@ export class ArchetypeSystem {
         return config; // For 'sharedUses' or other types
     }
     
+    // Get free advanced conditions from archetype
+    static getFreeAdvancedConditions(character) {
+        if (character.archetypes.effectType === 'crowdControl') {
+            return 2; // Crowd Control grants 2 free advanced conditions
+        }
+        return 0;
+    }
+    
+    // Count used free advanced conditions across all attacks
+    static countUsedFreeAdvancedConditions(character) {
+        let usedCount = 0;
+        
+        // Count advanced conditions used in all special attacks
+        character.specialAttacks.forEach(attack => {
+            if (attack.advancedConditions) {
+                usedCount += attack.advancedConditions.length;
+            }
+        });
+        
+        return usedCount;
+    }
+    
+    // Check if character has unused free advanced condition slots
+    static hasUnusedFreeAdvancedConditions(character) {
+        const freeConditions = this.getFreeAdvancedConditions(character);
+        const usedConditions = this.countUsedFreeAdvancedConditions(character);
+        return usedConditions < freeConditions;
+    }
+    
     // Check if archetype selection is complete
     static isArchetypeSelectionComplete(character) {
         const categories = this.getArchetypeCategories();

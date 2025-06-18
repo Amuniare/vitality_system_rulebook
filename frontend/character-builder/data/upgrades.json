@@ -1,5 +1,49 @@
 {
   "Upgrades": {
+    "Generic Attack Upgrades": [
+      {
+        "id": "extended_range",
+        "name": "Extended Range",
+        "cost": 10,
+        "effect": "Ranged attacks reach 30 spaces instead of 15.",
+        "category": "Generic Attack Upgrades"
+      },
+      {
+        "id": "long_range",
+        "name": "Long Range",
+        "cost": 20,
+        "effect": "Ranged attacks reach 100 spaces instead of 15.",
+        "category": "Generic Attack Upgrades"
+      },
+      {
+        "id": "perception_range",
+        "name": "Perception Range",
+        "cost": 10,
+        "effect": "Direct attacks can target anyone you can see instead of 30 spaces.",
+        "category": "Generic Attack Upgrades"
+      },
+      {
+        "id": "enhanced_scale",
+        "name": "Enhanced Scale",
+        "cost": 20,
+        "effect": "Double the size of Area attacks (e.g., 6sp radius, 12sp cone, 24sp line).",
+        "category": "Generic Attack Upgrades"
+      },
+      {
+        "id": "precise",
+        "name": "Precise",
+        "cost": 30,
+        "effect": "Choose which targets are affected by Area attacks.",
+        "category": "Generic Attack Upgrades"
+      },
+      {
+        "id": "ranged_aoe",
+        "name": "Ranged AOE",
+        "cost": 20,
+        "effect": "Area attacks can originate from a designated point within 15 spaces.",
+        "category": "Generic Attack Upgrades"
+      }
+    ],
     "Accuracy Bonuses": [
       {
         "id": "accurateAttack",

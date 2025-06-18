@@ -61,7 +61,7 @@
         "name": "Direct Area Attack",
         "range": "self",
         "description": "Affects multiple targets in an area and automatically hits them. This attack is typically limited to applying conditions only.",
-        "baseCostKey": "direct_area",
+        "costKey": "direct_area",
         "discounts": {
             "aoeSpecialist": "area",
             "directSpecialist": "direct"
