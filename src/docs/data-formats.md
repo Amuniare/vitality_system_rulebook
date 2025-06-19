@@ -1,356 +1,586 @@
+# Data Formats Documentation
 
+This document provides comprehensive documentation of all character data formats used in the Vitality System project, including JSON schemas, field mappings, and conversion specifications.
 
-# **docs/data-formats.md**
+## Table of Contents
 
-```markdown
-# Data Formats
+1. [Web Builder Character Format](#web-builder-character-format)
+2. [Roll20 Character Format](#roll20-character-format)
+3. [Character Mapping System](#character-mapping-system)
+4. [Data Validation](#data-validation)
+5. [Examples](#examples)
 
-Character data structures and JSON formats used throughout the Vitality System.
+---
 
-## Character JSON Structure
+## Web Builder Character Format
 
-### **Complete Character Format**
+The web builder uses a hierarchical JSON structure optimized for character creation workflow and data organization.
+
+### Core Schema
+
+```json
+{
+  "id": "string",                     // Unique identifier (timestamp-based)
+  "name": "string",                   // Character display name
+  "realName": "string",               // Character's real/civilian name
+  "playerName": "string",             // Player's name
+  "characterType": "string",          // "player_character" | "npc" 
+  "characterSubType": "string|null",  // NPC faction/group
+  "tier": "number",                   // 1-10 power level
+  "folderId": "string|null",          // Folder organization
+  "version": "string",                // Builder version "2.2-action-rework"
+  "created": "string",                // ISO timestamp
+  "lastModified": "string",           // ISO timestamp
+  "biographyDetails": {},             // Character background
+  "archetypes": {},                   // Character build archetypes
+  "talents": [],                      // Character talents/skills  
+  "attributes": {},                   // Core attributes
+  "mainPoolPurchases": {},            // Major character features
+  "specialAttacks": [],               // Custom attacks
+  "utilityPurchases": {},             // Minor features and abilities
+  "calculatedStats": {},              // Derived combat stats
+  "pointPools": {},                   // Point spending tracking
+  "validationResults": {},            // Build validation state
+  "buildState": {}                    // UI completion tracking
+}
+```
+
+### Biography Details
+
+```json
+"biographyDetails": {
+  "player_name": "string",
+  "heir_ambition": "string",         // Character motivation
+  "mandate_focus": "string",         // Campaign role
+  "background_motivation": "string", // Character origin
+  "authority_handling": "string",    // Personality trait
+  "others_perception": "string",     // Social standing
+  "bond_with_trader": "string",      // Relationship dynamic
+  "character_bio": "string",         // Free-form biography
+  "gm_notes": "string"              // GM-only information
+}
+```
+
+### Archetypes System
+
+```json
+"archetypes": {
+  "movement": "string",              // "behemoth" | "swift" | "skirmisher"
+  "attackType": "string",            // "singleTarget" | "areaOfEffect" 
+  "effectType": "string",            // "damageSpecialist" | "crowdControl"
+  "uniqueAbility": "string",         // "extraordinary" | "practical"
+  "defensive": "string",             // "juggernaut" | "resilient" | "evasive"
+  "specialAttack": "string",         // "dualNatured" | "versatile"
+  "utility": "string"               // "jackOfAllTrades" | "versatileMaster"
+}
+```
+
+### Core Attributes
+
+```json
+"attributes": {
+  "focus": "number",        // 0-10, mental precision
+  "mobility": "number",     // 0-10, speed and agility  
+  "power": "number",        // 0-10, raw strength
+  "endurance": "number",    // 0-10, resilience
+  "awareness": "number",    // 0-10, perception
+  "communication": "number", // 0-10, social skills
+  "intelligence": "number"  // 0-10, reasoning ability
+}
+```
+
+### Special Attacks Structure
+
+```json
+"specialAttacks": [
+  {
+    "id": "string",                    // Unique identifier
+    "name": "string",                  // Attack name
+    "description": "string",           // Attack description
+    "subtitle": "string",              // Attack type summary
+    "attackTypes": ["string"],         // ["melee_ac", "ranged", etc.]
+    "effectTypes": ["string"],         // ["damage", "control", etc.]
+    "isHybrid": "boolean",             // Multi-type attack flag
+    "limits": [],                      // Attack limitations
+    "limitPointsTotal": "number",      // Limit constraint value
+    "upgradePointsFromLimits": "number", // Points gained from limits
+    "upgradePointsFromArchetype": "number", // Base archetype points
+    "upgradePointsAvailable": "number", // Total available points
+    "upgradePointsSpent": "number",    // Points currently used
+    "upgrades": [                      // Attack enhancements
+      {
+        "id": "string",                // Upgrade identifier
+        "name": "string",              // Upgrade name
+        "cost": "number",              // Point cost
+        "category": "string",          // Upgrade category
+        "subcategory": "string",       // Upgrade subcategory
+        "effect": "string",            // Rules text
+        "originalCost": "number",      // Base cost before modifiers
+        "isSpecialty": "boolean"       // Specialty upgrade flag
+      }
+    ],
+    "basicConditions": [],             // Basic status effects
+    "advancedConditions": [],          // Advanced status effects
+    "properties": {                    // Attack properties
+      "range": "string|null",
+      "area": "string|null", 
+      "requirements": [],
+      "restrictions": []
+    },
+    "archetypeData": {}               // Archetype-specific data
+  }
+]
+```
+
+### Main Pool Purchases
+
+```json
+"mainPoolPurchases": {
+  "boons": [                         // Major character features
+    {
+      "boonId": "string",            // Feature identifier
+      "name": "string",              // Feature name
+      "cost": "number",              // Point cost
+      "category": "string",          // "defensive" | "offensive" | etc.
+      "type": "string",              // "unique" | "simple"
+      "baseCost": "number",          // Base cost before upgrades
+      "upgrades": [                  // Feature modifications
+        {
+          "id": "string",            // Upgrade identifier
+          "quantity": "number"       // Number purchased
+        }
+      ],
+      "purchased": "string"          // ISO timestamp
+    }
+  ],
+  "traits": [],                     // Custom character traits
+  "flaws": [],                      // Character disadvantages
+  "primaryActionUpgrades": []       // Basic action enhancements
+}
+```
+
+### Utility Purchases
+
+```json
+"utilityPurchases": {
+  "features": [                     // Minor abilities
+    {
+      "id": "string",               // Feature identifier
+      "name": "string",             // Feature name
+      "cost": "number",             // Point cost
+      "purchased": "string"         // ISO timestamp
+    }
+  ],
+  "senses": [],                     // Enhanced senses
+  "movement": [],                   // Movement abilities
+  "descriptors": []                 // Character descriptors
+}
+```
+
+---
+
+## Roll20 Character Format
+
+Roll20 uses a completely flat structure with specific naming conventions and string-only values.
+
+### Core Schema
+
 ```json
 {
   "metadata": {
-    "characterId": "unique-id-string",
-    "extractedAt": "2025-01-XX...",
-    "name": "Character Name",
-    "attributeCount": 95
+    "characterId": "string",         // Roll20 character ID
+    "extractedAt": "string",         // ISO timestamp
+    "name": "string",                // Character name
+    "attributeCount": "number"       // Total attribute count
   },
-  "attributes": {
-    "character_name": "Hero Name",
-    "character_realname": "Civilian Name", 
-    "char_tier": "4",
-    "char_efforts": "2",
-    "char_focus": "3",
-    "char_mobility": "2",
-    "char_power": "4",
-    "char_endurance": "3",
-    "char_awareness": "2",
-    "char_communication": "1", 
-    "char_intelligence": "2",
-    "char_hp": "100/100"
+  "attributes": {},                  // Flat key-value pairs (all strings)
+  "repeating_sections": {            // Repeating data sections
+    "attacks": {},                   // Character attacks
+    "traits": {},                    // Character traits
+    "features": {},                  // Character features
+    "uniqueabilities": {},           // Special abilities
+    "awarenessexpertises": {},       // Awareness skills
+    "communicationexpertises": {},   // Communication skills
+    "intelligenceexpertises": {},    // Intelligence skills
+    "focusexpertises": {},           // Focus skills
+    "mobilityexpertises": {},        // Mobility skills
+    "enduranceexpertises": {},       // Endurance skills
+    "powerexpertises": {}            // Power skills
   },
-  "repeating_sections": {
-    "traits": {
-      "row_id_1": {
-        "traitActive": "1",
-        "traitName": "Trait Name",
-        "traitAcBonus": "0",
-        "traitDgBonus": "2"
-      }
-    },
-    "attacks": {
-      "row_id_2": {
-        "AttackName": "Special Attack",
-        "AttackType": "2",
-        "Brutal": "1",
-        "ArmorPiercing": "1"
-      }
-    }
-  },
-  "abilities": [
-    {
-      "name": "Attack Name",
-      "type": "indexed",
-      "content": 5,
-      "showInMacroBar": true,
-      "isTokenAction": false
-    }
-  ],
-  "permissions": {
-    "see_by": "player1,player2",
-    "edit_by": "player1"
+  "abilities": [],                   // Macro abilities
+  "permissions": {                   // Access permissions
+    "see_by": "string",              // "all" | "player"
+    "edit_by": "string"              // "all" | "player"
   }
 }
 ```
 
-## Attribute Structure
+### Core Attributes (All String Values)
 
-### **Core Attributes**
 ```json
 "attributes": {
-  // Character basics
-  "character_name": "Hero Name",
-  "character_realname": "Real Name",
-  "char_tier": "4",
-  "char_efforts": "2",
+  "character_name": "string",        // Character display name
+  "character_realname": "string",    // Real name
+  "char_tier": "string",             // "1" through "10"
   
-  // Core stats (0 to tier maximum)
-  "char_focus": "3",       // Combat: accuracy, initiative, resolve
-  "char_mobility": "2",    // Combat: movement, initiative, avoidance  
-  "char_power": "4",       // Combat: damage, conditions, stability
-  "char_endurance": "3",   // Combat: vitality, durability
-  "char_awareness": "2",   // Utility: notice things, initiative
-  "char_communication": "1", // Utility: social skills
-  "char_intelligence": "2",  // Utility: knowledge, reasoning
+  // Core Attributes
+  "char_focus": "string",            // "0" through "10"
+  "char_mobility": "string",         // "0" through "10"
+  "char_power": "string",            // "0" through "10"
+  "char_endurance": "string",        // "0" through "10"
+  "char_awareness": "string",        // "0" through "10"
+  "char_communication": "string",    // "0" through "10"
+  "char_intelligence": "string",     // "0" through "10"
   
-  // Calculated defenses (auto-computed)
-  "char_avoidance": "19",     // 10 + tier + mobility + mods
-  "char_durability": "21",    // tier + (endurance × 1.5) + mods
-  "char_resolve": "17",       // 10 + tier + focus + mods
-  "char_stability": "18",     // 10 + tier + power + mods  
-  "char_vitality": "17",      // 10 + tier + endurance + mods
+  // Derived Combat Stats
+  "char_avoidance": "string",        // 10 + tier + mobility
+  "char_durability": "string",       // tier + ceil(endurance * 1.5)
+  "char_resolve": "string",          // 10 + tier + focus
+  "char_stability": "string",        // 10 + tier + power
+  "char_vitality": "string",         // 10 + tier + endurance
+  "char_accuracy": "string",         // tier + focus
+  "char_damage": "string",           // tier + ceil(power * 1.5)
+  "char_conditions": "string",       // tier * 2
+  "char_movement": "string",         // max(mobility + 6, mobility + tier)
+  "char_initiative": "string",       // tier + mobility + focus + awareness
+  "char_hp": "string",               // "100/100" format
   
-  // Combat stats (auto-computed)
-  "char_accuracy": "7",       // tier + focus + mods
-  "char_damage": "10",        // tier + (power × 1.5) + mods
-  "char_conditions": "8",     // tier × 2 + mods
-  "char_movement": "6",       // max(mobility + 6, mobility + tier) + mods
-  "char_initiative": "11",    // tier + mobility + focus + awareness + mods
+  // Archetype Fields
+  "char_archetype_movement": "string",
+  "char_archetype_attackType": "string",
+  "char_archetype_effectType": "string",
+  "char_archetype_uniqueAbility": "string",
+  "char_archetype_defensive": "string",
+  "char_archetype_specialAttack": "string",
+  "char_archetype_utility": "string",
   
-  // Health
-  "char_hp": "100/100"        // current/maximum
+  // Biography
+  "char_bio": "string"               // Formatted biography text
 }
 ```
 
-### **Modifier Attributes** 
-```json
-// Manual modifiers for each stat
-"char_avMod": "0",           // Avoidance modifier
-"char_drMod": "0",           // Durability modifier
-"char_acMod": "0",           // Accuracy modifier
-// ... (mod for each stat)
+### Repeating Sections Structure
 
-// Primary action bonuses (checkboxes)
-"char_avPrimaryAction": "on", // +tier when using primary action
-"char_drPrimaryAction": "",   // (empty = not checked)
-// ... (primary action for each stat)
+Each repeating section uses unique row IDs following Roll20's pattern:
+
+#### Row ID Format
+```
+"-{prefix}{random_alphanumeric}"
+Example: "-ON2ciXkBZk7HHKt4WqX"
 ```
 
-## Repeating Sections
-
-### **Traits Section**
+#### Attacks Section
 ```json
-"traits": {
-  "unique_row_id": {
-    "traitActive": "1",        // 0/1 checkbox
-    "traitName": "Swift",      // Text name
-    "traitAcBonus": "2",       // Accuracy bonus
-    "traitDgBonus": "0",       // Damage bonus  
-    "traitCnBonus": "0",       // Condition bonus
-    "traitAvBonus": "0",       // Avoidance bonus
-    "traitDrBonus": "0",       // Durability bonus
-    "traitRsBonus": "0",       // Resolve bonus
-    "traitSbBonus": "0",       // Stability bonus
-    "traitVtBonus": "0",       // Vitality bonus
-    "traitMBonus": "4"         // Movement bonus
+"repeating_attacks": {
+  "-ON2ciXkBZk7HHKt4WqX": {
+    "AttackName": "string",          // Attack name
+    "leftsub": "string",             // "Melee" | "Ranged"
+    "AttackType": "string",          // "1" (melee) | "2" (ranged)
+    "ArmorPiercing": "string",       // "1" if has armor piercing
+    "Brutal": "string",              // "1" if has brutal
+    "ReliableEffect": "string",      // "2" if enhanced effect
+    "Bleed": "string"                // "1" if causes bleed
   }
 }
 ```
 
-### **Attacks Section**
+#### Traits Section
 ```json
-"attacks": {
-  "attack_row_id": {
-    "AttackName": "Plasma Cannon",
-    "leftsub": "Ranged energy attack",
-    "AttackType": "2",         // 0=Melee(AC), 1=Melee(DG/CN), 2=Ranged, 3=Direct, 4=AOE, 5=AOE Direct
-    "RollCN": "0",            // 0=OFF, 1=Resolve, 2=Stability, 3=Vitality
-    "EffectType": "0",        // 0=None, 1=Disarm, 2=Grab, ... 11=Disable Specials
-    "Hybrid": "0",            // 0=OFF, 1=Damage→CN, 2=CN→Damage
-    
-    // Upgrade values (0/1 for most, numbers for tiers)
-    "Brutal": "1",            // 0 or 1
-    "ArmorPiercing": "1",     // 0 or 1
-    "FinishingBlow": "2",     // Number of tiers (0-3)
-    "MinionSlayer": "1",      // 1=AC, 2=DG, 3=CN bonus type
-    
-    // String modifiers (usually empty for mechanical upgrades)
-    "AccuracyStringModifiers": "",
-    "DamageStringModifiers": "", 
-    "ConditionsStringModifiers": ""
+"repeating_traits": {
+  "-ON2kGOKa4ZrdCEXte-g": {
+    "traitName": "string",           // Trait name and conditions
+    "traitDrBonus": "string",        // Damage reduction bonus
+    "traitDgBonus": "string",        // Damage bonus  
+    "traitAcBonus": "string",        // Accuracy bonus
+    "traitActive": "string"          // "1" if active
   }
 }
 ```
 
-### **Other Repeating Sections**
+#### Features Section
 ```json
-// Unique Abilities
-"uniqueAbilities": {
-  "ability_id": {
-    "char_uniqueAbilities": "Telekinesis",
-    "uniqueAbilitiesDesc": "Move objects with mind"
-  }
-}
-
-// Features  
-"features": {
-  "feature_id": {
-    "char_features": "Night Vision",
-    "featuresDesc": "See in complete darkness"
-  }
-}
-
-// Expertise sections (one per attribute)
-"awarenessExpertises": {
-  "expertise_id": {
-    "awarenessExpertiseActive": "on",    // on/off checkbox
-    "awarenessExpertiseName": "Tracking" // Text name
+"repeating_features": {
+  "-ON2fG8kBZk7HHKt4WqX": {
+    "char_features": "string",       // Feature name
+    "featuresDesc": "string"         // Feature description
   }
 }
 ```
 
-## Abilities Structure
-
-### **Compressed Abilities** (Storage Format)
+#### Expertise Sections
 ```json
-"abilities": [
-  {
-    "name": "Attack 1",
-    "type": "indexed",             // Indicates compressed
-    "content": 1,                  // Attack index number  
-    "showInMacroBar": true,        // Macro bar visibility
-    "isTokenAction": false,        // Token action flag
-    "template_ref": "scriptcards", // Template reference
-    "compression_ratio": 0.001     // Optional: compression stats
-  },
-  {
-    "name": "Utility Ability", 
-    "type": "full",                // Not compressed
-    "content": "!scriptcard {{ ... }}", // Full macro content
-    "showInMacroBar": false,
-    "isTokenAction": true
+"repeating_focusexpertises": {
+  "-ON2n6VyZs2-20E31M9G": {
+    "focusExpertiseActive": "string", // "@{char_tier}" | "on"
+    "focusExpertiseName": "string"    // Skill name (optional)
   }
-]
+}
 ```
 
-### **Expanded Abilities** (Runtime Format)
-```json
-"abilities": [
-  {
-    "name": "Attack 1",
-    "content": "!scriptcard {{ --Rbyindex|...; }}", // Full 26KB+ content
-    "showInMacroBar": true,
-    "isTokenAction": false
-  }
-]
+---
+
+## Character Mapping System
+
+The mapping system converts between web builder and Roll20 formats using specialized converters.
+
+### Conversion Architecture
+
+```
+Web Builder JSON → Character Mapper → Roll20 JSON → ChatSetAttr Commands
 ```
 
-## Data Flow Formats
+### Core Mapping Rules
 
-### **Web Builder → Export**
+1. **All Roll20 values must be strings** - Convert all numbers to strings
+2. **Flatten nested structures** - Convert hierarchical data to flat key-value pairs  
+3. **Generate unique row IDs** - Use Roll20-compatible ID format for repeating sections
+4. **Calculate derived stats** - Compute all combat statistics from base attributes
+5. **Preserve data integrity** - Ensure no data loss during conversion
+
+### Field Mapping Table
+
+| Web Builder Field | Roll20 Field | Conversion |
+|---|---|---|
+| `name` | `character_name` | Direct copy |
+| `realName` | `character_realname` | Direct copy |
+| `tier` | `char_tier` | Number → String |
+| `attributes.focus` | `char_focus` | Number → String |
+| `attributes.mobility` | `char_mobility` | Number → String |
+| `attributes.power` | `char_power` | Number → String |
+| `attributes.endurance` | `char_endurance` | Number → String |
+| `attributes.awareness` | `char_awareness` | Number → String |
+| `attributes.communication` | `char_communication` | Number → String |
+| `attributes.intelligence` | `char_intelligence` | Number → String |
+| `archetypes.movement` | `char_archetype_movement` | Direct copy |
+| `archetypes.attackType` | `char_archetype_attackType` | Direct copy |
+| `archetypes.effectType` | `char_archetype_effectType` | Direct copy |
+| `specialAttacks[]` | `repeating_attacks` | Custom converter |
+| `mainPoolPurchases.traits[]` | `repeating_traits` | Custom converter |
+| `utilityPurchases.features[]` | `repeating_features` | Custom converter |
+
+### Derived Statistics Formulas
+
+```javascript
+// Combat Statistics
+avoidance = 10 + tier + mobility
+durability = tier + Math.ceil(endurance * 1.5)
+resolve = 10 + tier + focus  
+stability = 10 + tier + power
+vitality = 10 + tier + endurance
+accuracy = tier + focus
+damage = tier + Math.ceil(power * 1.5)
+conditions = tier * 2
+movement = Math.max(mobility + 6, mobility + tier)
+initiative = tier + mobility + focus + awareness
+```
+
+### Special Attack Conversion
+
+```javascript
+// Web Builder → Roll20 Attack Mapping
+{
+  "name": "Mastercrafted chainsword",
+  "attackTypes": ["melee_ac"],
+  "upgrades": [
+    {"id": "Heavy_Strike"},
+    {"id": "Accurate_Attack"},
+    {"id": "High_Impact"}
+  ]
+}
+
+// Converts to:
+{
+  "AttackName": "Mastercrafted chainsword",
+  "leftsub": "Melee",
+  "AttackType": "1",
+  "ArmorPiercing": "1",    // from Heavy_Strike
+  "Brutal": "1"            // from High_Impact
+}
+```
+
+### ID Generation System
+
+Roll20 requires unique IDs for repeating section rows:
+
+```javascript
+// Format: -{prefix}{random}
+// Prefix: N + last 4 digits of timestamp
+// Random: 12 character alphanumeric string
+
+generateRowID() {
+  const prefix = "N" + String(Date.now()).slice(-4);
+  const random = generateRandomString(12);
+  return `-${prefix}${random}`;
+}
+
+// Example: "-N2056kH8mP3qX9wR"
+```
+
+---
+
+## Data Validation
+
+### Web Builder Validation
+
+```json
+"validationResults": {
+  "isValid": "boolean",             // Overall validation state
+  "errors": ["string"],             // Critical validation failures
+  "warnings": ["string"],           // Non-critical issues
+  "completionStatus": {             // Build completion tracking
+    "archetypesComplete": "boolean",
+    "attributesComplete": "boolean", 
+    "mainPoolComplete": "boolean",
+    "specialAttacksComplete": "boolean",
+    "utilityComplete": "boolean"
+  }
+}
+```
+
+### Roll20 Validation
+
+```javascript
+// Required Roll20 fields
+const requiredFields = [
+  "char_tier",
+  "char_accuracy", 
+  "char_damage",
+  "char_avoidance",
+  "char_durability",
+  "char_resolve",
+  "char_stability", 
+  "char_vitality"
+];
+
+// All values must be strings
+function validateRoll20Data(data) {
+  for (const [key, value] of Object.entries(data.attributes)) {
+    if (typeof value !== 'string') {
+      throw new Error(`Invalid type for ${key}: expected string, got ${typeof value}`);
+    }
+  }
+}
+```
+
+---
+
+## Examples
+
+### Complete Web Builder Character (Brother Rainard)
+
 ```json
 {
-  "id": "timestamp_string",
-  "name": "Character Name", 
+  "id": "1750197836202",
+  "name": "Brother Rainard",
+  "realName": "",
+  "playerName": "Nick",
   "tier": 4,
+  "attributes": {
+    "focus": 0,
+    "mobility": 0, 
+    "power": 4,
+    "endurance": 4,
+    "awareness": 4,
+    "communication": 0,
+    "intelligence": 0
+  },
   "archetypes": {
-    "movement": "swift",
+    "movement": "behemoth",
     "attackType": "singleTarget",
-    // ... other archetypes
+    "effectType": "damageSpecialist",
+    "defensive": "juggernaut"
+  },
+  "specialAttacks": [
+    {
+      "id": "17502052664680.5885271753907905",
+      "name": "Mastercrafted chainsword",
+      "attackTypes": ["melee_ac"],
+      "effectTypes": ["damage"],
+      "upgrades": [
+        {
+          "id": "Specialized_Combat_Melee_Specialization_Heavy_Strike",
+          "name": "Heavy Strike",
+          "cost": 40
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Corresponding Roll20 Format (Converted)
+
+```json
+{
+  "metadata": {
+    "characterId": "1750197836202",
+    "name": "Brother Rainard",
+    "attributeCount": 25
   },
   "attributes": {
-    "focus": 3,
-    "mobility": 2,
-    // ... other attributes  
+    "character_name": "Brother Rainard",
+    "char_tier": "4",
+    "char_focus": "0",
+    "char_mobility": "0",
+    "char_power": "4", 
+    "char_endurance": "4",
+    "char_awareness": "4",
+    "char_communication": "0",
+    "char_intelligence": "0",
+    "char_avoidance": "14",
+    "char_durability": "10",
+    "char_resolve": "14",
+    "char_stability": "14",
+    "char_vitality": "14",
+    "char_accuracy": "4",
+    "char_damage": "10",
+    "char_conditions": "8",
+    "char_movement": "10",
+    "char_initiative": "8",
+    "char_archetype_movement": "behemoth",
+    "char_archetype_attackType": "singleTarget",
+    "char_archetype_effectType": "damageSpecialist",
+    "char_archetype_defensive": "juggernaut"
   },
-  "specialAttacks": [],
-  "utilityPurchases": {}
+  "repeating_sections": {
+    "attacks": {
+      "-N2056kH8mP3qX9wR": {
+        "AttackName": "Mastercrafted chainsword",
+        "leftsub": "Melee",
+        "AttackType": "1",
+        "ArmorPiercing": "1"
+      }
+    },
+    "traits": {},
+    "features": {}
+  }
 }
 ```
 
-### **Roll20 Flat Format** (ChatSetAttr)
-```json
-{
-  "char_tier": "4",
-  "char_focus": "3", 
-  "repeating_attacks_row1_AttackName": "Plasma Cannon",
-  "repeating_attacks_row1_AttackType": "2",
-  "repeating_attacks_row1_Brutal": "1"
-}
-```
+### ChatSetAttr Command Format
 
-## Validation Rules
-
-### **Required Fields**
 ```javascript
-// Minimum viable character
+// Final flattened format for Roll20 upload
 {
-  "metadata": { "name": "string" },
-  "attributes": { 
-    "char_tier": "1-10",
-    "character_name": "string" 
-  },
-  "repeating_sections": {},
-  "abilities": [],
-  "permissions": {}
+  "character_name": "Brother Rainard",
+  "char_tier": "4",
+  "char_power": "4",
+  "repeating_attacks_-N2056kH8mP3qX9wR_AttackName": "Mastercrafted chainsword",
+  "repeating_attacks_-N2056kH8mP3qX9wR_leftsub": "Melee",
+  "repeating_attacks_-N2056kH8mP3qX9wR_AttackType": "1"
 }
 ```
 
-### **Attribute Constraints**
-- `char_tier`: Integer 1-10 (usually starts at 4)
-- Core stats: Integer 0 to tier value
-- Calculated stats: Auto-computed, don't set manually
-- HP format: "current/max" (e.g. "75/100")
+---
 
-### **Attack Type Values**
-- `0`: Melee (Accuracy) - adjacent, +tier to accuracy OR damage
-- `1`: Melee (Damage/Condition) - adjacent, +tier to damage/condition  
-- `2`: Ranged - 15 spaces, -tier if adjacent to enemy
-- `3`: Direct - 30 spaces, auto-hit, condition only, -tier to rolls
-- `4`: AOE - 3sp radius/6sp cone/12sp line, -tier to rolls
-- `5`: AOE Direct - Area + auto-hit, condition only
+## Version History
 
-### **Condition Target Values**
-- `0`: No condition
-- `1`: Resolve resistance
-- `2`: Stability resistance  
-- `3`: Vitality resistance
+- **v2.2-action-rework**: Current web builder format with enhanced special attacks
+- **v2.0**: Core character builder implementation
+- **v1.0**: Initial Roll20 integration
 
-## File Organization
+## Related Documentation
 
-### **Directory Structure**
-```
-characters/
-├── extracted/           # From Roll20 (flat JSON format)
-├── web_exports/        # From web builder (nested format)  
-├── input/              # Test/template characters
-└── compressed/         # Backup of compressed versions
-```
-
-### **Naming Conventions**
-- **Extracted**: `Character_Name_tier4_timestamp.json`
-- **Web Export**: `character_name_id.json`
-- **Template**: `template_archetype_tier4.json`
-
-## Migration Between Formats
-
-### **Web Builder → Roll20 Format**
-```python
-from src.character.mapper import CharacterMapper
-
-# Convert nested to flat
-flat_data = CharacterMapper.flatten_for_chatsetattr(web_builder_data)
-```
-
-### **Old Format → New Format** 
-```python
-# Migrate legacy character data
-new_data = CharacterMapper.convert_old_format_to_new(old_data)
-```
-
-## Common Data Issues
-
-### **Troubleshooting**
-- **Missing attributes**: Check required fields exist
-- **Invalid tier**: Ensure 1-10 range, usually start at 4
-- **Repeating section errors**: Verify row IDs are unique
-- **Ability expansion fails**: Check ScriptCards template exists
-- **Upload failures**: Validate JSON structure before upload
-
-### **Data Cleanup**
-```python
-# Validate character data
-from src.utils.json_utils import load_json
-char = load_json("character.json")
-
-# Check required fields
-assert "metadata" in char
-assert "name" in char["metadata"] 
-assert "attributes" in char
-assert "char_tier" in char["attributes"]
-```
-
-
+- `roll20_character_sheet_attribute_list.md` - Complete Roll20 field reference
+- `roll20-integration.md` - Integration architecture and API documentation
+- `development-guide.md` - Development patterns and best practices
