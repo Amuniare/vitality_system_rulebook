@@ -174,6 +174,9 @@ PRESETS = {
         'all_data/characters/extracted/Brother_Rainard.json',
         'archive/extracted/Achillas.json'
         'src/backend/',
+        'src/docs/',
+        'src/roll20_api/',
+        'src/char_sheet/',
 
 
     ],
@@ -185,13 +188,10 @@ PRESETS = {
         'src/backend/character/file_utils.py',
         'src/backend/main.py',
         'src/backend/char_sheet/rpgSheet.py',
-        
+
         'frontend/character-builder/',
         'src/backend/roll20_api/',
     ]
-
-
-
 
 }
 
