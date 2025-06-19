@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class Roll20Connection:
     """Connect to existing browser session to bypass Cloudflare"""
     
-    def __init__(self, campaign_id: str = "18934967"):
+    def __init__(self, campaign_id: str = "19776221"):
         self.playwright = None
         self.browser = None
         self.page = None

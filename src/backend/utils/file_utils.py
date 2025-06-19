@@ -38,7 +38,7 @@ def process_downloaded_characters() -> Tuple[int, int]:
         if not downloads_path.exists():
             downloads_path = Path.home() / "Downloads"
         
-        target_path = Path("characters") / "input"
+        target_path = Path("all_data") / "characters" / "input"
         target_path.mkdir(parents=True, exist_ok=True)
         
         one_week_ago = datetime.now() - timedelta(days=7)
