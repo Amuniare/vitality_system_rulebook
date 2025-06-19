@@ -18,22 +18,21 @@ export class GenericUtilitySection {
                 allItems = allItems.concat(itemsToAdd.map(item => ({ ...item, cost: tier.cost ?? item.cost })));
             }
         });
-        const availableItems = allItems.filter(item => !purchasedItems.some(p => p.id === item.id));
-
         return `
             <div class="utility-generic-section">
-                <h3>Available ${title}</h3>
+                <h3>${title}</h3>
                 ${RenderUtils.renderGrid(
-                    [...availableItems, { isCustomCreator: true, categoryKey }],
+                    [...allItems, { isCustomCreator: true, categoryKey }],
                     (item) => {
                         if (item.isCustomCreator) {
                             return this.customUtilityForm.render(item.categoryKey);
                         }
+                        const isPurchased = purchasedItems.some(p => p.id === item.id);
                         return RenderUtils.renderCard({
                             title: item.name, cost: item.cost, description: item.description,
-                            status: 'available',
-                            clickable: true, disabled: false,
-                            dataAttributes: { 
+                            status: isPurchased ? 'purchased' : 'available',
+                            clickable: !isPurchased, disabled: isPurchased,
+                            dataAttributes: isPurchased ? {} : { 
                                 action: `purchase-item`, 
                                 'category-key': categoryKey, 
                                 'item-id': item.id,
