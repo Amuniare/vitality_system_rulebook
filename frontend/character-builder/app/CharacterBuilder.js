@@ -364,6 +364,49 @@ export class CharacterBuilder {
                 // Ensure character has an ID before saving
                 this.currentCharacter.id = Date.now().toString();
             }
+            
+            // Ensure critical properties are never undefined before saving
+            if (!this.currentCharacter.talents || !Array.isArray(this.currentCharacter.talents)) {
+                console.warn('Fixing missing talents property before save');
+                this.currentCharacter.talents = ["", ""];
+            }
+            
+            if (!this.currentCharacter.archetypes || typeof this.currentCharacter.archetypes !== 'object') {
+                console.warn('Fixing missing archetypes property before save');
+                this.currentCharacter.archetypes = {
+                    movement: null,
+                    attackType: null,
+                    effectType: null,
+                    uniqueAbility: null,
+                    defensive: null,
+                    specialAttack: null,
+                    utility: null
+                };
+            }
+            
+            if (!this.currentCharacter.utilityPurchases || typeof this.currentCharacter.utilityPurchases !== 'object') {
+                console.warn('Fixing missing utilityPurchases property before save');
+                this.currentCharacter.utilityPurchases = {
+                    features: [],
+                    senses: [],
+                    movement: [],
+                    descriptors: []
+                };
+            }
+            
+            if (!this.currentCharacter.utilityArchetypeSelections || typeof this.currentCharacter.utilityArchetypeSelections !== 'object') {
+                console.warn('Fixing missing utilityArchetypeSelections property before save');
+                this.currentCharacter.utilityArchetypeSelections = {
+                    practicalSkills: [],
+                    specializedAttribute: null
+                };
+            }
+            
+            console.log('Before saving - character properties:', {
+                talents: this.currentCharacter.talents,
+                archetypes: this.currentCharacter.archetypes,
+                utilityPurchases: this.currentCharacter.utilityPurchases
+            });
             this.library.saveCharacter(this.currentCharacter);
             console.log('Character saved to library:', this.currentCharacter.name);
         }
@@ -820,9 +863,7 @@ export class CharacterBuilder {
         try {
             this.currentCharacter = new VitalityCharacter();
             console.log('VitalityCharacter created:', this.currentCharacter);
-            
             this.showCharacterBuilder();
-            console.log('Character builder shown');
             
             this.showNotification('New character created!', 'success');
             console.log('Notification shown');
@@ -876,11 +917,36 @@ export class CharacterBuilder {
      * This fixes the "touch is not a function" error when loading from localStorage
      */
     rehydrateCharacter(characterData) {
-        // Create a new VitalityCharacter instance
+        // Create a new VitalityCharacter instance with proper defaults
         const character = new VitalityCharacter();
         
-        // Copy all properties from the loaded data
-        Object.assign(character, characterData);
+        // Copy properties from loaded data, but preserve initialized defaults for missing properties
+        Object.keys(characterData).forEach(key => {
+            if (characterData[key] !== undefined) {
+                character[key] = characterData[key];
+            }
+        });
+        
+        // Ensure critical properties exist with proper defaults (for old character data)
+        if (!character.talents || !Array.isArray(character.talents)) {
+            character.talents = ["", ""];
+        }
+        
+        if (!character.utilityPurchases || typeof character.utilityPurchases !== 'object') {
+            character.utilityPurchases = {
+                features: [],
+                senses: [],
+                movement: [],
+                descriptors: []
+            };
+        }
+        
+        if (!character.utilityArchetypeSelections || typeof character.utilityArchetypeSelections !== 'object') {
+            character.utilityArchetypeSelections = {
+                practicalSkills: [],
+                specializedAttribute: null
+            };
+        }
         
         // Ensure the character has a proper ID
         if (!character.id) {

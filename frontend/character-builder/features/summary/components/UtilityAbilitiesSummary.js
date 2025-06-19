@@ -49,7 +49,7 @@ export class UtilityAbilitiesSummary {
 
         const hasTalents = character.talents?.some(t => t && t.trim() !== '');
         const hasArchetype = !!character.archetypes?.utility;
-        const hasPurchases = Object.values(character.utilityPurchases || {}).some(category => Array.isArray(category) && category.length > 0);
+        const hasPurchases = character.utilityPurchases && Object.values(character.utilityPurchases).some(category => Array.isArray(category) && category.length > 0);
 
         return hasTalents || hasArchetype || hasPurchases;
     }

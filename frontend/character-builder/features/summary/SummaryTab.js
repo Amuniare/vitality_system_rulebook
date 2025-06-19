@@ -55,7 +55,7 @@ export class SummaryTab {
                         ${this.pointPoolsSummary.render(pools)}
                         ${this.attributesSummary.render(character, statBreakdowns)}
                         ${this.archetypesSummary.render(character.archetypes, archetypeDefinitions)}
-                        ${this.utilityAbilitiesSummary.render(character.utilityPurchases, utilityDefinitions)}
+                        ${this.utilityAbilitiesSummary.render(character)}
                     </div>
                     <div class="summary-right-column">
                         ${this.specialAttacksSummary.render(character.specialAttacks)}
