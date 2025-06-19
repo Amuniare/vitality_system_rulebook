@@ -1,4 +1,4 @@
-"""
+﻿"""
 Roll20 API Automation Tool
 Main entry point
 """
@@ -12,6 +12,8 @@ from .utils.logging import setup_logging
 from .api.connection import Roll20Connection
 from .api.chat_interface import ChatInterface
 from .character.updater import CharacterUpdater
+from .character.schema.schema_uploader import SchemaUploader
+from .character.schema.schema_validator import SchemaValidator
 from .character.api_extractor import CharacterExtractor
 from .utils.json_utils import save_json
 from .utils.file_utils import process_downloaded_characters # New Import

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Enhanced character updater using custom Roll20 API
 """
 import logging

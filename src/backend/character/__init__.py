@@ -1,15 +1,10 @@
-# Only import modules without heavy dependencies for testing
-from .mapper import CharacterMapper
+﻿"""
+Character package for Roll20 integration using schema-based approach.
+"""
 
-# Heavy dependency imports only when needed
-def get_character_extractor():
-    from .api_extractor import CharacterExtractor
-    return CharacterExtractor
+from .schema.schema_mapper import SchemaMapper
+from .schema.schema_uploader import SchemaUploader
+from .schema.schema_validator import SchemaValidator
+from .schema.roll20_schema import Roll20Schema
 
-def get_character_updater():
-    from .updater import CharacterUpdater
-    return CharacterUpdater
-
-def get_character_differ():
-    from .differ import CharacterDiffer
-    return CharacterDiffer
+__all__ = ['SchemaMapper', 'SchemaUploader', 'SchemaValidator', 'Roll20Schema']
