@@ -257,7 +257,8 @@ export class SpecialAttackSystem {
         const errors = [];
         const warnings = [];
         
-        if (attack.upgrades.some(upgrade => upgrade.id === upgradeData.id)) {
+        // Allow Enhanced Scale to be purchased multiple times
+        if (upgradeData.name !== 'Enhanced Scale' && attack.upgrades.some(upgrade => upgrade.id === upgradeData.id)) {
             errors.push('Already purchased');
         }
         
@@ -518,8 +519,18 @@ export class SpecialAttackSystem {
             throw new Error('Upgrade not found');
         }
 
-        // Toggle the specialty status
-        upgrade.isSpecialty = !upgrade.isSpecialty;
+        // Special handling for Enhanced Scale - toggle ALL instances
+        if (upgrade.name === 'Enhanced Scale') {
+            const newSpecialtyStatus = !upgrade.isSpecialty;
+            attack.upgrades.forEach(u => {
+                if (u.name === 'Enhanced Scale') {
+                    u.isSpecialty = newSpecialtyStatus;
+                }
+            });
+        } else {
+            // Toggle the specialty status for regular upgrades
+            upgrade.isSpecialty = !upgrade.isSpecialty;
+        }
 
         // Recalculate points spent
         this.recalculateAttackPoints(character, attack);

@@ -395,16 +395,34 @@ export class AttackTypeSystem {
         return totalCost;
     }
     
+    // Calculate enhanced area size based on Enhanced Scale upgrades
+    static calculateEnhancedAreaSize(attack, baseSize) {
+        const enhancedScaleCount = attack.upgrades?.filter(u => u.name === 'Enhanced Scale').length || 0;
+        return baseSize * Math.pow(2, enhancedScaleCount);
+    }
+    
     // Get attack summary with all types and modifiers
     static getAttackSummary(character, attack) {
         const attackTypes = attack.attackTypes.map(id => {
             const def = this.getAttackTypeDefinition(id, character); // Pass character for discount calculation
-            return def ? {
+            if (!def) return {id, name: id, range: 'N/A', penalties: null}; // Fallback
+            
+            // Calculate enhanced area sizes for area attacks
+            let enhancedAreas = null;
+            if (def.areaOptions) {
+                enhancedAreas = def.areaOptions.map(option => ({
+                    ...option,
+                    enhancedSize: this.calculateEnhancedAreaSize(attack, option.size)
+                }));
+            }
+            
+            return {
                 id,
                 name: def.name,
                 range: def.range,
-                penalties: def.penalty || null
-            } : {id, name: id, range: 'N/A', penalties: null}; // Fallback
+                penalties: def.penalty || null,
+                areaOptions: enhancedAreas
+            };
         });
         
         const effectTypes = attack.effectTypes.map(id => {

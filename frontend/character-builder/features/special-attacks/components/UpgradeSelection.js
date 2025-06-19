@@ -30,7 +30,7 @@ export class UpgradeSelection {
                 
                 ${this.renderGuidanceMessage(attack, archetype, isLimitsBased)}
                 ${RenderUtils.renderPurchasedList(
-                    attack.upgrades || [],
+                    this.groupPurchasedUpgrades(attack.upgrades || []),
                     (upgrade, index) => this.renderPurchasedUpgrade(upgrade),
                     { title: `Purchased Upgrades (${attack.upgrades?.length || 0})`, emptyMessage: 'No upgrades purchased.' }
                 )}
@@ -46,17 +46,47 @@ export class UpgradeSelection {
         return '';
     }
 
+    groupPurchasedUpgrades(upgrades) {
+        const grouped = [];
+        const enhancedScales = upgrades.filter(u => u.name === 'Enhanced Scale');
+        const otherUpgrades = upgrades.filter(u => u.name !== 'Enhanced Scale');
+        
+        // Add Enhanced Scale as a single grouped item if any exist
+        if (enhancedScales.length > 0) {
+            const firstEnhancedScale = enhancedScales[0];
+            grouped.push({
+                ...firstEnhancedScale,
+                isGrouped: true,
+                groupCount: enhancedScales.length,
+                // Use the specialty status of the first one (they should all be the same now)
+                isSpecialty: firstEnhancedScale.isSpecialty
+            });
+        }
+        
+        // Add all other upgrades individually
+        grouped.push(...otherUpgrades);
+        
+        return grouped;
+    }
+
     renderPurchasedUpgrade(upgrade) {
         const baseCost = upgrade.cost === 0 ? 0 : upgrade.cost;
         const isSpecialty = upgrade.isSpecialty || false;
         const isCustom = upgrade.isCustom || false;
-        const displayCost = isSpecialty ? Math.floor(baseCost / 2) : baseCost;
+        const isGrouped = upgrade.isGrouped || false;
+        const groupCount = upgrade.groupCount || 1;
+        
+        // For grouped Enhanced Scale, calculate total cost
+        const totalBaseCost = isGrouped ? baseCost * groupCount : baseCost;
+        const displayCost = isSpecialty ? Math.floor(totalBaseCost / 2) : totalBaseCost;
+        
+        const nameWithCount = isGrouped && groupCount > 1 ? `${upgrade.name} (${groupCount})` : upgrade.name;
         const costText = displayCost === 0 ? 'Free' : `${displayCost}p${isSpecialty ? ' (Specialty)' : ''}${isCustom ? ' (Custom)' : ''}`;
         
         return `
             <div class="purchased-item purchased-upgrade ${isCustom ? 'custom-upgrade' : ''}">
                 <div class="item-info">
-                    <span class="item-name">${upgrade.name}</span>
+                    <span class="item-name">${nameWithCount}</span>
                     <span class="item-details">${costText}</span>
                     ${isCustom && upgrade.effect ? `<span class="item-description">${upgrade.effect}</span>` : ''}
                 </div>
@@ -129,8 +159,15 @@ export class UpgradeSelection {
         const validation = SpecialAttackSystem.validateUpgradeAddition(character, attack, upgrade);
         const alreadyPurchased = attack.upgrades?.some(u => u.id === upgrade.id);
         
+        // Special handling for Enhanced Scale - show count if multiple purchases
+        let enhancedScaleCount = 0;
+        const isEnhancedScale = upgrade.name === 'Enhanced Scale';
+        if (isEnhancedScale) {
+            enhancedScaleCount = attack.upgrades?.filter(u => u.name === 'Enhanced Scale').length || 0;
+        }
+        
         let status = 'available';
-        if (alreadyPurchased) status = 'purchased';
+        if (alreadyPurchased && !isEnhancedScale) status = 'purchased';
         else if (!validation.isValid) status = 'conflict';
         
         const actualCost = SpecialAttackSystem._getActualUpgradeCost(upgrade, character);
@@ -138,16 +175,42 @@ export class UpgradeSelection {
         // Only disable if already purchased or has conflicts (not affordability)
         const hasConflicts = validation.errors.some(e => !e.startsWith('Insufficient points'));
         
+        // For Enhanced Scale, show count and allow multiple purchases
+        const displayTitle = isEnhancedScale && enhancedScaleCount > 0 
+            ? `${upgrade.name} (${enhancedScaleCount})`
+            : upgrade.name;
+        
+        const shouldDisable = isEnhancedScale 
+            ? hasConflicts  // Enhanced Scale only disabled by conflicts, not by already being purchased
+            : alreadyPurchased || hasConflicts;
+        
+        // Special handling for Enhanced Scale - add quantity controls
+        let quantityControls = '';
+        if (isEnhancedScale) {
+            quantityControls = `
+                <div class="quantity-controls">
+                    <button type="button" class="quantity-btn quantity-decrease" 
+                            data-action="remove-upgrade" data-upgrade-id="${upgrade.id}"
+                            ${enhancedScaleCount === 0 ? 'disabled' : ''}>-</button>
+                    <span class="quantity-display">${enhancedScaleCount}</span>
+                    <button type="button" class="quantity-btn quantity-increase" 
+                            data-action="purchase-upgrade" data-upgrade-id="${upgrade.id}"
+                            ${shouldDisable ? 'disabled' : ''}>+</button>
+                </div>
+            `;
+        }
+        
         return RenderUtils.renderCard({
-            title: upgrade.name,
+            title: displayTitle,
             cost: actualCost,
             description: upgrade.effect || upgrade.description,
-            clickable: !alreadyPurchased && !hasConflicts,
-            disabled: alreadyPurchased || hasConflicts,
-            dataAttributes: { action: 'purchase-upgrade', 'upgrade-id': upgrade.id },
+            clickable: !isEnhancedScale && !shouldDisable, // Enhanced Scale uses quantity controls instead
+            disabled: !isEnhancedScale && shouldDisable,
+            dataAttributes: !isEnhancedScale ? { action: 'purchase-upgrade', 'upgrade-id': upgrade.id } : {},
             additionalContent: `
                 ${upgrade.restriction ? `<small class="upgrade-restriction">Restriction: ${upgrade.restriction}</small>` : ''}
                 ${hasConflicts && !alreadyPurchased ? `<small class="error-text">${validation.errors.find(e => !e.startsWith('Insufficient points'))}</small>` : ''}
+                ${quantityControls}
             `
         }, { cardClass: 'upgrade-card' });
     }

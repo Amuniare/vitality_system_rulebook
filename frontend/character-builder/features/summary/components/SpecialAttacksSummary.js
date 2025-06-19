@@ -1,3 +1,5 @@
+import { AttackTypeSystem } from '../../../systems/AttackTypeSystem.js';
+
 export class SpecialAttacksSummary {
     constructor() {
         // Pure display component - no state needed
@@ -98,11 +100,19 @@ export class SpecialAttacksSummary {
         if (!upgrades || !Array.isArray(upgrades) || upgrades.length === 0) {
             return 'None';
         }
-        return upgrades.map(upgrade => {
-            if (typeof upgrade === 'object' && upgrade.upgradeId) {
-                return upgrade.upgradeId; // Use the ID for now, could be enhanced with names
+        
+        // Group upgrades by ID to show counts for stackable ones like Enhanced Scale
+        const upgradeCounts = {};
+        upgrades.forEach(upgrade => {
+            const id = upgrade.id || upgrade.upgradeId || upgrade.name || upgrade;
+            upgradeCounts[id] = (upgradeCounts[id] || 0) + 1;
+        });
+        
+        return Object.entries(upgradeCounts).map(([upgradeId, count]) => {
+            if (count > 1) {
+                return `${upgradeId} (${count})`;
             }
-            return upgrade.name || upgrade;
+            return upgradeId;
         }).join(', ');
     }
     
@@ -111,10 +121,31 @@ export class SpecialAttacksSummary {
             return '';
         }
         
+        const attackTypeDetails = attack.attackTypes.map(typeId => {
+            const def = AttackTypeSystem.getAttackTypeDefinition(typeId);
+            if (!def || !def.areaOptions) {
+                return typeId; // Non-area attack types, just show name
+            }
+            
+            // Area attack with Enhanced Scale effects
+            const enhancedScaleCount = attack.upgrades?.filter(u => u.name === 'Enhanced Scale').length || 0;
+            if (enhancedScaleCount === 0) {
+                return typeId; // No Enhanced Scale, just show name
+            }
+            
+            // Show enhanced area sizes
+            const areaInfo = def.areaOptions.map(option => {
+                const enhancedSize = AttackTypeSystem.calculateEnhancedAreaSize(attack, option.size);
+                return `${enhancedSize}${option.unit || 'sp'} ${option.shape || ''}`;
+            }).join(', ');
+            
+            return `${def.name} (${areaInfo})`;
+        });
+        
         return `
             <div class="summary-item">
                 <span class="summary-label">Attack Types</span>
-                <span class="summary-value">${attack.attackTypes.join(', ')}</span>
+                <span class="summary-value">${attackTypeDetails.join(', ')}</span>
             </div>
         `;
     }
