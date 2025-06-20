@@ -398,7 +398,7 @@ class SchemaMapper:
         # Default to intelligence for unknown talents
         logger.warning(f"Unknown talent attribute for '{talent_name}', defaulting to intelligence")
         return 'intelligence'
-    
+
     def _map_special_attacks(self, web_data: Dict[str, Any], roll20_char: Roll20Character):
         """Map special attacks with complete upgrade system"""
         special_attacks = web_data.get('specialAttacks', [])
@@ -414,17 +414,15 @@ class SchemaMapper:
                 'AttackName': attack.get('name', ''),
                 'leftsub': self._determine_attack_subtitle(attack),
                 'AttackType': self._map_attack_type(attack.get('attackTypes', [])),
-                'EffectType': self._map_effect_type(attack.get('effectTypes', [])),
-                'Hybrid': "1" if attack.get('isHybrid', False) else "0",
-                'RollCN': "0"  # Default
+                'EffectType': self._map_effect_type_from_conditions(attack),  # CHANGED
+                'Hybrid': self._map_hybrid(attack),  # CHANGED
+                'RollCN': self._map_roll_cn(attack)  # CHANGED
             }
             
             # Map all attack upgrades using the complete mapping system
             upgrades = attack.get('upgrades', [])
             for upgrade in upgrades:
                 upgrade_id = upgrade.get('id', '')
-                
-                # Extract the actual upgrade name from the complex ID
                 upgrade_name = self._extract_upgrade_name(upgrade_id)
                 
                 if upgrade_name in ATTACK_UPGRADE_MAPPINGS:
@@ -446,7 +444,84 @@ class SchemaMapper:
             logger.debug(f"Mapped attack: {attack.get('name', 'Unknown')}")
         
         logger.info(f"Mapped {len(special_attacks)} special attacks")
-    
+
+    def _map_attack_type(self, attack_types: List[str]) -> str:
+        """Map attack types to Roll20 format"""
+        if 'melee_ac' in attack_types:
+            return "0"  # Melee (AC)
+        elif 'melee_dg' in attack_types:
+            return "1"  # Melee (DG/CN)
+        elif 'ranged' in attack_types:
+            return "2"  # Ranged
+        elif 'direct' in attack_types:
+            return "3"  # Direct
+        elif 'area' in attack_types:  # FIXED: was 'aoe'
+            return "4"  # AOE
+        elif 'aoe_direct' in attack_types:
+            return "5"  # AOE Direct
+        
+        return "0"  # Default to melee
+
+    def _map_effect_type_from_conditions(self, attack: Dict[str, Any]) -> str:
+        """Map specific conditions to Roll20 EffectType"""
+        # Get all conditions from both arrays
+        basic_conditions = attack.get('basicConditions', [])
+        advanced_conditions = attack.get('advancedConditions', [])
+        all_conditions = basic_conditions + advanced_conditions
+        
+        # Condition to Roll20 EffectType mapping
+        condition_mapping = {
+            'disarm': "1",
+            'grab': "2", 
+            'shove': "3",
+            'daze': "4",
+            'blind': "5",
+            'taunt': "6",
+            'setup': "7",
+            'control': "8",
+            'stun': "9",
+            'weaken': "10",
+            'disable': "11"
+        }
+        
+        # Return first matching condition
+        for condition in all_conditions:
+            if condition in condition_mapping:
+                return condition_mapping[condition]
+        
+        return "0"  # None
+
+    def _map_roll_cn(self, attack: Dict[str, Any]) -> str:
+        """Map RollCN based on attack effect types"""
+        effect_types = attack.get('effectTypes', [])
+        
+        # If pure damage, no condition roll needed
+        if effect_types == ['damage']:
+            return "0"  # OFF
+        
+        # If hybrid or condition, default to resolve
+        if 'hybrid' in effect_types or 'condition' in effect_types:
+            return "1"  # Resolve
+        
+        return "0"  # Default OFF
+
+    def _map_hybrid(self, attack: Dict[str, Any]) -> str:
+        """Map Hybrid field based on hybridOrder"""
+        effect_types = attack.get('effectTypes', [])
+        
+        # Only applies to hybrid attacks
+        if 'hybrid' not in effect_types:
+            return "0"  # OFF
+        
+        hybrid_order = attack.get('hybridOrder', '')
+        
+        if hybrid_order == 'conditions-first':
+            return "2"  # CN → Damage
+        elif hybrid_order == 'damage-first':
+            return "1"  # Damage → CN
+        
+        return "0"  # Default OFF
+
     def _extract_upgrade_name(self, upgrade_id: str) -> str:
         """Extract upgrade name from complex ID format"""
         # Handle IDs like "Specialized_Combat_Melee_Specialization_Heavy_Strike"
@@ -487,71 +562,12 @@ class SchemaMapper:
         
         return 'Special'
     
-    def _map_attack_type(self, attack_types: List[str]) -> str:
-        """Map attack types to Roll20 format"""
-        if 'melee_ac' in attack_types:
-            return "0"  # Melee (AC)
-        elif 'melee_dg' in attack_types:
-            return "1"  # Melee (DG/CN)
-        elif 'ranged' in attack_types:
-            return "2"  # Ranged
-        elif 'direct' in attack_types:
-            return "3"  # Direct
-        elif 'aoe' in attack_types:
-            return "4"  # AOE
-        
-        return "0"  # Default to melee
-    
-    def _map_effect_type(self, effect_types: List[str]) -> str:
-        """Map effect types to Roll20 format"""
-        effect_mapping = {
-            'disarm': "1",
-            'grab': "2",
-            'shove': "3", 
-            'daze': "4",
-            'blind': "5",
-            'taunt': "6",
-            'setup': "7",
-            'control': "8",
-            'stun': "9",
-            'weaken': "10",
-            'disable': "11"
-        }
-        
-        for effect in effect_types:
-            if effect in effect_mapping:
-                return effect_mapping[effect]
-        
-        return "0"  # None
-    
+
     def _map_main_pool_purchases(self, web_data: Dict[str, Any], roll20_char: Roll20Character):
         """Map main pool purchases (boons, traits, unique abilities)"""
         main_pool = web_data.get('mainPoolPurchases', {})
         
-        # Map boons to unique abilities
-        boons = main_pool.get('boons', [])
-        if boons:
-            if 'uniqueabilities' not in roll20_char.repeating_sections:
-                roll20_char.repeating_sections['uniqueabilities'] = {}
-            
-            for boon in boons:
-                row_id = self._generate_unique_row_id('unique')
-                
-                # Build description with upgrades
-                description = f"Cost: {boon.get('cost', 0)} points."
-                upgrades = boon.get('upgrades', [])
-                if upgrades:
-                    upgrade_names = [upgrade.get('id', 'Unknown') for upgrade in upgrades]
-                    description += f" Upgrades: {', '.join(upgrade_names)}."
-                
-                roll20_char.repeating_sections['uniqueabilities'][row_id] = {
-                    'char_uniqueAbilities': boon.get('name', ''),
-                    'uniqueAbilitiesDesc': description
-                }
-                
-                logger.debug(f"Mapped boon: {boon.get('name', 'Unknown')}")
-        
-        # Map traits
+        # Map traits with proper condition/bonus handling
         traits = main_pool.get('traits', [])
         if traits:
             if 'traits' not in roll20_char.repeating_sections:
@@ -560,9 +576,18 @@ class SchemaMapper:
             for trait in traits:
                 row_id = self._generate_unique_row_id('trait')
                 
-                roll20_char.repeating_sections['traits'][row_id] = {
+                # Build trait name from conditions
+                conditions = trait.get('conditions', [])
+                trait_name = " / ".join([c.title() for c in conditions]) if conditions else "Custom Trait"
+                
+                # Get stat bonuses and tier
+                stat_bonuses = trait.get('statBonuses', [])
+                tier = int(web_data.get('tier', 4))
+                
+                # Initialize all bonuses to 0
+                trait_data = {
                     'traitActive': "1",
-                    'traitName': trait.get('name', ''),
+                    'traitName': trait_name,  # FIXED: build from conditions
                     'traitAcBonus': "0",
                     'traitDgBonus': "0", 
                     'traitCnBonus': "0",
@@ -574,8 +599,21 @@ class SchemaMapper:
                     'traitMBonus': "0"
                 }
                 
-                logger.debug(f"Mapped trait: {trait.get('name', 'Unknown')}")
-    
+                # FIXED: Set bonuses based on statBonuses array
+                for bonus_type in stat_bonuses:
+                    if bonus_type == 'accuracy':
+                        trait_data['traitAcBonus'] = str(tier)
+                    elif bonus_type == 'damage':
+                        trait_data['traitDgBonus'] = str(tier)
+                    elif bonus_type == 'conditions':
+                        trait_data['traitCnBonus'] = str(tier)
+                    elif bonus_type == 'avoidance':
+                        trait_data['traitAvBonus'] = str(tier)
+                    # Add other mappings as needed
+                
+                roll20_char.repeating_sections['traits'][row_id] = trait_data
+                logger.debug(f"Mapped trait: {trait_name} with bonuses: {stat_bonuses}")
+
     def _map_utility_purchases(self, web_data: Dict[str, Any], roll20_char: Roll20Character):
         """Map utility purchases (features, senses, descriptors)"""
         utility = web_data.get('utilityPurchases', {})

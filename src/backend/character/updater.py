@@ -500,13 +500,16 @@ class CharacterUpdater:
             # Send update command
             self.chat.send_command(f"!update-character {char_name}")
             response = self.chat.wait_for_response(timeout=30)
+            logger.info(f"DEBUG: Raw response for {char_name}: '{response}'")
+            logger.info(f"DEBUG: Response type: {type(response)}")
+            logger.info(f"DEBUG: Contains 'not found': {'not found' in response if response else 'None response'}")
             
             # Check if character was found and updated successfully
-            if response and "Successfully updated character" in response:
+            if response and f"Successfully updated character: {char_name}" in response:
                 logger.info(f"Full update completed successfully for: {char_name}")
                 self._cleanup_character_handout(char_name)
                 return True
-            elif response and "not found" in response:
+            elif response and f'Character "{char_name}" not found' in response:
                 # Character doesn't exist, try to create it first
                 logger.info(f"Character '{char_name}' not found, attempting to create it")
                 

@@ -181,17 +181,6 @@ PRESETS = {
 
     ],
 
-    'mapping2': [
-        '--root',
-        'src/backend/character/mapper.py',
-        'src/backend/character/json_utils.py',
-        'src/backend/character/file_utils.py',
-        'src/backend/main.py',
-        'src/backend/char_sheet/rpgSheet.py',
-
-        'frontend/character-builder/',
-        'src/backend/roll20_api/',
-    ]
 
 }
 

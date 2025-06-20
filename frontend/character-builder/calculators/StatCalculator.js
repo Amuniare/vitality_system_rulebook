@@ -207,7 +207,7 @@ export class StatCalculator {
                 stats.quickActions = tier >= 8 ? 3 : 2;
                 break;
             case 'cutAbove':
-                const bonus = tier <= 3 ? 1 : tier <= 6 ? 2 : 3;
+                const bonus = tier <= 4 ? 1 : tier <= 7 ? 2 : 3;
                 stats.accuracy += bonus;
                 stats.damage += bonus;
                 stats.conditions += bonus;
@@ -227,10 +227,10 @@ export class StatCalculator {
                 stats.avoidance -= tier;
                 stats.damageResistance = 'chosen_type_half';
                 break;
-            case 'resilient':
+            case 'fortress':
                 stats.durability += tier;
                 break;
-            case 'fortress':
+            case 'resilient':
                 stats.resolve += tier;
                 stats.stability += tier;
                 stats.vitality += tier;
@@ -273,7 +273,7 @@ export class StatCalculator {
         if (archetypes.uniqueAbility === 'versatileMaster') {
             stats.quickActions = tier >= 8 ? 3 : 2;
         } else if (archetypes.uniqueAbility === 'cutAbove') {
-            const bonus = tier <= 3 ? 1 : tier <= 6 ? 2 : 3;
+            const bonus = tier <= 4 ? 1 : tier <= 7 ? 2 : 3;
             stats.accuracy += bonus;
             stats.damage += bonus;
             stats.conditions += bonus;
@@ -295,10 +295,10 @@ export class StatCalculator {
             case 'stalwart':
                 stats.avoidance -= tier;
                 break;
-            case 'resilient':
+            case 'fortress':
                 stats.durability += tier;
                 break;
-            case 'fortress':
+            case 'resilient':
                 stats.resolve += tier;
                 stats.stability += tier;
                 stats.vitality += tier;
@@ -310,7 +310,7 @@ export class StatCalculator {
         
         // Cut Above affects all stats including defenses
         if (archetypes.uniqueAbility === 'cutAbove') {
-            const bonus = tier <= 3 ? 1 : tier <= 6 ? 2 : 3;
+            const bonus = tier <= 4 ? 1 : tier <= 7 ? 2 : 3;
             stats.avoidance += bonus;
             stats.durability += bonus;
             stats.resolve += bonus;
