@@ -1,11 +1,11 @@
 {
     "tier5": {
         "cost": 5,
-        "features": [
+        "movement": [
             {
                 "id": "wallWalking",
                 "name": "Wall Walking",
-                "description": "Move on walls and ceilings at your normal speed, defying gravity on solid surfaces. You can change orientation as part of your movement without spending additional actions."
+                "description": "Move on walls and ceilings at normal speed, defying gravity on solid surfaces. You can change orientation as part of your movement without spending additional actions."
             },
             {
                 "id": "burrowing",
@@ -16,7 +16,7 @@
     },
     "tier10": {
         "cost": 10,
-        "features": [
+        "movement": [
             {
                 "id": "flight",
                 "name": "Flight",
