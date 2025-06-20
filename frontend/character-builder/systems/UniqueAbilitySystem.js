@@ -43,16 +43,18 @@ export class UniqueAbilitySystem {
 
     // Calculate total cost including upgrades
     static calculateUniqueAbilityTotalCost(ability, upgrades = []) {
-        if (!ability) return 0; // Should not happen if ability is validated first
+        if (!ability) return 0;
         let totalCost = ability.baseCost;
         
         if (upgrades.length > 0) {
             upgrades.forEach(upgradeSelection => {
-                // Handle standard upgrades only
                 if (ability.upgrades) {
                     const upgradeDef = ability.upgrades.find(u => u.id === upgradeSelection.id);
                     if (upgradeDef) {
-                        if (upgradeDef.per) {
+                        if (upgradeDef.cost === "variable") {
+                            // Variable cost upgrade - the quantity IS the cost
+                            totalCost += upgradeSelection.quantity || 0;
+                        } else if (upgradeDef.per) {
                             totalCost += upgradeDef.cost * (upgradeSelection.quantity || 1);
                         } else {
                             totalCost += upgradeDef.cost;

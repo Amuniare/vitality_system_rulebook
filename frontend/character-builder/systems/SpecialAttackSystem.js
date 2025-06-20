@@ -180,31 +180,29 @@ export class SpecialAttackSystem {
     // Helper method to recalculate upgrade points spent
     static _recalculateUpgradePointsSpent(character, attack) {
         let totalSpent = 0;
-        
-        // Calculate upgrade costs
         if (attack.upgrades) {
             for (const upgrade of attack.upgrades) {
                 const upgradeData = this.getUpgradeById(upgrade.id);
                 if (upgradeData) {
-                    totalSpent += this._getActualUpgradeCost(upgradeData, character, upgrade.isSpecialty);
+                    totalSpent += this._getActualUpgradeCost(upgradeData, character, upgrade.isSpecialty, upgrade);
                 }
             }
         }
-        
-        // Add attack type, effect type, and advanced condition costs
-        totalSpent += AttackTypeSystem.calculateAttackTypeCosts(character, attack);
-        
         attack.upgradePointsSpent = totalSpent;
     }
 
     // NEW HELPER: Centralize cost calculation
-    static _getActualUpgradeCost(upgradeData, character, isSpecialty = false) {
+    static _getActualUpgradeCost(upgradeData, character, isSpecialty = false, purchasedUpgrade = null) {
         if (!upgradeData) return 0;
         let actualCost = upgradeData.cost;
+        
         if (typeof actualCost === 'string') {
             if (actualCost.includes('per tier')) {
                 const baseAmount = parseInt(actualCost.match(/\d+/)[0] || '0');
                 actualCost = baseAmount * (character.tier || 1);
+            } else if (actualCost === 'variable') {
+                // For variable cost upgrades, use the stored cost or default to 0
+                actualCost = purchasedUpgrade?.cost || 0;
             } else {
                 actualCost = parseInt(actualCost) || 0;
             }
