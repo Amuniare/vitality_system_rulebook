@@ -473,7 +473,85 @@ export class SpecialAttackTab {
             this.builder.updateCharacter();
         } catch (error) { this.builder.showNotification(error.message, 'error'); }
     }
-    
+
+
+
+    addAttackType(typeId) { 
+        if (!typeId) return;
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (attack && !attack.attackTypes.includes(typeId)) {
+            attack.attackTypes.push(typeId);
+            // CRITICAL: Trigger recalculation
+            SpecialAttackSystem.recalculateAttackPoints(character, attack);
+            this.builder.updateCharacter();
+        }
+    }
+
+    removeAttackType(typeId) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if(attack) {
+            attack.attackTypes = (attack.attackTypes || []).filter(id => id !== typeId);
+            // CRITICAL: Trigger recalculation
+            SpecialAttackSystem.recalculateAttackPoints(character, attack);
+            this.builder.updateCharacter();
+        }
+    }
+
+    addEffectType(typeId) {
+        if (!typeId) return;
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if(attack) {
+            attack.effectTypes = [typeId];
+            // CRITICAL: Trigger recalculation
+            SpecialAttackSystem.recalculateAttackPoints(character, attack);
+            this.builder.updateCharacter();
+        }
+    }
+
+    removeEffectType(typeId) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if(attack) {
+            attack.effectTypes = [];
+            // CRITICAL: Trigger recalculation
+            SpecialAttackSystem.recalculateAttackPoints(character, attack);
+            this.builder.updateCharacter();
+        }
+    }
+
+    addCondition(conditionId, isAdvanced) {
+        if (!conditionId) return;
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
+            if (!attack[arrayKey]) attack[arrayKey] = [];
+            if (!attack[arrayKey].includes(conditionId)) {
+                attack[arrayKey].push(conditionId);
+                // CRITICAL: Trigger recalculation
+                SpecialAttackSystem.recalculateAttackPoints(character, attack);
+                this.builder.updateCharacter();
+            }
+        }
+    }
+
+    removeCondition(conditionId, isAdvanced) {
+        const character = this.builder.currentCharacter;
+        const attack = character.specialAttacks[this.selectedAttackIndex];
+        if (attack) {
+            const arrayKey = isAdvanced ? 'advancedConditions' : 'basicConditions';
+            if (attack[arrayKey]) {
+                attack[arrayKey] = attack[arrayKey].filter(id => id !== conditionId);
+                // CRITICAL: Trigger recalculation
+                SpecialAttackSystem.recalculateAttackPoints(character, attack);
+                this.builder.updateCharacter();
+            }
+        }
+    }
+        
     onCharacterUpdate() {
         this.render();
     }

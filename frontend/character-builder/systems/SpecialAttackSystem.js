@@ -180,6 +180,8 @@ export class SpecialAttackSystem {
     // Helper method to recalculate upgrade points spent
     static _recalculateUpgradePointsSpent(character, attack) {
         let totalSpent = 0;
+        
+        // 1. Explicit upgrade costs (already working)
         if (attack.upgrades) {
             for (const upgrade of attack.upgrades) {
                 const upgradeData = this.getUpgradeById(upgrade.id);
@@ -188,6 +190,20 @@ export class SpecialAttackSystem {
                 }
             }
         }
+        
+        // 2. Attack type and effect type costs (NEW - this is what was missing)
+        totalSpent += AttackTypeSystem.calculateAttackTypeCosts(character, attack);
+        
+        // 3. Advanced condition costs (NEW - this is what was missing)
+        if (attack.advancedConditions && attack.advancedConditions.length > 0) {
+            attack.advancedConditions.forEach(conditionId => {
+                const conditionDef = AttackTypeSystem.getAdvancedConditionDefinition?.(conditionId);
+                if (conditionDef) {
+                    totalSpent += conditionDef.cost || 0;
+                }
+            });
+        }
+        
         attack.upgradePointsSpent = totalSpent;
     }
 
