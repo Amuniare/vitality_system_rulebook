@@ -295,6 +295,10 @@ export class MainPoolTab {
         if (!container) return;
         this.containerElement = container;
         this.clickHandler = (e) => {
+            if (e.target.classList.contains('stat-bonus-select')) {
+                this.handleStatBonusChange(e.target);
+                return;
+            }
             const target = e.target.closest('[data-action], .section-tab');
             if (!target) return;
             if (target.classList.contains('section-tab')) {
@@ -307,6 +311,15 @@ export class MainPoolTab {
         container.addEventListener('change', this.clickHandler);
         container.addEventListener('input', this.clickHandler);
         console.log('✅ MainPoolTab event listeners attached ONCE.');
+    }
+
+    handleStatBonusChange(selectElement) {
+        const flawId = selectElement.dataset.flawId;
+        const purchaseBtn = document.querySelector(`[data-action="purchase-flaw"][data-flaw-id="${flawId}"]`);
+        
+        if (purchaseBtn) {
+            purchaseBtn.disabled = !selectElement.value;
+        }
     }
 
     handleAction(target) {
