@@ -79,9 +79,7 @@ export class SpecialAttackSystem {
         const archetype = character.archetypes.specialAttack;
         
         // Check archetype restrictions
-        if (archetype === 'basic') {
-            errors.push('Basic archetype cannot create special attacks');
-        }
+
         
         if (archetype === 'oneTrick' && character.specialAttacks.length >= 1) {
             errors.push('One Trick archetype allows only one special attack');
