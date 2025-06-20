@@ -72,6 +72,9 @@ class SchemaMapper:
             # Map permissions
             self._map_permissions(web_data, roll20_char)
             
+            # Map abilities - generate macro buttons for attacks
+            self._map_abilities(web_data, roll20_char)
+            
             # Convert to final format
             logger.info(f"=== SCHEMA DEBUG: Building final result structure ===")
             field_count = roll20_char.get_field_count()
@@ -661,6 +664,42 @@ class SchemaMapper:
             "see_by": "all",
             "edit_by": "all"
         }
+    
+    def _map_abilities(self, web_data: Dict[str, Any], roll20_char: Roll20Character):
+        """Generate ability macros for attacks and other character actions"""
+        # Clear existing abilities
+        roll20_char.abilities = []
+        
+        # Generate abilities for each attack in the attacks repeating section
+        attacks = roll20_char.repeating_sections.get('attacks', {})
+        
+        # Sort attacks by row_id to ensure consistent indexing
+        sorted_attacks = sorted(attacks.items())
+        
+        # Roll20 always expects exactly 6 abilities (0-5)
+        for index in range(6):
+            if index < len(sorted_attacks):
+                # Use actual attack name
+                row_id, attack_data = sorted_attacks[index]
+                attack_name = attack_data.get('AttackName', f'Attack {index + 1}')
+            else:
+                # Use placeholder name for unused slots
+                attack_name = f'New Ability {index}'
+            
+            # Create ability macro
+            ability = {
+                "name": attack_name,
+                "type": "indexed",
+                "content": index,
+                "showInMacroBar": False,
+                "isTokenAction": False,
+                "template_ref": None
+            }
+            
+            roll20_char.abilities.append(ability)
+            logger.debug(f"Generated ability macro: {attack_name} (index {index})")
+        
+        logger.info(f"Generated {len(roll20_char.abilities)} ability macros")
     
     def _generate_unique_row_id(self, prefix: str) -> str:
         """Generate unique Row ID for repeating sections using Roll20IDGenerator"""

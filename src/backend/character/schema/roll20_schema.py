@@ -267,6 +267,7 @@ ATTACK_UPGRADE_MAPPINGS = {
     "Enhanced_Effect": "EnhancedEffect",
     "Reliable_Effect": "ReliableEffect",
     "Consistent_Effect": "ConsistentEffect",
+    "ConsistentEffect": "ConsistentEffect",
     "Critical_Effect": "CriticalEffect",
     "Armor_Piercing": "ArmorPiercing",
     "Brutal": "Brutal",
@@ -281,6 +282,7 @@ ATTACK_UPGRADE_MAPPINGS = {
     # Condition Upgrades
     "Condition_Critical_Range": "ConditionCriticalRange",
     "Lasting_Condition": "LastingCondition",
+    "LastingCondition": "LastingCondition",
     "Mass_Effect": "MassEffect",
     "Collateral_Condition": "CollateralCondition",
     "Contagious": "Contagious",
