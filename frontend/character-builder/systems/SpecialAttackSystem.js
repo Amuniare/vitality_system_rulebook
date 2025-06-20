@@ -194,15 +194,6 @@ export class SpecialAttackSystem {
         // 2. Attack type and effect type costs (NEW - this is what was missing)
         totalSpent += AttackTypeSystem.calculateAttackTypeCosts(character, attack);
         
-        // 3. Advanced condition costs (NEW - this is what was missing)
-        if (attack.advancedConditions && attack.advancedConditions.length > 0) {
-            attack.advancedConditions.forEach(conditionId => {
-                const conditionDef = AttackTypeSystem.getAdvancedConditionDefinition?.(conditionId);
-                if (conditionDef) {
-                    totalSpent += conditionDef.cost || 0;
-                }
-            });
-        }
         
         attack.upgradePointsSpent = totalSpent;
     }
