@@ -7,11 +7,10 @@ class Roll20IDGenerator:
     
     @staticmethod
     def generate_row_id():
-        """Generate ID matching Roll20's format: -[prefix][random_alphanumeric]"""
-        # Roll20 uses patterns like: -ON2ciXkBZk7HHKt4WqX
-        prefix = "N" + str(int(time.time() * 1000))[-4:]  # Last 4 digits of timestamp
-        random_part = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
-        return f"-{prefix}{random_part}"
+        """Generate ID matching Roll20's format: -[random_alphanumeric]"""
+        # Generate 16-character random string (no underscores or spaces)
+        random_part = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+        return f"-{random_part}"
     
     @staticmethod  
     def generate_unique_id(existing_ids=None):

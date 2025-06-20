@@ -1,4 +1,6 @@
 // CharacterLibrary.js - Character library management
+import { IdGenerator } from '../utils/IdGenerator.js';
+
 export class CharacterLibrary {
     constructor() {
         this.characters = new Map();
@@ -107,7 +109,7 @@ export class CharacterLibrary {
     // Create folder
     createFolder(name, parentId = null) {
         const folder = {
-            id: Date.now().toString(),
+            id: IdGenerator.generateId(),
             name,
             parentId,
             created: new Date().toISOString(),

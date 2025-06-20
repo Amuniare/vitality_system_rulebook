@@ -4,6 +4,7 @@ import { TierSystem } from '../core/TierSystem.js';
 import { ArchetypeSystem } from './ArchetypeSystem.js';
 import { AttackTypeSystem } from './AttackTypeSystem.js';
 import { gameDataManager } from '../core/GameDataManager.js';
+import { IdGenerator } from '../shared/utils/IdGenerator.js';
 
 export class SpecialAttackSystem {
     // Create a new special attack
@@ -18,7 +19,7 @@ export class SpecialAttackSystem {
         }
         
         const attack = {
-            id: Date.now().toString() + Math.random(),
+            id: IdGenerator.generateId(),
             name: name || `Special Attack ${character.specialAttacks.length + 1}`,
             description: "",
             

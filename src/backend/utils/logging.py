@@ -21,3 +21,4 @@ def setup_logging():
     )
     logger = logging.getLogger(__name__)
     logger.info("Logging setup complete: %s", log_file)
+    return logger

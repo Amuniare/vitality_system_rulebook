@@ -1,8 +1,10 @@
 // frontend/character-builder/core/VitalityCharacter.js
 // VitalityCharacter.js - Core character data model
+import { IdGenerator } from '../shared/utils/IdGenerator.js';
+
 export class VitalityCharacter {
     constructor(id = null, name = "New Character", folderId = null) {
-        this.id = id || Date.now().toString();
+        this.id = id || IdGenerator.generateId();
         this.name = name;
         this.realName = "";
         this.playerName = "";
@@ -94,7 +96,7 @@ export class VitalityCharacter {
     // Create a special attack with proper structure
     createSpecialAttack(name = null) {
         const attack = {
-            id: Date.now().toString() + Math.random(),
+            id: IdGenerator.generateId(),
             name: name || `Special Attack ${this.specialAttacks.length + 1}`,
             description: "",
             

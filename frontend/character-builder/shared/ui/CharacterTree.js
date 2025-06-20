@@ -1,6 +1,7 @@
 // CharacterTree.js - COMPLETE REWRITE with fixed debounce
 import { RenderUtils } from '../utils/RenderUtils.js';
 import { EventManager } from '../utils/EventManager.js';
+import { IdGenerator } from '../utils/IdGenerator.js';
 
 export class CharacterTree {
     constructor(characterBuilder) {
@@ -232,7 +233,7 @@ export class CharacterTree {
         if (!original) return;
 
         const duplicate = JSON.parse(JSON.stringify(original));
-        duplicate.id = Date.now().toString();
+        duplicate.id = IdGenerator.generateId();
         duplicate.name = `${original.name} (Copy)`;
         duplicate.created = new Date().toISOString();
         duplicate.lastModified = new Date().toISOString();

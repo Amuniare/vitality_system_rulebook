@@ -172,7 +172,7 @@ PRESETS = {
 
         'all_data/characters/input/Brother_Rainard.json',
         'all_data/characters/extracted/Brother_Rainard.json',
-        'archive/extracted/Achillas.json'
+        'archive/extracted/Achillas.json',
         'src/backend/',
         'src/docs/',
         'src/roll20_api/',
