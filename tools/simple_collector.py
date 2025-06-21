@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'rogue_trader'
+DEFAULT_PRESET = 'root_frontend'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
@@ -163,8 +163,17 @@ PRESETS = {
     ],
 
     'rogue_trader': [
-        # Complete codebase collection - includes everything
         'frontend/campaigns/rogue_trader/',
+    ],
+
+
+    'rogue_trader_generation': [
+        '--root',
+        'frontend/campaigns/rogue_trader/',
+        'frontend/rules/rulebook.md',
+        'all_data/characters/testing/test.json',
+        'src/char_sheet/',
+
     ],
 
     'mapping': [

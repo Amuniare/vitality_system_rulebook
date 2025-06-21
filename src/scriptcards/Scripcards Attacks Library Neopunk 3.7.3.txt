@@ -10,7 +10,7 @@
   --/| Formatting
   --/| ###################################################################################################
 
-    --#overridetemplate| hologram
+    --#overridetemplate| paper
 
     --#hideTitleCard| 0
 
