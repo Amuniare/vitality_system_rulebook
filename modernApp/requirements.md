@@ -1,5 +1,3 @@
-I'll help you review your project and create a comprehensive business requirements document and implementation plan. Let me start by examining the key components you've mentioned.Based on my review of your project, I now have a comprehensive understanding of the Vitality System Character Builder. Let me create a detailed Business Requirements Document and Implementation Plan for rebuilding your web app.
-
 # Business Requirements Document & Implementation Plan
 ## Vitality System Character Builder v3.0
 
@@ -21,8 +19,17 @@ The project aims to rebuild the existing Vitality Character Builder with a moder
 - ✅ Modern architecture foundation
 - ✅ Universal component structure started
 - ❌ Fundamental rule errors (flaws giving points instead of costing)
-- ✅ Completed unverified data migration
+- ❌ Correct Archetypes (Movement, Attack, Effect, Unique, Defensive, Special, Utility)
+- ✅ Completed data migration
+- ❌ Verified new data migration accuracy
 - ❌ Missing most functionality
+- ❌ Finishing Main Pool Tab
+- ❌ Special Attacks Tab
+- ❌ Bio/Identity Tab
+- ❌ Utility Tab
+- ❌ Character Management System
+
+
 
 ### Business Requirements
 
@@ -30,9 +37,9 @@ The project aims to rebuild the existing Vitality Character Builder with a moder
 
 **1.1 Character Creation Flow**
 - Basic Information (name, tier 1-10, character type)
-- 7 Archetype selections (Combat, Defensive, Movement, Expertise, Social, Supernatural, Wealth)
+- 7 Archetype selections (Movement, Attack, Effect, Unique, Defensive, Special, Utility)
 - Attribute allocation (Combat: tier×2 points, Utility: tier points)
-- Main Pool purchases (250-350 points based on tier)
+- Main Pool purchases ( (Tier-2)*15 points based on tier)
 - Special Attacks creation
 - Utility purchases
 - Base Attacks configuration (NEW)

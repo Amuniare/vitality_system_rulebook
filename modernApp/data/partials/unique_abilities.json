@@ -1,0 +1,122 @@
+{
+    "unique_ability_aura": {
+      "id": "unique_ability_aura", "schemaType": "entity", "type": "unique_ability", "name": "Aura",
+      "description": "A passive field around you affecting enemies or allies. It requires an Action to activate and a Quick Action each turn to maintain.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [], "effects": [{ "type": "aura_field", "radius": 1, "activation": "action", "maintenance": "quick_action" }],
+      "subEntities": {
+        "auraTypes": [
+          { "id": "aura_type_attack", "name": "Attack Aura", "description": "Makes a melee Base Attack against anything entering or ending its turn in the radius. Can only affect the same target once per round. Suffers a -Tier penalty to Accuracy." },
+          { "id": "aura_type_obscuring", "name": "Obscuring Aura", "description": "Provides visual cover, prevents sight-based abilities, and attacks through the aura suffer a -Tier penalty to Accuracy. You can see through your Aura and are unpenalized." },
+          { "id": "aura_type_bolster", "name": "Bolster Aura", "description": "Allies in the radius receive the benefit of your Fighting Actions." }
+        ],
+        "upgrades": [
+          { "id": "upgrade_aura_increasedRadius", "schemaType": "entity", "type": "upgrade", "name": "Increased Radius", "description": "+X radius per purchase.", "cost": { "value": 5, "pool": "main", "display": "+5p per space", "per": "space", "stackable": true }, "requirements": [], "effects": [{ "type": "property_mod", "target": "radius", "value": "+1" }], "ui": { "component": "upgrade-card", "category": "Aura", "tags": ["radius", "size"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_aura_rangedOrigin", "schemaType": "entity", "type": "upgrade", "name": "Ranged Origin", "description": "Originates from another point you can see within 15 spaces. If centered on an ally, the point will move with them.", "cost": { "value": 15, "pool": "main", "display": "+15p" }, "requirements": [], "effects": [{ "type": "property_mod", "target": "origin", "value": "ranged_15" }], "ui": { "component": "upgrade-card", "category": "Aura", "tags": ["range", "positioning"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_aura_additionalEffect", "schemaType": "entity", "type": "upgrade", "name": "Additional Effect", "description": "A second aura type is active simultaneously.", "cost": { "value": 30, "pool": "main", "display": "+30p" }, "requirements": [], "effects": [{ "type": "property_mod", "target": "max_effects", "value": "+1" }], "ui": { "component": "upgrade-card", "category": "Aura", "tags": ["versatility"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_aura_directEffect", "schemaType": "entity", "type": "upgrade", "name": "Direct Effect", "description": "The Attack Aura auto-hits without an Accuracy roll, but suffers a -Tier penalty to Damage and Condition rolls.", "cost": { "value": 30, "pool": "main", "display": "+30p" }, "requirements": [], "effects": [{ "type": "aura_effect_change", "value": "direct_auto_hit" }], "ui": { "component": "upgrade-card", "category": "Aura", "tags": ["attack_aura", "reliable"] }, "sourceFile": "unique_abilities_complex.json" }
+        ]
+      },
+      "ui": { "component": "upgradeable-card", "category": "Area Effect", "tags": ["aura", "control", "support"] }, "sourceFile": "unique_abilities_complex.json"
+    },
+    "unique_ability_createWall": {
+      "id": "unique_ability_createWall", "schemaType": "entity", "type": "unique_ability", "name": "Create Wall",
+      "description": "Create a temporary battlefield structure. It requires an Action to summon and a Quick Action each turn to maintain. The wall has Tier uses per rest.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [], "effects": [{ "type": "summon", "target": "wall" }],
+      "subEntities": {
+        "upgrades": [
+          { "id": "upgrade_wall_increasedSize", "schemaType": "entity", "type": "upgrade", "name": "Increased Size", "description": "Increase the number of spaces by an additional Tier × 5 per purchase.", "cost": { "value": 15, "pool": "main", "display": "+15p per Tier", "per": "tier", "stackable": true }, "requirements": [], "effects": [{ "type": "property_mod", "target": "size", "value": "+(tier*5)" }], "ui": { "component": "upgrade-card", "category": "Create Wall", "tags": ["size"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_wall_shapeable", "schemaType": "entity", "type": "upgrade", "name": "Shapeable", "description": "Freely manipulate the size and shape of the wall.", "cost": { "value": 30, "pool": "main", "display": "+30p" }, "requirements": [], "effects": [{ "type": "property_mod", "target": "shape", "value": "freeform" }], "ui": { "component": "upgrade-card", "category": "Create Wall", "tags": ["utility", "shape"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_wall_tough", "schemaType": "entity", "type": "upgrade", "name": "Tough", "description": "The wall has 100 HP instead of 50 HP.", "cost": { "value": 30, "pool": "main", "display": "+30p" }, "requirements": [], "effects": [{ "type": "property_mod", "target": "hp", "value": 100 }], "ui": { "component": "upgrade-card", "category": "Create Wall", "tags": ["defense", "health"] }, "sourceFile": "unique_abilities_complex.json" }
+        ]
+      },
+      "ui": { "component": "upgradeable-card", "category": "Battlefield Control", "tags": ["wall", "defense", "summon"] }, "sourceFile": "unique_abilities_complex.json"
+    },
+    "unique_ability_shield": {
+      "id": "unique_ability_shield", "schemaType": "entity", "type": "unique_ability", "name": "Shield",
+      "description": "A personal protective shield. You gain a shield with Tier×3 HP at the start of each turn (not cumulative). The shield's HP is depleted before your regular HP. You cannot boost your Avoidance or Durability outside of Fighting Actions or external sources.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [{ "type": "rule", "value": "no_defense_boost", "display": "Cannot boost Avoidance/Durability" }],
+      "effects": [{ "type": "shield", "value": "tier*3", "regen": "tier*3" }],
+      "subEntities": {
+        "upgrades": [
+          { "id": "upgrade_shield_increasedShielding", "schemaType": "entity", "type": "upgrade", "name": "Increased Shielding", "description": "+Tier×3 max shield HP per purchase (recovery stays the same).", "cost": { "value": 15, "pool": "main", "display": "+15p per Tier", "per": "tier", "stackable": true }, "requirements": [], "effects": [{ "type": "property_mod", "target": "shield_hp", "value": "+(tier*3)" }], "ui": { "component": "upgrade-card", "category": "Shield", "tags": ["health"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_shield_quickRecovery", "schemaType": "entity", "type": "upgrade", "name": "Quick Recovery", "description": "Recover an additional Tier×3 HP per turn per purchase.", "cost": { "value": 15, "pool": "main", "display": "+15p per Tier", "per": "tier", "stackable": true }, "requirements": [], "effects": [{ "type": "property_mod", "target": "shield_regen", "value": "+(tier*3)" }], "ui": { "component": "upgrade-card", "category": "Shield", "tags": ["regen"] }, "sourceFile": "unique_abilities_complex.json" }
+        ]
+      },
+      "ui": { "component": "upgradeable-card", "category": "Defensive", "tags": ["shield", "health"] }, "sourceFile": "unique_abilities_complex.json"
+    },
+    "unique_ability_backlash": {
+      "id": "unique_ability_backlash", "schemaType": "entity", "type": "unique_ability", "name": "Backlash",
+      "description": "An automatic counterattack system. When you are hit by a Melee Attack, you can make a Base Attack against the attacker. You have 2 uses per round, which reset at the start of your turn.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [],
+      "effects": [{ "type": "counter_attack", "trigger": "on_melee_hit", "uses": 2, "reset": "start_of_turn" }],
+      "subEntities": {
+        "upgrades": [
+          { "id": "upgrade_backlash_additionalUses", "schemaType": "entity", "type": "upgrade", "name": "Additional Uses", "description": "Gain additional uses per purchase.", "cost": { "value": 15, "pool": "main", "display": "+15p per use", "per": "use", "stackable": true }, "requirements": [], "effects": [{ "type": "property_mod", "target": "uses", "value": "+1" }], "ui": { "component": "upgrade-card", "category": "Backlash", "tags": ["uses"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_backlash_distantResponse", "schemaType": "entity", "type": "upgrade", "name": "Distant Response", "description": "Can be triggered by any attack type, and you can respond with a Ranged or Direct Base Attack.", "cost": { "value": 30, "pool": "main", "display": "+30p" }, "requirements": [], "effects": [{ "type": "property_mod", "target": "trigger", "value": "any_attack" }], "ui": { "component": "upgrade-card", "category": "Backlash", "tags": ["range"] }, "sourceFile": "unique_abilities_complex.json" }
+        ]
+      },
+      "ui": { "component": "upgradeable-card", "category": "Reactive", "tags": ["counter", "melee"] }, "sourceFile": "unique_abilities_complex.json"
+    },
+    "unique_ability_boost": {
+      "id": "unique_ability_boost", "schemaType": "entity", "type": "unique_ability", "name": "Boost",
+      "description": "A temporary power enhancement. As a Free Action, you can increase your Tier by half (rounded up). The duration is determined by the chosen option below.",
+      "cost": { "value": 60, "pool": "main", "display": "60p" },
+      "requirements": [],
+      "effects": [{ "type": "stat_bonus", "target": "tier", "value": "ceil(tier/2)", "temporary": true }],
+      "subEntities": {
+        "upgrades": [
+          { "id": "upgrade_boost_awakened", "schemaType": "entity", "type": "upgrade", "name": "Awakened", "description": "Pick an additional Movement Archetype when purchasing this ability.", "cost": { "value": 15, "pool": "main", "display": "+15p" }, "requirements": [], "effects": [{ "type": "grant_ability", "subType": "archetype_movement" }], "ui": { "component": "upgrade-card", "category": "Boost", "tags": ["archetype"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_boost_unstoppable", "schemaType": "entity", "type": "upgrade", "name": "Unstoppable", "description": "Pick an additional Defensive Archetype when purchasing this ability.", "cost": { "value": 30, "pool": "main", "display": "+30p" }, "requirements": [], "effects": [{ "type": "grant_ability", "subType": "archetype_defensive" }], "ui": { "component": "upgrade-card", "category": "Boost", "tags": ["archetype"] }, "sourceFile": "unique_abilities_complex.json" }
+        ]
+      },
+      "ui": { "component": "upgradeable-card", "category": "Enhancement", "tags": ["buff", "tier"] }, "sourceFile": "unique_abilities_complex.json"
+    },
+    "unique_ability_baseSummon": {
+      "id": "unique_ability_baseSummon", "schemaType": "entity", "type": "unique_ability", "name": "Base Summon",
+      "description": "Create a basic summon with stats equal to your Tier, 10 HP (minion), no Special Attacks or Utility abilities. It acts on your initiative.",
+      "cost": { "value": 10, "pool": "main", "display": "10p per summon" },
+      "requirements": [],
+      "effects": [{ "type": "summon", "target": "basic_creature" }],
+      "subEntities": {
+        "upgrades": [
+          { "id": "upgrade_summon_mobile", "schemaType": "entity", "type": "upgrade", "name": "Mobile", "description": "The summon gets a Movement archetype.", "cost": { "value": 5, "pool": "main", "display": "+5p" }, "requirements": [], "effects": [{ "type": "property_mod", "target": "summon_archetype", "value": "movement" }], "ui": { "component": "upgrade-card", "category": "Base Summon", "tags": ["summon"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_summon_captain", "schemaType": "entity", "type": "upgrade", "name": "Captain", "description": "The summon has 25 HP instead of 10 HP.", "cost": { "value": 10, "pool": "main", "display": "+10p" }, "requirements": [], "effects": [{ "type": "property_mod", "target": "hp", "value": 25 }], "ui": { "component": "upgrade-card", "category": "Base Summon", "tags": ["summon", "health"] }, "sourceFile": "unique_abilities_complex.json" }
+        ]
+      },
+      "ui": { "component": "upgradeable-card", "category": "Summoning", "tags": ["summon", "pet"] }, "sourceFile": "unique_abilities_complex.json"
+    },
+    "unique_ability_invisibility": {
+      "id": "unique_ability_invisibility", "schemaType": "entity", "type": "unique_ability", "name": "Invisibility",
+      "description": "An advanced concealment ability. You become Invisible and can take the Hide Action even while in the line of sight of enemies. You are unaffected by sight-based abilities.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [],
+      "effects": [{ "type": "state_change", "value": "invisible" }],
+      "ui": { "component": "card", "category": "Stealth", "tags": ["invisibility", "stealth"] }, "sourceFile": "unique_abilities_complex.json"
+    },
+    "unique_ability_regeneration": {
+      "id": "unique_ability_regeneration", "schemaType": "entity", "type": "unique_ability", "name": "Regeneration",
+      "description": "A rapid healing ability. You regain HP at the start of each turn based on your Tier (Tiers 1-4: 20 HP, Tiers 5-6: 30 HP, Tiers 7-8: 40 HP, Tiers 9-10: 50 HP). If unconscious, you wake up once healed to full HP. You cannot boost your Avoidance or Durability outside of Fighting Actions or external sources.",
+      "cost": { "value": 60, "pool": "main", "display": "60p" },
+      "requirements": [{ "type": "rule", "value": "no_defense_boost", "display": "Cannot boost Avoidance/Durability" }],
+      "effects": [{ "type": "healing", "value": "tier_based_regen", "trigger": "start_of_turn" }],
+      "ui": { "component": "card", "category": "Healing", "tags": ["healing", "regeneration", "tank"] }, "sourceFile": "unique_abilities_complex.json"
+    },
+    "unique_ability_heal": {
+      "id": "unique_ability_heal", "schemaType": "entity", "type": "unique_ability", "name": "Heal",
+      "description": "Restore health to other characters. Touch a living being to heal them for (5 × Tier) HP. You have 5 uses per rest.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [],
+      "effects": [{ "type": "healing", "value": "5*tier", "range": "touch", "uses": 5 }],
+      "subEntities": {
+        "upgrades": [
+          { "id": "upgrade_heal_increasedCharges", "schemaType": "entity", "type": "upgrade", "name": "Increased Charges", "description": "Double the number of charges per purchase.", "cost": { "value": 15, "pool": "main", "display": "+15p", "per": "purchase", "stackable": true }, "requirements": [], "effects": [{ "type": "property_mod", "target": "uses", "value": "*2" }], "ui": { "component": "upgrade-card", "category": "Heal", "tags": ["uses"] }, "sourceFile": "unique_abilities_complex.json" },
+          { "id": "upgrade_heal_increasedHealing", "schemaType": "entity", "type": "upgrade", "name": "Increased Healing", "description": "Double the HP healed per purchase.", "cost": { "value": 30, "pool": "main", "display": "+30p", "per": "purchase", "stackable": true }, "requirements": [], "effects": [{ "type": "property_mod", "target": "healing_amount", "value": "*2" }], "ui": { "component": "upgrade-card", "category": "Heal", "tags": ["healing"] }, "sourceFile": "unique_abilities_complex.json" }
+        ]
+      },
+      "ui": { "component": "upgradeable-card", "category": "Healing", "tags": ["healing", "support"] }, "sourceFile": "unique_abilities_complex.json"
+    }
+  }

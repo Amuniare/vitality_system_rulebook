@@ -1,0 +1,435 @@
+{
+    "charge_up": {
+      "id": "limit_main_charge_up",
+      "name": "Charge-Up",
+      "description": "Must use Primary Action on consecutive turns to charge before using attack.",
+      "cost": 40,
+      "subEntities": {
+        "variants": [
+          {
+            "id": "limit_variant_charge_up_extended_charge",
+            "name": "Extended Charge",
+            "description": "Must charge for two turns before using.",
+            "cost": 50,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_extended_charge_triple_charge", "name": "Triple Charge", "description": "Must charge three turns before using.", "cost": 60 },
+                { "id": "limit_modifier_extended_charge_cascade_failure", "name": "Cascade Failure", "description": "If interrupted during any charge turn, lose ability for rest of combat.", "cost": 50 },
+                { "id": "limit_modifier_extended_charge_escalating_exposure", "name": "Escalating Exposure", "description": "Each charge turn reduces your Durability by 5.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_charge_up_rooted_while_charging",
+            "name": "Rooted While Charging",
+            "description": "Cannot move between charge-up and release.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_rooted_while_charging_immobilized", "name": "Immobilized", "description": "Cannot move until end of turn after releasing attack.", "cost": 30 },
+                { "id": "limit_modifier_rooted_while_charging_anchored", "name": "Anchored", "description": "If moved from position by any effect, lose charge.", "cost": 30 },
+                { "id": "limit_modifier_rooted_while_charging_melee", "name": "Melee", "description": "The attack you are making is a melee attack.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_charge_up_concentration",
+            "name": "Concentration",
+            "description": "Lose charge if you take damage or gain conditions.",
+            "cost": 40,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_concentration_fragile_concentration", "name": "Fragile Concentration", "description": "Concentration breaks if any character moves adjacent to you.", "cost": 50 },
+                { "id": "limit_modifier_concentration_cascade_failure", "name": "Cascade Failure", "description": "If concentration broken, you cannot attempt any attack with Concentration for rest of combat.", "cost": 60 },
+                { "id": "limit_modifier_concentration_proximity_sensitivity", "name": "Proximity Sensitivity", "description": "Concentration breaks if any character moves within 5 spaces of you.", "cost": 60 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_charge_up_exposed_while_charging",
+            "name": "Exposed While Charging",
+            "description": "Avoidance reduced by 2×Tier while charging.",
+            "cost": 40,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_exposed_while_charging_fragile", "name": "Fragile", "description": "Avoidance becomes 0 while charging, all attacks are critical hits.", "cost": 80 },
+                { "id": "limit_modifier_exposed_while_charging_beacon", "name": "Beacon", "description": "All enemies within 30 spaces know your exact location while charging.", "cost": 40 },
+                { "id": "limit_modifier_exposed_while_charging_vulnerable", "name": "Vulnerable", "description": "Take double damage from all sources while charging.", "cost": 60 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_charge_up_power_lock",
+            "name": "Power Lock",
+            "description": "Disable specific defensive ability while charging, gain points equal to that ability's cost.",
+            "cost": "Variable",
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_power_lock_extended_lock", "name": "Extended Lock", "description": "Disabled ability remains unusable until end of next turn.", "cost": 30 },
+                { "id": "limit_modifier_power_lock_multiple_lock", "name": "Multiple Lock", "description": "Disable second defensive ability, gain its cost in points.", "cost": "Variable" },
+                { "id": "limit_modifier_power_lock_system_failure", "name": "System Failure", "description": "Requires Concentration - If interrupted, all locked abilities unusable for rest of combat.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_charge_up_focused_charging",
+            "name": "Focused Charging",
+            "description": "Must also spend Quick Action on charge and release turns.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_focused_charging_total_focus", "name": "Total Focus", "description": "Must spend Primary Action, Quick Action, and Movement on charge turns.", "cost": 50 },
+                { "id": "limit_modifier_focused_charging_ally_coordination", "name": "Ally Coordination", "description": "Adjacent ally must attack same target you're charging against or charge fails.", "cost": 30 },
+                { "id": "limit_modifier_focused_charging_reaction_delay", "name": "Reaction Delay", "description": "Cannot use Reactions while charging, gain points equal to cost of reaction abilities you have purchased.", "cost": "Variable" }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "reserves": {
+      "id": "limit_main_reserves",
+      "name": "Reserves",
+      "description": "Can only be used 3 times per combat. Regain all uses after combat ends.",
+      "cost": 10,
+      "subEntities": {
+        "variants": [
+          {
+            "id": "limit_variant_reserves_reserves_2",
+            "name": "Reserves 2",
+            "description": "Reduce to 2 uses per combat.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_reserves_2_reserves_1", "name": "Reserves 1", "description": "Reduce to 1 use per combat.", "cost": 40 },
+                { "id": "limit_modifier_reserves_2_extended_recovery", "name": "Extended Recovery", "description": "Regain uses after full rest instead of after combat, once per day.", "cost": 20 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_reserves_volatile_uses",
+            "name": "Volatile Uses",
+            "description": "Each time you take damage, lose 1 use.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_volatile_uses_condition_trigger", "name": "Condition Trigger", "description": "Each time you gain a condition, lose 1 use.", "cost": 30 },
+                { "id": "limit_modifier_volatile_uses_critical_failure", "name": "Critical Failure", "description": "If you roll a natural 1 on any d20, lose 1 use.", "cost": 30 },
+                { "id": "limit_modifier_volatile_uses_life_drain", "name": "Life Drain", "description": "If out of uses, and you would lose 1, take 15 damage instead.", "cost": 40 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_reserves_shared_pool",
+            "name": "Shared Pool",
+            "description": "Multiple special attacks share same use pool, total uses divided among them, +1 use to the pool for each special attack added.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_shared_pool_reduced_reserves", "name": "Reduced Reserves", "description": "Reduce pool by 1 use.", "cost": 20 },
+                { "id": "limit_modifier_shared_pool_pool_drain", "name": "Pool Drain", "description": "If any attack in pool misses, remove an extra use.", "cost": 40 },
+                { "id": "limit_modifier_shared_pool_cascade_lock", "name": "Cascade Lock", "description": "If any attack in pool misses, no attacks in pool can be used for 1 turn.", "cost": 30 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_reserves_steady",
+            "name": "Steady",
+            "description": "Cannot use until turn 3 of combat.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_steady_patient", "name": "Patient", "description": "Cannot use until turn 5 of combat.", "cost": 30 },
+                { "id": "limit_modifier_steady_unhealthy", "name": "Unhealthy", "description": "Must be below half HP to use.", "cost": 30 },
+                { "id": "limit_modifier_steady_timid", "name": "Timid", "description": "Cannot use unless you are at full hit points and are not affected by any conditions.", "cost": 60 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "cooldown": {
+      "id": "limit_main_cooldown",
+      "name": "Cooldown",
+      "description": "Cannot use again for 1 turn after use.",
+      "cost": 10,
+      "subEntities": {
+        "variants": [
+          {
+            "id": "limit_variant_cooldown_cooldown_2",
+            "name": "Cooldown 2",
+            "description": "Cannot use again for 2 turns after use.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_cooldown_2_cooldown_3", "name": "Cooldown 3", "description": "Cannot use again for 3 turns after use.", "cost": 30 },
+                { "id": "limit_modifier_cooldown_2_permanent_injury", "name": "Permanent Injury", "description": "Each use of this limit, permanantly increases all cooldown cooldown periods by 1 turn, until you take a full rest.", "cost": 40 },
+                { "id": "limit_modifier_cooldown_2_fates", "name": "Fates", "description": "Roll a d4-1 when the attack is made, the cooldown is extended by the result.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_cooldown_failure_extension",
+            "name": "Failure Extension",
+            "description": "If attack misses or fails effect, cooldown period increases by 1 turn.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_failure_extension_doubling_failure", "name": "Doubling Failure", "description": "If attack misses or fails effect, cooldown period increases by 1 turn.", "cost": 30 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_cooldown_shared_cooldown",
+            "name": "Shared Cooldown",
+            "description": "Choose 2 other of your special attacks, they can't be used while you are cooling down from this attack.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_shared_cooldown_increased_cooldown", "name": "Increased Cooldown", "description": "Choose 1 of your more special attacks, they can't be used while you are cooling down from this attack.", "cost": 30 },
+                { "id": "limit_modifier_shared_cooldown_mass_cooldown", "name": "Mass Cooldown", "description": "All of your special attacks cannot be used while you are cooling down from this attack.", "cost": 40 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_cooldown_death_proximity",
+            "name": "Death Proximity",
+            "description": "Cooldown increases by 1 turn for every 25 HP below maximum.",
+            "cost": 40,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_death_proximity_trigger_extension", "name": "Trigger Extension", "description": "Taking damage or gaining conditions adds 1 turn to current cooldown.", "cost": 60 },
+                { "id": "limit_modifier_death_proximity_condition_spiral", "name": "Condition Spiral", "description": "Conditions aquired last until the end of your cooldown period.", "cost": 40 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_cooldown_healthy",
+            "name": "Healthy",
+            "description": "Your cooldowns don't go down unless you are above 50 HP and not affected by any advanced conditions.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_healthy_pinnacle_of_health", "name": "Pinnacle of Health", "description": "Your cooldowns don't go down unless you are at max HP and not affected by any conditions.", "cost": 50 },
+                { "id": "limit_modifier_healthy_timid", "name": "Timid", "description": "You cannot use this attack unless you are at max HP and not affected by any conditions.", "cost": 50 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "unreliable": {
+      "id": "limit_main_unreliable",
+      "name": "Unreliable",
+      "description": "Roll d20 before use; if under 5, attack fails and action is wasted.",
+      "cost": 30,
+      "subEntities": {
+        "variants": [
+          {
+            "id": "limit_variant_unreliable_unreliable_10",
+            "name": "Unreliable 10",
+            "description": "Must roll 10+ or attack fails.",
+            "cost": 50,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_unreliable_10_unreliable_15", "name": "Unreliable 15", "description": "Must roll 15+ or attack fails.", "cost": 100 },
+                { "id": "limit_modifier_unreliable_10_unreliable_20", "name": "Unreliable 20", "description": "Must roll 20 or attack fails.", "cost": 200 },
+                { "id": "limit_modifier_unreliable_10_double_check", "name": "Double Check", "description": "Must make reliability check twice, both must succeed.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_unreliable_stress_breakdown",
+            "name": "Stress Breakdown",
+            "description": "Reliability DC increases by 1 each turn of combat.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_stress_breakdown_rapid_degradation", "name": "Rapid Degradation", "description": "Reliability DC increases by an additional 1 each turn of combat.", "cost": 50 },
+                { "id": "limit_modifier_stress_breakdown_health_dependent", "name": "Health Dependent", "description": "DC increases by 1 for every 10 HP missing.", "cost": 40 },
+                { "id": "limit_modifier_stress_breakdown_fearful", "name": "Fearful", "description": "DC increases by 5 if an enemy is adjacent to you.", "cost": 40 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_unreliable_equipment_dependent",
+            "name": "Equipment Dependent",
+            "description": "You have a specific, noticeable and disarmable item, in order to do any attack. There needs to be a reason, you wouldn't always have this item on you. (discuss with GM)",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_equipment_dependent_fragile_gear", "name": "Fragile Gear", "description": "If you fail the Unreliable roll, the item breaks and won't be fixed until you spend 8 hours, or meet another specified condition (discuss with GM).", "cost": 50 },
+                { "id": "limit_modifier_equipment_dependent_maintenance", "name": "Maintenance", "description": "Equipment breaks if attack fails, requires action to repair.", "cost": 30 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_unreliable_cascading_failure",
+            "name": "Cascading Failure",
+            "description": "Each failure increases next reliability DC by 5.",
+            "cost": 50,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_cascading_failure_spread_effect", "name": "Spread Effect", "description": "Failed checks increase DC for all your special attacks.", "cost": 50 },
+                { "id": "limit_modifier_cascading_failure_critical_cascade", "name": "Critical Cascade", "description": "Failures in combat make ability unusable for rest of session.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_unreliable_attrition",
+            "name": "Attrition",
+            "description": "When unreliable roll fails, take 15 damage.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_attrition_attrition_2", "name": "Attrition 2", "description": "When unreliable roll fails, take an additional 15 damage.", "cost": 40 },
+                { "id": "limit_modifier_attrition_concussive_kickback", "name": "Concussive Kickback", "description": "When unreliable roll fails, gain Stun condition, until the start of your next turn.", "cost": 60 },
+                { "id": "limit_modifier_attrition_exhaustive", "name": "Exhaustive", "description": "When unreliable roll fails, you must spend an effort or fall unconscious.", "cost": 100 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "combo_move": {
+      "id": "limit_main_combo_move",
+      "name": "Combo Move",
+      "description": "You must have hit an enemy on your last turn.",
+      "cost": 30,
+      "subEntities": {
+        "variants": [
+          {
+            "id": "limit_variant_combo_move_revenge",
+            "name": "Revenge",
+            "description": "You must have done damage on inflicted a condition on your last turn.",
+            "cost": 40,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_revenge_kill_history", "name": "Kill History", "description": "You must have defeated an enemy on your last turn.", "cost": 50 },
+                { "id": "limit_modifier_revenge_perfect_opening", "name": "Perfect Opening", "description": "You must have critically hit on your last turn.", "cost": 50 },
+                { "id": "limit_modifier_revenge_follow_up", "name": "Follow-Up", "description": "You must hit the same enemy as you did last turn.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_combo_move_switch_hitter",
+            "name": "Switch Hitter",
+            "description": "Can only target enemies you have not damaged this combat.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_switch_hitter_first_blood", "name": "First Blood", "description": "Can only target enemies no ally has damaged this combat.", "cost": 50 },
+                { "id": "limit_modifier_switch_hitter_finishing_move", "name": "Finishing Move", "description": "Can only target enemies below half max HP.", "cost": 40 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_combo_move_ally_setup",
+            "name": "Ally Setup",
+            "description": "Ally must have hit the same enemy you're about to attack this turn.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_ally_setup_coordination", "name": "Coordination", "description": "Ally attack must have damaged or inflicted a condition on the same enemy you're about to attack this turn.", "cost": 40 },
+                { "id": "limit_modifier_ally_setup_perfect_teamwork", "name": "Perfect Teamwork", "description": "Must be a specific Ally, chosen when limit taken.", "cost": 40 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_combo_move_steady",
+            "name": "Steady",
+            "description": "Cannot use until turn 3 of combat.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_steady_patient_combo", "name": "Patient", "description": "Cannot use until turn 5 of combat.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_combo_move_escalation",
+            "name": "Escalation",
+            "description": "Cannot use until an ally is below half HP.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_escalation_desperation", "name": "Desperation", "description": "Cannot use until ally is unconscious.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_combo_move_set_up",
+            "name": "Set Up",
+            "description": "Must have hit with a specific special attack (chosen when limit taken).",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_set_up_solid_set_up", "name": "Solid Set Up", "description": "Must have damaged or inflicted a condition with a specific special attack (chosen when limit taken).", "cost": 60 },
+                { "id": "limit_modifier_set_up_perfect_opening_combo", "name": "Perfect Opening", "description": "Must have critically hit with specific special attack.", "cost": 70 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "unhealthy": {
+      "id": "limit_main_unhealthy",
+      "name": "Unhealthy",
+      "description": "Can only use when below max HP.",
+      "cost": 20,
+      "subEntities": {
+        "variants": [
+          {
+            "id": "limit_variant_unhealthy_unhealthy_2",
+            "name": "Unhealthy 2",
+            "description": "Can only use when at 75 HP or below.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_unhealthy_2_unhealthy_3", "name": "Unhealthy 3", "description": "Can only use when at 50 HP or below.", "cost": 40 },
+                { "id": "limit_modifier_unhealthy_2_unhealthy_4", "name": "Unhealthy 4", "description": "Can only use when at 25 HP or below.", "cost": 50 },
+                { "id": "limit_modifier_unhealthy_2_unhealthy_5", "name": "Unhealthy 5", "description": "Can only use when at 0 HP or below.", "cost": 50 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_unhealthy_fresh_wound_1",
+            "name": "Fresh Wound 1",
+            "description": "Must have taken 15+ damage since the end of your last turn to use.",
+            "cost": 30,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_fresh_wound_1_fresh_wound_2", "name": "Fresh Wound 2", "description": "Must have taken 30+ damage since the end of your last turn to use.", "cost": 40 },
+                { "id": "limit_modifier_fresh_wound_1_continuous_suffering", "name": "Continuous Suffering", "description": "Must have taken damage on every turn for the last 3 turns, cannot be caused by Attrition.", "cost": 50 },
+                { "id": "limit_modifier_fresh_wound_1_condition_lock", "name": "Condition Lock", "description": "Must be afflicted by a condition.", "cost": 40 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_unhealthy_attrition_1",
+            "name": "Attrition 1",
+            "description": "Each use costs 15 HP, paid after attack resolves.",
+            "cost": 20,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_attrition_1_attrition_x", "name": "Attrition X", "description": "Each successive use costs additional 15 HP (15, 30, 45, etc.)", "cost": 30 },
+                { "id": "limit_modifier_attrition_1_concussed", "name": "Concussed", "description": "You become stunned until the end of your next turn.", "cost": 80 }
+              ]
+            }
+          },
+          {
+            "id": "limit_variant_unhealthy_desperation",
+            "name": "Desperation",
+            "description": "Can only use when an ally is at 25 HP or below.",
+            "cost": 60,
+            "subEntities": {
+              "modifiers": [
+                { "id": "limit_modifier_desperation_last_resort", "name": "Last Resort", "description": "Can only use when 2+ allies are at 25 HP or below.", "cost": 80 },
+                { "id": "limit_modifier_desperation_avenger", "name": "Avenger", "description": "Can when an ally is unconscious.", "cost": 100 }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }

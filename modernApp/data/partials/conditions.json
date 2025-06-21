@@ -1,0 +1,437 @@
+{
+    "condition_basic_disarm": {
+      "id": "condition_basic_disarm",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Disarm",
+      "description": "Forces the target to drop something they're holding. The dropped item can be picked up as a Quick Action. You may attempt to launch the item in any direction a number of spaces equal to how successful your roll was assuming you have the Capacity to move it.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "0p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "stability",
+          "display": "Resisted by Stability"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "basic",
+        "tags": [
+          "control",
+          "item"
+        ]
+      },
+      "sourceFile": "conditions_basic.json"
+    },
+    "condition_basic_grab": {
+      "id": "condition_basic_grab",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Grab",
+      "description": "The target cannot move. As an Action, the target can make a Stability check against the Condition roll to break free early, or as part of their movement to drag you with them following the rules for Capacity.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "0p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "stability",
+          "display": "Resisted by Stability"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "basic",
+        "tags": [
+          "control",
+          "movement_restriction"
+        ]
+      },
+      "sourceFile": "conditions_basic.json"
+    },
+    "condition_basic_shove": {
+      "id": "condition_basic_shove",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Shove",
+      "description": "Push or pull the target a number of spaces equal to (Condition roll - Resistance). Collisions deal falling damage to both entities and you can expend 5 shoving spaces to knock the target prone.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "0p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "stability",
+          "display": "Resisted by Stability"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "basic",
+        "tags": [
+          "control",
+          "forced_movement"
+        ]
+      },
+      "sourceFile": "conditions_basic.json"
+    },
+    "condition_basic_prone": {
+      "id": "condition_basic_prone",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Prone",
+      "description": "Adjacent attacks against you gain +Tier to Accuracy, ranged attacks against you suffer -Tier to Accuracy. Standing costs 3 movement spaces.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "0p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "basic",
+        "tags": [
+          "control",
+          "state"
+        ]
+      },
+      "sourceFile": "conditions_basic.json"
+    },
+    "condition_basic_blind": {
+      "id": "condition_basic_blind",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Blind",
+      "description": "Target treats all others as visually Hidden. Hidden attackers ignore the target's base Tier Avoidance bonus. When attacking, you must roll a Perception check vs the target's Stealth check; the attack is assumed to have missed on a failure.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "0p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "vitality",
+          "display": "Resisted by Vitality"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "basic",
+        "tags": [
+          "sensory",
+          "debuff"
+        ]
+      },
+      "sourceFile": "conditions_basic.json"
+    },
+    "condition_basic_daze": {
+      "id": "condition_basic_daze",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Daze",
+      "description": "Target cannot take Quick Actions or Reactions.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "0p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "vitality",
+          "display": "Resisted by Vitality"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "basic",
+        "tags": [
+          "action_economy",
+          "debuff"
+        ]
+      },
+      "sourceFile": "conditions_basic.json"
+    },
+    "condition_basic_setup": {
+      "id": "condition_basic_setup",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Setup",
+      "description": "The next Accuracy check against the target adds double your Tier to their regular bonus.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "0p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "resolve",
+          "display": "Resisted by Resolve"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "basic",
+        "tags": [
+          "debuff",
+          "support"
+        ]
+      },
+      "sourceFile": "conditions_basic.json"
+    },
+    "condition_basic_taunt": {
+      "id": "condition_basic_taunt",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Taunt",
+      "description": "Target suffers a reduction to their Accuracy checks equal to double your Tier against all targets other than you.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "0p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "resolve",
+          "display": "Resisted by Resolve"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "basic",
+        "tags": [
+          "control",
+          "debuff"
+        ]
+      },
+      "sourceFile": "conditions_basic.json"
+    },
+    "condition_advanced_control": {
+      "id": "condition_advanced_control",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Control",
+      "description": "You control the target on their next turn. Common uses are making them attack, protect you, or become Stunned. If you or an ally attack them, the Control ends.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "resolve",
+          "display": "Resisted by Resolve"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "advanced",
+        "tags": [
+          "control",
+          "mind_control"
+        ]
+      },
+      "sourceFile": "conditions_advanced.json"
+    },
+    "condition_advanced_stun": {
+      "id": "condition_advanced_stun",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Stun",
+      "description": "The target can take no actions or movement, their Avoidance is reduced to 0, and any attacks that hit them are considered critical hits.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": [
+            "resolve",
+            "vitality"
+          ],
+          "display": "Resisted by Resolve or Vitality"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "advanced",
+        "tags": [
+          "control",
+          "hard_cc"
+        ]
+      },
+      "sourceFile": "conditions_advanced.json"
+    },
+    "condition_advanced_weaken": {
+      "id": "condition_advanced_weaken",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Weaken",
+      "description": "Reduce the chosen stat by your Tier: Accuracy, Damage, Conditions, Avoidance, Durability, or All Resistances. This effect does not expire, but the target cannot be affected by more than one instance of Weaken.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "vitality",
+          "display": "Resisted by Vitality"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "advanced",
+        "tags": [
+          "debuff",
+          "permanent"
+        ]
+      },
+      "sourceFile": "conditions_advanced.json"
+    },
+    "condition_advanced_disableSpecials": {
+      "id": "condition_advanced_disableSpecials",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Disable Specials",
+      "description": "Target cannot use Special Attacks.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": [
+            "resolve",
+            "vitality"
+          ],
+          "display": "Resisted by Resolve or Vitality"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "advanced",
+        "tags": [
+          "control",
+          "utility"
+        ]
+      },
+      "sourceFile": "conditions_advanced.json"
+    },
+    "condition_advanced_frighten": {
+      "id": "condition_advanced_frighten",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Frighten",
+      "description": "The target must move away from you and can only take the Hasten or Hide Actions. If there is nowhere to run or hide, they may take the Dodge or Brace Actions.",
+      "cost": {
+        "value": 10,
+        "pool": "special_attack_points",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "resolve",
+          "display": "Resisted by Resolve"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "advanced",
+        "tags": [
+          "control",
+          "fear"
+        ]
+      },
+      "sourceFile": "conditions_advanced.json"
+    },
+    "condition_advanced_enthrall": {
+      "id": "condition_advanced_enthrall",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Enthrall",
+      "description": "The target must defend you.",
+      "cost": {
+        "value": 15,
+        "pool": "special_attack_points",
+        "display": "15p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "resolve",
+          "display": "Resisted by Resolve"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "advanced",
+        "tags": [
+          "control",
+          "social"
+        ]
+      },
+      "sourceFile": "conditions_advanced.json"
+    },
+    "condition_advanced_frenzy": {
+      "id": "condition_advanced_frenzy",
+      "schemaType": "entity",
+      "type": "condition",
+      "name": "Frenzy",
+      "description": "Target attacks the nearest character indiscriminately.",
+      "cost": {
+        "value": 15,
+        "pool": "special_attack_points",
+        "display": "15p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "resistance_check",
+          "target": "resolve",
+          "display": "Resisted by Resolve"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "advanced",
+        "tags": [
+          "control",
+          "chaos"
+        ]
+      },
+      "sourceFile": "conditions_advanced.json"
+    }
+  }

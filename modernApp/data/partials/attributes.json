@@ -1,0 +1,234 @@
+{
+    "attribute_combat_focus": {
+      "id": "attribute_combat_focus",
+      "schemaType": "entity",
+      "type": "attribute",
+      "name": "Focus",
+      "description": "*\"Aim true, act fast.\"*\\n\\nRepresents your character's precision, fighting skill, and mental fortitude. It improves `Accuracy` for all attacks, increases `Initiative`, and boosts `Resolve` score against mental and psychic effects.",
+      "cost": {
+        "value": 1,
+        "pool": "combat_attribute_points",
+        "display": "1p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "stat_mod",
+          "target": "accuracy",
+          "value": 1
+        },
+        {
+          "type": "stat_mod",
+          "target": "initiative",
+          "value": 1
+        },
+        {
+          "type": "stat_mod",
+          "target": "resolve",
+          "value": 1
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "combat",
+        "tags": [
+          "accuracy",
+          "initiative",
+          "resolve"
+        ]
+      },
+      "sourceFile": "attributes.json"
+    },
+    "attribute_combat_mobility": {
+      "id": "attribute_combat_mobility",
+      "schemaType": "entity",
+      "type": "attribute",
+      "name": "Mobility",
+      "description": "*\"Can't hit what isn't there.\"*\\n\\nGoverns physical agility, speed, and evasiveness. It increases your base `Movement` speed, boosts `Avoidance` score, and improves `Initiative`.",
+      "cost": {
+        "value": 1,
+        "pool": "combat_attribute_points",
+        "display": "1p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "stat_mod",
+          "target": "movement",
+          "value": 1
+        },
+        {
+          "type": "stat_mod",
+          "target": "avoidance",
+          "value": 1
+        },
+        {
+          "type": "stat_mod",
+          "target": "initiative",
+          "value": 1
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "combat",
+        "tags": [
+          "movement",
+          "avoidance",
+          "initiative"
+        ]
+      },
+      "sourceFile": "attributes.json"
+    },
+    "attribute_combat_power": {
+      "id": "attribute_combat_power",
+      "schemaType": "entity",
+      "type": "attribute",
+      "name": "Power",
+      "description": "*\"Hit hard, leave a mark.\"*\\n\\nThe raw force of your abilities. It directly increases your base `Damage`, boosts your `Conditions` check, and increases `Stability` score.",
+      "cost": {
+        "value": 1,
+        "pool": "combat_attribute_points",
+        "display": "1p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "stat_mod",
+          "target": "damage",
+          "value": 1.5
+        },
+        {
+          "type": "stat_mod",
+          "target": "conditions",
+          "value": 1
+        },
+        {
+          "type": "stat_mod",
+          "target": "stability",
+          "value": 1
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "combat",
+        "tags": [
+          "damage",
+          "conditions",
+          "stability"
+        ]
+      },
+      "sourceFile": "attributes.json"
+    },
+    "attribute_combat_endurance": {
+      "id": "attribute_combat_endurance",
+      "schemaType": "entity",
+      "type": "attribute",
+      "name": "Endurance",
+      "description": "*\"Outlast them all.\"*\\n\\nRepresents physical resilience and stamina. It significantly boosts `Durability`, increases `Vitality` score, and contributes to Survival Checks.",
+      "cost": {
+        "value": 1,
+        "pool": "combat_attribute_points",
+        "display": "1p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "stat_mod",
+          "target": "durability",
+          "value": 1.5
+        },
+        {
+          "type": "stat_mod",
+          "target": "vitality",
+          "value": 1
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "combat",
+        "tags": [
+          "durability",
+          "vitality",
+          "health"
+        ]
+      },
+      "sourceFile": "attributes.json"
+    },
+    "attribute_utility_awareness": {
+      "id": "attribute_utility_awareness",
+      "schemaType": "entity",
+      "type": "attribute",
+      "name": "Awareness",
+      "description": "*\"Nothing escapes your notice.\"*\\n\\nRepresents your perception and intuition. It improves `Initiative` and is the core stat for `Perception`, `Tracking`, and `Sense Motive` skill checks.",
+      "cost": {
+        "value": 1,
+        "pool": "utility_attribute_points",
+        "display": "1p"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "stat_mod",
+          "target": "initiative",
+          "value": 1
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "utility",
+        "tags": [
+          "perception",
+          "initiative",
+          "skills"
+        ]
+      },
+      "sourceFile": "attributes.json"
+    },
+    "attribute_utility_communication": {
+      "id": "attribute_utility_communication",
+      "schemaType": "entity",
+      "type": "attribute",
+      "name": "Communication",
+      "description": "*\"Words are your sharpest weapon.\"*\\n\\nThe ability to influence, deceive, or inspire others. It governs all social skill checks like `Persuasion`, `Deception`, and `Intimidation`.",
+      "cost": {
+        "value": 1,
+        "pool": "utility_attribute_points",
+        "display": "1p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "utility",
+        "tags": [
+          "social",
+          "skills"
+        ]
+      },
+      "sourceFile": "attributes.json"
+    },
+    "attribute_utility_intelligence": {
+      "id": "attribute_utility_intelligence",
+      "schemaType": "entity",
+      "type": "attribute",
+      "name": "Intelligence",
+      "description": "*\"Knowledge is power.\"*\\n\\nRepresents logic, reasoning, and problem-solving. It governs `Knowledge`, `Crafting`, `Research`, and `Strategy` checks.",
+      "cost": {
+        "value": 1,
+        "pool": "utility_attribute_points",
+        "display": "1p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "utility",
+        "tags": [
+          "knowledge",
+          "tech",
+          "skills"
+        ]
+      },
+      "sourceFile": "attributes.json"
+    }
+  }

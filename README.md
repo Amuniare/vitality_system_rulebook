@@ -21,3 +21,21 @@ The primary guides for developing this project are now:
 -   **`docs/workplan.md`:** The official project roadmap, containing both the long-term vision and the prioritized list of active features and bug fixes.
 -   **`.gemini/instructions.md`:** Context, guidelines, rules and commands for the gemini AI.
 
+New-item modernApp/data/partials/actions.json
+New-item modernApp/data/partials/archetypes.json
+New-item modernApp/data/partials/attributes.json
+New-item modernApp/data/partials/bio.json
+New-item modernApp/data/partials/boons_simple.json
+New-item modernApp/data/partials/character_types.json
+New-item modernApp/data/partials/conditions.json
+New-item modernApp/data/partials/descriptors.json
+New-item modernApp/data/partials/effect_types.json
+New-item modernApp/data/partials/features.json
+New-item modernApp/data/partials/flaws.json
+New-item modernApp/data/partials/limits.json
+New-item modernApp/data/partials/movement_features.json
+New-item modernApp/data/partials/senses.json
+New-item modernApp/data/partials/skills.json
+New-item modernApp/data/partials/trait_conditions.json
+New-item modernApp/data/partials/unique_abilities.json
+New-item modernApp/data/partials/upgrades.json   

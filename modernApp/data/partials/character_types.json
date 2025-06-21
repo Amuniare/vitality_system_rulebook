@@ -1,0 +1,216 @@
+{
+    "character_type_player_character": {
+      "id": "character_type_player_character",
+      "schemaType": "entity",
+      "type": "character_type",
+      "name": "Player Character",
+      "description": "A unique, player-controlled character with a full range of abilities.",
+      "cost": {
+        "value": 0,
+        "pool": "selection",
+        "display": "Choice"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "base_stat",
+          "target": "hp",
+          "value": 100,
+          "display": "Base HP: 100"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "character_type",
+        "tags": [
+          "pc"
+        ]
+      },
+      "sourceFile": "character_type.json"
+    },
+    "character_type_npc_ally": {
+      "id": "character_type_npc_ally",
+      "schemaType": "entity",
+      "type": "character_type",
+      "name": "NPC Ally",
+      "description": "A friendly non-player character that assists the party.",
+      "cost": {
+        "value": 0,
+        "pool": "selection",
+        "display": "Choice"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "base_stat",
+          "target": "hp",
+          "value": 50,
+          "display": "Base HP: 50"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "character_type",
+        "tags": [
+          "npc",
+          "ally"
+        ]
+      },
+      "sourceFile": "character_type.json"
+    },
+    "character_type_other": {
+      "id": "character_type_other",
+      "schemaType": "entity",
+      "type": "character_type",
+      "name": "Other",
+      "description": "Select a specific character type from the sub-categories.",
+      "cost": {
+        "value": 0,
+        "pool": "selection",
+        "display": "Choice"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "base_stat",
+          "target": "hp",
+          "value": 10,
+          "display": "Base HP: 10"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "character_type",
+        "tags": [
+          "npc",
+          "generic"
+        ]
+      },
+      "sourceFile": "character_type.json"
+    },
+    "character_type_minion": {
+      "id": "character_type_minion",
+      "schemaType": "entity",
+      "type": "character_type",
+      "name": "Minion",
+      "parentId": "character_type_other",
+      "description": "A standard, non-unique character. Typically found in groups and defeated easily.",
+      "cost": {
+        "value": 0,
+        "pool": "selection",
+        "display": "Choice"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "base_stat",
+          "target": "hp",
+          "value": 10,
+          "display": "Base HP: 10"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "other_subtypes",
+        "tags": [
+          "npc",
+          "minion"
+        ]
+      },
+      "sourceFile": "character_type.json"
+    },
+    "character_type_captain": {
+      "id": "character_type_captain",
+      "schemaType": "entity",
+      "type": "character_type",
+      "name": "Captain",
+      "parentId": "character_type_other",
+      "description": "A more durable character that often leads minions. A moderate threat.",
+      "cost": {
+        "value": 0,
+        "pool": "selection",
+        "display": "Choice"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "base_stat",
+          "target": "hp",
+          "value": 25,
+          "display": "Base HP: 25"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "other_subtypes",
+        "tags": [
+          "npc",
+          "elite"
+        ]
+      },
+      "sourceFile": "character_type.json"
+    },
+    "character_type_vanguard": {
+      "id": "character_type_vanguard",
+      "schemaType": "entity",
+      "type": "character_type",
+      "name": "Vanguard",
+      "parentId": "character_type_other",
+      "description": "A powerful and resilient character, a significant threat on the battlefield.",
+      "cost": {
+        "value": 0,
+        "pool": "selection",
+        "display": "Choice"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "base_stat",
+          "target": "hp",
+          "value": 50,
+          "display": "Base HP: 50"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "other_subtypes",
+        "tags": [
+          "npc",
+          "elite",
+          "tough"
+        ]
+      },
+      "sourceFile": "character_type.json"
+    },
+    "character_type_boss": {
+      "id": "character_type_boss",
+      "schemaType": "entity",
+      "type": "character_type",
+      "name": "Boss",
+      "parentId": "character_type_other",
+      "description": "A major antagonist with a large health pool and unique, dangerous abilities.",
+      "cost": {
+        "value": 0,
+        "pool": "selection",
+        "display": "Choice"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "base_stat",
+          "target": "hp",
+          "value": 100,
+          "display": "Base HP: 100"
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "other_subtypes",
+        "tags": [
+          "npc",
+          "boss"
+        ]
+      },
+      "sourceFile": "character_type.json"
+    }
+  }

@@ -1,0 +1,79 @@
+{
+"trait_condition_rooted": {
+    "id": "trait_condition_rooted",
+    "schemaType": "entity",
+    "type": "trait_condition",
+    "name": "Rooted",
+    "description": "Cannot move this turn",
+    "cost": { "value": 1, "pool": "trait_tier", "display": "1pt" },
+    "requirements": [], "effects": [],
+    "ui": { "component": "card", "category": "tier1", "tags": ["movement_restriction", "trait"] },
+    "sourceFile": "trait_conditions.json"
+  },
+  "trait_condition_longDistanceFighter": {
+    "id": "trait_condition_longDistanceFighter",
+    "schemaType": "entity",
+    "type": "trait_condition",
+    "name": "Long Distance Fighter",
+    "description": "No enemies within 5 spaces",
+    "cost": { "value": 1, "pool": "trait_tier", "display": "1pt" },
+    "requirements": [], "effects": [],
+    "ui": { "component": "card", "category": "tier1", "tags": ["positioning", "ranged", "trait"] },
+    "sourceFile": "trait_conditions.json"
+  },
+  "trait_condition_unhealthy1": {
+    "id": "trait_condition_unhealthy1",
+    "schemaType": "entity",
+    "type": "trait_condition",
+    "name": "Unhealthy 1",
+    "description": "25+ points below max HP",
+    "cost": { "value": 1, "pool": "trait_tier", "display": "1pt" },
+    "requirements": [], "effects": [],
+    "ui": { "component": "card", "category": "tier1", "tags": ["health", "risk_reward", "trait"] },
+    "sourceFile": "trait_conditions.json"
+  },
+  "trait_condition_vengeful": {
+    "id": "trait_condition_vengeful",
+    "schemaType": "entity",
+    "type": "trait_condition",
+    "name": "Vengeful",
+    "description": "Been hit since last turn",
+    "cost": { "value": 1, "pool": "trait_tier", "display": "1pt" },
+    "requirements": [], "effects": [],
+    "ui": { "component": "card", "category": "tier1", "tags": ["reactive", "combat_state", "trait"] },
+    "sourceFile": "trait_conditions.json"
+  },
+  "trait_condition_timid": {
+    "id": "trait_condition_timid",
+    "schemaType": "entity",
+    "type": "trait_condition",
+    "name": "Timid",
+    "description": "At max HP with no conditions",
+    "cost": { "value": 2, "pool": "trait_tier", "display": "2pt" },
+    "requirements": [], "effects": [],
+    "ui": { "component": "card", "category": "tier2", "tags": ["health", "cautious", "trait"] },
+    "sourceFile": "trait_conditions.json"
+  },
+  "trait_condition_quickdraw": {
+    "id": "trait_condition_quickdraw",
+    "schemaType": "entity",
+    "type": "trait_condition",
+    "name": "Quickdraw",
+    "description": "First 2 rounds of combat",
+    "cost": { "value": 3, "pool": "trait_tier", "display": "3pt" },
+    "requirements": [], "effects": [],
+    "ui": { "component": "card", "category": "tier3", "tags": ["opening_move", "combat_start", "trait"] },
+    "sourceFile": "trait_conditions.json"
+  },
+  "trait_condition_environment": {
+    "id": "trait_condition_environment",
+    "schemaType": "entity",
+    "type": "trait_condition",
+    "name": "Environment",
+    "description": "Specific locations (electricity, water, urban, forest)",
+    "cost": { "value": 0, "pool": "trait_tier", "display": "Variable" },
+    "requirements": [], "effects": [],
+    "ui": { "component": "card", "category": "variable", "tags": ["environment", "narrative", "trait"] },
+    "sourceFile": "trait_conditions.json"
+  }
+}

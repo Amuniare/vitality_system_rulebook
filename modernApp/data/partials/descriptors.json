@@ -1,0 +1,393 @@
+{
+    "descriptor_elemental_fire": {
+      "id": "descriptor_elemental_fire",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Fire",
+      "description": "Utility Applications: Make Intelligence checks to forge materials without tools, melt locks, create emergency lighting, or purify contaminated substances through controlled burning. Environmental Control: Make Intelligence checks to regulate temperature in buildings, melt ice barriers, or create smoke signals visible for miles. Detection: Make Awareness checks to sense heat sources through walls, track warm-blooded creatures, or identify recent fires. Crafting: Make Intelligence checks to work glass, ceramics, or metals with precision using controlled flame. Resistance: Immune to heat-based damage and environmental effects from extreme temperatures.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Elemental",
+        "tags": [
+          "elemental",
+          "fire"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_elemental_water": {
+      "id": "descriptor_elemental_water",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Water",
+      "description": "Utility Applications: Make Intelligence checks to purify contaminated water sources, create ice tools/weapons, or navigate underwater environments. Environmental Control: Make Intelligence checks to create fog banks for concealment, redirect waterways, or cause/stop precipitation. Detection: Make Awareness checks to locate water sources underground, sense moisture levels, or track creatures through wet environments. Life Support: Make Intelligence checks to extract moisture from air in deserts or create breathable air pockets underwater. Resistance: Immune to drowning and pressure effects underwater.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Elemental",
+        "tags": [
+          "elemental",
+          "water"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_elemental_earth": {
+      "id": "descriptor_elemental_earth",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Earth",
+      "description": "Utility Applications: Make Intelligence checks to locate mineral deposits, create stone tools/barriers, or navigate underground. Environmental Control: Make Intelligence checks to create earthquakes, shape landscape, or reinforce structures. Detection: Make Awareness checks to sense vibrations through the ground, locate underground spaces, or identify geological instabilities. Construction: Make Intelligence checks to shape stone into precise architectural forms or create permanent fortifications. Resistance: Immune to crushing damage and effects from unstable terrain.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Elemental",
+        "tags": [
+          "elemental",
+          "earth"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_elemental_air": {
+      "id": "descriptor_elemental_air",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Air",
+      "description": "Utility Applications: Make Intelligence checks to create updrafts for assisted flight, carry messages via wind, or clear toxic gases. Environmental Control: Make Intelligence checks to create localized weather patterns, disperse crowds with wind, or amplify/muffle sounds. Detection: Make Awareness checks to track scents across great distances, overhear distant conversations, or sense air pressure changes. Navigation: Make Awareness checks to determine wind patterns for sailing/flying or predict weather changes. Resistance: Immune to suffocation and airborne toxins.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Elemental",
+        "tags": [
+          "elemental",
+          "air"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_elemental_lightning": {
+      "id": "descriptor_elemental_lightning",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Lightning",
+      "description": "Utility Applications: Make Intelligence checks to power electronic devices, create precise electrical discharges, or generate electromagnetic fields. Environmental Control: Make Intelligence checks to disrupt electronics, create localized storms, or generate light displays. Detection: Make Awareness checks to sense electrical activity, track electronic devices, or identify electrical malfunctions. Communication: Make Intelligence checks to transmit messages through electrical networks or interfere with communications. Resistance: Immune to electrical damage and electromagnetic interference.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Elemental",
+        "tags": [
+          "elemental",
+          "lightning"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_elemental_ice": {
+      "id": "descriptor_elemental_ice",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Ice",
+      "description": "Utility Applications: Make Intelligence checks to preserve materials indefinitely, create precise ice constructs, or generate subzero environments. Environmental Control: Make Intelligence checks to freeze liquids instantly, create slippery surfaces, or generate protective barriers. Detection: Make Awareness checks to sense temperature variations, track warm creatures in cold environments, or identify frozen substances. Construction: Make Intelligence checks to create temporary ice structures or reinforce existing materials with ice. Resistance: Immune to cold damage and hypothermia effects.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Elemental",
+        "tags": [
+          "elemental",
+          "ice"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_energy_kinetic": {
+      "id": "descriptor_energy_kinetic",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Kinetic",
+      "description": "Combat Enhancement: Enhance the force of moving objects, turning a pebble into a deadly projectile or a thrown spear into a devastating missile. Movement: Ignore impediments like mud, snow, or rubble, maintaining momentum without slowing. Defense: Absorb kinetic energy from impacts and transfer it elsewhere, such as reversing the force back to an attacker. Mobility: Defy gravity temporarily, running on walls or maintaining footing on impossibly narrow surfaces. Resistance: Immune to falling damage and impact-based effects.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Energy",
+        "tags": [
+          "energy",
+          "kinetic"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_energy_plasma": {
+      "id": "descriptor_energy_plasma",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Plasma",
+      "description": "Environmental Control: Surround yourself with glowing plasma, providing light and damaging nearby enemies with searing heat. Detection: Detect the presence of plasma generators, power sources, or active weapons within a wide radius. Utility Applications: Manipulate plasma-like materials to weld, seal, or fuse objects permanently. Energy Mastery: Make Intelligence checks to generate controlled plasma discharges or manipulate existing plasma fields. Resistance: Withstand high-energy environments, including intense radiation or plasma discharges.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Energy",
+        "tags": [
+          "energy",
+          "plasma"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_specialized_biological": {
+      "id": "descriptor_specialized_biological",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Biological",
+      "description": "Regeneration: Heal from significant injuries and lost limbs or organs relatively quickly. Toxin Mastery: Identify, neutralize, or create potent toxins and antidotes instinctively. Highly resistant to toxins, diseases, and biological effects. Animal Connection: Form deep connections with animals, influencing their actions and understanding their emotions. Plant Revival: Revive withered plants by touch, causing them to grow rapidly, even in barren environments. Resistance: Immune to diseases, toxins, and biological manipulation.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized",
+        "tags": [
+          "specialized",
+          "biological"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_specialized_technology": {
+      "id": "descriptor_specialized_technology",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Technology",
+      "description": "Machine Communication: Communicate with machines as though they were sentient, intuitively diagnosing malfunctions or errors. Decryption: Make Intelligence checks to decode encrypted data or bypass advanced security systems. Remote Control: Remotely interact with and control electronic systems, such as locking or unlocking doors, or rerouting power. System Override: Temporarily interface with and influence complex systems like vehicles or automated devices. Resistance: Immune to technological surveillance and electronic interference.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized",
+        "tags": [
+          "specialized",
+          "technology"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_specialized_mental": {
+      "id": "descriptor_specialized_mental",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Mental",
+      "description": "Memory Sharing: Share vivid memories, ideas, or concepts directly into another's mind, bypassing verbal communication entirely. Emotion Amplification: Amplify the emotions of those around you to overwhelming levels, inducing fear, joy, or rage. Psychic Defense: Shield yourself from psychic intrusion, emotional manipulation, or mind-altering effects. Memory Recovery: Instantly retrieve forgotten memories or suppressed knowledge, including sensory details from years past. Resistance: Immune to mental manipulation and psychic attacks.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized",
+        "tags": [
+          "specialized",
+          "mental"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_specialized_arcane": {
+      "id": "descriptor_specialized_arcane",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Arcane",
+      "description": "Magic Detection: Detect and analyze magical effects within a wide radius, understanding their source and purpose. Glyph Mastery: Decipher, replicate, or counter magical glyphs and sigils, even if highly advanced. Magical Marking: Leave subtle magical traces on objects or locations, readable only by those with arcane knowledge. Artifact Sense: Sense and locate magical artifacts or enchanted items, regardless of concealment. Resistance: Immune to magical effects and supernatural manipulation.",
+      "cost": {
+        "value": 5,
+        "pool": "utility",
+        "display": "5p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized",
+        "tags": [
+          "specialized",
+          "arcane"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_reality_time": {
+      "id": "descriptor_reality_time",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Time",
+      "description": "Temporal Perception: Make Awareness checks to see the past/future states of objects and locations. Chronological Analysis: Make Intelligence checks to determine exact timing of past events or predict future schedules. Temporal Crafting: Make Intelligence checks to age or restore objects to different time periods. Historical Investigation: Make Intelligence checks to witness past events as they occurred. Advanced Applications: Accelerate or reverse time in an area, or move yourself through time. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign.",
+      "cost": {
+        "value": 10,
+        "pool": "utility",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Reality",
+        "tags": [
+          "reality",
+          "time"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_reality_space": {
+      "id": "descriptor_reality_space",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Space",
+      "description": "Dimensional Analysis: Make Intelligence checks to measure exact distances/volumes without tools or understand spatial relationships. Spatial Navigation: Make Awareness checks to navigate through complex 3D environments or folded space. Geometric Construction: Make Intelligence checks to create perfect geometric forms or impossible architectural spaces. Distance Manipulation: Make Intelligence checks to compress or expand the apparent distance between locations. Advanced Applications: Open rifts to teleport vast distances. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign.",
+      "cost": {
+        "value": 10,
+        "pool": "utility",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Reality",
+        "tags": [
+          "reality",
+          "space"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_reality_probability": {
+      "id": "descriptor_reality_probability",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Probability",
+      "description": "Outcome Analysis: Make Intelligence checks to calculate precise odds of complex events or identify statistical anomalies. Pattern Recognition: Make Awareness checks to spot improbable coincidences or detect manipulated probability. Luck Adjustment: Make Intelligence checks to subtly influence random events in your favor. Chaos Detection: Make Awareness checks to sense when probability is being externally manipulated. Advanced Applications: Significantly alter probability outcomes. Work with GM to establish specific limitations and consequences.",
+      "cost": {
+        "value": 10,
+        "pool": "utility",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Reality",
+        "tags": [
+          "reality",
+          "probability"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_reality_atomic": {
+      "id": "descriptor_reality_atomic",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Atomic",
+      "description": "Atomic Perception: Perceive the atomic structure of objects, identifying weaknesses or flaws for precise interaction. Density Alteration: Alter the density or composition of objects with a focused effort, such as hardening glass into steel. Atomic Manipulation: Ability to alter the distance between atoms for objects you can touch. Environmental Immunity: Immune to any extreme temperature or radiation effects. Advanced Applications: Ability to start atomic chain reactions. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign.",
+      "cost": {
+        "value": 10,
+        "pool": "utility",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Reality",
+        "tags": [
+          "reality",
+          "atomic"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    },
+    "descriptor_reality_cosmic": {
+      "id": "descriptor_reality_cosmic",
+      "schemaType": "entity",
+      "type": "descriptor",
+      "name": "Cosmic",
+      "description": "Universal Knowledge: Intuitively know information about the state of the universe, the cosmos, and other cosmic beings. Cosmic Presence: Inspire awe or reverence in those around you, projecting a cosmic aura of authority. Environmental Immunity: Operate unharmed in any environment, immune to any environmental effect. Energy Mastery: Make Intelligence checks to manipulate cosmic forces and stellar energies. Advanced Applications: You can infuse other beings with Cosmic energy and power. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign.",
+      "cost": {
+        "value": 10,
+        "pool": "utility",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Reality",
+        "tags": [
+          "reality",
+          "cosmic"
+        ]
+      },
+      "sourceFile": "descriptors.json"
+    }
+  }
