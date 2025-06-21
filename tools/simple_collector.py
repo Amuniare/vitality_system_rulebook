@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'root_modern_frontend'
+DEFAULT_PRESET = 'data_transfer'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
@@ -46,6 +46,15 @@ PRESETS = {
         'frontend/',
     ],
 
+    'data_transfer': [
+        # Root files + frontend
+        'frontend/rules/rulebook.md',
+        'frontend/character-builder/data/',
+        'modernApp/',
+
+    ],
+
+
     'root_modern_frontend': [
         # Root files + frontend
         '--root',
@@ -58,6 +67,15 @@ PRESETS = {
         '--root',
         'frontend/character-builder/',
         'frontend/rules/rulebook.md'
+    ],
+
+    'root_modern_character_builder': [
+        # Root files + character-builder
+
+        'frontend/character-builder/',
+        'frontend/rules/rulebook.md',
+        'modernApp/',
+
     ],
 
     'root_character_builder_minus_data': [

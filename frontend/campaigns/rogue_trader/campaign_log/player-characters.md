@@ -3,7 +3,7 @@
 ---
 
 
-# **Cinder (Celestine Vex) - Quick Reference**
+# **Cinder - Unsanctioned Pyromancer Psycher**
 
 ## **Character Creation Choices**
 - **Heir Ambition: Survivor** 
@@ -31,8 +31,8 @@
 - **Compulsively obsessed** with cleanliness and purity, terrified her definition of "contamination" might expand to include friends
 
 ## **Powers/Abilities**
-- **Purification fire** that burns simultaneously on physical, mental, and spiritual levels, bypassing armor to attack perceived corruption
-- **Some control but slow summoning** - has learned to manage her powers but it takes time and concentration to safely manifest them
+- **Purification fire** that burns away at both the targets physical body and their soul
+- **Moderate Control** - has learned to manage her powers but it takes time and concentration to safely manifest them
 
 ## **Relationships with Others**
 - **Dame Venecia** - Coddles her like other psykers; Cinder sees her as hope (authority who survived Warp changes)
