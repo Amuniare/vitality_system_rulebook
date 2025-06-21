@@ -49,7 +49,6 @@ PRESETS = {
     'data_transfer': [
         # Root files + frontend
         'frontend/rules/rulebook.md',
-        'frontend/character-builder/data/',
         'modernApp/',
 
     ],
