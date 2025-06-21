@@ -10,7 +10,7 @@ import datetime
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'root_frontend'
+DEFAULT_PRESET = 'root_modern_frontend'
 
 # ============================================================================
 # SIMPLE PRESETS - Just lists of files/folders to include
@@ -44,6 +44,13 @@ PRESETS = {
         # Root files + frontend
         '--root',
         'frontend/',
+    ],
+
+    'root_modern_frontend': [
+        # Root files + frontend
+        '--root',
+        'frontend/',
+        'modernApp/',
     ],
 
     'root_character_builder': [
