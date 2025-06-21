@@ -1,0 +1,100 @@
+{
+    "effect_type_damage": {
+      "id": "effect_type_damage",
+      "schemaType": "entity",
+      "type": "effect_type",
+      "name": "Damage Only",
+      "description": "Focuses on dealing the maximum amount of pure damage.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "Free"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "rule",
+          "value": "max_damage_potential",
+          "display": "Enables maximum damage potential for the attack."
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "Effect Type",
+        "tags": [
+          "damage",
+          "offense"
+        ]
+      },
+      "sourceFile": "effect_types.json"
+    },
+    "effect_type_condition": {
+      "id": "effect_type_condition",
+      "schemaType": "entity",
+      "type": "effect_type",
+      "name": "Condition Only",
+      "description": "Focuses on applying status effects without dealing any damage.",
+      "cost": {
+        "value": 0,
+        "pool": "special_attack_points",
+        "display": "Free"
+      },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "rule",
+          "value": "condition_focus",
+          "display": "Enables focused application of conditions."
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "Effect Type",
+        "tags": [
+          "condition",
+          "debuff",
+          "control"
+        ]
+      },
+      "sourceFile": "effect_types.json"
+    },
+    "effect_type_hybrid": {
+      "id": "effect_type_hybrid",
+      "schemaType": "entity",
+      "type": "effect_type",
+      "name": "Hybrid (Damage + Condition)",
+      "description": "A versatile attack that applies both damage and a condition simultaneously, but with reduced potency for both.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [
+        {
+          "type": "archetype_discount",
+          "value": "hybridSpecialist",
+          "display": "This is free for the Hybrid Specialist archetype."
+        }
+      ],
+      "effects": [
+        {
+          "type": "stat_penalty",
+          "target": [
+            "damage",
+            "conditions"
+          ],
+          "value": "tier",
+          "display": "-Tier to all Damage & Condition rolls."
+        }
+      ],
+      "ui": {
+        "component": "card",
+        "category": "Effect Type",
+        "tags": [
+          "hybrid",
+          "versatile"
+        ]
+      },
+      "sourceFile": "effect_types.json"
+    }
+  }

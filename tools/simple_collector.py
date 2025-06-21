@@ -72,6 +72,7 @@ PRESETS = {
         'frontend/character-builder/',
         'frontend/rules/rulebook.md',
         'modernApp/',
+        'tools/build_game_data.py'
 
     ],
 

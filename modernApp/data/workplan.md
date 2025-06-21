@@ -1,163 +1,261 @@
-Excellent. This is a much more powerful and maintainable workflow. Let's proceed with a full review of your `partials` directory, create a punch list of fixes and additions, and craft the perfect system prompt for your LLM.
+I'll help you review your schema development and create a comprehensive plan. Let me first search for and review all the relevant documents you mentioned.Based on my review of your schema evolution and current implementation, here are my recommendations:
 
-### 1. Analysis of Existing Partials
+## 1. Schema Decision: Use Schema 4 (Universal Entity Schema) with Modifications
 
-Here is a review of each file in `modernApp/data/partials/`, comparing them against your Universal Entity Schema (`schema_4.md`).
+**Why Schema 4 is the right choice:**
+- ✅ Flat structure enables fast lookups and simple state management
+- ✅ `parentId` elegantly handles hierarchical relationships without nesting
+- ✅ Universal structure allows one component to render any entity type
+- ✅ Supports your goal of 50%+ code reduction
 
-#### `archetypes.json`
-*   **Status:** ✅ **Excellent.**
-*   **Analysis:** This file is the gold standard and a perfect template. It correctly uses the Universal Entity Schema. The IDs are namespaced (`archetype_movement_swift`), costs are objects (`{ "pool": "selection" }`), and the structure is flat.
-*   **Action Needed:** None. Use this as the example for all other files.
-
-#### `main_pool.json`
-*   **Status:** ❌ **Incorrectly Organized.**
-*   **Analysis:** This file is a mixture of multiple entity types (`flaw`, `boon`, `action_upgrade`, `trait_condition`). While the individual entities *within* this file are reasonably well-formatted, they don't belong together. This monolithic file defeats the purpose of modular partials.
-*   **Action Needed:**
-    1.  **Delete this file.**
-    2.  Split its contents into the following new partial files:
-        *   `flaws.json`
-        *   `boons_simple.json`
-        *   `actions.json`
-        *   `trait_conditions.json`
-
-#### `limits.json` & `unique_abilities.json`
-*   **Status:** ❌ **Incorrect Schema (Major Issue).**
-*   **Analysis:** Both of these files use a custom, deeply nested hierarchical structure. They **do not** conform to the Universal Entity Schema. The build script cannot process these as-is. This is a primary blocker.
-*   **Action Needed:**
-    1.  **Flatten the structure.** Every single item (the main limit, its variants, and their modifiers) must become a top-level entity in the JSON object.
-    2.  **Add `parentId` for relationships.** A modifier must have a `parentId` that points to its variant's ID. A variant must have a `parentId` that points to the main limit's ID.
-    3.  **Standardize the `cost` object.** A simple number like `"cost": 40` must become `"cost": { "value": 40, "pool": "limit_points", "display": "+40p" }`.
-    4.  **Apply universal schema fields** (`type`, `schemaType`, `ui`, `sourceFile`, etc.) to every single entry.
-
----
-
-### 2. Full Content Checklist (Fixes & Additions)
-
-Here is a complete punch list of all the partial files that need to be created or fixed to fully represent your game rules.
-
-| Partial File | Status & Action Required |
-| :--- | :--- |
-| **`actions.json`** | 🟡 **Create/Split:** Extract from `main_pool.json`. Ensure all items follow the Universal Schema. |
-| **`archetypes.json`** | ✅ **Complete:** No action needed. |
-| **`attributes.json`** | 🔴 **Missing:** Generate this new partial from `frontend/character-builder/data/attributes.json`. |
-| **`bio.json`** | 🔴 **Missing:** Generate this partial. It should contain the `questionnaires` object, not entities. |
-| **`boons_simple.json`** | 🟡 **Create/Split:** Extract from `main_pool.json`. |
-| **`character_types.json`**| 🔴 **Missing:** Generate this new partial from `frontend/character-builder/data/character_type.json`. |
-| **`conditions.json`** | 🔴 **Missing:** Generate this new partial, combining `conditions_basic.json` and `conditions_advanced.json`. |
-| **`descriptors.json`** | 🔴 **Missing:** Generate this new partial from `frontend/character-builder/data/descriptors.json`. |
-| **`effect_types.json`** | 🔴 **Missing:** Generate this new partial from `frontend/character-builder/data/effect_types_definitions.json`. |
-| **`features.json`** | 🔴 **Missing:** Generate this partial. This will require special handling for its tiered structure. |
-| **`flaws.json`** | 🟡 **Create/Split:** Extract from `main_pool.json`. **Crucially, ensure `cost.value` is `30` and not `-30`.** |
-| **`limits.json`** | ❌ **Fix Required:** Complete refactor needed. Flatten the entire hierarchy into individual entities with `parentId` fields. |
-| **`movement_features.json`** | 🔴 **Missing:** Generate this partial. |
-| **`senses.json`** | 🔴 **Missing:** Generate this partial. |
-| **`skills.json`** | 🔴 **Missing:** Generate from `frontend/character-builder/data/skills.json` and `expertise.json`. |
-| **`trait_conditions.json`**| 🟡 **Create/Split:** Extract from `main_pool.json`. |
-| **`unique_abilities.json`**| ❌ **Fix Required:** Complete refactor needed. Flatten the hierarchy; extract all upgrades into their own entities with a `parentId`. |
-| **`upgrades.json`** | 🔴 **Missing:** Generate this partial. Flatten the hierarchy from the original file. |
-
----
-
-### 3. The System Prompt for Your LLM
-
-Here is the system prompt you should use. It is designed to be comprehensive and enforce the schema, especially the critical `parentId` relationship for hierarchical data.
-
-```markdown
-You are a meticulous data architect. Your primary task is to convert game rulebook text into a structured JSON format based on a strict Universal Entity Schema. You must adhere to this schema precisely.
-
-**Your Goal:**
-Take the provided source text (game rules) and generate a JSON object containing one or more entities.
-- Each KEY in the JSON object MUST be the entity's namespaced ID (e.g., "flaw_combat_slow").
-- Each VALUE in the JSON object MUST be a valid entity object conforming to the schema below.
-
----
-
-### **Universal Entity Schema (v3.1)**
-
+**Necessary modifications:**
 ```json
 {
-  "id": "string:type_category_name",
-  "schemaType": "entity",
-  "type": "string",
-  "name": "string:DisplayName",
-  "description": "string:ExactRulebookText",
-  "cost": {
-    "value": "number | string_formula",
-    "pool": "string:main|utility|special_attack|limit_points|selection|none",
-    "display": "string:UI_Text (e.g., '30p', 'Free', '+40p')"
+  "schemaVersion": "4.0",
+  "metadata": {
+    "gameVersion": "5.5",
+    "lastUpdated": "2024-01-20"
   },
-  "parentId": "string:optional_id_of_parent_entity",
-  "requirements": [],
-  "effects": [],
-  "ui": {
-    "component": "string:card|list_item",
-    "category": "string:For_UI_Grouping",
-    "tags": ["string:search_tag_1"]
+  "entities": {
+    // All flat entities here
   },
-  "sourceFile": "string:original_filename.json"
+  "questionnaires": {
+    // Bio questionnaires (not entities)
+  },
+  "bannedCombinations": [
+    // Incompatible upgrade pairs
+  ],
+  "calculationFormulas": {
+    // Centralized formulas for complex calculations
+  }
 }
 ```
 
----
+## 2. Limits/Unique Abilities: Flat with ParentId
 
-### **CRITICAL INSTRUCTION: Handling Hierarchical Data (subEntities)**
-
-If the source text describes a main entity with sub-components (e.g., a Limit with Variants and Modifiers, or a Unique Ability with Upgrades), you MUST follow this flattening process:
-
-1.  Every single item, including variants and modifiers, becomes its own top-level entity in the final JSON object.
-2.  Each sub-component entity MUST have a `parentId` field that references the ID of its direct parent.
-3.  Each sub-component MUST have its own complete entity structure, including `id`, `type`, `cost`, `ui`, etc.
-
-**EXAMPLE of Flattening Hierarchical Data:**
-
-**IF GIVEN THIS HIERARCHICAL SOURCE:**
+**Current Problem:** Your limits.json uses deeply nested structure:
 ```json
-"Charge-Up": {
-  "cost": 40,
-  "variants": {
-    "Extended Charge": {
-      "cost": 50,
-      "modifiers": {
-        "Triple Charge": { "cost": 60 }
+{
+  "charge_up": {
+    "variants": {
+      "extended_charge": {
+        "modifiers": {
+          "triple_charge": {...}
+        }
       }
     }
   }
 }
 ```
 
-**YOU MUST PRODUCE THIS FLATTENED JSON OUTPUT:**
+**Solution:** Flatten completely with parentId references:
 ```json
 {
-  "limit_main_charge_up": {
-    "id": "limit_main_charge_up",
-    "schemaType": "entity",
-    "type": "limit_main",
+  "limit_charge_up": {
+    "id": "limit_charge_up",
+    "type": "limit",
     "name": "Charge-Up",
     "cost": { "value": 40, "pool": "limit_points", "display": "+40p" },
-    "ui": { "category": "Charge-Up" /* ... */ }
+    "parentId": null
   },
-  "limit_variant_charge_up_extended_charge": {
-    "id": "limit_variant_charge_up_extended_charge",
-    "schemaType": "entity",
+  "limit_charge_up_extended": {
+    "id": "limit_charge_up_extended",
     "type": "limit_variant",
     "name": "Extended Charge",
-    "parentId": "limit_main_charge_up",
     "cost": { "value": 50, "pool": "limit_points", "display": "+50p" },
-    "ui": { "category": "Charge-Up" /* ... */ }
+    "parentId": "limit_charge_up"
   },
-  "limit_modifier_extended_charge_triple_charge": {
-    "id": "limit_modifier_extended_charge_triple_charge",
-    "schemaType": "entity",
+  "limit_charge_up_extended_triple": {
+    "id": "limit_charge_up_extended_triple",
     "type": "limit_modifier",
     "name": "Triple Charge",
-    "parentId": "limit_variant_charge_up_extended_charge",
     "cost": { "value": 60, "pool": "limit_points", "display": "+60p" },
-    "ui": { "category": "Charge-Up" /* ... */ }
+    "parentId": "limit_charge_up_extended"
   }
 }
 ```
 
+**Benefits:**
+- UI can reconstruct hierarchy by following parentId chains
+- Each item is independently purchasable/validatable
+- Supports your existing SpecialAttackSystem logic
+
+## 3. Critical Changes to Partials
+
+### High Priority Fixes:
+1. **Split main_pool.json** into:
+   - `flaws.json` (with CORRECT 30pt cost)
+   - `boons_simple.json`
+   - `actions.json`
+   - `trait_conditions.json`
+
+2. **Flatten limits.json** - Every limit/variant/modifier as top-level entity
+3. **Flatten unique_abilities.json** - Main abilities and upgrades separate
+4. **Fix cost economics** - Flaws COST 30 points, not give them
+
+### Missing Files to Create:
+- `bio.json` - Questionnaire data (not entities)
+- `expertise.json` - Skill categories
+- `movement_features.json` - Movement-related abilities
+
+## 4. Final Schema Document
+
+Create `modernApp/data/schema_final.md`:
+
+```markdown
+# Vitality Character Builder - Final Data Schema v4.0
+
+## Overview
+Single source of truth using flat entity structure with parentId relationships.
+
+## Entity Schema
+Every entity MUST have:
+- `id`: Namespaced identifier (type_category_name)
+- `schemaType`: Always "entity"
+- `type`: Entity type (flaw, trait, limit, etc.)
+- `name`: Display name
+- `description`: Exact rulebook text
+- `cost`: Object with value/pool/display
+- `parentId`: Reference to parent entity (null if none)
+- `requirements`: Array of prerequisite conditions
+- `effects`: Array of mechanical effects
+- `ui`: Display metadata
+- `sourceFile`: Original filename
+
+## File Structure
+```
+unified-game-data.json
+├── schemaVersion
+├── metadata
+├── entities (flat list)
+├── questionnaires
+├── bannedCombinations
+└── calculationFormulas
+```
+
+## Implementation Rules
+1. NO nested structures in entities
+2. Use parentId for ALL hierarchical relationships
+3. Costs are ALWAYS objects, never raw numbers
+4. Effects use declarative format for automation
+5. UI metadata drives component rendering
+```
+
+
+
+### Success Metrics
+- ✅ Single JSON file < 500KB
+- ✅ 50%+ code reduction achieved
+- ✅ All rules correctly implemented
+- ✅ < 2s page load, < 100ms interactions
+- ✅ Roll20 export working
+
 ---
 
-Now, using the provided schema and the flattening example, process the following text and generate the JSON output. Ensure the `description` field contains the exact and complete text provided. Do not summarize.
+
+## Files That Are Perfect (No Changes Needed) ✅
+- **archetypes.json** - Already using universal schema perfectly
+- **flaws.json** - Correctly shows cost: 30p 
+- **boons_simple.json** - Proper flat structure
+- **actions.json** - Well-formatted entities
+- **trait_conditions.json** - Correct schema
+- **bio.json** - Has questionnaires object as expected
+- **attributes.json** - Good structure
+- **character_types.json** - Proper entities
+- **conditions.json** - Well-formatted
+- **descriptors.json** - Correct schema
+- **effect_types.json** - Good structure
+- **skills.json** - Proper entities
+- **upgrades.json** - Already flat with correct schema!
+- **features.json** - Perfect flat structure
+- **senses.json** - Correct schema implementation
+- **movement_features.json** - Well-formatted
+
+## Files That Need Major Work ❌
+
+### 1. **limits.json**
+**Current Problem:** Uses nested hierarchical structure with `subEntities`
+**Required Changes:**
+- Flatten completely - every limit, variant, and modifier becomes a top-level entity
+- Add `parentId` field to link relationships
+- Fix cost format from `"cost": 40` to `"cost": { "value": 40, "pool": "limit_points", "display": "+40p" }`
+- Add all universal schema fields
+
+### 2. **unique_abilities.json**
+**Current Problem:** Uses nested structure with `subEntities` 
+**Required Changes:**
+- Flatten all abilities and their upgrades into separate entities
+- Add `parentId` to link upgrades to their main ability
+- Standardize cost objects
+- Add all universal schema fields
+
+## Updated Workplan
+
+Since most files are already correct, here's the focused plan:
+
+### Phase 1: Fix Hierarchical Files (2 days)
+
+**Day 1: Flatten limits.json**
+```json
+// FROM THIS:
+{
+  "charge_up": {
+    "subEntities": {
+      "variants": [...]
+    }
+  }
+}
+
+// TO THIS:
+{
+  "limit_main_charge_up": {
+    "id": "limit_main_charge_up",
+    "type": "limit_main",
+    "parentId": null,
+    "cost": { "value": 40, "pool": "limit_points", "display": "+40p" }
+  },
+  "limit_variant_charge_up_extended": {
+    "id": "limit_variant_charge_up_extended", 
+    "type": "limit_variant",
+    "parentId": "limit_main_charge_up",
+    "cost": { "value": 50, "pool": "limit_points", "display": "+50p" }
+  }
+}
 ```
+
+**Day 2: Flatten unique_abilities.json**
+```json
+// FROM THIS:
+{
+  "unique_ability_aura": {
+    "subEntities": {
+      "upgrades": [...]
+    }
+  }
+}
+
+// TO THIS:
+{
+  "unique_ability_aura": {
+    "id": "unique_ability_aura",
+    "type": "unique_ability",
+    "parentId": null
+  },
+  "upgrade_aura_increased_radius": {
+    "id": "upgrade_aura_increased_radius",
+    "type": "unique_ability_upgrade",
+    "parentId": "unique_ability_aura"
+  }
+}
+```
+
+### Phase 2: Build & Validation (1 day)
+- Run build_game_data.py to generate unified-game-data.json
+- Create validation script to verify parentId relationships
+- Test that hierarchical data can be reconstructed from flat structure
+
+### Phase 3: Frontend Implementation (1 week)
+- Complete EntityLoader with parentId traversal
+- Build HierarchicalDisplay component for limits/abilities
+- Implement remaining tabs
+

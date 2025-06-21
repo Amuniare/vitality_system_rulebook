@@ -1,0 +1,214 @@
+{
+    "questionnaires": {
+      "pc": {
+        "title": "Player Character Creation",
+        "description": "Essential questions for creating your Player Character heir to the Rogue Trader dynasty.",
+        "questions": [
+          {
+            "id": "player_name",
+            "question": "Player Name?",
+            "type": "dropdown",
+            "options": [
+              "Diego",
+              "Emmanuel",
+              "Phantom",
+              "Jubb",
+              "Nick",
+              "Trent",
+              "Other"
+            ]
+          },
+          {
+            "id": "heir_ambition",
+            "question": "What drives your desire to inherit the dynasty's warrant of trade?",
+            "type": "dropdown",
+            "options": [
+              "Legacy Builder - To create something that will outlast you.",
+              "Power Seeker - To crave authority and influence.",
+              "Duty Bound - To carry on the dynasty's mission.",
+              "Survivor - To gain the protection and resources leadership provides.",
+              "Idealist - To use the dynasty's power to make the Imperium better.",
+              "Other"
+            ]
+          },
+          {
+            "id": "bond_with_trader",
+            "question": "What is your bond with the Rogue Trader, Dame Venecia?",
+            "type": "dropdown",
+            "options": [
+              "The Loyal Retainer - Served from her Knight House days, bound by a blood debt from Cadia.",
+              "The Ambitious Partner - Joined her early on, splitting risks and rewards as equals.",
+              "The Reluctant Ally - A recent recruit with a hidden agenda, bound by mutual necessity.",
+              "The Shared Visionary - You both work toward the same long-term goal for the Imperium.",
+              "Other"
+            ]
+          },
+          {
+            "id": "mandate_focus",
+            "question": "Which aspect of the warrant's mandate do you most want to accomplish?",
+            "type": "dropdown",
+            "options": [
+              "Supply Line Establishment - To maintain supply lines in the most dangerous regions.",
+              "Asset Recovery & Cleansing - To cleanse corruption and salvage assets from lost territories.",
+              "Technology Acquisition - To acquire Warp-resistant tech and psyker artifacts for the Crusade.",
+              "Military Recruitment - To build elite forces from Warp exposure survivors and unsanctioned psykers.",
+              "Other"
+            ]
+          },
+          {
+            "id": "background_motivation",
+            "question": "What drove you to leave your previous life?",
+            "type": "dropdown",
+            "options": [
+              "Ambition Unfulfilled - Your talents exceeded what your previous station could offer.",
+              "Scandal or Disgrace - A failure, betrayal, or forbidden act forced you from your former life.",
+              "Loyalty Transferred - You followed someone into exile or discovered a more worthy cause.",
+              "Necessity - War, corruption, or upheaval left you no choice but to seek new purpose.",
+              "Other"
+            ]
+          },
+          {
+            "id": "authority_handling",
+            "question": "How do you handle authority and moral compromises?",
+            "type": "dropdown",
+            "options": [
+              "Respect hierarchy, refuse compromise - You follow Imperial doctrine absolutely.",
+              "Question authority, small compromises for greater good - You bend rules when lives hang in the balance.",
+              "Challenge authority, pragmatic solutions - You prioritize results over protocol.",
+              "Ignore authority unless beneficial - You serve your own interests first.",
+              "Other"
+            ]
+          },
+          {
+            "id": "others_perception",
+            "question": "How do others see you?",
+            "type": "dropdown",
+            "options": [
+              "Reliable and trustworthy - Colleagues depend on your word and competence.",
+              "Dangerous but useful - Others fear your methods but recognize your effectiveness.",
+              "Ambitious and driven - People see your hunger for advancement and achievement.",
+              "Mysterious and unpredictable - You keep your thoughts hidden and actions surprise others.",
+              "Other"
+            ]
+          },
+          {
+            "id": "character_bio",
+            "question": "Additional Character Background & Biography",
+            "type": "textarea",
+            "placeholder": "Describe your character's history, personality, goals, relationships, or any other details that flesh out who they are..."
+          },
+          {
+            "id": "gm_notes",
+            "question": "Secrets & Notes for the GM",
+            "type": "textarea",
+            "gmOnly": true,
+            "placeholder": "Enter any character secrets, hidden agendas, or notes visible only to the Game Master."
+          }
+        ]
+      },
+      "npc": {
+        "title": "NPC Creation",
+        "description": "Each player creates 2 NPCs who serve as key crew members aboard the Eternal Vigil.",
+        "questions": [
+          {
+            "id": "connection_role",
+            "question": "What is this NPC's connection and role to your character?",
+            "type": "dropdown",
+            "options": [
+              "Blood Bond Specialist - Family or sworn companion with unique skills.",
+              "Debt-Bound Right Hand - Life-saver who handles practical operations.",
+              "Secret-Sharing Conscience - Dangerous knowledge binds you; keeps you grounded.",
+              "Partner Enforcer - Longtime scheme partner who handles dirty work.",
+              "Other"
+            ]
+          },
+          {
+            "id": "personal_drive",
+            "question": "What is this NPC's personal drive and motivation?",
+            "type": "dropdown",
+            "options": [
+              "The Protector - Motivated by safeguarding something precious.",
+              "The Seeker - Pursues something lost, hidden, or forbidden.",
+              "The Builder - Works toward creating something lasting.",
+              "The Survivor - Driven by need to escape their past or outlive enemies.",
+              "The Faithful - Serves a higher cause or promise to someone important.",
+              "Other"
+            ]
+          },
+          {
+            "id": "npc_background",
+            "question": "NPC Background & Details",
+            "type": "textarea",
+            "placeholder": "Describe this NPC's history, personality, skills, appearance, and relationship dynamics with your character and the crew..."
+          },
+          {
+            "id": "npc_secrets",
+            "question": "Secrets & Notes for the GM",
+            "type": "textarea",
+            "gmOnly": true,
+            "placeholder": "Enter any secrets, hidden agendas, or plot hooks for this NPC that only the GM should know..."
+          }
+        ]
+      },
+      "other": {
+        "title": "Other Character Creation",
+        "description": "For creating additional characters, contacts, or background elements.",
+        "questions": [
+          {
+            "id": "character_type",
+            "question": "What type of character is this?",
+            "type": "dropdown",
+            "options": [
+              "Contact/Ally - Someone who provides information or assistance.",
+              "Rival/Enemy - An antagonist or competing interest.",
+              "Family Member - Related to a PC but not directly involved in operations.",
+              "Organization Representative - Speaks for a faction, guild, or institution.",
+              "Background Character - Fills out the world but has limited direct involvement.",
+              "Other"
+            ]
+          },
+          {
+            "id": "faction_affiliation",
+            "question": "What faction or organization is this character affiliated with?",
+            "type": "dropdown",
+            "options": [
+              "Adeptus Mechanicus - Tech-priests and forge worlds.",
+              "Imperial Navy - Fleet officers and void-born crews.",
+              "Astra Militarum - Imperial Guard regiments and commanders.",
+              "Adeptus Ministorum - Ecclesiarchy priests and missionaries.",
+              "Inquisition - Inquisitors, acolytes, and their agents.",
+              "Noble Houses - Planetary governors and aristocratic families.",
+              "Rogue Trader Dynasties - Other warrant holders and their crews.",
+              "Merchant Guilds - Trade consortiums and commercial interests.",
+              "Criminal Organizations - Pirates, smugglers, and underworld contacts.",
+              "Chaos Cults - Heretical organizations and corrupted individuals.",
+              "Eldar - Craftworld, Corsair, or Dark Eldar factions.",
+              "Tau Empire - Fire caste, earth caste, or diplomatic corps.",
+              "Ork Clans - Warbosses, meks, or surprisingly reasonable greenskins.",
+              "Independent/Unaffiliated - Free agents or isolated communities.",
+              "Other"
+            ]
+          },
+          {
+            "id": "relationship_to_party",
+            "question": "How does this character relate to the party or dynasty?",
+            "type": "textarea",
+            "placeholder": "Describe their connection to the PCs, Dame Venecia, or the dynasty's operations..."
+          },
+          {
+            "id": "other_background",
+            "question": "Character Background & Details",
+            "type": "textarea",
+            "placeholder": "Describe this character's history, personality, goals, and role in the story..."
+          },
+          {
+            "id": "other_gm_notes",
+            "question": "Secrets & Notes for the GM",
+            "type": "textarea",
+            "gmOnly": true,
+            "placeholder": "Enter any secrets, plot hooks, or GM-specific information about this character..."
+          }
+        ]
+      }
+    }
+  }
