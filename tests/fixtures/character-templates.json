@@ -1,0 +1,90 @@
+{
+    "newCharacterDefault": {
+        "id": "char_default_template",
+        "name": "New Character",
+        "tier": 4,
+        "schemaVersion": "4.0",
+        "archetypes": {},
+        "flaws": [],
+        "traits": [],
+        "boons": [],
+        "action_upgrades": [],
+        "features": [],
+        "senses": [],
+        "descriptors": [],
+        "movement_features": [],
+        "unique_abilities_purchased": [],
+        "special_attacks_created": [],
+        "attributes": {
+            "focus": 0,
+            "mobility": 0,
+            "power": 0,
+            "endurance": 0,
+            "awareness": 0,
+            "communication": 0,
+            "intelligence": 0
+        },
+        "pools": {}
+    },
+    "tier1TankConcept": {
+        "id": "char_tier1_tank",
+        "name": "Rook the Immovable",
+        "tier": 1,
+        "schemaVersion": "4.0",
+        "archetypes": {
+            "movement": "archetype_movement_behemoth",
+            "defensive": "archetype_defensive_fortress"
+        },
+        "flaws": [
+            {
+                "id": "flaw_slow",
+                "purchaseId": "p_slow_1"
+            }
+        ],
+        "traits": [],
+        "boons": [],
+        "attributes": {
+            "focus": 0,
+            "mobility": 0,
+            "power": 0,
+            "endurance": 2,
+            "awareness": 1,
+            "communication": 0,
+            "intelligence": 0
+        }
+    },
+    "tier5MageConcept": {
+        "id": "char_tier5_mage",
+        "name": "Lyra Spellweaver",
+        "tier": 5,
+        "schemaVersion": "4.0",
+        "archetypes": {
+            "effectType": "archetype_effectType_crowdControl",
+            "uniqueAbility": "archetype_uniqueAbility_extraordinary",
+            "specialAttack": "archetype_specialAttack_paragon"
+        },
+        "flaws": [],
+        "traits": [],
+        "boons": [
+            {
+                "id": "boon_simple_psychic",
+                "purchaseId": "p_psychic_1"
+            }
+        ],
+        "attributes": {
+            "focus": 4,
+            "mobility": 1,
+            "power": 3,
+            "endurance": 2,
+            "awareness": 2,
+            "communication": 2,
+            "intelligence": 1
+        },
+        "unique_abilities_purchased": [
+            {
+                "id": "unique_ability_aura",
+                "purchaseId": "p_aura_1"
+            }
+        ]
+    }
+}

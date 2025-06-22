@@ -13,7 +13,7 @@ import sys
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'root_modern_app_minus_partials_plus_tests'
+DEFAULT_PRESET = 'root_modern_app_minus_partials'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude
@@ -54,6 +54,9 @@ PRESETS = {
         'modernApp/',
         '!modernApp/data/partials/',
         'tests/',
+        '!tests/node_modules/',
+        '!tests/output/',
+
     ],
 
 

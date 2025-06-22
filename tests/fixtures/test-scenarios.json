@@ -1,0 +1,80 @@
+{
+    "basicInfoUpdate": {
+        "description": "Test updating basic character name and tier.",
+        "steps": [
+            {
+                "action": "fill",
+                "selectorKey": "basicInfoTab.characterNameInput",
+                "value": "Test Character Alpha"
+            },
+            {
+                "action": "selectOption",
+                "selectorKey": "basicInfoTab.characterTierSelect",
+                "value": "5"
+            },
+            {
+                "action": "click",
+                "selectorKey": "basicInfoTab.saveButton"
+            },
+            {
+                "action": "waitForState",
+                "stateCheck": "characterNameToBe",
+                "expectedValue": "Test Character Alpha"
+            },
+            {
+                "action": "waitForState",
+                "stateCheck": "characterTierToBe",
+                "expectedValue": 5
+            }
+        ]
+    },
+    "archetypeSelection_Movement": {
+        "description": "Test selecting a movement archetype and verifying state.",
+        "prerequisiteCharacter": "newCharacterDefault",
+        "steps": [
+            {
+                "action": "navigateToTab",
+                "tabId": "archetypes"
+            },
+            {
+                "action": "selectOption",
+                "selectorKey": "archetypeTab.movementArchetypeSelect",
+                "optionIndex": 1
+            },
+            {
+                "action": "waitForState",
+                "stateCheck": "archetypeSelected",
+                "category": "movement",
+                "expectedValueProperty": "valueFromSelection"
+            }
+        ]
+    },
+    "mainPool_PurchaseFlaw": {
+        "description": "Test purchasing a flaw from the Main Pool tab.",
+        "steps": [
+            {
+                "action": "navigateToTab",
+                "tabId": "main-pool"
+            },
+            {
+                "action": "click",
+                "selectorKey": "mainPoolTab.flawsSectionButton"
+            },
+            {
+                "action": "waitForElementVisible",
+                "selector": ".purchase-card[data-entity-type='flaw'] button[data-action='purchase']"
+            },
+            {
+                "action": "clickFirstAvailable",
+                "selector": ".purchase-card[data-entity-type='flaw'] button[data-action='purchase']",
+                "storeEntityIdAs": "purchasedFlawId"
+            },
+            {
+                "action": "waitForState",
+                "stateCheck": "entityIsPurchased",
+                "entityType": "flaw",
+                "entityIdProperty": "purchasedFlawId"
+            }
+        ]
+    }
+}

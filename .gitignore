@@ -20,4 +20,10 @@ all_data
 .gemini
 
 simple_collector.py
-update.py
+update.
+
+node_modules
+package-lock.json
+tests/output
+tests/playwright-report
+tests/tests

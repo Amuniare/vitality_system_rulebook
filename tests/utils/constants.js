@@ -25,7 +25,7 @@ export const TAB_BUTTON_SELECTORS = {
 };
 
 
-export const OUTPUT_DIR_BASE = 'tests/output'; // Base for test artifacts
+export const OUTPUT_DIR_BASE = './output'; // Base for test artifacts
 
 // Example selectors (these will need to be specific to your app's DOM)
 export const CHARACTER_NAME_INPUT = '#character-name';

@@ -1,4 +1,7 @@
+
 // modernApp/app.js
+let isAppInitializedGlobally = false; // Guard against multiple initializations
+
 import { SchemaSystem } from './core/SchemaSystem.js';
 import { StateManager } from './core/StateManager.js';
 import { EntityLoader } from './core/EntityLoader.js';
@@ -287,6 +290,11 @@ class ModernCharacterBuilder {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    if (isAppInitializedGlobally) {
+        Logger.warn('[App] DOMContentLoaded fired, but app already initialized. Preventing re-initialization.');
+        return;
+    }
+    isAppInitializedGlobally = true; // Set the guard
     Logger.info('[App] DOM loaded, initializing app...');
     
     try {
@@ -309,12 +317,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </button>
             </div>
         `;
-    }
-});
-
-document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && window.modernCharacterBuilder?.initialized) {
-        window.modernCharacterBuilder.updateCharacterSummary();
     }
 });
 
