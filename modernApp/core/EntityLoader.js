@@ -61,41 +61,65 @@ export class EntityLoader {
         }
     }
     
+
+
+
     static getEntity(id) {
         return this.entities.get(id);
     }
-    
+
     static getEntitiesByType(type) {
-        const ids = this.indexes.byType.get(type) || new Set();
-        return Array.from(ids).map(id => this.entities.get(id));
-    }
-    
-    static getEntitiesByCategory(category) {
-        const ids = this.indexes.byCategory.get(category) || new Set();
-        return Array.from(ids).map(id => this.entities.get(id));
-    }
-    
-    static getEntitiesByFilter(filter) {
-        let results = Array.from(this.entities.values());
-        
-        if (filter.type) {
-            results = results.filter(e => e.type === filter.type);
+        const ids = this.indexes.byType.get(type);
+        if (!ids) {
+            Logger.warn(`[EntityLoader] No entities found for type: ${type}`);
+            return [];
         }
+        return Array.from(ids).map(id => this.entities.get(id)).filter(Boolean);
+    }
+
+    static getAvailableEntities(type, character = null) {
+        const entities = this.getEntitiesByType(type);
         
-        if (filter.category) {
-            results = results.filter(e => e.category === filter.category);
-        }
-        
-        if (filter.tags) {
-            results = results.filter(e => 
-                e.tags && filter.tags.some(tag => e.tags.includes(tag))
+        // For unique abilities, filter out already purchased upgrades
+        if (type === 'unique_ability' && character) {
+            const purchasedIds = new Set(
+                (character.unique_abilities || []).map(p => p.id)
             );
+            
+            return entities.filter(entity => {
+                // Show base abilities and unpurchased upgrades
+                if (!entity.parentId) return true;
+                return !purchasedIds.has(entity.id);
+            });
         }
         
-        if (filter.custom) {
-            results = results.filter(filter.custom);
+        return entities;
+    }
+
+    static getEntitiesByCategory(category) {
+        const ids = this.indexes.byCategory.get(category);
+        if (!ids) return [];
+        return Array.from(ids).map(id => this.entities.get(id)).filter(Boolean);
+    }
+
+    static getEntitiesByTag(tag) {
+        const ids = this.indexes.byTag.get(tag);
+        if (!ids) return [];
+        return Array.from(ids).map(id => this.entities.get(id)).filter(Boolean);
+    }
+
+    static searchEntities(query) {
+        const lowerQuery = query.toLowerCase();
+        const results = [];
+        
+        for (const [id, entity] of this.entities) {
+            if (entity.name?.toLowerCase().includes(lowerQuery) ||
+                entity.description?.toLowerCase().includes(lowerQuery)) {
+                results.push(entity);
+            }
         }
         
         return results;
     }
+
 }

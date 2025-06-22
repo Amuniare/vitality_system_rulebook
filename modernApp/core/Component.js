@@ -1,9 +1,4 @@
-from pathlib import Path
 
-file_path = Path("modernApp/core/Component.js")
-file_path.parent.mkdir(parents=True, exist_ok=True) # Ensure directory exists
-
-content = """
 // modernApp/core/Component.js
 import { Logger } from '../utils/Logger.js';
 import { PropsManager } from './PropsManager.js'; // Import PropsManager
@@ -193,10 +188,3 @@ export class Component {
         Logger.debug(`[Component] Unsubscribed all for ${this.constructor.name}`);
     }
 }
-"""
-
-try:
-    file_path.write_text(content, encoding='utf-8')
-    print(f"Successfully updated {file_path}")
-except Exception as e:
-    print(f"An error occurred while writing to {file_path}: {e}")

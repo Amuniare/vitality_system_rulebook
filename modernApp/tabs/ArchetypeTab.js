@@ -63,19 +63,23 @@ export class ArchetypeTab {
         Logger.debug('[ArchetypeTab] Character archetypes loaded/reloaded:', this.selectedArchetypes);
     }
 
+    // Replace the existing onCharacterUpdate method
     onCharacterUpdate(character) {
         if (character && character.archetypes) {
-            const currentSelectionsJSON = JSON.stringify(this.selectedArchetypes);
-            const newSelectionsJSON = JSON.stringify(character.archetypes);
-            
-            if (currentSelectionsJSON !== newSelectionsJSON) {
-                this.selectedArchetypes = { ...character.archetypes };
-                if (this.container && this.container.style.display !== 'none') {
-                    this.render(); 
-                    Logger.debug('[ArchetypeTab] Re-rendered due to external character archetype update.');
-                }
+            // Always update selections and render if visible
+            this.selectedArchetypes = { ...character.archetypes };
+            if (this.container && this.container.style.display !== 'none') {
+                this.render();
+                Logger.debug('[ArchetypeTab] Re-rendered due to character update.');
             }
         }
+    }
+
+    // Also add a method to handle tab activation
+    onTabActivated() {
+        // Re-render when tab becomes active to catch any missed updates
+        this.loadCharacterArchetypes();
+        this.render();
     }
     
     render() {

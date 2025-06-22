@@ -11,7 +11,7 @@ import { EntityLoader } from './EntityLoader.js'; // Ensure EntityLoader is impo
 export class StateManager {
     static instance = null; // Not used as a typical singleton, but methods are static
     static characterManager = null;
-    static character = null;
+    static character = null; // Canonical property for current character state
     static history = [];
     static historyIndex = -1;
     static maxHistorySize = 50;
@@ -28,15 +28,11 @@ export class StateManager {
         
         this.characterManager = characterManagerInstance; // Use passed instance
         
-        // Load active character from CharacterManager
-        // CharacterManager's init should ensure an active character is available or created.
         await this.loadActiveCharacter();
         
-        // Set up auto-save
         this.setupAutoSave();
         
-        // Listen for character switches
-        EventBus.on('CHARACTER_SWITCHED', async (data) => { // data might contain { characterId, metadata }
+        EventBus.on('CHARACTER_SWITCHED', async (data) => {
             await this.loadActiveCharacter();
         });
         
@@ -44,75 +40,168 @@ export class StateManager {
         Logger.info('[StateManager] Initialized');
     }
 
-    static dispatch(actionType, payload) {
-        Logger.debug(`[StateManager] Dispatching action: ${actionType}`, payload);
-        let updates;
-        let success = true; 
-        let error = null;   
-    
-        switch (actionType) {
-            case 'UPDATE_BASIC_INFO':
-                // Payload: { name, tier }
-                this.updateCharacter(payload); 
-                break;
-            case 'UPDATE_ARCHETYPES':
-                // Payload should be the new archetypes object e.g., { movement: "id1", attackType: "id2", ... }
-                this.updateCharacter({ archetypes: payload }); 
-                EventBus.emit('ARCHETYPES_UPDATED', { // Emit specific event for archetypes
-                    archetypes: payload,
-                    character: this.character
-                });
-                break;
-            case 'PURCHASE_ENTITY':
-                // Payload: { entityId, entityType, context (optional) }
-                const entityToPurchase = EntityLoader.getEntity(payload.entityId);
-                if (entityToPurchase) {
-                    updates = this._internalPurchaseEntity(entityToPurchase, payload.entityType, payload.context || {});
-                    if (updates) {
-                        this.updateCharacter(updates);
-                        EventBus.emit('ENTITY_PURCHASED', { entity: entityToPurchase, character: this.character });
-                    }
-                } else {
-                    const errorMessage = `Entity not found for purchase: ${payload.entityId}`;
-                    Logger.error(`[StateManager] ${errorMessage}`);
-                    success = false;
-                    error = errorMessage;
-                }
-                break;
-            case 'REMOVE_ENTITY':
-                // Payload: { purchaseId, entityType }
-                updates = this._internalRemoveEntity(payload.purchaseId, payload.entityType);
-                if (updates) {
-                    this.updateCharacter(updates);
-                    EventBus.emit('ENTITY_REMOVED', { purchaseId: payload.purchaseId, entityType: payload.entityType, character: this.character });
-                }
-                // If updates is null (entity not found for removal), it's not necessarily a dispatch error,
-                // _internalRemoveEntity would have logged a warning.
-                break;
-            default:
-                const unknownActionMessage = `Unknown action type: ${actionType}`;
-                Logger.warn(`[StateManager] ${unknownActionMessage}`);
-                success = false;
-                error = unknownActionMessage;
-                break; 
+    static dispatch(action, payload = {}) {
+        Logger.info(`[StateManager] Dispatching action: ${action}`, payload);
+        
+        // Create a deep clone of the character to ensure immutability
+        // FIX 1 APPLIED HERE: Robust cloning, assumes this.character is the canonical state
+        const oldCharacterState = this.character; // State *before* this dispatch
+        let character; // This will be the mutable clone for this dispatch
+        if (oldCharacterState === undefined) {
+            Logger.warn("[StateManager] current character state (this.character) is undefined during dispatch. Initializing to an empty object for this operation. This might indicate an issue with character loading or initialization.");
+            character = {};
+        } else {
+            // oldCharacterState can be null here, JSON.stringify(null) results in "null", which JSON.parse("null") correctly parses to null.
+            character = JSON.parse(JSON.stringify(oldCharacterState));
         }
-        return { success, error }; // Return consistent object
+        // END OF FIX 1 APPLICATION
+        
+        let result = { success: false, error: 'Unknown action' };
+        
+        switch (action) {
+            case 'CREATE_CHARACTER':
+                const newChar = {
+                    id: `char_${Date.now()}`,
+                    schemaVersion: '4.0',
+                    name: payload.name || 'New Character',
+                    playerName: payload.playerName || '',
+                    tier: payload.tier || 1,
+                    characterType: payload.characterType || 'hero',
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                    attributes: {
+                        power: 0,
+                        endurance: 0,
+                        mobility: 0,
+                        focus: 0,
+                        awareness: 0,
+                        communication: 0,
+                        intelligence: 0
+                    },
+                    archetypes: {},
+                    traits: [],
+                    flaws: [],
+                    boons: [],
+                    features: [],
+                    action_upgrades: [],
+                    unique_abilities: [],
+                    special_attacks: [],
+                    baseAttacks: {
+                        melee: null,
+                        ranged: null
+                    }
+                };
+                // Note: this.character (canonical state) is updated below after history
+                result = { success: true, character: newChar }; // 'character' here is the new state
+                break;
+                
+            case 'UPDATE_BASIC_INFO':
+                Object.assign(character, payload); // Modify the clone
+                character.updatedAt = Date.now();
+                result = { success: true, character };
+                break;
+                
+            case 'UPDATE_ARCHETYPES':
+                character.archetypes = { ...payload }; // Modify the clone
+                character.updatedAt = Date.now();
+                result = { success: true, character };
+                break;
+                
+            case 'UPDATE_ATTRIBUTES':
+                character.attributes = { ...character.attributes, ...payload }; // Modify the clone
+                character.updatedAt = Date.now();
+                result = { success: true, character };
+                break;
+                
+            case 'PURCHASE_ENTITY':
+                const { entityType, purchaseData } = payload;
+                const arrayName = `${entityType}s`;
+                
+                if (!character[arrayName]) {
+                    character[arrayName] = [];
+                }
+                
+                character[arrayName] = [...character[arrayName], purchaseData]; // Modify the clone
+                character.updatedAt = Date.now();
+                result = { success: true, character, purchaseData };
+                break;
+                
+            case 'REMOVE_ENTITY':
+                const { purchaseId, entityType: removeType } = payload;
+                const removeArrayName = `${removeType}s`;
+                
+                if (character[removeArrayName]) {
+                    character[removeArrayName] = character[removeArrayName].filter(
+                        p => p.purchaseId !== purchaseId
+                    ); // Modify the clone
+                    character.updatedAt = Date.now();
+                    result = { success: true, character };
+                } else {
+                    result = { success: false, error: 'Entity array not found' };
+                }
+                break;
+                
+            case 'LOAD_CHARACTER': // This action might be redundant if CHARACTER_SWITCHED handles loading
+                if (payload.character) {
+                    // 'character' here is the payload, not the clone from above
+                    // This action directly sets the state.
+                    result = { success: true, character: JSON.parse(JSON.stringify(payload.character)) };
+                }
+                break;
+                
+            default:
+                Logger.warn(`[StateManager] Unknown action: ${action}`);
+        }
+        
+        // Only update canonical state and history if action was successful and state changed
+        if (result.success && result.character && JSON.stringify(result.character) !== JSON.stringify(oldCharacterState)) {
+            this.character = result.character; // Update the canonical this.character
+            this._addToHistory(oldCharacterState); // Add the state *before* this dispatch
+            this._saveToLocalStorage(); // Persist the new canonical state
+            
+            EventBus.emit('CHARACTER_CHANGED', { 
+                character: this.character,
+                action,
+                payload 
+            });
+            
+            if (action === 'PURCHASE_ENTITY') {
+                EventBus.emit('ENTITY_PURCHASED', {
+                    character: this.character,
+                    entityType: payload.entityType,
+                    purchaseData: result.purchaseData // Ensure purchaseData is in result if needed
+                });
+            } else if (action === 'REMOVE_ENTITY') {
+                EventBus.emit('ENTITY_REMOVED', {
+                    character: this.character,
+                    entityType: payload.entityType,
+                    purchaseId: payload.purchaseId
+                });
+            }
+        } else if (result.success && action === 'LOAD_CHARACTER') {
+            // Special case for LOAD_CHARACTER: even if the content is the same,
+            // it's a load operation, so update canonical state and emit.
+            this.character = result.character;
+            this.clearHistory(); // Clear history for a newly loaded character
+            this._saveToLocalStorage();
+            EventBus.emit('CHARACTER_LOADED', { character: this.character });
+        }
+        
+        return result;
     }
-    
-    // Helper for generating unique IDs for purchases
+
     static generatePurchaseId() {
         return `purchase_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
     
-    // Internal method to handle the logic of adding an entity
     static _internalPurchaseEntity(entity, entityType, context = {}) {
         const updates = {};
-        const category = entityType + 's'; // e.g., flaws, traits
+        const category = entityType + 's'; 
     
         const purchaseObject = {
-            id: entity.id, // The ID of the entity definition
-            purchaseId: this.generatePurchaseId(), // A unique ID for this specific purchase instance
-            ...(context.config || {}) // Include any specific configuration for this purchase instance
+            id: entity.id, 
+            purchaseId: this.generatePurchaseId(), 
+            ...(context.config || {}) 
         };
     
         updates[category] = [...(this.character[category] || []), purchaseObject];
@@ -120,7 +209,6 @@ export class StateManager {
         return updates;
     }
     
-    // Internal method to handle removal by purchaseId
     static _internalRemoveEntity(purchaseId, entityType) {
         const updates = {};
         const category = entityType + 's';
@@ -133,34 +221,33 @@ export class StateManager {
                 return updates;
             } else {
                 Logger.warn(`[StateManager] PurchaseId ${purchaseId} not found in ${category} for removal.`);
-                return null; // No change
+                return null; 
             }
         }
         Logger.warn(`[StateManager] Category ${category} not found on character for removal.`);
-        return null; // Category doesn't exist
+        return null; 
     }
-
 
     static async loadActiveCharacter() {
         try {
-            const characterData = this.characterManager.getActiveCharacter(); // This comes from CharacterManager's internal state
+            const characterData = this.characterManager.getActiveCharacter(); 
             
             if (!characterData) {
-                // This case should ideally be handled by CharacterManager.init() ensuring a character always exists.
-                // If CharacterManager.getActiveCharacter() can return null (e.g., no characters at all and none created yet),
-                // then StateManager needs a robust default.
                 Logger.info('[StateManager] No active character found by CharacterManager, creating default for StateManager internal use.');
                 this.character = this.createDefaultCharacter();
-                // Potentially, if CharacterManager reports NO active character, StateManager might need to inform CharacterManager
-                // to create and set one, or this default character is temporary until CM provides one.
-                // For now, StateManager will just use this default.
             } else {
-                // Migrate if needed
+                // FIX 2 APPLIED HERE: Robust handling of migration result
                 const migrated = await DataMigration.migrate(characterData);
                 this.character = migrated;
+                // If migration resulted in null from a non-null characterData, it's an issue.
+                if (this.character === null && characterData !== null) { 
+                     Logger.warn('[StateManager] Character data migration resulted in null. Using default character to ensure a valid state.');
+                     this.character = this.createDefaultCharacter();
+                }
+                // END OF FIX 2 APPLICATION
             }
             
-            this.clearHistory(); // Clear history for the newly loaded character
+            this.clearHistory(); 
             
             Logger.info('[StateManager] Loaded character:', this.character.name);
             
@@ -169,49 +256,47 @@ export class StateManager {
         } catch (error) {
             Logger.error('[StateManager] Failed to load character, creating default:', error);
             this.character = this.createDefaultCharacter();
-            EventBus.emit('CHARACTER_LOADED', { character: this.character }); // Emit even with default
+            EventBus.emit('CHARACTER_LOADED', { character: this.character }); 
         }
     }
     
     static createDefaultCharacter() {
-        // This should align with CharacterManager's default creation
         return {
-            id: 'default_' + Date.now(), // Temporary ID if not yet saved by CharacterManager
+            id: 'default_' + Date.now(), 
             name: 'New Character',
             tier: 4,
-            schemaVersion: DataMigration.CURRENT_VERSION, // Important for future migrations
+            schemaVersion: DataMigration.CURRENT_VERSION, 
             archetypes: {},
-            attributes: {}, // Should initialize with base values if any
+            attributes: {}, 
             traits: [],
             flaws: [],
-            boons: [], // Example of another purchase array
+            boons: [], 
             features: [],
             actions: [],
             limits: [],
             skills: [],
-            specialAttacks: [], // Consider renaming to special_attacks_created if it stores full attack objects
-            mainPool: { // Default pool values for a Tier 4 character
-                available: (4 - 2) * 15, // (Tier-2) * 15
+            specialAttacks: [], 
+            mainPool: { 
+                available: (4 - 2) * 15, 
                 spent: 0
             },
             combatAttr: {
-                available: Math.floor(4 / 2) + 4, // Tier/2 + 4
+                available: Math.floor(4 / 2) + 4, 
                 spent: 0
             },
             utilityAttr: {
-                available: 4, // Tier (for Tier 4)
+                available: 4, 
                 spent: 0
             },
             created: Date.now(),
             lastModified: Date.now()
-            // Ensure all expected top-level properties are present as per character schema
         };
     }
     
     static getCharacter() {
         if (!this.initialized || !this.character) {
             Logger.warn('[StateManager] getCharacter called before initialized or character is null. Returning new default structure.');
-            return this.createDefaultCharacter(); // Always return a valid structure
+            return this.createDefaultCharacter(); 
         }
         return this.character;
     }
@@ -222,23 +307,22 @@ export class StateManager {
             return;
         }
         
+        const stateBeforeUpdate = this.character; // Capture state before applying updates
+
         if (addToHistory) {
-            this.addToHistory();
+            this._addToHistory(stateBeforeUpdate); // Add the state *before* this specific update
         }
         
-        // Apply updates
         this.character = { ...this.character, ...updates };
         
-        // Save to CharacterManager
-        this.saveCharacter();
+        this.saveCharacter(); // This now calls CharacterManager
         
-        // Emit change event
         EventBus.emit('CHARACTER_CHANGED', {
             character: this.character,
-            updates // Pass along what specifically changed
+            updates 
         });
         
-        Logger.debug('[StateManager] Character updated:', this.character); // Log the full updated character for debug
+        Logger.debug('[StateManager] Character updated:', this.character);
     }
     
     static saveCharacter() {
@@ -247,19 +331,24 @@ export class StateManager {
             return;
         }
         
-        // Clear auto-save timeout if one was pending
         if (this.autoSaveTimeout) {
             clearTimeout(this.autoSaveTimeout);
         }
         
-        // Save through CharacterManager
         this.characterManager.saveActiveCharacter(this.character);
-        
         Logger.debug('[StateManager] Character save request sent to CharacterManager');
+    }
+
+    static _saveToLocalStorage() { // Renamed for clarity, as it saves the current `this.character`
+        if (!this.initialized || !this.characterManager || !this.character) {
+            Logger.warn('[StateManager] Cannot _saveToLocalStorage - not fully initialized or character is null.');
+            return;
+        }
+        this.characterManager.saveActiveCharacter(this.character);
+        Logger.debug('[StateManager] (_saveToLocalStorage) Character data persisted via CharacterManager.');
     }
     
     static setupAutoSave() {
-        // Auto-save on any change after a delay
         EventBus.on('CHARACTER_CHANGED', () => {
             if (this.autoSaveTimeout) {
                 clearTimeout(this.autoSaveTimeout);
@@ -267,41 +356,27 @@ export class StateManager {
             
             this.autoSaveTimeout = setTimeout(() => {
                 this.saveCharacter();
-            }, 2000); // 2 second delay
+            }, 2000); 
         });
     }
     
-    // Attribute management
     static updateAttribute(attribute, value) {
         Logger.info(`[StateManager] Updating attribute: ${attribute} = ${value}`);
         
-        const attributes = { ...(this.character.attributes || {}), [attribute]: value }; // Ensure attributes object exists
+        const attributes = { ...(this.character.attributes || {}), [attribute]: value }; 
         
-        this.updateCharacter({ attributes }); // This will also trigger CHARACTER_CHANGED
-        
-        // Emitting a specific ATTRIBUTE_CHANGED might be redundant if CHARACTER_CHANGED is sufficient
-        // and components can derive changes from the 'updates' payload of CHARACTER_CHANGED.
-        // EventBus.emit('ATTRIBUTE_CHANGED', {
-        //     attribute,
-        //     value,
-        //     character: this.character
-        // });
+        this.updateCharacter({ attributes });
     }
     
-    // History management
-    static addToHistory() {
-        if (!this.character) return; // Don't add null character to history
-        // Remove any states after current index (if undo was used)
+    static _addToHistory(characterState) { // Parameter renamed for clarity
+        if (!characterState) return; 
         this.history = this.history.slice(0, this.historyIndex + 1);
+        this.history.push(JSON.stringify(characterState)); // Push the passed state
         
-        // Add current state (deep copy)
-        this.history.push(JSON.stringify(this.character));
-        
-        // Limit history size
         if (this.history.length > this.maxHistorySize) {
-            this.history.shift(); // Remove oldest state
+            this.history.shift(); 
         } else {
-            this.historyIndex++; // Only increment if not trimming
+            this.historyIndex++; 
         }
     }
     
@@ -311,10 +386,10 @@ export class StateManager {
     }
     
     static undo() {
-        if (this.historyIndex > 0) { // Can't undo the initial state (index 0) this way
+        if (this.historyIndex > 0) { 
             this.historyIndex--;
             this.character = JSON.parse(this.history[this.historyIndex]);
-            this.saveCharacter(); // Save undone state
+            this.saveCharacter(); 
             
             EventBus.emit('CHARACTER_CHANGED', {
                 character: this.character,
@@ -332,7 +407,7 @@ export class StateManager {
         if (this.historyIndex < this.history.length - 1) {
             this.historyIndex++;
             this.character = JSON.parse(this.history[this.historyIndex]);
-            this.saveCharacter(); // Save redone state
+            this.saveCharacter(); 
             
             EventBus.emit('CHARACTER_CHANGED', {
                 character: this.character,

@@ -158,4 +158,43 @@ export class UniversalCard {
         }
         return '';
     }
+
+
+    // Add this method to UniversalCard class after the render method
+
+    static renderHierarchical(entity, context, childEntities = []) {
+        // First render the main card
+        let html = this.render(entity, context);
+        
+        // If there are child entities (upgrades), render them nested
+        if (childEntities && childEntities.length > 0) {
+            const childrenHtml = childEntities.map(child => {
+                // Child context inherits from parent but may override
+                const childContext = {
+                    ...context,
+                    isChild: true,
+                    parentId: entity.id
+                };
+                return `<div class="child-entity-card">${this.render(child, childContext)}</div>`;
+            }).join('');
+            
+            // Wrap the original card and children
+            html = `
+                <div class="hierarchical-entity-card">
+                    ${html}
+                    <div class="child-entities">
+                        <div class="child-entities-header">Upgrades:</div>
+                        ${childrenHtml}
+                    </div>
+                </div>
+            `;
+        }
+        
+        return html;
+    }
+
+    // Also add a helper method to check if entity has children
+    static hasChildren(entity, allEntities) {
+        return allEntities.some(e => e.parentId === entity.id);
+    }
 }

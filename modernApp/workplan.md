@@ -1,89 +1,223 @@
-Okay, here's an ordered list of changes, prioritizing critical fixes and foundational elements first. This list aims to stabilize the application and ensure core rules are correctly implemented before moving on to new features or significant enhancements.
+I'll provide a detailed implementation plan to transform your system into a more robust, predictable architecture.## Detailed Implementation Plan
 
-**Phase 1: Critical Core Fixes & Foundational Integrity**
-*(These are the absolute first things to tackle as they affect the fundamental correctness and usability of the app.)*
+Based on your errors and architecture analysis, here's a comprehensive plan to fix the systemic issues:
 
-1.  **Ensure Correct Rule Economics (Flaws & Traits Costing Points):**
-    *   **Action:** While `PoolCalculator.js` seems to have the correct logic (Flaws/Traits cost 30 points, Main Pool is `(tier-2)*15`), you need to **verify and ensure all systems and UI tabs that interact with purchasing or displaying these entities correctly reflect this.**
-    *   **Files to Check/Update:**
-        *   `StateManager.js`: Ensure `_purchaseEntity` doesn't have old logic if it calculates costs (though it seems to just store).
-        *   `UnifiedPurchaseSystem.js`: Confirm it doesn't apply incorrect cost logic before dispatching.
-        *   `modernApp/tabs/MainPoolTab.js`: Ensure the UI correctly displays these as costs and that purchase actions use the correct cost values from `unified-game-data.json`.
-        *   `modernApp/components/PurchaseCard.js` and `UniversalCard.js`: Ensure they correctly display the cost from the entity data (which *should* be `30` for Flaws/Traits).
-    *   **Why First:** This is a fundamental rule error identified in `modernApp/README.md` and `modernApp/workplan.md`. The app cannot function correctly until this is fixed.
+### **Phase 1: Core Infrastructure Changes**
 
-2.  **Fix Archetypes Tab Data Linking & Functionality:**
-    *   **Action:** Debug and repair the `modernApp/tabs/ArchetypeTab.js` to correctly load, display, select, and persist archetype choices.
-    *   **Files to Check/Update:** `modernApp/tabs/ArchetypeTab.js`, `StateManager.js` (ensure `UPDATE_ARCHETYPES` action works and persists), `EntityLoader.js` (confirm archetypes are loaded correctly).
-    *   **Why Second:** Archetype selection is a core early step in character creation. If this is broken, the user journey halts.
+#### **1. Create a New Component Base Class**
+**File:** `modernApp/core/Component.js` (NEW)
+```
+Purpose: Standardize component lifecycle and state management
+Changes:
+- Define lifecycle methods: constructor, init, render, update, destroy
+- Automatic state subscription management
+- Props validation and default handling
+- Event listener tracking and cleanup
+- Render queue to prevent unnecessary re-renders
+```
 
-3.  **Fix Main Pool Tab Data Display & Basic Functionality:**
-    *   **Action:** Ensure `modernApp/tabs/MainPoolTab.js` correctly displays available entities (Flaws, Traits, Boons, Action Upgrades) from `unified-game-data.json` and that basic purchase/remove actions work with the corrected cost logic.
-    *   **Files to Check/Update:** `modernApp/tabs/MainPoolTab.js`, `EntityLoader.js` (ensure all main pool categories are loaded), `UnifiedPurchaseSystem.js`.
-    *   **Why Third:** The Main Pool is where a significant portion of character customization happens.
+#### **2. Implement a Props System**
+**File:** `modernApp/core/PropsManager.js` (NEW)
+```
+Purpose: Manage data flow to components
+Changes:
+- Define how components declare their data needs
+- Automatic prop extraction from state
+- Prop validation before render
+- Change detection to trigger updates
+```
 
-**Phase 2: Implement Missing Core Systems & Essential Components**
-*(These are foundational systems and components required for broader application functionality and to support other tabs.)*
+#### **3. Refactor StateManager**
+**File:** `modernApp/core/StateManager.js`
+```
+Changes:
+- Add getState() method that returns immutable state
+- Add subscribe(path, callback) for granular subscriptions
+- Add unsubscribe(subscriptionId) for cleanup
+- Implement state path watching (e.g., 'character.purchases.flaws')
+- Add state transaction support for atomic updates
+- Remove direct character property access pattern
+- Implement proper state cloning before mutations
+```
 
-4.  **Implement `core/CharacterManager.js`:**
-    *   **Action:** Create the `CharacterManager.js` as outlined in `Architecture.md` to handle basic CRUD for multiple characters (even if the UI for selection comes later). This is crucial for the "Character select system" mentioned as missing in `modernApp/README.md`.
-    *   **Files to Create/Update:** `modernApp/core/CharacterManager.js`.
-    *   **Why:** This is a core architectural piece for future expansion and addresses a key missing feature.
+#### **4. Create RenderQueue System**
+**File:** `modernApp/core/RenderQueue.js` (NEW)
+```
+Purpose: Batch renders and prevent cascading updates
+Changes:
+- Queue component updates
+- Deduplicate render requests
+- Use requestAnimationFrame for batching
+- Priority-based rendering
+```
 
-5.  **Implement `core/ValidationSystem.js`:**
-    *   **Action:** Create `ValidationSystem.js` to provide advisory warnings (e.g., point budget overruns) as per `Architecture.md`. This system should not block actions.
-    *   **Files to Create/Update:** `modernApp/core/ValidationSystem.js`.
-    *   **Why:** Fulfills the "Advisory Validation" core principle.
+### **Phase 2: Component Architecture Refactoring**
 
-6.  **Implement `components/PointPoolDisplay.js`:**
-    *   **Action:** Flesh out the empty `PointPoolDisplay.js` stub. This component will be needed by multiple tabs (Attributes, Summary, etc.) to show point totals.
-    *   **Files to Create/Update:** `modernApp/components/PointPoolDisplay.js`.
-    *   **Why:** A frequently needed UI element for resource tracking.
+#### **5. Refactor EventBus**
+**File:** `modernApp/core/EventBus.js`
+```
+Changes:
+- Add subscription tracking by component ID
+- Implement automatic cleanup on component destroy
+- Add event namespacing
+- Reduce redundant events (merge CHARACTER_CHANGED and ENTITY_PURCHASED)
+- Add event payload validation
+```
 
-7.  **Implement `components/Modal.js`:**
-    *   **Action:** Implement the `Modal.js` component for dialogs, confirmations, etc.
-    *   **Files to Create/Update:** `modernApp/components/Modal.js`.
-    *   **Why:** A common UI utility that will be needed for various interactions (e.g., delete confirmations from `CharacterManager`).
+#### **6. Update All Tab Base Classes**
+**Files:** All files in `modernApp/tabs/`
+```
+Common Changes for Each Tab:
+- Extend from new Component base class
+- Remove manual event listener management
+- Implement proper lifecycle methods
+- Use props instead of direct state access
+- Separate data fetching from rendering
+- Add proper cleanup methods
+```
 
-**Phase 3: Complete Remaining Tabs & UI Functionality**
-*(With core systems and components in place, flesh out the remaining UI sections.)*
+#### **7. Fix PurchaseCard Component**
+**File:** `modernApp/components/PurchaseCard.js`
+```
+Specific Changes:
+- Accept all required data as constructor parameters
+- Remove direct StateManager access
+- Implement proper isPurchased check with defensive coding
+- Use event delegation from parent container
+- Add prop validation
+```
 
-8.  **Fix/Complete `modernApp/tabs/SpecialAttacksTab.js`:**
-    *   **Action:** Address the navigation and functionality issues mentioned in `modernApp/workplan.md`. Ensure it can create, edit, and display special attacks.
-    *   **Files to Check/Update:** `modernApp/tabs/SpecialAttacksTab.js`, potentially `AttackSystem.js` (if it exists or needs creation).
+### **Phase 3: Specific File Changes**
 
-9.  **Implement Remaining Tabs (as per `Architecture.md` and `modernApp/README.md`):**
-    *   **Action:**
-        *   `modernApp/tabs/AttributesTab.js` (likely uses `PointPoolDisplay`).
-        *   `modernApp/tabs/BaseAttacksTab.js` (new feature).
-        *   `modernApp/tabs/IdentityTab.js` (Bio/Identity).
-        *   `modernApp/tabs/UtilityTab.js`.
-        *   `modernApp/tabs/SummaryTab.js`.
-    *   **Why:** To achieve full character creation functionality.
+#### **8. MainPoolTab.js**
+**File:** `modernApp/tabs/MainPoolTab.js`
+```
+Changes:
+- Extend Component base class
+- Declare required state paths: ['character.purchases', 'character.tier']
+- Move event listeners to init() method
+- Use event delegation on container, not individual cards
+- Pass complete purchase data to PurchaseCard
+- Implement proper state subscription
+- Remove re-rendering on every event
+```
 
-**Phase 4: Advanced Features & Architectural Refinements**
-*(Once the app is functionally complete and correct, address these.)*
+#### **9. ArchetypeTab.js**
+**File:** `modernApp/tabs/ArchetypeTab.js`
+```
+Changes:
+- Store selected archetypes in component state
+- Implement optimistic UI updates
+- Batch state updates
+- Use proper event delegation
+- Add loading states
+```
 
-10. **Implement Import/Export System (using `CharacterManager`):**
-    *   **Action:** Create `ExportSystem.js` and integrate it with `CharacterManager.js`.
-    *   **Files to Create/Update:** `modernApp/systems/ExportSystem.js`, `modernApp/core/CharacterManager.js`.
-    *   **Why:** Key feature mentioned in `modernApp/README.md` and `Architecture.md`.
+#### **10. AttributesTab.js**
+**File:** `modernApp/tabs/AttributesTab.js`
+```
+Changes:
+- Implement proper event delegation for +/- buttons
+- Store attribute values locally during interaction
+- Batch updates to state
+- Add proper input validation
+- Implement debounced saves
+```
 
-11. **Implement Roll20 JSON Export Format:**
-    *   **Action:** Extend the `ExportSystem.js` to support Roll20-specific JSON output.
-    *   **Files to Update:** `modernApp/systems/ExportSystem.js`.
-    *   **Why:** A primary end-goal of the application.
+#### **11. App.js**
+**File:** `modernApp/app.js`
+```
+Changes:
+- Implement proper tab lifecycle management
+- Call destroy() on previous tab before switching
+- Pass props to tabs instead of stateManager instance
+- Implement global error boundary
+- Add component registry for debugging
+```
 
-12. **Standardize CSS Handling:**
-    *   **Action:** Refactor components (`CollapsibleSection.js`, `UniversalForm.js`, `UniversalList.js`) that inject CSS. Move all component-specific styles to `modernApp/css/modern-app.css`.
-    *   **Why:** Improves maintainability, performance, and avoids style conflicts.
+### **Phase 4: Data Flow Standardization**
 
-13. **Enhance Universal Components (`UniversalForm`, `UniversalList`):**
-    *   **Action:** Add features like real-time validation to `UniversalForm.js` and virtual scrolling to `UniversalList.js` as outlined in `Architecture.md`.
-    *   **Why:** Improves UX and performance for more complex scenarios.
+#### **12. Create StateConnector**
+**File:** `modernApp/core/StateConnector.js` (NEW)
+```
+Purpose: Connect components to state slices
+Changes:
+- High-order function to wrap components
+- Automatic prop mapping from state
+- Subscription management
+- Memoization of props
+```
 
-14. **Review and Implement Remaining Enhancements from `Architecture.md`:**
-    *   **Action:** Go through `Architecture.md` section by section for `core/`, `components/`, and `utils/` and implement any remaining planned enhancements (e.g., `DataLoader` retry logic, more robust schema validation in `EntityLoader`).
-    *   **Why:** To fully realize the architectural vision.
+#### **13. Update CharacterManager**
+**File:** `modernApp/core/CharacterManager.js`
+```
+Changes:
+- Ensure it always returns complete character objects
+- Add validation before saving
+- Implement proper change detection
+- Add migration support for old data
+```
 
-This order prioritizes fixing what's broken and essential, then building out the core systems and components, followed by completing the UI, and finally adding advanced features and refinements.
+### **Phase 5: Implementation Strategy**
+
+#### **Execution Order:**
+
+1. **Week 1: Core Infrastructure**
+   - Create Component.js base class
+   - Create PropsManager.js
+   - Refactor StateManager.js
+   - Create RenderQueue.js
+
+2. **Week 2: Event System & State Connection**
+   - Refactor EventBus.js
+   - Create StateConnector.js
+   - Update CharacterManager.js
+
+3. **Week 3: Component Migration**
+   - Migrate PurchaseCard.js first (smallest component)
+   - Migrate MainPoolTab.js
+   - Fix the "p is undefined" error
+
+4. **Week 4: Remaining Tabs**
+   - Migrate ArchetypeTab.js
+   - Migrate AttributesTab.js
+   - Update App.js
+
+### **Testing Strategy:**
+
+1. **Unit Tests for Core Systems**
+   - Test Component lifecycle
+   - Test state subscriptions
+   - Test event propagation
+
+2. **Integration Tests**
+   - Test tab switching
+   - Test purchase flow
+   - Test state persistence
+
+3. **Manual Testing Checklist**
+   - Can purchase without errors
+   - Buttons remain functional after tab switch
+   - UI updates immediately without tab change
+   - No console errors during normal use
+
+### **Migration Path:**
+
+1. **Parallel Implementation**
+   - Build new system alongside old
+   - Migrate one component at a time
+   - Keep old system functional during migration
+
+2. **Feature Flags**
+   - Use flags to switch between old/new components
+   - Test thoroughly before switching
+
+3. **Gradual Rollout**
+   - Start with least critical components
+   - Monitor for issues
+   - Complete migration tab by tab
+
+This plan addresses all three of your core issues by:
+- Ensuring consistent state access (fixes "p is undefined")
+- Properly managing event listeners (fixes buttons not working)
+- Implementing proper change detection (fixes need to switch tabs for updates)

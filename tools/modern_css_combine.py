@@ -116,6 +116,11 @@ def get_section_header(filename):
             'title': 'PRINT STYLES',
             'subtitle': 'Original',
             'format': 'standard'
+        },
+        '19-attribute-controls.css': {
+            'title': 'ATTRIBUTE CONTROLS',
+            'subtitle': 'Original',
+            'format': 'standard'
         }
     }
     

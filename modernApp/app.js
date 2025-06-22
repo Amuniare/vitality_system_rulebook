@@ -10,6 +10,7 @@ import { NotificationSystem } from './components/NotificationSystem.js';
 import { CharacterListPanel } from './components/CharacterListPanel.js';
 import { BasicInfoTab } from './tabs/BasicInfoTab.js';
 import { ArchetypeTab } from './tabs/ArchetypeTab.js';
+import { AttributesTab } from './tabs/AttributesTab.js';
 import { MainPoolTab } from './tabs/MainPoolTab.js';
 import { SummaryPanel } from './components/SummaryPanel.js'; 
 
@@ -135,6 +136,7 @@ class ModernCharacterBuilder {
         Logger.info('[App] Registering tabs...');
         this.registerTab('basic-info', BasicInfoTab, 'Basic Info');
         this.registerTab('archetypes', ArchetypeTab, 'Archetypes');
+        this.registerTab('attributes', AttributesTab, 'Attributes');
         this.registerTab('main-pool', MainPoolTab, 'Main Pool');
         Logger.info(`[App] Tabs registered:`, Array.from(this.tabs.keys()));
     }
@@ -244,6 +246,39 @@ class ModernCharacterBuilder {
         
         this.activeTab = tabId;
         EventBus.emit('TAB_CHANGED', { tabId });
+    }
+
+
+    // Add after the showTab method
+    showTab(tabId) {
+        // Hide all tabs
+        this.tabs.forEach((tab, id) => {
+            const tabElement = document.getElementById(`${id}-tab`);
+            if (tabElement) {
+                tabElement.style.display = 'none';
+            }
+        });
+        
+        // Show selected tab
+        const selectedTabElement = document.getElementById(`${tabId}-tab`);
+        if (selectedTabElement) {
+            selectedTabElement.style.display = 'block';
+        }
+        
+        // Update active states
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabId);
+        });
+        
+        this.activeTab = tabId;
+        
+        // Notify the tab it's been activated
+        const tab = this.tabs.get(tabId);
+        if (tab && typeof tab.onTabActivated === 'function') {
+            tab.onTabActivated();
+        }
+        
+        Logger.info(`[App] Switched to tab: ${tabId}`);
     }
     
     // This can be simplified or removed if components handle their own updates via EventBus
