@@ -18,7 +18,7 @@ export class ConsoleLogger {
         this.page = page;
         const sanitizedIdentifier = testRunIdentifier.replace(/[^a-z0-9_.-]/gi, '_').toLowerCase();
         this.logDir = path.join(OUTPUT_DIR_BASE, TestHelpers.getTimestamp(), sanitizedIdentifier, 'logs');
-        this.logFilePath = path.join(this.logDir, 'console.log');
+        this.logFilePath = path.join(this.logDir, 'console.txt');
         this.consoleMessages = [];
         this.isListening = false;
         this._consoleHandler = null; // To store the bound handler for removal

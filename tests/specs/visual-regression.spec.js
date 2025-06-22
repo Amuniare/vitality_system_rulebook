@@ -49,15 +49,16 @@ test.describe('Visual Regression Screenshot Capture', () => {
     // Iterate over all defined tabs and capture a screenshot for each
     for (const tabKey in TAB_IDS) {
         const tabId = TAB_IDS[tabKey];
-        
-        // Skip if the tab selector isn't defined (e.g., for future tabs)
-        const tabButtonSelector = (await import('../utils/constants.js')).TAB_BUTTON_SELECTORS[tabId];
-        if (!tabButtonSelector) {
-            console.warn(`Visual test for tab ID "${tabId}" skipped: button selector not defined.`);
-            continue;
-        }
 
         test(`should capture screenshot of ${tabId} tab`, async () => {
+            // Dynamically import TAB_BUTTON_SELECTORS inside the async test function
+            const { TAB_BUTTON_SELECTORS } = await import('../utils/constants.js');
+            const tabButtonSelector = TAB_BUTTON_SELECTORS[tabId];
+            if (!tabButtonSelector) {
+                console.warn(`Visual test for tab ID "${tabId}" skipped: button selector not defined.`);
+                return;
+            }
+
             await runner.runStep(`Navigate to ${tabId} for Screenshot`, async () => {
                 await runner.tabNavigator.navigateToTab(tabId, { waitForContentLoaded: true });
                 // Add a small delay for any final rendering/animations
