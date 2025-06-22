@@ -1,174 +1,111 @@
+// modernApp/components/UniversalCard.js
+import { Logger } from '../utils/Logger.js';
+import { Formatters } from '../utils/Formatters.js';
+
+/**
+ * A "dumb" static component for rendering any game entity as a card.
+ * It contains no business logic and relies on a pre-computed `context` object for its state.
+ */
 export class UniversalCard {
-    static render(entity, context = {}) {
+    /**
+     * Renders the card's HTML based on entity data and pre-calculated context.
+     * @param {Object} entity - The raw entity data from unified-game-data.json.
+     * @param {Object} context - A pre-computed context object.
+     * @param {boolean} context.isPurchased - Whether the character has this entity.
+     * @param {boolean} context.isAffordable - Whether the character can afford this entity.
+     * @param {boolean} context.areRequirementsMet - Whether the character meets all prerequisites.
+     * @param {string[]} context.unmetRequirements - A list of unmet requirement descriptions.
+     * @param {string} context.entityType - The type of the entity (e.g., 'flaw', 'trait').
+     * @returns {string} The complete HTML for the card.
+     */
+    static render(entity, context) {
+        if (!entity || !context) {
+            Logger.error('[UniversalCard] Render called with missing entity or context.');
+            return '<div class="purchase-card error"><p>Error: Card data missing.</p></div>';
+        }
+
         const {
-            character,
-            selected = false,
-            showCost = true,
-            showDescription = true,
-            compact = false,
-            interactive = true,
-            onSelect
+            isPurchased,
+            isAffordable,
+            areRequirementsMet,
+            unmetRequirements,
+            entityType
         } = context;
-        
-        // Determine state
-        const available = this.checkAvailability(entity, character);
-        const affordable = this.checkAffordability(entity, character);
-        
-        // Build CSS classes
-        const classes = [
-            'universal-card',
-            entity.type,
-            entity.ui?.size || 'medium',
-            selected ? 'selected' : '',
-            !available ? 'disabled' : '',
-            !affordable ? 'unaffordable' : '',
-            compact ? 'compact' : '',
-            interactive && available ? 'interactive' : ''
+
+        const cardClasses = [
+            'purchase-card',
+            !isAffordable && !isPurchased ? 'unaffordable' : '',
+            !areRequirementsMet ? 'requirements-unmet' : '',
+            isPurchased ? 'purchased' : '',
         ].filter(Boolean).join(' ');
-        
-        // Build data attributes
-        const dataAttrs = [
-            `data-entity-id="${entity.id}"`,
-            `data-entity-type="${entity.type}"`,
-            interactive ? `data-clickable="true"` : ''
-        ].filter(Boolean).join(' ');
-        
+
+        // The button is only truly disabled if it's a non-removable, purchased item (like a Flaw).
+        // Otherwise, it's always clickable per "Advisory Validation" principle.
+        const isButtonDisabled = isPurchased && entityType === 'flaw';
+
         return `
-            <div class="${classes}" ${dataAttrs}>
-                ${this.renderHeader(entity, { showCost, affordable })}
-                ${showDescription ? this.renderDescription(entity) : ''}
-                ${this.renderEffects(entity)}
-                ${this.renderRequirements(entity, character)}
-                ${this.renderStatus(entity, { selected, available })}
+            <div class="${cardClasses}" data-entity-id="${entity.id}" data-entity-type="${entityType}">
+                ${this._renderHeader(entity)}
+                ${this._renderDescription(entity.description)}
+                ${this._renderEffects(entity.effects)}
+                ${this._renderRequirements(unmetRequirements)}
+                ${this._renderStatus(isPurchased, isAffordable)}
+                <button class="btn btn-primary purchase-btn" 
+                        data-action="${isPurchased ? 'remove' : 'purchase'}"
+                        data-entity-id="${entity.id}"
+                        data-entity-type="${entityType}"
+                        ${isButtonDisabled ? 'disabled' : ''}>
+                    ${isPurchased ? 'Remove' : 'Purchase'}
+                </button>
             </div>
         `;
     }
-    
-    static renderHeader(entity, options) {
-        const { showCost, affordable } = options;
-        
+
+    static _renderHeader(entity) {
         return `
             <div class="card-header">
-                <h4 class="card-title">${entity.name}</h4>
-                ${showCost && entity.cost ? this.renderCost(entity.cost, affordable) : ''}
+                <h4>${entity.name}</h4>
+                <span class="cost">${Formatters.formatCost(entity.cost)}</span>
             </div>
         `;
     }
-    
-    static renderCost(cost, affordable = true) {
-        if (!cost || cost.value === 0) {
-            return '<span class="card-cost free">Free</span>';
-        }
-        
-        const display = cost.display || `${cost.value}p`;
-        const cssClass = affordable ? 'affordable' : 'unaffordable';
-        
-        return `<span class="card-cost ${cssClass}">${display}</span>`;
+
+    static _renderDescription(description) {
+        if (!description) return '';
+        return `<p class="card-description">${description}</p>`;
     }
-    
-    static renderDescription(entity) {
-        if (!entity.description) return '';
-        
-        return `
-            <div class="card-description">
-                ${entity.description}
-            </div>
-        `;
-    }
-    
-    static renderEffects(entity) {
-        if (!entity.effects || entity.effects.length === 0) return '';
-        
-        const effectsHtml = entity.effects.map(effect => 
-            this.renderEffect(effect)
-        ).join('');
-        
+
+    static _renderEffects(effects) {
+        if (!effects || effects.length === 0) return '';
         return `
             <div class="card-effects">
-                ${effectsHtml}
+                <strong>Effects:</strong>
+                <ul>
+                    ${effects.map(effect => `<li>${effect.display || effect.type}</li>`).join('')}
+                </ul>
             </div>
         `;
     }
-    
-    static renderEffect(effect) {
-        switch (effect.type) {
-            case 'stat':
-                return `<div class="effect stat-effect">${effect.target}: ${effect.value}</div>`;
-            case 'conditional':
-                return `<div class="effect conditional-effect">${effect.trigger}: ${effect.bonus}</div>`;
-            default:
-                return `<div class="effect">${effect.description || effect.type}</div>`;
-        }
-    }
-    
-    static renderRequirements(entity, character) {
-        if (!entity.requirements || entity.requirements.length === 0) return '';
-        
-        const unmet = this.getUnmetRequirements(entity, character);
-        if (unmet.length === 0) return '';
-        
+
+    static _renderRequirements(unmetRequirements) {
+        if (!unmetRequirements || unmetRequirements.length === 0) return '';
         return `
             <div class="card-requirements">
-                <span class="requirement-label">Requires:</span>
-                ${unmet.map(req => `<span class="requirement unmet">${req}</span>`).join('')}
+                <strong>Requirements not met:</strong>
+                <ul>
+                    ${unmetRequirements.map(req => `<li>${req}</li>`).join('')}
+                </ul>
             </div>
         `;
     }
-    
-    static renderStatus(entity, options) {
-        const { selected, available } = options;
-        
-        if (selected) {
-            return '<div class="card-status selected">✓ Selected</div>';
+
+    static _renderStatus(isPurchased, isAffordable) {
+        if (isPurchased) {
+            return '<p class="purchased-indicator">✓ Purchased</p>';
         }
-        
-        if (!available) {
-            return '<div class="card-status unavailable">Unavailable</div>';
+        if (!isAffordable) {
+            return '<p class="requirement-warning">Cannot afford</p>';
         }
-        
         return '';
-    }
-    
-    static checkAvailability(entity, character) {
-        if (!entity.requirements) return true;
-        
-        // Check all requirements
-        return entity.requirements.every(req => 
-            this.checkRequirement(req, character)
-        );
-    }
-    
-    static checkAffordability(entity, character) {
-        if (!entity.cost || entity.cost.value === 0) return true;
-        if (!character || !character.pools) return false;
-        
-        const pool = character.pools[entity.cost.pool];
-        if (!pool) return false;
-        
-        const costValue = typeof entity.cost.value === 'function' 
-            ? entity.cost.value(character)
-            : entity.cost.value;
-            
-        return pool.remaining >= costValue;
-    }
-    
-    static checkRequirement(requirement, character) {
-        // Simplified requirement checking
-        switch (requirement.type) {
-            case 'archetype':
-                return character.archetypes[requirement.category] === requirement.value;
-            case 'tier':
-                return character.tier >= requirement.min;
-            default:
-                return true;
-        }
-    }
-    
-    static getUnmetRequirements(entity, character) {
-        if (!entity.requirements) return [];
-        
-        return entity.requirements
-            .filter(req => !this.checkRequirement(req, character))
-            .map(req => req.display || req.type);
     }
 }

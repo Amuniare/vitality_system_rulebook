@@ -1,3 +1,7 @@
+// modernApp/core/EntityLoader.js
+import { DataLoader } from '../utils/DataLoader.js';
+import { Logger } from '../utils/Logger.js';
+
 export class EntityLoader {
     static entities = new Map();
     static indexes = {
@@ -8,8 +12,8 @@ export class EntityLoader {
     
     static async init() {
         try {
-            const response = await fetch('data/unified-game-data.json');
-            const data = await response.json();
+            // ✅ Use DataLoader to fetch data, enabling caching
+            const data = await DataLoader.loadJSON('data/unified-game-data.json');
             
             // Load all entities
             Object.entries(data.entities).forEach(([id, entity]) => {
@@ -20,9 +24,11 @@ export class EntityLoader {
                 this.indexEntity(entity);
             });
             
-            console.log(`✅ Loaded ${this.entities.size} entities`);
+            // ✅ Use Logger for consistent output
+            Logger.info(`[EntityLoader] Loaded and indexed ${this.entities.size} entities.`);
         } catch (error) {
-            console.error('Failed to load entities:', error);
+            // ✅ Use Logger for error handling
+            Logger.error('[EntityLoader] Failed to load entities:', error);
             throw error;
         }
     }

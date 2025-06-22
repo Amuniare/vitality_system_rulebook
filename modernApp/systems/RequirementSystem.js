@@ -1,6 +1,7 @@
 // file: modernApp/systems/RequirementSystem.js
 import { StateManager } from '../core/StateManager.js';
 import { EntityLoader } from '../core/EntityLoader.js';
+import { Logger } from '../utils/Logger.js'; // ✅ Import Logger
 
 export class RequirementSystem {
 
@@ -69,7 +70,8 @@ export class RequirementSystem {
                 return true;
 
             default:
-                console.warn(`Unknown requirement type encountered: ${requirement.type}`);
+                // ✅ Use Logger
+                Logger.warn(`[RequirementSystem] Unknown requirement type encountered: ${requirement.type}`);
                 return true; // Default to true to avoid blocking valid purchases unnecessarily.
         }
     }

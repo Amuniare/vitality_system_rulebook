@@ -1,3 +1,5 @@
+import { Logger } from '../utils/Logger.js';
+
 export class NotificationSystem {
     static container = null;
     static queue = [];
@@ -6,7 +8,8 @@ export class NotificationSystem {
     static init() {
         this.container = document.getElementById('notification-container');
         if (!this.container) {
-            console.warn('Notification container not found');
+            // ✅ Use Logger
+            Logger.warn('[NotificationSystem] Notification container not found in the DOM.');
         }
     }
     

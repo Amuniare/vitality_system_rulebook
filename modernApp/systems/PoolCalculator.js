@@ -1,6 +1,7 @@
 // modernApp/systems/PoolCalculator.js - COMPLETE FIX
 import { StateManager } from '../core/StateManager.js';
 import { EntityLoader } from '../core/EntityLoader.js';
+import { Logger } from '../utils/Logger.js'; // ✅ Import Logger
 
 export class PoolCalculator {
     static calculatePools(character) {
@@ -42,7 +43,8 @@ export class PoolCalculator {
                                 const modifier = eval(formula);
                                 basePool += modifier;
                             } catch (e) {
-                                console.error('Error evaluating pool formula:', e);
+                                // ✅ Use Logger
+                                Logger.error('[PoolCalculator] Error evaluating pool formula:', e);
                             }
                         } else {
                             basePool += effect.value;

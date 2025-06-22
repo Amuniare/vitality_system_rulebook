@@ -13,7 +13,7 @@ import sys
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'root_modern_app_with_charater_builder_minus_partials'
+DEFAULT_PRESET = 'root_modern_app_minus_partials_plus_tests'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude
@@ -40,9 +40,22 @@ PRESETS = {
     
     'root_modern_app_minus_partials': [
         # Example of exclusion: include modernApp but exclude the partials
+        '--root',
+
         'modernApp/',
         '!modernApp/data/partials/',
     ],
+
+
+    'root_modern_app_minus_partials_plus_tests': [
+        # Example of exclusion: include modernApp but exclude the partials
+        '--root',
+
+        'modernApp/',
+        '!modernApp/data/partials/',
+        'tests/',
+    ],
+
 
     'root_modern_app_with_charater_builder_minus_partials': [
         '--root',

@@ -1,260 +1,200 @@
-// tabs/MainPoolTab.js
-import { PurchaseCard } from '../components/purchaseCard.js';
+// modernApp/tabs/MainPoolTab.js
+import { PurchaseCard } from '../components/PurchaseCard.js';
+import { Logger } from '../utils/Logger.js';
+import { EntityLoader } from '../core/EntityLoader.js';
+import { EventBus } from '../core/EventBus.js';
+import { PoolCalculator } from '../systems/PoolCalculator.js';
+import { UnifiedPurchaseSystem } from '../systems/UnifiedPurchaseSystem.js'; // Direct import now
 
 export class MainPoolTab {
-    constructor(container, stateManager, dataLoader) {
+    constructor(container, stateManager) {
         this.container = container;
         this.stateManager = stateManager;
-        this.dataLoader = dataLoader;
-        this.currentSection = 'flaws';
+        this.currentSectionKey = 'flaws'; // Default section
         
+        // Ensure entityType matches the 'type' field in your unified-game-data.json for these items
         this.sections = {
-            flaws: { title: 'Flaws', cost: '30p' },
-            traits: { title: 'Traits', cost: '30p' },
-            boons: { title: 'Boons', cost: 'Variable' },
-            actions: { title: 'Action Upgrades', cost: 'Variable' }
+            flaws: { title: 'Flaws', entityType: 'flaw', description: 'Flaws COST 30 main pool points each but grant a +Tier stat bonus and add limitations.' },
+            traits: { title: 'Traits', entityType: 'trait', description: 'Traits COST 30 main pool points each and provide conditional +Tier bonuses or unique effects.' },
+            boons_simple: { title: 'Simple Boons', entityType: 'boon', description: 'Simple Boons have variable costs and provide straightforward benefits.' },
+            action_upgrades: { title: 'Action Upgrades', entityType: 'action_upgrade', description: 'Action Upgrades enhance or modify standard character actions. Costs vary.' },
+            // Add other main pool categories here if they exist:
+            unique_abilities_purchasable: { title: 'Unique Abilities', entityType: 'unique_ability', description: 'Powerful, distinct abilities. Costs vary.'}
         };
         
-        this.unsubscribe = null;
+        this.eventBusListener = null;
+        this.delegatedGridListener = null; // For purchase grid
     }
 
     async init() {
-        // Load all entities
-        await this.loadAllEntities();
+        this.eventBusListener = (characterData) => {
+            if (this.container.querySelector('.main-pool-tab')) {
+                this.render(); 
+                Logger.debug('[MainPoolTab] Re-rendered due to character update.');
+            }
+        };
+        EventBus.on('character-updated', this.eventBusListener);
         
-        // Subscribe to state changes
-        this.unsubscribe = this.stateManager.subscribe(() => {
-            this.updatePointsDisplay();
-            this.updatePurchaseCards();
-        });
-        
-        // Set up event delegation
-        this.setupEventDelegation();
-    }
+        // Initial character data for rendering
+        const character = this.stateManager.getCharacter();
+        // Any specific pre-computation based on character can go here if needed before first render
 
-    async loadAllEntities() {
-        try {
-            const [flaws, traits, boons, actions] = await Promise.all([
-                this.dataLoader.loadFlaws(),
-                this.dataLoader.loadTraits(),
-                this.dataLoader.loadBoons(),
-                this.dataLoader.loadActionUpgrades()
-            ]);
-
-            this.stateManager.dispatch({
-                type: 'SET_ENTITIES',
-                payload: { type: 'flaws', entities: flaws }
-            });
-            this.stateManager.dispatch({
-                type: 'SET_ENTITIES',
-                payload: { type: 'traits', entities: traits }
-            });
-            this.stateManager.dispatch({
-                type: 'SET_ENTITIES',
-                payload: { type: 'boons', entities: boons }
-            });
-            this.stateManager.dispatch({
-                type: 'SET_ENTITIES',
-                payload: { type: 'actions', entities: actions }
-            });
-        } catch (error) {
-            console.error('Error loading entities:', error);
-        }
+        Logger.info('[MainPoolTab] Initialized.');
     }
 
     render() {
-        const state = this.stateManager.getState();
-        const mainPool = state.pools.main;
-        const availablePoints = this.stateManager.getAvailablePoints('main');
+        const character = this.stateManager.getCharacter();
+        const pools = PoolCalculator.calculatePools(character);
 
         this.container.innerHTML = `
             <div class="tab-content main-pool-tab">
-                <div class="pool-header">
+                <div class="pool-header section-header">
                     <h2>Main Pool</h2>
                     <div class="pool-summary">
                         <div class="pool-info">
                             <span class="pool-label">Points Available:</span>
-                            <span class="pool-value" id="main-pool-points">${availablePoints} / ${mainPool.total}</span>
+                            <span class="pool-value" id="main-pool-points-display">${pools.mainRemaining} / ${pools.main}</span>
                         </div>
                         <div class="pool-breakdown">
-                            <span>✅ Base: (${state.character.tier} - ${state.character.powerLevel}) × 15 = ${mainPool.total}</span>
+                            <span>Base Pool: ${pools.main} (Tier ${character.tier})</span>
+                            <!-- You can add details here like points from archetypes if applicable -->
                         </div>
                     </div>
                 </div>
                 
                 <div class="section-tabs">
                     ${Object.entries(this.sections).map(([key, section]) => `
-                        <button class="section-tab ${key === this.currentSection ? 'active' : ''}" 
-                                data-section="${key}">
-                            ${section.title} (Cost: ${section.cost})
+                        <button class="section-tab ${key === this.currentSectionKey ? 'active' : ''}" 
+                                data-section-key="${key}">
+                            ${section.title}
                         </button>
                     `).join('')}
                 </div>
                 
-                <div class="section-content">
+                <div class="section-content-wrapper section-content">
                     <div class="section-header">
-                        <h3>${this.sections[this.currentSection].title}</h3>
-                        <p>${this.getSectionDescription()}</p>
+                        <h3>${this.sections[this.currentSectionKey].title}</h3>
+                        <p>${this.sections[this.currentSectionKey].description}</p>
                     </div>
-                    <div class="purchase-grid" id="purchase-grid">
-                        ${this.renderPurchaseCards()}
+                    <div class="purchase-grid" id="main-pool-purchase-grid">
+                        ${this.renderPurchaseCardsForCurrentSection()}
                     </div>
-                </div>
-                
-                <div class="summary-section">
-                    <h4>Point Pools</h4>
-                    <p id="pool-summary">${this.renderPoolSummary()}</p>
                 </div>
             </div>
         `;
-
-        // Re-setup event listeners after render
-        this.setupSectionTabs();
+        this.setupEventListeners();
+        Logger.debug(`[MainPoolTab] Rendered section: ${this.currentSectionKey}`);
     }
 
-    renderPurchaseCards() {
-        const state = this.stateManager.getState();
-        const entities = state.entities[this.currentSection] || [];
-        
-        if (entities.length === 0) {
-            return '<p class="no-items">No items available in this category.</p>';
+    renderPurchaseCardsForCurrentSection() {
+        const sectionConfig = this.sections[this.currentSectionKey];
+        if (!sectionConfig) {
+            Logger.error(`[MainPoolTab] No section config found for key: ${this.currentSectionKey}`);
+            return '<p class="no-items">Error: Section configuration not found.</p>';
         }
 
-        return entities
-            .map(entity => {
-                const card = new PurchaseCard(entity, this.currentSection.slice(0, -1), this.stateManager);
-                return card.render();
-            })
-            .join('');
-    }
-
-    renderPoolSummary() {
-        const state = this.stateManager.getState();
-        const summaries = [];
+        const entityType = sectionConfig.entityType;
+        const entities = EntityLoader.getEntitiesByType(entityType);
         
-        Object.entries(state.pools).forEach(([poolName, pool]) => {
-            if (pool.total > 0) {
-                const available = this.stateManager.getAvailablePoints(poolName);
-                summaries.push(`${poolName.charAt(0).toUpperCase() + poolName.slice(1)}: ${available}/${pool.total}`);
-            }
-        });
-        
-        return summaries.length > 0 ? summaries.join(' | ') : 'No pools available';
-    }
-
-    getSectionDescription() {
-        const descriptions = {
-            flaws: 'Flaws provide extra points by adding limitations to your character.',
-            traits: 'Traits define your character\'s core abilities and characteristics.',
-            boons: 'Boons have variable costs and provide unique benefits.',
-            actions: 'Action upgrades expand your combat options with special maneuvers.'
-        };
-        return descriptions[this.currentSection] || '';
-    }
-
-    setupEventDelegation() {
-        // Remove any existing listener
-        if (this.clickHandler) {
-            this.container.removeEventListener('click', this.clickHandler);
+        if (!entities || entities.length === 0) {
+            return `<p class="no-items">No items available in the "${sectionConfig.title}" category (type: ${entityType}). Check unified-game-data.json.</p>`;
         }
 
-        this.clickHandler = (e) => {
-            // Handle purchase/remove buttons
-            if (e.target.classList.contains('purchase-btn')) {
-                e.preventDefault();
-                const action = e.target.dataset.action;
-                const entityId = e.target.dataset.entityId;
-                const entityType = e.target.dataset.entityType;
-                
-                if (action === 'purchase') {
-                    this.handlePurchase(entityId, entityType);
-                } else if (action === 'remove') {
-                    this.handleRemove(entityId, entityType);
-                }
-            }
-        };
+        const character = this.stateManager.getCharacter();
+        const purchaseArrayName = `${entityType}s`; // e.g. "flaws", "traits"
 
-        this.container.addEventListener('click', this.clickHandler);
+        return entities.map(entity => {
+            // Context for UniversalCard via PurchaseCard
+            const purchasedInstance = character[purchaseArrayName]?.find(p => p.id === entity.id);
+            const isPurchased = !!purchasedInstance;
+            
+            // PurchaseCard will internally call RequirementSystem and PoolCalculator for affordability
+            // It then calls UniversalCard.render with the assembled context.
+            const card = new PurchaseCard(entity, entityType); 
+            return card.render(); // PurchaseCard handles its own logic and context for UniversalCard
+        }).join('');
     }
 
-    setupSectionTabs() {
-        const tabs = this.container.querySelectorAll('.section-tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                const section = e.target.dataset.section;
-                if (section && section !== this.currentSection) {
-                    this.currentSection = section;
-                    this.updateSection();
-                }
-            });
+    setupEventListeners() {
+        // Section Tab Buttons
+        this.container.querySelectorAll('.section-tab').forEach(tabButton => {
+            // Simple way to manage listeners on re-render: check if already attached
+            if (!tabButton.hasAttribute('data-listener-attached')) {
+                tabButton.addEventListener('click', (e) => {
+                    const sectionKey = e.currentTarget.dataset.sectionKey;
+                    if (sectionKey && sectionKey !== this.currentSectionKey) {
+                        this.currentSectionKey = sectionKey;
+                        this.render(); // Re-render to show new section
+                    }
+                });
+                tabButton.setAttribute('data-listener-attached', 'true');
+            }
         });
+
+        // Purchase/Remove Buttons (Event Delegation on the grid)
+        const purchaseGrid = this.container.querySelector('#main-pool-purchase-grid');
+        if (purchaseGrid) {
+            // Remove old listener before adding a new one if it exists
+            if (this.delegatedGridListener) {
+                purchaseGrid.removeEventListener('click', this.delegatedGridListener);
+            }
+            this.delegatedGridListener = (e) => {
+                const button = e.target.closest('.purchase-btn');
+                if (button && !button.disabled) {
+                    e.preventDefault();
+                    const action = button.dataset.action;
+                    const entityId = button.dataset.entityId;
+                    const entityTypeFromCard = button.dataset.entityType; // This is reliable
+
+                    if (!entityTypeFromCard) {
+                        Logger.error("[MainPoolTab] Clicked button without entityType in dataset", button);
+                        return;
+                    }
+                    
+                    if (action === 'purchase') {
+                        this.handlePurchase(entityId, entityTypeFromCard);
+                    } else if (action === 'remove') {
+                        const character = this.stateManager.getCharacter();
+                        const purchaseArrayName = `${entityTypeFromCard}s`;
+                        const purchaseInstance = character[purchaseArrayName]?.find(p => p.id === entityId);
+
+                        if (purchaseInstance && purchaseInstance.purchaseId) {
+                            this.handleRemove(purchaseInstance.purchaseId, entityTypeFromCard);
+                        } else {
+                            Logger.warn(`[MainPoolTab] Could not find purchaseId for entity ${entityId} of type ${entityTypeFromCard} to remove.`);
+                            // Attempt removal by entityId if purchaseId is missing (fallback for older data/logic)
+                            // This might be risky if multiple instances of same ID are possible and purchaseId is key
+                        }
+                    }
+                }
+            };
+            purchaseGrid.addEventListener('click', this.delegatedGridListener);
+        }
+        Logger.debug('[MainPoolTab] Event listeners set up.');
     }
 
     handlePurchase(entityId, entityType) {
-        this.stateManager.dispatch({
-            type: 'PURCHASE_ENTITY',
-            payload: { entityId, entityType }
-        });
+        Logger.info(`[MainPoolTab] Attempting purchase: Entity ID - ${entityId}, Type - ${entityType}`);
+        UnifiedPurchaseSystem.purchase(entityId);
+        // StateManager change will trigger re-render via EventBus listener in init()
     }
 
-    handleRemove(entityId, entityType) {
-        const purchase = this.stateManager.getPurchaseForEntity(entityId, entityType);
-        if (purchase) {
-            this.stateManager.dispatch({
-                type: 'REMOVE_ENTITY',
-                payload: { purchaseId: purchase.id, entityType }
-            });
-        }
+    handleRemove(purchaseId, entityType) {
+        Logger.info(`[MainPoolTab] Attempting removal: Purchase ID - ${purchaseId}, Type - ${entityType}`);
+        UnifiedPurchaseSystem.remove(purchaseId, entityType);
+        // StateManager change will trigger re-render via EventBus listener in init()
     }
-
-    updateSection() {
-        // Update active tab
-        const tabs = this.container.querySelectorAll('.section-tab');
-        tabs.forEach(tab => {
-            tab.classList.toggle('active', tab.dataset.section === this.currentSection);
-        });
-
-        // Update section header
-        const header = this.container.querySelector('.section-header h3');
-        const description = this.container.querySelector('.section-header p');
-        if (header) header.textContent = this.sections[this.currentSection].title;
-        if (description) description.textContent = this.getSectionDescription();
-
-        // Update purchase cards
-        this.updatePurchaseCards();
-    }
-
-    updatePurchaseCards() {
-        const grid = this.container.querySelector('#purchase-grid');
-        if (grid) {
-            grid.innerHTML = this.renderPurchaseCards();
-        }
-    }
-
-    updatePointsDisplay() {
-        const state = this.stateManager.getState();
-        const mainPool = state.pools.main;
-        const availablePoints = this.stateManager.getAvailablePoints('main');
-        
-        // Update main pool display
-        const pointsDisplay = this.container.querySelector('#main-pool-points');
-        if (pointsDisplay) {
-            pointsDisplay.textContent = `${availablePoints} / ${mainPool.total}`;
-        }
-
-        // Update pool summary
-        const poolSummary = this.container.querySelector('#pool-summary');
-        if (poolSummary) {
-            poolSummary.textContent = this.renderPoolSummary();
-        }
-    }
-
+    
     destroy() {
-        if (this.unsubscribe) {
-            this.unsubscribe();
+        if (this.eventBusListener) {
+            EventBus.off('character-updated', this.eventBusListener);
+            this.eventBusListener = null;
+            Logger.info('[MainPoolTab] Unsubscribed from character-updated event.');
         }
-        if (this.clickHandler) {
-            this.container.removeEventListener('click', this.clickHandler);
+        const purchaseGrid = this.container.querySelector('#main-pool-purchase-grid');
+        if (purchaseGrid && this.delegatedGridListener) {
+            purchaseGrid.removeEventListener('click', this.delegatedGridListener);
+            this.delegatedGridListener = null;
         }
     }
 }

@@ -1,13 +1,18 @@
-// file: modernApp/systems/UnifiedPurchaseSystem.js
+// modernApp/systems/UnifiedPurchaseSystem.js
 import { StateManager } from '../core/StateManager.js';
 import { EntityLoader } from '../core/EntityLoader.js';
 import { RequirementSystem } from './RequirementSystem.js';
 import { NotificationSystem } from '../components/NotificationSystem.js';
+import { Logger } from '../utils/Logger.js';
 
+/**
+ * Orchestrates the purchase and removal of entities, handling advisory validation and user feedback.
+ * It does not contain state or business logic itself, delegating to other systems.
+ */
 export class UnifiedPurchaseSystem {
 
     /**
-     * Handles the purchase of any entity, orchestrating validation and state updates.
+     * Handles the purchase of any entity.
      * @param {string} entityId - The ID of the entity to purchase.
      * @returns {Object} - The result from StateManager.dispatch.
      */
@@ -17,36 +22,35 @@ export class UnifiedPurchaseSystem {
 
         if (!entity) {
             const message = `Purchase failed: Entity with ID "${entityId}" not found.`;
-            console.error(message);
+            Logger.error(`[PurchaseSystem] ${message}`);
             NotificationSystem.show(message, 'error');
             return { success: false, error: message };
         }
 
         // 1. Check for uniqueness if the entity is not stackable
-        const arrayName = this.getArrayForType(entity.type);
+        const arrayName = `${entity.type}s`;
         const isStackable = entity.cost?.stackable === true;
-        if (arrayName && !isStackable && character[arrayName]?.some(p => p.id === entityId)) {
-             const message = `Cannot purchase "${entity.name}": Already purchased.`;
-             console.warn(message);
+        if (character[arrayName] && !isStackable && character[arrayName].some(p => p.id === entityId)) {
+             const message = `Cannot purchase "${entity.name}": This is a unique item you already own.`;
+             Logger.info(`[PurchaseSystem] ${message}`);
              NotificationSystem.show(message, 'info');
-             return { success: false, error: message, alreadyOwned: true };
+             return { success: false, alreadyOwned: true };
         }
 
-        // 2. Check Requirements (advisory)
+        // 2. Perform ADVISORY check for requirements
         const reqCheck = RequirementSystem.check(entity.requirements, character);
         if (!reqCheck.areMet) {
             const message = `Requirements not met for ${entity.name}: ${reqCheck.unmet.join(', ')}`;
-            console.warn(message);
-            NotificationSystem.show(message, 'warning');
-            // Per our rules, we don't block the purchase, but the warning is important.
+            Logger.warn(`[PurchaseSystem] ${message}`);
+            NotificationSystem.show(message, 'warning', 5000); // Longer duration for warnings
         }
 
-        // 3. Dispatch to StateManager for the actual purchase
-        console.log(`[PurchaseSystem] Attempting to purchase ${entity.name} (${entityId})`);
+        // 3. Dispatch the purchase action to the StateManager.
+        // NO affordability check here. The system allows the purchase regardless of point cost.
+        Logger.info(`[PurchaseSystem] Dispatching purchase for ${entity.name} (${entityId})`);
         const result = StateManager.dispatch('PURCHASE_ENTITY', {
             entityId: entity.id,
-            entityType: entity.type,
-            cost: entity.cost
+            entityType: entity.type
         });
 
         if (result.success) {
@@ -61,22 +65,23 @@ export class UnifiedPurchaseSystem {
     /**
      * Handles the removal of any purchased entity.
      * @param {string} purchaseId - The unique ID of the purchase instance.
-     * @param {string} entityType - The type of the entity to help locate it in the character object.
+     * @param {string} entityType - The type of the entity to help locate it.
      * @returns {Object} - The result from StateManager.dispatch.
      */
     static remove(purchaseId, entityType) {
         if (!purchaseId || !entityType) {
              const message = `Removal failed: purchaseId and entityType are required.`;
-             console.error(message);
+             Logger.error(`[PurchaseSystem] ${message}`);
              NotificationSystem.show(message, 'error');
              return { success: false, error: message };
         }
-        
-        // Find the original entity to show its name in the notification
-        const arrayNameForLookup = this.getArrayForType(entityType);
-        const purchaseInstance = StateManager.getCharacter()[arrayNameForLookup]?.find(p => p.purchaseId === purchaseId);
-        const entity = purchaseInstance ? EntityLoader.getEntity(purchaseInstance.id) : null;
 
+        // Find the original entity name for the notification before removing it.
+        const character = StateManager.getCharacter();
+        const arrayName = `${entityType}s`;
+        const purchaseInstance = character[arrayName]?.find(p => p.purchaseId === purchaseId);
+        const entity = purchaseInstance ? EntityLoader.getEntity(purchaseInstance.id) : null;
+        
         const result = StateManager.dispatch('REMOVE_ENTITY', { purchaseId, entityType });
 
         if (result.success && entity) {
@@ -86,21 +91,5 @@ export class UnifiedPurchaseSystem {
         }
 
         return result;
-    }
-
-    /**
-     * Helper to get the correct character array name from an entity type.
-     * Mirrors the logic in StateManager.
-     */
-    static getArrayForType(entityType) {
-        const typeMap = {
-            'trait': 'traits',
-            'flaw': 'flaws',
-            'boon': 'boons',
-            'action': 'actions',
-            'feature': 'features',
-            'sense': 'senses'
-        };
-        return typeMap[entityType] || null;
     }
 }

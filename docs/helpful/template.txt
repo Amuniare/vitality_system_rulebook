@@ -1,0 +1,91 @@
+Review the following key documents:
+
+modernApp\app.js
+modernApp\Architecture.md
+modernApp\character-builder.md
+modernApp\index.html
+modernApp\README.md
+modernApp\requirements.md
+modernApp\workplan.md
+
+
+Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md
+
+
+We'll be doing a review of the following sections: components/ utils/, core/ 
+
+1. To ensure that they make appropriate use of utils/ components where needed
+2. To ensure that they abide by architecture.md and all other documentation above
+3. Finally, if you have any notes or things that you think should be changed. List them
+
+At this time, don't write code anything, I just want you to analyze
+
+
+## Chain-of-Thought 
+Analyze this code problem using these steps:
+	1. Identify the core requirements
+	2. Break down the technical constraints
+	3. Consider potential edge cases
+	4. Develop an algorithm addressing all constraints
+	5. Evaluate time and space complexity
+	6. Propose implementation approaches
+
+
+
+
+---
+
+Review the following key documents:
+
+modernApp\app.js
+modernApp\Architecture.md
+modernApp\character-builder.md
+modernApp\index.html
+modernApp\README.md
+modernApp\requirements.md
+modernApp\workplan.md
+tests\README.md
+
+Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md
+
+We'll be working on:
+
+tests/
+
+using the --write-code method
+
+can you create the update.py file, which updates the following files:
+
+4. **`tests/framework/TestRunner.js`** - Main test orchestration and runner
+5. **`tests/framework/BrowserManager.js`** - Browser lifecycle management
+6. **`tests/framework/TabNavigator.js`** - ModernApp tab navigation utilities
+7. **`tests/framework/ScreenshotCapture.js`** - Screenshot capture and management
+8. **`tests/framework/ConsoleLogger.js`** - Console log capture and filtering
+9. **`tests/framework/ReportGenerator.js`** - HTML/JSON report generation
+10. **`tests/framework/InteractionTester.js`** - Button/form interaction testing
+11. **`tests/framework/StateValidator.js`** - App state validation utilities
+
+
+## Chain-of-Thought 
+Analyze this code problem using these steps:
+	1. Identify the core requirements
+	2. Break down the technical constraints
+	3. Consider potential edge cases
+	4. Develop an algorithm addressing all constraints
+	5. Evaluate time and space complexity
+	6. Propose implementation approaches
+
+
+
+---
+
+
+We'll be building:
+
+modernApp\systems\AttackSystem.js
+modernApp\systems\EffectSystem.js
+modernApp\systems\ExportSystem.js
+modernApp\systems\PoolCalculator.js
+modernApp\systems\RequirementSystem.js
+modernApp\systems\SearchSystem.js
+modernApp\systems\UnifiedPurchaseSystem.js

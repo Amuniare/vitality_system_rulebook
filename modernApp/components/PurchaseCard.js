@@ -1,104 +1,60 @@
-// components/PurchaseCard.js
+// modernApp/components/PurchaseCard.js
+import { Logger } from '../utils/Logger.js';
+import { StateManager } from '../core/StateManager.js';
+import { RequirementSystem } from '../systems/RequirementSystem.js';
+import { PoolCalculator } from '../systems/PoolCalculator.js';
+import { UniversalCard } from './UniversalCard.js';
+
+/**
+ * A "smart" component wrapper that orchestrates data gathering for a purchasable entity
+ * and then uses the "dumb" UniversalCard component for rendering.
+ */
 export class PurchaseCard {
-    constructor(entity, entityType, stateManager) {
+    /**
+     * @param {Object} entity - The entity object from unified-game-data.json.
+     * @param {string} entityType - The type of the entity (e.g., 'flaw', 'trait').
+     */
+    constructor(entity, entityType) {
+        if (!entity || !entityType) {
+            throw new Error('PurchaseCard requires an entity and entityType.');
+        }
         this.entity = entity;
         this.entityType = entityType;
-        this.stateManager = stateManager;
+        Logger.debug(`[PurchaseCard] Created for entity: ${entity.name} (${entity.id})`);
     }
 
+    /**
+     * Gathers all necessary data from core systems and renders the card.
+     * @returns {string} The complete HTML for the card.
+     */
     render() {
-        const state = this.stateManager.getState();
-        const poolType = this.getPoolType();
-        const availablePoints = this.stateManager.getAvailablePoints(poolType);
-        const isPurchased = this.stateManager.hasPurchased(this.entity.id, this.entityType);
-        const canAfford = availablePoints >= this.entity.cost;
-        const isDisabled = (!canAfford && !isPurchased) || (isPurchased && this.entityType === 'flaw');
+        const character = StateManager.getCharacter();
 
-        return `
-            <div class="purchase-card ${isDisabled ? 'disabled' : ''} ${isPurchased ? 'purchased' : ''}" 
-                 data-entity-id="${this.entity.id}" 
-                 data-entity-type="${this.entityType}">
-                <div class="card-header">
-                    <h4>${this.entity.name}</h4>
-                    <span class="cost">${this.entity.cost}p</span>
-                </div>
-                <p class="card-description">${this.entity.description || ''}</p>
-                ${this.renderEffects()}
-                ${this.renderRequirements()}
-                ${!canAfford && !isPurchased ? '<p class="requirement-warning">Not enough points</p>' : ''}
-                ${isPurchased ? '<p class="purchased-indicator">✓ Purchased</p>' : ''}
-                <button class="btn btn-primary purchase-btn" 
-                        data-action="${isPurchased ? 'remove' : 'purchase'}"
-                        data-entity-id="${this.entity.id}"
-                        data-entity-type="${this.entityType}"
-                        ${isDisabled ? 'disabled' : ''}>
-                    ${isPurchased ? 'Remove' : 'Purchase'}
-                </button>
-            </div>
-        `;
-    }
+        // 1. Check requirements
+        const reqCheck = RequirementSystem.check(this.entity.requirements, character);
 
+        // 2. Check affordability (Note: this is a placeholder for where the system call would go)
+        // For now, we'll simulate the call. In a full implementation, PoolCalculator would have this method.
+        const pools = PoolCalculator.calculatePools(character);
+        const poolName = this.entity.cost?.pool || 'main';
+        const pool = pools[poolName + 'Remaining'] ?? -Infinity;
+        const cost = this.entity.cost?.value || 0;
+        const isAffordable = pool >= cost;
+        
+        // 3. Check if already purchased
+        const arrayName = `${this.entityType}s`;
+        const isPurchased = character[arrayName]?.some(p => p.id === this.entity.id) || false;
 
-
-
-    renderRequirements() {
-        if (!this.entity.requirements || this.entity.requirements.length === 0) {
-            return '';
-        }
-
-        const reqList = this.entity.requirements.map(req => `<li>${req}</li>`).join('');
-        return `
-            <div class="card-requirements">
-                <strong>Requirements:</strong>
-                <ul>${reqList}</ul>
-            </div>
-        `;
-    }
-
-    // Update the getPoolType method in PurchaseCard
-
-    getPoolType() {
-        const poolMapping = {
-            'flaw': 'main',
-            'trait': 'main',
-            'boon': 'main',
-            'action': 'main',
-            'uniqueAbility': 'main',
-            'specialAttack': 'main',
-            'archetypeUpgrade': 'main',
-            'trait2': 'secondary',
-            'companion': 'companion'
+        // 4. Assemble the context object for the "dumb" rendering component
+        const context = {
+            isPurchased,
+            isAffordable,
+            areRequirementsMet: reqCheck.areMet,
+            unmetRequirements: reqCheck.unmet,
+            entityType: this.entityType
         };
-        return poolMapping[this.entityType] || 'main';
+
+        // 5. Delegate rendering to the universal component
+        return UniversalCard.render(this.entity, context);
     }
-
-    // Update renderEffects to handle more complex effect types
-    renderEffects() {
-        if (!this.entity.effects || this.entity.effects.length === 0) {
-            return '';
-        }
-
-        const effectsList = this.entity.effects.map(effect => {
-            if (typeof effect === 'string') {
-                return `<li>${effect}</li>`;
-            } else if (effect.description) {
-                return `<li>${effect.description}${effect.value ? ` (${effect.value})` : ''}</li>`;
-            } else if (effect.stat && effect.modifier) {
-                return `<li>${effect.stat}: ${effect.modifier > 0 ? '+' : ''}${effect.modifier}</li>`;
-            }
-            return '';
-        }).join('');
-
-        return effectsList ? `
-            <div class="card-effects">
-                <strong>Effects:</strong>
-                <ul>${effectsList}</ul>
-            </div>
-        ` : '';
-    }
-
-
-
-
-
 }
