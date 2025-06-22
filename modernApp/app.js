@@ -1,15 +1,13 @@
-
 // modernApp/app.js
-let isAppInitializedGlobally = false; // Guard against multiple initializations
+let isAppInitializedGlobally = false; 
 
 import { SchemaSystem } from './core/SchemaSystem.js';
-import { StateManager } from './core/StateManager.js';
+import { StateManager } from './core/StateManager.js'; // Still imported for other modules/tabs that might use it directly
 import { EntityLoader } from './core/EntityLoader.js';
 import { EventBus } from './core/EventBus.js';
 import { NotificationSystem } from './components/NotificationSystem.js';
 import { Logger } from './utils/Logger.js';
-import { Formatters } from './utils/Formatters.js';
-// DataLoader is used by EntityLoader, not directly needed here for tab instantiation
+import { CharacterManager } from './core/CharacterManager.js'; // Import CharacterManager
 
 // Import tabs
 import { BasicInfoTab } from './tabs/BasicInfoTab.js';
@@ -19,15 +17,16 @@ import { MainPoolTab } from './tabs/MainPoolTab.js';
 class ModernCharacterBuilder {
     constructor() {
         this.tabs = new Map();
-        this.currentTab = 'basic-info';
+        this.currentTab = 'basic-info'; // Default starting tab
         this.container = document.getElementById('tab-content');
-        this.summaryContainer = document.getElementById('summary-content'); // Corrected ID
+        this.summaryContainer = document.getElementById('summary-content');
         this.initialized = false;
+        this.characterManager = null; // Will be initialized in init()
     }
     
     async init() {
         try {
-            Logger.info('[App] Initializing Modern Character Builder...');
+            Logger.info('[App] Initializing Modern CharacterBuilder...');
             document.body.style.visibility = 'hidden';
             
             Logger.info('[App] Initializing core systems...');
@@ -37,21 +36,39 @@ class ModernCharacterBuilder {
             await EntityLoader.init();
             Logger.info('[App] EntityLoader initialized.');
             
-            StateManager.init();
-            Logger.info('[App] StateManager initialized.');
-            
             NotificationSystem.init();
             Logger.info('[App] NotificationSystem initialized.');
+
+            // Initialize CharacterManager, which will in turn initialize StateManager
+            this.characterManager = new CharacterManager();
+            await this.characterManager.init(); // This is now async and sets up StateManager
+            Logger.info('[App] CharacterManager (and StateManager via it) initialized.');
             
+            // Tabs are initialized after StateManager has an active character
             await this.initializeTabs();
             
             this.setupEventListeners();
             this.setupTabNavigation();
-            this.showTab(this.currentTab); // Render initial tab
-            this.updateCharacterSummary(); // Initial summary render
             
+            // Initial render based on character loaded by CharacterManager
+            // The 'active-character-changed' or 'character-updated' event from CM/SM
+            // should trigger the first summary update and tab render.
+            // Let's ensure the first tab is shown.
+            this.showTab(this.currentTab); // Default to basic-info or last active tab if we store that
+            this.updateCharacterSummary(); // Initial summary render based on StateManager's current character
+
             EventBus.on('character-updated', (character) => {
                 this.updateCharacterSummary(character);
+                // If current tab needs refresh on any character update:
+                // const tabInstance = this.tabs.get(this.currentTab);
+                // if (tabInstance && typeof tabInstance.render === 'function') tabInstance.render();
+            });
+
+            // Optional: If tab content should change when active character ID changes
+            EventBus.on('active-character-changed', (newCharId) => {
+                Logger.info(`[App] Active character changed to ${newCharId}. Reloading current tab view.`);
+                this.showTab(this.currentTab); // Re-render current tab with new character data
+                // Summary will update via 'character-updated' emitted by StateManager.loadCharacter
             });
             
             this.initialized = true;
@@ -65,14 +82,15 @@ class ModernCharacterBuilder {
         }
     }
     
+    // ... (initializeTabs, setupEventListeners, setupTabNavigation, showTab, updateCharacterSummary, renderArchetypesSummary, renderPointPoolsSummary, renderProgressSummary, showInitializationError remain the same)
     async initializeTabs() {
         Logger.info('[App] Initializing tabs...');
         
         const basicInfoTab = new BasicInfoTab(this.container);
-        // if (basicInfoTab.init) await basicInfoTab.init(); // If BasicInfoTab had an async init
         this.tabs.set('basic-info', basicInfoTab);
 
-        const archetypeTab = new ArchetypeTab(this.container, StateManager);
+        // Pass StateManager to tabs that need it for direct access or dispatching actions
+        const archetypeTab = new ArchetypeTab(this.container, StateManager); 
         if (archetypeTab.init) await archetypeTab.init();
         this.tabs.set('archetypes', archetypeTab);
         
@@ -93,6 +111,14 @@ class ModernCharacterBuilder {
             Logger.error('Unhandled promise rejection:', event.reason);
             NotificationSystem.show(`Promise error: ${event.reason.message || event.reason}`, 'error');
         });
+
+        // Listen for StateManager's character updates to save automatically
+        EventBus.on('character-updated', (characterData) => {
+            if (this.characterManager && characterData && characterData.id) {
+                // Debounce or throttle this if it becomes too frequent
+                this.characterManager.saveCharacter(characterData);
+            }
+        });
     }
     
     setupTabNavigation() {
@@ -102,7 +128,7 @@ class ModernCharacterBuilder {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 const tabId = button.dataset.tab;
-                if (tabId && tabId !== this.currentTab) { // Only switch if different
+                if (tabId && tabId !== this.currentTab) { 
                     this.showTab(tabId);
                 }
             });
@@ -116,7 +142,6 @@ class ModernCharacterBuilder {
             btn.classList.toggle('active', btn.dataset.tab === tabId);
         });
         
-        // Clear previous tab content
         this.container.innerHTML = ''; 
         
         const tab = this.tabs.get(tabId);
@@ -159,10 +184,21 @@ class ModernCharacterBuilder {
         }
         
         try {
-            const character = charData || StateManager.getCharacter();
+            // Use charData if provided (from event), else get fresh from StateManager
+            const character = charData || StateManager.getCharacter(); 
             
+            // Ensure character is not null or the default "No Character Loaded" before proceeding
+            if (!character || !character.id) {
+                this.summaryContainer.innerHTML = `
+                    <div class="character-summary-content">
+                        <h3>Character Summary</h3>
+                        <p class="text-muted">No character loaded or character data is invalid.</p>
+                    </div>`;
+                return;
+            }
+
             this.summaryContainer.innerHTML = `
-                <div class="character-summary-content"> <!-- Added a wrapper class -->
+                <div class="character-summary-content">
                     <h3>Character Summary</h3>
                     
                     <div class="summary-section">
@@ -177,8 +213,7 @@ class ModernCharacterBuilder {
                     </div>
                     
                     <div class="summary-section" id="summary-point-pools-section">
-                        <h4>Point Pools</h4>
-                        ${this.renderPointPoolsSummary(character)} 
+                        <!-- Content will be dynamically updated by renderPointPoolsSummary -->
                     </div>
                     
                     <div class="summary-section">
@@ -187,6 +222,9 @@ class ModernCharacterBuilder {
                     </div>
                 </div>
             `;
+            // Call renderPointPoolsSummary separately as it's async
+            this.renderPointPoolsSummary(character);
+
         } catch (error) {
             Logger.error('[App] Error updating character summary:', error);
             this.summaryContainer.innerHTML = `
@@ -199,63 +237,57 @@ class ModernCharacterBuilder {
     
     renderArchetypesSummary(character) {
         const archetypes = character.archetypes || {};
-        const archetypeEntries = Object.entries(archetypes);
+        const archetypeEntries = Object.entries(archetypes).filter(([_, id]) => id); // Filter out null/empty IDs
         
         if (archetypeEntries.length === 0) {
             return '<p class="text-muted">No archetypes selected</p>';
         }
         
         return archetypeEntries.map(([category, id]) => {
-            if (!id) return ''; // Skip if no archetype selected for a category
             const entity = EntityLoader.getEntity(id);
             const displayName = entity?.name || id;
-            return `<p><strong>${Formatters.capitalize(category)}:</strong> ${displayName}</p>`;
+            // Assuming Formatters.capitalize is available or use a simple one
+            const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1).replace(/([A-Z])/g, ' $1');
+            return `<p><strong>${formattedCategory}:</strong> ${displayName}</p>`;
         }).join('');
     }
     
-    renderPointPoolsSummary(character) {
-        // This method will show "Calculating..." and then be updated by the async import
-        // Ensure the target element for update exists
-        const targetElementId = 'summary-point-pools-section';
+    async renderPointPoolsSummary(character) {
+        const targetElement = document.getElementById('summary-point-pools-section');
+        if (!targetElement) {
+            Logger.warn('[App] Point pools summary target element not found.');
+            return;
+        }
         
-        // Schedule the async update
-        import('./systems/PoolCalculator.js').then(({ PoolCalculator }) => {
+        targetElement.innerHTML = '<h4>Point Pools</h4><p class="text-muted">Calculating...</p>'; // Placeholder
+
+        try {
+            const { PoolCalculator } = await import('./systems/PoolCalculator.js');
             const pools = PoolCalculator.calculatePools(character);
             const poolsHtml = `
                 <p><strong>Main Pool:</strong> ${pools.mainRemaining}/${pools.main}</p>
                 <p><strong>Combat Attr:</strong> ${pools.combatRemaining}/${pools.combat}</p>
                 <p><strong>Utility Attr:</strong> ${pools.utilityRemaining}/${pools.utility}</p>
             `;
-            
-            const poolsSection = document.getElementById(targetElementId);
-            if (poolsSection) {
-                poolsSection.innerHTML = '<h4>Point Pools</h4>' + poolsHtml;
-            }
-        }).catch(error => {
+            targetElement.innerHTML = '<h4>Point Pools</h4>' + poolsHtml;
+        } catch (error) {
             Logger.error('[App] Error loading or using PoolCalculator for summary:', error);
-            const poolsSection = document.getElementById(targetElementId);
-            if (poolsSection) {
-                poolsSection.innerHTML = '<h4>Point Pools</h4><p class="text-muted">Pool calculation error.</p>';
-            }
-        });
-        
-        return '<p class="text-muted">Calculating...</p>'; // Initial placeholder
+            targetElement.innerHTML = '<h4>Point Pools</h4><p class="text-muted">Pool calculation error.</p>';
+        }
     }
     
     renderProgressSummary(character) {
+        // Ensure character and archetypes are defined before trying to access Object.values
+        const archetypesSelected = character && character.archetypes && Object.values(character.archetypes).some(val => !!val);
+        const mainPoolItemsSelected = character && [
+            ...(character.flaws || []), ...(character.traits || []), ...(character.boons || []),
+            ...(character.action_upgrades || [])
+        ].length > 0;
+
         const steps = [
-            { id: 'basic-info', name: 'Basic Info', completed: !!(character.name && character.tier) },
-            { id: 'archetypes', name: 'Archetypes', completed: Object.values(character.archetypes || {}).some(val => !!val) },
-            { 
-                id: 'main-pool', 
-                name: 'Main Pool Items', 
-                completed: [
-                    ...(character.flaws || []),
-                    ...(character.traits || []),
-                    ...(character.boons || []),
-                    ...(character.action_upgrades || [])
-                ].length > 0 
-            }
+            { id: 'basic-info', name: 'Basic Info', completed: !!(character && character.name && character.tier) },
+            { id: 'archetypes', name: 'Archetypes', completed: archetypesSelected },
+            { id: 'main-pool', name: 'Main Pool Items', completed: mainPoolItemsSelected }
         ];
         
         return steps.map(step => `
@@ -267,8 +299,9 @@ class ModernCharacterBuilder {
             </p>
         `).join('');
     }
-    
+
     showInitializationError(error) {
+        // ... (same as before)
         if (this.container) {
             this.container.innerHTML = `
                 <div class="error-screen">
@@ -278,7 +311,7 @@ class ModernCharacterBuilder {
                         <summary>Error Details</summary>
                         <pre>${error.stack || error.message}</pre>
                     </details>
-                    <button onclick="location.reload()" class.btn btn-primary">
+                    <button onclick="location.reload()" class="btn btn-primary">
                         Reload Page
                     </button>
                 </div>
@@ -289,27 +322,29 @@ class ModernCharacterBuilder {
     }
 }
 
+
+// Global init logic for app.js
 document.addEventListener('DOMContentLoaded', async () => {
     if (isAppInitializedGlobally) {
         Logger.warn('[App] DOMContentLoaded fired, but app already initialized. Preventing re-initialization.');
         return;
     }
-    isAppInitializedGlobally = true; // Set the guard
-    Logger.info('[App] DOM loaded, initializing app...');
+    isAppInitializedGlobally = true;
+    Logger.info('[App] DOM loaded, initializing app instance...');
     
     try {
         const app = new ModernCharacterBuilder();
         await app.init();
-        window.modernCharacterBuilder = app; // Make app globally accessible for debugging
+        window.modernCharacterBuilder = app; 
     } catch (error) {
-        Logger.error('[App] Failed to start application:', error);
+        Logger.error('[App] Failed to start application instance:', error);
         document.body.style.visibility = 'visible';
         document.body.classList.add('loaded');
         const container = document.getElementById('tab-content') || document.body;
         container.innerHTML = `
             <div class="error-screen" style="padding: 20px; text-align: center;">
-                <h1>Startup Error</h1>
-                <p>The application failed to start.</p>
+                <h1>Application Startup Error</h1>
+                <p>The application failed to start correctly.</p>
                 <p><strong>Error:</strong> ${error.message}</p>
                 <pre>${error.stack || 'No stack trace'}</pre>
                 <button onclick="location.reload()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
@@ -320,4 +355,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-export { ModernCharacterBuilder };
+export { ModernCharacterBuilder }; // If needed by other modules, though usually app.js is the top level.
