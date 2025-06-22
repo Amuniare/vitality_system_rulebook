@@ -1,0 +1,46 @@
+/* .character-summary from index.html is the main container */
+.character-summary > h3 { /* Targeting the h3 directly inside the summary aside */
+    color: var(--color-accent-primary);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border-primary);
+    padding-bottom: var(--spacing-md);
+}
+#summary-content .summary-section { /* Styling for sections within summary-content */
+    background-color: transparent; /* Override .section-content if it's too dark for sidebar */
+    border: none; /* Remove border if inside sidebar */
+    padding: 0; /* Remove padding if inside sidebar */
+    margin-top: var(--spacing-lg); /* Space between summary sections */
+}
+#summary-content .summary-section:first-child {
+    margin-top: 0;
+}
+#summary-content .summary-section h4 {
+    color: var(--color-text-primary); /* Less emphasis than accent */
+    font-size: var(--font-size-lg); /* Slightly smaller */
+    margin-bottom: var(--spacing-sm);
+}
+#summary-content .summary-section p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+#summary-content .summary-section p strong {
+    color: var(--color-text-primary);
+}
+#summary-content .progress-indicator {
+    margin-right: var(--spacing-sm);
+}
+#summary-content .progress-indicator.completed {
+    color: var(--color-accent-success);
+}
+#summary-content .progress-indicator.pending {
+    color: var(--color-accent-warning);
+}
+
+
+/* Legacy #pool-summary - might not be used if PointPoolDisplay is used in summary */
+#pool-summary {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-family: var(--font-mono);
+}

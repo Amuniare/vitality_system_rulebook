@@ -1,0 +1,17 @@
+.text-muted {
+    color: var(--color-text-muted) !important; /* Ensure it overrides for specific cases */
+}
+
+.text-center {
+    text-align: center;
+}
+
+.no-items { /* Message for empty lists/grids */
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: var(--spacing-xxl) var(--spacing-md); /* More vertical padding */
+    font-size: var(--font-size-lg);
+    border: 1px dashed var(--color-border-secondary); /* Visual cue for empty area */
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-card); /* Slight background */
+}

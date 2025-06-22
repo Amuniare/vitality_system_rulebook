@@ -7,20 +7,18 @@ modernApp\index.html
 modernApp\README.md
 modernApp\requirements.md
 modernApp\workplan.md
+console.txt
+3 attached screenshots
 
-Visit my website, and test it out.
-URL CONTEXT: https://amuniare.github.io/vitality_system_rulebook/modernApp/
 
 Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md
 
 
-We'll be doing a review of the following sections: components/ utils/, core/ 
-
-1. To ensure that they make appropriate use of utils/ components where needed
-2. To ensure that they abide by architecture.md and all other documentation above
-3. Finally, if you have any notes or things that you think should be changed. List them
-
-At this time, don't write code anything, I just want you to analyze
+We'll be doing a review of the app, the images and the console log
+1. does this abide by architexture.md, requirements.md and README.md
+2. does this make appropriate and effective use of components, core, systems, data and utils files
+3. review the attached screenshots and console.txt, what issues can you see
+4. what would you recommend working on next
 
 
 ## Chain-of-Thought 

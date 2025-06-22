@@ -3,7 +3,6 @@
    
    Original Base + Consolidated Component Styles
    ========================================================================== */
-
 /* =====================================================
    RESET & BASE STYLES (Original)
    ===================================================== */
@@ -183,7 +182,6 @@ li {
     /* max-width: 1400px; /* Already in original */
     /* margin: 0 auto; /* Already in original */
 }
-
 
 /* =====================================================
    NAVIGATION & TABS (Original)
@@ -579,7 +577,6 @@ li {
     border-color: var(--color-border-secondary);
 }
 
-
 /* =====================================================
    SUMMARY SECTION (Original)
    ===================================================== */
@@ -694,7 +691,6 @@ li {
    CONSOLIDATED COMPONENT-SPECIFIC STYLES
    (Styles extracted from JS components are placed below)
    ========================================================================== */
-
 /*
    Component: modernApp/components/CollapsibleSection.js
    -----------------------------------------------------
@@ -1097,7 +1093,6 @@ body.modal-open {
     text-align: center; /* Center "no results" message */
 }
 
-
 /* =====================================================
    NOTIFICATION SYSTEM (If not already styled globally)
    ===================================================== */
@@ -1171,7 +1166,6 @@ body.modal-open {
     color: var(--color-text-primary);
     background-color: var(--color-bg-hover);
 }
-
 
 /* =====================================================
    RESPONSIVE DESIGN (Original - ensure this is at the end)
@@ -1334,6 +1328,10 @@ body.modal-open {
 
 /* Closing brace for the last media query in original if it was there */
 /* } */ /* This was from the very end of your provided CSS */
+
+/* ==========================================================================
+   END OF FILE
+   ========================================================================== */
 
 /* ==========================================================================
    END OF FILE

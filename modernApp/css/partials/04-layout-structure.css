@@ -1,0 +1,41 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-header {
+    background-color: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border-primary);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    position: sticky;
+    top: 0;
+    z-index: 100; /* Lower than modals */
+    backdrop-filter: blur(10px);
+    background-color: rgba(26, 31, 46, 0.9); /* Semi-transparent background for blur effect */
+}
+
+.app-main { /* This class was not in index.html, but good for structure */
+    flex: 1;
+    display: flex;
+    overflow: hidden; /* If sidebar and content are side-by-side */
+}
+
+/* .app-sidebar from original, assuming it's part of the main layout for character summary */
+.character-summary { /* Renamed from .app-sidebar to match index.html more closely */
+    width: 280px; /* Default width */
+    background-color: var(--color-bg-secondary);
+    border-left: 1px solid var(--color-border-primary); /* Assuming summary is on the right */
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+    /* Flex properties if .tab-container and .character-summary are direct children of a flex container */
+}
+
+/* .app-content from original, mapping to .tab-container from index.html */
+.tab-container { /* This is the main content area in index.html */
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-xl);
+    /* max-width: 1400px; /* Already in original */
+    /* margin: 0 auto; /* Already in original */
+}

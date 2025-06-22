@@ -1,0 +1,70 @@
+#notification-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 2000; /* Above modals */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: auto; /* Allow content to define width */
+    max-width: 350px; /* Max width for notifications */
+}
+
+.notification {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity var(--transition-base), transform var(--transition-base);
+    border-left: 4px solid var(--color-border-primary); /* Default border */
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.notification.hide { /* For animating out if needed, though JS usually just removes */
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.notification-info {
+    border-left-color: var(--color-accent-primary);
+}
+.notification-success {
+    border-left-color: var(--color-accent-success);
+}
+.notification-warning {
+    border-left-color: var(--color-accent-warning);
+}
+.notification-error {
+    border-left-color: var(--color-accent-danger);
+}
+
+.notification-message {
+    flex-grow: 1;
+    font-size: var(--font-size-sm);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    line-height: 1;
+    border-radius: var(--radius-full);
+}
+.notification-close:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-hover);
+}
