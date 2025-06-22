@@ -17,16 +17,33 @@
             <button class="tab-btn active" data-tab="basic-info">Basic Info</button>
             <button class="tab-btn" data-tab="archetypes">Archetypes</button>
             <button class="tab-btn" data-tab="main-pool">Main Pool</button>
+            <!-- Add other main tab buttons here as they are implemented -->
         </nav>
         
-        <main class="tab-container">
-            <div id="tab-content"></div>
-        </main>
-        
-        <aside class="character-summary">
-            <h3>Character Summary</h3>
-            <div id="summary-content"></div>
-        </aside>
+        <div class="app-main"> 
+            <aside class="character-manager-panel">
+                <h3>Characters</h3>
+                <div id="character-list-controls">
+                    <!-- Buttons for New Character, Import, etc. will be added by CharacterListPanel.js -->
+                </div>
+                <div id="character-list-content">
+                    <!-- Character list will be rendered here by CharacterListPanel.js -->
+                </div>
+            </aside>
+
+            <main class="tab-container">
+                <div id="tab-content">
+                    <!-- Tab content will be rendered here by app.js -->
+                </div>
+            </main>
+            
+            <aside class="character-summary">
+                <h3>Character Summary</h3>
+                <div id="summary-content">
+                    <!-- Summary content will be rendered here by app.js -->
+                </div>
+            </aside>
+        </div>
     </div>
     
     <script type="module" src="app.js"></script>
