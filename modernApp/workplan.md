@@ -1,225 +1,155 @@
-I'll help you create an updated workplan by first reviewing the existing documentation and both web applications. Let me search through your project files to understand the current state and what's been completed.# Updated Detailed Workplan - Vitality Character Builder v3.0
+I'll help you review the workplan documentation and verify the implementation status of Phases 1, 2, and 3. Let me search through your project knowledge to find the relevant information.Based on my review of the documentation and code, here's my assessment of the current implementation status and an updated workplan:
 
-Based on my review of the current state, here's a comprehensive workplan for completing the modernApp.
+## Implementation Status Assessment
 
-## Current Status Summary
+### ✅ **Phase 1: Foundation Correction** - PARTIALLY COMPLETE
+- **Data Schema Design**: ✅ unified-game-data.json created (447.6 KB)
+- **Core System Updates**: ⚠️ Partially complete with critical errors
+  - ❌ Flaws incorrectly give points instead of costing 30 points
+  - ❌ Archetypes tab broken - not linking to data properly
+  - ⚠️ PoolCalculator has fundamental rule errors
+- **Data Migration**: ✅ Executed but needs validation
 
-### ✅ Completed:
-- **Data Migration**: unified-game-data.json created (447.6 KB)
-- **Core Architecture**: SchemaSystem, StateManager, EventBus, EntityLoader
-- **Basic Tabs**: BasicInfo, Archetype, partial MainPool
-- **Most partial JSON files** correctly formatted
+### ❌ **Phase 2: Universal Components** - INCOMPLETE
+- **Component Development**: ⚠️ Started but not finished
+  - ✅ UniversalCard basic structure
+  - ⚠️ UniversalForm empty (157 lines but no implementation)
+  - ⚠️ UniversalList empty (139 lines but no implementation)
+- **Tab Reconstruction**: ❌ Most tabs missing
+  - ✅ BasicInfo, Archetype tabs exist
+  - ⚠️ MainPool tab incomplete (missing data)
+  - ❌ Special Attacks tab broken
+  - ❌ Utility, Bio/Identity, Base Attacks tabs missing
 
-### ❌ Remaining Work:
-- Fix 2 hierarchical JSON files
-- Fix fundamental rule errors (flaws cost)
-- Complete 5 missing tabs
-- Implement 3 empty systems
-- Build 2 empty components
-- Add character management & export features
+### ❌ **Phase 3: Advanced Features** - NOT STARTED
+- ❌ Character Management System
+- ❌ Import/Export System
+- ❌ Roll20 export format
 
-## Phase 1: Critical Data Fixes (2 days)
+## Critical Issues to Fix
 
-### Day 1: Fix Hierarchical JSON Files
-**Goal**: Flatten limits.json and unique_abilities.json
+1. **Archetypes Tab**: Not properly linking to data
+2. **Main Pool**: Missing data display
+3. **Special Attacks**: Navigation broken
+4. **Rule Economics**: Flaws should COST 30 points (not give points)
+5. **Data Structure**: limits.json and unique_abilities.json need flattening
 
-1. **Fix limits.json** (Morning)
-   - Flatten all nested structures
-   - Convert every limit/variant/modifier to top-level entity
-   - Add parentId relationships
-   - Fix cost format: `"cost": 40` → `"cost": { "value": 40, "pool": "limit_points", "display": "+40p" }`
+## Updated Workplan
 
-2. **Fix unique_abilities.json** (Afternoon)
-   - Flatten abilities and upgrades
-   - Add parentId links
-   - Standardize cost objects
-   - Add all required schema fields
+### **Phase 1: Critical Fixes** (3-4 days)
 
-### Day 2: Fix Rule Economics & Validation
-**Goal**: Correct fundamental rule errors
+#### Day 1: Fix Data Structure Issues
+- **Morning**: 
+  - Flatten limits.json hierarchical structure
+  - Convert all nested limits to top-level entities with parentId
+  - Fix cost formats to match schema
+- **Afternoon**:
+  - Flatten unique_abilities.json 
+  - Add proper parentId relationships
+  - Validate all required schema fields
 
-1. **Fix Flaw Economics** (Morning)
-   - Update PoolCalculator: flaws COST 30 points
-   - Fix MainPoolTab display logic
-   - Ensure traits also cost 30 points
+#### Day 2: Fix Core Rule Economics
+- **Morning**:
+  - Fix PoolCalculator - flaws COST 30 points
+  - Update MainPoolTab purchase logic
+  - Ensure traits also cost 30 points correctly
+- **Afternoon**:
+  - Fix Archetypes tab data linking
+  - Debug archetype selection not persisting
+  - Test archetype effects application
 
-2. **Run Build & Validate** (Afternoon)
-   - Execute build_game_data.py
-   - Create validation script for parentId relationships
-   - Verify all data integrity
-   - Test pool calculations
-
-## Phase 2: Core Systems Implementation (3 days)
-
-### Day 3: RequirementSystem
-**Goal**: Complete prerequisite checking
-
-```javascript
-// Implement:
-- checkRequirements(entity, character)
-- getUnmetRequirements(entity, character)
-- validatePurchase(entity, character)
-- Support for: tier, archetype, stat, entity dependencies
-```
-
-### Day 4: EffectSystem
-**Goal**: Handle all stat modifications
-
-```javascript
-// Implement:
-- applyEffects(effects, character)
-- calculateModifiers(character)
-- getActiveEffects(character)
-- Support for: stat bonuses, conditional modifiers, stacking rules
-```
-
-### Day 5: UnifiedPurchaseSystem
-**Goal**: Centralized purchase logic
-
-```javascript
-// Implement:
-- purchaseEntity(entityId, character)
-- removeEntity(purchaseId, character)
-- validatePurchase(entity, character)
-- Integration with pools, requirements, effects
-```
-
-## Phase 3: Universal Components (2 days)
-
-### Day 6: Component Development
-
-1. **UniversalForm** (Morning)
-   - Dynamic form generation from JSON schema
-   - Field validation with advisory warnings
-   - Support for all input types
-   - Integration with StateManager
-
-2. **UniversalList** (Afternoon)
-   - Filterable/sortable entity lists
-   - Search functionality
-   - Pagination for large datasets
-   - Category grouping
-
-### Day 7: Component Polish
-- Complete UniversalCard variants
-- Add loading states
-- Implement error boundaries
-- Performance optimization
-
-## Phase 4: Tab Implementation (5 days)
-
-### Day 8: Complete MainPoolTab
-- Fix flaw/trait purchase logic
+#### Day 3: Complete Main Pool Tab
+- Fix missing data display issues
 - Implement boons section
-- Add action purchases
-- Complete UI interactions
+- Add action purchases interface
+- Complete flaw/trait selection with correct costs
 
-### Day 9: Special Attacks Tab
-- Attack creation interface
-- Type/effect selection
-- Limit system integration
+#### Day 4: Fix Special Attacks Navigation
+- Debug routing to Special Attacks tab
+- Implement attack creation interface
+- Add basic attack editor functionality
+
+### **Phase 2: Complete Core Systems** (3 days)
+
+#### Day 5: RequirementSystem
+- Implement checkRequirements()
+- Add prerequisite validation
+- Support tier/archetype/stat dependencies
+
+#### Day 6: EffectSystem Completion
+- Complete stat modifier calculations
+- Implement conditional effects
+- Add stacking rules
+
+#### Day 7: UnifiedPurchaseSystem
+- Centralize all purchase logic
+- Integrate with pools and requirements
+- Add validation framework
+
+### **Phase 3: Universal Components** (2 days)
+
+#### Day 8: Complete UniversalForm
+- Dynamic form generation from schema
+- Field validation with advisory warnings
+- StateManager integration
+
+#### Day 9: Complete UniversalList
+- Filterable/sortable lists
+- Search functionality
+- Category grouping
+
+### **Phase 4: Missing Tabs** (4 days)
+
+#### Day 10: Special Attacks Tab
+- Attack creation/editing
+- Limits integration
 - Upgrade management
-- Cost calculation
 
-### Day 10: Utility Tab
-- Expertise system (activity/situational)
-- Features selection
-- Senses management
-- Movement features
+#### Day 11: Utility Tab
+- Expertise system
+- Features/senses/movement
 - Skills interface
 
-### Day 11: Bio/Identity Tab
-- Character background form
-- Questionnaire system
-- Character portrait upload
-- Notes/description fields
-- Export bio data
+#### Day 12: Bio/Identity Tab
+- Character background forms
+- Portrait upload
+- Notes system
 
-### Day 12: Base Attacks Tab (New Feature)
+#### Day 13: Base Attacks Tab
 - Base attack configuration
 - Quick action upgrades
-- Attribute selection
-- Damage calculation display
-- Integration with combat stats
+- Damage calculations
 
-## Phase 5: Advanced Features (3 days)
+### **Phase 5: Advanced Features** (3 days)
 
-### Day 13: Character Management
-```javascript
-// Features:
+#### Day 14: Character Management
 - Multi-character support
-- Character list/grid view
-- Folders/categories
-- Quick duplicate
-- Character search
-- Recently used
-```
+- Character list/folders
+- Search functionality
 
-### Day 14: Import/Export System
-```javascript
-// Features:
-- JSON export with schema version
-- Import with validation
-- Backwards compatibility
-- Export profiles (full/summary)
+#### Day 15: Import/Export System
+- JSON export with schema
+- Import validation
 - Roll20 format conversion
-```
 
-### Day 15: Summary Tab & Polish
-- Complete character summary
-- Validation warnings display
-- Print-friendly view
-- Quick actions panel
+#### Day 16: Testing & Polish
+- End-to-end testing
 - Performance optimization
+- Bug fixes
 
-## Phase 6: Testing & Documentation (2 days)
+## Immediate Next Steps
 
-### Day 16: Integration Testing
-- End-to-end character creation
-- Cross-tab data sync
-- Pool calculations
-- Export/import cycle
-- Browser compatibility
-
-### Day 17: Documentation & Deployment
-- User guide creation
-- Developer documentation
-- Deployment scripts
-- Performance benchmarks
-- Bug fixes from testing
+1. **TODAY**: Start with fixing the hierarchical JSON files (limits.json, unique_abilities.json)
+2. **Priority**: Fix the fundamental rule error where flaws should COST points
+3. **Then**: Fix the broken Archetypes tab data linking
+4. **Finally**: Complete the Main Pool tab with correct data display
 
 ## Success Metrics
+- ✅ All 8 tabs functional
+- ✅ Correct rule implementation (flaws cost 30 points)
+- ✅ Character management system
+- ✅ Import/export functionality
+- ✅ < 500KB unified data file
+- ✅ 50%+ code reduction
 
-1. **Code Reduction**: Target 50%+ reduction achieved
-2. **Performance**: < 2s load, < 100ms interactions
-3. **Data Size**: unified-game-data.json < 500KB ✅
-4. **Rules Accuracy**: 100% compliance with rulebook
-5. **Features**: All 8 tabs + character management
-
-## Risk Mitigation
-
-**Risk**: Complex hierarchical UI for limits/abilities
-- **Mitigation**: Build HierarchicalDisplay component with expand/collapse
-
-**Risk**: Performance with large character lists
-- **Mitigation**: Virtual scrolling, lazy loading, indexedDB for storage
-
-**Risk**: Roll20 export compatibility
-- **Mitigation**: Test with actual Roll20 API, maintain mapping documentation
-
-## Next Immediate Steps
-
-1. **Today**: Fix limits.json and unique_abilities.json structure
-2. **Tomorrow**: Correct flaw economics in PoolCalculator
-3. **This Week**: Complete core systems (Requirement, Effect, Purchase)
-4. **Next Week**: Implement all remaining tabs
-
-## Additional Features for Future Consideration
-
-- Campaign management (multiple characters per campaign)
-- Shared character templates
-- Combat tracker integration
-- Automated character advancement
-- Mobile app version
-- Real-time collaboration
-
+Would you like me to help you start with any specific phase or elaborate on any particular implementation detail?

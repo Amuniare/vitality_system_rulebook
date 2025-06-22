@@ -1,100 +1,108 @@
+// modernApp/systems/PoolCalculator.js - COMPLETE FIX
+import { StateManager } from '../core/StateManager.js';
+import { EntityLoader } from '../core/EntityLoader.js';
+
 export class PoolCalculator {
-    static calculateMainPool(character) {
-        const result = {
-            totalAvailable: 0,
-            totalSpent: 0,
-            remaining: 0,
-            breakdown: {
-                base: 0,
-                flaws: 0,
-                traits: 0,
-                boons: 0,
-                other: 0
-            }
+    static calculatePools(character) {
+        const tier = character.tier || 1;
+        const pools = {
+            main: this.calculateMainPool(character),
+            limit: this.calculateLimitPool(character),
+            combat: tier * 2,  // tier × 2 points for combat attributes
+            utility: tier,     // tier points for utility attributes
+            combatUsed: this.calculateCombatUsed(character),
+            utilityUsed: this.calculateUtilityUsed(character)
         };
+
+        pools.mainUsed = this.calculateMainPoolUsed(character);
+        pools.mainRemaining = pools.main - pools.mainUsed;
+        pools.combatRemaining = pools.combat - pools.combatUsed;
+        pools.utilityRemaining = pools.utility - pools.utilityUsed;
+
+        return pools;
+    }
+
+    // ✅ FIXED: Correct main pool formula (tier-2) × 15
+    static calculateMainPool(character) {
+        const tier = character.tier || 1;
         
-        // Base points from tier
-        const tierBonus = Math.max(0, (character.tier - 2) * 15);
-        result.breakdown.base = tierBonus;
-        result.totalAvailable = tierBonus;
-        
-        // Add points from flaws
+        // ✅ CORRECT FORMULA: (tier-2) × 15, minimum 0
+        let basePool = Math.max(0, (tier - 2) * 15);
+
+        // Check for special archetypes that modify pool
+        const uniqueAbility = character.archetypes?.uniqueAbility;
+        if (uniqueAbility) {
+            const archetype = EntityLoader.getEntity(uniqueAbility);
+            if (archetype?.effects) {
+                archetype.effects.forEach(effect => {
+                    if (effect.type === 'pool_mod' && effect.target === 'main') {
+                        if (typeof effect.value === 'string') {
+                            const formula = effect.value.replace(/tier/g, tier);
+                            try {
+                                const modifier = eval(formula);
+                                basePool += modifier;
+                            } catch (e) {
+                                console.error('Error evaluating pool formula:', e);
+                            }
+                        } else {
+                            basePool += effect.value;
+                        }
+                    }
+                });
+            }
+        }
+
+        return basePool;
+    }
+
+    static calculateMainPoolUsed(character) {
+        let used = 0;
+
+        // Flaws COST 30 points each
         if (character.flaws) {
-            character.flaws.forEach(flaw => {
-                const flawCost = flaw.cost?.value || 0;
-                if (flawCost < 0) {
-                    // Negative cost = gives points
-                    result.breakdown.flaws += Math.abs(flawCost);
-                    result.totalAvailable += Math.abs(flawCost);
-                }
-            });
+            used += character.flaws.length * 30;
         }
-        
-        // Subtract points for traits
+
+        // Traits COST 30 points each
         if (character.traits) {
-            character.traits.forEach(trait => {
-                const traitCost = trait.cost?.value || trait.cost || 0;
-                result.breakdown.traits += traitCost;
-                result.totalSpent += traitCost;
-            });
+            used += character.traits.length * 30;
         }
-        
-        // Subtract points for boons
+
+        // Boons cost variable amounts
         if (character.boons) {
             character.boons.forEach(boon => {
-                const boonCost = boon.cost?.value || boon.cost || 0;
-                result.breakdown.boons += boonCost;
-                result.totalSpent += boonCost;
+                const entity = EntityLoader.getEntity(boon.id);
+                used += entity?.cost?.value || 0;
             });
         }
-        
-        result.remaining = result.totalAvailable - result.totalSpent;
-        
-        return result;
-    }
-    
-    static calculateUtilityPool(character) {
-        const result = {
-            totalAvailable: 0,
-            totalSpent: 0,
-            remaining: 0,
-            breakdown: {}
-        };
-        
-        // Base utility points
-        result.totalAvailable = Math.max(0, 5 * (character.tier - 1));
-        
-        // Calculate spent points
-        // TODO: Add utility purchases
-        
-        result.remaining = result.totalAvailable - result.totalSpent;
-        
-        return result;
-    }
-    
-    static calculateSpecialAttackPool(character) {
-        const result = {
-            totalAvailable: 30,
-            totalSpent: 0,
-            remaining: 30,
-            breakdown: {}
-        };
-        
-        // TODO: Calculate special attack points
-        
-        return result;
-    }
-    
-    static getPool(character, poolName) {
-        switch (poolName) {
-            case 'main':
-                return this.calculateMainPool(character);
-            case 'utility':
-                return this.calculateUtilityPool(character);
-            case 'special':
-                return this.calculateSpecialAttackPool(character);
-            default:
-                return { totalAvailable: 0, totalSpent: 0, remaining: 0 };
+
+        // Actions cost variable amounts
+        if (character.actions) {
+            character.actions.forEach(action => {
+                const entity = EntityLoader.getEntity(action.id);
+                used += entity?.cost?.value || 0;
+            });
         }
+
+        return used;
+    }
+
+    static calculateCombatUsed(character) {
+        const combatAttributes = ['focus', 'mobility', 'power', 'endurance'];
+        return combatAttributes.reduce((total, attr) => 
+            total + (character.attributes?.[attr] || 0), 0
+        );
+    }
+
+    static calculateUtilityUsed(character) {
+        const utilityAttributes = ['awareness', 'communication', 'intelligence'];
+        return utilityAttributes.reduce((total, attr) => 
+            total + (character.attributes?.[attr] || 0), 0
+        );
+    }
+
+    static calculateLimitPool(character) {
+        // Placeholder for limit pool calculation
+        return 0;
     }
 }

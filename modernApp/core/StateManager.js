@@ -1,190 +1,207 @@
-import { EventBus } from './EventBus.js';
-import { SchemaSystem } from './SchemaSystem.js';
-
-
+// state/StateManager.js
 export class StateManager {
-    static character = null;
-    static history = [];
-    static maxHistory = 50;
-    
-    static init() {
-        // Create default character
-        const defaultCharacter = {
-            id: Date.now().toString(),
-            name: 'New Character',
-            tier: 4,
-            archetypes: {},
-            traits: [],
-            flaws: [],
-            boons: [],
+    constructor() {
+        this.state = {
+            character: {
+                name: '',
+                archetype: null,
+                tier: 4,
+                powerLevel: 2
+            },
             pools: {
-                main: { totalAvailable: 0, totalSpent: 0, remaining: 0 },
-                utility: { totalAvailable: 15, totalSpent: 0, remaining: 15 },
-                special: { totalAvailable: 30, totalSpent: 0, remaining: 30 }
+                main: { total: 30, spent: 0 },
+                secondary: { total: 0, spent: 0 },
+                companion: { total: 0, spent: 0 }
+            },
+            purchases: {},
+            entities: {
+                flaws: [],
+                traits: [],
+                boons: [],
+                actions: [],
+                trait2: [],
+                companions: []
             }
         };
         
-        const validation = SchemaSystem.validate('character', defaultCharacter);
-        this.character = validation.data;
+        this.listeners = [];
+        this.initialize();
     }
-    
-    static getCharacter() {
-        return this.character;
+
+    initialize() {
+        // Calculate initial pool values
+        this.recalculatePools();
     }
-    
-    static dispatch(action, payload = {}) {
-        console.log(`[StateManager] Dispatching: ${action}`, payload);
+
+    dispatch(action) {
+        console.log('[StateManager] Dispatching:', action.type, action.payload);
         
-        try {
-            // Save to history
-            this.saveToHistory();
+        switch (action.type) {
+            case 'PURCHASE_ENTITY':
+                this.purchaseEntity(action.payload);
+                break;
+            case 'REMOVE_ENTITY':
+                this.removeEntity(action.payload);
+                break;
+            case 'UPDATE_CHARACTER':
+                this.updateCharacter(action.payload);
+                break;
+            case 'SET_ENTITIES':
+                this.setEntities(action.payload);
+                break;
+        }
+        
+        this.notifyListeners();
+    }
+
+    purchaseEntity(payload) {
+        const { entityId, entityType } = payload;
+        const entity = this.findEntity(entityId, entityType);
+        
+        if (!entity) {
+            console.error('Entity not found:', entityId, entityType);
+            return;
+        }
+
+        const poolType = this.getPoolForEntityType(entityType);
+        const availablePoints = this.getAvailablePoints(poolType);
+
+        if (availablePoints < entity.cost) {
+            console.error('Not enough points:', availablePoints, '<', entity.cost);
+            return;
+        }
+
+        // Create purchase record
+        const purchaseId = Date.now().toString();
+        this.state.purchases[purchaseId] = {
+            id: purchaseId,
+            entityId: entity.id,
+            entityType: entityType,
+            cost: entity.cost,
+            poolType: poolType,
+            entity: entity
+        };
+
+        // Update pool spent amount
+        this.recalculatePoolSpent(poolType);
+    }
+
+    removeEntity(payload) {
+        const { purchaseId, entityType } = payload;
+        
+        if (this.state.purchases[purchaseId]) {
+            const poolType = this.state.purchases[purchaseId].poolType;
+            delete this.state.purchases[purchaseId];
+            this.recalculatePoolSpent(poolType);
+        }
+    }
+
+    findEntity(entityId, entityType) {
+        const entityList = this.state.entities[entityType + 's'] || this.state.entities[entityType] || [];
+        return entityList.find(e => e.id === entityId);
+    }
+
+    getPoolForEntityType(entityType) {
+        const mapping = {
+            'flaw': 'main',
+            'trait': 'main',
+            'boon': 'main',
+            'action': 'main',
+            'trait2': 'secondary',
+            'companion': 'companion'
+        };
+        return mapping[entityType] || 'main';
+    }
+
+    recalculatePools() {
+        const tier = this.state.character.tier || 4;
+        const powerLevel = this.state.character.powerLevel || 2;
+        
+        // Main pool calculation
+        this.state.pools.main.total = (tier - powerLevel) * 15;
+        
+        // Secondary pool (if traits part 2 is enabled)
+        this.state.pools.secondary.total = Math.floor(this.state.pools.main.total * 0.5);
+        
+        // Recalculate spent for all pools
+        Object.keys(this.state.pools).forEach(poolType => {
+            this.recalculatePoolSpent(poolType);
+        });
+    }
+
+    recalculatePoolSpent(poolType) {
+        const spent = Object.values(this.state.purchases)
+            .filter(p => p.poolType === poolType)
+            .reduce((sum, p) => sum + p.cost, 0);
+        
+        this.state.pools[poolType].spent = spent;
+    }
+
+    getAvailablePoints(poolType) {
+        const pool = this.state.pools[poolType];
+        if (!pool) return 0;
+        return pool.total - pool.spent;
+    }
+
+    hasPurchased(entityId, entityType) {
+        return Object.values(this.state.purchases).some(
+            p => p.entityId === entityId && p.entityType === entityType
+        );
+    }
+
+    getPurchaseForEntity(entityId, entityType) {
+        return Object.values(this.state.purchases).find(
+            p => p.entityId === entityId && p.entityType === entityType
+        );
+    }
+
+    updateCharacter(updates) {
+        this.state.character = { ...this.state.character, ...updates };
+        this.recalculatePools();
+    }
+
+    setEntities(payload) {
+        const { type, entities } = payload;
+        this.state.entities[type] = entities;
+    }
+
+    getState() {
+        return this.state;
+    }
+
+    subscribe(listener) {
+        this.listeners.push(listener);
+        return () => {
+            this.listeners = this.listeners.filter(l => l !== listener);
+        };
+    }
+
+    notifyListeners() {
+        this.listeners.forEach(listener => listener(this.state));
+    }
+
+    // Update the getPoolForEntityType method in StateManager
+
+    getPoolForEntityType(entityType) {
+        const mapping = {
+            // Main pool entities
+            'flaw': 'main',
+            'trait': 'main',
+            'boon': 'main',
+            'action': 'main',
+            'uniqueAbility': 'main',
+            'specialAttack': 'main',
+            'archetypeUpgrade': 'main',
             
-            // Process action
-            let result;
-            switch (action) {
-                case 'UPDATE_BASIC_INFO':
-                    result = this.updateBasicInfo(payload);
-                    break;
-                case 'SELECT_ARCHETYPE':
-                    result = this.selectArchetype(payload);
-                    break;
-                case 'PURCHASE_ENTITY':
-                    result = this.purchaseEntity(payload);
-                    break;
-                case 'REMOVE_ENTITY':
-                    result = this.removeEntity(payload);
-                    break;
-                default:
-                    throw new Error(`Unknown action: ${action}`);
-            }
-
-
-
-            // Validate new state
-            const validation = SchemaSystem.validate('character', this.character);
-            if (!validation.isValid) {
-                this.rollback();
-                throw new Error(`Invalid character state: ${validation.errors.join(', ')}`);
-            }
-
+            // Secondary pool entities
+            'trait2': 'secondary',
             
-            // Notify listeners
-            EventBus.emit('character-updated', {
-                character: this.character,
-                action,
-                changes: result.changes || []
-            });
-
-
-
-            return { success: true, ...result };
+            // Companion pool entities
+            'companion': 'companion',
             
-        } catch (error) {
-            console.error(`[StateManager] Error in ${action}:`, error);
-            EventBus.emit('action-failed', { action, error: error.message });
-            return { success: false, error: error.message };
-        }
-    }
-    
-    static updateBasicInfo({ name, tier }) {
-        if (name !== undefined) this.character.name = name;
-        if (tier !== undefined) this.character.tier = tier;
-        
-        return { 
-            changes: ['basicInfo'],
-            message: 'Basic info updated'
+            // Free/automatic entities (no cost)
+            'archetypeTrait': null
         };
-    }
-    
-    static selectArchetype({ category, archetypeId }) {
-        if (!category) throw new Error('Category required');
-        
-        this.character.archetypes[category] = archetypeId;
-        
-        return {
-            changes: ['archetypes', category],
-            message: `Selected ${archetypeId} for ${category}`
-        };
-    }
-    
-    static purchaseEntity({ entityId, entityType, cost, options = {} }) {
-        const arrayName = this.getArrayForType(entityType);
-        if (!arrayName) throw new Error(`Invalid entity type: ${entityType}`);
-        
-        // Add to character
-        const purchase = {
-            id: entityId,
-            purchaseId: Date.now().toString(),
-            cost: cost,
-            options: options,
-            purchaseDate: new Date().toISOString()
-        };
-        
-        this.character[arrayName].push(purchase);
-        
-        // Update pool
-        if (cost && cost.pool) {
-            this.updatePool(cost.pool, cost.value || 0);
-        }
-        
-        return {
-            changes: [arrayName, 'pools'],
-            message: `Purchased ${entityId}`
-        };
-    }
-    
-    static removeEntity({ purchaseId, entityType }) {
-        const arrayName = this.getArrayForType(entityType);
-        if (!arrayName) throw new Error(`Invalid entity type: ${entityType}`);
-        
-        const index = this.character[arrayName].findIndex(p => p.purchaseId === purchaseId);
-        if (index === -1) throw new Error('Purchase not found');
-        
-        const removed = this.character[arrayName].splice(index, 1)[0];
-        
-        // Refund cost
-        if (removed.cost && removed.cost.pool) {
-            this.updatePool(removed.cost.pool, -(removed.cost.value || 0));
-        }
-        
-        return {
-            changes: [arrayName, 'pools'],
-            message: `Removed ${removed.id}`
-        };
-    }
-    
-    static getArrayForType(entityType) {
-        const typeMap = {
-            'trait': 'traits',
-            'flaw': 'flaws',
-            'boon': 'boons',
-            'action': 'actions',
-            'feature': 'features',
-            'sense': 'senses'
-        };
-        return typeMap[entityType];
-    }
-    
-    static updatePool(poolName, spent) {
-        const pool = this.character.pools[poolName];
-        if (!pool) return;
-        
-        pool.totalSpent += spent;
-        pool.remaining = pool.totalAvailable - pool.totalSpent;
-    }
-    
-    static saveToHistory() {
-        this.history.push(JSON.stringify(this.character));
-        if (this.history.length > this.maxHistory) {
-            this.history.shift();
-        }
-    }
-    
-    static rollback() {
-        if (this.history.length === 0) return;
-        
-        const previous = this.history.pop();
-        this.character = JSON.parse(previous);
+        return mapping[entityType] || 'main';
     }
 }
-
