@@ -1,6 +1,9 @@
 // file: modernApp/components/UniversalList.js
 import { UniversalCard } from './UniversalCard.js';
-import { EntityLoader } from '../core/EntityLoader.js';
+// EntityLoader might not be needed here if items are always passed in.
+// import { EntityLoader } from '../core/EntityLoader.js';
+import { Logger } from '../utils/Logger.js';
+
 
 export class UniversalList {
 
@@ -10,21 +13,35 @@ export class UniversalList {
      * @param {string} options.id - A unique ID for the list container.
      * @param {Array<Object>} options.items - The array of entity objects to display.
      * @param {Object} [options.cardContext={}] - The context to pass to UniversalCard.render.
+     * @param {string} [options.entityType='unknown'] - The type of entities in the list, used for card rendering context.
      * @param {boolean} [options.showSearch=true] - Whether to show the search bar.
      * @param {Array<Object>} [options.filters=[]] - An array of filter definitions.
      * @returns {string} - The HTML string for the list component.
      */
-    static render({ id, items, cardContext = {}, showSearch = true, filters = [] }) {
+    static render({ id, items, cardContext = {}, entityType = 'unknown', showSearch = true, filters = [] }) {
+        const cardsHtml = items.map(item => {
+            // Construct a basic context if not fully provided, ensuring entityType is passed
+            const individualCardContext = {
+                entityType: entityType, // Ensure entityType is part of the context
+                isPurchased: cardContext.isPurchased !== undefined ? cardContext.isPurchased(item.id) : false,
+                isAffordable: cardContext.isAffordable !== undefined ? cardContext.isAffordable(item.id) : true,
+                areRequirementsMet: cardContext.areRequirementsMet !== undefined ? cardContext.areRequirementsMet(item.id) : true,
+                unmetRequirements: cardContext.unmetRequirements !== undefined ? cardContext.unmetRequirements(item.id) : [],
+                ...cardContext // Allow overriding with more specific context
+            };
+            return UniversalCard.render(item, individualCardContext);
+        }).join('');
+        
         return `
             <div id="${id}" class="universal-list-container">
                 <div class="list-controls">
-                    ${showSearch ? this.renderSearch() : ''}
+                    ${showSearch ? this.renderSearch(id) : ''}
                     <div class="list-filters">
-                        ${filters.map(filter => this.renderFilter(filter)).join('')}
+                        ${filters.map(filter => this.renderFilter(filter, id)).join('')}
                     </div>
                 </div>
                 <div class="entity-grid list-items">
-                    ${items.map(item => UniversalCard.render(item, cardContext)).join('')}
+                    ${cardsHtml || '<p class="no-items">No items match your criteria.</p>'}
                 </div>
             </div>
         `;
@@ -32,12 +49,14 @@ export class UniversalList {
 
     /**
      * Renders the search input.
+     * @param {string} listId - The ID of the parent list for unique search input ID.
      * @returns {string}
      */
-    static renderSearch() {
+    static renderSearch(listId) {
         return `
             <div class="list-search">
-                <input type="search" class="form-input" placeholder="Search..." data-action="search-list">
+                <label for="search-${listId}" class="sr-only">Search list</label>
+                <input type="search" id="search-${listId}" class="form-input" placeholder="Search..." data-action="search-list">
             </div>
         `;
     }
@@ -45,13 +64,15 @@ export class UniversalList {
     /**
      * Renders a single filter dropdown.
      * @param {Object} filter - The filter definition.
+     * @param {string} listId - The ID of the parent list for unique filter ID.
      * @returns {string}
      */
-    static renderFilter(filter) {
+    static renderFilter(filter, listId) {
+        const filterId = `filter-${listId}-${filter.key || filter.id}`;
         return `
             <div class="list-filter-group">
-                <label for="filter-${filter.id}" class="form-label sr-only">${filter.label}</label>
-                <select id="filter-${filter.id}" class="form-select" data-action="filter-list" data-filter-key="${filter.key}">
+                <label for="${filterId}" class="form-label sr-only">${filter.label}</label>
+                <select id="${filterId}" class="form-select" data-action="filter-list" data-filter-key="${filter.key || filter.id}">
                     <option value="">${filter.label}</option>
                     ${filter.options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
                 </select>
@@ -67,19 +88,28 @@ export class UniversalList {
      */
     static setup(id, onUpdate) {
         const container = document.getElementById(id);
-        if (!container) return;
+        if (!container) {
+            Logger.warn(`[UniversalList] Container with id "${id}" not found for event setup.`);
+            return;
+        }
 
-        container.addEventListener('input', (e) => {
-            if (e.target.matches('[data-action="search-list"]')) {
+        // Using a single delegated event listener for efficiency
+        if (container._universalListListener) {
+            container.removeEventListener('input', container._universalListListener);
+            container.removeEventListener('change', container._universalListListener);
+        }
+
+        container._universalListListener = (e) => {
+            if (e.target.matches('[data-action="search-list"]') && e.type === 'input') {
+                this.triggerUpdate(container, onUpdate);
+            } else if (e.target.matches('[data-action="filter-list"]') && e.type === 'change') {
                 this.triggerUpdate(container, onUpdate);
             }
-        });
+        };
         
-        container.addEventListener('change', (e) => {
-            if (e.target.matches('[data-action="filter-list"]')) {
-                this.triggerUpdate(container, onUpdate);
-            }
-        });
+        container.addEventListener('input', container._universalListListener);
+        container.addEventListener('change', container._universalListListener);
+        Logger.debug(`[UniversalList] Event listeners set up for list "${id}".`);
     }
 
     /**
@@ -93,47 +123,17 @@ export class UniversalList {
 
         const activeFilters = {};
         container.querySelectorAll('[data-action="filter-list"]').forEach(select => {
-            if (select.value) {
+            if (select.value) { // Only include if a filter option is selected
                 activeFilters[select.dataset.filterKey] = select.value;
             }
         });
 
-        onUpdate({ searchTerm, activeFilters });
+        if (typeof onUpdate === 'function') {
+            onUpdate({ searchTerm, activeFilters });
+        } else {
+            Logger.warn('[UniversalList] onUpdate callback is not a function.');
+        }
     }
 }
 
-// Add some basic styles for the new list controls to modern-app.css
-const listStyles = `
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-}
-
-.list-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
-}
-
-.list-search {
-    flex-grow: 1;
-}
-
-.list-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-}
-`;
-
-const styleEl = document.createElement('style');
-styleEl.textContent = listStyles;
-document.head.appendChild(styleEl);
+// REMOVED listStyles constant and the style injection logic.

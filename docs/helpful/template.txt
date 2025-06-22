@@ -7,8 +7,9 @@ modernApp\index.html
 modernApp\README.md
 modernApp\requirements.md
 modernApp\workplan.md
-console.log
-3 attached screenshots
+
+Visit my website, and test it out.
+URL CONTEXT: https://amuniare.github.io/vitality_system_rulebook/modernApp/
 
 Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md
 

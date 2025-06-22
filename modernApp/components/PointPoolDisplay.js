@@ -1,4 +1,3 @@
-
 // modernApp/components/PointPoolDisplay.js
 import { Logger } from '../utils/Logger.js';
 import { Formatters } from '../utils/Formatters.js';
@@ -20,7 +19,7 @@ export class PointPoolDisplay {
             throw new Error('PointPoolDisplay requires poolConfigs.');
         }
         this.container = container;
-        this.poolConfigs = poolConfigs; // e.g., [{ key: 'main', label: 'Main Pool', totalKey: 'main', remainingKey: 'mainRemaining' }]
+        this.poolConfigs = poolConfigs; 
         Logger.info('[PointPoolDisplay] Initialized.');
     }
 
@@ -60,37 +59,4 @@ export class PointPoolDisplay {
     }
 }
 
-// Minimal CSS for PointPoolDisplay (can be moved to modern-app.css)
-const pointPoolDisplayStyles = `
-.point-pools-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-.pool-info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-xs) 0;
-    font-size: var(--font-size-base);
-}
-.pool-info-item .pool-label {
-    color: var(--color-text-secondary);
-    font-weight: 500;
-}
-.pool-info-item .pool-value {
-    color: var(--color-text-primary);
-    font-weight: 600;
-    font-family: var(--font-mono);
-}
-.pool-info-item .pool-value.over-budget {
-    color: var(--color-accent-danger);
-}
-`;
-
-if (!document.getElementById('point-pool-display-styles')) {
-    const styleEl = document.createElement('style');
-    styleEl.id = 'point-pool-display-styles';
-    styleEl.textContent = pointPoolDisplayStyles;
-    document.head.appendChild(styleEl);
-}
+// REMOVED pointPoolDisplayStyles constant and the style injection logic.

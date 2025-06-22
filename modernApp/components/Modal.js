@@ -1,4 +1,3 @@
-
 // modernApp/components/Modal.js
 import { Logger } from '../utils/Logger.js';
 
@@ -11,6 +10,9 @@ export class Modal {
         const modalOverlay = document.createElement('div');
         modalOverlay.className = 'modal-overlay';
         modalOverlay.id = modalId;
+        modalOverlay.setAttribute('role', 'dialog'); // Accessibility
+        modalOverlay.setAttribute('aria-modal', 'true');
+        modalOverlay.setAttribute('aria-labelledby', `modal-title-${modalId}`);
 
         let buttonsHtml = '';
         if (buttonsConfig.length > 0) {
@@ -26,10 +28,10 @@ export class Modal {
         }
 
         modalOverlay.innerHTML = `
-            <div class="modal-content">
+            <div class="modal-content" role="document">
                 <div class="modal-header">
-                    <h3 class="modal-title">${title}</h3>
-                    <button class="modal-close-btn" data-action="close">×</button>
+                    <h3 class="modal-title" id="modal-title-${modalId}">${title}</h3>
+                    <button class="modal-close-btn" data-action="close" aria-label="Close modal">×</button>
                 </div>
                 <div class="modal-body">
                     ${contentHtml}
@@ -43,56 +45,53 @@ export class Modal {
     static _show(modalElement, onAction) {
         if (activeModal) {
             Logger.warn('[Modal] Another modal is already active. Closing it first.');
-            this._hide(activeModal); // Hide previous modal if any
+            this._hide(activeModal); 
         }
 
         document.body.appendChild(modalElement);
-        document.body.classList.add('modal-open'); // For potential body scroll lock
+        document.body.classList.add('modal-open'); 
         activeModal = modalElement;
 
-        // Focus on the first focusable element or the modal itself
         const focusable = modalElement.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
         if (focusable) {
             focusable.focus();
         } else {
-            modalElement.focus(); // Fallback
+            modalElement.querySelector('.modal-content').focus(); // Fallback to content div
         }
         
-        // Animation
         requestAnimationFrame(() => {
             modalElement.classList.add('open');
         });
 
-        // Event listeners
         const closeHandler = (action = 'close') => {
             this._hide(modalElement);
             if (typeof onAction === 'function') {
                 onAction(action);
             }
         };
-
-        modalElement.addEventListener('click', (e) => {
-            if (e.target === modalElement) { // Click on overlay
+        
+        // Store handlers on the element itself to ensure they are unique per modal instance
+        modalElement._clickHandler = (e) => {
+            if (e.target === modalElement) { 
                 closeHandler('overlay_close');
             }
             const button = e.target.closest('button[data-action]');
             if (button) {
+                e.stopPropagation(); // Prevent overlay click if button is inside
                 const action = button.dataset.action;
-                if (action === 'close') {
-                    closeHandler('close_button');
-                } else if (action) {
-                    closeHandler(action); // Custom button actions
-                }
+                // Custom actions will also close the modal by default through closeHandler
+                closeHandler(action);
             }
-        });
+        };
 
-        const keydownHandler = (e) => {
+        modalElement._keydownHandler = (e) => {
             if (e.key === 'Escape') {
                 closeHandler('escape_key');
             }
         };
-        modalElement.keydownHandler = keydownHandler; // Store for removal
-        document.addEventListener('keydown', keydownHandler);
+        
+        modalElement.addEventListener('click', modalElement._clickHandler);
+        document.addEventListener('keydown', modalElement._keydownHandler);
 
         Logger.debug(`[Modal] Shown: ${modalElement.id}`);
     }
@@ -102,16 +101,27 @@ export class Modal {
 
         modalElement.classList.remove('open');
         
-        // Remove after transition
-        modalElement.addEventListener('transitionend', () => {
+        const transitionEndHandler = () => {
             if (modalElement.parentNode) {
                 modalElement.parentNode.removeChild(modalElement);
             }
-             // Remove keydown listener specific to this modal
-            if (modalElement.keydownHandler) {
-                document.removeEventListener('keydown', modalElement.keydownHandler);
+            if (modalElement._clickHandler) {
+                 modalElement.removeEventListener('click', modalElement._clickHandler);
             }
-        }, { once: true });
+            if (modalElement._keydownHandler) {
+                document.removeEventListener('keydown', modalElement._keydownHandler);
+            }
+            modalElement.removeEventListener('transitionend', transitionEndHandler);
+        };
+        
+        modalElement.addEventListener('transitionend', transitionEndHandler);
+
+        // Fallback if transitionend doesn't fire (e.g. no transition defined or display:none interrupts)
+        setTimeout(() => {
+            if (document.body.contains(modalElement)) {
+                transitionEndHandler(); // Attempt cleanup if still there
+            }
+        }, 500); // Slightly longer than typical transition
 
 
         if (activeModal === modalElement) {
@@ -121,12 +131,6 @@ export class Modal {
         Logger.debug(`[Modal] Hidden: ${modalElement.id}`);
     }
 
-    /**
-     * Shows a confirmation dialog.
-     * @param {string} title - The title of the modal.
-     * @param {string} message - The message to display.
-     * @returns {Promise<boolean>} - A promise that resolves to true if OK is clicked, false otherwise.
-     */
     static confirm(title, message) {
         return new Promise((resolve) => {
             const buttons = [
@@ -141,16 +145,9 @@ export class Modal {
         });
     }
 
-    /**
-     * Shows a modal with custom HTML content.
-     * @param {string} title - The title of the modal.
-     * @param {string} contentHtml - The HTML string for the modal body.
-     * @param {Array<Object>} [buttonsConfig=[]] - Configuration for buttons, e.g., [{text: 'Save', action: 'save', className: 'btn-primary'}].
-     * @returns {Promise<string>} - A promise that resolves with the action string of the button clicked.
-     */
     static showCustom(title, contentHtml, buttonsConfig = []) {
          return new Promise((resolve) => {
-            const modalElement = this._createModalShell(title, contentHtml, buttonsConfig.length > 0 ? buttonsConfig : [{ text: 'Close', action: 'close', className: 'btn-primary' }]);
+            const modalElement = this._createModalShell(title, contentHtml, buttonsConfig.length > 0 ? buttonsConfig : [{ text: 'Close', action: 'close_button', className: 'btn-primary' }]);
             this._show(modalElement, (action) => {
                 resolve(action);
             });
@@ -159,91 +156,12 @@ export class Modal {
     
     static closeActive() {
         if (activeModal) {
-            this._hide(activeModal);
+            // Assuming the _hide method's default action for direct close is 'close_button' or similar
+            // or simply call _hide and let it handle cleanup.
+            // The onAction callback from the original _show call won't be invoked here, which is usually fine for forced close.
+             this._hide(activeModal);
         }
     }
 }
 
-// Minimal CSS for Modal (can be moved to modern-app.css)
-const modalStyles = `
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity var(--transition-base);
-    padding: var(--spacing-md);
-}
-.modal-overlay.open {
-    opacity: 1;
-}
-.modal-content {
-    background-color: var(--color-bg-secondary);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-    transform: scale(0.95);
-    transition: transform var(--transition-base);
-}
-.modal-overlay.open .modal-content {
-    transform: scale(1);
-}
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--color-border-primary);
-    padding-bottom: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-}
-.modal-title {
-    margin: 0;
-    font-size: var(--font-size-xl);
-    color: var(--color-text-primary);
-}
-.modal-close-btn {
-    background: none;
-    border: none;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-xxl);
-    cursor: pointer;
-    line-height: 1;
-    padding: 0 var(--spacing-sm);
-}
-.modal-close-btn:hover {
-    color: var(--color-text-primary);
-}
-.modal-body {
-    margin-bottom: var(--spacing-lg);
-    line-height: 1.6;
-}
-.modal-body p {
-    margin-bottom: var(--spacing-sm);
-}
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--spacing-md);
-}
-body.modal-open {
-    overflow: hidden; /* Prevent background scrolling */
-}
-`;
-
-if (!document.getElementById('modal-component-styles')) {
-    const styleEl = document.createElement('style');
-    styleEl.id = 'modal-component-styles';
-    styleEl.textContent = modalStyles;
-    document.head.appendChild(styleEl);
-}
+// REMOVED modalStyles constant and the style injection logic.

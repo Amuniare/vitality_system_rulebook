@@ -1,4 +1,3 @@
-
 // modernApp/components/CollapsibleSection.js
 import { Logger } from '../utils/Logger.js';
 
@@ -21,6 +20,8 @@ export class CollapsibleSection {
         this.content = content;
         this.isOpen = isOpen;
         this.sectionEl = null;
+        this.contentEl = null; // Added for clarity
+        this.iconEl = null;    // Added for clarity
 
         this.render();
         Logger.info(`[CollapsibleSection] Section "${this.title}" initialized.`);
@@ -73,8 +74,8 @@ export class CollapsibleSection {
         if (this.isOpen) return;
         this.isOpen = true;
         this.sectionEl.classList.add('open');
-        this.contentEl.style.display = 'block';
-        this.iconEl.textContent = '−';
+        this.contentEl.style.display = 'block'; // Or any other display type like 'flex', 'grid' if needed
+        if (this.iconEl) this.iconEl.textContent = '−'; // Check if iconEl exists
         Logger.debug(`[CollapsibleSection] Section "${this.title}" opened.`);
     }
 
@@ -83,58 +84,11 @@ export class CollapsibleSection {
         this.isOpen = false;
         this.sectionEl.classList.remove('open');
         this.contentEl.style.display = 'none';
-        this.iconEl.textContent = '+';
+        if (this.iconEl) this.iconEl.textContent = '+'; // Check if iconEl exists
         Logger.debug(`[CollapsibleSection] Section "${this.title}" closed.`);
     }
     
-    // Static method to inject necessary CSS for this component to work.
-    static injectStyles() {
-        const styleId = 'collapsible-section-styles';
-        if (document.getElementById(styleId)) return;
-
-        const styles = `
-            .collapsible-section {
-                border: 1px solid var(--color-border-primary);
-                border-radius: var(--radius-md);
-                margin-bottom: var(--spacing-md);
-                background-color: var(--color-bg-secondary);
-                overflow: hidden;
-            }
-            .collapsible-header {
-                padding: var(--spacing-md) var(--spacing-lg);
-                cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                user-select: none;
-                transition: background-color var(--transition-fast);
-            }
-            .collapsible-header:hover {
-                background-color: var(--color-bg-hover);
-            }
-            .collapsible-title {
-                margin: 0;
-                font-size: var(--font-size-lg);
-                color: var(--color-accent-primary);
-            }
-            .collapsible-toggle-icon {
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: var(--color-text-secondary);
-            }
-            .collapsible-content {
-                padding: var(--spacing-lg);
-                border-top: 1px solid var(--color-border-primary);
-                background-color: var(--color-bg-card);
-            }
-        `;
-        const styleEl = document.createElement('style');
-        styleEl.id = styleId;
-        styleEl.textContent = styles;
-        document.head.appendChild(styleEl);
-        Logger.info('[CollapsibleSection] Injected required CSS styles.');
-    }
+    // REMOVED static injectStyles() method and the call to it.
 }
 
-// Automatically inject styles when the script is loaded.
-CollapsibleSection.injectStyles();
+// REMOVED CollapsibleSection.injectStyles();
