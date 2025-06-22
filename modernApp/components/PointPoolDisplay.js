@@ -1,62 +1,209 @@
 // modernApp/components/PointPoolDisplay.js
 import { Logger } from '../utils/Logger.js';
-import { Formatters } from '../utils/Formatters.js';
+import { EventBus } from '../core/EventBus.js';
+import { PoolCalculator } from '../systems/PoolCalculator.js';
 
 /**
- * A component to display various character point pools.
+ * PointPoolDisplay - Reusable component for displaying point pools
+ * Used across multiple tabs to show point totals and usage
  */
 export class PointPoolDisplay {
-    /**
-     * @param {HTMLElement} container - The DOM element to render the display into.
-     * @param {Array<Object>} poolConfigs - Configuration for which pools to display.
-     *        Each object: { key: 'main', label: 'Main Pool', dataKeyTotal: 'main', dataKeyRemaining: 'mainRemaining' }
-     */
-    constructor(container, poolConfigs) {
-        if (!container) {
-            throw new Error('PointPoolDisplay requires a valid container element.');
-        }
-        if (!poolConfigs || poolConfigs.length === 0) {
-            throw new Error('PointPoolDisplay requires poolConfigs.');
-        }
-        this.container = container;
-        this.poolConfigs = poolConfigs; 
-        Logger.info('[PointPoolDisplay] Initialized.');
+    constructor(options = {}) {
+        this.options = {
+            showMainPool: true,
+            showCombatAttr: true,
+            showUtilityAttr: true,
+            showValidation: true,
+            compact: false,
+            ...options
+        };
+        
+        this.container = null;
+        this.pools = null;
+        
+        // Bind methods
+        this.handlePoolUpdate = this.handlePoolUpdate.bind(this);
     }
-
-    /**
-     * Renders the point pool display with the given pool data.
-     * @param {Object} poolsData - An object containing pool values, e.g., 
-     *                             { main: 30, mainRemaining: 10, combat: 8, combatRemaining: 8, ... }
-     *                             Keys should match `totalKey` and `remainingKey` in poolConfigs.
-     */
-    render(poolsData) {
-        if (!poolsData) {
-            Logger.warn('[PointPoolDisplay] Render called with no poolsData.');
-            this.container.innerHTML = '<p class="text-muted">Pool data not available.</p>';
+    
+    init(container) {
+        if (!container) {
+            Logger.error('[PointPoolDisplay] Container element required');
             return;
         }
-
-        let html = '<div class="point-pools-container">';
-        this.poolConfigs.forEach(config => {
-            const total = poolsData[config.totalKey] !== undefined ? poolsData[config.totalKey] : 'N/A';
-            const remaining = poolsData[config.remainingKey] !== undefined ? poolsData[config.remainingKey] : 'N/A';
+        
+        this.container = container;
+        
+        // Set up event listeners
+        this.setupEventListeners();
+        
+        // Initial render
+        this.update();
+        
+        Logger.info('[PointPoolDisplay] Initialized');
+    }
+    
+    setupEventListeners() {
+        // Listen for any changes that affect pools
+        EventBus.on('ENTITY_PURCHASED', this.handlePoolUpdate);
+        EventBus.on('ENTITY_REMOVED', this.handlePoolUpdate);
+        EventBus.on('ATTRIBUTE_CHANGED', this.handlePoolUpdate);
+        EventBus.on('CHARACTER_CHANGED', this.handlePoolUpdate);
+        EventBus.on('CHARACTER_LOADED', this.handlePoolUpdate);
+    }
+    
+    handlePoolUpdate() {
+        this.update();
+    }
+    
+    update() {
+        // Calculate current pools
+        this.pools = PoolCalculator.calculatePools();
+        
+        // Render the display
+        this.render();
+    }
+    
+    render() {
+        if (!this.container || !this.pools) return;
+        
+        // Clear existing content
+        this.container.innerHTML = '';
+        
+        // Add CSS class
+        this.container.className = `point-pool-display ${this.options.compact ? 'compact' : ''}`;
+        
+        // Create pools container
+        const poolsContainer = document.createElement('div');
+        poolsContainer.className = 'pools-container';
+        
+        // Render each pool
+        if (this.options.showMainPool) {
+            poolsContainer.appendChild(this.renderPool('Main Pool', this.pools.mainPool, 'main-pool'));
+        }
+        
+        if (this.options.showCombatAttr) {
+            poolsContainer.appendChild(this.renderPool('Combat Attr', this.pools.combatAttr, 'combat-attr'));
+        }
+        
+        if (this.options.showUtilityAttr) {
+            poolsContainer.appendChild(this.renderPool('Utility Attr', this.pools.utilityAttr, 'utility-attr'));
+        }
+        
+        this.container.appendChild(poolsContainer);
+        
+        // Add validation indicator if enabled
+        if (this.options.showValidation) {
+            const validationIndicator = this.renderValidationIndicator();
+            this.container.appendChild(validationIndicator);
+        }
+    }
+    
+    renderPool(name, pool, className) {
+        const poolDiv = document.createElement('div');
+        poolDiv.className = `pool ${className}`;
+        
+        const remaining = pool.available - pool.spent;
+        const isOverBudget = remaining < 0;
+        
+        if (this.options.compact) {
+            // Compact format: "Main: 15/30"
+            poolDiv.innerHTML = `
+                <span class="pool-name">${name}:</span>
+                <span class="pool-values ${isOverBudget ? 'over-budget' : ''}">
+                    ${pool.spent}/${pool.available}
+                </span>
+            `;
+        } else {
+            // Full format with progress bar
+            const percentage = pool.available > 0 
+                ? Math.min(100, (pool.spent / pool.available) * 100)
+                : 0;
             
-            const isOverBudget = typeof remaining === 'number' && remaining < 0;
-            const displayClass = isOverBudget ? 'pool-value over-budget' : 'pool-value';
-            const remainingDisplay = typeof remaining === 'number' ? Formatters.formatNumber(remaining) : remaining;
-            const totalDisplay = typeof total === 'number' ? Formatters.formatNumber(total) : total;
-
-            html += `
-                <div class="pool-info-item" data-pool-key="${config.key}">
-                    <span class="pool-label">${config.label}:</span>
-                    <span class="${displayClass}">${remainingDisplay} / ${totalDisplay}</span>
+            poolDiv.innerHTML = `
+                <div class="pool-header">
+                    <span class="pool-name">${name}</span>
+                    <span class="pool-values ${isOverBudget ? 'over-budget' : ''}">
+                        ${pool.spent} / ${pool.available}
+                    </span>
+                </div>
+                <div class="pool-bar">
+                    <div class="pool-bar-fill ${isOverBudget ? 'over-budget' : ''}" 
+                         style="width: ${percentage}%"></div>
+                </div>
+                <div class="pool-remaining ${isOverBudget ? 'over-budget' : ''}">
+                    ${isOverBudget ? 'Over by' : 'Remaining'}: ${Math.abs(remaining)}
                 </div>
             `;
+        }
+        
+        // Add data attributes for validation
+        poolDiv.setAttribute('data-pool-type', className);
+        poolDiv.setAttribute('data-validation', className.replace('-', ''));
+        
+        return poolDiv;
+    }
+    
+    renderValidationIndicator() {
+        const indicator = document.createElement('div');
+        indicator.id = 'validation-status';
+        indicator.className = 'validation-indicator';
+        indicator.innerHTML = `
+            <span class="validation-icon">⚠️</span>
+            <span class="validation-text">Validation Status</span>
+        `;
+        
+        return indicator;
+    }
+    
+    cleanup() {
+        // Remove event listeners
+        EventBus.off('ENTITY_PURCHASED', this.handlePoolUpdate);
+        EventBus.off('ENTITY_REMOVED', this.handlePoolUpdate);
+        EventBus.off('ATTRIBUTE_CHANGED', this.handlePoolUpdate);
+        EventBus.off('CHARACTER_CHANGED', this.handlePoolUpdate);
+        EventBus.off('CHARACTER_LOADED', this.handlePoolUpdate);
+        
+        // Clear container
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
+    }
+    
+    // Static factory methods for common configurations
+    static createFullDisplay(container) {
+        const display = new PointPoolDisplay({
+            showMainPool: true,
+            showCombatAttr: true,
+            showUtilityAttr: true,
+            showValidation: true,
+            compact: false
         });
-        html += '</div>';
-        this.container.innerHTML = html;
-        Logger.debug('[PointPoolDisplay] Rendered pools:', poolsData);
+        display.init(container);
+        return display;
+    }
+    
+    static createCompactDisplay(container, options = {}) {
+        const display = new PointPoolDisplay({
+            showMainPool: true,
+            showCombatAttr: true,
+            showUtilityAttr: true,
+            showValidation: false,
+            compact: true,
+            ...options
+        });
+        display.init(container);
+        return display;
+    }
+    
+    static createMainPoolOnly(container) {
+        const display = new PointPoolDisplay({
+            showMainPool: true,
+            showCombatAttr: false,
+            showUtilityAttr: false,
+            showValidation: false,
+            compact: true
+        });
+        display.init(container);
+        return display;
     }
 }
-
-// REMOVED pointPoolDisplayStyles constant and the style injection logic.

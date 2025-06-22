@@ -1,81 +1,316 @@
-
 // modernApp/core/ValidationSystem.js
 import { Logger } from '../utils/Logger.js';
+import { EventBus } from './EventBus.js';
+import { StateManager } from './StateManager.js';
 import { PoolCalculator } from '../systems/PoolCalculator.js';
-import { RequirementSystem } from '../systems/RequirementSystem.js';
-import { EntityLoader } from './EntityLoader.js';
+import { NotificationSystem } from '../components/NotificationSystem.js';
 
+/**
+ * ValidationSystem - Provides advisory warnings without blocking actions
+ * Implements the "Advisory Validation" principle from Architecture.md
+ */
 export class ValidationSystem {
-
-    /**
-     * Performs advisory validation on the entire character.
-     * @param {Object} character - The character object from StateManager.
-     * @returns {Array<Object>} - An array of warning objects, e.g., { type: 'budget', pool: 'main', message: '...' }
-     */
-    static validateCharacter(character) {
-        if (!character) {
-            Logger.warn('[ValidationSystem] validateCharacter called with no character data.');
-            return [];
+    static instance = null;
+    
+    static getInstance() {
+        if (!ValidationSystem.instance) {
+            ValidationSystem.instance = new ValidationSystem();
         }
-        Logger.debug('[ValidationSystem] Starting character validation for:', character.name);
-        const warnings = [];
-
-        // 1. Validate Point Pools
-        const pools = PoolCalculator.calculatePools(character);
-        for (const poolKey of ['main', 'combat', 'utility']) {
-            if (pools[poolKey + 'Remaining'] < 0) {
-                warnings.push({
-                    type: 'budget',
-                    pool: poolKey,
-                    message: `You are over budget by ${Math.abs(pools[poolKey + 'Remaining'])} points in the ${poolKey} pool.`
-                });
-            }
+        return ValidationSystem.instance;
+    }
+    
+    constructor() {
+        if (ValidationSystem.instance) {
+            return ValidationSystem.instance;
         }
-        // TODO: Add limit pool validation if/when it's implemented
-
-        // 2. Validate Purchased Entities' Requirements
-        const purchaseCategories = ['flaws', 'traits', 'boons', 'action_upgrades', 'features', 'senses', 'movement_features', 'descriptors', 'unique_abilities_purchased']; 
-        // Add 'special_attacks_created' if they have requirements
         
-        purchaseCategories.forEach(categoryKey => {
-            if (character[categoryKey] && Array.isArray(character[categoryKey])) {
-                character[categoryKey].forEach(purchase => {
-                    const entity = EntityLoader.getEntity(purchase.id);
-                    if (entity && entity.requirements) {
-                        const reqCheck = RequirementSystem.check(entity.requirements, character);
-                        if (!reqCheck.areMet) {
-                            warnings.push({
-                                type: 'requirement',
-                                entityName: entity.name,
-                                entityId: entity.id,
-                                message: `Purchased item "${entity.name}" no longer meets requirements: ${reqCheck.unmet.join(', ')}.`
-                            });
-                        }
-                    }
-                });
+        this.notifications = null;
+        this.validationRules = new Map();
+        this.warningThresholds = {
+            mainPool: 0,        // Warn when over budget
+            combatAttr: 0,      // Warn when over budget
+            utilityAttr: 0,     // Warn when over budget
+            archetypes: 7,      // Warn if not all selected
+            attributes: {
+                min: 8,         // Warn if any attribute below 8
+                max: 20        // Warn if any attribute above 20
             }
+        };
+        
+        Logger.info('[ValidationSystem] Instance created.');
+    }
+    
+    init() {
+        Logger.info('[ValidationSystem] Initializing...');
+        
+        this.notifications = NotificationSystem.getInstance();
+        
+        // Set up validation rules
+        this.setupValidationRules();
+        
+        // Listen for events that need validation
+        this.setupEventListeners();
+        
+        Logger.info('[ValidationSystem] Initialized.');
+    }
+    
+    setupValidationRules() {
+        // Main Pool validation
+        this.validationRules.set('mainPool', () => {
+            const pools = PoolCalculator.calculatePools();
+            const spent = pools.mainPool.spent;
+            const available = pools.mainPool.available;
+            
+            if (spent > available) {
+                const overage = spent - available;
+                return {
+                    valid: false,
+                    warning: `Main Pool over budget by ${overage} points`,
+                    severity: 'warning'
+                };
+            }
+            
+            return { valid: true };
         });
         
-        // 3. Validate Archetype Constraints (Example - can be expanded)
-        const specialAttackArchetypeId = character.archetypes?.specialAttack;
-        if (specialAttackArchetypeId) {
-            const saArchetype = EntityLoader.getEntity(specialAttackArchetypeId);
-            if (saArchetype?.id === 'archetype_specialAttack_paragon' && (character.limits_selected?.length > 0)) { // Assuming 'limits_selected' array
-                 warnings.push({
-                    type: 'archetype_constraint',
-                    archetypeName: saArchetype.name,
-                    message: `Paragon archetype selected, but Limits are also taken. Paragons cannot take Limits.`
-                });
+        // Combat Attributes validation
+        this.validationRules.set('combatAttr', () => {
+            const pools = PoolCalculator.calculatePools();
+            const spent = pools.combatAttr.spent;
+            const available = pools.combatAttr.available;
+            
+            if (spent > available) {
+                const overage = spent - available;
+                return {
+                    valid: false,
+                    warning: `Combat Attributes over budget by ${overage} points`,
+                    severity: 'warning'
+                };
             }
-            // Add more archetype specific rule checks here
+            
+            return { valid: true };
+        });
+        
+        // Utility Attributes validation
+        this.validationRules.set('utilityAttr', () => {
+            const pools = PoolCalculator.calculatePools();
+            const spent = pools.utilityAttr.spent;
+            const available = pools.utilityAttr.available;
+            
+            if (spent > available) {
+                const overage = spent - available;
+                return {
+                    valid: false,
+                    warning: `Utility Attributes over budget by ${overage} points`,
+                    severity: 'warning'
+                };
+            }
+            
+            return { valid: true };
+        });
+        
+        // Archetypes validation
+        this.validationRules.set('archetypes', () => {
+            const character = StateManager.getCharacter();
+            const selectedCount = Object.keys(character.archetypes || {}).length;
+            
+            if (selectedCount < this.warningThresholds.archetypes) {
+                return {
+                    valid: false,
+                    warning: `${this.warningThresholds.archetypes - selectedCount} archetype(s) not selected`,
+                    severity: 'info'
+                };
+            }
+            
+            return { valid: true };
+        });
+        
+        // Attributes validation
+        this.validationRules.set('attributes', () => {
+            const character = StateManager.getCharacter();
+            const attributes = character.attributes || {};
+            const warnings = [];
+            
+            Object.entries(attributes).forEach(([attr, value]) => {
+                if (value < this.warningThresholds.attributes.min) {
+                    warnings.push(`${attr} is below minimum (${value} < ${this.warningThresholds.attributes.min})`);
+                } else if (value > this.warningThresholds.attributes.max) {
+                    warnings.push(`${attr} exceeds maximum (${value} > ${this.warningThresholds.attributes.max})`);
+                }
+            });
+            
+            if (warnings.length > 0) {
+                return {
+                    valid: false,
+                    warning: warnings.join(', '),
+                    severity: 'info'
+                };
+            }
+            
+            return { valid: true };
+        });
+        
+        // Character name validation
+        this.validationRules.set('characterName', () => {
+            const character = StateManager.getCharacter();
+            
+            if (!character.name || character.name.trim() === '' || character.name === 'New Character') {
+                return {
+                    valid: false,
+                    warning: 'Character needs a proper name',
+                    severity: 'info'
+                };
+            }
+            
+            return { valid: true };
+        });
+    }
+    
+    setupEventListeners() {
+        // Validate on any purchase
+        EventBus.on('ENTITY_PURCHASED', () => this.validateAll());
+        EventBus.on('ENTITY_REMOVED', () => this.validateAll());
+        
+        // Validate on archetype changes
+        EventBus.on('ARCHETYPE_CHANGED', () => this.validate('archetypes'));
+        
+        // Validate on attribute changes
+        EventBus.on('ATTRIBUTE_CHANGED', () => {
+            this.validate('attributes');
+            this.validate('combatAttr');
+            this.validate('utilityAttr');
+        });
+        
+        // Validate on character changes
+        EventBus.on('CHARACTER_CHANGED', () => this.validateAll());
+        EventBus.on('CHARACTER_LOADED', () => this.validateAll());
+        
+        // Validate before export
+        EventBus.on('BEFORE_EXPORT', (data) => {
+            const results = this.validateForExport();
+            data.validationResults = results;
+        });
+    }
+    
+    validate(ruleName) {
+        if (!this.validationRules.has(ruleName)) {
+            Logger.warn(`[ValidationSystem] Unknown validation rule: ${ruleName}`);
+            return { valid: true };
         }
-
-
-        if (warnings.length > 0) {
-            Logger.warn('[ValidationSystem] Character validation found warnings:', warnings);
+        
+        const rule = this.validationRules.get(ruleName);
+        const result = rule();
+        
+        if (!result.valid && result.warning) {
+            this.showWarning(result.warning, result.severity);
+        }
+        
+        return result;
+    }
+    
+    validateAll() {
+        const results = new Map();
+        let hasWarnings = false;
+        
+        for (const [ruleName, rule] of this.validationRules) {
+            const result = rule();
+            results.set(ruleName, result);
+            
+            if (!result.valid) {
+                hasWarnings = true;
+            }
+        }
+        
+        // Update UI with validation status
+        this.updateValidationUI(results);
+        
+        return {
+            valid: !hasWarnings,
+            results: Array.from(results.entries())
+        };
+    }
+    
+    validateForExport() {
+        const validation = this.validateAll();
+        
+        if (!validation.valid) {
+            // Show consolidated warning for export
+            const warnings = validation.results
+                .filter(([_, result]) => !result.valid)
+                .map(([_, result]) => result.warning);
+            
+            this.notifications.warning(
+                'Character has validation warnings:\n' + warnings.join('\n'),
+                5000
+            );
+        }
+        
+        return validation;
+    }
+    
+    showWarning(message, severity = 'warning') {
+        switch (severity) {
+            case 'error':
+                this.notifications.error(message);
+                break;
+            case 'warning':
+                this.notifications.warning(message);
+                break;
+            case 'info':
+                this.notifications.info(message);
+                break;
+            default:
+                this.notifications.show(message);
+        }
+    }
+    
+    updateValidationUI(results) {
+        // Update validation indicators in the UI
+        const validationIndicator = document.getElementById('validation-status');
+        if (!validationIndicator) return;
+        
+        const hasWarnings = Array.from(results.values()).some(r => !r.valid);
+        
+        if (hasWarnings) {
+            validationIndicator.classList.add('has-warnings');
+            validationIndicator.title = 'Character has validation warnings';
         } else {
-            Logger.info('[ValidationSystem] Character validation passed with no warnings.');
+            validationIndicator.classList.remove('has-warnings');
+            validationIndicator.title = 'Character validation passed';
         }
-        return warnings;
+        
+        // Update individual validation indicators
+        results.forEach((result, ruleName) => {
+            const indicator = document.querySelector(`[data-validation="${ruleName}"]`);
+            if (indicator) {
+                indicator.classList.toggle('invalid', !result.valid);
+                indicator.title = result.warning || '';
+            }
+        });
+    }
+    
+    // Public methods for checking specific validations
+    isMainPoolValid() {
+        return this.validate('mainPool').valid;
+    }
+    
+    isCombatAttrValid() {
+        return this.validate('combatAttr').valid;
+    }
+    
+    isUtilityAttrValid() {
+        return this.validate('utilityAttr').valid;
+    }
+    
+    areArchetypesComplete() {
+        return this.validate('archetypes').valid;
+    }
+    
+    areAttributesValid() {
+        return this.validate('attributes').valid;
+    }
+    
+    isCharacterComplete() {
+        return this.validateAll().valid;
     }
 }

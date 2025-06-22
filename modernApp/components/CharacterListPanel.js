@@ -36,8 +36,8 @@ export class CharacterListPanel {
     }
 
     renderList() {
-        const charactersMetadata = this.characterManager.getAllCharactersMetadata();
-        const activeCharId = this.characterManager.getActiveCharacterId();
+        const charactersMetadata = this.characterManager.getAllCharacters();
+        const activeCharId = this.characterManager.activeCharacterId;
 
         if (charactersMetadata.length === 0) {
             this.listContainer.innerHTML = '<p class="text-muted text-center">No characters yet. Create one!</p>';
@@ -67,7 +67,7 @@ export class CharacterListPanel {
 
             switch (action) {
                 case 'new-character':
-                    this.characterManager.createCharacter('New Character ' + (this.characterManager.getAllCharactersMetadata().length + 1));
+                    this.characterManager.createCharacter('New Character ' + (this.characterManager.getAllCharacters().length + 1));
                     // Active character and list will update via events
                     break;
                 case 'import-character':
@@ -91,7 +91,7 @@ export class CharacterListPanel {
 
             switch (action) {
                 case 'load-character':
-                    if (charId !== this.characterManager.getActiveCharacterId()) {
+                    if (charId !== this.characterManager.activeCharacterId) {
                         this.characterManager.setActiveCharacter(charId);
                     }
                     break;

@@ -1,91 +1,137 @@
-
 // modernApp/utils/Storage.js
 import { Logger } from './Logger.js';
 
 /**
- * A robust wrapper for localStorage that provides versioning.
+ * Storage utility for localStorage operations with JSON support
  */
 export class Storage {
-    constructor(prefix = 'vitality-app-', version = '1.0') {
-        this.prefix = prefix;
-        this.version = version;
-        this.storage = window.localStorage;
-    }
-
-    _getPrefixedKey(key) {
-        return `${this.prefix}${key}`;
-    }
-
+    static prefix = 'vitality_';
+    
     /**
-     * Stores an item in localStorage, wrapped with version info.
-     * @param {string} key - The key for the item.
-     * @param {*} value - The value to store. Will be JSON stringified.
+     * Get item from localStorage
+     * @param {string} key - Storage key
+     * @returns {*} Parsed value or null
      */
-    setItem(key, value) {
-        const prefixedKey = this._getPrefixedKey(key);
-        const dataToStore = {
-            version: this.version,
-            payload: value,
-            timestamp: Date.now()
-        };
-
+    static getItem(key) {
         try {
-            this.storage.setItem(prefixedKey, JSON.stringify(dataToStore));
-        } catch (error) {
-            Logger.error(`[Storage] Failed to set item "${key}":`, error);
-        }
-    }
-
-    /**
-     * Retrieves an item from localStorage.
-     * @param {string} key - The key of the item to retrieve.
-     * @returns {*} The stored value, or null if not found, invalid, or version mismatch.
-     */
-    getItem(key) {
-        const prefixedKey = this._getPrefixedKey(key);
-        try {
-            const rawData = this.storage.getItem(prefixedKey);
-            if (!rawData) {
+            const item = localStorage.getItem(this.prefix + key);
+            if (item === null) {
                 return null;
             }
-
-            const storedData = JSON.parse(rawData);
-
-            if (storedData.version !== this.version) {
-                Logger.warn(`[Storage] Version mismatch for key "${key}". Expected ${this.version}, found ${storedData.version}. Data will be ignored.`);
-                // Here, you could implement migration logic in a real app.
-                // For now, we'll just discard the old data.
-                this.removeItem(key);
-                return null;
+            
+            // Try to parse as JSON, fallback to raw string
+            try {
+                return JSON.parse(item);
+            } catch {
+                return item;
             }
-
-            return storedData.payload;
         } catch (error) {
-            Logger.error(`[Storage] Failed to get or parse item "${key}":`, error);
+            Logger.error(`[Storage] Failed to get item ${key}:`, error);
             return null;
         }
     }
-
+    
     /**
-     * Removes an item from localStorage.
-     * @param {string} key - The key of the item to remove.
+     * Set item in localStorage
+     * @param {string} key - Storage key
+     * @param {*} value - Value to store (will be JSON stringified)
+     * @returns {boolean} Success status
      */
-    removeItem(key) {
-        const prefixedKey = this._getPrefixedKey(key);
-        this.storage.removeItem(prefixedKey);
+    static setItem(key, value) {
+        try {
+            const serialized = JSON.stringify(value);
+            localStorage.setItem(this.prefix + key, serialized);
+            return true;
+        } catch (error) {
+            Logger.error(`[Storage] Failed to set item ${key}:`, error);
+            return false;
+        }
     }
-
+    
     /**
-     * Clears all items from localStorage that have the configured prefix.
+     * Remove item from localStorage
+     * @param {string} key - Storage key
+     * @returns {boolean} Success status
      */
-    clear() {
-        for (let i = this.storage.length - 1; i >= 0; i--) {
-            const key = this.storage.key(i);
+    static removeItem(key) {
+        try {
+            localStorage.removeItem(this.prefix + key);
+            return true;
+        } catch (error) {
+            Logger.error(`[Storage] Failed to remove item ${key}:`, error);
+            return false;
+        }
+    }
+    
+    /**
+     * Clear all items with our prefix
+     * @returns {boolean} Success status
+     */
+    static clear() {
+        try {
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith(this.prefix)) {
+                    keysToRemove.push(key);
+                }
+            }
+            
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+            Logger.info(`[Storage] Cleared ${keysToRemove.length} items`);
+            return true;
+        } catch (error) {
+            Logger.error('[Storage] Failed to clear storage:', error);
+            return false;
+        }
+    }
+    
+    /**
+     * Check if a key exists
+     * @param {string} key - Storage key
+     * @returns {boolean} Exists status
+     */
+    static hasItem(key) {
+        return localStorage.getItem(this.prefix + key) !== null;
+    }
+    
+    /**
+     * Get all keys with our prefix
+     * @returns {string[]} Array of keys (without prefix)
+     */
+    static getAllKeys() {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
             if (key && key.startsWith(this.prefix)) {
-                this.storage.removeItem(key);
+                keys.push(key.substring(this.prefix.length));
             }
         }
-        Logger.info(`[Storage] Cleared all items with prefix "${this.prefix}".`);
+        return keys;
+    }
+    
+    /**
+     * Get storage size info
+     * @returns {Object} Size information
+     */
+    static getStorageInfo() {
+        let totalSize = 0;
+        let itemCount = 0;
+        
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith(this.prefix)) {
+                const value = localStorage.getItem(key);
+                totalSize += key.length + (value ? value.length : 0);
+                itemCount++;
+            }
+        }
+        
+        return {
+            itemCount,
+            totalSize,
+            totalSizeKB: (totalSize / 1024).toFixed(2),
+            totalSizeMB: (totalSize / 1024 / 1024).toFixed(2)
+        };
     }
 }
-

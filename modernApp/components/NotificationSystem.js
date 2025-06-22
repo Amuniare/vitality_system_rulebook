@@ -1,33 +1,50 @@
+// modernApp/components/NotificationSystem.js
 import { Logger } from '../utils/Logger.js';
 
 export class NotificationSystem {
-    static container = null;
-    static queue = [];
-    static activeNotifications = new Map();
+    static instance = null;
     
-    static init() {
-        this.container = document.getElementById('notification-container');
-        if (!this.container) {
-            // ✅ Use Logger
-            Logger.warn('[NotificationSystem] Notification container not found in the DOM.');
+    static getInstance() {
+        if (!NotificationSystem.instance) {
+            NotificationSystem.instance = new NotificationSystem();
         }
+        return NotificationSystem.instance;
     }
     
-    static show(message, type = 'info', duration = 3000) {
-        if (!this.container) return;
+    constructor() {
+        if (NotificationSystem.instance) {
+            return NotificationSystem.instance;
+        }
         
-        const id = Date.now().toString();
-        const notification = this.createNotification(id, message, type);
+        this.container = null;
+        this.queue = [];
+        this.activeNotifications = new Map();
+        
+        Logger.info('[NotificationSystem] Instance created.');
+    }
+    
+    init() {
+        this.container = document.getElementById('notification-container');
+        if (!this.container) {
+            Logger.warn('[NotificationSystem] Notification container not found in the DOM.');
+        }
+        
+        Logger.info('[NotificationSystem] Initialized.');
+    }
+    
+    show(message, type = 'info', duration = 3000) {
+        if (!this.container) {
+            Logger.error('[NotificationSystem] Cannot show notification - container not found.');
+            return;
+        }
+        
+        const id = Date.now();
+        const notification = this.createNotificationElement(id, message, type);
         
         this.container.appendChild(notification);
         this.activeNotifications.set(id, notification);
         
-        // Animate in
-        requestAnimationFrame(() => {
-            notification.classList.add('show');
-        });
-        
-        // Auto-remove if duration is set
+        // Auto-remove after duration
         if (duration > 0) {
             setTimeout(() => this.remove(id), duration);
         }
@@ -35,38 +52,49 @@ export class NotificationSystem {
         return id;
     }
     
-    static createNotification(id, message, type) {
+    createNotificationElement(id, message, type) {
         const div = document.createElement('div');
         div.className = `notification notification-${type}`;
         div.dataset.notificationId = id;
-        
         div.innerHTML = `
             <span class="notification-message">${message}</span>
-            <button class="notification-close" data-action="close-notification">×</button>
+            <button class="notification-close" aria-label="Close notification">&times;</button>
         `;
         
-        // Handle close button
-        div.querySelector('[data-action="close-notification"]').addEventListener('click', () => {
+        // Add close handler
+        div.querySelector('.notification-close').addEventListener('click', () => {
             this.remove(id);
         });
         
         return div;
     }
     
-    static remove(id) {
+    remove(id) {
         const notification = this.activeNotifications.get(id);
-        if (!notification) return;
-        
-        notification.classList.remove('show');
-        notification.classList.add('hide');
-        
-        setTimeout(() => {
+        if (notification) {
             notification.remove();
             this.activeNotifications.delete(id);
-        }, 300);
+        }
     }
     
-    static clear() {
+    // Convenience methods
+    success(message, duration) {
+        return this.show(message, 'success', duration);
+    }
+    
+    error(message, duration = 5000) {
+        return this.show(message, 'error', duration);
+    }
+    
+    warning(message, duration = 4000) {
+        return this.show(message, 'warning', duration);
+    }
+    
+    info(message, duration = 3000) {
+        return this.show(message, 'info', duration);
+    }
+    
+    clear() {
         this.activeNotifications.forEach((notification, id) => {
             this.remove(id);
         });
