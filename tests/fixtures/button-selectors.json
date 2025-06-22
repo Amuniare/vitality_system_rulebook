@@ -16,7 +16,7 @@
     "mainPoolTab": {
         "flawsSectionButton": "button.section-tab[data-section-key='flaws']",
         "traitsSectionButton": "button.section-tab[data-section-key='traits']",
-        "boonsSectionButton": "button.section-tab[data-section-key='boons_simple']",
+        "boonsSectionButton": "button.section-tab[data-section-key='boons']",
         "actionUpgradesSectionButton": "button.section-tab[data-section-key='action_upgrades']",
         "uniqueAbilitiesSectionButton": "button.section-tab[data-section-key='unique_abilities_purchasable']",
         "purchaseButtonGeneric": ".purchase-card button[data-action='purchase']",

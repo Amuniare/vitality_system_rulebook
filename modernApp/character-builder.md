@@ -96,14 +96,14 @@ Seven archetype categories:
 Six purchase sections:
 1. **Flaws** - Cost 30 points, provide +tier stat bonus
 2. **Traits** - Cost 30 points, conditional +tier bonuses
-3. **Simple Boons** - Basic abilities with fixed costs
+3. **Boons** - Basic abilities with fixed costs
 4. **Unique Abilities** - Complex multi-stage purchases
 5. **Action Upgrades** - Enhance base actions
 6. **Custom Abilities** - Player-created content
 
 **Systems Used:**
 - `TraitFlawSystem` - Trait/flaw mechanics
-- `SimpleBoonsSystem` - Boon management
+- `BoonsSystem` - Boon management
 - `UniqueAbilitySystem` - Complex ability handling
 - `ActionSystem` - Action upgrade logic
 - `PointPoolCalculator` - Main pool tracking
@@ -231,7 +231,7 @@ Five main sections:
 - flaws.json
 - traits.json
 - trait_conditions.json
-- simple_boons.json
+- boons.json
 - unique_abilities.json
 - upgrades.json
 - features.json

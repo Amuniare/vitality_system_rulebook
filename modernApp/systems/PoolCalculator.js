@@ -46,6 +46,8 @@ export class PoolCalculator {
         // ✅ CORRECT FORMULA: (tier-2) × 15, minimum 0
         let basePool = Math.max(0, (tier - 2) * 15);
 
+        
+
         // Check for special archetypes that modify pool
         const uniqueAbility = character.archetypes?.uniqueAbility;
         if (uniqueAbility) {
@@ -94,15 +96,19 @@ export class PoolCalculator {
             });
         }
 
-        // Actions cost variable amounts
-        if (character.actions) {
-            character.actions.forEach(action => {
-                const entity = EntityLoader.getEntity(action.id);
-                used += entity?.cost?.value || 0;
+
+
+        if (character.action_upgrades) {
+            character.action_upgrades.forEach(upgrade => {
+                const entity = EntityLoader.getEntity(upgrade.id); // Assuming 'upgrade.id' is the entity definition ID
+                if (entity && entity.cost && entity.cost.pool === 'main') { // Ensure it's a main pool cost
+                    used += entity.cost.value || 0;
+                }
             });
         }
-
+        
         return used;
+
     }
 
     static calculateCombatUsed(character) {

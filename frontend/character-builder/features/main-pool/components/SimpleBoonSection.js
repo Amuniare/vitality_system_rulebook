@@ -1,28 +1,28 @@
-// frontend/character-builder/features/main-pool/components/SimpleBoonSection.js
-import { SimpleBoonsSystem } from '../../../systems/SimpleBoonsSystem.js';
+// frontend/character-builder/features/main-pool/components/BoonSection.js
+import { BoonsSystem } from '../../../systems/BoonsSystem.js';
 import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
 
-export class SimpleBoonSection {
+export class BoonSection {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
     }
 
     render(character, pointInfo) {
-        const simpleBoons = SimpleBoonsSystem.getAvailableBoons();
+        const boons = BoonsSystem.getAvailableBoons();
         const purchasedBoons = character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type); // Assuming 'simple' or undefined type means simple
 
         const containerHtml = `
             <div class="main-pool-category">
-                <h3>Available Simple Boons</h3>
+                <h3>Available Boons</h3>
                 <p class="category-description">
                     Permanent abilities that change how your character functions.
-                    Simple boons have fixed costs and immediate effects.
+                    Boons have fixed costs and immediate effects.
                 </p>
 
                 ${RenderUtils.renderGrid(
-                    simpleBoons,
-                    (boon) => this.renderSimpleBoonOption(boon, character, pointInfo),
+                    boons,
+                    (boon) => this.renderBoonOption(boon, character, pointInfo),
                     { gridContainerClass: 'grid-layout boon-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
                 )}
             </div>
@@ -48,7 +48,7 @@ export class SimpleBoonSection {
         `;
     }
 
-    renderSimpleBoonOption(boon, character, pointInfo) {
+    renderBoonOption(boon, character, pointInfo) {
         const alreadyPurchased = character.mainPoolPurchases.boons.some(b => b.boonId === boon.id && (b.type === 'simple' || !b.type));
 
         let status = 'available';
@@ -75,14 +75,14 @@ export class SimpleBoonSection {
         // Handled by MainPoolTab's EventManager using data-action
     }
 
-    purchaseSimpleBoon(boonId) {
+    purchaseBoon(boonId) {
         // 1. Get current point balance
         const character = this.builder.currentCharacter;
         const pools = PointPoolCalculator.calculateAllPools(character);
         const remainingPoints = pools.remaining.mainPool;
         
         // 2. Get the cost of the item
-        const boon = SimpleBoonsSystem.getAvailableBoons().find(b => b.id === boonId);
+        const boon = BoonsSystem.getAvailableBoons().find(b => b.id === boonId);
         const itemCost = boon ? boon.cost : 0;
         
         // 3. Check if this purchase will go over budget
@@ -93,7 +93,7 @@ export class SimpleBoonSection {
 
         // 5. Proceed with the purchase REGARDLESS of the check.
         try {
-            SimpleBoonsSystem.purchaseBoon(character, boonId);
+            BoonsSystem.purchaseBoon(character, boonId);
             this.builder.updateCharacter();
             this.builder.showNotification(`Purchased simple boon!`, 'success');
         } catch (error) {
@@ -107,7 +107,7 @@ export class SimpleBoonSection {
         try {
             const boon = character.mainPoolPurchases.boons.find(b => b.boonId === boonIdToRemove && (b.type === 'simple' || !b.type));
             if (boon) {
-                SimpleBoonsSystem.removeBoon(character, boon.boonId); // System uses boonId
+                BoonsSystem.removeBoon(character, boon.boonId); // System uses boonId
                 this.builder.updateCharacter();
                 this.builder.showNotification(`Removed ${boon.name}`, 'info');
             } else {

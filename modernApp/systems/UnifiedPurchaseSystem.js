@@ -23,7 +23,7 @@ export class UnifiedPurchaseSystem {
         if (!entity) {
             const message = `Purchase failed: Entity with ID "${entityId}" not found.`;
             Logger.error(`[PurchaseSystem] ${message}`);
-            NotificationSystem.show(message, 'error');
+            NotificationSystem.getInstance().error(message); // Corrected
             return { success: false, error: message };
         }
 
@@ -33,7 +33,7 @@ export class UnifiedPurchaseSystem {
         if (character[arrayName] && !isStackable && character[arrayName].some(p => p.id === entityId)) {
              const message = `Cannot purchase "${entity.name}": This is a unique item you already own.`;
              Logger.info(`[PurchaseSystem] ${message}`);
-             NotificationSystem.show(message, 'info');
+             NotificationSystem.getInstance().info(message); // Corrected
              return { success: false, alreadyOwned: true };
         }
 
@@ -42,7 +42,7 @@ export class UnifiedPurchaseSystem {
         if (!reqCheck.areMet) {
             const message = `Requirements not met for ${entity.name}: ${reqCheck.unmet.join(', ')}`;
             Logger.warn(`[PurchaseSystem] ${message}`);
-            NotificationSystem.show(message, 'warning', 5000); // Longer duration for warnings
+            NotificationSystem.getInstance().warning(message, 5000); // Corrected (using helper with duration)
         }
 
         // 3. Dispatch the purchase action to the StateManager.
@@ -54,9 +54,9 @@ export class UnifiedPurchaseSystem {
         });
 
         if (result.success) {
-            NotificationSystem.show(`Purchased: ${entity.name}`, 'success');
+            NotificationSystem.getInstance().success(`Purchased: ${entity.name}`); // Corrected
         } else {
-            NotificationSystem.show(`Failed to purchase: ${entity.name}. ${result.error}`, 'error');
+            NotificationSystem.getInstance().error(`Failed to purchase: ${entity.name}. ${result.error}`); // Corrected
         }
 
         return result;
@@ -72,7 +72,7 @@ export class UnifiedPurchaseSystem {
         if (!purchaseId || !entityType) {
              const message = `Removal failed: purchaseId and entityType are required.`;
              Logger.error(`[PurchaseSystem] ${message}`);
-             NotificationSystem.show(message, 'error');
+             NotificationSystem.getInstance().error(message); // Corrected
              return { success: false, error: message };
         }
 
@@ -85,9 +85,9 @@ export class UnifiedPurchaseSystem {
         const result = StateManager.dispatch('REMOVE_ENTITY', { purchaseId, entityType });
 
         if (result.success && entity) {
-            NotificationSystem.show(`Removed: ${entity.name}`, 'success');
+            NotificationSystem.getInstance().success(`Removed: ${entity.name}`); // Corrected
         } else if (!result.success) {
-             NotificationSystem.show(`Failed to remove item. ${result.error}`, 'error');
+             NotificationSystem.getInstance().error(`Failed to remove item. ${result.error}`); // Corrected
         }
 
         return result;

@@ -5,7 +5,7 @@ class GameDataManager {
         this.dataFiles = {
             // Actions & Boons
             actions: 'data/actions.json',
-            simpleBoons: 'data/boons_simple.json',
+            boons: 'data/boons.json',
             complexUniqueAbilities: 'data/unique_abilities_complex.json',
 
             // Archetypes
@@ -106,7 +106,7 @@ class GameDataManager {
 
     // Public Getters
     getActions() { return this._getData('actions', []); }
-    getSimpleBoons() { return this._getData('simpleBoons', []); }
+    getBoons() { return this._getData('boons', []); }
     getComplexUniqueAbilities() { return this._getData('complexUniqueAbilities', []); }
 
     getArchetypes() { return this._getData('archetypes', {}); } // Returns the whole object

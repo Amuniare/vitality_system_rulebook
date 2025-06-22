@@ -9,7 +9,7 @@
 ## Technical Debug Log: 23A - Complete Success
 
 **Problem Statement:**
-The Main Pool Tab's section navigation tabs (Flaws, Traits, Simple Boons, etc.) and interactive elements within the Traits tab would stop responding to clicks after any character update operation. Users could no longer switch between sections or select trait cards, making the interface effectively broken after the first interaction.
+The Main Pool Tab's section navigation tabs (Flaws, Traits, Boons, etc.) and interactive elements within the Traits tab would stop responding to clicks after any character update operation. Users could no longer switch between sections or select trait cards, making the interface effectively broken after the first interaction.
 
 **Initial Hypothesis:**
 The issue was identified as a classic "stale event listener" problem caused by the anti-pattern of using a simple boolean flag (`this.listenersAttached = false`) to manage event listener lifecycle. This approach failed to properly clean up old listeners when components re-rendered, resulting in multiple ghost listeners that interfered with proper event handling.

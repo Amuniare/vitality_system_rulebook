@@ -33,6 +33,41 @@ Analyze this code problem using these steps:
 
 
 
+---
+
+
+Review the following key documents:
+
+modernApp\app.js
+modernApp\Architecture.md
+modernApp\character-builder.md
+modernApp\index.html
+modernApp\README.md
+modernApp\requirements.md
+modernApp\workplan.md
+
+
+Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md
+
+
+We'll be doing a review of the app, the images and the console log
+1. does this abide by architexture.md, requirements.md and README.md
+2. does this make appropriate and effective use of components, core, systems, data and utils files
+3. what would you recommend working on next
+
+
+## Chain-of-Thought 
+Analyze this code problem using these steps:
+	1. Identify the core requirements
+	2. Break down the technical constraints
+	3. Consider potential edge cases
+	4. Develop an algorithm addressing all constraints
+	5. Evaluate time and space complexity
+	6. Propose implementation approaches
+
+
+
+
 
 
 
@@ -54,7 +89,8 @@ Your job is to fix this ModernApp, to work how it is intended to work, as laid o
 
 We'll be working on:
 
-Fixing the issues in the console log
+
+adding traits and simple boons to Main tab
 
 
 
@@ -67,8 +103,8 @@ Analyze this code problem using these steps:
 	5. Evaluate time and space complexity
 	6. Propose implementation approaches
 
-Don't Write Code, just propose solutions
 
+Don't Write Code, just identify problems and root cause of issues, and explain simply any potential solutions
 
 ---
 

@@ -6,7 +6,7 @@ The character builder uses a comprehensive external JSON data system managed by 
 - `actions.json` - Primary actions (14 entries)
 - `archetypes.json` - 7 archetype categories with variants
 - `attack_types_definitions.json` - Attack type mechanics
-- `boons_simple.json` - Simple boon abilities (8 entries)
+- `boons.json` - Simple boon abilities (8 entries)
 - `conditions_basic.json` - Basic conditions (9 entries)  
 - `descriptors.json` - Reality manipulation descriptors
 - `effect_types_definitions.json` - Effect type mechanics

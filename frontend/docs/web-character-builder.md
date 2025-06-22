@@ -19,7 +19,7 @@ rulebook/character-builder/
 │   ├── actions.json          # Primary actions (14 entries)
 │   ├── archetypes.json       # 7 archetype categories with variants
 │   ├── attack_types_definitions.json # Attack type mechanics
-│   ├── boons_simple.json     # Simple boon abilities (8 entries)
+│   ├── boons.json     # Simple boon abilities (8 entries)
 │   ├── conditions_basic.json # Basic conditions (9 entries)
 │   ├── descriptors.json      # Reality manipulation descriptors
 │   ├── effect_types_definitions.json # Effect type mechanics
@@ -36,7 +36,7 @@ rulebook/character-builder/
 │   ├── ArchetypeSystem.js    # 7 archetype categories
 │   ├── AttackTypeSystem.js   # Attack & effect type management
 │   ├── AttributeSystem.js    # Attributes & defenses
-│   ├── SimpleBoonsSystem.js  # Simple boon purchases
+│   ├── BoonsSystem.js  # Simple boon purchases
 │   ├── SpecialAttackSystem.js # Special attack creation
 │   ├── TraitFlawSystem.js    # Trait & flaw management
 │   ├── UniqueAbilitySystem.js # Complex unique abilities
@@ -56,7 +56,7 @@ rulebook/character-builder/
 │   │   ├── CharacterTree.js           # Hierarchical organization
 │   │   ├── FlawPurchaseSection.js     # Flaw economics system
 │   │   ├── PointPoolDisplay.js        # Real-time calculations
-│   │   ├── SimpleBoonSection.js       # Simple boon purchases
+│   │   ├── BoonSection.js       # Simple boon purchases
 │   │   ├── TraitPurchaseSection.js    # Complex trait builder
 │   │   ├── UniqueAbilitySection.js    # Complex ability upgrades
 │   │   └── ValidationDisplay.js       # Build order enforcement
@@ -87,7 +87,7 @@ rulebook/character-builder/
 - **All 7 Tabs**: BasicInfo, Archetypes, Attributes, MainPool, SpecialAttacks, Utility, Summary
 - **External Data System**: 15 JSON files via GameDataManager
 - **Modular Architecture**: EventManager, UpdateManager, RenderUtils, Component system
-- **5-Section Main Pool**: Flaws, Traits, Simple Boons, Unique Abilities, Action Upgrades
+- **5-Section Main Pool**: Flaws, Traits, Boons, Unique Abilities, Action Upgrades
 - **Complete Special Attack Builder**: Limits, upgrades, attack types with modal interfaces
 - **Full Utility System**: Expertise, features, senses, movement, descriptors
 - **Character Library**: localStorage with folders, search, import/export

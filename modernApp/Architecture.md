@@ -338,7 +338,7 @@ class CharacterManager {
 **Sections:**
 1. Flaws (fix economics)
 2. Traits (fix economics)
-3. Simple Boons
+3. Boons
 4. Unique Abilities
 5. Action Upgrades
 6. Custom Abilities

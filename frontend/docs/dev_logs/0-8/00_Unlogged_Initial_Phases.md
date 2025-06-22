@@ -33,7 +33,7 @@ This phase implemented the "Main Pool", one of the most complex economic systems
 
 *   **Modular Section Design:** The Main Pool tab was designed with its own sub-navigation for Flaws, Traits, Boons, and other purchases.
 *   **Flaw & Trait Economics:** The core logic for the flaw/trait system was implemented, where flaws cost points but provide stat bonuses, and traits cost points to provide conditional bonuses.
-*   **Component Creation:** The initial versions of `FlawPurchaseSection`, `TraitPurchaseSection`, and `SimpleBoonSection` were created.
+*   **Component Creation:** The initial versions of `FlawPurchaseSection`, `TraitPurchaseSection`, and `BoonSection` were created.
 
 
 ### Phase 4: Component Architecture

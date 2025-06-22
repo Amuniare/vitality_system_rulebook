@@ -1,12 +1,12 @@
-// SimpleBoonsSystem.js - Simple boon purchases (split from UniqueAbilitySystem)
+// BoonsSystem.js - Simple boon purchases (split from UniqueAbilitySystem)
 import { PointPoolCalculator } from '../calculators/PointPoolCalculator.js';
 import { GameConstants } from '../core/GameConstants.js';
 import { gameDataManager } from '../core/GameDataManager.js'; // ADDED
 
-export class SimpleBoonsSystem {
-    // Get simple boons (one-time purchases with fixed effects)
+export class BoonsSystem {
+    // Get boons (one-time purchases with fixed effects)
     static getAvailableBoons() {
-        return gameDataManager.getSimpleBoons() || []; // MODIFIED
+        return gameDataManager.getBoons() || []; // MODIFIED
     }
 
     // Validate simple boon purchase
@@ -14,7 +14,7 @@ export class SimpleBoonsSystem {
         const errors = [];
         const warnings = [];
         
-        const boon = (gameDataManager.getSimpleBoons() || []).find(b => b.id === boonId); // MODIFIED
+        const boon = (gameDataManager.getBoons() || []).find(b => b.id === boonId); // MODIFIED
         if (!boon) {
             errors.push(`Invalid boon: ${boonId}`);
             return { isValid: false, errors, warnings };
@@ -67,7 +67,7 @@ export class SimpleBoonsSystem {
             throw new Error(validation.errors.join(', '));
         }
         
-        const boon = (gameDataManager.getSimpleBoons() || []).find(b => b.id === boonId); // MODIFIED
+        const boon = (gameDataManager.getBoons() || []).find(b => b.id === boonId); // MODIFIED
         
         character.mainPoolPurchases.boons.push({
             boonId: boonId,
@@ -106,9 +106,9 @@ export class SimpleBoonsSystem {
         };
         
         character.mainPoolPurchases.boons.forEach(boonPurchase => {
-            if (boonPurchase.type !== 'simple' && boonPurchase.type !== undefined) return; // Only process simple boons (or untyped assumed simple)
+            if (boonPurchase.type !== 'boon' && boonPurchase.type !== undefined) return; // Only process boons (or untyped assumed simple)
             
-            const boonDef = (gameDataManager.getSimpleBoons() || []).find(b => b.id === boonPurchase.boonId); // Get definition
+            const boonDef = (gameDataManager.getBoons() || []).find(b => b.id === boonPurchase.boonId); // Get definition
             if (!boonDef) return;
 
             switch(boonDef.id) { // Use ID from definition

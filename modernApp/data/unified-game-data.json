@@ -1695,7 +1695,7 @@
                     "condition"
                 ]
             },
-            "sourceFile": "boons_simple.json"
+            "sourceFile": "boons.json"
         },
         "boon_simple_robot": {
             "id": "boon_simple_robot",
@@ -1734,7 +1734,7 @@
                     "defense"
                 ]
             },
-            "sourceFile": "boons_simple.json"
+            "sourceFile": "boons.json"
         },
         "boon_simple_telekinetic": {
             "id": "boon_simple_telekinetic",
@@ -1762,7 +1762,7 @@
                     "condition"
                 ]
             },
-            "sourceFile": "boons_simple.json"
+            "sourceFile": "boons.json"
         },
         "boon_simple_biohacker": {
             "id": "boon_simple_biohacker",
@@ -1790,7 +1790,7 @@
                     "condition"
                 ]
             },
-            "sourceFile": "boons_simple.json"
+            "sourceFile": "boons.json"
         },
         "boon_simple_utilitarian": {
             "id": "boon_simple_utilitarian",
@@ -1819,7 +1819,7 @@
                     "points"
                 ]
             },
-            "sourceFile": "boons_simple.json"
+            "sourceFile": "boons.json"
         },
         "boon_simple_perfectionist": {
             "id": "boon_simple_perfectionist",
@@ -1847,7 +1847,7 @@
                     "dice"
                 ]
             },
-            "sourceFile": "boons_simple.json"
+            "sourceFile": "boons.json"
         },
         "boon_simple_combatReflexes": {
             "id": "boon_simple_combatReflexes",
@@ -1876,7 +1876,7 @@
                     "combat"
                 ]
             },
-            "sourceFile": "boons_simple.json"
+            "sourceFile": "boons.json"
         },
         "character_type_player_character": {
             "id": "character_type_player_character",

@@ -64,7 +64,11 @@ export class PointPoolDisplay {
     }
     
     render() {
-        if (!this.container || !this.pools) return;
+        if (!this.container || !this.pools) {
+            Logger.warn('[PointPoolDisplay] Render called but container or pools not available.');
+            if (this.container) this.container.innerHTML = '<p>Pool data unavailable.</p>';
+            return;
+        }
         
         // Clear existing content
         this.container.innerHTML = '';
@@ -77,16 +81,16 @@ export class PointPoolDisplay {
         poolsContainer.className = 'pools-container';
         
         // Render each pool
-        if (this.options.showMainPool) {
-            poolsContainer.appendChild(this.renderPool('Main Pool', this.pools.mainPool, 'main-pool'));
+        if (this.options.showMainPool && typeof this.pools.main !== 'undefined' && typeof this.pools.mainUsed !== 'undefined') {
+            poolsContainer.appendChild(this.renderPool('Main Pool', { available: this.pools.main, spent: this.pools.mainUsed }, 'main-pool'));
         }
         
-        if (this.options.showCombatAttr) {
-            poolsContainer.appendChild(this.renderPool('Combat Attr', this.pools.combatAttr, 'combat-attr'));
+        if (this.options.showCombatAttr && typeof this.pools.combat !== 'undefined' && typeof this.pools.combatUsed !== 'undefined') {
+            poolsContainer.appendChild(this.renderPool('Combat Attr', { available: this.pools.combat, spent: this.pools.combatUsed }, 'combat-attr'));
         }
         
-        if (this.options.showUtilityAttr) {
-            poolsContainer.appendChild(this.renderPool('Utility Attr', this.pools.utilityAttr, 'utility-attr'));
+        if (this.options.showUtilityAttr && typeof this.pools.utility !== 'undefined' && typeof this.pools.utilityUsed !== 'undefined') {
+            poolsContainer.appendChild(this.renderPool('Utility Attr', { available: this.pools.utility, spent: this.pools.utilityUsed }, 'utility-attr'));
         }
         
         this.container.appendChild(poolsContainer);
@@ -98,9 +102,16 @@ export class PointPoolDisplay {
         }
     }
     
-    renderPool(name, pool, className) {
+    renderPool(name, pool, className) { // pool should now be an object like { available: X, spent: Y }
         const poolDiv = document.createElement('div');
         poolDiv.className = `pool ${className}`;
+
+        // Guard against pool being undefined or not having expected properties
+        if (!pool || typeof pool.available === 'undefined' || typeof pool.spent === 'undefined') {
+            Logger.warn(`[PointPoolDisplay] Invalid pool data for ${name}:`, pool);
+            poolDiv.innerHTML = `<span class="pool-name">${name}: Data Error</span>`;
+            return poolDiv;
+        }
         
         const remaining = pool.available - pool.spent;
         const isOverBudget = remaining < 0;

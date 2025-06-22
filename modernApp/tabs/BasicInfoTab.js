@@ -1,35 +1,47 @@
 // modernApp/tabs/BasicInfoTab.js
 import { StateManager } from '../core/StateManager.js';
 import { EventBus } from '../core/EventBus.js';
-import { Logger } from '../utils/Logger.js'; // Import Logger
+import { Logger } from '../utils/Logger.js';
 
 export class BasicInfoTab {
-    constructor(container) { // Accept container
-        this.container = container; // Store it
-        this.characterCache = null; // Cache to compare for changes
+    constructor(container) {
+        this.container = container;
+        this.characterCache = null; 
 
-        EventBus.on('CHARACTER_LOADED', (data) => { // Listen for initial load or switch
-            if (this.container && this.container.style.display !== 'none') { // Check if tab is active
-                 this.updateDisplay(data.character);
-                 Logger.debug('[BasicInfoTab] Display updated via CHARACTER_LOADED event.');
-            }
-        });
-        EventBus.on('CHARACTER_CHANGED', (data) => { // Listen for updates
-            if (this.container && this.container.style.display !== 'none') {
-                 this.updateDisplay(data.character);
-                 Logger.debug('[BasicInfoTab] Display updated via CHARACTER_CHANGED event.');
-            }
-        });
+        // Store bound handlers to properly remove them later
+        this._boundUpdateHandler = this.handleCharacterStateUpdate.bind(this);
+
+        EventBus.on('CHARACTER_LOADED', this._boundUpdateHandler);
+        EventBus.on('CHARACTER_CHANGED', this._boundUpdateHandler);
     }
 
     async init() {
-        // Container is now passed in constructor, no need to find it here.
-        // this.render() will be called by app.js when the tab is switched to.
-        // However, for initial load if this is the default tab, app.js will call render.
-        // We can pre-populate characterCache here if needed or rely on first render.
         const character = StateManager.getCharacter();
-        this.characterCache = { ...character };
+        this.characterCache = JSON.stringify(this.extractRelevantData(character)); // Cache relevant parts as string
         Logger.info('[BasicInfoTab] Initialized.');
+        // Render will be called by app.js when tab is made active or on first load if default.
+    }
+    
+    extractRelevantData(character) {
+        // Only cache data that this tab directly displays/modifies
+        return {
+            name: character.name,
+            tier: character.tier
+        };
+    }
+
+    handleCharacterStateUpdate(data) { // data can be { character } or { character, updates }
+        const character = data.character || data; // Get the full character object
+        const newRelevantData = JSON.stringify(this.extractRelevantData(character));
+
+        // Only re-render if relevant data changed AND tab is visible
+        if (newRelevantData !== this.characterCache) {
+            this.characterCache = newRelevantData; // Update cache
+            if (this.container && this.container.style.display !== 'none') {
+                Logger.debug('[BasicInfoTab] Relevant character data changed, re-rendering.');
+                this.render(); 
+            }
+        }
     }
     
     render() {
@@ -38,9 +50,9 @@ export class BasicInfoTab {
             return;
         }
         const character = StateManager.getCharacter();
-        this.characterCache = { ...character }; // Update cache on render
+        // Update cache with the character data being rendered
+        this.characterCache = JSON.stringify(this.extractRelevantData(character)); 
         
-        // The content itself, no longer querying for #basic-info-tab
         this.container.innerHTML = ` 
             <div class="tab-header">
                 <h2>Basic Information</h2>
@@ -84,25 +96,22 @@ export class BasicInfoTab {
         if (!this.container) return; 
         const saveButton = this.container.querySelector('[data-action="save-basic-info"]');
         if (saveButton) {
-            // Prevent duplicate listeners if render is called multiple times
-            if (!saveButton.hasAttribute('data-listener-attached')) {
-                saveButton.addEventListener('click', () => {
-                    this.saveBasicInfo();
-                });
-                saveButton.setAttribute('data-listener-attached', 'true');
+            if (saveButton._clickHandler) { // Remove old if exists
+                saveButton.removeEventListener('click', saveButton._clickHandler);
             }
+            saveButton._clickHandler = () => this.saveBasicInfo(); // Store ref
+            saveButton.addEventListener('click', saveButton._clickHandler);
         }
         
         const nameInput = this.container.querySelector('#character-name');
         if (nameInput) {
-            if (!nameInput.hasAttribute('data-listener-attached')) {
-                nameInput.addEventListener('keyup', (e) => {
-                    if (e.key === 'Enter') {
-                        this.saveBasicInfo();
-                    }
-                });
-                nameInput.setAttribute('data-listener-attached', 'true');
+             if (nameInput._keyUpHandler) {
+                nameInput.removeEventListener('keyup', nameInput._keyUpHandler);
             }
+            nameInput._keyUpHandler = (e) => {
+                if (e.key === 'Enter') this.saveBasicInfo();
+            };
+            nameInput.addEventListener('keyup', nameInput._keyUpHandler);
         }
     }
     
@@ -120,34 +129,32 @@ export class BasicInfoTab {
         const tier = parseInt(tierSelect.value);
         
         Logger.debug(`[BasicInfoTab] Saving basic info: Name - ${name}, Tier - ${tier}`);
-        // Use the new StateManager.dispatch method
         StateManager.dispatch('UPDATE_BASIC_INFO', { name, tier }); 
+        // The CHARACTER_CHANGED event from dispatch will trigger handleCharacterStateUpdate,
+        // which will update the cache and, if necessary, re-render (though likely not needed if inputs match).
     }
     
-    updateDisplay(characterData) {
-        if (!this.container) return; 
-        const character = characterData || StateManager.getCharacter();
-        this.characterCache = { ...character }; 
-
-        const nameInput = this.container.querySelector('#character-name');
-        const tierSelect = this.container.querySelector('#character-tier');
-        
-        if (nameInput && nameInput.value !== character.name) {
-            nameInput.value = character.name || '';
-        }
-        
-        if (tierSelect && parseInt(tierSelect.value) !== character.tier) {
-            tierSelect.value = character.tier || 4; // Default to tier 4 if undefined
-        }
-        Logger.debug('[BasicInfoTab] Display fields updated.');
-    }
+    // updateDisplay is effectively replaced by the logic in handleCharacterStateUpdate calling render()
+    // if relevant data changes.
 
     cleanup() {
-        // If EventBus listeners were added with specific bound functions, remove them here.
-        // For now, assuming global listeners or listeners that don't need specific cleanup here
-        // beyond what app.js might do for the tab instance itself.
-        // If delegated listeners were added to this.container, they should be removed if the
-        // container itself is not destroyed.
+        // Remove specific listeners
+        EventBus.off('CHARACTER_LOADED', this._boundUpdateHandler);
+        EventBus.off('CHARACTER_CHANGED', this._boundUpdateHandler);
+
+        // Remove listeners from DOM elements if container might persist
+        if (this.container) {
+            const saveButton = this.container.querySelector('[data-action="save-basic-info"]');
+            if (saveButton && saveButton._clickHandler) {
+                saveButton.removeEventListener('click', saveButton._clickHandler);
+                delete saveButton._clickHandler;
+            }
+            const nameInput = this.container.querySelector('#character-name');
+            if (nameInput && nameInput._keyUpHandler) {
+                nameInput.removeEventListener('keyup', nameInput._keyUpHandler);
+                delete nameInput._keyUpHandler;
+            }
+        }
         Logger.info('[BasicInfoTab] Cleanup called.');
     }
 }

@@ -7,7 +7,7 @@ export class BoonPurchaseSection {
     }
 
     render(character, pointInfo) {
-        const simpleBoons = UniqueAbilitySystem.getAvailableBoons();
+        const boons = UniqueAbilitySystem.getAvailableBoons();
         const complexBoons = UniqueAbilitySystem.getComplexUniqueAbilities();
         const purchasedBoons = character.mainPoolPurchases.boons;
 
@@ -16,7 +16,7 @@ export class BoonPurchaseSection {
                 <h3>Boons (Variable Cost)</h3>
                 <p class="category-description">
                     Permanent abilities that change how your character functions.
-                    Simple boons have fixed costs, complex boons have upgrades.
+                    Boons have fixed costs, complex boons have upgrades.
                 </p>
                 
                 <div class="purchased-items">
@@ -30,9 +30,9 @@ export class BoonPurchaseSection {
                 
                 <div class="boon-categories">
                     <div class="simple-boons">
-                        <h4>Simple Boons</h4>
+                        <h4>Boons</h4>
                         <div class="boon-grid">
-                            ${simpleBoons.map(boon => this.renderSimpleBoonOption(boon, character, pointInfo)).join('')}
+                            ${boons.map(boon => this.renderBoonOption(boon, character, pointInfo)).join('')}
                         </div>
                     </div>
                     
@@ -61,7 +61,7 @@ export class BoonPurchaseSection {
         `;
     }
 
-    renderSimpleBoonOption(boon, character, pointInfo) {
+    renderBoonOption(boon, character, pointInfo) {
         const canAfford = pointInfo.remaining >= boon.cost;
         const alreadyPurchased = character.mainPoolPurchases.boons.some(b => b.boonId === boon.id);
         const canPurchase = canAfford && !alreadyPurchased;
@@ -111,7 +111,7 @@ export class BoonPurchaseSection {
         document.querySelectorAll('.boon-card.simple.clickable').forEach(card => {
             card.addEventListener('click', () => {
                 const boonId = card.dataset.boonId;
-                this.purchaseSimpleBoon(boonId);
+                this.purchaseBoon(boonId);
             });
         });
 
@@ -133,7 +133,7 @@ export class BoonPurchaseSection {
         });
     }
 
-    purchaseSimpleBoon(boonId) {
+    purchaseBoon(boonId) {
         const character = this.builder.currentCharacter;
         
         try {

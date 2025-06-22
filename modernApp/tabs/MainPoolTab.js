@@ -7,20 +7,21 @@ import { PoolCalculator } from '../systems/PoolCalculator.js';
 import { UnifiedPurchaseSystem } from '../systems/UnifiedPurchaseSystem.js';
 
 export class MainPoolTab {
-    constructor(container, stateManager) { // constructor signature is already correct
-        this.container = container; // Store it
+    constructor(container, stateManager) {
+        this.container = container;
         this.stateManager = stateManager;
         this.currentSectionKey = 'flaws'; 
         
         this.sections = {
             flaws: { title: 'Flaws', entityType: 'flaw', description: 'Flaws COST 30 main pool points each but grant a +Tier stat bonus and add limitations.' },
             traits: { title: 'Traits', entityType: 'trait', description: 'Traits COST 30 main pool points each and provide conditional +Tier bonuses or unique effects.' },
-            boons_simple: { title: 'Simple Boons', entityType: 'boon', parentIdFilter: null, description: 'Simple Boons have variable costs and provide straightforward benefits. (Ensure these are top-level boons in JSON)' },
+            boons: { title: 'Boons', entityType: 'boon', parentIdFilter: null, description: 'Boons have variable costs and provide straightforward benefits.' },
             action_upgrades: { title: 'Action Upgrades', entityType: 'action_upgrade', description: 'Action Upgrades enhance or modify standard character actions. Costs vary.' },
-            unique_abilities_purchasable: { title: 'Unique Abilities', entityType: 'unique_ability', parentIdFilter: null, description: 'Powerful, distinct abilities. Costs vary. (Ensure these are top-level unique_abilities)'}
+            unique_abilities_purchasable: { title: 'Unique Abilities', entityType: 'unique_ability', parentIdFilter: null, description: 'Powerful, distinct abilities. Costs vary.'}
         };
         
         this.eventBusListeners = {
+            characterLoaded: null, // Added listener for character load/switch
             characterChanged: null,
             entityPurchased: null,
             entityRemoved: null
@@ -29,10 +30,14 @@ export class MainPoolTab {
     }
 
     async init() {
-        this.eventBusListeners.characterChanged = (data) => this.handleCharacterUpdate(data.character);
-        this.eventBusListeners.entityPurchased = () => this.handleCharacterUpdate(this.stateManager.getCharacter());
-        this.eventBusListeners.entityRemoved = () => this.handleCharacterUpdate(this.stateManager.getCharacter());
+        // Store bound versions of handlers
+        this.eventBusListeners.characterLoaded = (data) => this.handleCharacterUpdate(data.character, 'CHARACTER_LOADED');
+        this.eventBusListeners.characterChanged = (data) => this.handleCharacterUpdate(data.character, 'CHARACTER_CHANGED');
+        this.eventBusListeners.entityPurchased = (data) => this.handleCharacterUpdate(data.character, 'ENTITY_PURCHASED');
+        this.eventBusListeners.entityRemoved = (data) => this.handleCharacterUpdate(data.character, 'ENTITY_REMOVED');
 
+        // Subscribe to events
+        EventBus.on('CHARACTER_LOADED', this.eventBusListeners.characterLoaded);
         EventBus.on('CHARACTER_CHANGED', this.eventBusListeners.characterChanged);
         EventBus.on('ENTITY_PURCHASED', this.eventBusListeners.entityPurchased);
         EventBus.on('ENTITY_REMOVED', this.eventBusListeners.entityRemoved);
@@ -40,11 +45,10 @@ export class MainPoolTab {
         Logger.info('[MainPoolTab] Initialized.');
     }
 
-    handleCharacterUpdate(character) {
-        // Only re-render if this tab is currently visible to avoid unnecessary work
+    handleCharacterUpdate(character, eventName = 'Unknown Event') {
         if (this.container && this.container.style.display !== 'none') {
+            Logger.debug(`[MainPoolTab] Re-rendering due to ${eventName}.`);
             this.render();
-            Logger.debug('[MainPoolTab] Re-rendered due to character/purchase update.');
         }
     }
 
@@ -54,9 +58,8 @@ export class MainPoolTab {
             return;
         }
         const character = this.stateManager.getCharacter();
-        const pools = PoolCalculator.calculatePools(character);
+        const pools = PoolCalculator.calculatePools(character); // Pass character
 
-        // The main content div *inside* this.container will have the class "main-pool-tab"
         this.container.innerHTML = `
             <div class="main-pool-tab"> 
                 <div class="pool-header section-header">
@@ -106,20 +109,16 @@ export class MainPoolTab {
         const entityType = sectionConfig.entityType;
         let entities = EntityLoader.getEntitiesByType(entityType);
         
-        // Apply parentIdFilter if specified (for unique_abilities vs upgrades)
         if (sectionConfig.parentIdFilter !== undefined) {
             entities = entities.filter(e => e.parentId === sectionConfig.parentIdFilter);
         }
         
         if (!entities || entities.length === 0) {
-            return `<p class="no-items">No items available in the "${sectionConfig.title}" category (type: ${entityType}). Check unified-game-data.json and filters.</p>`;
+            return `<p class="no-items">No items available in the "${sectionConfig.title}" category (type: ${entityType}).</p>`;
         }
 
-        const character = this.stateManager.getCharacter();
-        const purchaseArrayName = `${entityType}s`;
-
+        // No need to pass character here, PurchaseCard gets it from StateManager
         return entities.map(entity => {
-            const purchaseInstance = character[purchaseArrayName]?.find(p => p.id === entity.id);
             const card = new PurchaseCard(entity, entityType); 
             return card.render(); 
         }).join('');
@@ -154,23 +153,26 @@ export class MainPoolTab {
                     const entityId = button.dataset.entityId;
                     const entityTypeFromCard = button.dataset.entityType; 
                     
+                    Logger.debug(`[MainPoolTab] Button Clicked - Action: ${action}, EntityID: ${entityId}, Type: ${entityTypeFromCard}`);
+
                     if (!entityId || !entityTypeFromCard) {
                         Logger.error("[MainPoolTab] Clicked button without entityId or entityType in dataset", button);
                         return;
                     }
                     
-                    if (action === 'purchase') {
+                    // *** FIX: Match action names from UniversalCard ***
+                    if (action === 'purchase_entity') { 
                         this.handlePurchase(entityId, entityTypeFromCard);
-                    } else if (action === 'remove') {
+                    } else if (action === 'remove_entity') { 
                         const character = this.stateManager.getCharacter();
                         const purchaseArrayName = `${entityTypeFromCard}s`;
-                        const purchaseInstance = character[purchaseArrayName]?.find(p => p.id === entityId);
+                        // Find by entity.id first to get the purchaseInstance which contains purchaseId
+                        const purchaseInstance = character[purchaseArrayName]?.find(p => p.id === entityId); 
 
                         if (purchaseInstance && purchaseInstance.purchaseId) {
                             this.handleRemove(purchaseInstance.purchaseId, entityTypeFromCard);
                         } else {
-                            Logger.warn(`[MainPoolTab] Could not find purchaseId for entity ${entityId} of type ${entityTypeFromCard} to remove. This might happen if it was an old purchase before purchaseIds were implemented.`);
-                            // Fallback or error notification could go here. For now, we log.
+                            Logger.warn(`[MainPoolTab] Could not find purchaseId for entity ${entityId} of type ${entityTypeFromCard} to remove.`);
                         }
                     }
                 }
@@ -182,7 +184,6 @@ export class MainPoolTab {
 
     handlePurchase(entityId, entityType) {
         Logger.info(`[MainPoolTab] Attempting purchase: Entity ID - ${entityId}, Type - ${entityType}`);
-        // UnifiedPurchaseSystem calls StateManager.dispatch, which will trigger EventBus events
         UnifiedPurchaseSystem.purchase(entityId); 
     }
 
@@ -191,16 +192,11 @@ export class MainPoolTab {
         UnifiedPurchaseSystem.remove(purchaseId, entityType);
     }
     
-    cleanup() { // Changed from destroy to cleanup
-        if (this.eventBusListeners.characterChanged) {
-            EventBus.off('CHARACTER_CHANGED', this.eventBusListeners.characterChanged);
-        }
-        if (this.eventBusListeners.entityPurchased) {
-            EventBus.off('ENTITY_PURCHASED', this.eventBusListeners.entityPurchased);
-        }
-        if (this.eventBusListeners.entityRemoved) {
-            EventBus.off('ENTITY_REMOVED', this.eventBusListeners.entityRemoved);
-        }
+    cleanup() {
+        if (this.eventBusListeners.characterLoaded) EventBus.off('CHARACTER_LOADED', this.eventBusListeners.characterLoaded);
+        if (this.eventBusListeners.characterChanged) EventBus.off('CHARACTER_CHANGED', this.eventBusListeners.characterChanged);
+        if (this.eventBusListeners.entityPurchased) EventBus.off('ENTITY_PURCHASED', this.eventBusListeners.entityPurchased);
+        if (this.eventBusListeners.entityRemoved) EventBus.off('ENTITY_REMOVED', this.eventBusListeners.entityRemoved);
         this.eventBusListeners = {};
 
         const purchaseGrid = this.container?.querySelector('#main-pool-purchase-grid');
