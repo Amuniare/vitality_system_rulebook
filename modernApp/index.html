@@ -10,14 +10,14 @@
     <div id="app">
         <header class="app-header">
             <h1>Vitality Character Builder</h1>
-            <div id="notification-container"></div>
+            <!-- FIXED: Changed from #notification-container to #notifications -->
+            <div id="notifications"></div>
         </header>
-        
-        <!-- TAB NAVIGATION MOVED FROM HERE -->
         
         <div class="app-main"> 
             <aside class="character-manager-panel">
                 <h3>Characters</h3>
+                <!-- FIXED: Ensure this element exists -->
                 <div id="character-list-controls">
                     <!-- Buttons for New Character, Import, etc. will be added by CharacterListPanel.js -->
                 </div>
@@ -27,7 +27,6 @@
             </aside>
 
             <main class="tab-container">
-                <!-- TAB NAVIGATION MOVED TO HERE, AS THE FIRST CHILD OF tab-container -->
                 <nav class="tab-navigation">
                     <button class="tab-btn active" data-tab="basic-info">Basic Info</button>
                     <button class="tab-btn" data-tab="archetypes">Archetypes</button>

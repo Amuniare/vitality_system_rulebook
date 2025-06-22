@@ -1,15 +1,30 @@
 // modernApp/tabs/AttributesTab.js
+import { Component } from '../core/Component.js';
+import { connectToState } from '../core/StateConnector.js';
 import { StateManager } from '../core/StateManager.js';
-import { EventBus } from '../core/EventBus.js';
-import { Logger } from '../utils/Logger.js';
-import { EntityLoader } from '../core/EntityLoader.js';
-import { PointPoolDisplay } from '../components/PointPoolDisplay.js';
-import { AttributeControl } from '../components/AttributeControl.js';
 import { PoolCalculator } from '../systems/PoolCalculator.js';
+import { PointPoolDisplay } from '../components/PointPoolDisplay.js';
+import { Logger } from '../utils/Logger.js';
 
-export class AttributesTab {
-    constructor(container) {
-        this.container = container;
+class AttributesTab extends Component {
+    static propSchema = {
+        character: { type: 'object', default: () => ({}) },
+        pools: { type: 'object', default: () => ({}) }
+    };
+
+    constructor(container, initialProps = {}) {
+        super(initialProps, container);
+        
+        // Store attribute values locally during interaction
+        this.state = {
+            localAttributes: {
+                combat: { power: 0, endurance: 0, mobility: 0, focus: 0 },
+                utility: { awareness: 0, communication: 0, intelligence: 0 }
+            },
+            pendingUpdates: new Set(),
+            validationErrors: {}
+        };
+
         this.attributeDefinitions = {
             combat: [
                 { id: 'power', name: 'Power', description: 'Physical strength and damage' },
@@ -23,158 +38,303 @@ export class AttributesTab {
                 { id: 'intelligence', name: 'Intelligence', description: 'Knowledge and reasoning' }
             ]
         };
-        
-        this.poolDisplays = {
-            combat: null,
-            utility: null
-        };
-        
-        this._boundHandleCharacterUpdate = this.handleCharacterUpdate.bind(this);
-        this._boundHandleAttributeChange = this.handleAttributeChange.bind(this);
+
+        this.poolDisplays = { combat: null, utility: null };
     }
-    
-    async init() {
-        EventBus.on('CHARACTER_LOADED', this._boundHandleCharacterUpdate);
-        EventBus.on('CHARACTER_CHANGED', this._boundHandleCharacterUpdate);
-        Logger.info('[AttributesTab] Initialized.');
+
+    init() {
+        this.componentId = `attributes-tab-${Date.now()}`;
+        
+        // Load initial attribute values
+        this.loadCharacterAttributes();
+        
+        // Implement proper event delegation for +/- buttons
+        this._addEventListener(this.container, 'click', this.handleContainerClick.bind(this));
+        this._addEventListener(this.container, 'input', this.handleInputChange.bind(this));
+        
+        Logger.info('[AttributesTab] Initialized with proper event delegation');
     }
-    
-    handleCharacterUpdate() {
-        if (this.container && this.container.style.display !== 'none') {
-            this.render();
+
+    loadCharacterAttributes() {
+        const { character } = this.props;
+        if (character) {
+            const combatAttrs = character.combatAttributes || {};
+            const utilityAttrs = character.utilityAttributes || {};
+            
+            this.setState({
+                localAttributes: {
+                    combat: {
+                        power: combatAttrs.power || 0,
+                        endurance: combatAttrs.endurance || 0,
+                        mobility: combatAttrs.mobility || 0,
+                        focus: combatAttrs.focus || 0
+                    },
+                    utility: {
+                        awareness: utilityAttrs.awareness || 0,
+                        communication: utilityAttrs.communication || 0,
+                        intelligence: utilityAttrs.intelligence || 0
+                    }
+                }
+            });
         }
     }
-    
+
+    // Implement proper event delegation for +/- buttons
+    handleContainerClick(e) {
+        const btn = e.target.closest('.attribute-btn');
+        if (!btn) return;
+
+        const attributeId = btn.dataset.attribute;
+        const poolType = btn.dataset.poolType;
+        const action = btn.dataset.action;
+
+        if (attributeId && poolType && action) {
+            this.handleAttributeChange(poolType, attributeId, action);
+        }
+    }
+
+    handleInputChange(e) {
+        const input = e.target.closest('.attribute-input');
+        if (!input) return;
+
+        const attributeId = input.dataset.attribute;
+        const poolType = input.dataset.poolType;
+        const value = parseInt(input.value) || 0;
+
+        if (attributeId && poolType) {
+            this.handleDirectAttributeChange(poolType, attributeId, value);
+        }
+    }
+
+    handleAttributeChange(poolType, attributeId, action) {
+        const currentValue = this.state.localAttributes[poolType][attributeId];
+        let newValue = currentValue;
+
+        if (action === 'increase') {
+            newValue = Math.min(currentValue + 1, 10); // Max tier + archetype bonus
+        } else if (action === 'decrease') {
+            newValue = Math.max(currentValue - 1, 0);
+        }
+
+        this.updateLocalAttribute(poolType, attributeId, newValue);
+    }
+
+    handleDirectAttributeChange(poolType, attributeId, value) {
+        // Add proper input validation
+        const validatedValue = this.validateAttributeValue(value, poolType);
+        this.updateLocalAttribute(poolType, attributeId, validatedValue);
+    }
+
+    // Add proper input validation
+    validateAttributeValue(value, poolType) {
+        const { character } = this.props;
+        const tier = character.tier || 1;
+        const maxValue = tier + 6; // Base tier + max archetype bonus
+        
+        if (value < 0) return 0;
+        if (value > maxValue) return maxValue;
+        return value;
+    }
+
+    updateLocalAttribute(poolType, attributeId, newValue) {
+        const newLocalAttributes = { ...this.state.localAttributes };
+        newLocalAttributes[poolType] = { ...newLocalAttributes[poolType] };
+        newLocalAttributes[poolType][attributeId] = newValue;
+
+        this.setState({
+            localAttributes: newLocalAttributes,
+            pendingUpdates: new Set([...this.state.pendingUpdates, `${poolType}.${attributeId}`])
+        });
+
+        // Implement debounced saves - batch updates to state
+        this.debouncedSave = this.debouncedSave || this.debounce(() => {
+            this.saveAttributesToState();
+        }, 500);
+
+        this.debouncedSave();
+    }
+
+    // Batch updates to state
+    saveAttributesToState() {
+        const updates = Array.from(this.state.pendingUpdates);
+        if (updates.length > 0) {
+            StateManager.dispatch('UPDATE_ATTRIBUTES', {
+                combatAttributes: this.state.localAttributes.combat,
+                utilityAttributes: this.state.localAttributes.utility
+            });
+            
+            this.setState({ pendingUpdates: new Set() });
+            Logger.debug('[AttributesTab] Saved attribute changes to state');
+        }
+    }
+
+    // Helper method for debouncing
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
     render() {
         if (!this.container) return;
-        
-        const character = StateManager.getCharacter();
-        if (!character) {
-            this.container.innerHTML = '<p>No character loaded.</p>';
-            return;
-        }
-        
-        // FIX 3 APPLIED HERE: Changed calculateAllPools(character) to calculatePools()
-        const pools = PoolCalculator.calculatePools(); 
-        // END OF FIX 3 APPLICATION
-        const tier = character.tier || 1;
-        
+
+        const { character, pools } = this.props;
+        const { localAttributes, pendingUpdates } = this.state;
+
         this.container.innerHTML = `
-            <div class="attributes-tab">
-                <div class="tab-header">
-                    <h2>Attribute Allocation</h2>
-                    <p>Distribute your attribute points between combat and utility attributes.</p>
-                </div>
-                
-                <div class="attributes-layout">
-                    <div class="combat-attributes-section">
-                        <h3>Combat Attributes</h3>
-                        <div class="pool-display-container" id="combat-pool-display"></div>
-                        <div class="attributes-grid">
-                            ${this.renderAttributeControls('combat', character, pools.combatRemaining, tier)}
-                        </div>
-                    </div>
-                    
-                    <div class="utility-attributes-section">
-                        <h3>Utility Attributes</h3>
-                        <div class="pool-display-container" id="utility-pool-display"></div>
-                        <div class="attributes-grid">
-                            ${this.renderAttributeControls('utility', character, pools.utilityRemaining, tier)}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="attributes-summary">
-                    ${this.renderDerivedStats(character)}
-                </div>
+            <div class="tab-header">
+                <h2>Attribute Allocation</h2>
+                <p>Allocate your attribute points across combat and utility categories.</p>
             </div>
+
+            <div class="attributes-container">
+                ${this.renderAttributeSection('combat', 'Combat Attributes', localAttributes.combat, pools)}
+                ${this.renderAttributeSection('utility', 'Utility Attributes', localAttributes.utility, pools)}
+            </div>
+
+            ${pendingUpdates.size > 0 ? '<div class="save-indicator">Changes pending save...</div>' : ''}
         `;
-        
-        this.poolDisplays.combat = PointPoolDisplay.createCompactDisplay(
-            this.container.querySelector('#combat-pool-display'),
-            { showMainPool: false, showCombatAttr: true, showUtilityAttr: false }
-        );
-        
-        this.poolDisplays.utility = PointPoolDisplay.createCompactDisplay(
-            this.container.querySelector('#utility-pool-display'),
-            { showMainPool: false, showCombatAttr: false, showUtilityAttr: true }
-        );
-        
-        AttributeControl.attachHandlers(this.container, this._boundHandleAttributeChange);
+
+        // Initialize pool displays
+        this.initializePoolDisplays();
     }
-    
-    renderAttributeControls(poolType, character, availablePointsInPool, tier) {
-        const attributes = this.attributeDefinitions[poolType];
-        const maxPerAttribute = tier * 3; 
-        
-        return attributes.map(attr => {
-            const currentValue = character.attributes?.[attr.id] || 0;
-            // Disable increase if no points left in pool AND current value is 0 or max
-            // or if already at max for this attribute
-            const canIncrease = currentValue < maxPerAttribute && availablePointsInPool > 0;
-            
-            return AttributeControl.render({
-                attributeId: attr.id,
-                label: attr.name,
-                value: currentValue,
-                min: 0,
-                max: maxPerAttribute,
-                pool: poolType,
-                // Disable increase button if at max OR no points left in this specific pool
-                // Decrease button is handled by its own logic (value > min)
-                // This is a bit simplified, a more robust check might be needed in AttributeControl itself
-                // based on points spent vs points available.
-                // The 'disabled' here is a general hint.
-                disabled: !canIncrease && currentValue === 0 // General disable if cannot afford first point
-            });
-        }).join('');
-    }
-    
-    renderDerivedStats(character) {
-        const hp = 50 + (character.attributes?.endurance || 0) * 10;
-        const initiative = (character.attributes?.awareness || 0) + (character.tier || 0);
-        const moveSpeed = 30 + (character.attributes?.mobility || 0) * 5;
-        
+
+    renderAttributeSection(poolType, title, attributes, pools) {
+        const poolInfo = pools[poolType] || {};
+        const attributeDefs = this.attributeDefinitions[poolType];
+
         return `
-            <div class="derived-stats">
-                <h3>Derived Statistics</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-label">Hit Points:</span>
-                        <span class="stat-value">${hp}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Initiative:</span>
-                        <span class="stat-value">+${initiative}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Move Speed:</span>
-                        <span class="stat-value">${moveSpeed} ft</span>
-                    </div>
+            <div class="attribute-section section-content">
+                <div class="section-header">
+                    <h3>${title}</h3>
+                    <div id="${poolType}-pool-display" class="pool-display-container"></div>
+                </div>
+                
+                <div class="attributes-grid">
+                    ${attributeDefs.map(attr => this.renderAttributeControl(poolType, attr, attributes[attr.id])).join('')}
                 </div>
             </div>
         `;
     }
-    
-    handleAttributeChange(attributeId, newValue, oldValue) {
-        Logger.info(`[AttributesTab] Attribute ${attributeId} changed from ${oldValue} to ${newValue}`);
-        
-        const character = StateManager.getCharacter();
-        const updatedAttributes = {
-            ...character.attributes,
-            [attributeId]: newValue
-        };
-        
-        StateManager.dispatch('UPDATE_ATTRIBUTES', updatedAttributes);
+
+    renderAttributeControl(poolType, attributeDef, currentValue) {
+        const { character } = this.props;
+        const tier = character.tier || 1;
+        const maxValue = tier + 6;
+
+        return `
+            <div class="attribute-control">
+                <div class="attribute-header">
+                    <label class="attribute-label">${attributeDef.name}</label>
+                    <span class="attribute-description">${attributeDef.description}</span>
+                </div>
+                
+                <div class="attribute-controls">
+                    <button class="attribute-btn btn-decrease" 
+                            data-pool-type="${poolType}" 
+                            data-attribute="${attributeDef.id}" 
+                            data-action="decrease"
+                            ${currentValue <= 0 ? 'disabled' : ''}>-</button>
+                    
+                    <input type="number" 
+                           class="attribute-input" 
+                           data-pool-type="${poolType}" 
+                           data-attribute="${attributeDef.id}"
+                           value="${currentValue}" 
+                           min="0" 
+                           max="${maxValue}">
+                    
+                    <button class="attribute-btn btn-increase" 
+                            data-pool-type="${poolType}" 
+                            data-attribute="${attributeDef.id}" 
+                            data-action="increase"
+                            ${currentValue >= maxValue ? 'disabled' : ''}>+</button>
+                </div>
+                
+                <div class="attribute-value">
+                    <span class="current-value">${currentValue}</span>
+                    <span class="max-value">/ ${maxValue}</span>
+                </div>
+            </div>
+        `;
     }
-    
-    cleanup() {
-        EventBus.off('CHARACTER_LOADED', this._boundHandleCharacterUpdate);
-        EventBus.off('CHARACTER_CHANGED', this._boundHandleCharacterUpdate);
+
+    initializePoolDisplays() {
+        const combatContainer = this.container?.querySelector('#combat-pool-display');
+        const utilityContainer = this.container?.querySelector('#utility-pool-display');
+
+        if (combatContainer && !this.poolDisplays.combat) {
+            this.poolDisplays.combat = PointPoolDisplay.createCompactDisplay(combatContainer, {
+                showCombatAttr: true,
+                showUtilityAttr: false
+            });
+        }
+
+        if (utilityContainer && !this.poolDisplays.utility) {
+            this.poolDisplays.utility = PointPoolDisplay.createCompactDisplay(utilityContainer, {
+                showCombatAttr: false,
+                showUtilityAttr: true
+            });
+        }
+    }
+
+    // Override update to sync component state with props
+    update(newProps) {
+        super.update(newProps);
         
-        if (this.poolDisplays.combat) this.poolDisplays.combat.cleanup();
-        if (this.poolDisplays.utility) this.poolDisplays.utility.cleanup();
-        
-        Logger.info('[AttributesTab] Cleanup called.');
+        // Sync local attributes when props change (but not if we have pending updates)
+        if (newProps.character && this.state.pendingUpdates.size === 0) {
+            const combatAttrs = newProps.character.combatAttributes || {};
+            const utilityAttrs = newProps.character.utilityAttributes || {};
+            
+            this.setState({
+                localAttributes: {
+                    combat: {
+                        power: combatAttrs.power || 0,
+                        endurance: combatAttrs.endurance || 0,
+                        mobility: combatAttrs.mobility || 0,
+                        focus: combatAttrs.focus || 0
+                    },
+                    utility: {
+                        awareness: utilityAttrs.awareness || 0,
+                        communication: utilityAttrs.communication || 0,
+                        intelligence: utilityAttrs.intelligence || 0
+                    }
+                }
+            });
+        }
+    }
+
+    destroy() {
+        // Save any pending changes before cleanup
+        if (this.state.pendingUpdates.size > 0) {
+            this.saveAttributesToState();
+        }
+
+        // Clean up pool displays
+        if (this.poolDisplays.combat) {
+            this.poolDisplays.combat.destroy();
+            this.poolDisplays.combat = null;
+        }
+        if (this.poolDisplays.utility) {
+            this.poolDisplays.utility.destroy();
+            this.poolDisplays.utility = null;
+        }
+
+        super.destroy();
     }
 }
+
+const mapStateToProps = (state) => ({
+    character: state,
+    pools: PoolCalculator.calculatePools(state)
+});
+
+const ConnectedAttributesTab = connectToState(mapStateToProps)(AttributesTab);
+export { ConnectedAttributesTab as AttributesTab };

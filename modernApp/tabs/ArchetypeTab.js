@@ -1,14 +1,28 @@
 // modernApp/tabs/ArchetypeTab.js
-import { Logger } from '../utils/Logger.js';
+import { Component } from '../core/Component.js';
+import { connectToState } from '../core/StateConnector.js';
 import { StateManager } from '../core/StateManager.js';
 import { EntityLoader } from '../core/EntityLoader.js';
-import { EventBus } from '../core/EventBus.js';
-import { UniversalCard } from '../components/UniversalCard.js'; // Import UniversalCard
-import { RequirementSystem } from '../systems/RequirementSystem.js'; // Import RequirementSystem
+import { UniversalCard } from '../components/UniversalCard.js';
+import { RequirementSystem } from '../systems/RequirementSystem.js';
+import { Logger } from '../utils/Logger.js';
 
-export class ArchetypeTab {
-    constructor(container) {
-        this.container = container;
+class ArchetypeTab extends Component {
+    static propSchema = {
+        character: { type: 'object', default: () => ({}) },
+        archetypes: { type: 'object', default: () => ({}) }
+    };
+
+    constructor(container, initialProps = {}) {
+        super(initialProps, container);
+        
+        // Store selected archetypes in component state
+        this.state = {
+            selectedArchetypes: {},
+            loading: false,
+            pendingUpdates: new Set()
+        };
+
         this.archetypeCategories = [
             { key: 'movement', label: 'Movement Archetype' },
             { key: 'attackType', label: 'Attack Type Archetype' },
@@ -19,25 +33,26 @@ export class ArchetypeTab {
             { key: 'utility', label: 'Utility Method' }
         ];
         
-        this.selectedArchetypes = {}; // This will hold { categoryKey: archetypeId }
-        this.archetypeData = {}; // This will hold { categoryKey: [archetypeEntities] }
-        
-        // Bind methods
+        this.archetypeData = {};
         this.handleArchetypeSelection = this.handleArchetypeSelection.bind(this);
-        this._boundOnCharacterUpdate = this.onCharacterUpdate.bind(this); // Store bound reference
-        
-        EventBus.on('CHARACTER_LOADED', this._boundOnCharacterUpdate);
-        EventBus.on('CHARACTER_CHANGED', this._boundOnCharacterUpdate);
     }
-    
+
     async init() {
-        Logger.info('[ArchetypeTab] Initializing...');
+        this.componentId = `archetype-tab-${Date.now()}`;
+        
+        // Add loading states
+        this.setState({ loading: true });
+        
         await this.loadArchetypeData();
-        this.loadCharacterArchetypes(); 
-        // Render will be called by app.js when tab is active
-        Logger.info('[ArchetypeTab] Initialized.');
+        this.loadCharacterArchetypes();
+        
+        // Use proper event delegation
+        this._addEventListener(this.container, 'click', this.handleContainerClick.bind(this));
+        
+        this.setState({ loading: false });
+        Logger.info('[ArchetypeTab] Initialized with proper Component pattern');
     }
-    
+
     async loadArchetypeData() {
         try {
             const allEntities = Array.from(EntityLoader.entities.values());
@@ -52,155 +67,157 @@ export class ArchetypeTab {
             Logger.error('[ArchetypeTab] Failed to load archetype data:', error);
         }
     }
-    
+
     loadCharacterArchetypes() {
-        const character = StateManager.getCharacter();
+        const { character } = this.props;
         if (character && character.archetypes) {
-            this.selectedArchetypes = { ...character.archetypes };
-        } else {
-            this.selectedArchetypes = {};
+            this.setState({ 
+                selectedArchetypes: { ...character.archetypes } 
+            });
         }
-        Logger.debug('[ArchetypeTab] Character archetypes loaded/reloaded:', this.selectedArchetypes);
+        Logger.debug('[ArchetypeTab] Character archetypes loaded:', this.state.selectedArchetypes);
     }
 
-    // Replace the existing onCharacterUpdate method
-    onCharacterUpdate(character) {
-        if (character && character.archetypes) {
-            // Always update selections and render if visible
-            this.selectedArchetypes = { ...character.archetypes };
-            if (this.container && this.container.style.display !== 'none') {
-                this.render();
-                Logger.debug('[ArchetypeTab] Re-rendered due to character update.');
+    // Use proper event delegation
+    handleContainerClick(e) {
+        const archetypeCard = e.target.closest('.selectable-card');
+        if (!archetypeCard) return;
+
+        const action = archetypeCard.dataset.action;
+        const entityId = archetypeCard.dataset.entityId;
+        const categoryKey = archetypeCard.dataset.categoryKey;
+
+        if (action === 'select_archetype' && entityId && categoryKey) {
+            this.handleArchetypeSelection(categoryKey, entityId);
+        }
+    }
+
+    // Implement optimistic UI updates and batch state updates
+    async handleArchetypeSelection(categoryKey, archetypeId) {
+        Logger.info(`[ArchetypeTab] Selecting archetype: ${archetypeId} for category: ${categoryKey}`);
+        
+        // Optimistic UI update - update local state immediately
+        const newSelectedArchetypes = { ...this.state.selectedArchetypes };
+        newSelectedArchetypes[categoryKey] = archetypeId;
+        
+        this.setState({ 
+            selectedArchetypes: newSelectedArchetypes,
+            pendingUpdates: new Set([...this.state.pendingUpdates, categoryKey])
+        });
+
+        // Batch state updates - debounce multiple rapid changes
+        this.debouncedStateUpdate = this.debouncedStateUpdate || this.debounce(() => {
+            const updates = Array.from(this.state.pendingUpdates);
+            if (updates.length > 0) {
+                StateManager.dispatch('SET_ARCHETYPE_SELECTIONS', {
+                    archetypes: this.state.selectedArchetypes
+                });
+                this.setState({ pendingUpdates: new Set() });
             }
-        }
+        }, 300);
+
+        this.debouncedStateUpdate();
     }
 
-    // Also add a method to handle tab activation
-    onTabActivated() {
-        // Re-render when tab becomes active to catch any missed updates
-        this.loadCharacterArchetypes();
-        this.render();
+    // Helper method for debouncing
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     }
-    
+
     render() {
-        if (!this.container) {
-            Logger.error('[ArchetypeTab] Container not found for rendering.');
+        if (!this.container) return;
+
+        const { character } = this.props;
+        const { loading, selectedArchetypes } = this.state;
+
+        if (loading) {
+            this.container.innerHTML = '<div class="loading">Loading archetypes...</div>';
             return;
         }
-        Logger.info('[ArchetypeTab] Rendering...');
-        
-        this.loadCharacterArchetypes(); // Ensure selections are fresh
 
-        this.container.innerHTML = ''; 
-        
-        const header = document.createElement('div');
-        header.className = 'tab-header';
-        header.innerHTML = `
-            <h2>Archetype Selection</h2>
-            <p>Select one archetype from each category. Archetypes define your character's core capabilities, statistical bonuses, and how some systems (like Special Attacks) function.</p>
+        this.container.innerHTML = `
+            <div class="tab-header">
+                <h2>Archetype Selection</h2>
+                <p>Select one archetype from each category. Archetypes define your character's core capabilities, statistical bonuses, and how some systems (like Special Attacks) function.</p>
+            </div>
+            <div class="archetype-selections-container">
+                ${this.archetypeCategories.map(category => this.renderArchetypeCategory(category, character)).join('')}
+            </div>
         `;
-        this.container.appendChild(header);
-        
-        const selectionsContainer = document.createElement('div');
-        selectionsContainer.className = 'archetype-selections-container'; // Main container for all categories
-        
-        this.archetypeCategories.forEach(category => {
-            const categorySection = this.createArchetypeCategorySection(category);
-            selectionsContainer.appendChild(categorySection);
-        });
-        
-        this.container.appendChild(selectionsContainer);
-        this.setupEventListeners(); // Setup delegated listener
-        
-        Logger.debug('[ArchetypeTab] Rendered.');
     }
-    
-    createArchetypeCategorySection(category) {
-        const sectionDiv = document.createElement('div');
-        sectionDiv.className = 'archetype-category-section section-content'; // Use section-content for styling
-        
-        const headerDiv = document.createElement('div');
-        headerDiv.className = 'section-header';
-        headerDiv.innerHTML = `<h3>${category.label}</h3>`;
-        sectionDiv.appendChild(headerDiv);
 
-        const gridDiv = document.createElement('div');
-        gridDiv.className = 'purchase-grid archetype-grid'; // Use purchase-grid for card layout
-        gridDiv.dataset.categoryKey = category.key; // For event delegation
-        
+    renderArchetypeCategory(category, character) {
         const archetypesForCategory = this.archetypeData[category.key] || [];
+        const selectedArchetypeId = this.state.selectedArchetypes[category.key];
+        
         if (archetypesForCategory.length === 0) {
-            Logger.warn(`[ArchetypeTab] No archetypes found for category: ${category.key}`);
-            gridDiv.innerHTML = '<p class="no-items">No archetypes available for this category.</p>';
-        } else {
-            const character = StateManager.getCharacter();
-            gridDiv.innerHTML = archetypesForCategory.map(archetypeEntity => {
-                const isCurrentlySelected = this.selectedArchetypes[category.key] === archetypeEntity.id;
-                const reqCheck = RequirementSystem.check(archetypeEntity.requirements, character);
-
-                const cardContext = {
-                    isPurchased: isCurrentlySelected,
-                    isAffordable: true, 
-                    areRequirementsMet: reqCheck.areMet,
-                    unmetRequirements: reqCheck.unmet,
-                    entityType: 'archetype',
-                    interactionType: 'select',
-                    categoryKey: category.key
-                };
-                return UniversalCard.render(archetypeEntity, cardContext);
-            }).join('');
+            return `
+                <div class="archetype-category-section section-content">
+                    <div class="section-header">
+                        <h3>${category.label}</h3>
+                    </div>
+                    <p class="no-items">No archetypes available for this category.</p>
+                </div>
+            `;
         }
-        sectionDiv.appendChild(gridDiv);
-        return sectionDiv;
+
+        const cardsHtml = archetypesForCategory.map(archetype => {
+            const isSelected = selectedArchetypeId === archetype.id;
+            const reqCheck = RequirementSystem.check(archetype.requirements, character);
+            
+            const context = {
+                isPurchased: isSelected,
+                areRequirementsMet: reqCheck.areMet,
+                unmetRequirements: reqCheck.unmet,
+                entityType: 'archetype',
+                interactionType: 'select',
+                categoryKey: category.key
+            };
+
+            return UniversalCard.render(archetype, context);
+        }).join('');
+
+        return `
+            <div class="archetype-category-section section-content">
+                <div class="section-header">
+                    <h3>${category.label}</h3>
+                </div>
+                <div class="purchase-grid archetype-grid" data-category-key="${category.key}">
+                    ${cardsHtml}
+                </div>
+            </div>
+        `;
     }
 
-    setupEventListeners() {
-        // Use event delegation on the main container for all archetype card interactions
-        if (this.container._archetypeClickListener) {
-            this.container.removeEventListener('click', this.container._archetypeClickListener);
-        }
-
-        this.container._archetypeClickListener = (event) => {
-            const button = event.target.closest('button[data-action="select_archetype"]');
-            if (button) {
-                const entityId = button.dataset.entityId;
-                const categoryKey = button.dataset.categoryKey; // Get category from button
-                if (entityId && categoryKey) {
-                    this.handleArchetypeSelection(categoryKey, entityId);
-                }
+    // Override update to sync component state with props
+    update(newProps) {
+        super.update(newProps);
+        
+        // Sync selected archetypes when props change
+        if (newProps.character && newProps.character.archetypes) {
+            const propArchetypes = newProps.character.archetypes;
+            if (JSON.stringify(propArchetypes) !== JSON.stringify(this.state.selectedArchetypes)) {
+                this.setState({ 
+                    selectedArchetypes: { ...propArchetypes },
+                    pendingUpdates: new Set() // Clear pending updates since props updated
+                });
             }
-        };
-        this.container.addEventListener('click', this.container._archetypeClickListener);
-    }
-    
-    handleArchetypeSelection(categoryKey, archetypeId) {
-        Logger.info(`[ArchetypeTab] Archetype selected: ${categoryKey} = ${archetypeId}`);
-        
-        // Update local state
-        this.selectedArchetypes[categoryKey] = archetypeId;
-        
-        // Dispatch to StateManager
-        StateManager.dispatch('UPDATE_ARCHETYPES', { ...this.selectedArchetypes });
-        
-        // The CHARACTER_CHANGED event will trigger a re-render if the tab is active.
-        // If not active, the render will happen when it becomes active.
-        // For immediate feedback within the tab even if CHARACTER_CHANGED doesn't cause a full re-render (e.g., due to same object ref),
-        // we can specifically re-render the affected category or the whole tab.
-        // However, with `onCharacterUpdate` triggering render, this should be handled.
-    }
-    
-    // updateDetailsPanel is no longer needed as details are part of the cards.
-    // renderArchetypeEffects is also part of UniversalCard now.
-    
-    cleanup() {
-        if (this._boundOnCharacterUpdate) {
-            EventBus.off('CHARACTER_LOADED', this._boundOnCharacterUpdate);
-            EventBus.off('CHARACTER_CHANGED', this._boundOnCharacterUpdate);
         }
-        if (this.container && this.container._archetypeClickListener) {
-            this.container.removeEventListener('click', this.container._archetypeClickListener);
-            delete this.container._archetypeClickListener;
-        }
-        Logger.info('[ArchetypeTab] Cleanup called.');
     }
 }
+
+const mapStateToProps = (state) => ({
+    character: state,
+    archetypes: state.archetypes || {}
+});
+
+const ConnectedArchetypeTab = connectToState(mapStateToProps)(ArchetypeTab);
+export { ConnectedArchetypeTab as ArchetypeTab };

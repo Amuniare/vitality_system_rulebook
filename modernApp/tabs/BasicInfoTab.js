@@ -1,86 +1,67 @@
+
 // modernApp/tabs/BasicInfoTab.js
-import { StateManager } from '../core/StateManager.js';
-import { EventBus } from '../core/EventBus.js';
+import { Component } from '../core/Component.js';
+import { StateManager } from '../core/StateManager.js'; // Still needed for dispatching actions
 import { Logger } from '../utils/Logger.js';
+import { connectToState } from '../core/StateConnector.js'; // Import StateConnector
 
-export class BasicInfoTab {
-    constructor(container) {
-        this.container = container;
-        this.characterCache = null; 
+// This is the "Dumb" presentational component
+class BasicInfoTab extends Component {
+    static propSchema = {
+        characterName: { type: 'string', default: 'New Character' },
+        characterTier: { type: 'number', default: 4 },
+        // The 'character' prop itself could be passed if more data is needed
+        // character: { type: 'object', default: () => ({}) } 
+    };
 
-        // Store bound handlers to properly remove them later
-        this._boundUpdateHandler = this.handleCharacterStateUpdate.bind(this);
-
-        EventBus.on('CHARACTER_LOADED', this._boundUpdateHandler);
-        EventBus.on('CHARACTER_CHANGED', this._boundUpdateHandler);
+    constructor(container, initialProps = {}) {
+        // Props are now fully managed by the Component base class via propSchema
+        // and passed by the ConnectedComponent wrapper.
+        super(initialProps, container); 
+        Logger.info(`[BasicInfoTab][Dumb] Constructed with props:`, this.props);
     }
 
     async init() {
-        const character = StateManager.getCharacter();
-        this.characterCache = JSON.stringify(this.extractRelevantData(character)); // Cache relevant parts as string
-        Logger.info('[BasicInfoTab] Initialized.');
-        // Render will be called by app.js when tab is made active or on first load if default.
-    }
-    
-    extractRelevantData(character) {
-        // Only cache data that this tab directly displays/modifies
-        return {
-            name: character.name,
-            tier: character.tier
-        };
-    }
-
-    handleCharacterStateUpdate(data) { // data can be { character } or { character, updates }
-        const character = data.character || data; // Get the full character object
-        const newRelevantData = JSON.stringify(this.extractRelevantData(character));
-
-        // Only re-render if relevant data changed AND tab is visible
-        if (newRelevantData !== this.characterCache) {
-            this.characterCache = newRelevantData; // Update cache
-            if (this.container && this.container.style.display !== 'none') {
-                Logger.debug('[BasicInfoTab] Relevant character data changed, re-rendering.');
-                this.render(); 
-            }
-        }
+        // No direct subscriptions needed here anymore for prop updates.
+        // StateConnector handles subscribing to StateManager and calling `this.update()`.
+        Logger.info('[BasicInfoTab][Dumb] Initialized.');
     }
     
     render() {
-        if (!this.container) {
-            Logger.error("[BasicInfoTab] Cannot render, container is not set.");
-            return;
-        }
-        const character = StateManager.getCharacter();
-        // Update cache with the character data being rendered
-        this.characterCache = JSON.stringify(this.extractRelevantData(character)); 
-        
+        super.render(); 
+
+        const name = this.props.characterName;
+        const tier = this.props.characterTier;
+
         this.container.innerHTML = ` 
             <div class="tab-header">
                 <h2>Basic Information</h2>
+                <p>Set your character's fundamental details.</p>
             </div>
             
             <div class="form-group">
-                <label for="character-name">Character Name</label>
+                <label for="basic-info-character-name-${this.props.id || 'default'}">Character Name</label>
                 <input type="text" 
-                       id="character-name" 
+                       id="basic-info-character-name-${this.props.id || 'default'}" 
                        class="form-input"
-                       value="${character.name || ''}"
+                       value="${name || ''}"
                        placeholder="Enter character name">
             </div>
             
             <div class="form-group">
-                <label for="character-tier">Tier</label>
-                <select id="character-tier" class="form-select">
-                    ${this.renderTierOptions(character.tier)}
+                <label for="basic-info-character-tier-${this.props.id || 'default'}">Tier</label>
+                <select id="basic-info-character-tier-${this.props.id || 'default'}" class="form-select">
+                    ${this.renderTierOptions(tier)}
                 </select>
             </div>
             
             <button class="btn btn-primary" data-action="save-basic-info">
-                Save Changes
+                Save Basic Info
             </button>
         `;
         
-        this.setupEventListeners();
-        Logger.info('[BasicInfoTab] Rendered.');
+        this.attachLocalEventListeners();
+        Logger.info('[BasicInfoTab][Dumb] Rendered with props:', this.props);
     }
     
     renderTierOptions(currentTier) {
@@ -92,69 +73,71 @@ export class BasicInfoTab {
         `).join('');
     }
     
-    setupEventListeners() {
-        if (!this.container) return; 
+    attachLocalEventListeners() {
+        // DOM listeners are still managed by the Component base class methods
         const saveButton = this.container.querySelector('[data-action="save-basic-info"]');
         if (saveButton) {
-            if (saveButton._clickHandler) { // Remove old if exists
-                saveButton.removeEventListener('click', saveButton._clickHandler);
-            }
-            saveButton._clickHandler = () => this.saveBasicInfo(); // Store ref
-            saveButton.addEventListener('click', saveButton._clickHandler);
+            this._addEventListener(saveButton, 'click', this.handleSaveBasicInfo);
         }
         
-        const nameInput = this.container.querySelector('#character-name');
+        const nameInput = this.container.querySelector(`#basic-info-character-name-${this.props.id || 'default'}`);
         if (nameInput) {
-             if (nameInput._keyUpHandler) {
-                nameInput.removeEventListener('keyup', nameInput._keyUpHandler);
-            }
-            nameInput._keyUpHandler = (e) => {
-                if (e.key === 'Enter') this.saveBasicInfo();
-            };
-            nameInput.addEventListener('keyup', nameInput._keyUpHandler);
+            this._addEventListener(nameInput, 'keyup', (e) => {
+                if (e.key === 'Enter') this.handleSaveBasicInfo();
+            });
         }
     }
     
-    saveBasicInfo() {
+    handleSaveBasicInfo() {
         if (!this.container) return; 
-        const nameInput = this.container.querySelector('#character-name');
-        const tierSelect = this.container.querySelector('#character-tier');
+        const nameInput = this.container.querySelector(`#basic-info-character-name-${this.props.id || 'default'}`);
+        const tierSelect = this.container.querySelector(`#basic-info-character-tier-${this.props.id || 'default'}`);
 
         if (!nameInput || !tierSelect) {
-            Logger.warn('[BasicInfoTab] Could not find form elements to save.');
+            Logger.warn('[BasicInfoTab][Dumb] Could not find form elements to save.');
             return;
         }
 
         const name = nameInput.value.trim();
         const tier = parseInt(tierSelect.value);
         
-        Logger.debug(`[BasicInfoTab] Saving basic info: Name - ${name}, Tier - ${tier}`);
+        Logger.debug(`[BasicInfoTab][Dumb] Saving basic info: Name - ${name}, Tier - ${tier}`);
+        
         StateManager.dispatch('UPDATE_BASIC_INFO', { name, tier }); 
-        // The CHARACTER_CHANGED event from dispatch will trigger handleCharacterStateUpdate,
-        // which will update the cache and, if necessary, re-render (though likely not needed if inputs match).
     }
     
-    // updateDisplay is effectively replaced by the logic in handleCharacterStateUpdate calling render()
-    // if relevant data changes.
+    // `update(nextProps)` is inherited from Component.
+    // StateConnector will call this method on the dumb component instance
+    // when the mapped props change.
 
-    cleanup() {
-        // Remove specific listeners
-        EventBus.off('CHARACTER_LOADED', this._boundUpdateHandler);
-        EventBus.off('CHARACTER_CHANGED', this._boundUpdateHandler);
-
-        // Remove listeners from DOM elements if container might persist
-        if (this.container) {
-            const saveButton = this.container.querySelector('[data-action="save-basic-info"]');
-            if (saveButton && saveButton._clickHandler) {
-                saveButton.removeEventListener('click', saveButton._clickHandler);
-                delete saveButton._clickHandler;
-            }
-            const nameInput = this.container.querySelector('#character-name');
-            if (nameInput && nameInput._keyUpHandler) {
-                nameInput.removeEventListener('keyup', nameInput._keyUpHandler);
-                delete nameInput._keyUpHandler;
-            }
-        }
-        Logger.info('[BasicInfoTab] Cleanup called.');
+    destroy() {
+        Logger.info(`[BasicInfoTab][Dumb] Destroying...`);
+        super.destroy(); 
     }
 }
+
+// mapStateToProps function: Extracts relevant data from global state for this component
+const mapStateToPropsBasicInfo = (globalState, ownProps) => {
+    // ownProps are props passed directly to the ConnectedComponent instance, not used here yet
+    if (!globalState) {
+        Logger.warn('[BasicInfoTab][mapStateToProps] Global state is null, returning default props.');
+        return {
+            characterName: BasicInfoTab.propSchema.characterName.default,
+            characterTier: BasicInfoTab.propSchema.characterTier.default
+        };
+    }
+    return {
+        characterName: globalState.name || BasicInfoTab.propSchema.characterName.default,
+        characterTier: globalState.tier || BasicInfoTab.propSchema.characterTier.default
+        // If passing the whole character:
+        // character: globalState 
+    };
+};
+
+// Create and export the "Connected" component
+const ConnectedBasicInfoTab = connectToState(mapStateToPropsBasicInfo)(BasicInfoTab);
+
+export { ConnectedBasicInfoTab as BasicInfoTab }; // Export connected component as the default for this module
+// For testing or advanced usage, you might also export the dumb component:
+// export { BasicInfoTab as DumbBasicInfoTab, ConnectedBasicInfoTab as BasicInfoTab };
+

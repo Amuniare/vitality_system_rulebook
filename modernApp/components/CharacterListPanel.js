@@ -1,33 +1,44 @@
 // modernApp/components/CharacterListPanel.js
 import { Logger } from '../utils/Logger.js';
 import { EventBus } from '../core/EventBus.js';
-// CharacterManager will be accessed via a global instance or passed in app.js
 
 export class CharacterListPanel {
     constructor(listContainerId, controlsContainerId, characterManager) {
         this.listContainer = document.getElementById(listContainerId);
         this.controlsContainer = document.getElementById(controlsContainerId);
-        this.characterManager = characterManager; // Instance of CharacterManager
+        this.characterManager = characterManager;
 
-        if (!this.listContainer || !this.controlsContainer) {
-            Logger.error('[CharacterListPanel] Required container elements not found.');
-            return;
+        // FIXED: Better error handling for missing containers
+        if (!this.listContainer) {
+            Logger.error(`[CharacterListPanel] List container '#${listContainerId}' not found.`);
+            throw new Error(`Required list container '#${listContainerId}' not found.`);
+        }
+        
+        if (!this.controlsContainer) {
+            Logger.error(`[CharacterListPanel] Controls container '#${controlsContainerId}' not found.`);
+            throw new Error(`Required controls container '#${controlsContainerId}' not found.`);
+        }
+
+        if (!this.characterManager) {
+            Logger.error('[CharacterListPanel] CharacterManager instance is required.');
+            throw new Error('CharacterManager instance is required.');
         }
         
         // Store handler references
         this.listContainerClickHandler = null;
         this.controlsContainerClickHandler = null;
 
-        this.init();
+        Logger.info('[CharacterListPanel] Constructor completed successfully.');
     }
 
-    init() {
+    async init() {
         this.renderControls();
         this.renderList();
         
-        // CORRECTED EVENT NAMES
+        // Set up event listeners
         EventBus.on('CHARACTER_LIST_UPDATED', () => this.renderList());
         EventBus.on('CHARACTER_SWITCHED', () => this.renderList()); // Re-render to update active state
+        
         Logger.info('[CharacterListPanel] Initialized.');
     }
 
@@ -107,51 +118,64 @@ export class CharacterListPanel {
             const charId = actionButton ? actionButton.closest('.character-list-item')?.dataset.charId : listItem?.dataset.charId;
             if (!charId) return;
 
-            const action = actionButton ? actionButton.dataset.action : 'load-character'; // Default to load if clicking item body
+            const action = actionButton ? actionButton.dataset.action : 'load-character';
 
             switch (action) {
                 case 'load-character':
-                    if (charId !== this.characterManager.activeCharacterId) {
-                        this.characterManager.setActiveCharacter(charId);
-                    }
+                    this.characterManager.setActiveCharacter(charId);
                     break;
                 case 'delete-character':
-                    this.handleDelete(charId);
+                    if (confirm('Are you sure you want to delete this character?')) {
+                        this.characterManager.deleteCharacter(charId);
+                    }
                     break;
             }
         };
-
+        
         // Add the new listener
         this.listContainer.addEventListener('click', this.listContainerClickHandler);
     }
 
-    async handleDelete(charId) {
-        const charMeta = this.characterManager.characters.get(charId);
-        // Assuming Modal component is available globally or via an import
-        // For now, using simple confirm
-        if (confirm(`Are you sure you want to delete "${charMeta?.name || 'this character'}"? This cannot be undone.`)) {
-            this.characterManager.deleteCharacter(charId);
-        }
+    handleImport() {
+        // Create a temporary file input for importing
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                const characterData = JSON.parse(text);
+                
+                // Import the character via CharacterManager
+                await this.characterManager.importCharacter(characterData);
+                Logger.info('[CharacterListPanel] Character imported successfully.');
+                
+            } catch (error) {
+                Logger.error('[CharacterListPanel] Failed to import character:', error);
+                alert('Failed to import character. Please check the file format.');
+            }
+        };
+        
+        input.click();
     }
 
-    async handleImport() {
-        try {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const text = await file.text();
-                    this.characterManager.importCharacter(text);
-                    // UI updates via events
-                }
-            };
-            input.click();
-        } catch (error) {
-            Logger.error('[CharacterListPanel] Error during import:', error);
-            // NotificationSystem.show('Failed to import character.', 'error'); // If NotificationSystem is globally accessible
-            alert('Failed to import character. See console for details.');
+    cleanup() {
+        // Remove event listeners
+        if (this.controlsContainerClickHandler) {
+            this.controlsContainer.removeEventListener('click', this.controlsContainerClickHandler);
         }
+        if (this.listContainerClickHandler) {
+            this.listContainer.removeEventListener('click', this.listContainerClickHandler);
+        }
+        
+        // Clean up EventBus listeners
+        EventBus.off('CHARACTER_LIST_UPDATED', this.renderList);
+        EventBus.off('CHARACTER_SWITCHED', this.renderList);
+        
+        Logger.info('[CharacterListPanel] Cleanup completed.');
     }
 }

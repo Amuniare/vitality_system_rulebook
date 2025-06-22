@@ -11,29 +11,41 @@ export class NotificationSystem {
         return NotificationSystem.instance;
     }
     
-    constructor() {
+    constructor(container = null) {
         if (NotificationSystem.instance && NotificationSystem.instance !== this) {
-            // Logger.warn('[NotificationSystem] Attempted to re-instantiate singleton. Returning existing instance.');
+            Logger.warn('[NotificationSystem] Attempted to re-instantiate singleton. Returning existing instance.');
             return NotificationSystem.instance;
         }
         
-        this.container = null;
+        this.container = container;
         this.queue = [];
         this.activeNotifications = new Map();
         
-        NotificationSystem.instance = this; // Ensure instance is set here
-        // Logger.info('[NotificationSystem] Instance created/retrieved.'); // Log once, perhaps in getInstance
+        NotificationSystem.instance = this;
+        
+        // If container provided in constructor, use it; otherwise try to find it
+        if (!this.container) {
+            this.container = document.getElementById('notifications'); // FIXED: Use correct ID
+        }
+        
+        if (!this.container) {
+            Logger.warn('[NotificationSystem] Notification container #notifications not found in the DOM. Notifications will not be visible.');
+        }
+        
+        Logger.info('[NotificationSystem] Instance created.');
     }
     
     init() {
         // This check ensures init logic runs only once for the singleton
         if (this.container) {
-            // Logger.debug('[NotificationSystem] Already initialized.');
+            Logger.debug('[NotificationSystem] Already initialized.');
             return;
         }
-        this.container = document.getElementById('notification-container');
+        
+        // FIXED: Look for correct container ID
+        this.container = document.getElementById('notifications');
         if (!this.container) {
-            Logger.warn('[NotificationSystem] Notification container not found in the DOM. Notifications will not be visible.');
+            Logger.warn('[NotificationSystem] Notification container #notifications not found in the DOM. Notifications will not be visible.');
         }
         
         Logger.info('[NotificationSystem] Initialized.');
@@ -41,9 +53,10 @@ export class NotificationSystem {
     
     show(message, type = 'info', duration = 3000) {
         if (!this.container) {
-            // Try to initialize if not already (e.g. if called before app.init fully completes)
-            if (!document.getElementById('notification-container')) {
-                 Logger.error('[NotificationSystem] Cannot show notification - container #notification-container not found in DOM.');
+            // Try to initialize if not already
+            // FIXED: Look for correct container ID
+            if (!document.getElementById('notifications')) {
+                 Logger.error('[NotificationSystem] Cannot show notification - container #notifications not found in DOM.');
                  console.warn(`Notification (type: ${type}): ${message}`); // Fallback to console
                  return;
             }
@@ -101,7 +114,7 @@ export class NotificationSystem {
                 }
                 this.activeNotifications.delete(id);
             }, { once: true });
-            // Fallback if transitionend doesn't fire (e.g. display:none immediately)
+            // Fallback if transitionend doesn't fire (e.g. CSS transition disabled or display:none immediately)
             setTimeout(() => {
                  if (notification.parentNode) notification.remove();
                  this.activeNotifications.delete(id);
@@ -129,5 +142,12 @@ export class NotificationSystem {
         this.activeNotifications.forEach((notification, id) => {
             this.remove(id); // Use remove to handle animations
         });
+    }
+    
+    cleanup() {
+        this.clear();
+        this.container = null;
+        this.queue = [];
+        Logger.info('[NotificationSystem] Cleanup completed.');
     }
 }

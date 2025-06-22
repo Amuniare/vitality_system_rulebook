@@ -1,198 +1,151 @@
 from pathlib import Path
 
-file_path = Path("modernApp/core/Component.js")
-file_path.parent.mkdir(parents=True, exist_ok=True) # Ensure directory exists
+file_path = Path("modernApp/tabs/BasicInfoTab.js")
+# Directory should already exist
 
 content = """
-// modernApp/core/Component.js
+// modernApp/tabs/BasicInfoTab.js
+import { Component } from '../core/Component.js';
+import { StateManager } from '../core/StateManager.js'; // Still needed for dispatching actions
 import { Logger } from '../utils/Logger.js';
-import { PropsManager } from './PropsManager.js'; // Import PropsManager
-// import { EventBus } from './EventBus.js';
-// import { StateManager } from './StateManager.js';
-// import { RenderQueue } from './RenderQueue.js';
+import { connectToState } from '../core/StateConnector.js'; // Import StateConnector
 
-/**
- * Base class for all UI components in the ModernApp.
- * Provides standardized lifecycle methods, state handling, event listener management,
- * and integration with the rendering pipeline.
- */
-export class Component {
-    /**
-     * Defines the expected props, their types, defaults, and requirements.
-     * Subclasses should override this.
-     * Example:
-     * static propSchema = {
-     *     title: { type: 'string', required: true, default: 'Default Title' },
-     *     count: { type: 'number', default: 0 },
-     *     items: { type: 'array', default: () => [] }
-     * };
-     */
-    static propSchema = {};
+// This is the "Dumb" presentational component
+class BasicInfoTab extends Component {
+    static propSchema = {
+        characterName: { type: 'string', default: 'New Character' },
+        characterTier: { type: 'number', default: 4 },
+        // The 'character' prop itself could be passed if more data is needed
+        // character: { type: 'object', default: () => ({}) } 
+    };
 
-    /**
-     * @param {Object} [initialProps={}] - Initial properties for the component.
-     * @param {HTMLElement} [container=null] - The DOM element to render the component into.
-     */
-    constructor(initialProps = {}, container = null) {
-        // Process props using PropsManager against the component's static propSchema
-        this.props = PropsManager.processProps(
-            this.constructor.name,
-            initialProps,
-            this.constructor.propSchema // Access static property via constructor
-        );
-        
-        this.state = {}; // Internal component state
-        this.container = container; // The DOM element this component manages/renders into
-        this._listeners = new Map(); // For tracking DOM event listeners
-        this._subscriptions = []; // For tracking StateManager or EventBus subscriptions
-        this.isMounted = false;
-
-        Logger.debug(`[Component] Constructor for ${this.constructor.name} with processed props:`, this.props);
+    constructor(container, initialProps = {}) {
+        // Props are now fully managed by the Component base class via propSchema
+        // and passed by the ConnectedComponent wrapper.
+        super(initialProps, container); 
+        Logger.info(`[BasicInfoTab][Dumb] Constructed with props:`, this.props);
     }
 
-    /**
-     * Initializes the component. Called after the constructor.
-     * Typically used for setting up initial state based on props,
-     * loading initial data, or setting up non-DOM event listeners.
-     * @async
-     */
     async init() {
-        Logger.debug(`[Component] init() for ${this.constructor.name}`);
-        // Override in subclasses for specific initialization logic
+        // No direct subscriptions needed here anymore for prop updates.
+        // StateConnector handles subscribing to StateManager and calling `this.update()`.
+        Logger.info('[BasicInfoTab][Dumb] Initialized.');
     }
-
-    /**
-     * Renders the component's UI into its container.
-     * This method should generate the HTML and attach necessary DOM event listeners.
-     * It's typically called after init or when state/props change significantly.
-     */
+    
     render() {
-        Logger.debug(`[Component] render() for ${this.constructor.name}`);
-        if (!this.container) {
-            Logger.warn(`[Component] No container for ${this.constructor.name} to render into.`);
+        super.render(); 
+
+        const name = this.props.characterName;
+        const tier = this.props.characterTier;
+
+        this.container.innerHTML = ` 
+            <div class="tab-header">
+                <h2>Basic Information</h2>
+                <p>Set your character's fundamental details.</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="basic-info-character-name-${this.props.id || 'default'}">Character Name</label>
+                <input type="text" 
+                       id="basic-info-character-name-${this.props.id || 'default'}" 
+                       class="form-input"
+                       value="${name || ''}"
+                       placeholder="Enter character name">
+            </div>
+            
+            <div class="form-group">
+                <label for="basic-info-character-tier-${this.props.id || 'default'}">Tier</label>
+                <select id="basic-info-character-tier-${this.props.id || 'default'}" class="form-select">
+                    ${this.renderTierOptions(tier)}
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" data-action="save-basic-info">
+                Save Basic Info
+            </button>
+        `;
+        
+        this.attachLocalEventListeners();
+        Logger.info('[BasicInfoTab][Dumb] Rendered with props:', this.props);
+    }
+    
+    renderTierOptions(currentTier) {
+        const tiers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        return tiers.map(tier => `
+            <option value="${tier}" ${tier === currentTier ? 'selected' : ''}>
+                Tier ${tier}
+            </option>
+        `).join('');
+    }
+    
+    attachLocalEventListeners() {
+        // DOM listeners are still managed by the Component base class methods
+        const saveButton = this.container.querySelector('[data-action="save-basic-info"]');
+        if (saveButton) {
+            this._addEventListener(saveButton, 'click', this.handleSaveBasicInfo);
+        }
+        
+        const nameInput = this.container.querySelector(`#basic-info-character-name-${this.props.id || 'default'}`);
+        if (nameInput) {
+            this._addEventListener(nameInput, 'keyup', (e) => {
+                if (e.key === 'Enter') this.handleSaveBasicInfo();
+            });
+        }
+    }
+    
+    handleSaveBasicInfo() {
+        if (!this.container) return; 
+        const nameInput = this.container.querySelector(`#basic-info-character-name-${this.props.id || 'default'}`);
+        const tierSelect = this.container.querySelector(`#basic-info-character-tier-${this.props.id || 'default'}`);
+
+        if (!nameInput || !tierSelect) {
+            Logger.warn('[BasicInfoTab][Dumb] Could not find form elements to save.');
             return;
         }
-        // Subclasses must implement this to provide their UI.
-    }
 
-    /**
-     * Updates the component's internal state and triggers a re-render.
-     * @param {Object|Function} newStateOrFn - An object with new state values or a function that returns new state.
-     */
-    setState(newStateOrFn) {
-        const oldState = { ...this.state };
-        const newState = typeof newStateOrFn === 'function'
-            ? newStateOrFn(oldState, this.props)
-            : newStateOrFn;
-
-        this.state = { ...oldState, ...newState };
-        Logger.debug(`[Component] setState() for ${this.constructor.name}`, { oldState, newState: this.state });
+        const name = nameInput.value.trim();
+        const tier = parseInt(tierSelect.value);
         
-        this._requestRender();
-    }
-
-    /**
-     * Called when the component receives new props.
-     * Processes the new props and re-renders if they have changed.
-     * @param {Object} nextProps - The new properties being passed to the component.
-     */
-    update(nextProps) {
-        Logger.debug(`[Component] update() for ${this.constructor.name} with incoming nextProps:`, nextProps);
+        Logger.debug(`[BasicInfoTab][Dumb] Saving basic info: Name - ${name}, Tier - ${tier}`);
         
-        const oldProps = this.props;
-        // Process incoming props (apply defaults, validate against schema)
-        this.props = PropsManager.processProps(
-            this.constructor.name,
-            nextProps,
-            this.constructor.propSchema
-        );
-        Logger.debug(`[Component] ${this.constructor.name} - Old props:`, oldProps, `New processed props:`, this.props);
-
-        // Re-render only if props have shallowly changed
-        if (!PropsManager.shallowCompare(oldProps, this.props)) {
-            Logger.debug(`[Component] Props changed for ${this.constructor.name}, requesting render.`);
-            this._requestRender();
-        } else {
-            Logger.debug(`[Component] Props did not change for ${this.constructor.name}, no render requested from update().`);
-        }
-        // Subclasses can override to perform specific actions on prop changes,
-        // but should call super.update(nextProps) if they want this default behavior.
+        StateManager.dispatch('UPDATE_BASIC_INFO', { name, tier }); 
     }
+    
+    // `update(nextProps)` is inherited from Component.
+    // StateConnector will call this method on the dumb component instance
+    // when the mapped props change.
 
-    /**
-     * Cleans up the component. Called before the component is removed or replaced.
-     * Should remove all event listeners and subscriptions.
-     */
     destroy() {
-        Logger.debug(`[Component] destroy() for ${this.constructor.name}`);
-        this._removeDOMEventListeners();
-        this._unsubscribeAll();
-        if (this.container) {
-            this.container.innerHTML = ''; // Clear the container
-        }
-        this.isMounted = false;
-    }
-
-    /**
-     * Marks the component as mounted. Typically called after the first render.
-     */
-    mount() {
-        this.isMounted = true;
-        Logger.debug(`[Component] ${this.constructor.name} mounted.`);
-    }
-
-    /**
-     * Placeholder for requesting a render. In a full system, this would
-     * interact with a RenderQueue.
-     */
-    _requestRender() {
-        Logger.debug(`[Component] _requestRender() called for ${this.constructor.name}.`);
-        if (this.isMounted && this.container) {
-            this.render();
-        } else {
-            Logger.debug(`[Component] Render skipped for ${this.constructor.name}: not mounted or no container.`);
-        }
-    }
-
-    // --- Event Listener Management ---
-    _addEventListener(element, eventType, handler, options) {
-        if (!element) {
-            Logger.warn(`[Component] Attempted to add listener to null element in ${this.constructor.name} for event ${eventType}`);
-            return;
-        }
-        const boundHandler = handler.bind(this);
-        element.addEventListener(eventType, boundHandler, options);
-        this._listeners.set({ element, eventType, originalHandler: handler }, boundHandler);
-    }
-
-    _removeDOMEventListeners() {
-        this._listeners.forEach((boundHandler, key) => {
-            key.element.removeEventListener(key.eventType, boundHandler);
-        });
-        this._listeners.clear();
-        Logger.debug(`[Component] Removed DOM event listeners for ${this.constructor.name}`);
-    }
-
-    // --- Subscription Management (for StateManager, EventBus) ---
-    _addSubscription(subscribeFn) {
-        try {
-            const unsubscribeFn = subscribeFn();
-            if (typeof unsubscribeFn === 'function') {
-                this._subscriptions.push(unsubscribeFn);
-            } else {
-                Logger.warn(`[Component] Subscription function in ${this.constructor.name} did not return an unsubscribe function.`);
-            }
-        } catch (error) {
-            Logger.error(`[Component] Error during subscription in ${this.constructor.name}:`, error);
-        }
-    }
-
-    _unsubscribeAll() {
-        this._subscriptions.forEach(unsubscribe => unsubscribe());
-        this._subscriptions = [];
-        Logger.debug(`[Component] Unsubscribed all for ${this.constructor.name}`);
+        Logger.info(`[BasicInfoTab][Dumb] Destroying...`);
+        super.destroy(); 
     }
 }
+
+// mapStateToProps function: Extracts relevant data from global state for this component
+const mapStateToPropsBasicInfo = (globalState, ownProps) => {
+    // ownProps are props passed directly to the ConnectedComponent instance, not used here yet
+    if (!globalState) {
+        Logger.warn('[BasicInfoTab][mapStateToProps] Global state is null, returning default props.');
+        return {
+            characterName: BasicInfoTab.propSchema.characterName.default,
+            characterTier: BasicInfoTab.propSchema.characterTier.default
+        };
+    }
+    return {
+        characterName: globalState.name || BasicInfoTab.propSchema.characterName.default,
+        characterTier: globalState.tier || BasicInfoTab.propSchema.characterTier.default
+        // If passing the whole character:
+        // character: globalState 
+    };
+};
+
+// Create and export the "Connected" component
+const ConnectedBasicInfoTab = connectToState(mapStateToPropsBasicInfo)(BasicInfoTab);
+
+export { ConnectedBasicInfoTab as BasicInfoTab }; // Export connected component as the default for this module
+// For testing or advanced usage, you might also export the dumb component:
+// export { BasicInfoTab as DumbBasicInfoTab, ConnectedBasicInfoTab as BasicInfoTab };
+
 """
 
 try:
