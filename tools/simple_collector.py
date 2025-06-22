@@ -43,7 +43,11 @@ PRESETS = {
         '--root',
 
         'modernApp/',
-        '!modernApp/data/partials/',
+        '!modernApp/data/unified-game-data.json',
+        '!modernApp/css/modern-app.css',
+        'tools/build_game_data.py',
+        'tools/modern_css_combine.py',
+
     ],
 
 
