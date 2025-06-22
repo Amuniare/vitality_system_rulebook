@@ -12,7 +12,8 @@ export class NotificationSystem {
     }
     
     constructor() {
-        if (NotificationSystem.instance) {
+        if (NotificationSystem.instance && NotificationSystem.instance !== this) {
+            // Logger.warn('[NotificationSystem] Attempted to re-instantiate singleton. Returning existing instance.');
             return NotificationSystem.instance;
         }
         
@@ -20,13 +21,19 @@ export class NotificationSystem {
         this.queue = [];
         this.activeNotifications = new Map();
         
-        Logger.info('[NotificationSystem] Instance created.');
+        NotificationSystem.instance = this; // Ensure instance is set here
+        // Logger.info('[NotificationSystem] Instance created/retrieved.'); // Log once, perhaps in getInstance
     }
     
     init() {
+        // This check ensures init logic runs only once for the singleton
+        if (this.container) {
+            // Logger.debug('[NotificationSystem] Already initialized.');
+            return;
+        }
         this.container = document.getElementById('notification-container');
         if (!this.container) {
-            Logger.warn('[NotificationSystem] Notification container not found in the DOM.');
+            Logger.warn('[NotificationSystem] Notification container not found in the DOM. Notifications will not be visible.');
         }
         
         Logger.info('[NotificationSystem] Initialized.');
@@ -34,17 +41,31 @@ export class NotificationSystem {
     
     show(message, type = 'info', duration = 3000) {
         if (!this.container) {
-            Logger.error('[NotificationSystem] Cannot show notification - container not found.');
-            return;
+            // Try to initialize if not already (e.g. if called before app.init fully completes)
+            if (!document.getElementById('notification-container')) {
+                 Logger.error('[NotificationSystem] Cannot show notification - container #notification-container not found in DOM.');
+                 console.warn(`Notification (type: ${type}): ${message}`); // Fallback to console
+                 return;
+            }
+            this.init(); // Attempt to set up container if it was missing
+            if (!this.container) { // Still not found after trying init
+                Logger.error('[NotificationSystem] Cannot show notification - container setup failed.');
+                console.warn(`Notification (type: ${type}): ${message}`);
+                return;
+            }
         }
         
-        const id = Date.now();
+        const id = Date.now() + Math.random(); // Add random to avoid collision if called rapidly
         const notification = this.createNotificationElement(id, message, type);
         
         this.container.appendChild(notification);
         this.activeNotifications.set(id, notification);
+
+        // Trigger animation
+        requestAnimationFrame(() => {
+            notification.classList.add('show');
+        });
         
-        // Auto-remove after duration
         if (duration > 0) {
             setTimeout(() => this.remove(id), duration);
         }
@@ -54,14 +75,14 @@ export class NotificationSystem {
     
     createNotificationElement(id, message, type) {
         const div = document.createElement('div');
-        div.className = `notification notification-${type}`;
+        // Apply specific type class for styling, e.g., 'notification-info', 'notification-error'
+        div.className = `notification notification-${type}`; 
         div.dataset.notificationId = id;
         div.innerHTML = `
             <span class="notification-message">${message}</span>
-            <button class="notification-close" aria-label="Close notification">&times;</button>
+            <button class="notification-close" aria-label="Close notification">×</button>
         `;
         
-        // Add close handler
         div.querySelector('.notification-close').addEventListener('click', () => {
             this.remove(id);
         });
@@ -72,12 +93,22 @@ export class NotificationSystem {
     remove(id) {
         const notification = this.activeNotifications.get(id);
         if (notification) {
-            notification.remove();
-            this.activeNotifications.delete(id);
+            notification.classList.remove('show'); // Trigger fade-out animation
+            // Wait for animation to complete before removing from DOM
+            notification.addEventListener('transitionend', () => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+                this.activeNotifications.delete(id);
+            }, { once: true });
+            // Fallback if transitionend doesn't fire (e.g. display:none immediately)
+            setTimeout(() => {
+                 if (notification.parentNode) notification.remove();
+                 this.activeNotifications.delete(id);
+            }, 500); // Slightly longer than transition
         }
     }
     
-    // Convenience methods
     success(message, duration) {
         return this.show(message, 'success', duration);
     }
@@ -96,7 +127,7 @@ export class NotificationSystem {
     
     clear() {
         this.activeNotifications.forEach((notification, id) => {
-            this.remove(id);
+            this.remove(id); // Use remove to handle animations
         });
     }
 }

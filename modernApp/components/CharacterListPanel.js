@@ -13,6 +13,10 @@ export class CharacterListPanel {
             Logger.error('[CharacterListPanel] Required container elements not found.');
             return;
         }
+        
+        // Store handler references
+        this.listContainerClickHandler = null;
+        this.controlsContainerClickHandler = null;
 
         this.init();
     }
@@ -21,8 +25,9 @@ export class CharacterListPanel {
         this.renderControls();
         this.renderList();
         
-        EventBus.on('character-list-updated', () => this.renderList());
-        EventBus.on('active-character-changed', () => this.renderList()); // Re-render to update active state
+        // CORRECTED EVENT NAMES
+        EventBus.on('CHARACTER_LIST_UPDATED', () => this.renderList());
+        EventBus.on('CHARACTER_SWITCHED', () => this.renderList()); // Re-render to update active state
         Logger.info('[CharacterListPanel] Initialized.');
     }
 
@@ -61,24 +66,39 @@ export class CharacterListPanel {
     }
 
     setupControlEventListeners() {
-        this.controlsContainer.addEventListener('click', (e) => {
+        // Remove previous listener if it exists
+        if (this.controlsContainerClickHandler) {
+            this.controlsContainer.removeEventListener('click', this.controlsContainerClickHandler);
+        }
+
+        // Define the new handler
+        this.controlsContainerClickHandler = (e) => {
             const action = e.target.closest('button')?.dataset.action;
             if (!action) return;
 
             switch (action) {
                 case 'new-character':
-                    this.characterManager.createCharacter('New Character ' + (this.characterManager.getAllCharacters().length + 1));
+                    this.characterManager.createNewCharacter('New Character ' + (this.characterManager.getAllCharacters().length + 1));
                     // Active character and list will update via events
                     break;
                 case 'import-character':
                     this.handleImport();
                     break;
             }
-        });
+        };
+        
+        // Add the new listener
+        this.controlsContainer.addEventListener('click', this.controlsContainerClickHandler);
     }
     
     setupListEventListeners() {
-        this.listContainer.addEventListener('click', (e) => {
+        // Remove previous listener if it exists
+        if (this.listContainerClickHandler) {
+            this.listContainer.removeEventListener('click', this.listContainerClickHandler);
+        }
+
+        // Define the new handler
+        this.listContainerClickHandler = (e) => {
             const listItem = e.target.closest('.character-list-item');
             const actionButton = e.target.closest('button[data-action]');
             
@@ -99,7 +119,10 @@ export class CharacterListPanel {
                     this.handleDelete(charId);
                     break;
             }
-        });
+        };
+
+        // Add the new listener
+        this.listContainer.addEventListener('click', this.listContainerClickHandler);
     }
 
     async handleDelete(charId) {

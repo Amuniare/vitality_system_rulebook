@@ -48,14 +48,15 @@ modernApp\index.html
 modernApp\README.md
 modernApp\requirements.md
 modernApp\workplan.md
-console.txt
-1 attached screenshots
+
 
 Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md
 
 We'll be working on:
 
-Fixing the issues in the console.txt log
+Fixing the issues in the console log
+
+
 
 ## Chain-of-Thought 
 Analyze this code problem using these steps:
@@ -66,7 +67,7 @@ Analyze this code problem using these steps:
 	5. Evaluate time and space complexity
 	6. Propose implementation approaches
 
-
+Don't Write Code, just propose solutions
 
 
 ---

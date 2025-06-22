@@ -1,38 +1,35 @@
-
 // modernApp/tabs/BasicInfoTab.js
 import { StateManager } from '../core/StateManager.js';
 import { EventBus } from '../core/EventBus.js';
 import { Logger } from '../utils/Logger.js'; // Import Logger
 
 export class BasicInfoTab {
-    constructor() {
-        this.container = null; // Will be set in init
+    constructor(container) { // Accept container
+        this.container = container; // Store it
         this.characterCache = null; // Cache to compare for changes
 
-        EventBus.on('character-updated', (characterData) => {
-            // Check if this tab is currently active and container is set
-            if (this.container && this.container.querySelector('.basic-info-tab')) {
-                 this.updateDisplay(characterData);
-                 Logger.debug('[BasicInfoTab] Display updated via character-updated event.');
+        EventBus.on('CHARACTER_LOADED', (data) => { // Listen for initial load or switch
+            if (this.container && this.container.style.display !== 'none') { // Check if tab is active
+                 this.updateDisplay(data.character);
+                 Logger.debug('[BasicInfoTab] Display updated via CHARACTER_LOADED event.');
+            }
+        });
+        EventBus.on('CHARACTER_CHANGED', (data) => { // Listen for updates
+            if (this.container && this.container.style.display !== 'none') {
+                 this.updateDisplay(data.character);
+                 Logger.debug('[BasicInfoTab] Display updated via CHARACTER_CHANGED event.');
             }
         });
     }
 
     async init() {
-        // BasicInfoTab expects its content to be in a div with id 'basic-info-tab'
-        this.container = document.getElementById('basic-info-tab'); 
-        if (!this.container) {
-            Logger.error('[BasicInfoTab] Specific container #basic-info-tab not found.');
-            // Attempt to use the generic tab content div if the specific one isn't found.
-            this.container = document.getElementById('tab-content'); 
-            if (!this.container) {
-                 Logger.error('[BasicInfoTab] Fallback container #tab-content also not found. Cannot initialize.');
-                 return; // Cannot render or init further
-            }
-        }
-        
-        this.render(); // Render content into its designated container
-        Logger.info('[BasicInfoTab] Initialized and rendered.');
+        // Container is now passed in constructor, no need to find it here.
+        // this.render() will be called by app.js when the tab is switched to.
+        // However, for initial load if this is the default tab, app.js will call render.
+        // We can pre-populate characterCache here if needed or rely on first render.
+        const character = StateManager.getCharacter();
+        this.characterCache = { ...character };
+        Logger.info('[BasicInfoTab] Initialized.');
     }
     
     render() {
@@ -41,32 +38,33 @@ export class BasicInfoTab {
             return;
         }
         const character = StateManager.getCharacter();
-        this.characterCache = { ...character }; // Initialize cache on render
+        this.characterCache = { ...character }; // Update cache on render
         
-        this.container.innerHTML = `
-            <div class="tab-content basic-info-tab">
+        // The content itself, no longer querying for #basic-info-tab
+        this.container.innerHTML = ` 
+            <div class="tab-header">
                 <h2>Basic Information</h2>
-                
-                <div class="form-group">
-                    <label for="character-name">Character Name</label>
-                    <input type="text" 
-                           id="character-name" 
-                           class="form-input"
-                           value="${character.name || ''}"
-                           placeholder="Enter character name">
-                </div>
-                
-                <div class="form-group">
-                    <label for="character-tier">Tier</label>
-                    <select id="character-tier" class="form-select">
-                        ${this.renderTierOptions(character.tier)}
-                    </select>
-                </div>
-                
-                <button class="btn btn-primary" data-action="save-basic-info">
-                    Save Changes
-                </button>
             </div>
+            
+            <div class="form-group">
+                <label for="character-name">Character Name</label>
+                <input type="text" 
+                       id="character-name" 
+                       class="form-input"
+                       value="${character.name || ''}"
+                       placeholder="Enter character name">
+            </div>
+            
+            <div class="form-group">
+                <label for="character-tier">Tier</label>
+                <select id="character-tier" class="form-select">
+                    ${this.renderTierOptions(character.tier)}
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" data-action="save-basic-info">
+                Save Changes
+            </button>
         `;
         
         this.setupEventListeners();
@@ -83,26 +81,33 @@ export class BasicInfoTab {
     }
     
     setupEventListeners() {
-        if (!this.container) return; // Guard against null container
+        if (!this.container) return; 
         const saveButton = this.container.querySelector('[data-action="save-basic-info"]');
         if (saveButton) {
-            saveButton.addEventListener('click', () => {
-                this.saveBasicInfo();
-            });
+            // Prevent duplicate listeners if render is called multiple times
+            if (!saveButton.hasAttribute('data-listener-attached')) {
+                saveButton.addEventListener('click', () => {
+                    this.saveBasicInfo();
+                });
+                saveButton.setAttribute('data-listener-attached', 'true');
+            }
         }
         
         const nameInput = this.container.querySelector('#character-name');
         if (nameInput) {
-            nameInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') {
-                    this.saveBasicInfo();
-                }
-            });
+            if (!nameInput.hasAttribute('data-listener-attached')) {
+                nameInput.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') {
+                        this.saveBasicInfo();
+                    }
+                });
+                nameInput.setAttribute('data-listener-attached', 'true');
+            }
         }
     }
     
     saveBasicInfo() {
-        if (!this.container) return; // Guard
+        if (!this.container) return; 
         const nameInput = this.container.querySelector('#character-name');
         const tierSelect = this.container.querySelector('#character-tier');
 
@@ -115,14 +120,14 @@ export class BasicInfoTab {
         const tier = parseInt(tierSelect.value);
         
         Logger.debug(`[BasicInfoTab] Saving basic info: Name - ${name}, Tier - ${tier}`);
-        StateManager.dispatch('UPDATE_BASIC_INFO', { name, tier }); // Assuming StateManager has a dispatch method
+        // Use the new StateManager.dispatch method
+        StateManager.dispatch('UPDATE_BASIC_INFO', { name, tier }); 
     }
     
     updateDisplay(characterData) {
-        if (!this.container) return; // Guard
-        // If characterData is not passed, get it from StateManager
+        if (!this.container) return; 
         const character = characterData || StateManager.getCharacter();
-        this.characterCache = { ...character }; // Update cache
+        this.characterCache = { ...character }; 
 
         const nameInput = this.container.querySelector('#character-name');
         const tierSelect = this.container.querySelector('#character-tier');
@@ -132,8 +137,17 @@ export class BasicInfoTab {
         }
         
         if (tierSelect && parseInt(tierSelect.value) !== character.tier) {
-            tierSelect.value = character.tier;
+            tierSelect.value = character.tier || 4; // Default to tier 4 if undefined
         }
         Logger.debug('[BasicInfoTab] Display fields updated.');
+    }
+
+    cleanup() {
+        // If EventBus listeners were added with specific bound functions, remove them here.
+        // For now, assuming global listeners or listeners that don't need specific cleanup here
+        // beyond what app.js might do for the tab instance itself.
+        // If delegated listeners were added to this.container, they should be removed if the
+        // container itself is not destroyed.
+        Logger.info('[BasicInfoTab] Cleanup called.');
     }
 }

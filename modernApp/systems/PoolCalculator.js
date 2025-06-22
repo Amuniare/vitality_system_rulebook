@@ -4,18 +4,34 @@ import { EntityLoader } from '../core/EntityLoader.js';
 import { Logger } from '../utils/Logger.js'; // ✅ Import Logger
 
 export class PoolCalculator {
-    static calculatePools(character) {
-        const tier = character.tier || 1;
+    static calculatePools() { // Parameter 'character' removed
+        const character = StateManager.getCharacter(); // Fetch character internally
+        
+        // Add a robust guard to handle cases where character might be null or missing tier
+        // This can happen if StateManager.getCharacter() returns a default/empty structure
+        // or if the character object isn't fully populated yet.
+        if (!character || typeof character.tier === 'undefined') { 
+            Logger.warn('[PoolCalculator] Character data not fully available or tier is undefined for pool calculation. Using defaults.');
+            // Return a default structure to prevent further errors
+            return { 
+                main: 0, mainUsed: 0, mainRemaining: 0,
+                limit: 0, 
+                combat: 0, combatUsed: 0, combatRemaining: 0,
+                utility: 0, utilityUsed: 0, utilityRemaining: 0
+            };
+        }
+
+        const tier = character.tier; // No need for `|| 1` due to the guard above
         const pools = {
-            main: this.calculateMainPool(character),
-            limit: this.calculateLimitPool(character),
-            combat: tier * 2,  // tier × 2 points for combat attributes
-            utility: tier,     // tier points for utility attributes
-            combatUsed: this.calculateCombatUsed(character),
-            utilityUsed: this.calculateUtilityUsed(character)
+            main: this.calculateMainPool(character), // Pass character to sub-methods
+            limit: this.calculateLimitPool(character), // Pass character to sub-methods
+            combat: tier * 2,
+            utility: tier,
+            combatUsed: this.calculateCombatUsed(character), // Pass character to sub-methods
+            utilityUsed: this.calculateUtilityUsed(character) // Pass character to sub-methods
         };
 
-        pools.mainUsed = this.calculateMainPoolUsed(character);
+        pools.mainUsed = this.calculateMainPoolUsed(character); // Pass character to sub-methods
         pools.mainRemaining = pools.main - pools.mainUsed;
         pools.combatRemaining = pools.combat - pools.combatUsed;
         pools.utilityRemaining = pools.utility - pools.utilityUsed;

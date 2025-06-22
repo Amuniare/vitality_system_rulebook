@@ -5,7 +5,8 @@ import { EntityLoader } from '../core/EntityLoader.js';
 import { EventBus } from '../core/EventBus.js';
 
 export class ArchetypeTab {
-    constructor() {
+    constructor(container) { // Accept container
+        this.container = container; // Store it
         this.archetypeCategories = [
             { key: 'movement', label: 'Movement Archetype' },
             { key: 'attackType', label: 'Attack Type Archetype' },
@@ -21,35 +22,30 @@ export class ArchetypeTab {
         
         // Bind methods
         this.handleArchetypeChange = this.handleArchetypeChange.bind(this);
+        
+        // Listen for character changes to update selections if needed
+        EventBus.on('CHARACTER_LOADED', (data) => this.onCharacterUpdate(data.character));
+        EventBus.on('CHARACTER_CHANGED', (data) => this.onCharacterUpdate(data.character));
     }
     
     async init() {
         Logger.info('[ArchetypeTab] Initializing...');
-        
-        // Load archetype data
         await this.loadArchetypeData();
-        
-        // Load current character's archetypes
-        this.loadCharacterArchetypes();
-        
+        this.loadCharacterArchetypes(); // Load initial selections
+        // Render will be called by app.js when tab is active
         Logger.info('[ArchetypeTab] Initialized.');
     }
     
     async loadArchetypeData() {
         try {
-            // Get all archetypes from EntityLoader
             const allEntities = Array.from(EntityLoader.entities.values());
-            
-            // Filter and organize archetypes by category
             this.archetypeCategories.forEach(category => {
                 this.archetypeData[category.key] = allEntities.filter(entity => 
                     entity.type === 'archetype' && 
-                    entity.category === category.key
+                    entity.ui?.category === category.key // Match against ui.category
                 );
-                
                 Logger.debug(`[ArchetypeTab] Loaded ${this.archetypeData[category.key].length} ${category.key} archetypes`);
             });
-            
         } catch (error) {
             Logger.error('[ArchetypeTab] Failed to load archetype data:', error);
         }
@@ -62,30 +58,42 @@ export class ArchetypeTab {
         } else {
             this.selectedArchetypes = {};
         }
+        Logger.debug('[ArchetypeTab] Character archetypes loaded/reloaded:', this.selectedArchetypes);
+    }
+
+    onCharacterUpdate(character) {
+        if (character && character.archetypes) {
+            const currentSelections = JSON.stringify(this.selectedArchetypes);
+            const newSelections = JSON.stringify(character.archetypes);
+            if (currentSelections !== newSelections) {
+                this.selectedArchetypes = { ...character.archetypes };
+                if (this.container && this.container.style.display !== 'none') { // If tab is active
+                    this.render(); // Re-render if selections changed externally
+                    Logger.debug('[ArchetypeTab] Re-rendered due to external character archetype update.');
+                }
+            }
+        }
     }
     
     render() {
-        Logger.info('[ArchetypeTab] Rendering...');
-        
-        const container = document.getElementById('archetypes-tab');
-        if (!container) {
-            Logger.error('[ArchetypeTab] Container not found');
+        if (!this.container) {
+            Logger.error('[ArchetypeTab] Container not found for rendering.');
             return;
         }
+        Logger.info('[ArchetypeTab] Rendering...');
         
-        // Clear existing content
-        container.innerHTML = '';
+        this.loadCharacterArchetypes(); // Ensure selections are fresh before rendering
+
+        this.container.innerHTML = ''; // Clear existing content from the passed container
         
-        // Create header
         const header = document.createElement('div');
         header.className = 'tab-header';
         header.innerHTML = `
             <h2>Archetype Selection</h2>
             <p>Select one archetype from each category. Archetypes define your character's core capabilities, statistical bonuses, and how some systems (like Special Attacks) function.</p>
         `;
-        container.appendChild(header);
+        this.container.appendChild(header);
         
-        // Create archetype selections
         const selectionsContainer = document.createElement('div');
         selectionsContainer.className = 'archetype-selections';
         
@@ -94,59 +102,51 @@ export class ArchetypeTab {
             selectionsContainer.appendChild(selection);
         });
         
-        container.appendChild(selectionsContainer);
+        this.container.appendChild(selectionsContainer);
         
-        // Create details panel
         const detailsPanel = document.createElement('div');
         detailsPanel.className = 'archetype-details-panel';
-        detailsPanel.id = 'archetype-details';
-        detailsPanel.innerHTML = `
-            <h3>Selected Archetype Details:</h3>
-            <p>Select archetypes from the dropdowns above to see their details.</p>
-        `;
-        container.appendChild(detailsPanel);
+        detailsPanel.id = 'archetype-details-panel-content'; // Unique ID for the content area
+        this.container.appendChild(detailsPanel);
         
-        // Update details based on current selections
-        this.updateDetailsPanel();
+        this.updateDetailsPanel(); // Populate details
         
         Logger.debug('[ArchetypeTab] Rendered.');
     }
     
     createArchetypeSelection(category) {
         const container = document.createElement('div');
-        container.className = 'archetype-selection';
+        container.className = 'archetype-selection form-group'; // Added form-group for styling
         
         const label = document.createElement('label');
         label.textContent = category.label + ':';
         label.htmlFor = `archetype-${category.key}`;
+        label.className = 'form-label';
         
         const select = document.createElement('select');
         select.id = `archetype-${category.key}`;
-        select.className = 'archetype-select';
+        select.className = 'archetype-select form-select'; // Added form-select
         select.dataset.category = category.key;
         
-        // Add default option
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = '-- Select --';
         select.appendChild(defaultOption);
         
-        // Add archetype options
         const archetypes = this.archetypeData[category.key] || [];
+        if (archetypes.length === 0) {
+            Logger.warn(`[ArchetypeTab] No archetypes found for category: ${category.key}`);
+        }
         archetypes.forEach(archetype => {
             const option = document.createElement('option');
             option.value = archetype.id;
             option.textContent = archetype.name;
-            
-            // Set selected if this is the current archetype
             if (this.selectedArchetypes[category.key] === archetype.id) {
                 option.selected = true;
             }
-            
             select.appendChild(option);
         });
         
-        // Add change listener
         select.addEventListener('change', this.handleArchetypeChange);
         
         container.appendChild(label);
@@ -157,48 +157,39 @@ export class ArchetypeTab {
     
     handleArchetypeChange(event) {
         const select = event.target;
-        const category = select.dataset.category;
+        const categoryKey = select.dataset.category;
         const archetypeId = select.value;
         
-        Logger.info(`[ArchetypeTab] Archetype changed: ${category} = ${archetypeId}`);
+        Logger.info(`[ArchetypeTab] Archetype changed: ${categoryKey} = ${archetypeId}`);
         
-        // Update selected archetypes
         if (archetypeId) {
-            this.selectedArchetypes[category] = archetypeId;
+            this.selectedArchetypes[categoryKey] = archetypeId;
         } else {
-            delete this.selectedArchetypes[category];
+            delete this.selectedArchetypes[categoryKey];
         }
         
-        // Update state
-        StateManager.updateArchetypes(this.selectedArchetypes);
+        // Use StateManager.dispatch for archetype updates
+        StateManager.dispatch('UPDATE_ARCHETYPES', { ...this.selectedArchetypes });
         
-        // Update details panel
         this.updateDetailsPanel();
-        
-        // Emit event
-        EventBus.emit('ARCHETYPE_CHANGED', {
-            category,
-            archetypeId,
-            allArchetypes: this.selectedArchetypes
-        });
     }
     
     updateDetailsPanel() {
-        const panel = document.getElementById('archetype-details');
-        if (!panel) return;
+        const panel = this.container.querySelector('#archetype-details-panel-content');
+        if (!panel) {
+            Logger.warn('[ArchetypeTab] Details panel content area not found.');
+            return;
+        }
         
-        // Clear existing content
         panel.innerHTML = '<h3>Selected Archetype Details:</h3>';
         
-        // Check if any archetypes are selected
-        const hasSelections = Object.keys(this.selectedArchetypes).length > 0;
+        const hasSelections = Object.values(this.selectedArchetypes).some(id => id);
         
         if (!hasSelections) {
             panel.innerHTML += '<p>Select archetypes from the dropdowns above to see their details.</p>';
             return;
         }
         
-        // Display details for each selected archetype
         this.archetypeCategories.forEach(category => {
             const archetypeId = this.selectedArchetypes[category.key];
             if (!archetypeId) return;
@@ -206,15 +197,14 @@ export class ArchetypeTab {
             const archetype = this.archetypeData[category.key]?.find(a => a.id === archetypeId);
             if (!archetype) return;
             
-            const details = document.createElement('div');
-            details.className = 'archetype-detail';
-            details.innerHTML = `
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = 'archetype-detail';
+            detailsDiv.innerHTML = `
                 <h4>${category.label}: ${archetype.name}</h4>
                 <p class="description">${archetype.description || 'No description available.'}</p>
                 ${this.renderArchetypeEffects(archetype)}
             `;
-            
-            panel.appendChild(details);
+            panel.appendChild(detailsDiv);
         });
     }
     
@@ -222,37 +212,20 @@ export class ArchetypeTab {
         if (!archetype.effects || archetype.effects.length === 0) {
             return '';
         }
-        
         let html = '<div class="archetype-effects"><strong>Effects:</strong><ul>';
-        
         archetype.effects.forEach(effect => {
-            html += '<li>';
-            
-            switch (effect.type) {
-                case 'bonus':
-                    html += `+${effect.value} ${effect.target}`;
-                    break;
-                case 'feature':
-                    html += effect.display || effect.value || 'Special Feature';
-                    break;
-                case 'ability':
-                    html += effect.display || effect.value || 'Special Ability';
-                    break;
-                default:
-                    html += effect.display || JSON.stringify(effect);
-            }
-            
-            html += '</li>';
+            html += `<li>${effect.display || effect.type || JSON.stringify(effect)}</li>`;
         });
-        
         html += '</ul></div>';
         return html;
     }
     
     cleanup() {
-        // Remove event listeners
-        document.querySelectorAll('.archetype-select').forEach(select => {
-            select.removeEventListener('change', this.handleArchetypeChange);
-        });
+        // Remove event listeners from selects if they were not re-created on each render
+        // Since we rebuild innerHTML on render, specific listeners on selects are implicitly removed.
+        // Global EventBus listeners might need explicit removal if this tab instance is destroyed.
+        EventBus.off('CHARACTER_LOADED', (data) => this.onCharacterUpdate(data.character));
+        EventBus.off('CHARACTER_CHANGED', (data) => this.onCharacterUpdate(data.character));
+        Logger.info('[ArchetypeTab] Cleanup called.');
     }
 }

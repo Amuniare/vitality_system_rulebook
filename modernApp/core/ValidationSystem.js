@@ -58,8 +58,9 @@ export class ValidationSystem {
         // Main Pool validation
         this.validationRules.set('mainPool', () => {
             const pools = PoolCalculator.calculatePools();
-            const spent = pools.mainPool.spent;
-            const available = pools.mainPool.available;
+            // CORRECTED: Use pools.mainUsed and pools.main (total available)
+            const spent = pools.mainUsed;
+            const available = pools.main; 
             
             if (spent > available) {
                 const overage = spent - available;
@@ -76,8 +77,9 @@ export class ValidationSystem {
         // Combat Attributes validation
         this.validationRules.set('combatAttr', () => {
             const pools = PoolCalculator.calculatePools();
-            const spent = pools.combatAttr.spent;
-            const available = pools.combatAttr.available;
+            // CORRECTED: Use pools.combatUsed and pools.combat (total available)
+            const spent = pools.combatUsed;
+            const available = pools.combat;
             
             if (spent > available) {
                 const overage = spent - available;
@@ -94,8 +96,9 @@ export class ValidationSystem {
         // Utility Attributes validation
         this.validationRules.set('utilityAttr', () => {
             const pools = PoolCalculator.calculatePools();
-            const spent = pools.utilityAttr.spent;
-            const available = pools.utilityAttr.available;
+            // CORRECTED: Use pools.utilityUsed and pools.utility (total available)
+            const spent = pools.utilityUsed;
+            const available = pools.utility;
             
             if (spent > available) {
                 const overage = spent - available;

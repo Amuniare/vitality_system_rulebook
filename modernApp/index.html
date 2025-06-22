@@ -13,12 +13,7 @@
             <div id="notification-container"></div>
         </header>
         
-        <nav class="tab-navigation">
-            <button class="tab-btn active" data-tab="basic-info">Basic Info</button>
-            <button class="tab-btn" data-tab="archetypes">Archetypes</button>
-            <button class="tab-btn" data-tab="main-pool">Main Pool</button>
-            <!-- Add other main tab buttons here as they are implemented -->
-        </nav>
+        <!-- TAB NAVIGATION MOVED FROM HERE -->
         
         <div class="app-main"> 
             <aside class="character-manager-panel">
@@ -32,6 +27,14 @@
             </aside>
 
             <main class="tab-container">
+                <!-- TAB NAVIGATION MOVED TO HERE, AS THE FIRST CHILD OF tab-container -->
+                <nav class="tab-navigation">
+                    <button class="tab-btn active" data-tab="basic-info">Basic Info</button>
+                    <button class="tab-btn" data-tab="archetypes">Archetypes</button>
+                    <button class="tab-btn" data-tab="main-pool">Main Pool</button>
+                    <!-- Add other main tab buttons here as they are implemented -->
+                </nav>
+                
                 <div id="tab-content">
                     <!-- Tab content will be rendered here by app.js -->
                 </div>

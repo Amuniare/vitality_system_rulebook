@@ -11,16 +11,15 @@ import { CharacterListPanel } from './components/CharacterListPanel.js';
 import { BasicInfoTab } from './tabs/BasicInfoTab.js';
 import { ArchetypeTab } from './tabs/ArchetypeTab.js';
 import { MainPoolTab } from './tabs/MainPoolTab.js';
+import { SummaryPanel } from './components/SummaryPanel.js'; 
 
 /**
  * ModernCharacterBuilder - Main application class
- * Implements singleton pattern to prevent multiple initializations
  */
 class ModernCharacterBuilder {
     static instance = null;
     
     constructor() {
-        // Enforce singleton
         if (ModernCharacterBuilder.instance) {
             Logger.warn('[App] Application instance already exists. Returning existing instance.');
             return ModernCharacterBuilder.instance;
@@ -35,10 +34,10 @@ class ModernCharacterBuilder {
         this.validationSystem = null;
         this.notificationSystem = null;
         this.characterListPanel = null;
+        this.summaryPanel = null; 
         
-        // Bind methods
         this.handleTabClick = this.handleTabClick.bind(this);
-        this.handleCharacterChange = this.handleCharacterChange.bind(this);
+        this.handleCharacterChange = this.handleCharacterChange.bind(this); // Keep if direct reactions needed
         this.handleCharacterListUpdate = this.handleCharacterListUpdate.bind(this);
         
         Logger.info('[App] ModernCharacterBuilder instance created.');
@@ -53,43 +52,32 @@ class ModernCharacterBuilder {
         try {
             Logger.info('[App] Initializing Modern CharacterBuilder...');
             
-            // Initialize core systems in dependency order
-            Logger.info('[App] Initializing core systems...');
-            
-            // 1. Schema System (no dependencies)
             await SchemaSystem.init();
             Logger.info('[App] SchemaSystem initialized.');
             
-            // 2. Entity Loader (depends on SchemaSystem)
             await EntityLoader.init();
             Logger.info('[App] EntityLoader initialized.');
             
-            // 3. Notification System (no dependencies)
             this.notificationSystem = NotificationSystem.getInstance();
-            this.notificationSystem.init();
+            this.notificationSystem.init(); 
             Logger.info('[App] NotificationSystem initialized.');
             
-            // 4. Character Manager (depends on EventBus)
             this.characterManager = CharacterManager.getInstance();
-            await this.characterManager.init();
+            await this.characterManager.init(); // CharacterManager loads/creates character and sets active
             Logger.info('[App] CharacterManager initialized.');
             
-            // 5. State Manager (depends on CharacterManager)
-            await StateManager.init(this.characterManager);
+            // StateManager init depends on CharacterManager providing an active character
+            await StateManager.init(this.characterManager); 
             Logger.info('[App] StateManager initialized.');
             
-            // 6. Validation System (depends on StateManager, EventBus)
             this.validationSystem = ValidationSystem.getInstance();
-            this.validationSystem.init();
+            this.validationSystem.init(); 
             Logger.info('[App] ValidationSystem initialized.');
             
-            // Initialize UI components
             await this.initializeUI();
             
-            // Set up event listeners
             this.setupEventListeners();
             
-            // Show the UI
             document.body.style.visibility = 'visible';
             document.body.classList.add('loaded');
             
@@ -104,59 +92,87 @@ class ModernCharacterBuilder {
     }
     
     async initializeUI() {
-        // Initialize character list panel
-        // Initialize character list panel
         this.characterListPanel = new CharacterListPanel(
-            'character-list-content',      // ID for the list container
-            'character-list-controls',     // ID for the controls container
-            this.characterManager          // Pass the CharacterManager instance
+            'character-list-content',
+            'character-list-controls',
+            this.characterManager 
         );
-        await this.characterListPanel.init();
+        // list panel init is in its constructor
         Logger.info('[App] CharacterListPanel initialized.');
+
+        const summaryContainer = document.getElementById('summary-content');
+        if (summaryContainer) {
+            this.summaryPanel = new SummaryPanel(summaryContainer);
+            this.summaryPanel.init(); 
+            Logger.info('[App] SummaryPanel initialized.');
+        } else {
+            Logger.error('[App] Summary content container #summary-content not found!');
+        }
+
+        this.registerAllTabs();
+
+        const mainTabContentDiv = document.getElementById('tab-content');
+        if (mainTabContentDiv) {
+            this.tabs.forEach(tabData => {
+                const specificTabDiv = document.createElement('div');
+                specificTabDiv.id = `${tabData.id}-tab-panel`; 
+                specificTabDiv.className = 'tab-content-panel'; 
+                specificTabDiv.style.display = 'none'; 
+                mainTabContentDiv.appendChild(specificTabDiv);
+                tabData.containerElement = specificTabDiv; 
+                Logger.debug(`[App] Created panel for tab: ${tabData.id}-tab-panel`);
+            });
+        } else {
+            Logger.error("[App] Main tab content container #tab-content not found!");
+        }
+
+        await this.initializeTabInstances();
         
-        // Initialize tabs
-        await this.initializeTabs();
-        
-        // Switch to default tab
         this.switchTab('basic-info');
     }
-    
-    async initializeTabs() {
-        Logger.info('[App] Initializing tabs...');
-        
-        // Register all tabs
+
+    registerAllTabs() {
+        Logger.info('[App] Registering tabs...');
         this.registerTab('basic-info', BasicInfoTab, 'Basic Info');
         this.registerTab('archetypes', ArchetypeTab, 'Archetypes');
         this.registerTab('main-pool', MainPoolTab, 'Main Pool');
-        // Additional tabs can be registered here as they're implemented
-        
-        // Initialize all registered tabs
+        Logger.info(`[App] Tabs registered:`, Array.from(this.tabs.keys()));
+    }
+
+    async initializeTabInstances() {
+        Logger.info('[App] Initializing tab instances...');
         for (const [tabId, tabData] of this.tabs) {
             try {
-                
                 const TabClass = tabData.class;
+                const tabContainer = tabData.containerElement; 
                 let instance;
-                const tabContentElement = document.getElementById(`${tabId}-tab`);
 
-                // Special handling for tabs with specific constructor needs
-                if (tabId === 'main-pool') { // Check by tabId for MainPoolTab
-                    instance = new TabClass(tabContentElement, StateManager);
-                } else if (tabId === 'basic-info') { // BasicInfoTab
-                    instance = new TabClass(); // Assuming its init will handle container
-                } else {
-                    instance = new TabClass(); // Default for other tabs
+                if (!tabContainer) {
+                    Logger.error(`[App] Container for tab ${tabData.id} not found/created. Skipping initialization.`);
+                    continue;
                 }
 
-                await instance.init();
+                if (tabId === 'main-pool') {
+                    instance = new TabClass(tabContainer, StateManager); // MainPoolTab needs StateManager
+                } else { 
+                    instance = new TabClass(tabContainer); 
+                }
+
+                if (typeof instance.init === 'function') { // Check if init method exists
+                    await instance.init();
+                }
                 tabData.instance = instance;
-                Logger.info(`[App] Tab initialized: ${tabId}`);
+                Logger.info(`[App] Tab instance initialized: ${tabId}`);
             } catch (error) {
-                Logger.error(`[App] Failed to initialize tab ${tabId}:`, error);
-                this.notificationSystem.error(`Failed to initialize ${tabData.name} tab`);
+                Logger.error(`[App] Failed to initialize tab instance ${tabId}:`, error);
+                if (this.notificationSystem) {
+                    this.notificationSystem.error(`Failed to initialize ${tabData.name} tab`);
+                } else {
+                    console.error(`[App] NotificationSystem not available to report error for tab ${tabId}`);
+                }
             }
         }
-        
-        Logger.info(`[App] Tabs initialized:`, Array.from(this.tabs.keys()));
+        Logger.info(`[App] All tab instances initialized.`);
     }
     
     registerTab(id, TabClass, name) {
@@ -164,21 +180,20 @@ class ModernCharacterBuilder {
             id,
             class: TabClass,
             name,
-            instance: null
+            instance: null,
+            containerElement: null 
         });
     }
     
     setupEventListeners() {
-        // Tab navigation
         document.querySelectorAll('[data-tab]').forEach(button => {
             button.addEventListener('click', this.handleTabClick);
         });
         
-        // Character events
-        EventBus.on('CHARACTER_CHANGED', this.handleCharacterChange);
+        // CHARACTER_CHANGED is now primarily handled by individual components like SummaryPanel, BasicInfoTab, etc.
+        // EventBus.on('CHARACTER_CHANGED', this.handleCharacterChange); // Keep if app.js needs direct reaction
         EventBus.on('CHARACTER_LIST_UPDATED', this.handleCharacterListUpdate);
         
-        // Window events
         window.addEventListener('beforeunload', () => this.cleanup());
     }
     
@@ -195,31 +210,35 @@ class ModernCharacterBuilder {
         
         Logger.info(`[App] Switching to tab: ${tabId}`);
         
-        // Update active states
         document.querySelectorAll('[data-tab]').forEach(button => {
             button.classList.toggle('active', button.dataset.tab === tabId);
         });
         
-        // Hide all tab contents
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
+        document.querySelectorAll('.tab-content-panel').forEach(contentPanel => {
+            contentPanel.style.display = 'none';
         });
         
-        // Show selected tab content
-        const tabContent = document.getElementById(`${tabId}-tab`);
-        if (tabContent) {
-            tabContent.classList.add('active');
+        const tabDataToSwitch = this.tabs.get(tabId);
+        if (tabDataToSwitch && tabDataToSwitch.containerElement) {
+            tabDataToSwitch.containerElement.style.display = 'block';
+        } else {
+             Logger.warn(`[App] No container element found for tab ${tabId} during switchTab`);
         }
         
-        // Render tab
-        const tabData = this.tabs.get(tabId);
-        if (tabData.instance) {
+        if (tabDataToSwitch && tabDataToSwitch.instance) {
             try {
-                tabData.instance.render();
-                Logger.info(`[App] Tab rendered: ${tabId}`);
+                // Ensure render method exists before calling
+                if (typeof tabDataToSwitch.instance.render === 'function') {
+                    tabDataToSwitch.instance.render();
+                    Logger.info(`[App] Tab rendered: ${tabId}`);
+                } else {
+                     Logger.warn(`[App] Tab instance for ${tabId} does not have a render method.`);
+                }
             } catch (error) {
                 Logger.error(`[App] Failed to render tab ${tabId}:`, error);
-                this.notificationSystem.error(`Failed to render ${tabData.name} tab`);
+                if (this.notificationSystem) {
+                    this.notificationSystem.error(`Failed to render ${tabDataToSwitch.name} tab`);
+                }
             }
         }
         
@@ -227,31 +246,23 @@ class ModernCharacterBuilder {
         EventBus.emit('TAB_CHANGED', { tabId });
     }
     
+    // This can be simplified or removed if components handle their own updates via EventBus
     handleCharacterChange(data) {
-        Logger.info('[App] Character changed:', data);
-        
-        // Update character header if it exists
-        const headerElement = document.querySelector('.character-header');
-        if (headerElement) {
-            const character = StateManager.getCharacter();
-            headerElement.innerHTML = `
-                <h2>${character.name || 'New Character'}</h2>
-                <span class="tier">Tier ${character.tier || 4}</span>
-            `;
-        }
-        
-        // Re-render active tab
+        Logger.info('[App] Character changed event received in app.js (name for debug):', data.character?.name);
+        // Most updates should be handled by components listening to CHARACTER_CHANGED or CHARACTER_LOADED.
+        // Re-rendering active tab is still a good idea if its content depends directly on character state
+        // not managed by its internal listeners.
         if (this.activeTab && this.tabs.has(this.activeTab)) {
             const tabData = this.tabs.get(this.activeTab);
-            if (tabData.instance) {
-                tabData.instance.render();
+            if (tabData.instance && typeof tabData.instance.render === 'function') {
+                tabData.instance.render(); 
             }
         }
     }
     
     handleCharacterListUpdate() {
         Logger.info('[App] Character list updated');
-        // Character list panel will handle its own updates via events
+        // CharacterListPanel handles its own updates.
     }
     
     showError(error) {
@@ -259,46 +270,48 @@ class ModernCharacterBuilder {
         container.innerHTML = `
             <div class="error-screen" style="padding: 20px; text-align: center;">
                 <h1>Application Error</h1>
-                <p>The application encountered an error.</p>
+                <p>The application encountered an error and cannot continue.</p>
                 <p><strong>Error:</strong> ${error.message}</p>
-                <pre style="text-align: left; max-width: 600px; margin: 20px auto; padding: 10px; background: #f0f0f0; overflow: auto;">
+                <pre style="text-align: left; max-width: 800px; margin: 20px auto; padding: 10px; background: #f0f0f0; color: #333; border: 1px solid #ccc; overflow: auto; white-space: pre-wrap; word-wrap: break-word;">
 ${error.stack || 'No stack trace available'}
                 </pre>
-                <button onclick="location.reload()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+                <button onclick="location.reload()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px;">
                     Reload Page
                 </button>
             </div>
         `;
-        document.body.style.visibility = 'visible';
-        document.body.classList.add('loaded');
+        document.body.style.visibility = 'visible'; 
+        document.body.classList.add('loaded'); 
     }
     
     cleanup() {
         Logger.info('[App] Cleaning up application...');
         
-        // Save any pending changes
-        StateManager.saveCharacter();
+        if (StateManager.initialized) { // Check if StateManager was initialized
+            StateManager.saveCharacter(); 
+        }
         
-        // Clean up event listeners
         document.querySelectorAll('[data-tab]').forEach(button => {
             button.removeEventListener('click', this.handleTabClick);
         });
         
-        EventBus.off('CHARACTER_CHANGED', this.handleCharacterChange);
+        // EventBus.off('CHARACTER_CHANGED', this.handleCharacterChange); // If specific app-level handler removed
         EventBus.off('CHARACTER_LIST_UPDATED', this.handleCharacterListUpdate);
         
-        // Clean up tabs
         for (const [tabId, tabData] of this.tabs) {
             if (tabData.instance && typeof tabData.instance.cleanup === 'function') {
                 tabData.instance.cleanup();
             }
+        }
+
+        if (this.summaryPanel && typeof this.summaryPanel.cleanup === 'function') {
+            this.summaryPanel.cleanup();
         }
         
         Logger.info('[App] Application cleanup complete.');
     }
 }
 
-// Single initialization on DOM ready
 let appInitialized = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -314,10 +327,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const app = new ModernCharacterBuilder();
         await app.init();
         
-        // Make app instance available globally for debugging
         window.modernCharacterBuilder = app;
     } catch (error) {
-        Logger.error('[App] Failed to start application:', error);
+        Logger.error('[App] Critical failure during application startup:', error);
+        if (!document.querySelector('.error-screen')) {
+            console.error("A critical error occurred. Check the console. Error message:", error.message);
+            document.body.innerHTML = `<div style="color: red; padding: 20px;"><h1>Fatal Error</h1><p>Application could not start. Check console.</p><pre>${error.stack}</pre></div>`;
+        }
     }
 });
 

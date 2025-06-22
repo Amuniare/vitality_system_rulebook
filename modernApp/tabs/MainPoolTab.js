@@ -4,50 +4,61 @@ import { Logger } from '../utils/Logger.js';
 import { EntityLoader } from '../core/EntityLoader.js';
 import { EventBus } from '../core/EventBus.js';
 import { PoolCalculator } from '../systems/PoolCalculator.js';
-import { UnifiedPurchaseSystem } from '../systems/UnifiedPurchaseSystem.js'; // Direct import now
+import { UnifiedPurchaseSystem } from '../systems/UnifiedPurchaseSystem.js';
 
 export class MainPoolTab {
-    constructor(container, stateManager) {
-        this.container = container;
+    constructor(container, stateManager) { // constructor signature is already correct
+        this.container = container; // Store it
         this.stateManager = stateManager;
-        this.currentSectionKey = 'flaws'; // Default section
+        this.currentSectionKey = 'flaws'; 
         
-        // Ensure entityType matches the 'type' field in your unified-game-data.json for these items
         this.sections = {
             flaws: { title: 'Flaws', entityType: 'flaw', description: 'Flaws COST 30 main pool points each but grant a +Tier stat bonus and add limitations.' },
             traits: { title: 'Traits', entityType: 'trait', description: 'Traits COST 30 main pool points each and provide conditional +Tier bonuses or unique effects.' },
-            boons_simple: { title: 'Simple Boons', entityType: 'boon', description: 'Simple Boons have variable costs and provide straightforward benefits.' },
+            boons_simple: { title: 'Simple Boons', entityType: 'boon', parentIdFilter: null, description: 'Simple Boons have variable costs and provide straightforward benefits. (Ensure these are top-level boons in JSON)' },
             action_upgrades: { title: 'Action Upgrades', entityType: 'action_upgrade', description: 'Action Upgrades enhance or modify standard character actions. Costs vary.' },
-            // Add other main pool categories here if they exist:
-            unique_abilities_purchasable: { title: 'Unique Abilities', entityType: 'unique_ability', description: 'Powerful, distinct abilities. Costs vary.'}
+            unique_abilities_purchasable: { title: 'Unique Abilities', entityType: 'unique_ability', parentIdFilter: null, description: 'Powerful, distinct abilities. Costs vary. (Ensure these are top-level unique_abilities)'}
         };
         
-        this.eventBusListener = null;
-        this.delegatedGridListener = null; // For purchase grid
+        this.eventBusListeners = {
+            characterChanged: null,
+            entityPurchased: null,
+            entityRemoved: null
+        };
+        this.delegatedGridListener = null;
     }
 
     async init() {
-        this.eventBusListener = (characterData) => {
-            if (this.container.querySelector('.main-pool-tab')) {
-                this.render(); 
-                Logger.debug('[MainPoolTab] Re-rendered due to character update.');
-            }
-        };
-        EventBus.on('character-updated', this.eventBusListener);
-        
-        // Initial character data for rendering
-        const character = this.stateManager.getCharacter();
-        // Any specific pre-computation based on character can go here if needed before first render
+        this.eventBusListeners.characterChanged = (data) => this.handleCharacterUpdate(data.character);
+        this.eventBusListeners.entityPurchased = () => this.handleCharacterUpdate(this.stateManager.getCharacter());
+        this.eventBusListeners.entityRemoved = () => this.handleCharacterUpdate(this.stateManager.getCharacter());
 
+        EventBus.on('CHARACTER_CHANGED', this.eventBusListeners.characterChanged);
+        EventBus.on('ENTITY_PURCHASED', this.eventBusListeners.entityPurchased);
+        EventBus.on('ENTITY_REMOVED', this.eventBusListeners.entityRemoved);
+        
         Logger.info('[MainPoolTab] Initialized.');
     }
 
+    handleCharacterUpdate(character) {
+        // Only re-render if this tab is currently visible to avoid unnecessary work
+        if (this.container && this.container.style.display !== 'none') {
+            this.render();
+            Logger.debug('[MainPoolTab] Re-rendered due to character/purchase update.');
+        }
+    }
+
     render() {
+        if (!this.container) {
+            Logger.error("[MainPoolTab] Cannot render, container is not set.");
+            return;
+        }
         const character = this.stateManager.getCharacter();
         const pools = PoolCalculator.calculatePools(character);
 
+        // The main content div *inside* this.container will have the class "main-pool-tab"
         this.container.innerHTML = `
-            <div class="tab-content main-pool-tab">
+            <div class="main-pool-tab"> 
                 <div class="pool-header section-header">
                     <h2>Main Pool</h2>
                     <div class="pool-summary">
@@ -56,8 +67,7 @@ export class MainPoolTab {
                             <span class="pool-value" id="main-pool-points-display">${pools.mainRemaining} / ${pools.main}</span>
                         </div>
                         <div class="pool-breakdown">
-                            <span>Base Pool: ${pools.main} (Tier ${character.tier})</span>
-                            <!-- You can add details here like points from archetypes if applicable -->
+                            <span>Base Pool: ${pools.main} (Tier ${character.tier || 4})</span>
                         </div>
                     </div>
                 </div>
@@ -94,47 +104,45 @@ export class MainPoolTab {
         }
 
         const entityType = sectionConfig.entityType;
-        const entities = EntityLoader.getEntitiesByType(entityType);
+        let entities = EntityLoader.getEntitiesByType(entityType);
+        
+        // Apply parentIdFilter if specified (for unique_abilities vs upgrades)
+        if (sectionConfig.parentIdFilter !== undefined) {
+            entities = entities.filter(e => e.parentId === sectionConfig.parentIdFilter);
+        }
         
         if (!entities || entities.length === 0) {
-            return `<p class="no-items">No items available in the "${sectionConfig.title}" category (type: ${entityType}). Check unified-game-data.json.</p>`;
+            return `<p class="no-items">No items available in the "${sectionConfig.title}" category (type: ${entityType}). Check unified-game-data.json and filters.</p>`;
         }
 
         const character = this.stateManager.getCharacter();
-        const purchaseArrayName = `${entityType}s`; // e.g. "flaws", "traits"
+        const purchaseArrayName = `${entityType}s`;
 
         return entities.map(entity => {
-            // Context for UniversalCard via PurchaseCard
-            const purchasedInstance = character[purchaseArrayName]?.find(p => p.id === entity.id);
-            const isPurchased = !!purchasedInstance;
-            
-            // PurchaseCard will internally call RequirementSystem and PoolCalculator for affordability
-            // It then calls UniversalCard.render with the assembled context.
+            const purchaseInstance = character[purchaseArrayName]?.find(p => p.id === entity.id);
             const card = new PurchaseCard(entity, entityType); 
-            return card.render(); // PurchaseCard handles its own logic and context for UniversalCard
+            return card.render(); 
         }).join('');
     }
 
     setupEventListeners() {
-        // Section Tab Buttons
+        if (!this.container) return;
+
         this.container.querySelectorAll('.section-tab').forEach(tabButton => {
-            // Simple way to manage listeners on re-render: check if already attached
             if (!tabButton.hasAttribute('data-listener-attached')) {
                 tabButton.addEventListener('click', (e) => {
                     const sectionKey = e.currentTarget.dataset.sectionKey;
                     if (sectionKey && sectionKey !== this.currentSectionKey) {
                         this.currentSectionKey = sectionKey;
-                        this.render(); // Re-render to show new section
+                        this.render(); 
                     }
                 });
                 tabButton.setAttribute('data-listener-attached', 'true');
             }
         });
 
-        // Purchase/Remove Buttons (Event Delegation on the grid)
         const purchaseGrid = this.container.querySelector('#main-pool-purchase-grid');
         if (purchaseGrid) {
-            // Remove old listener before adding a new one if it exists
             if (this.delegatedGridListener) {
                 purchaseGrid.removeEventListener('click', this.delegatedGridListener);
             }
@@ -144,10 +152,10 @@ export class MainPoolTab {
                     e.preventDefault();
                     const action = button.dataset.action;
                     const entityId = button.dataset.entityId;
-                    const entityTypeFromCard = button.dataset.entityType; // This is reliable
-
-                    if (!entityTypeFromCard) {
-                        Logger.error("[MainPoolTab] Clicked button without entityType in dataset", button);
+                    const entityTypeFromCard = button.dataset.entityType; 
+                    
+                    if (!entityId || !entityTypeFromCard) {
+                        Logger.error("[MainPoolTab] Clicked button without entityId or entityType in dataset", button);
                         return;
                     }
                     
@@ -161,9 +169,8 @@ export class MainPoolTab {
                         if (purchaseInstance && purchaseInstance.purchaseId) {
                             this.handleRemove(purchaseInstance.purchaseId, entityTypeFromCard);
                         } else {
-                            Logger.warn(`[MainPoolTab] Could not find purchaseId for entity ${entityId} of type ${entityTypeFromCard} to remove.`);
-                            // Attempt removal by entityId if purchaseId is missing (fallback for older data/logic)
-                            // This might be risky if multiple instances of same ID are possible and purchaseId is key
+                            Logger.warn(`[MainPoolTab] Could not find purchaseId for entity ${entityId} of type ${entityTypeFromCard} to remove. This might happen if it was an old purchase before purchaseIds were implemented.`);
+                            // Fallback or error notification could go here. For now, we log.
                         }
                     }
                 }
@@ -175,26 +182,32 @@ export class MainPoolTab {
 
     handlePurchase(entityId, entityType) {
         Logger.info(`[MainPoolTab] Attempting purchase: Entity ID - ${entityId}, Type - ${entityType}`);
-        UnifiedPurchaseSystem.purchase(entityId);
-        // StateManager change will trigger re-render via EventBus listener in init()
+        // UnifiedPurchaseSystem calls StateManager.dispatch, which will trigger EventBus events
+        UnifiedPurchaseSystem.purchase(entityId); 
     }
 
     handleRemove(purchaseId, entityType) {
         Logger.info(`[MainPoolTab] Attempting removal: Purchase ID - ${purchaseId}, Type - ${entityType}`);
         UnifiedPurchaseSystem.remove(purchaseId, entityType);
-        // StateManager change will trigger re-render via EventBus listener in init()
     }
     
-    destroy() {
-        if (this.eventBusListener) {
-            EventBus.off('character-updated', this.eventBusListener);
-            this.eventBusListener = null;
-            Logger.info('[MainPoolTab] Unsubscribed from character-updated event.');
+    cleanup() { // Changed from destroy to cleanup
+        if (this.eventBusListeners.characterChanged) {
+            EventBus.off('CHARACTER_CHANGED', this.eventBusListeners.characterChanged);
         }
-        const purchaseGrid = this.container.querySelector('#main-pool-purchase-grid');
+        if (this.eventBusListeners.entityPurchased) {
+            EventBus.off('ENTITY_PURCHASED', this.eventBusListeners.entityPurchased);
+        }
+        if (this.eventBusListeners.entityRemoved) {
+            EventBus.off('ENTITY_REMOVED', this.eventBusListeners.entityRemoved);
+        }
+        this.eventBusListeners = {};
+
+        const purchaseGrid = this.container?.querySelector('#main-pool-purchase-grid');
         if (purchaseGrid && this.delegatedGridListener) {
             purchaseGrid.removeEventListener('click', this.delegatedGridListener);
             this.delegatedGridListener = null;
         }
+        Logger.info('[MainPoolTab] Cleanup called, listeners removed.');
     }
 }
