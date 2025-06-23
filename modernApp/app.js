@@ -1,378 +1,655 @@
 // modernApp/app.js
 import { Logger } from './utils/Logger.js';
-import { SchemaSystem } from './core/SchemaSystem.js';
-import { EntityLoader } from './core/EntityLoader.js';
-import { EventBus } from './core/EventBus.js';
 import { StateManager } from './core/StateManager.js';
 import { CharacterManager } from './core/CharacterManager.js';
-import { ValidationSystem } from './core/ValidationSystem.js';
-import { NotificationSystem } from './components/NotificationSystem.js';
-import { CharacterListPanel } from './components/CharacterListPanel.js';
+import { EventBus } from './core/EventBus.js';
+import { DataMigration } from './core/DataMigration.js';
+import { EntityLoader } from './core/EntityLoader.js';
+import { StateConnectorUtils } from './core/StateConnector.js';
+import { RenderQueue } from './core/RenderQueue.js';
+
+// Import tabs
 import { BasicInfoTab } from './tabs/BasicInfoTab.js';
 import { ArchetypeTab } from './tabs/ArchetypeTab.js';
-import { AttributesTab } from './tabs/AttributesTab.js';
 import { MainPoolTab } from './tabs/MainPoolTab.js';
-import { SummaryPanel } from './components/SummaryPanel.js';
+
+// Import components
+import { TabNavigation } from './components/TabNavigation.js';
+import { CharacterHeader } from './components/CharacterHeader.js';
+import { CharacterListPanel } from './components/CharacterListPanel.js';
+import { NotificationSystem } from './components/NotificationSystem.js';
 
 /**
- * ModernCharacterBuilder - Main application class with proper lifecycle management
+ * Enhanced ModernCharacterBuilder with comprehensive debugging and error handling
+ * Main application class that orchestrates all systems and components
  */
 class ModernCharacterBuilder {
-    static instance = null;
-    
     constructor() {
-        if (ModernCharacterBuilder.instance) {
-            Logger.warn('[App] Application instance already exists. Returning existing instance.');
-            return ModernCharacterBuilder.instance;
-        }
-        
+        this.appId = `app_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         this.initialized = false;
-        this.tabs = new Map();
-        this.activeTab = null;
-        this.componentRegistry = new Map();
+        this.currentTab = 'basic-info';
         
-        // Core system instances
+        // Core systems
         this.characterManager = null;
-        this.validationSystem = null;
         this.notificationSystem = null;
         
         // UI components
+        this.tabNavigation = null;
+        this.characterHeader = null;
         this.characterListPanel = null;
-        this.summaryPanel = null;
         
-        // Bind event handlers to maintain context
-        this.handleTabClick = this.handleTabClick.bind(this);
-        this.handleCharacterChange = this.handleCharacterChange.bind(this);
-        this.handleCharacterListUpdate = this.handleCharacterListUpdate.bind(this);
+        // Active tab instances
+        this.tabs = new Map();
+        this.activeTabData = null;
         
-        ModernCharacterBuilder.instance = this;
-        Logger.info('[App] ModernCharacterBuilder instance created with enhanced lifecycle management.');
+        // Performance and debugging
+        this.initStartTime = 0;
+        this.debugMode = false;
+        this.errorCount = 0;
+        
+        Logger.info(`[ModernCharacterBuilder] Application instance created with ID: ${this.appId}`);
     }
-    
-    async init() {
-        if (this.initialized) {
-            Logger.warn('[App] Application already initialized');
-            return;
-        }
 
+    /**
+     * Initialize the application with comprehensive error handling and debugging
+     */
+    async init() {
+        this.initStartTime = performance.now();
+        Logger.info(`[ModernCharacterBuilder] Starting application initialization...`);
+        
         try {
-            Logger.info('[App] Starting initialization...');
+            // Check for debug mode
+            this.checkDebugMode();
             
+            // Initialize core systems
             await this.initializeCoreSystems();
+            
+            // Load game data
+            await this.loadGameData();
+            
+            // Initialize UI components
             await this.initializeUIComponents();
             
-            this.registerAllTabs();
-            await this.createTabContainers();
-            await this.initializeTabInstances();
+            // Setup event handlers
+            this.setupGlobalEventHandlers();
             
-            await this.setupEventListeners();
+            // Load initial character
+            await this.loadInitialCharacter();
             
-            this.switchTab('basic-info');
+            // Switch to initial tab
+            await this.switchToTab(this.currentTab);
             
+            // Mark as initialized
             this.initialized = true;
-            Logger.info('[App] Application initialization complete.');
+            
+            const initDuration = performance.now() - this.initStartTime;
+            Logger.info(`[ModernCharacterBuilder] Application initialized successfully in ${initDuration.toFixed(2)}ms`);
+            
+            // Show success notification
+            this.notificationSystem.success('Application loaded successfully');
+            
+            // Emit app ready event
+            EventBus.emit('APP_READY', {
+                appId: this.appId,
+                initDuration: initDuration
+            });
             
         } catch (error) {
-            Logger.error('[App] Initialization failed:', error);
-            if (this.notificationSystem) {
-                this.notificationSystem.error('Failed to initialize application');
-            }
+            Logger.error('[ModernCharacterBuilder] Application initialization failed:', error);
+            this.handleInitializationError(error);
             throw error;
         }
     }
 
+    /**
+     * Check for debug mode from URL parameters
+     */
+    checkDebugMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        this.debugMode = urlParams.has('debug') || urlParams.get('debug') === 'true';
+        
+        if (this.debugMode) {
+            Logger.enableDebugMode();
+            EventBus.enableDebugMode();
+            Logger.info('[ModernCharacterBuilder] Debug mode enabled via URL parameter');
+        }
+    }
+
+    /**
+     * Initialize core systems
+     */
     async initializeCoreSystems() {
-        Logger.info('[App] Initializing core systems...');
-        
-        await SchemaSystem.init();
-        await EntityLoader.init();
-        
-        // FIXED: Initialize CharacterManager BEFORE StateManager
-        this.characterManager = new CharacterManager();
-        await this.characterManager.init();
-        
-        // FIXED: Pass characterManager instance to StateManager
-        await StateManager.init(this.characterManager);
-        
-        this.validationSystem = new ValidationSystem();
-        
-        // Register core systems in component registry
-        this.componentRegistry.set('SchemaSystem', SchemaSystem);
-        this.componentRegistry.set('EntityLoader', EntityLoader);
-        this.componentRegistry.set('StateManager', StateManager);
-        this.componentRegistry.set('CharacterManager', this.characterManager);
-        this.componentRegistry.set('ValidationSystem', this.validationSystem);
-        
-        Logger.info('[App] Core systems initialized.');
-    }
-
-    async initializeUIComponents() {
-        Logger.info('[App] Initializing UI components...');
-
-        // Initialize NotificationSystem
-        const notificationContainer = document.getElementById('notifications');
-        if (notificationContainer) {
-            this.notificationSystem = new NotificationSystem(notificationContainer);
-            this.componentRegistry.set('NotificationSystem', this.notificationSystem);
-            Logger.info('[App] NotificationSystem initialized.');
-        } else {
-            Logger.error('[App] Notification container #notifications not found!');
-        }
-
-        // FIXED: Initialize CharacterListPanel with both required containers and characterManager
-        const characterListContainer = document.getElementById('character-list-content');
-        const characterControlsContainer = document.getElementById('character-list-controls');
-        
-        if (characterListContainer && characterControlsContainer) {
-            this.characterListPanel = new CharacterListPanel(
-                'character-list-content', 
-                'character-list-controls', 
-                this.characterManager
-            );
-            await this.characterListPanel.init();
-            this.componentRegistry.set('CharacterListPanel', this.characterListPanel);
-            Logger.info('[App] CharacterListPanel initialized.');
-        } else {
-            Logger.error('[App] Character list containers not found!', {
-                listContainer: !!characterListContainer,
-                controlsContainer: !!characterControlsContainer
-            });
-        }
-
-        // Initialize SummaryPanel
-        const summaryContainer = document.getElementById('summary-content');
-        if (summaryContainer) {
-            this.summaryPanel = new SummaryPanel(summaryContainer);
-            this.summaryPanel.init();
-            this.componentRegistry.set('SummaryPanel', this.summaryPanel);
-            Logger.info('[App] SummaryPanel initialized.');
-        } else {
-            Logger.error('[App] Summary content container #summary-content not found!');
-        }
-        
-        Logger.info('[App] UI components initialized.');
-    }
-
-    registerAllTabs() {
-        Logger.info('[App] Registering tabs...');
-        this.registerTab('basic-info', BasicInfoTab, 'Basic Info');
-        this.registerTab('archetypes', ArchetypeTab, 'Archetypes');
-        this.registerTab('attributes', AttributesTab, 'Attributes');
-        this.registerTab('main-pool', MainPoolTab, 'Main Pool');
-        Logger.info(`[App] Tabs registered:`, Array.from(this.tabs.keys()));
-    }
-
-    async createTabContainers() {
-        const mainTabContentDiv = document.getElementById('tab-content');
-        if (mainTabContentDiv) {
-            this.tabs.forEach(tabData => {
-                const specificTabDiv = document.createElement('div');
-                specificTabDiv.id = `${tabData.id}-tab-panel`;
-                specificTabDiv.className = 'tab-content-panel';
-                specificTabDiv.style.display = 'none';
-                mainTabContentDiv.appendChild(specificTabDiv);
-                tabData.containerElement = specificTabDiv;
-                Logger.debug(`[App] Created panel for tab: ${tabData.id}-tab-panel`);
-            });
-        } else {
-            Logger.error("[App] Main tab content container #tab-content not found!");
-        }
-    }
-
-    async initializeTabInstances() {
-        Logger.info('[App] Initializing tab instances...');
-        
-        for (const [tabId, tabData] of this.tabs) {
-            try {
-                if (tabData.containerElement) {
-                    const TabClass = tabData.class;
-                    tabData.instance = new TabClass(tabData.containerElement);
-                    
-                    // CRITICAL FIX: Ensure the component is properly mounted
-                    if (typeof tabData.instance.mount === 'function') {
-                        tabData.instance.mount(tabData.containerElement);
-                    } else {
-                        // For components without explicit mount method
-                        tabData.instance.container = tabData.containerElement;
-                        tabData.instance.isMounted = true;
-                    }
-                    
-                    Logger.debug(`[App] Initialized tab instance: ${tabId}`);
-                } else {
-                    Logger.error(`[App] No container element for tab: ${tabId}`);
-                }
-            } catch (error) {
-                Logger.error(`[App] Failed to initialize tab ${tabId}:`, error);
-            }
-        }
-    }
-
-    registerTab(id, tabClass, name) {
-        this.tabs.set(id, {
-            id,
-            class: tabClass,
-            name,
-            instance: null,
-            containerElement: null
-        });
-    }
-
-    async setupEventListeners() {
-        // Set up tab navigation
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        tabButtons.forEach(button => {
-            button.addEventListener('click', this.handleTabClick);
-        });
-
-        // Set up character management events
-        EventBus.on('CHARACTER_CHANGED', this.handleCharacterChange);
-        EventBus.on('CHARACTER_LIST_UPDATED', this.handleCharacterListUpdate);
-        
-        Logger.info('[App] Event listeners set up.');
-    }
-
-    handleTabClick(event) {
-        const tabId = event.target.dataset.tab;
-        if (tabId && this.tabs.has(tabId)) {
-            this.switchTab(tabId);
-        }
-    }
-
-    switchTab(tabId) {
-        if (!this.tabs.has(tabId)) {
-            Logger.error(`[App] Unknown tab: ${tabId}`);
-            return;
-        }
-
-        // Hide current tab
-        if (this.activeTab && this.tabs.has(this.activeTab)) {
-            const currentTabData = this.tabs.get(this.activeTab);
-            if (currentTabData.containerElement) {
-                currentTabData.containerElement.style.display = 'none';
-            }
-        }
-
-        // Update active tab
-        this.activeTab = tabId;
-        const newTabData = this.tabs.get(tabId);
-        
-        // Show new tab
-        if (newTabData.containerElement) {
-            newTabData.containerElement.style.display = 'block';
-        }
-
-        // Update tab navigation UI
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.tab === tabId);
-        });
-
-        // CRITICAL FIX: Ensure tab is mounted and initialized before rendering
-        if (newTabData.instance) {
-            // Double-check mounting for safety
-            if (!newTabData.instance.isMounted && newTabData.containerElement) {
-                if (typeof newTabData.instance.mount === 'function') {
-                    newTabData.instance.mount(newTabData.containerElement);
-                } else {
-                    newTabData.instance.container = newTabData.containerElement;
-                    newTabData.instance.isMounted = true;
-                }
-                Logger.debug(`[App] Re-mounted tab: ${tabId}`);
-            }
-
-            // Initialize tab if not already done
-            if (!newTabData.instance.initialized && typeof newTabData.instance.init === 'function') {
-                try {
-                    newTabData.instance.init();
-                    newTabData.instance.initialized = true;
-                    Logger.debug(`[App] Late-initialized tab: ${tabId}`);
-                } catch (error) {
-                    Logger.error(`[App] Error initializing tab ${tabId}:`, error);
-                }
-            }
-        }
-
-        Logger.debug(`[App] Switched to tab: ${tabId}`);
-    }
-
-    handleCharacterChange(data) {
-        Logger.debug('[App] Character changed:', data);
-        // Handle character change events
-    }
-
-    handleCharacterListUpdate(data) {
-        Logger.debug('[App] Character list updated:', data);
-        // Handle character list updates
-    }
-
-    // Cleanup method for proper application shutdown
-    cleanup() {
-        Logger.info('[App] Starting application cleanup...');
+        Logger.info('[ModernCharacterBuilder] Initializing core systems...');
         
         try {
-            // Cleanup event listeners
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            tabButtons.forEach(button => {
-                button.removeEventListener('click', this.handleTabClick);
-            });
-
-            EventBus.off('CHARACTER_CHANGED', this.handleCharacterChange);
-            EventBus.off('CHARACTER_LIST_UPDATED', this.handleCharacterListUpdate);
-
-            // Cleanup all components
-            this.componentRegistry.forEach((component, name) => {
-                if (component && typeof component.cleanup === 'function') {
-                    try {
-                        component.cleanup();
-                        Logger.debug(`[App] Cleaned up component: ${name}`);
-                    } catch (error) {
-                        Logger.warn(`[App] Error cleaning up component ${name}:`, error);
-                    }
-                }
-            });
-
-            this.componentRegistry.clear();
-            this.tabs.clear();
+            // Initialize CharacterManager
+            Logger.debug('[ModernCharacterBuilder] Initializing CharacterManager...');
+            this.characterManager = CharacterManager.getInstance();
+            await this.characterManager.init();
             
-            this.initialized = false;
-            ModernCharacterBuilder.instance = null;
+            // Initialize StateManager with CharacterManager
+            Logger.debug('[ModernCharacterBuilder] Initializing StateManager...');
+            await StateManager.init(this.characterManager);
             
-            Logger.info('[App] Application cleanup completed.');
+            // Initialize NotificationSystem
+            Logger.debug('[ModernCharacterBuilder] Initializing NotificationSystem...');
+            this.notificationSystem = NotificationSystem.getInstance();
+            await this.notificationSystem.init();
+            
+            Logger.info('[ModernCharacterBuilder] Core systems initialized successfully');
             
         } catch (error) {
-            Logger.error('[App] Error during cleanup:', error);
+            Logger.error('[ModernCharacterBuilder] Failed to initialize core systems:', error);
+            throw new Error(`Core systems initialization failed: ${error.message}`);
         }
     }
 
-    // Debug helper methods
-    getComponentRegistry() {
-        return Array.from(this.componentRegistry.entries());
+    /**
+     * Load game data
+     */
+    async loadGameData() {
+        Logger.info('[ModernCharacterBuilder] Loading game data...');
+        
+        try {
+            Logger.startTimer('gameDataLoad');
+            
+            // Initialize EntityLoader which loads unified game data
+            await EntityLoader.init();
+            
+            // Verify data was loaded
+            if (!EntityLoader.entities || EntityLoader.entities.size === 0) {
+                throw new Error('No game data loaded');
+            }
+            
+            // Store reference for easy access
+            window.gameData = {
+                entities: Object.fromEntries(EntityLoader.entities)
+            };
+            
+            const loadDuration = Logger.endTimer('gameDataLoad');
+            Logger.info(`[ModernCharacterBuilder] Game data loaded successfully in ${loadDuration.toFixed(2)}ms`);
+            Logger.info(`[ModernCharacterBuilder] Loaded ${EntityLoader.entities.size} entities`);
+            
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to load game data:', error);
+            throw new Error(`Game data loading failed: ${error.message}`);
+        }
     }
 
-    getActiveTabInfo() {
-        const activeTabData = this.tabs.get(this.activeTab);
+    /**
+     * Initialize UI components
+     */
+    async initializeUIComponents() {
+        Logger.info('[ModernCharacterBuilder] Initializing UI components...');
+        
+        try {
+            // Initialize character header
+            const headerContainer = document.getElementById('character-header');
+            if (headerContainer) {
+                this.characterHeader = new CharacterHeader({}, headerContainer);
+                await this.characterHeader.init();
+                Logger.debug('[ModernCharacterBuilder] Character header initialized');
+            } else {
+                Logger.warn('[ModernCharacterBuilder] Character header container not found');
+            }
+            
+            // Initialize character list panel
+            const listContainer = document.getElementById('character-list');
+            if (listContainer) {
+                this.characterListPanel = new CharacterListPanel({
+                    characterManager: this.characterManager,
+                    onCharacterSelect: (character) => this.handleCharacterSelection(character),
+                    onCharacterCreate: () => this.handleCharacterCreation(),
+                    onCharacterDelete: (characterId) => this.handleCharacterDeletion(characterId)
+                }, listContainer);
+                await this.characterListPanel.init();
+                Logger.debug('[ModernCharacterBuilder] Character list panel initialized');
+            } else {
+                Logger.warn('[ModernCharacterBuilder] Character list container not found');
+            }
+            
+            // Initialize tab navigation
+            const tabNavContainer = document.getElementById('tab-navigation');
+            if (tabNavContainer) {
+                this.tabNavigation = new TabNavigation({
+                    tabs: this.getTabConfiguration(),
+                    activeTab: this.currentTab,
+                    onTabSwitch: (tabId) => this.handleTabSwitch(tabId)
+                }, tabNavContainer);
+                await this.tabNavigation.init();
+                Logger.debug('[ModernCharacterBuilder] Tab navigation initialized');
+            } else {
+                throw new Error('Tab navigation container not found');
+            }
+            
+            Logger.info('[ModernCharacterBuilder] UI components initialized successfully');
+            
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to initialize UI components:', error);
+            throw new Error(`UI initialization failed: ${error.message}`);
+        }
+    }
+
+    /**
+     * Get tab configuration
+     */
+    getTabConfiguration() {
+        return [
+            { id: 'basic-info', label: 'Basic Info', icon: 'user' },
+            { id: 'archetypes', label: 'Archetypes', icon: 'puzzle-piece' },
+            { id: 'main-pool', label: 'Main Pool', icon: 'star' },
+            { id: 'secondary-pool', label: 'Secondary Pool', icon: 'gem', disabled: true },
+            { id: 'advantages', label: 'Advantages', icon: 'plus-circle', disabled: true },
+            { id: 'disadvantages', label: 'Disadvantages', icon: 'minus-circle', disabled: true },
+            { id: 'identity', label: 'Identity', icon: 'id-card', disabled: true },
+            { id: 'summary', label: 'Summary', icon: 'file-text', disabled: true }
+        ];
+    }
+
+    /**
+     * Switch to a different tab
+     */
+    async switchToTab(tabId) {
+        Logger.debug(`[ModernCharacterBuilder] Switching to tab: ${tabId}`);
+        
+        try {
+            // Hide current tab
+            if (this.activeTabData) {
+                this.activeTabData.instance.hide();
+                this.activeTabData.container.style.display = 'none';
+            }
+            
+            // Get or create tab instance
+            let tabData = this.tabs.get(tabId);
+            if (!tabData) {
+                tabData = await this.createTabInstance(tabId);
+                this.tabs.set(tabId, tabData);
+            }
+            
+            // Show new tab
+            tabData.container.style.display = 'block';
+            await tabData.instance.show();
+            
+            // Update state
+            this.currentTab = tabId;
+            this.activeTabData = tabData;
+            
+            // Update navigation if needed
+            if (this.tabNavigation) {
+                this.tabNavigation.setActiveTab(tabId);
+            }
+            
+            Logger.debug(`[ModernCharacterBuilder] Successfully switched to tab: ${tabId}`);
+            
+            // Emit tab change event
+            EventBus.emit('TAB_CHANGED', {
+                previousTab: this.currentTab,
+                currentTab: tabId
+            });
+            
+        } catch (error) {
+            Logger.error(`[ModernCharacterBuilder] Failed to switch to tab ${tabId}:`, error);
+            this.notificationSystem.error(`Failed to load ${tabId} tab`);
+            throw error;
+        }
+    }
+
+    /**
+     * Create a tab instance
+     */
+    async createTabInstance(tabId) {
+        Logger.debug(`[ModernCharacterBuilder] Creating tab instance: ${tabId}`);
+        
+        const container = document.getElementById(`${tabId}-content`);
+        if (!container) {
+            throw new Error(`Tab content container not found: ${tabId}-content`);
+        }
+        
+        let TabClass;
+        let props = {};
+        
+        switch (tabId) {
+            case 'basic-info':
+                TabClass = BasicInfoTab;
+                break;
+                
+            case 'archetypes':
+                TabClass = ArchetypeTab;
+                break;
+                
+            case 'main-pool':
+                TabClass = MainPoolTab;
+                break;
+                
+            default:
+                throw new Error(`Unknown tab: ${tabId}`);
+        }
+        
+        const instance = new TabClass(props, container);
+        await instance.init();
+        
+        return { instance, container };
+    }
+
+    /**
+     * Handle character selection
+     */
+    async handleCharacterSelection(character) {
+        Logger.info(`[ModernCharacterBuilder] Character selected: ${character.name}`);
+        
+        try {
+            // Load character into state
+            await StateManager.loadCharacter(character);
+            
+            // Update header
+            if (this.characterHeader) {
+                this.characterHeader.render(character);
+            }
+            
+            // Refresh current tab
+            if (this.activeTabData) {
+                await this.activeTabData.instance.refresh();
+            }
+            
+            this.notificationSystem.success(`Loaded character: ${character.name}`);
+            
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to load character:', error);
+            this.notificationSystem.error('Failed to load character');
+        }
+    }
+
+    /**
+     * Handle character creation
+     */
+    async handleCharacterCreation() {
+        Logger.info('[ModernCharacterBuilder] Creating new character...');
+        
+        try {
+            const newCharacter = await this.characterManager.createNewCharacter();
+            await this.handleCharacterSelection(newCharacter);
+            
+            // Switch to basic info tab for new character
+            await this.switchToTab('basic-info');
+            
+            this.notificationSystem.success('Created new character');
+            
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to create character:', error);
+            this.notificationSystem.error('Failed to create character');
+        }
+    }
+
+    /**
+     * Handle character deletion
+     */
+    async handleCharacterDeletion(characterId) {
+        Logger.info(`[ModernCharacterBuilder] Deleting character: ${characterId}`);
+        
+        try {
+            await this.characterManager.deleteCharacter(characterId);
+            
+            // If deleted character was active, load another
+            if (StateManager.getCharacter()?.id === characterId) {
+                const characters = this.characterManager.getAllCharacters();
+                if (characters.length > 0) {
+                    await this.handleCharacterSelection(characters[0]);
+                } else {
+                    // No characters left, create a new one
+                    await this.handleCharacterCreation();
+                }
+            }
+            
+            this.notificationSystem.success('Character deleted');
+            
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to delete character:', error);
+            this.notificationSystem.error('Failed to delete character');
+        }
+    }
+
+    /**
+     * Handle tab switch request
+     */
+    async handleTabSwitch(tabId) {
+        Logger.debug(`[ModernCharacterBuilder] Tab switch requested: ${tabId}`);
+        
+        if (tabId === this.currentTab) {
+            Logger.debug(`[ModernCharacterBuilder] Already on tab ${tabId}, ignoring switch`);
+            return;
+        }
+        
+        try {
+            await this.switchToTab(tabId);
+        } catch (error) {
+            Logger.error(`[ModernCharacterBuilder] Tab switch failed:`, error);
+            // Tab navigation will handle error display
+        }
+    }
+
+    /**
+     * Setup global event handlers
+     */
+    setupGlobalEventHandlers() {
+        Logger.debug('[ModernCharacterBuilder] Setting up global event handlers...');
+        
+        // Listen for character changes to update header
+        EventBus.on('CHARACTER_CHANGED', (data) => {
+            Logger.debug('[ModernCharacterBuilder] Character changed, updating header');
+            if (this.characterHeader && data.character) {
+                this.characterHeader.render(data.character);
+            }
+        });
+        
+        // Listen for critical errors
+        EventBus.on('CRITICAL_ERROR', (data) => {
+            this.errorCount++;
+            Logger.error('[ModernCharacterBuilder] Critical error received:', data);
+            this.showCriticalError(data.message, data.error);
+        });
+        
+        // Global error handler
+        window.addEventListener('error', (event) => {
+            this.errorCount++;
+            Logger.error('[ModernCharacterBuilder] Global error:', event.error);
+            this.notificationSystem?.error('An unexpected error occurred');
+        });
+        
+        // Global unhandled promise rejection handler
+        window.addEventListener('unhandledrejection', (event) => {
+            this.errorCount++;
+            Logger.error('[ModernCharacterBuilder] Unhandled promise rejection:', event.reason);
+            this.notificationSystem?.error('An unexpected error occurred');
+        });
+        
+        Logger.debug('[ModernCharacterBuilder] Global event handlers setup complete');
+    }
+
+    /**
+     * Load initial character
+     */
+    async loadInitialCharacter() {
+        Logger.info('[ModernCharacterBuilder] Loading initial character...');
+        
+        try {
+            const activeCharacter = await this.characterManager.getActiveCharacter();
+            
+            if (activeCharacter) {
+                Logger.info(`[ModernCharacterBuilder] Loaded active character: ${activeCharacter.name}`);
+                await StateManager.loadCharacter(activeCharacter);
+                
+                // Update header
+                if (this.characterHeader) {
+                    this.characterHeader.render(activeCharacter);
+                }
+            } else {
+                Logger.info('[ModernCharacterBuilder] No active character found, creating new one');
+                await this.handleCharacterCreation();
+            }
+            
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to load initial character:', error);
+            // Try to create a new character as fallback
+            try {
+                await this.handleCharacterCreation();
+            } catch (createError) {
+                Logger.error('[ModernCharacterBuilder] Failed to create fallback character:', createError);
+                throw new Error('Unable to load or create character');
+            }
+        }
+    }
+
+    /**
+     * Handle initialization errors
+     */
+    handleInitializationError(error) {
+        const initDuration = performance.now() - this.initStartTime;
+        Logger.error(`[ModernCharacterBuilder] Application initialization failed after ${initDuration.toFixed(2)}ms:`, error);
+        
+        // Show error in UI if possible
+        if (this.notificationSystem) {
+            this.notificationSystem.error(`Application failed to start: ${error.message}`);
+        }
+        
+        // Show critical error
+        this.showCriticalError('Application failed to start', error);
+    }
+
+    /**
+     * Show critical error to user
+     */
+    showCriticalError(message, error) {
+        Logger.error(`[ModernCharacterBuilder] CRITICAL ERROR: ${message}`, error);
+        
+        // Try notification system first
+        if (this.notificationSystem) {
+            this.notificationSystem.error(message, 0); // 0 duration = permanent
+        }
+        
+        // Show in critical error container as fallback
+        const errorContainer = document.getElementById('critical-error');
+        if (errorContainer) {
+            errorContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <h4>${message}</h4>
+                    <p><strong>Error:</strong> ${error?.message || 'Unknown error'}</p>
+                    <p><small>Check console for details</small></p>
+                    <button onclick="location.reload()" class="btn btn-primary mt-2">Reload Page</button>
+                </div>
+            `;
+            errorContainer.style.display = 'block';
+        }
+    }
+
+    /**
+     * Get debug information
+     */
+    getDebugInfo() {
         return {
-            id: this.activeTab,
-            name: activeTabData?.name,
-            instance: activeTabData?.instance,
-            hasContainer: !!activeTabData?.containerElement,
-            isMounted: activeTabData?.instance?.isMounted || false
+            appId: this.appId,
+            initialized: this.initialized,
+            currentTab: this.currentTab,
+            errorCount: this.errorCount,
+            debugMode: this.debugMode,
+            activeCharacter: StateManager.getCharacter()?.name || 'None',
+            loadedTabs: Array.from(this.tabs.keys()),
+            uptime: this.initialized ? performance.now() - this.initStartTime : 0,
+            systems: {
+                characterManager: !!this.characterManager,
+                stateManager: !!StateManager.initialized,
+                eventBus: EventBus.getStats(),
+                entityLoader: EntityLoader.entities?.size || 0,
+                notificationSystem: !!this.notificationSystem
+            }
         };
+    }
+
+    /**
+     * Cleanup application
+     */
+    async cleanup() {
+        Logger.info('[ModernCharacterBuilder] Starting application cleanup...');
+        
+        try {
+            // Cleanup tabs
+            for (const [tabId, tabData] of this.tabs) {
+                try {
+                    await tabData.instance.cleanup();
+                    Logger.debug(`[ModernCharacterBuilder] Cleaned up tab: ${tabId}`);
+                } catch (error) {
+                    Logger.error(`[ModernCharacterBuilder] Error cleaning up tab ${tabId}:`, error);
+                }
+            }
+            this.tabs.clear();
+            
+            // Cleanup UI components
+            if (this.tabNavigation) {
+                await this.tabNavigation.cleanup();
+            }
+            if (this.characterHeader) {
+                await this.characterHeader.cleanup();
+            }
+            if (this.characterListPanel) {
+                await this.characterListPanel.cleanup();
+            }
+            
+            // Clear references
+            this.characterManager = null;
+            this.notificationSystem = null;
+            this.tabNavigation = null;
+            this.characterHeader = null;
+            this.characterListPanel = null;
+            this.activeTabData = null;
+            
+            Logger.info('[ModernCharacterBuilder] Application cleanup complete');
+            
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Error during cleanup:', error);
+        }
     }
 }
 
-// Initialize application when DOM is ready
+// Application entry point
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        Logger.info('[App] DOM ready, starting application...');
+        
         const app = new ModernCharacterBuilder();
         await app.init();
-        Logger.info('[App] Application started successfully.');
         
         // Expose app instance for debugging
         window.app = app;
+        window.debugApp = {
+            getAppDebugInfo: () => app.getDebugInfo(),
+            getRenderQueueStats: () => RenderQueue.getStats(),
+            getStateConnectorStats: () => StateConnectorUtils.getGlobalStats(),
+            getEventBusStats: () => EventBus.getStats(),
+            forceStateUpdate: () => StateManager.forceNotifyStateChange(),
+            enableDebug: () => {
+                Logger.enableDebugMode();
+                EventBus.enableDebugMode();
+                app.debugMode = true;
+            }
+        };
+        
+        Logger.info('[App] Application started successfully');
         
     } catch (error) {
         Logger.error('[App] Failed to start application:', error);
         console.error('Application startup failed:', error);
+        
+        // Show error to user
+        const errorContainer = document.getElementById('critical-error');
+        if (errorContainer) {
+            errorContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <h4>Application Failed to Start</h4>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <button onclick="location.reload()" class="btn btn-primary">Reload Page</button>
+                </div>
+            `;
+            errorContainer.style.display = 'block';
+        }
     }
 });
 

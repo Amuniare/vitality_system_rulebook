@@ -1,128 +1,294 @@
-
 // modernApp/core/DataMigration.js
 import { Logger } from '../utils/Logger.js';
 
 /**
+ * Enhanced DataMigration with proper version handling and comprehensive debugging
  * Handles the migration of character data from older schemas to the current version.
- * This ensures backward compatibility as the application evolves.
  */
 export class DataMigration {
-    // The target schema version for the application.
-    // This should be updated whenever a breaking change is made to the character data structure.
+    // The target schema version - using string for consistency
     static CURRENT_VERSION = '4.0';
 
     /**
-     * A map of migration functions. Each function migrates from one version to the next.
-     * The key is the version to migrate *from*.
-     * The functions must be ordered chronologically by version.
+     * Migration functions map - each function migrates from one version to the next
      */
     static migrations = new Map([
-        // ['1.0', this.from_v1_to_v2], // Example for future migrations
-        // ['2.0', this.from_v2_to_v3], // Example for future migrations
-        ['3.0', this.from_v3_to_v4],   // A hypothetical migration
+        ['1', (data) => DataMigration._migrateTo2(data)],
+        ['1.0', (data) => DataMigration._migrateTo2(data)],
+        ['2', (data) => DataMigration._migrateTo3(data)],
+        ['2.0', (data) => DataMigration._migrateTo3(data)],
+        ['3', (data) => DataMigration._migrateTo4(data)],
+        ['3.0', (data) => DataMigration._migrateTo4(data)],
+        ['4', (data) => DataMigration._migrateTo4_0(data)], // Fix for version mismatch
+        ['4.0', (data) => data] // Already current version
     ]);
 
     /**
-     * Migrates character data to the current schema version.
-     * It sequentially applies all necessary migration steps.
-     * @param {Object} characterData - The character data to migrate. It may or may not have a schemaVersion property.
-     * @returns {Object} The migrated character data, or the original data if no migration was needed or possible.
+     * Migrates character data to the current version with enhanced debugging
+     * @param {Object} characterData - The character data to migrate
+     * @returns {Object} - The migrated character data
      */
-    static migrate(characterData) {
-        Logger.info('[DataMigration] Starting migration check...');
-
-        if (!characterData || typeof characterData !== 'object') {
-            Logger.error('[DataMigration] Cannot migrate invalid or null character data.');
-            return null;
+    static async migrate(characterData) {
+        if (!characterData) {
+            Logger.error('[DataMigration] Cannot migrate null character data');
+            throw new Error('Character data is required for migration');
         }
 
-        // Assume un-versioned data is an old version that needs migration. '3.0' is a placeholder.
-        let currentVersion = characterData.schemaVersion || '3.0'; 
-        Logger.info(`[DataMigration] Current data version: "${currentVersion}". Target version: "${this.CURRENT_VERSION}".`);
+        let currentVersion = characterData.schemaVersion || characterData.version || '1';
+        
+        // Normalize version to string for consistent comparison
+        currentVersion = String(currentVersion);
+        
+        Logger.info(`[DataMigration] Starting migration from version "${currentVersion}" to "${this.CURRENT_VERSION}"`);
 
+        // If already current version, return as-is
         if (currentVersion === this.CURRENT_VERSION) {
-            Logger.info('[DataMigration] Data is already at the current version. No migration needed.');
+            Logger.debug('[DataMigration] Data is already at current version, no migration needed');
             return characterData;
         }
-        
-        // Clone the data to avoid mutating the original object directly during the process.
-        let migratedData = { ...characterData };
 
-        // Loop through the migrations, applying them in order until the target version is reached.
-        while (this.migrations.has(currentVersion) && currentVersion !== this.CURRENT_VERSION) {
-            const migrationFunc = this.migrations.get(currentVersion);
-            
-            if (typeof migrationFunc !== 'function') {
-                Logger.error(`[DataMigration] Invalid migration function found for version "${currentVersion}". Aborting.`);
-                return characterData; // Return original data on error to prevent corruption.
+        let migrationData = JSON.parse(JSON.stringify(characterData)); // Deep copy
+        let migrationPath = [];
+        let migrationCount = 0;
+        const maxMigrations = 10; // Prevent infinite loops
+
+        try {
+            while (currentVersion !== this.CURRENT_VERSION && migrationCount < maxMigrations) {
+                Logger.debug(`[DataMigration] Attempting migration from version "${currentVersion}"`);
+                
+                const migrationFunction = this.migrations.get(currentVersion);
+                
+                if (!migrationFunction) {
+                    Logger.error(`[DataMigration] No migration path found for version "${currentVersion}"`);
+                    Logger.debug('[DataMigration] Available migration versions:', Array.from(this.migrations.keys()));
+                    throw new Error(`No migration available for version "${currentVersion}"`);
+                }
+
+                const previousVersion = currentVersion;
+                const previousData = JSON.parse(JSON.stringify(migrationData));
+                
+                Logger.debug(`[DataMigration] Executing migration function for version "${currentVersion}"`);
+                migrationData = migrationFunction(migrationData);
+                
+                // Update version
+                currentVersion = migrationData.schemaVersion || migrationData.version || this.CURRENT_VERSION;
+                currentVersion = String(currentVersion);
+                
+                migrationPath.push({
+                    from: previousVersion,
+                    to: currentVersion,
+                    timestamp: Date.now()
+                });
+                
+                migrationCount++;
+                
+                Logger.info(`[DataMigration] Migration step ${migrationCount}: "${previousVersion}" → "${currentVersion}"`);
+                
+                // Validate migration didn't break the data
+                if (!migrationData.id || !migrationData.name) {
+                    Logger.error('[DataMigration] Migration corrupted essential data:', {
+                        id: migrationData.id,
+                        name: migrationData.name,
+                        fromVersion: previousVersion,
+                        toVersion: currentVersion
+                    });
+                    throw new Error(`Migration from "${previousVersion}" to "${currentVersion}" corrupted character data`);
+                }
             }
-            
-            try {
-                Logger.info(`[DataMigration] Applying migration from version "${currentVersion}"...`);
-                migratedData = migrationFunc(migratedData);
-                currentVersion = migratedData.schemaVersion;
-                Logger.info(`[DataMigration] Successfully migrated to version "${currentVersion}".`);
-            } catch (error) {
-                Logger.error(`[DataMigration] An error occurred during migration from version "${currentVersion}":`, error);
-                return characterData; // Return original data to prevent saving a partially migrated, corrupt state.
+
+            if (migrationCount >= maxMigrations) {
+                Logger.error(`[DataMigration] Migration exceeded maximum attempts (${maxMigrations})`);
+                throw new Error('Migration failed: too many steps required');
             }
-        }
 
-        if (migratedData.schemaVersion !== this.CURRENT_VERSION) {
-            Logger.warn(`[DataMigration] Migration ended at version "${migratedData.schemaVersion}", but target is "${this.CURRENT_VERSION}". The data may be partially migrated or a migration script may be missing.`);
-        } else {
-            Logger.info('[DataMigration] Migration process completed successfully.');
-        }
+            // Ensure final version is set correctly
+            migrationData.schemaVersion = this.CURRENT_VERSION;
+            if (migrationData.version) {
+                delete migrationData.version; // Remove old version field
+            }
 
-        return migratedData;
+            Logger.info(`[DataMigration] Migration completed successfully:`, {
+                finalVersion: this.CURRENT_VERSION,
+                migrationSteps: migrationCount,
+                migrationPath: migrationPath.map(step => `${step.from}→${step.to}`).join(' → '),
+                characterName: migrationData.name,
+                characterId: migrationData.id
+            });
+
+            return migrationData;
+
+        } catch (error) {
+            Logger.error('[DataMigration] Migration failed:', {
+                error: error.message,
+                originalVersion: characterData.schemaVersion || characterData.version,
+                currentVersion,
+                migrationPath,
+                characterName: characterData.name,
+                characterId: characterData.id
+            });
+            throw error;
+        }
     }
 
     /**
-     * A hypothetical migration function from v3.0 to v4.0.
-     * This demonstrates how to safely add, remove, or rename properties.
-     * @param {Object} data - The character data in v3.0 format.
-     * @returns {Object} The character data in v4.0 format.
+     * Migration function: v1 → v2
      */
-    static from_v3_to_v4(data) {
-        Logger.debug('[DataMigration] Executing migration logic: v3.0 -> v4.0');
-        let migrated = { ...data };
-
-        // --- Example Migration Logic ---
-
-        // 1. ADD: Ensure new top-level arrays from the v4 schema exist.
-        Logger.debug('[DataMigration v3->v4] Ensuring top-level purchase arrays exist...');
-        const requiredArrays = ['traits', 'flaws', 'boons', 'features', 'senses', 'specialAttacks'];
-        requiredArrays.forEach(type => {
-            if (!migrated[type] || !Array.isArray(migrated[type])) {
-                migrated[type] = [];
-                Logger.debug(`[DataMigration v3->v4] Added missing or invalid '${type}' array.`);
-            }
-        });
-
-        // 2. MODIFY: Ensure 'archetypes' is a structured object, not just a single value.
-        if (typeof migrated.archetype === 'string') {
-            Logger.debug('[DataMigration v3->v4] Converting legacy "archetype" string to structured object.');
-            // This is a guess. The actual logic would depend on the old structure.
-            migrated.archetypes = { uniqueAbility: migrated.archetype }; 
-            delete migrated.archetype;
-        } else if (!migrated.archetypes || typeof migrated.archetypes !== 'object') {
-             Logger.debug('[DataMigration v3->v4] Initializing archetypes as an object.');
-             migrated.archetypes = {};
+    static _migrateTo2(data) {
+        Logger.debug('[DataMigration] Migrating to version 2.0');
+        
+        const migrated = { ...data };
+        
+        // Add basic structure improvements for v2
+        if (!migrated.archetypes) {
+            migrated.archetypes = {};
         }
-
-        // 3. RENAME: An old property might be renamed for clarity.
-        if (migrated.characterNotes) {
-            Logger.debug('[DataMigration v3->v4] Renaming "characterNotes" to "bio".');
-            migrated.bio = migrated.characterNotes;
-            delete migrated.characterNotes;
+        
+        if (!migrated.attributes) {
+            migrated.attributes = {
+                power: 8,
+                endurance: 8,
+                agility: 8,
+                intellect: 8,
+                awareness: 8,
+                will: 8
+            };
         }
-
-        // --- End of Example Logic ---
-
-        // CRITICAL: Update the schema version on the migrated object.
-        migrated.schemaVersion = '4.0';
-        Logger.debug(`[DataMigration v3->v4] Set schemaVersion to "${migrated.schemaVersion}".`);
-
+        
+        migrated.schemaVersion = '2.0';
         return migrated;
+    }
+
+    /**
+     * Migration function: v2 → v3
+     */
+    static _migrateTo3(data) {
+        Logger.debug('[DataMigration] Migrating to version 3.0');
+        
+        const migrated = { ...data };
+        
+        // Add pools structure for v3
+        if (!migrated.pools) {
+            migrated.pools = {
+                mainPool: { available: 300, spent: 0 },
+                combatAttributes: { available: 70, spent: 0 },
+                utilityAttributes: { available: 70, spent: 0 }
+            };
+        }
+        
+        // Add purchases tracking
+        if (!migrated.purchases) {
+            migrated.purchases = {
+                flaws: [],
+                traits: [],
+                boons: [],
+                uniqueAbilities: [],
+                actionUpgrades: []
+            };
+        }
+        
+        migrated.schemaVersion = '3.0';
+        return migrated;
+    }
+
+    /**
+     * Migration function: v3 → v4
+     */
+    static _migrateTo4(data) {
+        Logger.debug('[DataMigration] Migrating to version 4.0');
+        
+        const migrated = { ...data };
+        
+        // Add unified purchase system for v4
+        if (!migrated.unifiedPurchases) {
+            migrated.unifiedPurchases = [];
+            
+            // Migrate old purchases to unified format
+            if (migrated.purchases) {
+                Object.entries(migrated.purchases).forEach(([category, items]) => {
+                    items.forEach(item => {
+                        migrated.unifiedPurchases.push({
+                            id: item.id || `migrated_${category}_${Date.now()}`,
+                            category,
+                            entityId: item.entityId || item.id,
+                            data: item,
+                            timestamp: Date.now()
+                        });
+                    });
+                });
+            }
+        }
+        
+        migrated.schemaVersion = '4.0';
+        return migrated;
+    }
+
+    /**
+     * Migration function: v4 (string) → v4.0 (string) - Fix version mismatch
+     */
+    static _migrateTo4_0(data) {
+        Logger.debug('[DataMigration] Migrating from version "4" to "4.0" (version format fix)');
+        
+        const migrated = { ...data };
+        
+        // Ensure all v4.0 features are present
+        if (!migrated.unifiedPurchases) {
+            migrated.unifiedPurchases = [];
+        }
+        
+        // Ensure correct version format
+        migrated.schemaVersion = '4.0';
+        
+        // Remove old version field if present
+        if (migrated.version) {
+            delete migrated.version;
+        }
+        
+        Logger.debug('[DataMigration] Version format migration complete');
+        return migrated;
+    }
+
+    /**
+     * Validates that character data has required fields for the current version
+     */
+    static validate(characterData) {
+        const requiredFields = ['id', 'name', 'schemaVersion'];
+        const missing = requiredFields.filter(field => !characterData[field]);
+        
+        if (missing.length > 0) {
+            Logger.error('[DataMigration] Validation failed - missing required fields:', missing);
+            return false;
+        }
+        
+        if (characterData.schemaVersion !== this.CURRENT_VERSION) {
+            Logger.warn(`[DataMigration] Validation warning - version mismatch: expected "${this.CURRENT_VERSION}", got "${characterData.schemaVersion}"`);
+            return false;
+        }
+        
+        Logger.debug('[DataMigration] Validation passed');
+        return true;
+    }
+
+    /**
+     * Gets migration information for debugging
+     */
+    static getMigrationInfo() {
+        return {
+            currentVersion: this.CURRENT_VERSION,
+            availableMigrations: Array.from(this.migrations.keys()),
+            migrationCount: this.migrations.size
+        };
+    }
+
+    /**
+     * Checks if a version can be migrated to current
+     */
+    static canMigrate(version) {
+        const versionStr = String(version);
+        
+        if (versionStr === this.CURRENT_VERSION) {
+            return true;
+        }
+        
+        return this.migrations.has(versionStr);
     }
 }

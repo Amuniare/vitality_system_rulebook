@@ -4,21 +4,23 @@ import { EventBus } from './EventBus.js';
 import { DataMigration } from './DataMigration.js';
 
 /**
- * StateManager - Central state management for the character builder.
+ * StateManager - Central state management for the character builder with enhanced debugging
  * Manages the active character's state, history, and persistence.
  */
 export class StateManager {
     static characterManager = null; 
     static _internalCharacterState = null; 
     static _subscribers = new Set(); 
+    static _previousState = null; // For debugging state changes
     
     static history = [];
     static historyIndex = -1;
     static maxHistorySize = 50;
     static autoSaveTimeout = null;
     static initialized = false;
+    static updateCount = 0;
     
-    // FIXED: Accept characterManager instance during initialization
+    // Accept characterManager instance during initialization
     static async init(characterManagerInstance) {
         if (this.initialized) {
             Logger.warn('[StateManager] Already initialized.');
@@ -27,7 +29,7 @@ export class StateManager {
         
         Logger.info('[StateManager] Initializing...');
         
-        // FIXED: Set characterManager before using it
+        // Set characterManager before using it
         if (!characterManagerInstance) {
             throw new Error('StateManager requires a CharacterManager instance');
         }
@@ -43,235 +45,247 @@ export class StateManager {
         });
         
         this.initialized = true;
-        Logger.info('[StateManager] Initialization complete.');
+        Logger.info('[StateManager] Initialization complete. Initial state:', this._internalCharacterState);
     }
-
+    
+    static async loadActiveCharacter() {
+        Logger.info('[StateManager] Loading active character...');
+        
+        try {
+            const character = await this.characterManager.getActiveCharacter();
+            
+            if (character) {
+                // Store previous state for debugging
+                this._previousState = this._internalCharacterState ? 
+                    JSON.parse(JSON.stringify(this._internalCharacterState)) : null;
+                
+                this._internalCharacterState = character;
+                this.updateCount++;
+                
+                Logger.info('[StateManager] Active character loaded successfully:', {
+                    name: character.name,
+                    id: character.id,
+                    tier: character.tier,
+                    updateCount: this.updateCount
+                });
+                
+                // Emit event with debugging info
+                Logger.debug('[StateManager] Emitting CHARACTER_CHANGED event...');
+                EventBus.emit('CHARACTER_CHANGED', { 
+                    character: this._internalCharacterState,
+                    updateCount: this.updateCount,
+                    timestamp: Date.now()
+                });
+                Logger.debug('[StateManager] CHARACTER_CHANGED event emitted successfully');
+            } else {
+                Logger.warn('[StateManager] No active character found');
+                this._internalCharacterState = null;
+            }
+        } catch (error) {
+            Logger.error('[StateManager] Failed to load active character:', error);
+            throw error;
+        }
+    }
+    
     static getState() {
-        if (!this._internalCharacterState) {
+        if (!this.initialized) {
+            Logger.warn('[StateManager] getState() called before initialization');
             return null;
         }
-        try {
-            return JSON.parse(JSON.stringify(this._internalCharacterState));
-        } catch (e) {
-            Logger.error('[StateManager] Error deep cloning state in getState():', e, this._internalCharacterState);
-            return null; 
-        }
-    }
-
-    static subscribe(callback) {
-        if (typeof callback !== 'function') {
-            Logger.warn('[StateManager] Attempted to subscribe with a non-function.');
-            return () => {}; 
-        }
-        this._subscribers.add(callback);
-        Logger.debug('[StateManager] New subscriber added. Total:', this._subscribers.size);
-        return () => this.unsubscribe(callback);
-    }
-
-    static unsubscribe(callback) {
-        this._subscribers.delete(callback);
-        Logger.debug('[StateManager] Subscriber removed. Total:', this._subscribers.size);
-    }
-
-    static _notifySubscribers() {
-        Logger.debug(`[StateManager] Notifying ${this._subscribers.size} subscribers.`);
-        const currentState = this.getState();
         
-        this._subscribers.forEach(callback => {
-            try {
-                callback(currentState);
-            } catch (error) {
-                Logger.error('[StateManager] Error in subscriber callback:', error);
-            }
-        });
-    }
-
-    static async updateState(updates, actionDescription = 'Unknown update') {
         if (!this._internalCharacterState) {
-            Logger.error('[StateManager] Cannot update state: No active character.');
-            return { success: false, error: 'No active character loaded.' };
+            Logger.debug('[StateManager] getState() returning null - no active character');
+            return null;
         }
-
+        
+        // Return a deep copy to prevent external modifications
+        const state = JSON.parse(JSON.stringify(this._internalCharacterState));
+        Logger.debug('[StateManager] getState() returning state for:', state.name);
+        return state;
+    }
+    
+    static async updateState(newState, description = 'State update') {
+        if (!this.initialized) {
+            Logger.error('[StateManager] updateState() called before initialization');
+            throw new Error('StateManager not initialized');
+        }
+        
+        if (!newState) {
+            Logger.error('[StateManager] updateState() called with null state');
+            throw new Error('Cannot update state with null value');
+        }
+        
+        Logger.info(`[StateManager] updateState() called: ${description}`, {
+            updateCount: this.updateCount + 1,
+            newStateName: newState.name,
+            newStateId: newState.id
+        });
+        
         try {
-            this._addToHistory(JSON.parse(JSON.stringify(this._internalCharacterState)));
-
-            const updatedState = { ...this._internalCharacterState };
+            // Store previous state for debugging and history
+            this._previousState = this._internalCharacterState ? 
+                JSON.parse(JSON.stringify(this._internalCharacterState)) : null;
             
-            for (const [key, value] of Object.entries(updates)) {
-                updatedState[key] = value;
+            // Validate the new state
+            if (!newState.id || !newState.name) {
+                Logger.error('[StateManager] Invalid state structure:', newState);
+                throw new Error('State must have id and name properties');
             }
             
-            updatedState.updatedAt = Date.now();
-            this._internalCharacterState = updatedState;
-
-            this._notifySubscribers();
-            this._persistCharacterState();
+            // Add to history before updating
+            if (this._internalCharacterState) {
+                this.addToHistory(this._internalCharacterState, description);
+            }
+            
+            // Update internal state
+            this._internalCharacterState = JSON.parse(JSON.stringify(newState));
+            this.updateCount++;
+            
+            Logger.info('[StateManager] Internal state updated successfully:', {
+                updateCount: this.updateCount,
+                characterName: this._internalCharacterState.name
+            });
+            
+            // Save to character manager
+            try {
+                await this.characterManager.updateCharacter(this._internalCharacterState.id, this._internalCharacterState);
+                Logger.debug('[StateManager] Character saved to CharacterManager');
+            } catch (saveError) {
+                Logger.error('[StateManager] Failed to save character to CharacterManager:', saveError);
+                // Don't throw here - the state update succeeded, save failure is secondary
+            }
+            
+            // Emit change event with debugging info
+            Logger.info('[StateManager] Emitting CHARACTER_CHANGED event...', {
+                description,
+                updateCount: this.updateCount,
+                timestamp: Date.now()
+            });
             
             EventBus.emit('CHARACTER_CHANGED', { 
-                character: this.getState(), 
-                updates, 
-                description: actionDescription 
+                character: this._internalCharacterState,
+                previousCharacter: this._previousState,
+                description,
+                updateCount: this.updateCount,
+                timestamp: Date.now()
             });
-
-            Logger.debug(`[StateManager] State updated: ${actionDescription}`);
-            return { success: true };
+            
+            Logger.info('[StateManager] CHARACTER_CHANGED event emitted successfully');
+            
+            // Schedule auto-save
+            this.scheduleAutoSave();
             
         } catch (error) {
-            Logger.error('[StateManager] Failed to update state:', error);
-            return { success: false, error: error.message };
-        }
-    }
-
-    // FIXED: Add error handling for missing characterManager
-    static async loadActiveCharacter() {
-        Logger.info('[StateManager] Attempting to load active character data via CharacterManager...');
-        try {
-            // FIXED: Check if characterManager exists before using it
-            if (!this.characterManager) {
-                Logger.error('[StateManager] CharacterManager not available. Using default character.');
-                this._internalCharacterState = this.createDefaultCharacter();
-                this.clearHistory();
-                this._notifySubscribers();
-                EventBus.emit('CHARACTER_LOADED', { character: this.getState() });
-                return;
-            }
-
-            const characterDataFromManager = this.characterManager.getActiveCharacter(); 
-            
-            if (!characterDataFromManager) {
-                Logger.warn('[StateManager] CharacterManager returned no active character. StateManager will use a default structure.');
-                this._internalCharacterState = this.createDefaultCharacter();
-                Logger.info('[StateManager] Initialized with a default character structure.');
-            } else {
-                const migratedData = await DataMigration.migrate(characterDataFromManager);
-                if (migratedData === null && characterDataFromManager !== null) {
-                     Logger.error('[StateManager] CRITICAL: Character data migration resulted in null. Falling back to default.');
-                     this._internalCharacterState = this.createDefaultCharacter();
-                } else {
-                    this._internalCharacterState = migratedData;
-                }
-                Logger.info(`[StateManager] Loaded character: ${this._internalCharacterState?.name} (ID: ${this._internalCharacterState?.id})`);
-            }
-            
-            this.clearHistory(); 
-            this._notifySubscribers(); 
-            EventBus.emit('CHARACTER_LOADED', { character: this.getState() });
-            
-        } catch (error) {
-            Logger.error('[StateManager] Failed to load character, using default:', error);
-            this._internalCharacterState = this.createDefaultCharacter();
-            this.clearHistory();
-            this._notifySubscribers();
-            EventBus.emit('CHARACTER_LOADED', { character: this.getState() });
+            Logger.error('[StateManager] updateState() failed:', error);
+            throw error;
         }
     }
     
-    static createDefaultCharacter() {
-        return {
-            id: 'default_' + Date.now(), 
-            name: 'New Character', 
-            tier: 4, 
-            schemaVersion: DataMigration.CURRENT_VERSION, 
-            archetypes: {}, 
-            attributes: {}, 
-            traits: [], 
-            flaws: [], 
-            boons: [], 
-            features: [], 
-            action_upgrades: [], 
-            unique_abilities: [], 
-            special_attacks: [],
-            createdAt: Date.now(), 
-            updatedAt: Date.now()
+    static addToHistory(state, description) {
+        const historyEntry = {
+            state: JSON.parse(JSON.stringify(state)),
+            description,
+            timestamp: Date.now()
         };
-    }
         
-    static _persistCharacterState() {
-        if (!this.initialized || !this.characterManager || !this._internalCharacterState) {
-            Logger.warn('[StateManager] Cannot persist state: Not fully initialized or character state is null.');
-            return;
-        }
-        
-        if (this.autoSaveTimeout) {
-            clearTimeout(this.autoSaveTimeout);
-        }
-        
-        this.autoSaveTimeout = setTimeout(() => {
-            if (this.characterManager && this._internalCharacterState) {
-                this.characterManager.saveActiveCharacter(this._internalCharacterState);
-                Logger.debug('[StateManager] Character state persisted via CharacterManager (debounced).');
-            }
-        }, 500); 
-    }
-    
-    static setupAutoSave() {
-        Logger.info('[StateManager] Auto-save behavior integrated into state persistence logic.');
-    }
-        
-    static _addToHistory(stateSnapshot) {
-        if (!stateSnapshot) {
-            Logger.warn('[StateManager] Attempted to add null/undefined state to history.');
-            return;
-        }
-        
-        // Remove future history if we're not at the end
+        // Remove any future history entries (if we're not at the latest state)
         if (this.historyIndex < this.history.length - 1) {
             this.history = this.history.slice(0, this.historyIndex + 1);
         }
         
-        this.history.push(stateSnapshot);
+        this.history.push(historyEntry);
         this.historyIndex = this.history.length - 1;
         
         // Limit history size
         if (this.history.length > this.maxHistorySize) {
-            const excess = this.history.length - this.maxHistorySize;
-            this.history = this.history.slice(excess);
-            this.historyIndex -= excess;
+            this.history.shift();
+            this.historyIndex--;
         }
         
-        Logger.debug(`[StateManager] Added to history. Total entries: ${this.history.length}, Index: ${this.historyIndex}`);
+        Logger.debug(`[StateManager] Added to history: ${description}. History size: ${this.history.length}`);
     }
     
-    static clearHistory() {
-        this.history = [];
-        this.historyIndex = -1;
-        Logger.info('[StateManager] History cleared.');
+    static setupAutoSave() {
+        Logger.debug('[StateManager] Setting up auto-save...');
+        // Auto-save is handled by scheduleAutoSave() called after each update
     }
-
-    static undo() {
-        if (this.historyIndex > 0) {
-            this.historyIndex--;
-            this._internalCharacterState = JSON.parse(JSON.stringify(this.history[this.historyIndex]));
-            this._notifySubscribers();
-            this._persistCharacterState();
-            EventBus.emit('CHARACTER_CHANGED', { 
-                character: this.getState(), 
-                updates: {}, 
-                description: 'Undo' 
-            });
-            Logger.info(`[StateManager] Undo performed. History index: ${this.historyIndex}`);
-            return true;
+    
+    static scheduleAutoSave() {
+        if (this.autoSaveTimeout) {
+            clearTimeout(this.autoSaveTimeout);
         }
-        Logger.warn('[StateManager] Cannot undo: No previous state available.');
-        return false;
+        
+        this.autoSaveTimeout = setTimeout(async () => {
+            try {
+                if (this._internalCharacterState) {
+                    Logger.debug('[StateManager] Auto-saving character...');
+                    await this.characterManager.saveActiveCharacter(this._internalCharacterState);
+                    Logger.debug('[StateManager] Auto-save completed');
+                }
+            } catch (error) {
+                Logger.error('[StateManager] Auto-save failed:', error);
+            }
+        }, 1000); // Auto-save after 1 second of inactivity
     }
-
-    static redo() {
-        if (this.historyIndex < this.history.length - 1) {
-            this.historyIndex++;
-            this._internalCharacterState = JSON.parse(JSON.stringify(this.history[this.historyIndex]));
-            this._notifySubscribers();
-            this._persistCharacterState();
-            EventBus.emit('CHARACTER_CHANGED', { 
-                character: this.getState(), 
-                updates: {}, 
-                description: 'Redo' 
-            });
-            Logger.info(`[StateManager] Redo performed. History index: ${this.historyIndex}`);
-            return true;
+    
+    static async undo() {
+        if (this.historyIndex <= 0) {
+            Logger.warn('[StateManager] Cannot undo: No previous state available.');
+            return false;
         }
-        Logger.warn('[StateManager] Cannot redo: No future state available.');
-        return false;
+        
+        this.historyIndex--;
+        const historyEntry = this.history[this.historyIndex];
+        
+        Logger.info(`[StateManager] Undoing to: ${historyEntry.description}`);
+        
+        // Update state without adding to history
+        this._previousState = this._internalCharacterState ? 
+            JSON.parse(JSON.stringify(this._internalCharacterState)) : null;
+        this._internalCharacterState = JSON.parse(JSON.stringify(historyEntry.state));
+        this.updateCount++;
+        
+        // Save and emit change
+        await this.characterManager.updateCharacter(this._internalCharacterState.id, this._internalCharacterState);
+        EventBus.emit('CHARACTER_CHANGED', { 
+            character: this._internalCharacterState,
+            description: `Undo: ${historyEntry.description}`,
+            updateCount: this.updateCount,
+            timestamp: Date.now()
+        });
+        
+        Logger.info(`[StateManager] Undo completed. History index: ${this.historyIndex}`);
+        return true;
+    }
+    
+    static async redo() {
+        if (this.historyIndex >= this.history.length - 1) {
+            Logger.warn('[StateManager] Cannot redo: No future state available.');
+            return false;
+        }
+        
+        this.historyIndex++;
+        const historyEntry = this.history[this.historyIndex];
+        
+        Logger.info(`[StateManager] Redoing to: ${historyEntry.description}`);
+        
+        // Update state without adding to history
+        this._previousState = this._internalCharacterState ? 
+            JSON.parse(JSON.stringify(this._internalCharacterState)) : null;
+        this._internalCharacterState = JSON.parse(JSON.stringify(historyEntry.state));
+        this.updateCount++;
+        
+        // Save and emit change
+        await this.characterManager.updateCharacter(this._internalCharacterState.id, this._internalCharacterState);
+        EventBus.emit('CHARACTER_CHANGED', { 
+            character: this._internalCharacterState,
+            description: `Redo: ${historyEntry.description}`,
+            updateCount: this.updateCount,
+            timestamp: Date.now()
+        });
+        
+        Logger.info(`[StateManager] Redo completed. History index: ${this.historyIndex}`);
+        return true;
     }
 
     // Helper method to get character info
@@ -279,7 +293,7 @@ export class StateManager {
         return this.getState();
     }
 
-    // Debug methods
+    // Enhanced debug methods
     static getDebugInfo() {
         return {
             initialized: this.initialized,
@@ -287,7 +301,35 @@ export class StateManager {
             hasState: !!this._internalCharacterState,
             subscriberCount: this._subscribers.size,
             historyLength: this.history.length,
-            historyIndex: this.historyIndex
+            historyIndex: this.historyIndex,
+            updateCount: this.updateCount,
+            currentCharacterName: this._internalCharacterState?.name || 'None',
+            currentCharacterId: this._internalCharacterState?.id || 'None'
         };
+    }
+    
+    static getStateHistory() {
+        return this.history.map((entry, index) => ({
+            index,
+            description: entry.description,
+            timestamp: entry.timestamp,
+            isCurrent: index === this.historyIndex,
+            characterName: entry.state.name
+        }));
+    }
+    
+    // Force state change notification (for debugging)
+    static forceNotifyStateChange() {
+        if (this._internalCharacterState) {
+            Logger.info('[StateManager] Force notifying state change');
+            EventBus.emit('CHARACTER_CHANGED', { 
+                character: this._internalCharacterState,
+                description: 'Force notification',
+                updateCount: this.updateCount,
+                timestamp: Date.now()
+            });
+        } else {
+            Logger.warn('[StateManager] Cannot force notify - no state available');
+        }
     }
 }

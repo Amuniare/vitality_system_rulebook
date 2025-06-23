@@ -1,200 +1,406 @@
 // modernApp/components/UniversalCard.js
-// No changes were strictly needed here for the described issues,
-// as the data-action attributes it generates ('purchase_entity', 'select_archetype')
-// are correct. The fix is in how the consuming tabs interpret these.
-// For completeness and to ensure it's aligned with the consuming tabs,
-// here is the original UniversalCard.js content provided in the codebase.txt
-// as it appears to be correctly generating the necessary data attributes.
-
+import { Component } from '../core/Component.js';
+import { PurchaseButton } from './PurchaseButton.js';
 import { Logger } from '../utils/Logger.js';
 import { Formatters } from '../utils/Formatters.js';
 
 /**
- * A "dumb" static component for rendering any game entity as a card.
- * It contains no business logic and relies on a pre-computed `context` object for its state.
+ * Enhanced UniversalCard component with integrated purchase handling
+ * Renders any game entity with purchase/select capabilities
  */
-export class UniversalCard {
-    /**
-     * Renders the card's HTML based on entity data and pre-calculated context.
-     * @param {Object} entity - The raw entity data from unified-game-data.json.
-     * @param {Object} context - A pre-computed context object.
-     * @param {boolean} context.isPurchased - Whether the character has this entity or it's the selected one in a category.
-     * @param {boolean} [context.isAffordable=true] - Whether the character can afford this entity (defaults to true for non-purchasables).
-     * @param {boolean} [context.areRequirementsMet=true] - Whether the character meets all prerequisites (defaults to true).
-     * @param {string[]} [context.unmetRequirements=[]] - A list of unmet requirement descriptions.
-     * @param {string} context.entityType - The type of the entity (e.g., 'flaw', 'trait', 'archetype').
-     * @param {string} [context.interactionType='purchase'] - The type of interaction ('purchase' or 'select').
-     * @param {string} [context.categoryKey=''] - The category key, useful for select interactions (e.g., 'movement' for movement archetypes).
-     * @returns {string} The complete HTML for the card.
-     */
-    static render(entity, context) {
-        if (!entity || !context) {
-            Logger.error('[UniversalCard] Render called with missing entity or context.');
-            return '<div class="purchase-card error"><p>Error: Card data missing.</p></div>';
+export class UniversalCard extends Component {
+    static propSchema = {
+        // Entity data
+        entity: { type: 'object', required: true },
+        entityType: { type: 'string', required: true },
+        
+        // Display options
+        size: { type: 'string', default: 'medium' }, // small, medium, large
+        layout: { type: 'string', default: 'vertical' }, // vertical, horizontal, compact
+        showDescription: { type: 'boolean', default: true },
+        showCost: { type: 'boolean', default: true },
+        showEffects: { type: 'boolean', default: true },
+        showRequirements: { type: 'boolean', default: true },
+        
+        // Purchase state
+        isPurchased: { type: 'boolean', default: false },
+        isSelected: { type: 'boolean', default: false },
+        canPurchase: { type: 'boolean', default: true },
+        canRemove: { type: 'boolean', default: true },
+        
+        // Purchase handlers (optional)
+        onPurchase: { type: 'function', optional: true },
+        onRemove: { type: 'function', optional: true },
+        onSelect: { type: 'function', optional: true },
+        
+        // Additional metadata
+        metadata: { type: 'object', default: () => ({}) }
+    };
+
+    constructor(container, initialProps = {}) {
+        super(initialProps, container);
+        this.purchaseButton = null;
+        this.cardElement = null;
+        Logger.debug('[UniversalCard] Constructed for entity:', this.props.entity?.id);
+    }
+
+    async init() {
+        Logger.debug('[UniversalCard] Initializing...');
+        this.render();
+        this.setupEventListeners();
+    }
+
+    render() {
+        if (!this.container) {
+            Logger.warn('[UniversalCard] No container available for render');
+            return;
         }
 
-        const {
-            isPurchased, // True if selected (for archetypes) or owned (for purchasables)
-            isAffordable = true, // Default to true, relevant for 'purchase' type
-            areRequirementsMet = true, // Default to true
-            unmetRequirements = [],
-            entityType,
-            interactionType = 'purchase', // Default to 'purchase'
-            categoryKey = '' // Used for select_archetype data attribute
-        } = context;
+        if (!this.props.entity) {
+            Logger.error('[UniversalCard] No entity provided for render');
+            this.container.innerHTML = '<div class="card-error">No entity data</div>';
+            return;
+        }
 
-        const cardClasses = [
-            'purchase-card', // Base class
-            interactionType === 'select' ? 'selectable-card' : 'purchasable-card',
-            !isAffordable && interactionType === 'purchase' && !isPurchased ? 'unaffordable' : '',
-            !areRequirementsMet ? 'requirements-unmet' : '',
-            isPurchased ? 'purchased' : '', // 'purchased' class also means 'selected' for archetypes
-        ].filter(Boolean).join(' ');
+        const cardClasses = this.getCardClasses();
+        const entity = this.props.entity;
+        
+        this.container.innerHTML = `
+            <div class="${cardClasses}" data-entity-id="${entity.id}" data-entity-type="${this.props.entityType}">
+                ${this.renderCardHeader()}
+                ${this.renderCardBody()}
+                ${this.renderCardFooter()}
+            </div>
+        `;
 
-        // Since nothing is truly permanent, the button is never disabled for interaction.
-        const isButtonDisabled = false;
+        this.cardElement = this.container.querySelector('.universal-card');
+        
+        // Initialize purchase button
+        this.initializePurchaseButton();
+        
+        Logger.debug(`[UniversalCard] Rendered ${this.props.entityType} card:`, entity.id);
+    }
 
-        let buttonText = '';
-        let buttonAction = '';
+    renderCardHeader() {
+        const entity = this.props.entity;
+        const cost = this.props.showCost && entity.cost ? `<span class="card-cost">${entity.cost}pts</span>` : '';
+        
+        return `
+            <div class="card-header">
+                <div class="card-title-row">
+                    <h3 class="card-title">${entity.name || 'Unnamed'}</h3>
+                    ${cost}
+                </div>
+                ${this.renderCardTags()}
+            </div>
+        `;
+    }
 
-        if (interactionType === 'select') {
-            if (isPurchased) { 
-                buttonText = 'Selected'; 
-                buttonAction = ''; // No action if already selected, or perhaps 'deselect_archetype' if desired
+    renderCardTags() {
+        const entity = this.props.entity;
+        const tags = [];
+        
+        // Add type tag
+        if (this.props.entityType) {
+            tags.push(Formatters.camelToTitle(this.props.entityType));
+        }
+        
+        // Add entity-specific tags
+        if (entity.category) {
+            tags.push(Formatters.camelToTitle(entity.category));
+        }
+        
+        if (entity.tier) {
+            tags.push(`Tier ${entity.tier}`);
+        }
+        
+        if (entity.tags && Array.isArray(entity.tags)) {
+            tags.push(...entity.tags);
+        }
+        
+        if (tags.length === 0) return '';
+        
+        return `
+            <div class="card-tags">
+                ${tags.map(tag => `<span class="card-tag">${tag}</span>`).join('')}
+            </div>
+        `;
+    }
+
+    renderCardBody() {
+        const parts = [];
+        
+        if (this.props.showDescription) {
+            parts.push(this.renderDescription());
+        }
+        
+        if (this.props.showEffects) {
+            parts.push(this.renderEffects());
+        }
+        
+        if (this.props.showRequirements) {
+            parts.push(this.renderRequirements());
+        }
+        
+        return `<div class="card-body">${parts.join('')}</div>`;
+    }
+
+    renderDescription() {
+        const entity = this.props.entity;
+        
+        if (!entity.description) return '';
+        
+        return `
+            <div class="card-description">
+                <p>${entity.description}</p>
+            </div>
+        `;
+    }
+
+    renderEffects() {
+        const entity = this.props.entity;
+        
+        if (!entity.effects && !entity.statBonus && !entity.modifiers) return '';
+        
+        const effectsList = [];
+        
+        // Handle stat bonuses
+        if (entity.statBonus) {
+            if (typeof entity.statBonus === 'object') {
+                if (entity.statBonus.type === 'choice') {
+                    effectsList.push(`+${entity.statBonus.value} to chosen attribute (${entity.statBonus.options.join(', ')})`);
+                } else {
+                    Object.entries(entity.statBonus).forEach(([stat, value]) => {
+                        effectsList.push(`+${value} ${Formatters.camelToTitle(stat)}`);
+                    });
+                }
             } else {
-                buttonText = 'Select';
-                buttonAction = 'select_archetype';
-            }
-        } else { // Default 'purchase' interaction
-            if (isPurchased) {
-                buttonText = 'Remove';
-                buttonAction = 'remove_entity';
-            } else {
-                buttonText = 'Purchase';
-                buttonAction = 'purchase_entity';
+                effectsList.push(`Stat Bonus: ${entity.statBonus}`);
             }
         }
         
-        let actionButtonHtml = '';
-        if (interactionType === 'select' && isPurchased) {
-            actionButtonHtml = `<button class="btn btn-primary purchase-btn selected-indicator" disabled>${buttonText}</button>`;
-        } else if (buttonAction) { 
-             actionButtonHtml = `
-                <button class="btn btn-primary purchase-btn" 
-                        data-action="${buttonAction}"
-                        data-entity-id="${entity.id}"
-                        data-entity-type="${entityType}"
-                        ${categoryKey ? `data-category-key="${categoryKey}"` : ''}
-                        ${isButtonDisabled ? 'disabled' : ''}>
-                    ${buttonText}
-                </button>
-            `;
+        // Handle effects array
+        if (entity.effects && Array.isArray(entity.effects)) {
+            effectsList.push(...entity.effects.map(effect => effect.description || effect));
         }
-
-
-        return `
-            <div class="${cardClasses}" data-entity-id="${entity.id}" data-entity-type="${entityType}" ${categoryKey ? `data-category-key="${categoryKey}"` : ''}>
-                ${this._renderHeader(entity, interactionType)}
-                ${this._renderDescription(entity.description)}
-                ${this._renderEffects(entity.effects)}
-                ${this._renderRequirements(unmetRequirements)}
-                ${this._renderStatus(isPurchased, isAffordable, interactionType)}
-                ${actionButtonHtml}
-            </div>
-        `;
-    }
-
-    static _renderHeader(entity, interactionType) {
-        const costDisplay = (interactionType === 'select' && entity.cost?.display === "Choice") 
-            ? '<span>Choice</span>' 
-            : `<span class="cost">${Formatters.formatCost(entity.cost)}</span>`;
-
-        return `
-            <div class="card-header">
-                <h4>${entity.name}</h4>
-                ${costDisplay}
-            </div>
-        `;
-    }
-
-    static _renderDescription(description) {
-        if (!description) return '';
-        return `<p class="card-description">${description}</p>`;
-    }
-
-    static _renderEffects(effects) {
-        if (!effects || effects.length === 0) return '';
+        
+        // Handle modifiers
+        if (entity.modifiers) {
+            Object.entries(entity.modifiers).forEach(([key, value]) => {
+                effectsList.push(`${Formatters.camelToTitle(key)}: ${value}`);
+            });
+        }
+        
+        if (effectsList.length === 0) return '';
+        
         return `
             <div class="card-effects">
                 <strong>Effects:</strong>
-                <ul>
-                    ${effects.map(effect => `<li>${effect.display || effect.type}</li>`).join('')}
+                <ul class="effects-list">
+                    ${effectsList.map(effect => `<li>${effect}</li>`).join('')}
                 </ul>
             </div>
         `;
     }
 
-    static _renderRequirements(unmetRequirements) {
-        if (!unmetRequirements || unmetRequirements.length === 0) return '';
+    renderRequirements() {
+        const entity = this.props.entity;
+        
+        if (!entity.requirements && !entity.restrictions && !entity.prerequisites) return '';
+        
+        const requirementsList = [];
+        
+        // Handle requirements
+        if (entity.requirements) {
+            if (Array.isArray(entity.requirements)) {
+                requirementsList.push(...entity.requirements);
+            } else {
+                requirementsList.push(entity.requirements);
+            }
+        }
+        
+        // Handle restrictions
+        if (entity.restrictions) {
+            const restrictions = Array.isArray(entity.restrictions) 
+                ? entity.restrictions 
+                : [entity.restrictions];
+            requirementsList.push(...restrictions.map(r => `Cannot have: ${r}`));
+        }
+        
+        // Handle prerequisites
+        if (entity.prerequisites) {
+            const prereqs = Array.isArray(entity.prerequisites) 
+                ? entity.prerequisites 
+                : [entity.prerequisites];
+            requirementsList.push(...prereqs.map(p => `Requires: ${p}`));
+        }
+        
+        if (requirementsList.length === 0) return '';
+        
         return `
             <div class="card-requirements">
-                <strong>Requirements not met:</strong>
-                <ul>
-                    ${unmetRequirements.map(req => `<li>${req}</li>`).join('')}
+                <strong>Requirements:</strong>
+                <ul class="requirements-list">
+                    ${requirementsList.map(req => `<li>${req}</li>`).join('')}
                 </ul>
             </div>
         `;
     }
 
-    static _renderStatus(isPurchased, isAffordable, interactionType) {
-        if (isPurchased && interactionType === 'select') {
-            return '<p class="purchased-indicator">✓ Selected</p>';
-        }
-        if (isPurchased && interactionType === 'purchase') {
-            return '<p class="purchased-indicator">✓ Purchased</p>';
-        }
-        if (!isAffordable && interactionType === 'purchase') {
-            return '<p class="requirement-warning">Cannot afford</p>';
-        }
-        return '';
+    renderCardFooter() {
+        return `
+            <div class="card-footer">
+                <div class="purchase-button-container"></div>
+            </div>
+        `;
     }
 
-
-    // Add this method to UniversalCard class after the render method
-
-    static renderHierarchical(entity, context, childEntities = []) {
-        // First render the main card
-        let html = this.render(entity, context);
+    initializePurchaseButton() {
+        const buttonContainer = this.cardElement?.querySelector('.purchase-button-container');
         
-        // If there are child entities (upgrades), render them nested
-        if (childEntities && childEntities.length > 0) {
-            const childrenHtml = childEntities.map(child => {
-                // Child context inherits from parent but may override
-                const childContext = {
-                    ...context,
-                    isChild: true,
-                    parentId: entity.id
-                };
-                return `<div class="child-entity-card">${this.render(child, childContext)}</div>`;
-            }).join('');
+        if (!buttonContainer) {
+            Logger.error('[UniversalCard] Purchase button container not found');
+            return;
+        }
+        
+        try {
+            this.purchaseButton = new PurchaseButton(buttonContainer, {
+                entity: this.props.entity,
+                entityType: this.props.entityType,
+                isPurchased: this.props.isPurchased,
+                isSelected: this.props.isSelected,
+                canPurchase: this.props.canPurchase,
+                canRemove: this.props.canRemove,
+                size: this.props.size === 'large' ? 'large' : 'medium',
+                showCost: this.props.showCost,
+                onPurchase: this.props.onPurchase,
+                onRemove: this.props.onRemove,
+                onSelect: this.props.onSelect
+            });
             
-            // Wrap the original card and children
-            html = `
-                <div class="hierarchical-entity-card">
-                    ${html}
-                    <div class="child-entities">
-                        <div class="child-entities-header">Upgrades:</div>
-                        ${childrenHtml}
-                    </div>
-                </div>
-            `;
+            this.purchaseButton.init();
+            
+            Logger.debug('[UniversalCard] Purchase button initialized');
+        } catch (error) {
+            Logger.error('[UniversalCard] Failed to initialize purchase button:', error);
         }
-        
-        return html;
     }
 
-    // Also add a helper method to check if entity has children
-    static hasChildren(entity, allEntities) {
-        return allEntities.some(e => e.parentId === entity.id);
+    setupEventListeners() {
+        if (!this.cardElement) {
+            Logger.error('[UniversalCard] Cannot setup event listeners - no card element');
+            return;
+        }
+
+        // Listen for purchase events from the button
+        this._addEventListener(this.cardElement, 'purchase-action', this.handlePurchaseAction);
+        
+        // Add card interaction effects
+        this._addEventListener(this.cardElement, 'mouseenter', this.handleCardHover);
+        this._addEventListener(this.cardElement, 'mouseleave', this.handleCardLeave);
+    }
+
+    handlePurchaseAction(event) {
+        const { action, entity, entityType } = event.detail;
+        
+        Logger.info(`[UniversalCard] Purchase action received: ${action} for ${entityType}:`, entity.id);
+        
+        // Emit event to parent for handling
+        const cardEvent = new CustomEvent('card-purchase-action', {
+            detail: {
+                action,
+                entity,
+                entityType,
+                cardId: this.componentId,
+                timestamp: Date.now()
+            },
+            bubbles: true
+        });
+        
+        this.container.dispatchEvent(cardEvent);
+    }
+
+    handleCardHover(event) {
+        event.currentTarget.classList.add('card-hover');
+    }
+
+    handleCardLeave(event) {
+        event.currentTarget.classList.remove('card-hover');
+    }
+
+    getCardClasses() {
+        const baseClasses = ['universal-card'];
+        
+        // Size classes
+        baseClasses.push(`card-${this.props.size}`);
+        
+        // Layout classes
+        baseClasses.push(`card-${this.props.layout}`);
+        
+        // State classes
+        if (this.props.isPurchased) baseClasses.push('card-purchased');
+        if (this.props.isSelected) baseClasses.push('card-selected');
+        if (!this.props.canPurchase) baseClasses.push('card-disabled');
+        
+        // Entity type class
+        baseClasses.push(`card-${this.props.entityType}`);
+        
+        return baseClasses.join(' ');
+    }
+
+    // Update card state
+    updatePurchaseState(isPurchased, isSelected = null) {
+        this.props.isPurchased = isPurchased;
+        if (isSelected !== null) {
+            this.props.isSelected = isSelected;
+        }
+        
+        // Update purchase button
+        if (this.purchaseButton) {
+            this.purchaseButton.setPurchased(isPurchased);
+            if (isSelected !== null) {
+                this.purchaseButton.setSelected(isSelected);
+            }
+        }
+        
+        // Update card classes
+        if (this.cardElement) {
+            this.cardElement.className = this.getCardClasses();
+        }
+        
+        Logger.debug('[UniversalCard] Purchase state updated:', { isPurchased, isSelected });
+    }
+
+    // Set loading state on purchase button
+    setLoading(isLoading, loadingText = null) {
+        if (this.purchaseButton) {
+            this.purchaseButton.setLoading(isLoading, loadingText);
+        }
+    }
+
+    // Get card debug information
+    getDebugInfo() {
+        return {
+            entityId: this.props.entity?.id,
+            entityType: this.props.entityType,
+            isPurchased: this.props.isPurchased,
+            isSelected: this.props.isSelected,
+            canPurchase: this.props.canPurchase,
+            hasElement: !!this.cardElement,
+            hasPurchaseButton: !!this.purchaseButton
+        };
+    }
+
+    destroy() {
+        // Clean up purchase button
+        if (this.purchaseButton) {
+            this.purchaseButton.destroy();
+            this.purchaseButton = null;
+        }
+        
+        // Call parent destroy
+        super.destroy();
+        
+        Logger.debug('[UniversalCard] Destroyed');
     }
 }

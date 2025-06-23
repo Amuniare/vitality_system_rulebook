@@ -1,219 +1,106 @@
-### **Phase 1: Core Infrastructure Changes**
 
-#### **1. Create a New Component Base Class**
-**File:** `modernApp/core/Component.js` (NEW)
+## 1. Identify the Core Requirements
+
+The ModernApp should:
+- Update the display immediately when users make purchases/selections
+- Follow the Architecture.md principles: Event-Driven Updates with one-way data flow
+- Use the Component/StateConnector pattern for automatic re-renders
+- Maintain proper state synchronization between UI and data
+
+## 2. Break Down the Technical Constraints
+
+From the console log, I can see:
+- Button clicks ARE being detected (`[MainPoolTab] Purchase button clicked`)
+- The event delegation system IS working properly
+- State updates are being attempted
+- But the UI is NOT reflecting these changes
+
+## 3. Consider Potential Edge Cases
+
+The main issues identified:
+
+### Issue 1: Data Migration Version Mismatch
 ```
-Purpose: Standardize component lifecycle and state management
-Changes:
-- Define lifecycle methods: constructor, init, render, update, destroy
-- Automatic state subscription management
-- Props validation and default handling
-- Event listener tracking and cleanup
-- Render queue to prevent unnecessary re-renders
+[DataMigration] Migration ended at version "4", but target is "4.0"
 ```
+This warning suggests the data isn't in the expected format, which could cause state updates to fail.
 
-#### **2. Implement a Props System**
-**File:** `modernApp/core/PropsManager.js` (NEW)
-```
-Purpose: Manage data flow to components
-Changes:
-- Define how components declare their data needs
-- Automatic prop extraction from state
-- Prop validation before render
-- Change detection to trigger updates
-```
+### Issue 2: Purchase Flow Breaking
+The flow appears to be:
+1. Button click → ✅ Detected
+2. `handlePurchase()` → ✅ Called  
+3. `UnifiedPurchaseSystem.purchase()` → ✅ Called
+4. `StateManager.updateState()` → ❓ Unknown if succeeding
+5. Component re-render → ❌ Not happening
 
-#### **3. Refactor StateManager**
-**File:** `modernApp/core/StateManager.js`
-```
-Changes:
-- Add getState() method that returns immutable state
-- Add subscribe(path, callback) for granular subscriptions
-- Add unsubscribe(subscriptionId) for cleanup
-- Implement state path watching (e.g., 'character.purchases.flaws')
-- Add state transaction support for atomic updates
-- Remove direct character property access pattern
-- Implement proper state cloning before mutations
-```
+### Issue 3: StateConnector Not Triggering Re-renders
+The `StateConnector` should automatically re-render components when state changes, but this isn't happening.
 
-#### **4. Create RenderQueue System**
-**File:** `modernApp/core/RenderQueue.js` (NEW)
-```
-Purpose: Batch renders and prevent cascading updates
-Changes:
-- Queue component updates
-- Deduplicate render requests
-- Use requestAnimationFrame for batching
-- Priority-based rendering
-```
+## 4. Develop an Algorithm Addressing All Constraints
 
-### **Phase 2: Component Architecture Refactoring**
+### Root Cause Analysis:
 
-#### **5. Refactor EventBus**
-**File:** `modernApp/core/EventBus.js`
-```
-Changes:
-- Add subscription tracking by component ID
-- Implement automatic cleanup on component destroy
-- Add event namespacing
-- Reduce redundant events (merge CHARACTER_CHANGED and ENTITY_PURCHASED)
-- Add event payload validation
-```
+1. **StateManager.updateState() Implementation Issue**
+   - The method updates internal state and emits `CHARACTER_CHANGED` event
+   - But components aren't re-rendering in response
 
-#### **6. Update All Tab Base Classes**
-**Files:** All files in `modernApp/tabs/`
-```
-Common Changes for Each Tab:
-- Extend from new Component base class
-- Remove manual event listener management
-- Implement proper lifecycle methods
-- Use props instead of direct state access
-- Separate data fetching from rendering
-- Add proper cleanup methods
-```
+2. **StateConnector Subscription Issue**
+   - Components use `connectToState()` HOC
+   - But the connection between state changes and re-renders is broken
 
-#### **7. Fix PurchaseCard Component**
-**File:** `modernApp/components/PurchaseCard.js`
-```
-Specific Changes:
-- Accept all required data as constructor parameters
-- Remove direct StateManager access
-- Implement proper isPurchased check with defensive coding
-- Use event delegation from parent container
-- Add prop validation
-```
+3. **RenderQueue Not Processing**
+   - Components call `_requestRender()` but renders aren't happening
+   - The queue might not be processing properly
 
-### **Phase 3: Specific File Changes**
+## 5. Evaluate Time and Space Complexity
 
-#### **8. MainPoolTab.js**
-**File:** `modernApp/tabs/MainPoolTab.js`
-```
-Changes:
-- Extend Component base class
-- Declare required state paths: ['character.purchases', 'character.tier']
-- Move event listeners to init() method
-- Use event delegation on container, not individual cards
-- Pass complete purchase data to PurchaseCard
-- Implement proper state subscription
-- Remove re-rendering on every event
-```
+The issue isn't about performance but about the event/update cycle being broken. The complexity is in the architectural flow, not algorithmic efficiency.
 
-#### **9. ArchetypeTab.js**
-**File:** `modernApp/tabs/ArchetypeTab.js`
-```
-Changes:
-- Store selected archetypes in component state
-- Implement optimistic UI updates
-- Batch state updates
-- Use proper event delegation
-- Add loading states
-```
+## 6. Propose Implementation Approaches
 
-#### **10. AttributesTab.js**
-**File:** `modernApp/tabs/AttributesTab.js`
-```
-Changes:
-- Implement proper event delegation for +/- buttons
-- Store attribute values locally during interaction
-- Batch updates to state
-- Add proper input validation
-- Implement debounced saves
-```
+### Immediate Solutions:
 
-#### **11. App.js**
-**File:** `modernApp/app.js`
-```
-Changes:
-- Implement proper tab lifecycle management
-- Call destroy() on previous tab before switching
-- Pass props to tabs instead of stateManager instance
-- Implement global error boundary
-- Add component registry for debugging
-```
+1. **Fix StateConnector Re-render Trigger**
+   - Ensure `StateConnector` listens to `CHARACTER_CHANGED` events
+   - Force component update when props change
+   - Add debug logging to trace the update flow
 
-### **Phase 4: Data Flow Standardization**
+2. **Fix RenderQueue Processing**
+   - Verify `requestAnimationFrame` is being called
+   - Ensure components are properly added to the queue
+   - Check if renders are being deduplicated incorrectly
 
-#### **12. Create StateConnector**
-**File:** `modernApp/core/StateConnector.js` (NEW)
-```
-Purpose: Connect components to state slices
-Changes:
-- High-order function to wrap components
-- Automatic prop mapping from state
-- Subscription management
-- Memoization of props
-```
+3. **Add Explicit Re-render After Purchase**
+   - As a temporary fix, manually trigger re-renders after purchases
+   - This violates the architecture but would prove the rendering works
 
-#### **13. Update CharacterManager**
-**File:** `modernApp/core/CharacterManager.js`
-```
-Changes:
-- Ensure it always returns complete character objects
-- Add validation before saving
-- Implement proper change detection
-- Add migration support for old data
-```
+### Logic That Could Move to Components:
 
-### **Phase 5: Implementation Strategy**
+Currently, button click handling is in the tabs (MainPoolTab, ArchetypeTab). This could be improved by:
 
-#### **Execution Order:**
+1. **Move Purchase Logic to UniversalCard**
+   - Pass purchase/remove handlers as props
+   - Let the card component handle its own interactions
+   - This follows the "components emit events" principle better
 
-1. **Week 1: Core Infrastructure**
-   - Create Component.js base class
-   - Create PropsManager.js
-   - Refactor StateManager.js
-   - Create RenderQueue.js
+2. **Create a PurchaseButton Component**
+   - Encapsulate all purchase/select/remove logic
+   - Handle different button states (Purchase/Remove/Select/Selected)
+   - Emit standardized events
 
-2. **Week 2: Event System & State Connection**
-   - Refactor EventBus.js
-   - Create StateConnector.js
-   - Update CharacterManager.js
+### Recommended Next Steps:
 
-3. **Week 3: Component Migration**
-   - Migrate PurchaseCard.js first (smallest component)
-   - Migrate MainPoolTab.js
-   - Fix the "p is undefined" error
+1. **Debug StateConnector**:
+   - Add logging to see if `_handleStateChange` is called
+   - Verify props are actually changing
+   - Check if `forceUpdate()` is working
 
-4. **Week 4: Remaining Tabs**
-   - Migrate ArchetypeTab.js
-   - Migrate AttributesTab.js
-   - Update App.js
+2. **Fix Data Migration**:
+   - Update migration to handle "4" → "4.0" properly
+   - This might be causing silent failures
 
-### **Testing Strategy:**
+3. **Simplify the Update Chain**:
+   - Temporarily add direct re-renders after purchases to verify rendering works
+   - Then trace why automatic updates aren't happening
 
-1. **Unit Tests for Core Systems**
-   - Test Component lifecycle
-   - Test state subscriptions
-   - Test event propagation
-
-2. **Integration Tests**
-   - Test tab switching
-   - Test purchase flow
-   - Test state persistence
-
-3. **Manual Testing Checklist**
-   - Can purchase without errors
-   - Buttons remain functional after tab switch
-   - UI updates immediately without tab change
-   - No console errors during normal use
-
-### **Migration Path:**
-
-1. **Parallel Implementation**
-   - Build new system alongside old
-   - Migrate one component at a time
-   - Keep old system functional during migration
-
-2. **Feature Flags**
-   - Use flags to switch between old/new components
-   - Test thoroughly before switching
-
-3. **Gradual Rollout**
-   - Start with least critical components
-   - Monitor for issues
-   - Complete migration tab by tab
-
-This plan addresses all three of your core issues by:
-- Ensuring consistent state access (fixes "p is undefined")
-- Properly managing event listeners (fixes buttons not working)
-- Implementing proper change detection (fixes need to switch tabs for updates)
+The core issue is that the reactive update cycle is broken somewhere between StateManager → EventBus → StateConnector → Component re-render. The architecture is sound, but the implementation has a disconnect in this chain.

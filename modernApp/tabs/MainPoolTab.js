@@ -1,173 +1,430 @@
 // modernApp/tabs/MainPoolTab.js
 import { Component } from '../core/Component.js';
 import { connectToState } from '../core/StateConnector.js';
-import { PurchaseCard } from '../components/PurchaseCard.js';
-import { EntityLoader } from '../core/EntityLoader.js';
-import { StateManager } from '../core/StateManager.js';
-import { UnifiedPurchaseSystem } from '../systems/UnifiedPurchaseSystem.js';
-import { RequirementSystem } from '../systems/RequirementSystem.js';
-import { PoolCalculator } from '../systems/PoolCalculator.js';
 import { UniversalCard } from '../components/UniversalCard.js';
-import { EventBus } from '../core/EventBus.js';
+import { PointPoolDisplay } from '../components/PointPoolDisplay.js';
+import { CollapsibleSection } from '../components/CollapsibleSection.js';
 import { Logger } from '../utils/Logger.js';
+import { UnifiedPurchaseSystem } from '../systems/UnifiedPurchaseSystem.js';
+import { StateManager } from '../core/StateManager.js';
+import { PoolCalculator } from '../systems/PoolCalculator.js';
 
+/**
+ * Enhanced MainPoolTab with component-driven architecture
+ * Focuses on data preparation and layout, delegates purchase logic to components
+ */
 class MainPoolTab extends Component {
     static propSchema = {
         character: { type: 'object', default: () => ({}) },
+        gameData: { type: 'object', default: () => ({}) },
         pools: { type: 'object', default: () => ({}) }
     };
 
     constructor(container, initialProps = {}) {
         super(initialProps, container);
-        this.currentSection = 'flaws';
-        this.purchaseCards = new Map();
-        this.handleSectionChange = this.handleSectionChange.bind(this);
-        this.handlePurchase = this.handlePurchase.bind(this);
-        this.handleRemove = this.handleRemove.bind(this);
-        
-        this.sections = {
-            flaws: { title: 'Flaws', entityType: 'flaw', description: 'Flaws COST 30 main pool points each but grant a +Tier stat bonus and add limitations.' },
-            traits: { title: 'Traits', entityType: 'trait', description: 'Traits COST 30 main pool points each and provide conditional +Tier bonuses or unique effects.' },
-            boons: { title: 'Boons', entityType: 'boon', description: 'Boons have variable costs and provide straightforward benefits.' },
-            action_upgrades: { title: 'Action Upgrades', entityType: 'action_upgrade', description: 'Action Upgrades enhance or modify standard character actions.' },
-            unique_abilities: { title: 'Unique Abilities', entityType: 'unique_ability', description: 'Unique abilities with special costs and effects.' },
-            custom_abilities: { title: 'Custom Abilities', entityType: 'custom_ability', description: 'Custom abilities created by the player.' }
-        };
+        this.sections = new Map();
+        this.pointPoolDisplay = null;
+        Logger.info('[MainPoolTab] Constructed with props:', this.props);
     }
 
-    init() {
-        this.componentId = `main-pool-${Date.now()}`;
-        // Move event listeners to init() method
-        this._addEventListener(this.container, 'click', this.handleContainerClick.bind(this));
-        Logger.info('[MainPoolTab] Initialized with proper event delegation');
+    async init() {
+        Logger.info('[MainPoolTab] Initializing...');
+        this.render();
+        this.setupEventListeners();
+        Logger.info('[MainPoolTab] Initialization complete');
     }
 
-    // Use event delegation on container, not individual cards
-    handleContainerClick(e) {
-        // Section tabs
-        const sectionTab = e.target.closest('.section-tab');
-        if (sectionTab) {
-            this.handleSectionChange(sectionTab.dataset.sectionKey);
+    render() {
+        if (!this.container) {
+            Logger.warn('[MainPoolTab] No container available for render');
             return;
         }
 
-        // Purchase buttons via delegation - no direct listeners on individual cards
-        const purchaseBtn = e.target.closest('.purchase-btn');
-        if (purchaseBtn && !purchaseBtn.disabled) {
-            const action = purchaseBtn.dataset.action;
-            const entityId = purchaseBtn.dataset.entityId;
-            const entityType = purchaseBtn.dataset.entityType;
-            
-            if (action === 'purchase') {
-                this.handlePurchase(entityId, entityType);
-            } else if (action === 'remove') {
-                this.handleRemove(entityId, entityType);
-            }
-        }
-    }
+        Logger.debug('[MainPoolTab] Rendering with character:', this.props.character?.name);
 
-    handleSectionChange(sectionKey) {
-        this.currentSection = sectionKey;
-        this._requestRender(); // Use proper render queueing
-    }
-
-    handlePurchase(entityId, entityType) {
-        Logger.info(`[MainPoolTab] Attempting purchase: Entity ID - ${entityId}, Type - ${entityType}`);
-        UnifiedPurchaseSystem.purchase(entityId);
-        // No need to manually re-render - StateConnector handles updates
-    }
-
-    handleRemove(purchaseId, entityType) {
-        Logger.info(`[MainPoolTab] Attempting removal: Purchase ID - ${purchaseId}, Type - ${entityType}`);
-        UnifiedPurchaseSystem.remove(purchaseId, entityType);
-        // No need to manually re-render - StateConnector handles updates
-    }
-
-    async render() {
-        if (!this.container) return;
-
-        const { character, pools } = this.props;
-        const currentSectionData = this.sections[this.currentSection];
-        
-        try {
-            // Get entities for current section
-            const entities = await EntityLoader.getEntitiesByType(currentSectionData.entityType, character);
-            
-            this.container.innerHTML = `
+        this.container.innerHTML = `
+            <div class="main-pool-tab">
                 <div class="pool-header">
-                    <h2>Main Pool Purchases</h2>
-                    <div class="pool-summary">
-                        <div class="pool-info">
-                            <span class="pool-label">Main Pool Remaining:</span>
-                            <span class="pool-value">${pools.mainRemaining || 0}</span>
-                        </div>
-                        <div class="pool-breakdown">
-                            <span>Total: ${pools.mainTotal || 0}</span>
-                            <span>•</span>
-                            <span>Spent: ${pools.mainSpent || 0}</span>
-                        </div>
+                    <div class="point-pool-container"></div>
+                    <div class="tab-description">
+                        <p>Purchase flaws, traits, boons, and abilities using your main point pool.</p>
                     </div>
                 </div>
+                
+                <div class="pool-sections">
+                    <div class="flaws-section-container"></div>
+                    <div class="traits-section-container"></div>
+                    <div class="boons-section-container"></div>
+                    <div class="unique-abilities-section-container"></div>
+                    <div class="action-upgrades-section-container"></div>
+                </div>
+            </div>
+        `;
 
-                <div class="section-tabs">
-                    ${Object.entries(this.sections).map(([key, section]) => `
-                        <button class="section-tab ${key === this.currentSection ? 'active' : ''}" 
-                                data-section-key="${key}">
-                            ${section.title}
-                        </button>
-                    `).join('')}
-                </div>
+        // Initialize point pool display
+        this.initializePointPoolDisplay();
 
-                <div class="section-content">
-                    <div class="section-header">
-                        <h3>${currentSectionData.title}</h3>
-                        <p class="section-description">${currentSectionData.description}</p>
-                    </div>
-                    
-                    <div class="purchase-grid" id="main-pool-purchase-grid">
-                        ${entities.map(entity => this.renderPurchaseCard(entity, character)).join('')}
-                    </div>
-                </div>
-            `;
+        // Initialize sections
+        this.initializeSections();
+
+        Logger.debug('[MainPoolTab] Render complete');
+    }
+
+    initializePointPoolDisplay() {
+        const container = this.container.querySelector('.point-pool-container');
+        if (!container) {
+            Logger.error('[MainPoolTab] Point pool container not found');
+            return;
+        }
+
+        try {
+            this.pointPoolDisplay = new PointPoolDisplay(container, {
+                pools: this.props.pools,
+                showMainPool: true,
+                showBreakdown: true,
+                size: 'large'
+            });
+
+            this.pointPoolDisplay.init();
+            Logger.debug('[MainPoolTab] Point pool display initialized');
         } catch (error) {
-            Logger.error('[MainPoolTab] Error rendering:', error);
-            this.container.innerHTML = `<div class="error">Error loading ${currentSectionData.title}</div>`;
+            Logger.error('[MainPoolTab] Failed to initialize point pool display:', error);
         }
     }
 
-    // Pass complete purchase data to PurchaseCard
-    renderPurchaseCard(entity, character) {
-        const arrayName = `${this.sections[this.currentSection].entityType}s`;
-        const isPurchased = character[arrayName]?.some(p => p.id === entity.id) || false;
-        
-        // Check requirements
-        const reqCheck = RequirementSystem.check(entity.requirements, character);
-        
-        // Check affordability
-        const pools = PoolCalculator.calculatePools(character);
-        const poolName = entity.cost?.pool || 'main';
-        const pool = pools[poolName + 'Remaining'] ?? -Infinity;
-        const cost = entity.cost?.value || 0;
-        const isAffordable = pool >= cost;
+    initializeSections() {
+        const sectionsConfig = [
+            {
+                key: 'flaws',
+                title: 'Flaws',
+                description: 'Character flaws that cost 30 points and provide tier-based stat bonuses',
+                containerSelector: '.flaws-section-container',
+                dataKey: 'flaws',
+                entityType: 'flaw'
+            },
+            {
+                key: 'traits',
+                title: 'Traits', 
+                description: 'Character traits that cost 30 points each',
+                containerSelector: '.traits-section-container',
+                dataKey: 'traits',
+                entityType: 'trait'
+            },
+            {
+                key: 'boons',
+                title: 'Boons',
+                description: 'Beneficial character abilities',
+                containerSelector: '.boons-section-container', 
+                dataKey: 'boons',
+                entityType: 'boon'
+            },
+            {
+                key: 'uniqueAbilities',
+                title: 'Unique Abilities',
+                description: 'Special character abilities with variable costs',
+                containerSelector: '.unique-abilities-section-container',
+                dataKey: 'uniqueAbilities', 
+                entityType: 'uniqueAbility'
+            },
+            {
+                key: 'actionUpgrades',
+                title: 'Action Upgrades',
+                description: 'Upgrades to basic actions',
+                containerSelector: '.action-upgrades-section-container',
+                dataKey: 'actionUpgrades',
+                entityType: 'actionUpgrade'
+            }
+        ];
 
-        const context = {
-            isPurchased,
-            isAffordable,
-            areRequirementsMet: reqCheck.areMet,
-            unmetRequirements: reqCheck.unmet,
-            entityType: this.sections[this.currentSection].entityType
+        sectionsConfig.forEach(config => this.initializeSection(config));
+    }
+
+    initializeSection(config) {
+        const container = this.container.querySelector(config.containerSelector);
+        if (!container) {
+            Logger.error(`[MainPoolTab] Section container not found: ${config.containerSelector}`);
+            return;
+        }
+
+        try {
+            const section = new CollapsibleSection(container, {
+                title: config.title,
+                description: config.description,
+                isCollapsed: false,
+                showItemCount: true
+            });
+
+            section.init();
+
+            // Get entities for this section
+            const entities = this.getEntitiesForSection(config.dataKey);
+            
+            // Render entity cards in section content
+            this.renderSectionEntities(section, entities, config.entityType);
+
+            this.sections.set(config.key, section);
+            Logger.debug(`[MainPoolTab] Section initialized: ${config.title}`);
+        } catch (error) {
+            Logger.error(`[MainPoolTab] Failed to initialize section ${config.title}:`, error);
+        }
+    }
+
+    getEntitiesForSection(dataKey) {
+        const gameData = this.props.gameData;
+        if (!gameData || !gameData[dataKey]) {
+            Logger.warn(`[MainPoolTab] No data found for section: ${dataKey}`);
+            return [];
+        }
+
+        return gameData[dataKey] || [];
+    }
+
+    renderSectionEntities(section, entities, entityType) {
+        if (!entities || entities.length === 0) {
+            section.setContent('<p class="no-entities">No items available in this category.</p>');
+            return;
+        }
+
+        const contentContainer = document.createElement('div');
+        contentContainer.className = 'entities-grid';
+
+        entities.forEach(entity => {
+            const cardContainer = document.createElement('div');
+            cardContainer.className = 'entity-card-container';
+            
+            // Check if entity is purchased
+            const isPurchased = this.isEntityPurchased(entity.id, entityType);
+            
+            // Create card component
+            const card = new UniversalCard(cardContainer, {
+                entity,
+                entityType,
+                isPurchased,
+                canPurchase: this.canPurchaseEntity(entity),
+                canRemove: isPurchased,
+                size: 'medium',
+                showDescription: true,
+                showCost: true,
+                showEffects: true,
+                showRequirements: true
+            });
+
+            card.init();
+            contentContainer.appendChild(cardContainer);
+        });
+
+        section.setContent(contentContainer);
+        
+        Logger.debug(`[MainPoolTab] Rendered ${entities.length} entities for ${entityType}`);
+    }
+
+    setupEventListeners() {
+        if (!this.container) {
+            Logger.error('[MainPoolTab] Cannot setup event listeners - no container');
+            return;
+        }
+
+        // Listen for purchase actions from cards
+        this._addEventListener(this.container, 'card-purchase-action', this.handleCardPurchaseAction);
+        
+        Logger.debug('[MainPoolTab] Event listeners setup complete');
+    }
+
+    async handleCardPurchaseAction(event) {
+        const { action, entity, entityType } = event.detail;
+        
+        Logger.info(`[MainPoolTab] Handling card purchase action: ${action} for ${entityType}:`, entity.id);
+
+        try {
+            // Set loading state on the card
+            const cardElement = event.target.closest('.entity-card-container');
+            if (cardElement) {
+                const card = this.findCardComponent(cardElement);
+                if (card) {
+                    card.setLoading(true, `${action === 'purchase' ? 'Purchasing' : 'Removing'}...`);
+                }
+            }
+
+            let success = false;
+
+            switch (action) {
+                case 'purchase':
+                    success = await this.handlePurchase(entity, entityType);
+                    break;
+                case 'remove':
+                    success = await this.handleRemove(entity, entityType);
+                    break;
+                default:
+                    Logger.error(`[MainPoolTab] Unknown purchase action: ${action}`);
+                    return;
+            }
+
+            if (success) {
+                Logger.info(`[MainPoolTab] ${action} successful for ${entityType}:`, entity.id);
+                // The state update will trigger a re-render through StateConnector
+            } else {
+                Logger.warn(`[MainPoolTab] ${action} failed for ${entityType}:`, entity.id);
+            }
+
+        } catch (error) {
+            Logger.error(`[MainPoolTab] Error handling ${action}:`, error);
+        }
+    }
+
+    async handlePurchase(entity, entityType) {
+        Logger.debug(`[MainPoolTab] Purchasing ${entityType}:`, entity.id);
+
+        try {
+            const result = await UnifiedPurchaseSystem.purchase(entity, entityType, {
+                character: this.props.character,
+                gameData: this.props.gameData
+            });
+
+            if (result.success) {
+                Logger.info(`[MainPoolTab] Purchase successful for ${entity.name}`);
+                return true;
+            } else {
+                Logger.warn(`[MainPoolTab] Purchase failed:`, result.error);
+                return false;
+            }
+        } catch (error) {
+            Logger.error(`[MainPoolTab] Purchase error:`, error);
+            return false;
+        }
+    }
+
+    async handleRemove(entity, entityType) {
+        Logger.debug(`[MainPoolTab] Removing ${entityType}:`, entity.id);
+
+        try {
+            const result = await UnifiedPurchaseSystem.remove(entity.id, entityType, {
+                character: this.props.character
+            });
+
+            if (result.success) {
+                Logger.info(`[MainPoolTab] Removal successful for ${entity.name}`);
+                return true;
+            } else {
+                Logger.warn(`[MainPoolTab] Removal failed:`, result.error);
+                return false;
+            }
+        } catch (error) {
+            Logger.error(`[MainPoolTab] Removal error:`, error);
+            return false;
+        }
+    }
+
+    // Helper methods
+    isEntityPurchased(entityId, entityType) {
+        const character = this.props.character;
+        if (!character || !character.unifiedPurchases) return false;
+
+        return character.unifiedPurchases.some(purchase => 
+            purchase.entityId === entityId && purchase.category === entityType
+        );
+    }
+
+    canPurchaseEntity(entity) {
+        const pools = this.props.pools;
+        if (!pools || !pools.mainPool) return false;
+
+        return pools.mainPool.available >= (entity.cost || 0);
+    }
+
+    findCardComponent(cardElement) {
+        // This is a simplified lookup - in a real implementation,
+        // we'd maintain a registry of component instances
+        return null;
+    }
+
+    // Update method called by StateConnector
+    update(nextProps, prevProps) {
+        Logger.debug('[MainPoolTab] Update called with new props:', nextProps);
+
+        // Check if character or pools changed
+        const characterChanged = !prevProps || 
+            prevProps.character?.id !== nextProps.character?.id ||
+            JSON.stringify(prevProps.character?.unifiedPurchases) !== JSON.stringify(nextProps.character?.unifiedPurchases);
+
+        const poolsChanged = !prevProps || 
+            JSON.stringify(prevProps.pools) !== JSON.stringify(nextProps.pools);
+
+        if (characterChanged || poolsChanged) {
+            Logger.info('[MainPoolTab] Character or pools changed, re-rendering');
+            
+            // Update props
+            this.props = nextProps;
+            
+            // Re-render everything
+            this.render();
+        } else {
+            Logger.debug('[MainPoolTab] No significant changes, skipping re-render');
+        }
+    }
+
+    // Debug information
+    getDebugInfo() {
+        return {
+            characterId: this.props.character?.id,
+            characterName: this.props.character?.name,
+            sectionsCount: this.sections.size,
+            poolsAvailable: this.props.pools?.mainPool?.available,
+            purchasesCount: this.props.character?.unifiedPurchases?.length || 0
         };
+    }
 
-        return UniversalCard.render(entity, context);
+    destroy() {
+        Logger.info('[MainPoolTab] Destroying...');
+
+        // Clean up sections
+        this.sections.forEach(section => {
+            if (section && typeof section.destroy === 'function') {
+                section.destroy();
+            }
+        });
+        this.sections.clear();
+
+        // Clean up point pool display
+        if (this.pointPoolDisplay && typeof this.pointPoolDisplay.destroy === 'function') {
+            this.pointPoolDisplay.destroy();
+        }
+
+        // Call parent destroy
+        super.destroy();
+
+        Logger.info('[MainPoolTab] Destroyed');
     }
 }
 
-// Declare required state paths: ['character.purchases', 'character.tier']
-const mapStateToProps = (state) => ({
-    character: state,
-    pools: PoolCalculator.calculatePools(state)
-});
+// State mapping function
+const mapStateToProps = (state) => {
+    if (!state) {
+        Logger.debug('[MainPoolTab] mapStateToProps: No state available');
+        return {
+            character: {},
+            gameData: {},
+            pools: {}
+        };
+    }
 
-// Implement proper state subscription
-const ConnectedMainPoolTab = connectToState(mapStateToProps)(MainPoolTab);
+    const pools = PoolCalculator.calculatePools(state);
+    
+    Logger.debug('[MainPoolTab] mapStateToProps: Mapping state to props', {
+        characterName: state.name,
+        poolsAvailable: pools.mainPool?.available
+    });
+
+    return {
+        character: state,
+        gameData: window.gameData || {},
+        pools
+    };
+};
+
+// Connect to state with debugging
+const ConnectedMainPoolTab = connectToState(mapStateToProps, {
+    displayName: 'ConnectedMainPoolTab',
+    debugMode: true
+})(MainPoolTab);
+
 export { ConnectedMainPoolTab as MainPoolTab };

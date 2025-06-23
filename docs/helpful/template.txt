@@ -85,13 +85,15 @@ modernApp\requirements.md
 modernApp\workplan.md
 
 
-Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md
+Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md and ensure that you make appropriate and effective use of components, core, systems, data and utils files
+
 
 We'll be working on:
 
 
-fixing errors in the console log
-
+explaining why the errors are happening in the console log
+identifying root cause
+finding and proposing solutions that align with our goals of making appropriate and effective use of components, core, systems, data and utils files
 
 
 ## Chain-of-Thought 

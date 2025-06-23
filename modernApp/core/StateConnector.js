@@ -1,111 +1,123 @@
 // modernApp/core/StateConnector.js
 import { StateManager } from './StateManager.js';
 import { PropsManager } from './PropsManager.js';
+import { EventBus } from './EventBus.js';
 import { Logger } from '../utils/Logger.js';
 
 /**
- * Enhanced StateConnector with memoization, subscription management, and prop optimization
+ * Enhanced StateConnector with comprehensive debugging and memoization
  * Connects "dumb" UI components to the global StateManager with advanced features.
  */
 
-// Memoization utilities
 class PropsMemoizer {
     constructor() {
         this.cache = new Map();
-        this.maxCacheSize = 100; // Prevent memory leaks
-    }
-
-    getCacheKey(state, ownProps) {
-        // Create a stable cache key from state and props
-        try {
-            return JSON.stringify({ state, ownProps });
-        } catch (error) {
-            // Fallback for circular references
-            return `${Date.now()}_${Math.random()}`;
-        }
+        this.hitCount = 0;
+        this.missCount = 0;
     }
 
     memoize(mapStateToProps) {
         return (state, ownProps) => {
-            const cacheKey = this.getCacheKey(state, ownProps);
+            const cacheKey = JSON.stringify({ state, ownProps });
             
             if (this.cache.has(cacheKey)) {
-                Logger.debug('[PropsMemoizer] Cache hit for state mapping');
+                this.hitCount++;
+                Logger.debug('[PropsMemoizer] Cache hit');
                 return this.cache.get(cacheKey);
             }
-
+            
+            this.missCount++;
             const result = mapStateToProps(state, ownProps);
-            
-            // Manage cache size
-            if (this.cache.size >= this.maxCacheSize) {
-                const firstKey = this.cache.keys().next().value;
-                this.cache.delete(firstKey);
-            }
-            
             this.cache.set(cacheKey, result);
-            Logger.debug('[PropsMemoizer] Cached new state mapping result');
+            Logger.debug('[PropsMemoizer] Cache miss, computed new props:', result);
             return result;
         };
     }
 
     clear() {
         this.cache.clear();
+        this.hitCount = 0;
+        this.missCount = 0;
         Logger.debug('[PropsMemoizer] Cache cleared');
     }
 
     getStats() {
         return {
             cacheSize: this.cache.size,
-            maxCacheSize: this.maxCacheSize
+            hitCount: this.hitCount,
+            missCount: this.missCount,
+            hitRate: this.hitCount / (this.hitCount + this.missCount) || 0
         };
     }
 }
 
-// Subscription manager for efficient state updates
 class SubscriptionManager {
     constructor() {
         this.subscriptions = new Map();
-        this.subscriptionId = 0;
+        this.eventCounts = new Map();
     }
 
-    subscribe(callback, componentId) {
-        const id = ++this.subscriptionId;
+    subscribe(componentId, callback) {
+        const subscriptionId = `${componentId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
         const subscription = {
-            id,
-            callback,
+            id: subscriptionId,
             componentId,
-            lastCallTime: 0,
-            callCount: 0
+            callback,
+            callCount: 0,
+            lastCallTime: null,
+            createdAt: Date.now()
         };
 
-        this.subscriptions.set(id, subscription);
-        Logger.debug(`[SubscriptionManager] Added subscription ${id} for component ${componentId}`);
+        // Enhanced EventBus subscription with debugging
+        const unsubscribe = EventBus.on('CHARACTER_CHANGED', (data) => {
+            const startTime = performance.now();
+            Logger.debug(`[SubscriptionManager] CHARACTER_CHANGED event received by ${componentId}`, data);
+            
+            subscription.callCount++;
+            subscription.lastCallTime = Date.now();
+            
+            try {
+                callback(data);
+                const duration = performance.now() - startTime;
+                Logger.debug(`[SubscriptionManager] Callback completed for ${componentId} in ${duration.toFixed(2)}ms`);
+            } catch (error) {
+                Logger.error(`[SubscriptionManager] Error in callback for ${componentId}:`, error);
+            }
+        });
+
+        subscription.unsubscribe = unsubscribe;
+        this.subscriptions.set(subscriptionId, subscription);
         
-        return () => this.unsubscribe(id);
+        Logger.info(`[SubscriptionManager] Subscribed ${componentId} with ID ${subscriptionId}`);
+        return subscriptionId;
     }
 
     unsubscribe(subscriptionId) {
         const subscription = this.subscriptions.get(subscriptionId);
         if (subscription) {
+            subscription.unsubscribe();
             this.subscriptions.delete(subscriptionId);
-            Logger.debug(`[SubscriptionManager] Removed subscription ${subscriptionId} for component ${subscription.componentId}`);
+            Logger.info(`[SubscriptionManager] Unsubscribed ${subscription.componentId} (${subscriptionId})`);
+        } else {
+            Logger.warn(`[SubscriptionManager] Attempted to unsubscribe non-existent subscription: ${subscriptionId}`);
         }
     }
 
-    notify(state) {
+    notifyAll(data) {
         const startTime = performance.now();
         let notifiedCount = 0;
-
-        for (const [id, subscription] of this.subscriptions) {
+        
+        this.subscriptions.forEach(subscription => {
             try {
-                subscription.lastCallTime = Date.now();
+                subscription.callback(data);
                 subscription.callCount++;
-                subscription.callback(state);
+                subscription.lastCallTime = Date.now();
                 notifiedCount++;
             } catch (error) {
-                Logger.error(`[SubscriptionManager] Error in subscription ${id}:`, error);
+                Logger.error(`[SubscriptionManager] Error notifying ${subscription.componentId}:`, error);
             }
-        }
+        });
 
         const duration = performance.now() - startTime;
         Logger.debug(`[SubscriptionManager] Notified ${notifiedCount} subscriptions in ${duration.toFixed(2)}ms`);
@@ -120,14 +132,18 @@ class SubscriptionManager {
             id: sub.id,
             componentId: sub.componentId,
             callCount: sub.callCount,
-            lastCallTime: sub.lastCallTime
+            lastCallTime: sub.lastCallTime,
+            createdAt: sub.createdAt
         }));
         return stats;
     }
 
     cleanup() {
+        this.subscriptions.forEach(subscription => {
+            subscription.unsubscribe();
+        });
         this.subscriptions.clear();
-        Logger.debug('[SubscriptionManager] All subscriptions cleared');
+        Logger.debug('[SubscriptionManager] All subscriptions cleaned up');
     }
 }
 
@@ -136,13 +152,7 @@ const globalPropsMemoizer = new PropsMemoizer();
 const globalSubscriptionManager = new SubscriptionManager();
 
 /**
- * connectToState - Enhanced Higher-Order Component (HOC) factory
- * @param {Function} mapStateToProps - Function to map state to props
- * @param {Object} options - Configuration options
- * @param {boolean} options.memoize - Whether to memoize props (default: true)
- * @param {Function} options.shouldUpdate - Custom comparison function for updates
- * @param {string} options.displayName - Custom display name for debugging
- * @returns {Function} Enhanced connected component factory
+ * connectToState - Enhanced Higher-Order Component (HOC) factory with comprehensive debugging
  */
 export function connectToState(mapStateToProps, options = {}) {
     if (typeof mapStateToProps !== 'function') {
@@ -152,7 +162,8 @@ export function connectToState(mapStateToProps, options = {}) {
     const {
         memoize = true,
         shouldUpdate = null,
-        displayName = null
+        displayName = null,
+        debugMode = false
     } = options;
 
     // Apply memoization if enabled
@@ -170,91 +181,92 @@ export function connectToState(mapStateToProps, options = {}) {
                 this.container = container;
                 this.ownProps = initialOwnProps;
                 this.wrappedInstance = null;
-                this.unsubscribeFromStateManager = null;
+                this.subscriptionId = null;
                 this.lastMappedProps = null;
                 this.componentId = `${WrappedComponent.name}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
                 this.updateCount = 0;
                 this.lastUpdateTime = 0;
+                this.debugMode = debugMode;
 
-                Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Constructor. Component ID: ${this.componentId}`);
-                this._initialize();
+                Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Constructor with ID ${this.componentId}`, {
+                    container,
+                    initialOwnProps,
+                    debugMode: this.debugMode
+                });
             }
 
-            _initialize() {
+            async init() {
+                Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Initializing...`);
+                
                 try {
                     // Get initial state and map to props
-                    const initialState = StateManager.getState();
-                    this.lastMappedProps = optimizedMapStateToProps(initialState, this.ownProps);
+                    const currentState = StateManager.getState();
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Initial state:`, currentState);
                     
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Initial mappedProps:`, this.lastMappedProps);
+                    const initialMappedProps = optimizedMapStateToProps(currentState, this.ownProps);
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Initial mapped props:`, initialMappedProps);
 
-                    // Create the instance of the wrapped component
-                    this.wrappedInstance = new WrappedComponent(this.container, this.lastMappedProps);
+                    // Create wrapped component instance
+                    this.wrappedInstance = new WrappedComponent(this.container, {
+                        ...this.ownProps,
+                        ...initialMappedProps
+                    });
 
-                    // Subscribe to StateManager changes with enhanced subscription management
-                    this.unsubscribeFromStateManager = globalSubscriptionManager.subscribe(
-                        this._handleStateChange.bind(this),
-                        this.componentId
+                    // Store initial props for comparison
+                    this.lastMappedProps = initialMappedProps;
+
+                    // Initialize wrapped component
+                    if (typeof this.wrappedInstance.init === 'function') {
+                        await this.wrappedInstance.init();
+                    }
+
+                    // Subscribe to state changes
+                    this.subscriptionId = globalSubscriptionManager.subscribe(
+                        this.componentId,
+                        this._handleStateChange.bind(this)
                     );
 
-                    // Also subscribe to StateManager directly for compatibility
-                    this.stateManagerUnsubscribe = StateManager.subscribe(this._handleStateChange.bind(this));
-
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Initialized with subscription management`);
+                    Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Initialization complete`);
                 } catch (error) {
-                    Logger.error(`[ConnectedComponent][${WrappedComponent.name}] Initialization error:`, error);
+                    Logger.error(`[ConnectedComponent][${WrappedComponent.name}] Initialization failed:`, error);
                     throw error;
                 }
             }
 
-            async init() {
-                if (this.wrappedInstance && typeof this.wrappedInstance.init === 'function') {
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Calling wrapped init.`);
-                    await this.wrappedInstance.init();
-                }
-            }
-            
-            mount() {
-                if (this.wrappedInstance && typeof this.wrappedInstance.mount === 'function') {
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Calling wrapped mount.`);
-                    this.wrappedInstance.mount(this.container);
-                } else {
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Wrapped component has no mount method.`);
-                }
-            }
-
-            render() {
-                if (this.wrappedInstance && typeof this.wrappedInstance.render === 'function') {
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Calling wrapped render.`);
-                    this.wrappedInstance.render();
-                } else {
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Wrapped component has no render method.`);
-                }
-            }
-
-            // Enhanced state change handling with proper change detection
-            _handleStateChange(newState) {
-                if (!newState) {
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] State change with null state, skipping update.`);
-                    return;
-                }
+            _handleStateChange(eventData) {
+                const startTime = performance.now();
+                Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] _handleStateChange called`, eventData);
 
                 try {
-                    const newMappedProps = optimizedMapStateToProps(newState, this.ownProps);
-                    
-                    // Implement proper change detection
-                    if (this._shouldComponentUpdate(newMappedProps)) {
-                        Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Props changed, updating component.`);
-                        
+                    // Get current state
+                    const currentState = StateManager.getState();
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Current state:`, currentState);
+
+                    // Map state to props
+                    const newMappedProps = optimizedMapStateToProps(currentState, this.ownProps);
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] New mapped props:`, newMappedProps);
+
+                    // Check if update is needed
+                    const shouldComponentUpdate = this._shouldComponentUpdate(newMappedProps);
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Should update:`, shouldComponentUpdate);
+
+                    if (shouldComponentUpdate) {
                         const oldProps = this.lastMappedProps;
                         this.lastMappedProps = newMappedProps;
                         this.updateCount++;
                         this.lastUpdateTime = Date.now();
 
+                        Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Update #${this.updateCount} - Props changed:`, {
+                            oldProps,
+                            newProps: newMappedProps
+                        });
+
                         // Update the wrapped component
                         if (this.wrappedInstance && typeof this.wrappedInstance.update === 'function') {
+                            Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Calling wrapped instance update`);
                             this.wrappedInstance.update(newMappedProps, oldProps);
                         } else {
+                            Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Fallback: updating props and rendering`);
                             // Fallback: recreate props and render
                             if (this.wrappedInstance) {
                                 Object.assign(this.wrappedInstance.props || {}, newMappedProps);
@@ -264,133 +276,107 @@ export function connectToState(mapStateToProps, options = {}) {
                             }
                         }
                         
-                        Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Update #${this.updateCount} completed.`);
+                        const duration = performance.now() - startTime;
+                        Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Update #${this.updateCount} completed in ${duration.toFixed(2)}ms`);
                     } else {
-                        Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Props unchanged, skipping update.`);
+                        Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Props unchanged, skipping update`);
                     }
                 } catch (error) {
                     Logger.error(`[ConnectedComponent][${WrappedComponent.name}] Error handling state change:`, error);
                 }
             }
 
-            // Enhanced change detection with custom shouldUpdate function
+            // Enhanced change detection with debugging
             _shouldComponentUpdate(newMappedProps) {
                 if (!this.lastMappedProps) {
-                    return true; // First update
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] First update, should update: true`);
+                    return true;
                 }
 
                 // Use custom shouldUpdate function if provided
                 if (shouldUpdate && typeof shouldUpdate === 'function') {
-                    return shouldUpdate(this.lastMappedProps, newMappedProps, this.ownProps);
+                    const customResult = shouldUpdate(this.lastMappedProps, newMappedProps);
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Custom shouldUpdate result:`, customResult);
+                    return customResult;
                 }
 
                 // Default shallow comparison
-                return !this._shallowEqual(this.lastMappedProps, newMappedProps);
-            }
-
-            // Efficient shallow comparison for props
-            _shallowEqual(obj1, obj2) {
-                if (obj1 === obj2) return true;
+                const propsEqual = PropsManager.shallowCompare(this.lastMappedProps, newMappedProps);
+                const shouldUpdate = !propsEqual;
                 
-                if (!obj1 || !obj2) return false;
-                
-                const keys1 = Object.keys(obj1);
-                const keys2 = Object.keys(obj2);
-                
-                if (keys1.length !== keys2.length) return false;
-                
-                for (let key of keys1) {
-                    if (obj1[key] !== obj2[key]) return false;
+                if (this.debugMode) {
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Props comparison:`, {
+                        lastProps: this.lastMappedProps,
+                        newProps: newMappedProps,
+                        propsEqual,
+                        shouldUpdate
+                    });
                 }
                 
-                return true;
+                return shouldUpdate;
             }
 
-            // Update own props (useful for parent-child communication)
-            updateOwnProps(newOwnProps) {
-                if (!this._shallowEqual(this.ownProps, newOwnProps)) {
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Own props updated, re-mapping state.`);
-                    this.ownProps = newOwnProps;
-                    
-                    // Re-map state with new own props
-                    const currentState = StateManager.getState();
-                    if (currentState) {
-                        this._handleStateChange(currentState);
-                    }
+            // Expose wrapped instance methods
+            render() {
+                if (this.wrappedInstance && typeof this.wrappedInstance.render === 'function') {
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Render called`);
+                    return this.wrappedInstance.render();
                 }
-            }
-
-            // Get component statistics for debugging
-            getStats() {
-                return {
-                    componentId: this.componentId,
-                    componentName: WrappedComponent.name,
-                    updateCount: this.updateCount,
-                    lastUpdateTime: this.lastUpdateTime,
-                    hasWrappedInstance: !!this.wrappedInstance,
-                    subscriptionStats: globalSubscriptionManager.getSubscriptionStats().find(s => s.componentId === this.componentId)
-                };
+                Logger.warn(`[ConnectedComponent][${WrappedComponent.name}] Render called but no render method available`);
             }
 
             destroy() {
-                Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Destroying component ${this.componentId}...`);
+                Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Destroying...`);
                 
-                try {
-                    // Unsubscribe from enhanced subscription manager
-                    if (this.unsubscribeFromStateManager) {
-                        this.unsubscribeFromStateManager();
-                        this.unsubscribeFromStateManager = null;
-                    }
-
-                    // Unsubscribe from StateManager directly
-                    if (this.stateManagerUnsubscribe) {
-                        this.stateManagerUnsubscribe();
-                        this.stateManagerUnsubscribe = null;
-                    }
-
-                    // Destroy wrapped instance
-                    if (this.wrappedInstance && typeof this.wrappedInstance.destroy === 'function') {
-                        this.wrappedInstance.destroy();
-                    }
-                    
-                    this.wrappedInstance = null;
-                    this.container = null;
-                    this.lastMappedProps = null;
-                    this.ownProps = null;
-                    
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Component ${this.componentId} destroyed successfully.`);
-                } catch (error) {
-                    Logger.error(`[ConnectedComponent][${WrappedComponent.name}] Error during destruction:`, error);
+                // Unsubscribe from state changes
+                if (this.subscriptionId) {
+                    globalSubscriptionManager.unsubscribe(this.subscriptionId);
+                    this.subscriptionId = null;
                 }
+
+                // Destroy wrapped instance
+                if (this.wrappedInstance && typeof this.wrappedInstance.destroy === 'function') {
+                    this.wrappedInstance.destroy();
+                }
+
+                this.wrappedInstance = null;
+                this.lastMappedProps = null;
+                
+                Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Destroyed`);
+            }
+
+            // Debugging utilities
+            getDebugInfo() {
+                return {
+                    componentId: this.componentId,
+                    updateCount: this.updateCount,
+                    lastUpdateTime: this.lastUpdateTime,
+                    lastMappedProps: this.lastMappedProps,
+                    hasWrappedInstance: !!this.wrappedInstance,
+                    subscriptionId: this.subscriptionId
+                };
+            }
+
+            // Force update for debugging
+            forceUpdate() {
+                Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Force update requested`);
+                const currentState = StateManager.getState();
+                const newMappedProps = optimizedMapStateToProps(currentState, this.ownProps);
+                this._handleStateChange({ character: currentState });
             }
         }
-        
-        // Copy static properties and enhance with debugging info
-        Object.keys(WrappedComponent).forEach(key => {
-            if (Object.prototype.hasOwnProperty.call(WrappedComponent, key)) {
-                ConnectedComponent[key] = WrappedComponent[key];
-            }
-        });
-        
-        // Enhanced display name for better debugging
-        const componentDisplayName = displayName || WrappedComponent.displayName || WrappedComponent.name || 'Component';
-        ConnectedComponent.displayName = `Connected(${componentDisplayName})`;
-        
-        // Add debugging helpers
-        ConnectedComponent.getGlobalStats = () => ({
-            subscriptionCount: globalSubscriptionManager.getSubscriptionCount(),
-            memoizerStats: globalPropsMemoizer.getStats(),
-            subscriptionStats: globalSubscriptionManager.getSubscriptionStats()
-        });
+
+        // Set display name for debugging
+        ConnectedComponent.displayName = displayName || `Connected(${WrappedComponent.name})`;
         
         return ConnectedComponent;
     };
 }
 
-// Export utilities for advanced usage
+// Global utilities for debugging and management
 export const StateConnectorUtils = {
-    // Clear all memoization caches
-    clearMemoizationCache: () => {
+    // Clear memoization cache
+    clearCache: () => {
         globalPropsMemoizer.clear();
         Logger.info('[StateConnector] Memoization cache cleared');
     },
@@ -419,6 +405,13 @@ export const StateConnectorUtils = {
             }
             return false;
         };
+    },
+
+    // Force update all connected components (debugging only)
+    forceUpdateAll: () => {
+        Logger.info('[StateConnector] Force updating all connected components');
+        const currentState = StateManager.getState();
+        globalSubscriptionManager.notifyAll({ character: currentState });
     }
 };
 

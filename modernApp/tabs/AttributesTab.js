@@ -154,14 +154,16 @@ class AttributesTab extends Component {
         this.debouncedSave();
     }
 
-    // Batch updates to state
+
+
     saveAttributesToState() {
         const updates = Array.from(this.state.pendingUpdates);
         if (updates.length > 0) {
-            StateManager.dispatch('UPDATE_ATTRIBUTES', {
+            // FIXED: Use updateState instead of dispatch
+            StateManager.updateState({
                 combatAttributes: this.state.localAttributes.combat,
                 utilityAttributes: this.state.localAttributes.utility
-            });
+            }, 'Update attributes');
             
             this.setState({ pendingUpdates: new Set() });
             Logger.debug('[AttributesTab] Saved attribute changes to state');
