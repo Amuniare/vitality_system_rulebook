@@ -97,6 +97,82 @@ export const DOMConfig = {
         }
     },
 
+    // Tab-specific content containers
+    tabs: {
+        basicInfoContent: {
+            selector: '#basic-info-content',
+            name: 'Basic Info Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        },
+        archetypesContent: {
+            selector: '#archetypes-content',
+            name: 'Archetypes Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        },
+        attributesContent: {
+            selector: '#attributes-content',
+            name: 'Attributes Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        },
+        mainPoolContent: {
+            selector: '#main-pool-content',
+            name: 'Main Pool Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        },
+        secondaryPoolContent: {
+            selector: '#secondary-pool-content',
+            name: 'Secondary Pool Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        },
+        advantagesContent: {
+            selector: '#advantages-content',
+            name: 'Advantages Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        },
+        disadvantagesContent: {
+            selector: '#disadvantages-content',
+            name: 'Disadvantages Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        },
+        identityContent: {
+            selector: '#identity-content',
+            name: 'Identity Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        },
+        summaryTabContent: {
+            selector: '#summary-tab-content',
+            name: 'Summary Tab Content',
+            required: true,
+            parent: '#tab-content',
+            className: 'tab-content-panel',
+            style: 'display: none;'
+        }
+    },
+
     // UI components
     components: {
         notifications: {

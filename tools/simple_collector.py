@@ -13,7 +13,7 @@ import sys
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'root_character_builder'
+DEFAULT_PRESET = 'root_modern_app_minus_partials'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude

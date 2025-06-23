@@ -131,6 +131,11 @@ export class DOMVerifier {
             element.className = config.className;
         }
         
+        // Add inline styles
+        if (config.style) {
+            element.setAttribute('style', config.style);
+        }
+        
         // Add data attribute for debugging
         element.setAttribute('data-auto-created', 'true');
         element.setAttribute('data-element-key', key);

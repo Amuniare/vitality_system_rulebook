@@ -197,7 +197,7 @@ export class CharacterHeader extends Component {
     /**
      * Public method for backward compatibility
      */
-    update(character) {
+    updateCharacter(character) {
         this.updateProps({ character });
     }
 }

@@ -1,106 +1,102 @@
+I'll analyze the console errors and identify the root causes. Let me first search the project knowledge to understand the architecture and intended design.Based on my analysis of the console errors and project architecture, here are the key issues and their root causes:
 
-## 1. Identify the Core Requirements
+## Error Analysis
 
-The ModernApp should:
-- Update the display immediately when users make purchases/selections
-- Follow the Architecture.md principles: Event-Driven Updates with one-way data flow
-- Use the Component/StateConnector pattern for automatic re-renders
-- Maintain proper state synchronization between UI and data
+### 1. **Infinite Recursion in CharacterHeader** (Critical)
 
-## 2. Break Down the Technical Constraints
-
-From the console log, I can see:
-- Button clicks ARE being detected (`[MainPoolTab] Purchase button clicked`)
-- The event delegation system IS working properly
-- State updates are being attempted
-- But the UI is NOT reflecting these changes
-
-## 3. Consider Potential Edge Cases
-
-The main issues identified:
-
-### Issue 1: Data Migration Version Mismatch
+**What's happening:**
 ```
-[DataMigration] Migration ended at version "4", but target is "4.0"
+updateProps → update → updateProps → update (infinite loop)
 ```
-This warning suggests the data isn't in the expected format, which could cause state updates to fail.
 
-### Issue 2: Purchase Flow Breaking
-The flow appears to be:
-1. Button click → ✅ Detected
-2. `handlePurchase()` → ✅ Called  
-3. `UnifiedPurchaseSystem.purchase()` → ✅ Called
-4. `StateManager.updateState()` → ❓ Unknown if succeeding
-5. Component re-render → ❌ Not happening
+**Root Cause:** 
+The CharacterHeader component has a circular dependency. In the `update()` method (line 201), it calls `this.updateProps({ character })`, which triggers another `update()` call, creating an infinite loop.
 
-### Issue 3: StateConnector Not Triggering Re-renders
-The `StateConnector` should automatically re-render components when state changes, but this isn't happening.
+**Why it violates architecture:**
+- Components should have one-way data flow
+- The `update()` method should only refresh the view, not modify props
+- Props should only be updated from external sources (parent components or state changes)
 
-## 4. Develop an Algorithm Addressing All Constraints
+### 2. **Missing StateManager.loadCharacter() Method**
 
-### Root Cause Analysis:
+**What's happening:**
+```
+TypeError: (intermediate value).loadCharacter is not a function
+```
 
-1. **StateManager.updateState() Implementation Issue**
-   - The method updates internal state and emits `CHARACTER_CHANGED` event
-   - But components aren't re-rendering in response
+**Root Cause:**
+The app.js file expects StateManager to have a `loadCharacter()` method, but StateManager only has `setCharacter()`. This is an API mismatch.
 
-2. **StateConnector Subscription Issue**
-   - Components use `connectToState()` HOC
-   - But the connection between state changes and re-renders is broken
+**Why it violates architecture:**
+- Inconsistent API between what the app expects and what StateManager provides
+- The architecture requires consistent interfaces across all systems
 
-3. **RenderQueue Not Processing**
-   - Components call `_requestRender()` but renders aren't happening
-   - The queue might not be processing properly
+### 3. **Missing Tab Content Containers**
 
-## 5. Evaluate Time and Space Complexity
+**What's happening:**
+```
+Error: Tab content container not found: basic-info-content
+```
 
-The issue isn't about performance but about the event/update cycle being broken. The complexity is in the architectural flow, not algorithmic efficiency.
+**Root Cause:**
+The DOMVerifier creates the main tab navigation container but doesn't create individual tab content containers (basic-info-content, archetype-content, etc.). The app expects these containers to exist in the DOM.
 
-## 6. Propose Implementation Approaches
+**Why it violates architecture:**
+- The DOMConfig doesn't define tab-specific content containers
+- DOMVerifier isn't creating all required containers before tab initialization
 
-### Immediate Solutions:
+## Solutions Aligned with Architecture
 
-1. **Fix StateConnector Re-render Trigger**
-   - Ensure `StateConnector` listens to `CHARACTER_CHANGED` events
-   - Force component update when props change
-   - Add debug logging to trace the update flow
+### 1. **Fix Infinite Recursion**
 
-2. **Fix RenderQueue Processing**
-   - Verify `requestAnimationFrame` is being called
-   - Ensure components are properly added to the queue
-   - Check if renders are being deduplicated incorrectly
+Remove the circular dependency in CharacterHeader:
+- The `update()` method should NOT call `updateProps()`
+- Instead, it should just store the new character and re-render
+- Props should only be updated through the Component base class lifecycle
 
-3. **Add Explicit Re-render After Purchase**
-   - As a temporary fix, manually trigger re-renders after purchases
-   - This violates the architecture but would prove the rendering works
+### 2. **Fix StateManager API**
 
-### Logic That Could Move to Components:
+Add the missing method or update app.js to use the correct API:
+- Either add `loadCharacter()` to StateManager that internally calls `setCharacter()`
+- Or update app.js to use `StateManager.setCharacter()` instead
+- Ensure consistent naming across the application
 
-Currently, button click handling is in the tabs (MainPoolTab, ArchetypeTab). This could be improved by:
+### 3. **Complete DOM Container Creation**
 
-1. **Move Purchase Logic to UniversalCard**
-   - Pass purchase/remove handlers as props
-   - Let the card component handle its own interactions
-   - This follows the "components emit events" principle better
+Enhance DOMConfig and DOMVerifier:
+- Add tab content container definitions to DOMConfig
+- Update DOMVerifier to create all tab containers during initialization
+- Ensure containers are created before tab instances are initialized
 
-2. **Create a PurchaseButton Component**
-   - Encapsulate all purchase/select/remove logic
-   - Handle different button states (Purchase/Remove/Select/Selected)
-   - Emit standardized events
+### 4. **Fix Component Update Flow**
 
-### Recommended Next Steps:
+The proper flow should be:
+1. **User Action** → Component emits event
+2. **Event Handler** → Updates StateManager
+3. **StateManager** → Emits CHARACTER_CHANGED
+4. **StateConnector** → Updates component props
+5. **Component** → Re-renders based on new props
 
-1. **Debug StateConnector**:
-   - Add logging to see if `_handleStateChange` is called
-   - Verify props are actually changing
-   - Check if `forceUpdate()` is working
+Currently, this flow is broken because:
+- Components are trying to update their own props
+- StateConnector might not be properly wired to components
+- The update chain has circular dependencies
 
-2. **Fix Data Migration**:
-   - Update migration to handle "4" → "4.0" properly
-   - This might be causing silent failures
+## Recommended Next Steps
 
-3. **Simplify the Update Chain**:
-   - Temporarily add direct re-renders after purchases to verify rendering works
-   - Then trace why automatic updates aren't happening
+1. **Immediate Fixes** (to get app running):
+   - Remove `this.updateProps()` call from CharacterHeader.update()
+   - Add `loadCharacter()` to StateManager or fix the app.js call
+   - Add tab content containers to DOMConfig
 
-The core issue is that the reactive update cycle is broken somewhere between StateManager → EventBus → StateConnector → Component re-render. The architecture is sound, but the implementation has a disconnect in this chain.
+2. **Architecture Alignment**:
+   - Review all components for similar circular dependencies
+   - Ensure all components follow the one-way data flow
+   - Verify StateConnector is properly connecting state to components
+
+3. **Testing Strategy**:
+   - Add logging to trace the complete update flow
+   - Test each component in isolation
+   - Verify event propagation works correctly
+
+The architecture itself is sound and follows good practices (universal components, event-driven updates, centralized state). The issues are in the implementation details where components aren't following the established patterns correctly.

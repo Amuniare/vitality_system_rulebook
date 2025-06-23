@@ -11,6 +11,7 @@ import { RenderQueue } from './core/RenderQueue.js';
 // Import tabs
 import { BasicInfoTab } from './tabs/BasicInfoTab.js';
 import { ArchetypeTab } from './tabs/ArchetypeTab.js';
+import { AttributesTab } from './tabs/AttributesTab.js';
 import { MainPoolTab } from './tabs/MainPoolTab.js';
 
 // Import components
@@ -312,6 +313,7 @@ class ModernCharacterBuilder {
         return [
             { id: 'basic-info', label: 'Basic Info', icon: 'user' },
             { id: 'archetypes', label: 'Archetypes', icon: 'puzzle-piece' },
+            { id: 'attributes', label: 'Attributes', icon: 'sliders' },
             { id: 'main-pool', label: 'Main Pool', icon: 'star' },
             { id: 'secondary-pool', label: 'Secondary Pool', icon: 'gem', disabled: true },
             { id: 'advantages', label: 'Advantages', icon: 'plus-circle', disabled: true },
@@ -392,6 +394,10 @@ class ModernCharacterBuilder {
                 TabClass = ArchetypeTab;
                 break;
                 
+            case 'attributes':
+                TabClass = AttributesTab;
+                break;
+                
             case 'main-pool':
                 TabClass = MainPoolTab;
                 break;
@@ -414,7 +420,7 @@ class ModernCharacterBuilder {
         
         try {
             // Load character into state
-            await StateManager.loadCharacter(character);
+            await StateManager.updateState(character, 'Character selected');
             
             // Update header
             if (this.characterHeader) {
@@ -640,7 +646,7 @@ class ModernCharacterBuilder {
             
             if (activeCharacter) {
                 Logger.info(`[ModernCharacterBuilder] Loaded active character: ${activeCharacter.name}`);
-                await StateManager.loadCharacter(activeCharacter);
+                await StateManager.updateState(activeCharacter, 'Initial character loaded');
                 
                 // Update header
                 if (this.characterHeader) {
