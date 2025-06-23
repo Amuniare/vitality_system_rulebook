@@ -2,6 +2,7 @@
 import { Logger } from '../utils/Logger.js';
 import { PropsManager } from './PropsManager.js';
 import { RenderQueue } from './RenderQueue.js';
+import { EventBus } from './EventBus.js';
 
 /**
  * Enhanced Component base class with comprehensive debugging and lifecycle management
@@ -206,6 +207,11 @@ export class Component {
             // Clean up subscriptions
             this._unsubscribeAll();
             
+            // Clean up component event listeners
+            if (this._componentEventListeners) {
+                this._componentEventListeners.clear();
+            }
+            
             // Clear container
             if (this.container) {
                 this.container.innerHTML = '';
@@ -382,6 +388,131 @@ export class Component {
         
         if (unsubscribedCount > 0) {
             Logger.debug(`[Component][${this.constructor.name}] Unsubscribed ${unsubscribedCount} subscriptions for ${this.componentId}`);
+        }
+    }
+
+    // --- Public API for Universal Components ---
+    
+    /**
+     * Public method to add event listeners with automatic cleanup
+     * @param {Element} element - DOM element to attach listener to
+     * @param {string} eventType - Event type (e.g., 'click', 'change')
+     * @param {Function} handler - Event handler function
+     * @param {Object} options - Event listener options
+     */
+    addEventListener(element, eventType, handler, options) {
+        this._addEventListener(element, eventType, handler, options);
+    }
+
+    /**
+     * Subscribe to EventBus events with automatic cleanup
+     * @param {string} eventName - Name of the EventBus event
+     * @param {Function} handler - Event handler function
+     */
+    subscribe(eventName, handler) {
+        this._addSubscription(() => {
+            EventBus.on(eventName, handler);
+            Logger.debug(`[Component][${this.constructor.name}] Subscribed to ${eventName} in ${this.componentId}`);
+            return () => EventBus.off(eventName, handler);
+        });
+    }
+
+    /**
+     * Emit events through EventBus
+     * @param {string} eventName - Name of the event to emit
+     * @param {*} data - Data to send with the event
+     */
+    emit(eventName, data) {
+        EventBus.emit(eventName, data);
+        Logger.debug(`[Component][${this.constructor.name}] Emitted ${eventName} from ${this.componentId}:`, data);
+    }
+
+    /**
+     * Update component props and trigger re-render if changed
+     * @param {Object} newProps - New props to merge with existing props
+     */
+    updateProps(newProps) {
+        if (this.isDestroyed) {
+            Logger.warn(`[Component][${this.constructor.name}] Cannot updateProps on destroyed component ${this.componentId}`);
+            return;
+        }
+
+        const oldProps = this.props;
+        const updatedProps = PropsManager.processProps(
+            this.constructor.name,
+            { ...oldProps, ...newProps },
+            this.constructor.propSchema
+        );
+
+        // Only update and re-render if props actually changed
+        if (!PropsManager.shallowCompare(this.props, updatedProps)) {
+            Logger.debug(`[Component][${this.constructor.name}] Props updated for ${this.componentId}:`, {
+                oldProps,
+                newProps: updatedProps
+            });
+            
+            const prevProps = this.props;
+            this.props = updatedProps;
+            
+            // Call update lifecycle method
+            this.update(this.props, prevProps);
+            
+            // Request re-render
+            this._requestRender();
+        } else {
+            Logger.debug(`[Component][${this.constructor.name}] updateProps called for ${this.componentId}, but props did not change`);
+        }
+    }
+
+    /**
+     * Allow external objects to listen to component events
+     * This creates a simple event system for components
+     * @param {string} eventName - Name of the event to listen to
+     * @param {Function} handler - Event handler function
+     */
+    on(eventName, handler) {
+        if (!this._componentEventListeners) {
+            this._componentEventListeners = new Map();
+        }
+        
+        if (!this._componentEventListeners.has(eventName)) {
+            this._componentEventListeners.set(eventName, []);
+        }
+        
+        this._componentEventListeners.get(eventName).push(handler);
+        
+        Logger.debug(`[Component][${this.constructor.name}] External listener added for ${eventName} on ${this.componentId}`);
+        
+        // Return unsubscribe function
+        return () => {
+            const handlers = this._componentEventListeners.get(eventName);
+            if (handlers) {
+                const index = handlers.indexOf(handler);
+                if (index > -1) {
+                    handlers.splice(index, 1);
+                    Logger.debug(`[Component][${this.constructor.name}] External listener removed for ${eventName} on ${this.componentId}`);
+                }
+            }
+        };
+    }
+
+    /**
+     * Emit component-specific events to external listeners
+     * @param {string} eventName - Name of the event to emit
+     * @param {*} data - Data to send with the event
+     */
+    emitComponentEvent(eventName, data) {
+        if (this._componentEventListeners && this._componentEventListeners.has(eventName)) {
+            const handlers = this._componentEventListeners.get(eventName);
+            handlers.forEach(handler => {
+                try {
+                    handler(data);
+                } catch (error) {
+                    Logger.error(`[Component][${this.constructor.name}] Error in external event handler for ${eventName} on ${this.componentId}:`, error);
+                }
+            });
+            
+            Logger.debug(`[Component][${this.constructor.name}] Component event ${eventName} emitted from ${this.componentId} to ${handlers.length} listeners`);
         }
     }
 

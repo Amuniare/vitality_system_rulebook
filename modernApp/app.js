@@ -19,6 +19,11 @@ import { CharacterHeader } from './components/CharacterHeader.js';
 import { CharacterListPanel } from './components/CharacterListPanel.js';
 import { NotificationSystem } from './components/NotificationSystem.js';
 
+// Import DOM architecture components
+import { DOMVerifier } from './core/DOMVerifier.js';
+import { DOMConfig, getElement } from './config/DOMConfig.js';
+import { TemplateEngine, AppTemplates } from './core/TemplateEngine.js';
+
 /**
  * Enhanced ModernCharacterBuilder with comprehensive debugging and error handling
  * Main application class that orchestrates all systems and components
@@ -32,6 +37,10 @@ class ModernCharacterBuilder {
         // Core systems
         this.characterManager = null;
         this.notificationSystem = null;
+        
+        // DOM architecture systems
+        this.domVerifier = new DOMVerifier();
+        this.templateEngine = new TemplateEngine();
         
         // UI components
         this.tabNavigation = null;
@@ -47,6 +56,11 @@ class ModernCharacterBuilder {
         this.debugMode = false;
         this.errorCount = 0;
         
+        // Register templates
+        Object.entries(AppTemplates).forEach(([name, template]) => {
+            this.templateEngine.registerTemplate(name, template);
+        });
+        
         Logger.info(`[ModernCharacterBuilder] Application instance created with ID: ${this.appId}`);
     }
 
@@ -60,6 +74,21 @@ class ModernCharacterBuilder {
         try {
             // Check for debug mode
             this.checkDebugMode();
+            
+            // Step 1: Verify DOM structure
+            this.setupDOMVerification();
+            const domResults = this.domVerifier.verify(true); // Auto-create missing elements
+            
+            if (!domResults.passed) {
+                Logger.error('[ModernCharacterBuilder] DOM verification failed');
+                Logger.error(this.domVerifier.getReport());
+                throw new Error('Required DOM elements are missing');
+            }
+            
+            Logger.info('[ModernCharacterBuilder] DOM verification passed');
+            if (domResults.created.length > 0) {
+                Logger.warn(`[ModernCharacterBuilder] Auto-created ${domResults.created.length} missing elements`);
+            }
             
             // Initialize core systems
             await this.initializeCoreSystems();
@@ -113,6 +142,22 @@ class ModernCharacterBuilder {
             EventBus.enableDebugMode();
             Logger.info('[ModernCharacterBuilder] Debug mode enabled via URL parameter');
         }
+    }
+
+    /**
+     * Setup DOM verification by registering all required elements from DOMConfig
+     */
+    setupDOMVerification() {
+        // Register all required elements from DOMConfig
+        const configs = DOMConfig.getAllConfigs();
+        
+        configs.forEach(config => {
+            if (config.required) {
+                this.domVerifier.registerRequired(config.key, config);
+            } else {
+                this.domVerifier.registerOptional(config.key, config);
+            }
+        });
     }
 
     /**
@@ -183,40 +228,70 @@ class ModernCharacterBuilder {
         Logger.info('[ModernCharacterBuilder] Initializing UI components...');
         
         try {
-            // Initialize character header
-            const headerContainer = document.getElementById('character-header');
+            // Initialize CharacterHeader with universal pattern
+            const headerContainer = getElement('character.header');
             if (headerContainer) {
-                this.characterHeader = new CharacterHeader({}, headerContainer);
+                this.characterHeader = new CharacterHeader({
+                    character: null, // Will be set when character loads
+                    editable: true,
+                    showType: true,
+                    showTier: true
+                }, headerContainer);
+                
                 await this.characterHeader.init();
+                
+                // Listen for character name change events
+                this.characterHeader.on('character-name-changed', (data) => {
+                    this.handleCharacterNameChange(data);
+                });
+                
                 Logger.debug('[ModernCharacterBuilder] Character header initialized');
             } else {
                 Logger.warn('[ModernCharacterBuilder] Character header container not found');
             }
             
-            // Initialize character list panel
-            const listContainer = document.getElementById('character-list');
+            // Initialize CharacterListPanel with universal pattern
+            const listContainer = getElement('character.listContainer');
             if (listContainer) {
                 this.characterListPanel = new CharacterListPanel({
                     characterManager: this.characterManager,
-                    onCharacterSelect: (character) => this.handleCharacterSelection(character),
-                    onCharacterCreate: () => this.handleCharacterCreation(),
-                    onCharacterDelete: (characterId) => this.handleCharacterDeletion(characterId)
+                    activeCharacterId: null, // Will be set when character loads
+                    showControls: true,
+                    allowDelete: true,
+                    allowCreate: true,
+                    allowImport: true
                 }, listContainer);
+                
                 await this.characterListPanel.init();
+                
+                // Listen for character management events
+                this.characterListPanel.on('character-create-requested', () => this.handleCharacterCreation());
+                this.characterListPanel.on('character-select-requested', (data) => this.handleCharacterSelectionById(data.characterId));
+                this.characterListPanel.on('character-delete-requested', (data) => this.handleCharacterDeletion(data.characterId));
+                this.characterListPanel.on('character-import-requested', () => this.handleCharacterImport());
+                
                 Logger.debug('[ModernCharacterBuilder] Character list panel initialized');
             } else {
                 Logger.warn('[ModernCharacterBuilder] Character list container not found');
             }
             
-            // Initialize tab navigation
-            const tabNavContainer = document.getElementById('tab-navigation');
+            // Initialize TabNavigation with universal pattern
+            const tabNavContainer = getElement('navigation.tabContainer');
             if (tabNavContainer) {
                 this.tabNavigation = new TabNavigation({
                     tabs: this.getTabConfiguration(),
                     activeTab: this.currentTab,
-                    onTabSwitch: (tabId) => this.handleTabSwitch(tabId)
+                    orientation: 'horizontal',
+                    allowKeyboardNavigation: true,
+                    showBadges: true,
+                    showIcons: true
                 }, tabNavContainer);
+                
                 await this.tabNavigation.init();
+                
+                // Listen for tab switch events
+                this.tabNavigation.on('tab-switch-requested', (data) => this.handleTabSwitch(data.newTab));
+                
                 Logger.debug('[ModernCharacterBuilder] Tab navigation initialized');
             } else {
                 throw new Error('Tab navigation container not found');
@@ -428,16 +503,105 @@ class ModernCharacterBuilder {
     }
 
     /**
+     * Handle character selection by ID (from universal components)
+     */
+    async handleCharacterSelectionById(characterId) {
+        Logger.debug(`[ModernCharacterBuilder] Character selection by ID requested: ${characterId}`);
+        
+        try {
+            const character = this.characterManager.getCharacter(characterId);
+            if (character) {
+                await this.handleCharacterSelection(character);
+            } else {
+                Logger.error(`[ModernCharacterBuilder] Character not found: ${characterId}`);
+                this.notificationSystem.error('Character not found');
+            }
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to select character by ID:', error);
+            this.notificationSystem.error('Failed to select character');
+        }
+    }
+
+    /**
+     * Handle character name change (from CharacterHeader)
+     */
+    async handleCharacterNameChange(data) {
+        Logger.debug(`[ModernCharacterBuilder] Character name change requested: ${data.oldName} -> ${data.newName}`);
+        
+        try {
+            // Update character name through StateManager
+            const currentCharacter = StateManager.getCharacter();
+            if (currentCharacter && currentCharacter.id === data.characterId) {
+                await StateManager.updateCharacter({ name: data.newName });
+                this.notificationSystem.success(`Character renamed to "${data.newName}"`);
+            } else {
+                Logger.error('[ModernCharacterBuilder] Character ID mismatch for name change');
+                this.notificationSystem.error('Failed to update character name');
+            }
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to update character name:', error);
+            this.notificationSystem.error('Failed to update character name');
+        }
+    }
+
+    /**
+     * Handle character import request (from CharacterListPanel)
+     */
+    async handleCharacterImport() {
+        Logger.debug('[ModernCharacterBuilder] Character import requested');
+        
+        try {
+            // Create file input for import
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                try {
+                    const text = await file.text();
+                    const characterData = JSON.parse(text);
+                    
+                    // Import through CharacterManager
+                    const importedCharacter = await this.characterManager.importCharacter(characterData);
+                    await this.handleCharacterSelection(importedCharacter);
+                    
+                    this.notificationSystem.success(`Character "${importedCharacter.name}" imported successfully`);
+                    
+                } catch (importError) {
+                    Logger.error('[ModernCharacterBuilder] Failed to import character:', importError);
+                    this.notificationSystem.error('Failed to import character. Please check the file format.');
+                }
+            };
+            
+            input.click();
+            
+        } catch (error) {
+            Logger.error('[ModernCharacterBuilder] Failed to setup character import:', error);
+            this.notificationSystem.error('Failed to setup character import');
+        }
+    }
+
+    /**
      * Setup global event handlers
      */
     setupGlobalEventHandlers() {
         Logger.debug('[ModernCharacterBuilder] Setting up global event handlers...');
         
-        // Listen for character changes to update header
+        // Listen for character changes to update components
         EventBus.on('CHARACTER_CHANGED', (data) => {
-            Logger.debug('[ModernCharacterBuilder] Character changed, updating header');
+            Logger.debug('[ModernCharacterBuilder] Character changed, updating components');
+            
+            // Update CharacterHeader with new character data
             if (this.characterHeader && data.character) {
-                this.characterHeader.render(data.character);
+                this.characterHeader.updateProps({ character: data.character });
+            }
+            
+            // Update CharacterListPanel with new active character
+            if (this.characterListPanel && data.character) {
+                this.characterListPanel.updateProps({ activeCharacterId: data.character.id });
             }
         });
         

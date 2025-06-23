@@ -1,181 +1,295 @@
 // modernApp/components/CharacterListPanel.js
+import { Component } from '../core/Component.js';
 import { Logger } from '../utils/Logger.js';
 import { EventBus } from '../core/EventBus.js';
+import { TemplateEngine } from '../core/TemplateEngine.js';
 
-export class CharacterListPanel {
-    constructor(listContainerId, controlsContainerId, characterManager) {
-        this.listContainer = document.getElementById(listContainerId);
-        this.controlsContainer = document.getElementById(controlsContainerId);
-        this.characterManager = characterManager;
+/**
+ * Universal CharacterListPanel component following the architecture pattern
+ * Displays character list with controls for character management
+ */
+export class CharacterListPanel extends Component {
+    static propSchema = {
+        characterManager: { type: 'object', required: true },
+        activeCharacterId: { type: 'string', default: null },
+        showControls: { type: 'boolean', default: true },
+        allowDelete: { type: 'boolean', default: true },
+        allowCreate: { type: 'boolean', default: true },
+        allowImport: { type: 'boolean', default: true }
+    };
 
-        // FIXED: Better error handling for missing containers
+    constructor(props = {}, container = null) {
+        super(props, container);
+        
+        this.listContainer = null;
+        this.controlsContainer = null;
+        this.templateEngine = new TemplateEngine();
+        
+        // Register templates specific to this component
+        this.registerTemplates();
+        
+        Logger.debug(`[CharacterListPanel] Created with ID ${this.componentId}`);
+    }
+
+    registerTemplates() {
+        // Character list item template
+        this.templateEngine.registerTemplate('characterListItem', (data) => `
+            <li class="character-list-item ${data.isActive ? 'active' : ''}" 
+                data-character-id="${data.id}">
+                <div class="character-info" data-action="select-character">
+                    <span class="character-name">${data.name}</span>
+                    <div class="character-meta">
+                        <span class="character-tier">T${data.tier}</span>
+                        <span class="character-type">${data.type}</span>
+                    </div>
+                </div>
+                <div class="character-actions">
+                    <button class="btn-icon btn-edit" 
+                            data-action="edit-character" 
+                            title="Edit Character"
+                            aria-label="Edit ${data.name}">
+                        ✏️
+                    </button>
+                    ${data.allowDelete ? `
+                        <button class="btn-icon btn-delete btn-danger" 
+                                data-action="delete-character"
+                                title="Delete Character"
+                                aria-label="Delete ${data.name}">
+                            🗑️
+                        </button>
+                    ` : ''}
+                </div>
+            </li>
+        `);
+
+        // Control button template
+        this.templateEngine.registerTemplate('controlButton', (data) => `
+            <button class="btn ${data.className || 'btn-secondary'} btn-block" 
+                    data-action="${data.action}"
+                    ${data.disabled ? 'disabled' : ''}>
+                ${data.icon ? `<i class="${data.icon}"></i> ` : ''}
+                ${data.label}
+            </button>
+        `);
+
+        // Empty state template
+        this.templateEngine.registerTemplate('emptyState', (data) => `
+            <div class="character-list-empty">
+                <div class="empty-icon">${data.icon || '👤'}</div>
+                <div class="empty-message">${data.message}</div>
+                ${data.action ? `
+                    <button class="btn btn-primary" data-action="${data.action.action}">
+                        ${data.action.label}
+                    </button>
+                ` : ''}
+            </div>
+        `);
+    }
+
+    async onInit() {
+        this.setupContainers();
+        this.render();
+        this.attachEventListeners();
+        
+        // Listen for character-related events
+        this.subscribe('CHARACTER_LIST_UPDATED', () => this.renderList());
+        this.subscribe('CHARACTER_SWITCHED', () => this.renderList());
+        this.subscribe('CHARACTER_CHANGED', (data) => {
+            this.updateProps({ activeCharacterId: data.character?.id });
+        });
+        
+        Logger.info(`[CharacterListPanel] Initialized ${this.componentId}`);
+    }
+
+    setupContainers() {
+        if (!this.container) {
+            throw new Error('CharacterListPanel requires a container element');
+        }
+
+        // Create or find sub-containers
+        this.controlsContainer = this.container.querySelector('.character-list-controls');
+        this.listContainer = this.container.querySelector('.character-list-content');
+        
+        // Create containers if they don't exist
+        if (!this.controlsContainer && this.props.showControls) {
+            this.controlsContainer = document.createElement('div');
+            this.controlsContainer.className = 'character-list-controls';
+            this.container.appendChild(this.controlsContainer);
+        }
+        
         if (!this.listContainer) {
-            Logger.error(`[CharacterListPanel] List container '#${listContainerId}' not found.`);
-            throw new Error(`Required list container '#${listContainerId}' not found.`);
+            this.listContainer = document.createElement('div');
+            this.listContainer.className = 'character-list-content';
+            this.container.appendChild(this.listContainer);
         }
-        
-        if (!this.controlsContainer) {
-            Logger.error(`[CharacterListPanel] Controls container '#${controlsContainerId}' not found.`);
-            throw new Error(`Required controls container '#${controlsContainerId}' not found.`);
-        }
-
-        if (!this.characterManager) {
-            Logger.error('[CharacterListPanel] CharacterManager instance is required.');
-            throw new Error('CharacterManager instance is required.');
-        }
-        
-        // Store handler references
-        this.listContainerClickHandler = null;
-        this.controlsContainerClickHandler = null;
-
-        Logger.info('[CharacterListPanel] Constructor completed successfully.');
     }
 
-    async init() {
-        this.renderControls();
-        this.renderList();
-        
-        // Set up event listeners
-        EventBus.on('CHARACTER_LIST_UPDATED', () => this.renderList());
-        EventBus.on('CHARACTER_SWITCHED', () => this.renderList()); // Re-render to update active state
-        
-        Logger.info('[CharacterListPanel] Initialized.');
-    }
-
-    renderControls() {
-        this.controlsContainer.innerHTML = `
-            <button class="btn btn-primary btn-block" data-action="new-character">New Character</button>
-            <button class="btn btn-secondary btn-block" data-action="import-character">Import</button>
-            <!-- Add Export All later if needed -->
-        `;
-        this.setupControlEventListeners();
-    }
-
-    renderList() {
-        const charactersMetadata = this.characterManager.getAllCharacters();
-        const activeCharId = this.characterManager.activeCharacterId;
-
-        if (charactersMetadata.length === 0) {
-            this.listContainer.innerHTML = '<p class="text-muted text-center">No characters yet. Create one!</p>';
+    render() {
+        if (!this.container) {
+            Logger.warn(`[CharacterListPanel] No container provided for ${this.componentId}`);
             return;
         }
 
+        this.renderControls();
+        this.renderList();
+        
+        this.performanceMetrics.renderCount++;
+        Logger.debug(`[CharacterListPanel] Rendered ${this.componentId}`);
+    }
+
+    renderControls() {
+        if (!this.controlsContainer || !this.props.showControls) return;
+        
+        const buttons = [];
+        
+        if (this.props.allowCreate) {
+            buttons.push(this.templateEngine.render('controlButton', {
+                action: 'new-character',
+                label: 'New Character',
+                className: 'btn-primary',
+                icon: null
+            }));
+        }
+        
+        if (this.props.allowImport) {
+            buttons.push(this.templateEngine.render('controlButton', {
+                action: 'import-character',
+                label: 'Import',
+                className: 'btn-secondary',
+                icon: null
+            }));
+        }
+        
+        this.controlsContainer.innerHTML = buttons.join('');
+    }
+
+    renderList() {
+        if (!this.listContainer) return;
+        
+        const characterManager = this.props.characterManager;
+        if (!characterManager) {
+            this.listContainer.innerHTML = this.templateEngine.render('emptyState', {
+                message: 'No character manager available',
+                icon: '⚠️'
+            });
+            return;
+        }
+
+        const characters = characterManager.getAllCharacters();
+        
+        if (!characters || characters.length === 0) {
+            this.listContainer.innerHTML = this.templateEngine.render('emptyState', {
+                message: 'No characters found. Create your first character!',
+                icon: '👤',
+                action: this.props.allowCreate ? {
+                    action: 'new-character',
+                    label: 'Create Character'
+                } : null
+            });
+            return;
+        }
+
+        const characterItems = characters.map(character => 
+            this.templateEngine.render('characterListItem', {
+                id: character.id,
+                name: character.name || 'Unnamed Character',
+                tier: character.tier || 'N/A',
+                type: character.characterType || 'standard',
+                isActive: character.id === this.props.activeCharacterId,
+                allowDelete: this.props.allowDelete
+            })
+        ).join('');
+        
         this.listContainer.innerHTML = `
             <ul class="character-list">
-                ${charactersMetadata.map(char => `
-                    <li class="character-list-item ${char.id === activeCharId ? 'active' : ''}" data-char-id="${char.id}">
-                        <span class="char-name">${char.name || 'Unnamed Character'} (T${char.tier || 'N/A'})</span>
-                        <div class="char-actions">
-                            <button class="btn-icon" data-action="load-character" title="Load ${char.name}"><i class="icon-load">➔</i></button>
-                            <button class="btn-icon btn-danger" data-action="delete-character" title="Delete ${char.name}"><i class="icon-delete">🗑</i></button>
-                        </div>
-                    </li>
-                `).join('')}
+                ${characterItems}
             </ul>
         `;
-        this.setupListEventListeners();
     }
 
-    setupControlEventListeners() {
-        // Remove previous listener if it exists
-        if (this.controlsContainerClickHandler) {
-            this.controlsContainer.removeEventListener('click', this.controlsContainerClickHandler);
-        }
 
-        // Define the new handler
-        this.controlsContainerClickHandler = (e) => {
-            const action = e.target.closest('button')?.dataset.action;
-            if (!action) return;
-
-            switch (action) {
-                case 'new-character':
-                    this.characterManager.createNewCharacter('New Character ' + (this.characterManager.getAllCharacters().length + 1));
-                    // Active character and list will update via events
-                    break;
-                case 'import-character':
-                    this.handleImport();
-                    break;
-            }
-        };
-        
-        // Add the new listener
-        this.controlsContainer.addEventListener('click', this.controlsContainerClickHandler);
-    }
-    
-    setupListEventListeners() {
-        // Remove previous listener if it exists
-        if (this.listContainerClickHandler) {
-            this.listContainer.removeEventListener('click', this.listContainerClickHandler);
-        }
-
-        // Define the new handler
-        this.listContainerClickHandler = (e) => {
-            const listItem = e.target.closest('.character-list-item');
-            const actionButton = e.target.closest('button[data-action]');
-            
-            if (!listItem && !actionButton) return;
-
-            const charId = actionButton ? actionButton.closest('.character-list-item')?.dataset.charId : listItem?.dataset.charId;
-            if (!charId) return;
-
-            const action = actionButton ? actionButton.dataset.action : 'load-character';
-
-            switch (action) {
-                case 'load-character':
-                    this.characterManager.setActiveCharacter(charId);
-                    break;
-                case 'delete-character':
-                    if (confirm('Are you sure you want to delete this character?')) {
-                        this.characterManager.deleteCharacter(charId);
-                    }
-                    break;
-            }
-        };
-        
-        // Add the new listener
-        this.listContainer.addEventListener('click', this.listContainerClickHandler);
-    }
-
-    handleImport() {
-        // Create a temporary file input for importing
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            try {
-                const text = await file.text();
-                const characterData = JSON.parse(text);
+    attachEventListeners() {
+        // Controls event handling
+        if (this.controlsContainer) {
+            this.addEventListener(this.controlsContainer, 'click', (e) => {
+                const action = e.target.dataset.action;
                 
-                // Import the character via CharacterManager
-                await this.characterManager.importCharacter(characterData);
-                Logger.info('[CharacterListPanel] Character imported successfully.');
+                switch (action) {
+                    case 'new-character':
+                        this.handleNewCharacter();
+                        break;
+                    case 'import-character':
+                        this.handleImportCharacter();
+                        break;
+                }
+            });
+        }
+
+        // List event handling
+        if (this.listContainer) {
+            this.addEventListener(this.listContainer, 'click', (e) => {
+                const action = e.target.dataset.action;
+                const listItem = e.target.closest('.character-list-item');
                 
-            } catch (error) {
-                Logger.error('[CharacterListPanel] Failed to import character:', error);
-                alert('Failed to import character. Please check the file format.');
-            }
-        };
-        
-        input.click();
+                if (!listItem) return;
+                
+                const characterId = listItem.dataset.characterId;
+                
+                switch (action) {
+                    case 'select-character':
+                        this.handleSelectCharacter(characterId);
+                        break;
+                    case 'edit-character':
+                        this.handleEditCharacter(characterId);
+                        break;
+                    case 'delete-character':
+                        this.handleDeleteCharacter(characterId);
+                        break;
+                }
+            });
+        }
     }
 
-    cleanup() {
-        // Remove event listeners
-        if (this.controlsContainerClickHandler) {
-            this.controlsContainer.removeEventListener('click', this.controlsContainerClickHandler);
-        }
-        if (this.listContainerClickHandler) {
-            this.listContainer.removeEventListener('click', this.listContainerClickHandler);
-        }
+    handleNewCharacter() {
+        Logger.debug(`[CharacterListPanel] New character requested`);
+        this.emitComponentEvent('character-create-requested');
+    }
+
+    handleImportCharacter() {
+        Logger.debug(`[CharacterListPanel] Import character requested`);
+        this.emitComponentEvent('character-import-requested');
+    }
+
+    handleSelectCharacter(characterId) {
+        Logger.debug(`[CharacterListPanel] Character selection requested: ${characterId}`);
+        this.emitComponentEvent('character-select-requested', { characterId });
+    }
+
+    handleEditCharacter(characterId) {
+        Logger.debug(`[CharacterListPanel] Character edit requested: ${characterId}`);
+        this.emitComponentEvent('character-edit-requested', { characterId });
+    }
+
+    handleDeleteCharacter(characterId) {
+        if (!this.props.allowDelete) return;
         
-        // Clean up EventBus listeners
-        EventBus.off('CHARACTER_LIST_UPDATED', this.renderList);
-        EventBus.off('CHARACTER_SWITCHED', this.renderList);
+        Logger.debug(`[CharacterListPanel] Character deletion requested: ${characterId}`);
         
-        Logger.info('[CharacterListPanel] Cleanup completed.');
+        const character = this.props.characterManager.getCharacter(characterId);
+        const characterName = character?.name || 'Unknown Character';
+        
+        // Emit delete request with confirmation data
+        this.emitComponentEvent('character-delete-requested', { 
+            characterId, 
+            characterName,
+            requireConfirmation: true 
+        });
+    }
+
+    /**
+     * Legacy support methods for backward compatibility
+     */
+    async init() {
+        return this.onInit();
     }
 }
