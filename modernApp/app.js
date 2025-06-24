@@ -95,22 +95,65 @@ class ModernCharacterBuilder {
             }
             
             // Initialize core systems
-            await this.initializeCoreSystems();
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: About to initialize core systems...');
+            try {
+                await this.initializeCoreSystems();
+                Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: Core systems initialization completed successfully');
+            } catch (coreError) {
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Core systems initialization failed:', coreError);
+                throw new Error(`Core systems failed: ${coreError.message}`);
+            }
             
             // Load game data
-            await this.loadGameData();
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: About to load game data...');
+            try {
+                await this.loadGameData();
+                Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: Game data loading completed successfully');
+            } catch (dataError) {
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Game data loading failed:', dataError);
+                throw new Error(`Game data loading failed: ${dataError.message}`);
+            }
             
             // Initialize UI components
-            await this.initializeUIComponents();
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: About to initialize UI components...');
+            try {
+                await this.initializeUIComponents();
+                Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: UI components initialization completed successfully');
+            } catch (uiError) {
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: UI components initialization failed:', uiError);
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: UI Error stack:', uiError.stack);
+                throw new Error(`UI components initialization failed: ${uiError.message}`);
+            }
             
             // Setup event handlers
-            this.setupGlobalEventHandlers();
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: About to setup global event handlers...');
+            try {
+                this.setupGlobalEventHandlers();
+                Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: Global event handlers setup completed');
+            } catch (eventError) {
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Global event handlers setup failed:', eventError);
+                throw new Error(`Event handlers setup failed: ${eventError.message}`);
+            }
             
             // Load initial character
-            await this.loadInitialCharacter();
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: About to load initial character...');
+            try {
+                await this.loadInitialCharacter();
+                Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: Initial character loading completed');
+            } catch (charError) {
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Initial character loading failed:', charError);
+                throw new Error(`Initial character loading failed: ${charError.message}`);
+            }
             
             // Switch to initial tab
-            await this.switchToTab(this.currentTab);
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: About to switch to initial tab:', this.currentTab);
+            try {
+                await this.switchToTab(this.currentTab);
+                Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: Initial tab switch completed');
+            } catch (tabError) {
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Initial tab switch failed:', tabError);
+                throw new Error(`Initial tab switch failed: ${tabError.message}`);
+            }
             
             // Mark as initialized
             this.initialized = true;
@@ -201,30 +244,46 @@ class ModernCharacterBuilder {
      * Load game data
      */
     async loadGameData() {
+        Logger.info('[ModernCharacterBuilder] ENHANCED DEBUG: ======== GAME DATA LOADING START ========');
         Logger.info('[ModernCharacterBuilder] Loading game data...');
         
         try {
             Logger.startTimer('gameDataLoad');
             
             // Initialize EntityLoader which loads unified game data
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: About to call EntityLoader.init()...');
             await EntityLoader.init();
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: EntityLoader.init() completed');
             
             // Verify data was loaded
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: Verifying EntityLoader.entities...', EntityLoader.entities);
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: EntityLoader.entities type:', typeof EntityLoader.entities);
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: EntityLoader.entities size:', EntityLoader.entities?.size);
+            
             if (!EntityLoader.entities || EntityLoader.entities.size === 0) {
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: No game data loaded!');
+                Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: EntityLoader.entities value:', EntityLoader.entities);
                 throw new Error('No game data loaded');
             }
             
             // Store reference for easy access
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: Creating window.gameData reference...');
             window.gameData = {
                 entities: Object.fromEntries(EntityLoader.entities)
             };
+            Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: window.gameData created:', Object.keys(window.gameData.entities).length, 'entities');
             
             const loadDuration = Logger.endTimer('gameDataLoad');
-            Logger.info(`[ModernCharacterBuilder] Game data loaded successfully in ${loadDuration.toFixed(2)}ms`);
-            Logger.info(`[ModernCharacterBuilder] Loaded ${EntityLoader.entities.size} entities`);
+            Logger.info(`[ModernCharacterBuilder] ENHANCED DEBUG: Game data loaded successfully in ${loadDuration.toFixed(2)}ms`);
+            Logger.info(`[ModernCharacterBuilder] ENHANCED DEBUG: Loaded ${EntityLoader.entities.size} entities`);
+            Logger.info('[ModernCharacterBuilder] ENHANCED DEBUG: ======== GAME DATA LOADING COMPLETE ========');
             
         } catch (error) {
-            Logger.error('[ModernCharacterBuilder] Failed to load game data:', error);
+            Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: ======== GAME DATA LOADING FAILED ========');
+            Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Failed to load game data:', error);
+            Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Error type:', typeof error);
+            Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Error message:', error.message);
+            Logger.error('[ModernCharacterBuilder] ENHANCED DEBUG: Error stack:', error.stack);
             throw new Error(`Game data loading failed: ${error.message}`);
         }
     }
@@ -233,6 +292,7 @@ class ModernCharacterBuilder {
      * Initialize UI components
      */
     async initializeUIComponents() {
+        Logger.info('[ModernCharacterBuilder] ENHANCED DEBUG: ======== UI COMPONENTS INITIALIZATION START ========');
         Logger.info('[ModernCharacterBuilder] Initializing UI components...');
         
         // Initialize CharacterHeader with error handling
@@ -378,7 +438,11 @@ class ModernCharacterBuilder {
                 Logger.debug('[ModernCharacterBuilder] Container children after mount:', containerToUse.children.length);
                 
                 // Listen for tab switch events
-                this.tabNavigation.on('tab-switch-requested', (data) => this.handleTabSwitch(data.newTab));
+                Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: Setting up tab-switch-requested listener');
+                this.tabNavigation.on('tab-switch-requested', (data) => {
+                    Logger.debug('[ModernCharacterBuilder] ENHANCED DEBUG: tab-switch-requested event received:', data);
+                    this.handleTabSwitch(data.newTab);
+                });
                 
                 Logger.debug('[ModernCharacterBuilder] Tab navigation initialized successfully');
             } else {
@@ -395,6 +459,7 @@ class ModernCharacterBuilder {
             throw tabError; // Re-throw to see the error in the console
         }
         
+        Logger.info('[ModernCharacterBuilder] ENHANCED DEBUG: ======== UI COMPONENTS INITIALIZATION COMPLETE ========');
         Logger.info('[ModernCharacterBuilder] UI components initialization completed');
     }
 
@@ -604,21 +669,27 @@ class ModernCharacterBuilder {
      * Handle tab switch request
      */
     async handleTabSwitch(tabId) {
-        Logger.info(`[ModernCharacterBuilder] Tab switch requested: ${tabId}`);
+        Logger.info(`[ModernCharacterBuilder] ENHANCED DEBUG: ======== TAB SWITCH REQUEST ========`);
+        Logger.info(`[ModernCharacterBuilder] ENHANCED DEBUG: Tab switch requested: ${tabId}`);
+        Logger.debug(`[ModernCharacterBuilder] ENHANCED DEBUG: Current tab: ${this.currentTab}`);
+        Logger.debug(`[ModernCharacterBuilder] ENHANCED DEBUG: Tab IDs equal: ${tabId === this.currentTab}`);
         
         if (tabId === this.currentTab) {
-            Logger.debug(`[ModernCharacterBuilder] Already on tab ${tabId}, ignoring switch`);
+            Logger.debug(`[ModernCharacterBuilder] ENHANCED DEBUG: Already on tab ${tabId}, ignoring switch`);
             return;
         }
         
         try {
+            Logger.debug(`[ModernCharacterBuilder] ENHANCED DEBUG: Calling switchToTab(${tabId})`);
             await this.switchToTab(tabId);
-            Logger.info(`[ModernCharacterBuilder] Tab switch completed successfully: ${tabId}`);
+            Logger.info(`[ModernCharacterBuilder] ENHANCED DEBUG: Tab switch completed successfully: ${tabId}`);
         } catch (error) {
-            Logger.error(`[ModernCharacterBuilder] Tab switch failed:`, error);
+            Logger.error(`[ModernCharacterBuilder] ENHANCED DEBUG: Tab switch failed:`, error);
             console.error('Tab switch error details:', error);
             this.notificationSystem?.error(`Failed to switch to ${tabId} tab: ${error.message}`);
         }
+        
+        Logger.info(`[ModernCharacterBuilder] ENHANCED DEBUG: ======== END TAB SWITCH REQUEST ========`);
     }
 
     /**
@@ -919,32 +990,147 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
             // Debug functions for TabNavigation issue
             testTabConfiguration: () => {
-                console.log('Testing tab configuration...');
-                const config = app.getTabConfiguration();
-                console.log('Tab config:', config);
-                console.log('Tab config length:', config.length);
-                console.log('Tab config type:', typeof config);
-                console.log('Tab config is Array:', Array.isArray(config));
-                return config;
+                console.log('=== TESTING TAB CONFIGURATION ===');
+                try {
+                    const config = app.getTabConfiguration();
+                    console.log('✓ Tab config:', config);
+                    console.log('✓ Tab config length:', config?.length);
+                    console.log('✓ Tab config type:', typeof config);
+                    console.log('✓ Tab config is Array:', Array.isArray(config));
+                    console.log('✓ First tab:', config?.[0]);
+                    return config;
+                } catch (error) {
+                    console.error('✗ Tab configuration test failed:', error);
+                    return null;
+                }
             },
             testTabNavigation: () => {
-                console.log('Testing TabNavigation instance...');
-                console.log('TabNavigation instance:', app.tabNavigation);
-                if (app.tabNavigation) {
-                    console.log('TabNavigation props:', app.tabNavigation.props);
-                    console.log('TabNavigation props.tabs:', app.tabNavigation.props?.tabs);
-                    console.log('TabNavigation container:', app.tabNavigation.container);
-                    if (app.tabNavigation.container) {
-                        console.log('Container innerHTML:', app.tabNavigation.container.innerHTML);
-                        console.log('Container children:', app.tabNavigation.container.children.length);
+                console.log('=== TESTING TAB NAVIGATION INSTANCE ===');
+                try {
+                    console.log('✓ TabNavigation instance exists:', !!app.tabNavigation);
+                    console.log('✓ TabNavigation instance:', app.tabNavigation);
+                    if (app.tabNavigation) {
+                        console.log('✓ TabNavigation props:', app.tabNavigation.props);
+                        console.log('✓ TabNavigation props.tabs:', app.tabNavigation.props?.tabs);
+                        console.log('✓ TabNavigation props.tabs length:', app.tabNavigation.props?.tabs?.length);
+                        console.log('✓ TabNavigation container:', app.tabNavigation.container);
+                        console.log('✓ TabNavigation componentId:', app.tabNavigation.componentId);
+                        if (app.tabNavigation.container) {
+                            console.log('✓ Container innerHTML:', app.tabNavigation.container.innerHTML);
+                            console.log('✓ Container children count:', app.tabNavigation.container.children.length);
+                            console.log('✓ Container classList:', Array.from(app.tabNavigation.container.classList));
+                        }
                     }
+                    return app.tabNavigation;
+                } catch (error) {
+                    console.error('✗ TabNavigation test failed:', error);
+                    return null;
                 }
-                return app.tabNavigation;
+            },
+            testDOMElements: () => {
+                console.log('=== TESTING DOM ELEMENTS ===');
+                const navContainer = document.getElementById('tab-navigation');
+                console.log('✓ #tab-navigation exists:', !!navContainer);
+                console.log('✓ #tab-navigation element:', navContainer);
+                if (navContainer) {
+                    console.log('✓ Container innerHTML:', navContainer.innerHTML);
+                    console.log('✓ Container children:', navContainer.children.length);
+                    console.log('✓ Container classList:', Array.from(navContainer.classList));
+                }
+                
+                const tabContent = document.getElementById('tab-content');
+                console.log('✓ #tab-content exists:', !!tabContent);
+                console.log('✓ #tab-content children:', tabContent?.children.length);
+                
+                // Check for any elements with data-tab
+                const tabElements = document.querySelectorAll('[data-tab]');
+                console.log('✓ Elements with [data-tab]:', tabElements.length);
+                tabElements.forEach((el, i) => {
+                    console.log(`  ${i + 1}. ${el.tagName} data-tab="${el.dataset.tab}" text="${el.textContent?.trim()}"`);
+                });
+                
+                return { navContainer, tabContent, tabElements };
             },
             forceTabRender: () => {
-                console.log('Forcing TabNavigation render...');
-                if (app.tabNavigation && app.tabNavigation.render) {
-                    app.tabNavigation.render();
+                console.log('=== FORCING TAB NAVIGATION RENDER ===');
+                try {
+                    if (app.tabNavigation) {
+                        console.log('✓ Calling render...');
+                        if (app.tabNavigation.render) {
+                            app.tabNavigation.render();
+                            console.log('✓ Render completed');
+                        } else {
+                            console.error('✗ No render method found');
+                        }
+                    } else {
+                        console.error('✗ No TabNavigation instance');
+                    }
+                } catch (error) {
+                    console.error('✗ Force render failed:', error);
+                }
+            },
+            debugAppState: () => {
+                console.log('=== APP STATE DEBUG ===');
+                console.log('✓ App initialized:', app.initialized);
+                console.log('✓ Current tab:', app.currentTab);
+                console.log('✓ TabNavigation exists:', !!app.tabNavigation);
+                console.log('✓ CharacterManager exists:', !!app.characterManager);
+                console.log('✓ NotificationSystem exists:', !!app.notificationSystem);
+                console.log('✓ Active character:', StateManager.getCharacter()?.name);
+                console.log('✓ Error count:', app.errorCount);
+                return app.getDebugInfo();
+            },
+            recreateTabNavigation: async () => {
+                console.log('=== RECREATING TAB NAVIGATION ===');
+                try {
+                    // Clear existing instance
+                    if (app.tabNavigation) {
+                        console.log('✓ Cleaning up existing TabNavigation...');
+                        await app.tabNavigation.cleanup?.();
+                        app.tabNavigation = null;
+                    }
+                    
+                    // Get container
+                    const container = document.getElementById('tab-navigation');
+                    if (!container) {
+                        console.error('✗ No container found');
+                        return;
+                    }
+                    
+                    // Clear container
+                    container.innerHTML = '';
+                    console.log('✓ Container cleared');
+                    
+                    // Get tab config
+                    const tabConfig = app.getTabConfiguration();
+                    console.log('✓ Tab config retrieved:', tabConfig?.length, 'tabs');
+                    
+                    // Create new instance
+                    const { TabNavigation } = await import('./components/TabNavigation.js');
+                    const props = {
+                        tabs: tabConfig,
+                        activeTab: app.currentTab,
+                        orientation: 'horizontal',
+                        allowKeyboardNavigation: true,
+                        showBadges: true,
+                        showIcons: true
+                    };
+                    
+                    console.log('✓ Creating new TabNavigation instance...');
+                    app.tabNavigation = new TabNavigation(props, container);
+                    
+                    console.log('✓ Initializing...');
+                    await app.tabNavigation.init();
+                    
+                    console.log('✓ Mounting...');
+                    app.tabNavigation.mount();
+                    
+                    console.log('✓ TabNavigation recreated successfully');
+                    return app.tabNavigation;
+                    
+                } catch (error) {
+                    console.error('✗ Failed to recreate TabNavigation:', error);
+                    return null;
                 }
             }
         };

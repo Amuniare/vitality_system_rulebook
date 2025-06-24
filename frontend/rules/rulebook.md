@@ -639,7 +639,7 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 
 **Utilitarian (15p)** → Gain 10 extra points for Features, Senses, Movement Abilities, and Descriptors
 
-
+**Lucky (30p)** → You have an extra effort.
 
 **Perfectionist (15p)** → Reroll any natural 1s on d20 rolls
 

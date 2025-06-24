@@ -1,5 +1,3 @@
-I'll help you analyze the old app and create a comprehensive plan for rebuilding with universal components. Let me start by examining the codebase structure and documentation.Based on my analysis of the codebase, here's a comprehensive breakdown of all tabs in the old character builder app:
-
 ## Complete Tab Analysis: Old Character Builder
 
 ### 1. **Basic Info Tab**

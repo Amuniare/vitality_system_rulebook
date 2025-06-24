@@ -1,592 +1,269 @@
-# ModernApp Complete Architecture Blueprint
-## Comprehensive File Structure & Implementation Guide
+# ARCHITECTURE.md
+## Universal Components Framework for Vitality System Character Builder
 
-### Overview
-This document provides the complete file structure for the modernApp character builder, detailing every file needed, its purpose, interactions, and critical implementation notes to avoid common errors.
+### Executive Summary
 
----
+The modernApp represents a complete architectural rebuild of the Vitality System character builder, transitioning from 15+ scattered JSON files and duplicated UI code to a unified, data-driven component architecture. This framework enables 50%+ code reduction through reusable universal components while maintaining 100% rulebook accuracy and improving maintainability.
 
-## Core Architecture Principles
+### Core Architecture Patterns
 
-### 1. **Data-Driven Design**
-- All game content lives in `unified-game-data.json`
-- JavaScript files contain only logic, never game content
-- UI components render based on JSON metadata
+#### Component Lifecycle
+Every component follows a predictable lifecycle managed through the base Component class:
+```
+Constructor → Init → Mount → Render → Update → Destroy
+```
 
-### 2. **Universal Components**
-- Reusable components handle all common UI patterns
-- Components are "dumb" - they receive data and emit events
-- No component contains business logic
+Components must override only designated extension points (`onInit`, `onRender`, `onMount`, `onDestroy`) rather than core lifecycle methods. This ensures proper integration with the RenderQueue and event systems.
 
-### 3. **Event-Driven Updates**
-- All state changes go through StateManager
-- EventBus handles cross-component communication
-- One-way data flow: User → Event → StateManager → UI
+#### Data Flow (Unidirectional)
+```
+State (StateManager) → Props (StateConnector) → Components → Events → State
+```
 
-### 4. **Advisory Validation**
-- Never prevent user actions
-- Show warnings but allow over-budget purchases
-- Validate on export, not during creation
+Data flows downward through props, while user actions flow upward through events. Components never directly modify state or access global data.
 
----
+#### Event System Architecture
+Two complementary event systems work together:
+- **Component Events**: Scoped to component instances for UI interactions
+- **Global EventBus**: Application-wide events for state changes and cross-component communication
 
-## Complete File Structure
+#### Render Queue Optimization
+All renders are batched and optimized through the RenderQueue system:
+- Deduplicates render requests
+- Batches DOM updates
+- Provides performance metrics
+- Ensures consistent render order
 
-### `/modernApp/` (Root Directory)
+### System Layers
 
-#### `index.html`
-**Purpose:** Application entry point and shell
-**Key Features:**
-- Character management landing page
-- Tab navigation structure
-- Character summary sidebar
-- Notification container
-
-**Interactions:**
-- Loads `app.js` as module
-- Contains DOM structure for tabs
-- Hosts character selector UI
-
-**Common Errors to Avoid:**
-- Don't hardcode tab names - generate from config
-- Ensure proper module script loading
-- Include fallback for CSS loading failures
-
----
-
-### `/modernApp/core/` (Core Systems)
-
-#### `app.js`
-**Purpose:** Application initialization and orchestration
-**Responsibilities:**
-- Initialize all core systems in correct order
-- Set up tab management
-- Handle character selection/creation
-- Coordinate global events
-
-**Interactions:**
-- Initializes: SchemaSystem → EntityLoader → StateManager → EventBus → NotificationSystem
-- Creates all tab instances
-- Manages tab navigation
-
-**Common Errors to Avoid:**
-- Initialize systems in dependency order
-- Wait for all async operations before showing UI
-- Handle initialization failures gracefully
-
-#### `StateManager.js` ✅ (Existing)
-**Purpose:** Single source of truth for application state
-**Key Features:**
-- Character data management
-- Undo/redo functionality
-- Auto-save to localStorage
-- State change notifications
-
-**Critical Fix Needed:**
-- Ensure flaws cost points (not give points)
-- Validate character structure on load
-
-#### `EventBus.js` ✅ (Existing)
-**Purpose:** Cross-component communication
-**Implementation Notes:**
-- Use descriptive event names
-- Document all events
-- Clean up listeners on component destroy
-
-#### `EntityLoader.js` ✅ (Existing)
-**Purpose:** Load and manage game data
-**Enhancements Needed:**
-- Cache loaded data
-- Validate data structure
-- Handle missing/corrupt data
-
-#### `SchemaSystem.js` ✅ (Existing)
-**Purpose:** Data validation and structure enforcement
-**Key Features:**
-- Define entity schemas
-- Validate data on load
-- Provide defaults for missing fields
-
-#### `CharacterManager.js` 🆕
-**Purpose:** Multi-character support
-**Features:**
-- Character CRUD operations
-- Folder organization
-- Import/export
-- Character search
-
-**Implementation:**
+#### Data Layer
+**Unified JSON Schema**: All game content in a single source of truth
 ```javascript
-class CharacterManager {
-    constructor() {
-        this.characters = new Map();
-        this.folders = new Map();
-        this.activeCharacterId = null;
+{
+  "schemaVersion": "3.0",
+  "entities": {
+    "flaw_slow": {
+      "id": "flaw_slow",
+      "type": "flaw",
+      "name": "Slow",
+      "cost": 30,
+      "description": "[exact rulebook text]",
+      "effects": {...},
+      "ui": { "component": "card", "category": "flaw" }
     }
-    
-    create(template = 'blank') { }
-    load(id) { }
-    save(character) { }
-    delete(id) { }
-    export(id, format = 'json') { }
-    import(data, format = 'json') { }
-    organize(characterId, folderId) { }
-    search(query) { }
+  }
 }
 ```
 
-**Common Errors to Avoid:**
-- Always validate imported data
-- Handle character ID collisions
-- Preserve character history on save
+**Key Principles**:
+- Every entity has consistent structure
+- Display configuration included in data
+- Exact rulebook text preserved
+- No game content in JavaScript
 
-#### `ValidationSystem.js` 🆕
-**Purpose:** Advisory validation and warnings
-**Features:**
-- Check point budgets
-- Verify requirements
-- Generate warning messages
-- Never block actions
+#### State Management Layer
+**StateManager**: Central state repository
+- Single source of truth for character data
+- Dispatches state change events
+- Handles persistence to localStorage
+- Supports undo/redo operations
 
-**Implementation Notes:**
-- Return warnings, not errors
-- Provide helpful context
-- Support custom validation rules
+**StateConnector**: Props mapping system
+- Maps global state to component props
+- Automatic re-render on state changes
+- Prevents circular dependencies
+- Ensures data immutability
 
----
+#### Component Layer
+**Base Component Class**: Foundation for all UI components
+- Lifecycle management
+- Event handling utilities
+- Container management
+- Props validation
+- Render scheduling
 
-### `/modernApp/components/` (Universal Components)
+**Component Types**:
+- **Data Components**: Display game entities (UniversalCard, PurchaseCard)
+- **Layout Components**: Structure UI (TabNavigation, CollapsibleSection)
+- **Form Components**: Handle user input (UniversalForm, AttributeControl)
+- **Display Components**: Show calculated values (PointPoolDisplay, StatDisplay)
 
-#### `UniversalCard.js` ✅ (Existing)
-**Purpose:** Render any game entity as a card
-**Enhancements Needed:**
-- Support all card variants
-- Handle dynamic cost display
-- Show requirement warnings
+#### Event Layer
+**EventBus**: Global event system
+- STATE_CHANGED: State updates
+- CHARACTER_LOADED: New character loaded
+- ENTITY_PURCHASED: Purchase made
+- TAB_CHANGED: Navigation events
 
-#### `UniversalForm.js` ✅ (Existing)
-**Purpose:** Dynamic form generation
-**Enhancements Needed:**
-- Support all field types
-- Real-time validation feedback
-- Custom field renderers
+**Component Events**: Instance-scoped events
+- click, change, submit: User interactions
+- component-mounted, component-destroyed: Lifecycle
+- Custom events per component type
 
-#### `UniversalList.js` ✅ (Existing)
-**Purpose:** Filterable/sortable entity lists
-**Enhancements Needed:**
-- Virtual scrolling for performance
-- Advanced filtering options
-- Bulk selection support
+#### Render Layer
+**RenderQueue**: Optimized rendering pipeline
+- Batches multiple render requests
+- Prevents render thrashing
+- Provides performance metrics
+- Handles render prioritization
 
-#### `NotificationSystem.js` ✅ (Existing)
-**Purpose:** User feedback and warnings
-**Key Features:**
-- Toast notifications
-- Warning banners
-- Success confirmations
+**Template Engine**: Consistent HTML generation
+- Centralized templates
+- Prevents XSS vulnerabilities
+- Consistent styling hooks
+- Performance optimized
 
-#### `PurchaseCard.js` ✅ (Existing)
-**Purpose:** Specialized card for purchasable items
-**Critical Fix:**
-- Ensure flaws show as costing points
-- Display advisory warnings
+### Component Architecture
 
-#### `CharacterHeader.js` 🆕
-**Purpose:** Display character name, tier, type
-**Features:**
-- Editable character name
-- Quick tier adjustment
-- Character type selection
-
-#### `PointPoolDisplay.js` 🆕
-**Purpose:** Visual point pool tracking
-**Features:**
-- Show spent/available/remaining
-- Color coding for over-budget
-- Animated transitions
-
-#### `TabNavigation.js` 🆕
-**Purpose:** Tab switching and state
-**Features:**
-- Tab completion indicators
-- Keyboard navigation
-- Mobile-responsive design
-
-#### `SearchableSelect.js` 🆕
-**Purpose:** Enhanced select with search
-**Features:**
-- Type-ahead search
-- Group options
-- Multi-select support
-
-#### `CollapsibleSection.js` 🆕
-**Purpose:** Expandable content sections
-**Features:**
-- Smooth animations
-- Remember state
-- Nested support
-
-#### `Modal.js` 🆕
-**Purpose:** Dialog system
-**Features:**
-- Confirmation dialogs
-- Form modals
-- Custom content support
-
----
-
-### `/modernApp/systems/` (Business Logic)
-
-#### `PoolCalculator.js` ✅ (Existing)
-**Critical Fixes Needed:**
-- Flaws COST 30 points (not give)
-- Traits COST 30 points
-- Correct archetype calculations
-
-#### `RequirementSystem.js` ✅ (Existing)
-**Purpose:** Check entity requirements
-**Enhancements:**
-- Support complex requirements
-- Provide helpful messages
-- Check cascading requirements
-
-#### `EffectSystem.js` ✅ (Existing)
-**Purpose:** Apply entity effects
-**Enhancements:**
-- Stack similar effects properly
-- Handle conditional effects
-- Calculate derived stats
-
-#### `UnifiedPurchaseSystem.js` ✅ (Existing)
-**Purpose:** Handle all entity purchases
-**Key Responsibilities:**
-- Validate purchases (advisory)
-- Apply effects
-- Update pools
-- Track purchase history
-
-#### `AttackSystem.js` 🆕
-**Purpose:** Special attack management
-**Features:**
-- Attack creation/editing
-- Limit calculations
-- Upgrade management
-- Attack cloning
-
-#### `ExportSystem.js` 🆕
-**Purpose:** Character export/import
-**Features:**
-- JSON export
-- Roll20 format
-- PDF generation
-- Version migration
-
-#### `SearchSystem.js` 🆕
-**Purpose:** Entity search and filtering
-**Features:**
-- Full-text search
-- Tag filtering
-- Requirement filtering
-- Fuzzy matching
-
----
-
-### `/modernApp/tabs/` (UI Tabs)
-
-#### `BasicInfoTab.js` ✅ (Existing)
-**Status:** Functional
-**Enhancements:**
-- Add character portrait
-- Custom character types
-
-#### `IdentityTab.js` 🆕
-**Purpose:** Character background/roleplay
-**Components Used:**
-- UniversalForm (for text fields)
-- Modal (for portrait upload)
-
-**Features:**
-- Rich text areas
-- Portrait management
-- Auto-save drafts
-
-#### `ArchetypeTab.js` ✅ (Existing)
-**Status:** Needs data linking fixes
-**Critical Fixes:**
-- Connect to correct archetype data
-- Show archetype effects
-- Update point pools
-
-#### `AttributesTab.js` 🆕
-**Purpose:** Attribute point allocation
-**Components Used:**
-- PointPoolDisplay
-- Custom +/- controls
-
-**Features:**
-- Real-time pool updates
-- Tier-based limits
-- Derived stat display
-
-#### `MainPoolTab.js` ✅ (Existing)
-**Status:** Needs completion
-**Critical Fixes:**
-- Flaws cost 30 points
-- Complete all sections
-- Fix trait builder
-
-**Sections:**
-1. Flaws (fix economics)
-2. Traits (fix economics)
-3. Boons
-4. Unique Abilities
-5. Action Upgrades
-6. Custom Abilities
-
-#### `BaseAttacksTab.js` 🆕
-**Purpose:** Configure base attacks
-**Features:**
-- Base attack stats
-- Quick action upgrades
-- Attack calculations
-
-**Components Used:**
-- UniversalCard
-- UniversalForm
-- PurchaseCard
-
-#### `SpecialAttacksTab.js` ✅ (Existing)
-**Status:** Needs navigation fix
-**Features:**
-- Multiple attack management
-- Complex limit system
-- Upgrade trees
-
-#### `UtilityTab.js` 🆕
-**Purpose:** Non-combat abilities
-**Sections:**
-1. Talents (text fields)
-2. Archetype config
-3. Expertise display
-4. Pool purchases
-5. Custom utilities
-
-**Components Used:**
-- UniversalForm
-- UniversalList
-- PurchaseCard
-- SearchableSelect
-
-#### `SummaryTab.js` 🆕
-**Purpose:** Character overview
-**Features:**
-- Complete character sheet
-- Validation summary
-- Export options
-- Print view
-
-**Components Used:**
-- All display components
-- ExportSystem integration
-
----
-
-### `/modernApp/utils/` (Utilities)
-
-#### `DataLoader.js` ✅ (Existing)
-**Purpose:** Load JSON data files
-**Enhancements:**
-- Add caching layer
-- Progress indicators
-- Retry logic
-
-#### `Validators.js` 🆕
-**Purpose:** Data validation helpers
-**Features:**
-- Schema validation
-- Type checking
-- Range validation
-
-#### `Formatters.js` 🆕
-**Purpose:** Display formatting
-**Features:**
-- Number formatting
-- Cost display
-- Text truncation
-
-#### `Storage.js` 🆕
-**Purpose:** LocalStorage wrapper
-**Features:**
-- Versioned storage
-- Compression
-- Migration support
-
-#### `Logger.js` 🆕
-**Purpose:** Debug logging
-**Features:**
-- Log levels
-- Performance tracking
-- Error reporting
-
----
-
-## Critical Implementation Notes
-
-### 1. **Event Listener Management**
+#### Universal Component API
+Every component implements:
 ```javascript
-// ALWAYS clean up listeners
-class Component {
-    constructor() {
-        this.listeners = new Map();
-    }
-    
-    addEventListener(element, event, handler) {
-        element.addEventListener(event, handler);
-        this.listeners.set({element, event}, handler);
-    }
-    
-    destroy() {
-        for (const [{element, event}, handler] of this.listeners) {
-            element.removeEventListener(event, handler);
-        }
-        this.listeners.clear();
-    }
+class MyComponent extends Component {
+  static propSchema = {
+    // Props validation schema
+  };
+  
+  async onInit() {
+    // Setup logic
+  }
+  
+  onRender() {
+    // Generate HTML
+  }
+  
+  onMount() {
+    // Post-render setup
+  }
+  
+  onDestroy() {
+    // Cleanup
+  }
 }
 ```
 
-### 2. **State Updates**
+#### Props Validation
+Components declare expected props:
 ```javascript
-// ALWAYS go through StateManager
-// NEVER: character.name = "New Name"
-// ALWAYS: 
-StateManager.dispatch({
-    type: 'UPDATE_CHARACTER',
-    payload: { name: "New Name" }
+static propSchema = {
+  items: { type: 'array', required: true },
+  selectedId: { type: 'string', default: null },
+  onSelect: { type: 'function', required: true }
+}
+```
+
+#### Self-Contained Components
+Components manage their own:
+- DOM containers (create if missing)
+- Event listeners (attach/detach)
+- Child components (lifecycle)
+- State subscriptions (cleanup)
+
+#### Event Delegation
+Use stable event delegation patterns:
+```javascript
+// Attach to container, not individual elements
+this.addEventListener(this.container, 'click', (e) => {
+  const button = e.target.closest('[data-action]');
+  if (button) this.handleAction(button.dataset.action);
 });
 ```
 
-### 3. **Data Loading**
+### Data Architecture
+
+#### Unified Purchase Schema
+All purchasable entities follow consistent structure:
 ```javascript
-// ALWAYS handle loading states
-async loadData() {
-    try {
-        this.setState({ loading: true });
-        const data = await EntityLoader.load('flaws');
-        this.setState({ data, loading: false });
-    } catch (error) {
-        this.setState({ error, loading: false });
-        NotificationSystem.error('Failed to load data');
-    }
+{
+  "id": "unique_identifier",
+  "type": "flaw|trait|boon|upgrade|ability",
+  "name": "Display Name",
+  "cost": 30,
+  "description": "Exact rulebook text",
+  "requirements": [...],
+  "effects": [...],
+  "ui": {
+    "component": "card",
+    "size": "medium",
+    "category": "main_pool"
+  }
 }
 ```
 
-### 4. **Validation Pattern**
+#### Display Configuration
+UI rendering instructions in data:
+- Component type to use
+- Visual size/style
+- Category for filtering
+- Warning text
+- Help tooltips
+
+#### Validation as Data
+Rules expressed declaratively:
 ```javascript
-// NEVER block actions
-validatePurchase(item) {
-    const warnings = [];
-    
-    if (pool.remaining < item.cost) {
-        warnings.push({
-            type: 'over-budget',
-            message: `This purchase will put you ${item.cost - pool.remaining} points over budget`
-        });
-    }
-    
-    // Still allow the purchase!
-    return { valid: true, warnings };
-}
+"requirements": [
+  { "type": "archetype", "value": "movement_swift", "not": true },
+  { "type": "attribute", "target": "mobility", "min": 3 }
+]
 ```
 
-### 5. **Component Lifecycle**
+### Key Design Decisions
+
+#### Why Universal Components?
+- **Code Reuse**: One PurchaseCard handles all entity types
+- **Consistency**: Same interaction patterns everywhere
+- **Maintainability**: Fix once, works everywhere
+- **Extensibility**: New content = new JSON, not new code
+
+#### Why Props-Based State?
+- **Predictability**: Components can't corrupt global state
+- **Testability**: Components are pure functions of props
+- **Debugging**: Clear data flow path
+- **Performance**: Targeted updates only
+
+#### Why RenderQueue?
+- **Performance**: Batch DOM updates
+- **Consistency**: Predictable render order
+- **Debugging**: Render performance metrics
+- **Control**: Pause/resume rendering
+
+#### Why Template Engine?
+- **Security**: Prevent XSS attacks
+- **Performance**: Template caching
+- **Consistency**: Standardized HTML structure
+- **Maintainability**: Central template updates
+
+### Implementation Standards
+
+#### Component Creation Checklist
+1. Extend Component base class
+2. Define propSchema for validation
+3. Implement required lifecycle methods
+4. Use event delegation for interactions
+5. Clean up in onDestroy
+6. Document public API
+
+#### State Connection Pattern
 ```javascript
-class TabComponent {
-    async init() {
-        // 1. Load data
-        await this.loadData();
-        // 2. Set up state
-        this.initializeState();
-        // 3. Render
-        this.render();
-        // 4. Attach listeners
-        this.attachListeners();
-    }
-    
-    destroy() {
-        // ALWAYS clean up
-        this.removeListeners();
-        this.clearState();
-    }
-}
+// Map state to props
+const mapStateToProps = (state) => ({
+  characterName: state.character.name,
+  tier: state.character.tier
+});
+
+// Create connected component
+const ConnectedComponent = connectToState(mapStateToProps)(MyComponent);
 ```
 
----
+#### Event Handling Best Practices
+- Use data attributes for actions
+- Delegate events to container
+- Prevent default when needed
+- Stop propagation judiciously
+- Clean up listeners on destroy
 
-## Common Errors and Solutions
-
-### Error: "Cannot read property of undefined"
-**Cause:** Accessing nested properties without validation
-**Solution:**
-```javascript
-// BAD: character.archetypes.movement
-// GOOD: character?.archetypes?.movement || 'none'
-```
-
-### Error: "Multiple event handlers firing"
-**Cause:** Not cleaning up listeners on re-render
-**Solution:** Always remove listeners before adding new ones
-
-### Error: "State not updating"
-**Cause:** Direct mutation instead of using StateManager
-**Solution:** Always dispatch actions for state changes
-
-### Error: "Data mismatch"
-**Cause:** Expecting old data format
-**Solution:** Use SchemaSystem to validate and migrate data
-
-### Error: "Performance degradation"
-**Cause:** Re-rendering entire app on every change
-**Solution:** Use targeted updates and virtual scrolling
-
----
-
-## Testing Strategy
-
-### Unit Tests
-- Test each system in isolation
-- Mock dependencies
-- Test edge cases
-
-### Integration Tests
-- Test tab interactions
-- Test data flow
-- Test save/load cycles
-
-### E2E Tests
-- Complete character creation
-- Import/export flows
-- Multi-character management
-
----
-
-## Performance Considerations
-
-1. **Lazy Loading:** Load tab content only when accessed
-2. **Virtual Scrolling:** For lists with 100+ items
-3. **Debouncing:** For search and auto-save
-4. **Memoization:** For expensive calculations
-5. **Web Workers:** For data processing
-
----
-
-## Future Enhancements
-
-1. **Offline Support:** Service worker for offline use
-2. **Collaboration:** Real-time character sharing
-3. **Mobile App:** React Native version
-4. **API Integration:** Cloud save support
-5. **Modding Support:** Custom content creation
-
----
-
-This blueprint provides the complete architecture for building the modernApp character builder with universal components, proper state management, and avoiding all the common pitfalls encountered in the original system.
+#### Performance Rules
+- Never query DOM in loops
+- Batch DOM updates through RenderQueue
+- Use requestAnimationFrame for animations
+- Implement virtual scrolling for long lists
+- Cache expensive calculations

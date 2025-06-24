@@ -174,46 +174,90 @@ export class TabNavigation extends Component {
     }
 
     attachEventListeners() {
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Attaching event listeners to container:`, this.container);
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Container tagName:`, this.container?.tagName);
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Container ID:`, this.container?.id);
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Container classList:`, Array.from(this.container?.classList || []));
+        
+        // Add global click listener for debugging ALL clicks
+        document.addEventListener('click', (e) => {
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Document click detected on:`, e.target);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click target tag:`, e.target.tagName);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click target classes:`, Array.from(e.target.classList));
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click target data-tab:`, e.target.dataset?.tab);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click target closest('[data-tab]'):`, e.target.closest('[data-tab]'));
+        }, { once: false, passive: true });
+        
         this.addEventListener(this.container, 'click', (e) => {
-            Logger.debug(`[TabNavigation] Click event received on:`, e.target);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: ======== TAB NAVIGATION CLICK EVENT ========`);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click event received on:`, e.target);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event type:`, e.type);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event bubbles:`, e.bubbles);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event currentTarget:`, e.currentTarget);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event target:`, e.target);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Target tagName:`, e.target.tagName);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Target classes:`, Array.from(e.target.classList));
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Target dataset:`, e.target.dataset);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Target data-tab:`, e.target.dataset?.tab);
             
             const tabButton = e.target.closest('[data-tab]');
-            Logger.debug(`[TabNavigation] Found tab button:`, tabButton);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Found tab button:`, tabButton);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab button tagName:`, tabButton?.tagName);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab button data-tab:`, tabButton?.dataset?.tab);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab button disabled:`, tabButton?.disabled);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab button classList:`, Array.from(tabButton?.classList || []));
             
             if (!tabButton || tabButton.disabled) {
-                Logger.debug(`[TabNavigation] No tab button or button disabled, ignoring click`);
+                Logger.debug(`[TabNavigation] ENHANCED DEBUG: No tab button or button disabled, ignoring click`);
+                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Reason - tabButton exists:`, !!tabButton);
+                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Reason - tabButton disabled:`, tabButton?.disabled);
                 return;
             }
 
             e.preventDefault();
             const tabId = tabButton.dataset.tab;
-            Logger.info(`[TabNavigation] Tab button clicked: ${tabId}`);
+            Logger.info(`[TabNavigation] ENHANCED DEBUG: Tab button clicked: ${tabId}`);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Current tab ID:`, this.currentTabId);
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab IDs match:`, tabId === this.currentTabId);
             
             if (tabId !== this.currentTabId) {
+                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Calling handleTabClick for tab:`, tabId);
                 this.handleTabClick(tabId);
             } else {
-                Logger.debug(`[TabNavigation] Tab ${tabId} already active, ignoring click`);
+                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab ${tabId} already active, ignoring click`);
             }
+            
+            Logger.debug(`[TabNavigation] ENHANCED DEBUG: ======== END TAB NAVIGATION CLICK EVENT ========`);
         });
 
         if (this.props.allowKeyboardNavigation) {
             this.addEventListener(this.container, 'keydown', (e) => {
+                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Keyboard event:`, e.key);
                 this.handleKeyboardNavigation(e);
             });
         }
+        
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event listeners attached successfully`);
     }
 
     handleTabClick(tabId) {
-        Logger.debug(`[TabNavigation] Tab "${tabId}" clicked`);
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: ======== TAB CLICK HANDLER ========`);
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab "${tabId}" clicked`);
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Previous tab:`, this.currentTabId);
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Component ID:`, this.componentId);
         
         // Emit tab switch request
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Emitting tab-switch-requested event`);
         this.emitComponentEvent('tab-switch-requested', { 
             previousTab: this.currentTabId,
             newTab: tabId 
         });
         
         // Also emit legacy event for backward compatibility
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Emitting legacy tab-selected event via EventBus`);
         EventBus.emit('tab-selected', tabId);
+        
+        Logger.debug(`[TabNavigation] ENHANCED DEBUG: ======== END TAB CLICK HANDLER ========`);
     }
 
     handleKeyboardNavigation(e) {

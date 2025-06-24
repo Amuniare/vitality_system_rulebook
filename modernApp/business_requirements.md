@@ -1,204 +1,311 @@
-# Business Requirements Document & Implementation Plan
-## Vitality System Character Builder v3.0
 
-### Executive Summary
+# BUSINESS_REQUIREMENTS.md
+## Vitality System Character Builder - Business Requirements
 
-The project aims to rebuild the existing Vitality Character Builder with a modern, data-driven architecture that consolidates 15+ JSON files into a single source of truth, implements universal components for 50%+ code reduction, and ensures 100% rules accuracy while adding new features like character management and Roll20 export.
+### Project Vision
 
-### Current State Analysis
+Create a modern, data-driven character builder for the Vitality System RPG that consolidates game content into a unified data structure, implements reusable universal components for 50%+ code reduction, maintains 100% rulebook accuracy, and provides a superior user experience with features like multi-character management and Roll20 export.
 
-**Working System (frontend/character-builder):**
-- ✅ Fully functional with 7 tabs
-- ✅ Correct rule implementation  
-- ❌ 15+ scattered JSON files
-- ❌ Repeated UI patterns
-- ❌ Mixed architectural patterns
-- ❌ Event handling issues causing button failures
+### Core Principles
 
-**New System (modernApp):**
-- ✅ Modern architecture foundation
-- ✅ Universal component structure started
-- ❌ Fundamental rule errors (flaws giving points instead of costing)
-- ❌ Correct Archetypes (Movement, Attack, Effect, Unique, Defensive, Special, Utility)
-- ✅ Completed data migration
-- ❌ Verified new data migration accuracy
-- ❌ Missing most functionality
-- ❌ Finishing Main Pool Tab
-- ❌ Special Attacks Tab
-- ❌ Bio/Identity Tab
-- ❌ Utility Tab
-- ❌ Character Management System
+1. **No Validation Blocking**: The system provides advisory warnings only. Players can exceed point limits, violate requirements, or make "illegal" choices - the system warns but never prevents.
 
+2. **100% Rulebook Accuracy**: All text, formulas, and rules must exactly match the official rulebook. No paraphrasing or simplification of game content.
 
+3. **Data-Driven Architecture**: All game content lives in JSON. Adding new content means editing data files, not writing code.
 
-### Business Requirements
+4. **Universal Components**: Reusable components that adapt to data, reducing code duplication by 50% or more.
 
-#### 1. Core Functional Requirements
+### Functional Requirements by Tab
 
-**1.1 Character Creation Flow**
-- Basic Information (name, tier 1-10, character type)
-- 7 Archetype selections (Movement, Attack, Effect, Unique, Defensive, Special, Utility)
-- Attribute allocation (Combat: tier×2 points, Utility: tier points)
-- Main Pool purchases ( (Tier-2)*15 points based on tier)
-- Special Attacks creation
-- Utility purchases
-- Base Attacks configuration (NEW)
-- Summary and export
+#### 1. Basic Info Tab
+**Purpose**: Foundation character information
 
-**1.2 Point Economy Rules (CRITICAL CORRECTIONS)**
-- Main Pool: 250 points + (tier × 10)
-- Flaws: COST 30 points, give +tier stat bonus
-- Traits: COST 30 points, give conditional +tier bonuses
-- Boons: Variable costs as per rulebook
-- Advisory validation only - warn but never prevent
+**Features**:
+- Character name (text input)
+- Player name (text input)
+- Tier selection (1-10 dropdown)
+- Character type selection:
+  - Hero (protector/defender)
+  - Villain (antagonist)
+  - Rogue (anti-hero)
+  - Custom (text input)
+- Auto-save on every change
+- Character avatar upload (future)
 
-**1.3 Data Architecture**
-- Single unified-game-data.json containing ALL game content
-- Exact rulebook text preservation
-- Display metadata included in JSON
-- No game content in JavaScript files
+**Business Rules**:
+- Default tier is 4 (Competent)
+- Character name required for save
+- Type affects no mechanics (roleplay only)
 
-**1.4 New Features**
-- Character management system (multiple characters)
-- Import/Export functionality
-- Base Attacks tab
-- Roll20 JSON export format
-- Session tracking for wealth expenditures
+#### 2. Archetypes Tab
+**Purpose**: Select one archetype from each of 7 categories
 
-### Technical Requirements
+**Categories & Options**:
 
-#### 2. Architecture Specifications
+**Movement**: Swift, Skirmisher, Behemoth, Vanguard, Mole, Alternative Movement (Flight/Teleportation/Portal/Swinging/Super Jump)
 
-**2.1 Core Systems**
-```javascript
-// Unified data structure example
-{
-  "schemaVersion": "3.0",
-  "gameData": {
-    "flaws": [{
-      "id": "slow",
-      "name": "Slow",
-      "cost": 30,
-      "description": "Your reflexes are slow...[exact rulebook text]",
-      "statBonus": {
-        "type": "choice",
-        "options": ["power", "endurance", "focus"],
-        "value": "tier"
-      },
-      "restrictions": ["movement_archetype"],
-      "ui": {
-        "component": "card",
-        "size": "medium",
-        "warningText": "Incompatible with movement archetype"
-      }
-    }],
-    // ... all other game content
-  }
-}
-```
+**Attack Type**: Area Specialist, Direct Specialist, No Preference
 
-**2.2 Component Architecture**
-- UniversalCard: Renders any game entity
-- UniversalForm: Dynamic form generation
-- UniversalList: Filterable/sortable lists
-- NotificationSystem: Advisory warnings
-- CharacterManager: Multi-character support
+**Effect Type**: Damage Dealer, Buffer/Debuffer, Damage & Effect Hybrid, Effect Focused
 
-**2.3 State Management**
-- Single source of truth in StateManager
-- Event-driven updates via EventBus
-- Automatic persistence to localStorage
-- Undo/redo capability
+**Unique Ability**: Versatile Master, Extraordinary, Cut Above
 
-### Implementation Plan
+**Defensive**: Stalwart, Fortress, Resilient, Immutable, Juggernaut
 
-#### Phase 1: Foundation Correction (Week 1)
-**Priority: Fix fundamental rule errors**
+**Special Attack**: Normal, Specialist, Paragon, One Trick, Straightforward, Shared Uses, Dual-Natured, Basic
 
-1. **Day 1-2: Data Schema Design**
-   - Create comprehensive unified-game-data.json schema
-   - Include all entity types with proper cost structures
-   - Add display metadata for UI rendering
+**Utility**: Practical, Specialized, Jack of All Trades
 
-2. **Day 3-4: Core System Updates**
-   - Fix PoolCalculator with correct flaw/trait economics
-   - Implement RequirementSystem for prerequisites
-   - Complete EffectSystem for stat modifications
-   - Correct Errors with Archetypes Tab
+**Business Rules**:
+- Must select exactly one per category
+- No point cost for archetypes
+- Some archetypes modify point pools
+- Selections affect other tab options
 
-3. **Day 5-7: Data Migration**
-   - Migrate all 15+ JSON files to unified format
-   - Preserve exact rulebook text
-   - Validate data integrity
+#### 3. Attributes Tab
+**Purpose**: Allocate attribute points
 
-#### Phase 2: Universal Components (Week 2)
-**Priority: Build reusable UI system**
+**Combat Attributes** (Tier × 2 points total):
+- **Focus**: Accuracy, Initiative, Resolve
+- **Power**: Damage (×1.5), Conditions, Stability  
+- **Mobility**: Movement, Avoidance, Initiative
+- **Endurance**: Durability (×1.5), Vitality, Survival
 
-1. **Day 1-3: Component Development**
-   - Complete UniversalCard with all variants
-   - Implement UniversalForm with validation
-   - Build UniversalList with filtering
+**Utility Attributes** (Tier points total):
+- **Awareness**: Initiative, perception checks
+- **Communication**: Social interactions
+- **Intelligence**: Knowledge, problem-solving
 
-2. **Day 4-5: Tab Reconstruction**
-   - Rebuild existing tabs using universal components
-   - Implement Base Attacks tab (new)
-   - Ensure data-driven rendering
+**Features**:
+- +/- buttons for allocation
+- Real-time point tracking
+- Derived stat calculations
+- Visual indicators at limits
 
-3. **Day 6-7: Integration Testing**
-   - Test all character creation flows
-   - Verify point calculations
-   - Validate UI responsiveness
+**Business Rules**:
+- Cannot exceed Tier in any attribute
+- Minimum 0 per attribute
+- Auto-calculate derived stats
+- Warning if points unspent
 
-#### Phase 3: Advanced Features (Week 3)
-**Priority: Character management and export**
+#### 4. Main Pool Tab
+**Purpose**: Spend (Tier - 2) × 15 points
 
-1. **Day 1-2: Character Manager**
-   - Multi-character support
-   - Character folders/organization
-   - Search and filtering
+**Purchase Categories**:
 
-2. **Day 3-4: Import/Export System**
-   - JSON export with schema version
-   - Import with validation
-   - Roll20 format transformation
+**Flaws** (Cost 30 points each):
+- Provide +Tier bonus to chosen stat
+- Examples: Slow, Predictable, Fragile
 
-3. **Day 5-7: Polish and Testing**
-   - Advisory validation throughout
-   - Performance optimization
-   - Cross-browser testing
+**Traits** (Cost 30 points each):
+- Conditional +Tier bonuses
+- Examples: Berserker, Precise Striker
+
+**Boons** (Variable costs):
+- Simple abilities like Aquatic, Perfect Balance
+- Costs range from 5-40 points
+
+**Unique Abilities** (Variable costs):
+- Complex multi-stage purchases
+- Examples: Duplication, Shapeshifting
+- Upgrade trees with prerequisites
+
+**Action Upgrades** (Variable costs):
+- Enhance base actions
+- Examples: Multi-Attack, Improved Heal
+
+**Custom Abilities**:
+- Player-created content
+- Name, description, cost fields
+
+**Features**:
+- Dynamic purchase cards
+- Filtering by category
+- Search functionality  
+- Running point total
+- Purchase/remove buttons
+- Expandable descriptions
+
+**Business Rules**:
+- Can spend into negative (warning only)
+- Some items have prerequisites
+- Flaws may have stat requirements
+- Custom abilities GM-approved
+
+#### 5. Special Attacks Tab
+**Purpose**: Create and configure special attacks
+
+**Features**:
+- Create multiple attacks
+- Per-attack configuration:
+  - Name & description
+  - Attack type (Melee/Ranged/Emanation/etc.)
+  - Effect type selection
+  - Condition application
+  - Range/area options
+- Limits system:
+  - Select limits for bonus points
+  - Points = Tier × multiplier
+  - Examples: Ammo, Charge-Up, Situational
+- Upgrade purchases:
+  - Spend points on improvements
+  - Damage increases
+  - Condition improvements
+  - Special properties
+- Attack cloning
+- Efficiency calculations
+
+**Business Rules**:
+- Points from archetype selection
+- First (Tier × 10) at full value
+- Next (Tier × 20) at half value
+- Remainder at quarter value
+- Some archetypes restrict limits
+
+#### 6. Utility Tab  
+**Purpose**: Non-combat abilities using 5 × (Tier - 2) points
+
+**Sections**:
+
+**Talents** (Free):
+- Two text fields for narrative talents
+- Examples: "Expert Chef", "Military History"
+
+**Archetype Configuration**:
+- **Practical**: Select 3 skills for expertise
+- **Specialized**: Choose attribute for bonus
+- **Jack of All Trades**: Automatic
+
+**Expertise Display**:
+- Visual skill list with bonuses
+- Calculated from archetype + purchases
+
+**Purchasable Options**:
+- **Expertise**: Additional skill bonuses (5 points)
+- **Features**: Ambidextrous, Perfect Memory (5-10 points)
+- **Senses**: Darkvision, Tremorsense (5-15 points)
+- **Movement**: Wall-Crawling, Phasing (10-20 points)
+- **Descriptors**: Power sources/types (variable)
+
+**Custom Utilities**:
+- Create custom features
+- Name, description, cost
+
+**Business Rules**:
+- Cannot purchase if archetype restricts
+- Descriptors affect Special Attacks
+- Some features have prerequisites
+
+#### 7. Base Attacks Tab
+**Purpose**: Configure default attack options
+
+**Features**:
+- Physical base attack config
+- Energy base attack config
+- Attack type selection
+- Range settings
+- Default conditions
+- Upgrade applications
+
+**Business Rules**:
+- Uses Focus for accuracy
+- Uses Power for damage/conditions
+- Upgrades from Main Pool apply
+
+#### 8. Identity Tab
+**Purpose**: Character background and roleplay
+
+**Features**:
+- Character portrait upload
+- Background story (rich text)
+- Personality traits
+- Goals & motivations
+- Fears & secrets
+- Costume description
+- Notable relationships
+
+**Business Rules**:
+- No mechanical impact
+- Supports markdown formatting
+- Image size limits
+- Auto-save drafts
+
+#### 9. Summary Tab
+**Purpose**: Complete overview and export
+
+**Features**:
+- Character sheet view:
+  - All stats calculated
+  - Combat values
+  - Defenses
+  - Attacks summary
+  - Abilities list
+- Point totals summary
+- Validation warnings
+- Export options:
+  - JSON format
+  - PDF character sheet
+  - Roll20 compatible JSON
+  - Plain text summary
+- Import character function
+- Print-friendly view
+
+**Business Rules**:
+- Shows all warnings
+- Never blocks export
+- Version in export data
+- Backwards compatibility
+
+### Non-Functional Requirements
+
+#### Performance
+- Tab switches < 100ms
+- Search results instant
+- Auto-save < 50ms
+- Support 10+ characters
+
+#### Accessibility  
+- Full keyboard navigation
+- Screen reader support
+- High contrast mode
+- Mobile responsive
+
+#### Browser Support
+- Chrome/Edge (latest)
+- Firefox (latest)
+- Safari (latest)
+- Mobile browsers
+
+#### Data Management
+- localStorage primary
+- Import/export backup
+- Corruption recovery
+- Migration support
+
+### Data Requirements
+
+#### Unified Schema
+All game entities follow consistent structure with required fields: id, type, name, cost, description, effects, requirements, ui configuration.
+
+#### Content Sources
+- Flaws & Traits
+- Boons  
+- Unique Abilities
+- Action Upgrades
+- Attack Upgrades
+- Utility Features
+- Archetypes
+- Skills
+
+#### Validation Rules
+Expressed as data, not code. Requirements checked but never enforced. Warnings provided for guide.
 
 ### Success Metrics
 
-1. **Code Reduction**: Achieve 50%+ reduction in codebase size
-2. **Data Consolidation**: Single unified JSON file under 500KB
-3. **Rules Accuracy**: 100% compliance with rulebook.md
-4. **Performance**: Page load < 2 seconds, interactions < 100ms
-5. **Compatibility**: Works on Chrome, Firefox, Safari, Edge
-
-### Risk Mitigation
-
-**Risk 1: Data Migration Errors**
-- Mitigation: Automated validation scripts comparing old vs new data
-
-**Risk 2: Rule Implementation Mistakes**
-- Mitigation: Side-by-side testing with old system
-
-**Risk 3: Performance Issues**
-- Mitigation: Lazy loading, virtual scrolling for large lists
-
-### Deliverables
-
-1. **Unified Game Data JSON** with all content
-2. **Universal Component Library** (Card, Form, List)
-3. **Complete Character Builder** with 8 tabs
-4. **Character Manager** with import/export
-5. **Documentation** for maintenance and updates
-
-### Next Steps
-
-1. Review and approve this requirements document
-2. Begin Phase 1 with data schema design
-3. Set up development environment with hot reload
-4. Create test character scenarios for validation
-
-Would you like me to proceed with any specific phase or would you like to discuss any modifications to this plan?
+1. **Code Reduction**: 50%+ fewer lines vs old system
+2. **Consistency**: All entities use same components  
+3. **Accuracy**: 100% rulebook compliance
+4. **Performance**: All operations < 100ms
+5. **Reliability**: No data loss, corruption recovery
+6. **Usability**: Complete character in < 10 minutes
