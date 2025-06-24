@@ -302,18 +302,18 @@ export function connectToState(mapStateToProps, options = {}) {
 
                 // Default shallow comparison
                 const propsEqual = PropsManager.shallowCompare(this.lastMappedProps, newMappedProps);
-                const shouldUpdate = !propsEqual;
+                const shouldUpdateComponent = !propsEqual;
                 
                 if (this.debugMode) {
                     Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Props comparison:`, {
                         lastProps: this.lastMappedProps,
                         newProps: newMappedProps,
                         propsEqual,
-                        shouldUpdate
+                        shouldUpdate: shouldUpdateComponent
                     });
                 }
                 
-                return shouldUpdate;
+                return shouldUpdateComponent;
             }
 
             // Expose wrapped instance methods
@@ -323,6 +323,22 @@ export function connectToState(mapStateToProps, options = {}) {
                     return this.wrappedInstance.render();
                 }
                 Logger.warn(`[ConnectedComponent][${WrappedComponent.name}] Render called but no render method available`);
+            }
+
+            mount(container) {
+                if (this.wrappedInstance && typeof this.wrappedInstance.mount === 'function') {
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Mount called`);
+                    return this.wrappedInstance.mount(container);
+                }
+                Logger.warn(`[ConnectedComponent][${WrappedComponent.name}] Mount called but no mount method available`);
+            }
+
+            unmount() {
+                if (this.wrappedInstance && typeof this.wrappedInstance.unmount === 'function') {
+                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Unmount called`);
+                    return this.wrappedInstance.unmount();
+                }
+                Logger.warn(`[ConnectedComponent][${WrappedComponent.name}] Unmount called but no unmount method available`);
             }
 
             destroy() {

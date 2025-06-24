@@ -214,18 +214,22 @@ export const DOMConfig = {
 
 // Helper function to get element using config key
 export function getElement(configPath) {
+    console.debug(`[DOMConfig] Looking up element for path: ${configPath}`);
     const keys = configPath.split('.');
     let config = DOMConfig;
     
     for (const key of keys) {
         config = config[key];
         if (!config) {
-            console.error(`Invalid DOM config path: ${configPath}`);
+            console.error(`[DOMConfig] Invalid DOM config path: ${configPath}`);
             return null;
         }
     }
     
-    return document.querySelector(config.selector);
+    console.debug(`[DOMConfig] Found config for ${configPath}:`, config);
+    const element = document.querySelector(config.selector);
+    console.debug(`[DOMConfig] Element found for selector ${config.selector}:`, element);
+    return element;
 }
 
 // Helper to get multiple elements

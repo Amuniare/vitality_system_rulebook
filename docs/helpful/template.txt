@@ -146,7 +146,7 @@ Don't Write Code, just identify problems and root cause of issues, and explain s
 
 ---
 
-Review
+Review the following key documents:
 
 modernApp\app.js
 modernApp\Architecture.md
@@ -155,110 +155,20 @@ modernApp\index.html
 modernApp\README.md
 modernApp\requirements.md
 modernApp\workplan.md
-modernApp\README.md
 
 
-Your job is to fix this the testing of modernApp , to work how it is intended to work, as laid out in modernApp\README.md
 
-PS C:\Users\Trent\OneDrive\Documents\GitHub\vitality_system_rulebook\tests> npx playwright test specs/tab-navigation.spec.js --headed
-Skipping test for tab ID "attributes" as its button selector is not defined in constants.js
-Skipping test for tab ID "special-attacks" as its button selector is not defined in constants.js
-Skipping test for tab ID "utility" as its button selector is not defined in constants.js
-Skipping test for tab ID "summary" as its button selector is not defined in constants.js
-Skipping test for tab ID "base-attacks" as its button selector is not defined in constants.js
+Your job is to fix this ModernApp, to work how it is intended to work, as laid out in Architecture.md and ensure that you make appropriate and effective use of components, core, systems, data and utils files
 
-Running 3 tests using 3 workers
-Skipping test for tab ID "attributes" as its button selector is not defined in constants.js
-Skipping test for tab ID "attributes" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                  
-Skipping test for tab ID "special-attacks" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                             
-Skipping test for tab ID "special-attacks" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                             
-Skipping test for tab ID "utility" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                     
-Skipping test for tab ID "utility" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                     
-Skipping test for tab ID "summary" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                     
-Skipping test for tab ID "summary" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                     
-Skipping test for tab ID "base-attacks" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                
-Skipping test for tab ID "base-attacks" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                
-Skipping test for tab ID "attributes" as its button selector is not defined in constants.js
-Skipping test for tab ID "special-attacks" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                             
-Skipping test for tab ID "utility" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                     
-Skipping test for tab ID "summary" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                     
-Skipping test for tab ID "base-attacks" as its button selector is not defined in constants.js                                                                                                                                                                                                                                                                
-  1) [chromium] › specs\tab-navigation.spec.js:55:13 › Tab Navigation › should navigate to basic-info tab and verify content
 
-    Error: browserType.launch: Executable doesn't exist at C:\Users\Trent\AppData\Local\ms-playwright\chromium-1179\chrome-win\chrome.exe
-    ╔═════════════════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
-    ║ Please run the following command to download new browsers:              ║
-    ║                                                                         ║
-    ║     npx playwright install                                              ║
-    ║                                                                         ║
-    ║ <3 Playwright Team                                                      ║
-    ╚═════════════════════════════════════════════════════════════════════════╝
+We'll be working on:
 
-    TypeError: Cannot read properties of undefined (reading 'close')
 
-      40 |             console.log(`Test "${runner.testName}" finished with status: ${runner.testResults.status}.`);
-      41 |         }
-    > 42 |         await page.close(); // Close the page after each test
-         |                    ^
-      43 |     });
-      44 |
-      45 |     // Dynamically create tests for each tab
-        at C:\Users\Trent\OneDrive\Documents\GitHub\vitality_system_rulebook\tests\specs\tab-navigation.spec.js:42:20
+Why is the tab-navigation empty, I can't test the app without it?
+identifying root cause
+finding and proposing solutions that align with our goals of making appropriate and effective use of components, core, systems, data and utils files
 
-  2) [chromium] › specs\tab-navigation.spec.js:55:13 › Tab Navigation › should navigate to archetypes tab and verify content
 
-    Error: browserType.launch: Executable doesn't exist at C:\Users\Trent\AppData\Local\ms-playwright\chromium-1179\chrome-win\chrome.exe
-    ╔═════════════════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
-    ║ Please run the following command to download new browsers:              ║
-    ║                                                                         ║
-    ║     npx playwright install                                              ║
-    ║                                                                         ║
-    ║ <3 Playwright Team                                                      ║
-    ╚═════════════════════════════════════════════════════════════════════════╝
-
-    TypeError: Cannot read properties of undefined (reading 'close')
-
-      40 |             console.log(`Test "${runner.testName}" finished with status: ${runner.testResults.status}.`);
-      41 |         }
-    > 42 |         await page.close(); // Close the page after each test
-         |                    ^
-      43 |     });
-      44 |
-      45 |     // Dynamically create tests for each tab
-        at C:\Users\Trent\OneDrive\Documents\GitHub\vitality_system_rulebook\tests\specs\tab-navigation.spec.js:42:20
-
-  3) [chromium] › specs\tab-navigation.spec.js:55:13 › Tab Navigation › should navigate to main-pool tab and verify content
-
-    Error: browserType.launch: Executable doesn't exist at C:\Users\Trent\AppData\Local\ms-playwright\chromium-1179\chrome-win\chrome.exe
-    ╔═════════════════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright Test or Playwright was just installed or updated. ║
-    ║ Please run the following command to download new browsers:              ║
-    ║                                                                         ║
-    ║     npx playwright install                                              ║
-    ║                                                                         ║
-    ║ <3 Playwright Team                                                      ║
-    ╚═════════════════════════════════════════════════════════════════════════╝
-
-    TypeError: Cannot read properties of undefined (reading 'close')
-
-      40 |             console.log(`Test "${runner.testName}" finished with status: ${runner.testResults.status}.`);
-      41 |         }
-    > 42 |         await page.close(); // Close the page after each test
-         |                    ^
-      43 |     });
-      44 |
-      45 |     // Dynamically create tests for each tab
-        at C:\Users\Trent\OneDrive\Documents\GitHub\vitality_system_rulebook\tests\specs\tab-navigation.spec.js:42:20
-
-  3 failed
-    [chromium] › specs\tab-navigation.spec.js:55:13 › Tab Navigation › should navigate to basic-info tab and verify content 
-    [chromium] › specs\tab-navigation.spec.js:55:13 › Tab Navigation › should navigate to archetypes tab and verify content
-    [chromium] › specs\tab-navigation.spec.js:55:13 › Tab Navigation › should navigate to main-pool tab and verify content
-
-  Serving HTML report at http://localhost:9323. Press Ctrl+C to quit.
-PS C:\Users\Trent\OneDrive\Documents\GitHub\vitality_system_rulebook\tests> 
 
 
 ## Chain-of-Thought 
@@ -271,17 +181,4 @@ Analyze this code problem using these steps:
 	6. Propose implementation approaches
 
 
-
-
----
-
-
-We'll be building:
-
-modernApp\systems\AttackSystem.js
-modernApp\systems\EffectSystem.js
-modernApp\systems\ExportSystem.js
-modernApp\systems\PoolCalculator.js
-modernApp\systems\RequirementSystem.js
-modernApp\systems\SearchSystem.js
-modernApp\systems\UnifiedPurchaseSystem.js
+Don't Write Code, just identify problems and root cause of issues, and explain simply any potential solutions

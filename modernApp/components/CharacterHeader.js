@@ -30,11 +30,6 @@ export class CharacterHeader extends Component {
         this.render();
         this.attachEventListeners();
         
-        // Listen for character changes
-        this.subscribe('CHARACTER_CHANGED', (data) => {
-            this.updateProps({ character: data.character });
-        });
-        
         Logger.info(`[CharacterHeader] Initialized ${this.componentId}`);
     }
 
@@ -196,8 +191,10 @@ export class CharacterHeader extends Component {
 
     /**
      * Public method for backward compatibility
+     * Note: Props should be updated through StateConnector, not directly
      */
     updateCharacter(character) {
-        this.updateProps({ character });
+        Logger.warn(`[CharacterHeader] updateCharacter called directly - props should be updated through StateConnector`);
+        // Removed direct updateProps call to prevent infinite recursion
     }
 }

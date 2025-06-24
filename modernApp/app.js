@@ -88,7 +88,10 @@ class ModernCharacterBuilder {
             
             Logger.info('[ModernCharacterBuilder] DOM verification passed');
             if (domResults.created.length > 0) {
-                Logger.warn(`[ModernCharacterBuilder] Auto-created ${domResults.created.length} missing elements`);
+                Logger.warn(`[ModernCharacterBuilder] Auto-created ${domResults.created.length} missing elements:`);
+                domResults.created.forEach(element => {
+                    Logger.warn(`  - ${element.name} (${element.selector})`);
+                });
             }
             
             // Initialize core systems
@@ -138,10 +141,14 @@ class ModernCharacterBuilder {
         const urlParams = new URLSearchParams(window.location.search);
         this.debugMode = urlParams.has('debug') || urlParams.get('debug') === 'true';
         
+        // Enable debug mode by default for troubleshooting
+        Logger.enableDebugMode();
+        EventBus.enableDebugMode();
+        
         if (this.debugMode) {
-            Logger.enableDebugMode();
-            EventBus.enableDebugMode();
             Logger.info('[ModernCharacterBuilder] Debug mode enabled via URL parameter');
+        } else {
+            Logger.info('[ModernCharacterBuilder] Debug mode enabled by default for troubleshooting');
         }
     }
 
@@ -228,9 +235,12 @@ class ModernCharacterBuilder {
     async initializeUIComponents() {
         Logger.info('[ModernCharacterBuilder] Initializing UI components...');
         
+        // Initialize CharacterHeader with error handling
         try {
-            // Initialize CharacterHeader with universal pattern
+            Logger.debug('[ModernCharacterBuilder] Starting CharacterHeader initialization...');
             const headerContainer = getElement('character.header');
+            Logger.debug('[ModernCharacterBuilder] Character header container lookup result:', headerContainer);
+            
             if (headerContainer) {
                 this.characterHeader = new CharacterHeader({
                     character: null, // Will be set when character loads
@@ -250,10 +260,24 @@ class ModernCharacterBuilder {
             } else {
                 Logger.warn('[ModernCharacterBuilder] Character header container not found');
             }
-            
-            // Initialize CharacterListPanel with universal pattern
+        } catch (headerError) {
+            Logger.error('[ModernCharacterBuilder] Failed to initialize CharacterHeader:', headerError);
+            // Continue with other components
+        }
+        
+        // Initialize CharacterListPanel with error handling
+        try {
+            Logger.debug('[ModernCharacterBuilder] Starting CharacterListPanel initialization...');
             const listContainer = getElement('character.listContainer');
-            if (listContainer) {
+            Logger.debug('[ModernCharacterBuilder] Character list container lookup result:', listContainer);
+            
+            // Also try alternative selectors as fallback
+            const fallbackContainer = document.getElementById('character-list') || document.getElementById('character-list-content');
+            Logger.debug('[ModernCharacterBuilder] Character list fallback container:', fallbackContainer);
+            
+            const containerToUse = listContainer || fallbackContainer;
+            
+            if (containerToUse) {
                 this.characterListPanel = new CharacterListPanel({
                     characterManager: this.characterManager,
                     activeCharacterId: null, // Will be set when character loads
@@ -261,7 +285,7 @@ class ModernCharacterBuilder {
                     allowDelete: true,
                     allowCreate: true,
                     allowImport: true
-                }, listContainer);
+                }, containerToUse);
                 
                 await this.characterListPanel.init();
                 
@@ -275,42 +299,110 @@ class ModernCharacterBuilder {
             } else {
                 Logger.warn('[ModernCharacterBuilder] Character list container not found');
             }
+        } catch (listError) {
+            Logger.error('[ModernCharacterBuilder] Failed to initialize CharacterListPanel:', listError);
+            // Continue with other components
+        }
+        
+        // Initialize TabNavigation with ENHANCED debugging
+        try {
+            Logger.debug('[ModernCharacterBuilder] Starting TabNavigation initialization...');
+            Logger.debug('[ModernCharacterBuilder] Looking for tab navigation container...');
             
-            // Initialize TabNavigation with universal pattern
+            // Step 1: Get tab configuration and validate
+            const tabConfig = this.getTabConfiguration();
+            Logger.debug('[ModernCharacterBuilder] Tab configuration retrieved:', tabConfig);
+            Logger.debug('[ModernCharacterBuilder] Tab configuration length:', tabConfig.length);
+            Logger.debug('[ModernCharacterBuilder] Tab configuration type:', typeof tabConfig);
+            Logger.debug('[ModernCharacterBuilder] Tab configuration is Array:', Array.isArray(tabConfig));
+            
+            if (!tabConfig || !Array.isArray(tabConfig) || tabConfig.length === 0) {
+                Logger.error('[ModernCharacterBuilder] CRITICAL: Tab configuration is invalid!');
+                Logger.error('[ModernCharacterBuilder] Tab config value:', tabConfig);
+                throw new Error('Invalid tab configuration');
+            }
+            
+            // Step 2: Find container
             const tabNavContainer = getElement('navigation.tabContainer');
-            if (tabNavContainer) {
-                this.tabNavigation = new TabNavigation({
-                    tabs: this.getTabConfiguration(),
+            Logger.debug('[ModernCharacterBuilder] Tab navigation container found:', tabNavContainer);
+            
+            // Also try direct DOM query as fallback
+            const directContainer = document.getElementById('tab-navigation');
+            Logger.debug('[ModernCharacterBuilder] Direct DOM query result:', directContainer);
+            
+            const containerToUse = tabNavContainer || directContainer;
+            
+            if (containerToUse) {
+                Logger.debug('[ModernCharacterBuilder] Using container:', containerToUse);
+                Logger.debug('[ModernCharacterBuilder] Container tag name:', containerToUse.tagName);
+                Logger.debug('[ModernCharacterBuilder] Container ID:', containerToUse.id);
+                Logger.debug('[ModernCharacterBuilder] Container class list:', Array.from(containerToUse.classList));
+                
+                // Step 3: Create props object and validate
+                const tabNavigationProps = {
+                    tabs: tabConfig,
                     activeTab: this.currentTab,
                     orientation: 'horizontal',
                     allowKeyboardNavigation: true,
                     showBadges: true,
                     showIcons: true
-                }, tabNavContainer);
+                };
                 
+                Logger.debug('[ModernCharacterBuilder] TabNavigation props object:', tabNavigationProps);
+                Logger.debug('[ModernCharacterBuilder] Props.tabs:', tabNavigationProps.tabs);
+                Logger.debug('[ModernCharacterBuilder] Props.tabs length:', tabNavigationProps.tabs?.length);
+                
+                // Step 4: Create TabNavigation instance
+                Logger.debug('[ModernCharacterBuilder] Creating TabNavigation instance...');
+                this.tabNavigation = new TabNavigation(tabNavigationProps, containerToUse);
+                
+                Logger.debug('[ModernCharacterBuilder] TabNavigation instance created:', this.tabNavigation);
+                Logger.debug('[ModernCharacterBuilder] TabNavigation props after creation:', this.tabNavigation.props);
+                Logger.debug('[ModernCharacterBuilder] TabNavigation props.tabs after creation:', this.tabNavigation.props?.tabs);
+                Logger.debug('[ModernCharacterBuilder] TabNavigation props.tabs length after creation:', this.tabNavigation.props?.tabs?.length);
+                
+                // Step 5: Call init
+                Logger.debug('[ModernCharacterBuilder] Calling TabNavigation.init()...');
                 await this.tabNavigation.init();
+                
+                Logger.debug('[ModernCharacterBuilder] TabNavigation.init() completed');
+                Logger.debug('[ModernCharacterBuilder] TabNavigation props after init:', this.tabNavigation.props);
+                Logger.debug('[ModernCharacterBuilder] TabNavigation props.tabs after init:', this.tabNavigation.props?.tabs);
+                
+                // Step 6: Mount the component to trigger initial render
+                Logger.debug('[ModernCharacterBuilder] Mounting TabNavigation...');
+                this.tabNavigation.mount();
+                
+                // Step 7: Check container contents after mount
+                Logger.debug('[ModernCharacterBuilder] Container innerHTML after mount:', containerToUse.innerHTML);
+                Logger.debug('[ModernCharacterBuilder] Container children after mount:', containerToUse.children.length);
                 
                 // Listen for tab switch events
                 this.tabNavigation.on('tab-switch-requested', (data) => this.handleTabSwitch(data.newTab));
                 
-                Logger.debug('[ModernCharacterBuilder] Tab navigation initialized');
+                Logger.debug('[ModernCharacterBuilder] Tab navigation initialized successfully');
             } else {
+                Logger.error('[ModernCharacterBuilder] Tab navigation container not found with either method');
+                Logger.error('[ModernCharacterBuilder] Available elements with "tab" in ID:', 
+                    Array.from(document.querySelectorAll('[id*="tab"]')).map(el => el.id));
+                Logger.error('[ModernCharacterBuilder] All elements with ID:', 
+                    Array.from(document.querySelectorAll('[id]')).map(el => el.id));
                 throw new Error('Tab navigation container not found');
             }
-            
-            Logger.info('[ModernCharacterBuilder] UI components initialized successfully');
-            
-        } catch (error) {
-            Logger.error('[ModernCharacterBuilder] Failed to initialize UI components:', error);
-            throw new Error(`UI initialization failed: ${error.message}`);
+        } catch (tabError) {
+            Logger.error('[ModernCharacterBuilder] Failed to initialize TabNavigation:', tabError);
+            Logger.error('[ModernCharacterBuilder] Error stack:', tabError.stack);
+            throw tabError; // Re-throw to see the error in the console
         }
+        
+        Logger.info('[ModernCharacterBuilder] UI components initialization completed');
     }
 
     /**
      * Get tab configuration
      */
     getTabConfiguration() {
-        return [
+        const tabs = [
             { id: 'basic-info', label: 'Basic Info', icon: 'user' },
             { id: 'archetypes', label: 'Archetypes', icon: 'puzzle-piece' },
             { id: 'attributes', label: 'Attributes', icon: 'sliders' },
@@ -321,6 +413,15 @@ class ModernCharacterBuilder {
             { id: 'identity', label: 'Identity', icon: 'id-card', disabled: true },
             { id: 'summary', label: 'Summary', icon: 'file-text', disabled: true }
         ];
+        
+        Logger.debug('[ModernCharacterBuilder] Tab configuration method called');
+        Logger.debug('[ModernCharacterBuilder] Tab configuration tabs array:', tabs);
+        Logger.debug('[ModernCharacterBuilder] Tab configuration tabs length:', tabs.length);
+        Logger.debug('[ModernCharacterBuilder] Tab configuration tabs type:', typeof tabs);
+        Logger.debug('[ModernCharacterBuilder] Tab configuration tabs is Array:', Array.isArray(tabs));
+        Logger.debug('[ModernCharacterBuilder] Tab configuration tabs[0]:', tabs[0]);
+        
+        return tabs;
     }
 
     /**
@@ -330,9 +431,11 @@ class ModernCharacterBuilder {
         Logger.debug(`[ModernCharacterBuilder] Switching to tab: ${tabId}`);
         
         try {
-            // Hide current tab
+            // Unmount current tab (proper Component lifecycle)
             if (this.activeTabData) {
-                this.activeTabData.instance.hide();
+                if (this.activeTabData.instance.unmount) {
+                    this.activeTabData.instance.unmount();
+                }
                 this.activeTabData.container.style.display = 'none';
             }
             
@@ -343,9 +446,15 @@ class ModernCharacterBuilder {
                 this.tabs.set(tabId, tabData);
             }
             
-            // Show new tab
+            // Show and mount new tab (proper Component lifecycle)
             tabData.container.style.display = 'block';
-            await tabData.instance.show();
+            if (tabData.instance.mount) {
+                tabData.instance.mount();
+            }
+            // Always call render after mounting
+            if (tabData.instance.render) {
+                tabData.instance.render();
+            }
             
             // Update state
             this.currentTab = tabId;
@@ -377,9 +486,13 @@ class ModernCharacterBuilder {
     async createTabInstance(tabId) {
         Logger.debug(`[ModernCharacterBuilder] Creating tab instance: ${tabId}`);
         
-        const container = document.getElementById(`${tabId}-content`);
+        const containerSelector = `${tabId}-content`;
+        const container = document.getElementById(containerSelector);
         if (!container) {
-            throw new Error(`Tab content container not found: ${tabId}-content`);
+            Logger.error(`[ModernCharacterBuilder] Container not found: #${containerSelector}`);
+            Logger.error(`[ModernCharacterBuilder] Available containers:`, 
+                Array.from(document.querySelectorAll('[id*="content"]')).map(el => el.id));
+            throw new Error(`Tab content container not found: ${containerSelector}`);
         }
         
         let TabClass;
@@ -406,7 +519,7 @@ class ModernCharacterBuilder {
                 throw new Error(`Unknown tab: ${tabId}`);
         }
         
-        const instance = new TabClass(props, container);
+        const instance = new TabClass(container, props);
         await instance.init();
         
         return { instance, container };
@@ -427,10 +540,8 @@ class ModernCharacterBuilder {
                 this.characterHeader.render(character);
             }
             
-            // Refresh current tab
-            if (this.activeTabData) {
-                await this.activeTabData.instance.refresh();
-            }
+            // StateConnector will automatically update components when state changes
+            // No need to manually refresh tabs
             
             this.notificationSystem.success(`Loaded character: ${character.name}`);
             
@@ -538,7 +649,8 @@ class ModernCharacterBuilder {
             // Update character name through StateManager
             const currentCharacter = StateManager.getCharacter();
             if (currentCharacter && currentCharacter.id === data.characterId) {
-                await StateManager.updateCharacter({ name: data.newName });
+                const updatedCharacter = { ...currentCharacter, name: data.newName };
+                await StateManager.updateState(updatedCharacter, `Character renamed to "${data.newName}"`);
                 this.notificationSystem.success(`Character renamed to "${data.newName}"`);
             } else {
                 Logger.error('[ModernCharacterBuilder] Character ID mismatch for name change');
@@ -799,6 +911,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                 Logger.enableDebugMode();
                 EventBus.enableDebugMode();
                 app.debugMode = true;
+            },
+            // Debug functions for TabNavigation issue
+            testTabConfiguration: () => {
+                console.log('Testing tab configuration...');
+                const config = app.getTabConfiguration();
+                console.log('Tab config:', config);
+                console.log('Tab config length:', config.length);
+                console.log('Tab config type:', typeof config);
+                console.log('Tab config is Array:', Array.isArray(config));
+                return config;
+            },
+            testTabNavigation: () => {
+                console.log('Testing TabNavigation instance...');
+                console.log('TabNavigation instance:', app.tabNavigation);
+                if (app.tabNavigation) {
+                    console.log('TabNavigation props:', app.tabNavigation.props);
+                    console.log('TabNavigation props.tabs:', app.tabNavigation.props?.tabs);
+                    console.log('TabNavigation container:', app.tabNavigation.container);
+                    if (app.tabNavigation.container) {
+                        console.log('Container innerHTML:', app.tabNavigation.container.innerHTML);
+                        console.log('Container children:', app.tabNavigation.container.children.length);
+                    }
+                }
+                return app.tabNavigation;
+            },
+            forceTabRender: () => {
+                console.log('Forcing TabNavigation render...');
+                if (app.tabNavigation && app.tabNavigation.render) {
+                    app.tabNavigation.render();
+                }
             }
         };
         

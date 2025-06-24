@@ -43,6 +43,9 @@ export class Component {
             props: this.props,
             container: !!container
         });
+
+        // Validate required props early
+        this.validateRequiredProps();
     }
 
     async init() {
@@ -72,6 +75,54 @@ export class Component {
      */
     async onInit() {
         // Default implementation - can be overridden
+    }
+
+    /**
+     * Validate required props based on the propSchema
+     */
+    validateRequiredProps() {
+        if (!this.constructor.propSchema) {
+            return; // No schema to validate against
+        }
+
+        const schema = this.constructor.propSchema;
+        const componentName = this.constructor.name;
+        let hasErrors = false;
+
+        Logger.debug(`[Component][${componentName}] Validating required props for ${this.componentId}`);
+        Logger.debug(`[Component][${componentName}] PropSchema:`, schema);
+        Logger.debug(`[Component][${componentName}] Current props:`, this.props);
+
+        Object.entries(schema).forEach(([propName, propConfig]) => {
+            if (propConfig.required) {
+                const propValue = this.props[propName];
+                
+                if (propValue === undefined || propValue === null) {
+                    Logger.error(`[Component][${componentName}] MISSING REQUIRED PROP: "${propName}" for ${this.componentId}`);
+                    hasErrors = true;
+                } else {
+                    Logger.debug(`[Component][${componentName}] Required prop "${propName}" is present:`, propValue);
+                    
+                    // Special validation for TabNavigation tabs array
+                    if (componentName === 'TabNavigation' && propName === 'tabs') {
+                        if (!Array.isArray(propValue) || propValue.length === 0) {
+                            Logger.error(`[Component][${componentName}] INVALID TABS PROP: Expected non-empty array, got:`, propValue);
+                            hasErrors = true;
+                        } else {
+                            Logger.debug(`[Component][${componentName}] Tabs prop validation passed: ${propValue.length} tabs`);
+                        }
+                    }
+                }
+            }
+        });
+
+        if (hasErrors) {
+            Logger.error(`[Component][${componentName}] Props validation failed for ${this.componentId}`);
+            // In development, we might want to throw an error
+            // throw new Error(`Required props validation failed for ${componentName}`);
+        } else {
+            Logger.debug(`[Component][${componentName}] Props validation passed for ${this.componentId}`);
+        }
     }
 
     render() {

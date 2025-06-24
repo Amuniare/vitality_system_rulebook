@@ -25,10 +25,12 @@ export class TabNavigation extends Component {
         this.tabElements = [];
         
         Logger.debug(`[TabNavigation] Created with ID ${this.componentId}`);
+        Logger.debug(`[TabNavigation] Container:`, container);
+        Logger.debug(`[TabNavigation] Props:`, props);
+        Logger.debug(`[TabNavigation] Number of tabs:`, props.tabs?.length || 0);
     }
 
     async onInit() {
-        this.render();
         this.attachEventListeners();
         
         // Listen for external tab changes
@@ -44,25 +46,80 @@ export class TabNavigation extends Component {
         Logger.info(`[TabNavigation] Initialized ${this.componentId} with ${this.props.tabs.length} tabs`);
     }
 
-    render() {
+    onRender() {
+        Logger.debug(`[TabNavigation] Starting render for ${this.componentId}`);
+        
+        // ENHANCED DEBUGGING: Check props first
+        Logger.debug(`[TabNavigation] Props at render start:`, this.props);
+        Logger.debug(`[TabNavigation] Props.tabs at render start:`, this.props.tabs);
+        Logger.debug(`[TabNavigation] Props.tabs type:`, typeof this.props.tabs);
+        Logger.debug(`[TabNavigation] Props.tabs is Array:`, Array.isArray(this.props.tabs));
+        Logger.debug(`[TabNavigation] Props.tabs length:`, this.props.tabs?.length);
+        
+        if (!this.props.tabs || !Array.isArray(this.props.tabs) || this.props.tabs.length === 0) {
+            Logger.error(`[TabNavigation] CRITICAL: No tabs data available for rendering!`);
+            Logger.error(`[TabNavigation] Props.tabs value:`, this.props.tabs);
+            Logger.error(`[TabNavigation] Full props:`, this.props);
+            
+            // Provide fallback error display for user
+            if (this.container) {
+                const errorHtml = `
+                    <div class="tab-navigation-error" style="padding: 10px; background: #ffebee; border: 1px solid #f44336; color: #c62828; border-radius: 4px; margin: 10px 0;">
+                        <strong>⚠️ Tab Navigation Error:</strong> No tabs configured<br>
+                        <small>Component ID: ${this.componentId}</small><br>
+                        <small>Check browser console for details</small>
+                    </div>
+                `;
+                this.container.innerHTML = errorHtml;
+            }
+            return;
+        }
+        
         if (!this.container) {
-            Logger.warn(`[TabNavigation] No container provided for ${this.componentId}`);
+            Logger.error(`[TabNavigation] No container provided for ${this.componentId}`);
             return;
         }
 
-        const tabsHtml = this.props.tabs.map(tab => this.renderTab(tab)).join('');
+        Logger.debug(`[TabNavigation] Container element:`, this.container);
+        Logger.debug(`[TabNavigation] Container tagName:`, this.container.tagName);
+        Logger.debug(`[TabNavigation] Container ID:`, this.container.id);
+
+        // Generate HTML for each tab
+        Logger.debug(`[TabNavigation] About to generate HTML for ${this.props.tabs.length} tabs`);
+        const tabsHtml = this.props.tabs.map((tab, index) => {
+            Logger.debug(`[TabNavigation] Rendering tab ${index}:`, tab);
+            const html = this.renderTab(tab);
+            Logger.debug(`[TabNavigation] Generated HTML for tab ${index}:`, html);
+            return html;
+        }).join('');
         
-        this.container.innerHTML = `
-            <nav class="tab-navigation ${this.props.orientation}" role="tablist">
-                ${tabsHtml}
-            </nav>
-        `;
+        Logger.debug(`[TabNavigation] Generated tabs HTML:`, tabsHtml);
+        Logger.debug(`[TabNavigation] Generated tabs HTML length:`, tabsHtml.length);
+        
+        // Since the container is already a nav element, just add the tabs directly
+        const finalHtml = tabsHtml;
+        
+        Logger.debug(`[TabNavigation] Final HTML to inject:`, finalHtml);
+        this.container.innerHTML = finalHtml;
+        
+        // Add the required classes and attributes to the existing nav element
+        this.container.classList.add('tab-navigation', this.props.orientation);
+        this.container.setAttribute('role', 'tablist');
         
         // Cache tab elements for performance
         this.tabElements = this.container.querySelectorAll('[data-tab]');
+        Logger.debug(`[TabNavigation] Found ${this.tabElements.length} tab elements after render`);
+        Logger.debug(`[TabNavigation] Tab elements:`, Array.from(this.tabElements).map(el => ({
+            id: el.id,
+            dataTab: el.dataset.tab,
+            textContent: el.textContent,
+            classes: Array.from(el.classList)
+        })));
         
         this.performanceMetrics.renderCount++;
         Logger.debug(`[TabNavigation] Rendered ${this.componentId} with ${this.props.tabs.length} tabs`);
+        Logger.debug(`[TabNavigation] Container innerHTML after render:`, this.container.innerHTML);
+        Logger.debug(`[TabNavigation] Container children count:`, this.container.children.length);
     }
 
     renderTab(tab) {
@@ -274,7 +331,7 @@ export class TabNavigation extends Component {
         this.props.tabs[tabIndex].disabled = !enabled;
         
         // Re-render to reflect the change
-        this.render();
+        this._requestRender();
         
         Logger.debug(`[TabNavigation] Tab "${tabId}" ${enabled ? 'enabled' : 'disabled'} in ${this.componentId}`);
     }
@@ -289,7 +346,7 @@ export class TabNavigation extends Component {
         this.props.tabs[tabIndex].badge = badge;
         
         // Re-render to reflect the change
-        this.render();
+        this._requestRender();
         
         Logger.debug(`[TabNavigation] Tab "${tabId}" badge set to "${badge}" in ${this.componentId}`);
     }

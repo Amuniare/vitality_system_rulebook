@@ -88,7 +88,7 @@ class BasicInfoTab extends Component {
         }
     }
     
-    handleSaveBasicInfo() {
+    async handleSaveBasicInfo() {
         if (!this.container) return; 
         const nameInput = this.container.querySelector(`#basic-info-character-name-${this.props.id || 'default'}`);
         const tierSelect = this.container.querySelector(`#basic-info-character-tier-${this.props.id || 'default'}`);
@@ -103,7 +103,24 @@ class BasicInfoTab extends Component {
         
         Logger.debug(`[BasicInfoTab][Dumb] Saving basic info: Name - ${name}, Tier - ${tier}`);
         
-        StateManager.dispatch('UPDATE_BASIC_INFO', { name, tier }); 
+        try {
+            // Get current character state
+            const character = StateManager.getState();
+            
+            // Update the specific fields
+            const updatedCharacter = {
+                ...character,
+                name: name,
+                tier: tier
+            };
+            
+            // Save to StateManager
+            await StateManager.updateState(updatedCharacter, `Updated basic info: ${name}, Tier ${tier}`);
+            
+            Logger.info('[BasicInfoTab][Dumb] Basic info saved successfully');
+        } catch (error) {
+            Logger.error('[BasicInfoTab][Dumb] Error saving basic info:', error);
+        }
     }
     
     // `update(nextProps)` is inherited from Component.

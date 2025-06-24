@@ -10,6 +10,10 @@
     <div id="app">
         <header class="app-header">
             <h1>Vitality Character Builder</h1>
+            <!-- Character header for displaying character name and details -->
+            <div id="character-header" class="character-header">
+                <!-- Character header content will be rendered here -->
+            </div>
             <!-- FIXED: Changed from #notification-container to #notifications -->
             <div id="notifications"></div>
         </header>
@@ -21,8 +25,11 @@
                 <div id="character-list-controls">
                     <!-- Buttons for New Character, Import, etc. will be added by CharacterListPanel.js -->
                 </div>
-                <div id="character-list-content">
+                <div id="character-list" class="character-list-wrapper">
                     <!-- Character list will be rendered here by CharacterListPanel.js -->
+                </div>
+                <div id="character-list-content">
+                    <!-- Backup container for compatibility -->
                 </div>
             </aside>
 
@@ -33,6 +40,11 @@
                 
                 <div id="tab-content">
                     <!-- Tab content will be rendered here by app.js -->
+                    <div id="basic-info-content" class="tab-content-panel" style="display: none;"></div>
+                    <div id="archetypes-content" class="tab-content-panel" style="display: none;"></div>
+                    <div id="attributes-content" class="tab-content-panel" style="display: none;"></div>
+                    <div id="main-pool-content" class="tab-content-panel" style="display: none;"></div>
+                    <div id="special-attacks-content" class="tab-content-panel" style="display: none;"></div>
                 </div>
             </main>
             

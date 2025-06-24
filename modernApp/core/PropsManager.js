@@ -28,12 +28,36 @@ export class PropsManager {
      * @returns {Object} A new props object with defaults applied and validated.
      */
     static processProps(componentName, actualProps, propSchema) {
+        Logger.debug(`[PropsManager] Processing props for ${componentName}`);
+        Logger.debug(`[PropsManager] Actual props:`, actualProps);
+        Logger.debug(`[PropsManager] Prop schema:`, propSchema);
+        
         if (!propSchema || typeof propSchema !== 'object') {
             // If no schema is defined, return a shallow copy of actualProps.
-            return { ...(actualProps || {}) };
+            Logger.debug(`[PropsManager] No schema defined, returning shallow copy of actual props`);
+            const result = { ...(actualProps || {}) };
+            Logger.debug(`[PropsManager] Result:`, result);
+            return result;
         }
 
         const processedProps = {};
+        Logger.debug(`[PropsManager] Starting prop processing with schema`);
+        
+        // Special handling for TabNavigation tabs array
+        if (componentName === 'TabNavigation') {
+            Logger.debug(`[PropsManager] TabNavigation component detected!`);
+            Logger.debug(`[PropsManager] TabNavigation actualProps:`, actualProps);
+            Logger.debug(`[PropsManager] TabNavigation actualProps.tabs:`, actualProps.tabs);
+            Logger.debug(`[PropsManager] TabNavigation tabs exists:`, !!actualProps.tabs);
+            if (actualProps.tabs) {
+                Logger.debug(`[PropsManager] TabNavigation tabs length:`, actualProps.tabs.length);
+                Logger.debug(`[PropsManager] TabNavigation tabs type:`, typeof actualProps.tabs);
+                Logger.debug(`[PropsManager] TabNavigation tabs is Array:`, Array.isArray(actualProps.tabs));
+                Logger.debug(`[PropsManager] TabNavigation first tab:`, actualProps.tabs[0]);
+            } else {
+                Logger.error(`[PropsManager] CRITICAL: TabNavigation actualProps.tabs is missing or falsy!`);
+            }
+        }
 
         // Iterate over the schema to ensure all defined props are considered.
         for (const propName in propSchema) {
@@ -82,9 +106,19 @@ export class PropsManager {
         // This allows for flexible props but might be warned against in stricter setups.
         for (const propName in actualProps) {
             if (Object.prototype.hasOwnProperty.call(actualProps, propName) && !Object.prototype.hasOwnProperty.call(propSchema, propName)) {
-                // Logger.debug(`[PropsManager][${componentName}] Prop "${propName}" was passed but is not defined in propSchema.`);
+                Logger.debug(`[PropsManager][${componentName}] Prop "${propName}" was passed but is not defined in propSchema.`);
                 processedProps[propName] = actualProps[propName];
             }
+        }
+        
+        Logger.debug(`[PropsManager] Final processed props for ${componentName}:`, processedProps);
+        
+        // Special validation for TabNavigation
+        if (componentName === 'TabNavigation') {
+            Logger.debug(`[PropsManager] TabNavigation final tabs:`, processedProps.tabs);
+            Logger.debug(`[PropsManager] TabNavigation final tabs length:`, processedProps.tabs?.length);
+            Logger.debug(`[PropsManager] TabNavigation final tabs type:`, typeof processedProps.tabs);
+            Logger.debug(`[PropsManager] TabNavigation final tabs is Array:`, Array.isArray(processedProps.tabs));
         }
         
         return processedProps;

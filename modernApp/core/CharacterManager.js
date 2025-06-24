@@ -499,6 +499,73 @@ export class CharacterManager {
         }
     }
 
+    // MISSING METHOD - Get character by ID
+    getCharacter(characterId) {
+        if (!this.characters.has(characterId)) {
+            Logger.warn(`[CharacterManager] Character not found: ${characterId}`);
+            return null;
+        }
+        
+        const character = this.characters.get(characterId);
+        Logger.debug(`[CharacterManager] Retrieved character: ${character.name} (${characterId})`);
+        return character;
+    }
+
+    // MISSING METHOD - Get active character
+    getActiveCharacter() {
+        if (!this.activeCharacterId) {
+            Logger.warn('[CharacterManager] No active character set');
+            return null;
+        }
+        
+        return this.getCharacter(this.activeCharacterId);
+    }
+
+    // MISSING METHOD - Update character data
+    async updateCharacter(characterId, updates) {
+        if (!this.characters.has(characterId)) {
+            throw new Error(`Character not found: ${characterId}`);
+        }
+        
+        try {
+            const character = this.characters.get(characterId);
+            const updatedCharacter = { ...character, ...updates, updatedAt: Date.now() };
+            
+            // Ensure the updated character is complete and valid
+            const completeCharacter = await this.ensureCompleteCharacter(updatedCharacter);
+            
+            // Validate if enabled
+            if (this.validationEnabled) {
+                const validationResult = await this.validateCharacter(completeCharacter);
+                if (!validationResult.isValid) {
+                    Logger.warn(`[CharacterManager] Character ${characterId} has validation issues after update:`, validationResult.errors);
+                    // Fix issues automatically where possible
+                    const fixedCharacter = this.fixValidationIssues(completeCharacter, validationResult);
+                    this.characters.set(characterId, fixedCharacter);
+                } else {
+                    this.characters.set(characterId, completeCharacter);
+                }
+            } else {
+                this.characters.set(characterId, completeCharacter);
+            }
+            
+            // Save to storage
+            await this.saveCharacter(completeCharacter);
+            
+            // If this is the active character, emit change event
+            if (this.activeCharacterId === characterId) {
+                EventBus.emit('CHARACTER_CHANGED', { character: completeCharacter });
+            }
+            
+            Logger.info(`[CharacterManager] Updated character: ${completeCharacter.name} (${characterId})`);
+            return completeCharacter;
+            
+        } catch (error) {
+            Logger.error(`[CharacterManager] Failed to update character ${characterId}:`, error);
+            throw error;
+        }
+    }
+
     // Debug and utility methods
     getCharacterStats() {
         return {
