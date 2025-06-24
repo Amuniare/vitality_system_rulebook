@@ -31,6 +31,9 @@ export class TabNavigation extends Component {
     }
 
     async onInit() {
+        // Create content containers for each tab (self-contained architecture)
+        this.createTabContentContainers();
+        
         this.attachEventListeners();
         
         // Listen for external tab changes
@@ -172,14 +175,24 @@ export class TabNavigation extends Component {
 
     attachEventListeners() {
         this.addEventListener(this.container, 'click', (e) => {
+            Logger.debug(`[TabNavigation] Click event received on:`, e.target);
+            
             const tabButton = e.target.closest('[data-tab]');
-            if (!tabButton || tabButton.disabled) return;
+            Logger.debug(`[TabNavigation] Found tab button:`, tabButton);
+            
+            if (!tabButton || tabButton.disabled) {
+                Logger.debug(`[TabNavigation] No tab button or button disabled, ignoring click`);
+                return;
+            }
 
             e.preventDefault();
             const tabId = tabButton.dataset.tab;
+            Logger.info(`[TabNavigation] Tab button clicked: ${tabId}`);
             
             if (tabId !== this.currentTabId) {
                 this.handleTabClick(tabId);
+            } else {
+                Logger.debug(`[TabNavigation] Tab ${tabId} already active, ignoring click`);
             }
         });
 
@@ -349,6 +362,46 @@ export class TabNavigation extends Component {
         this._requestRender();
         
         Logger.debug(`[TabNavigation] Tab "${tabId}" badge set to "${badge}" in ${this.componentId}`);
+    }
+
+    /**
+     * Create content containers for each tab - implements self-contained architecture
+     * This ensures components don't depend on external DOM setup
+     * Uses Component base class utilities for consistent container creation
+     */
+    createTabContentContainers() {
+        Logger.debug(`[TabNavigation] Creating content containers for ${this.props.tabs.length} tabs`);
+        
+        // Ensure main tab content container exists using Component utilities
+        const tabContentContainer = this.ensureContainer('tab-content', {
+            className: 'tab-content-container',
+            parent: this.container.parentNode || document.querySelector('.app-main'),
+            options: {
+                insertBefore: this.container.nextSibling
+            }
+        });
+
+        if (!tabContentContainer) {
+            Logger.error(`[TabNavigation] Failed to create or find main tab content container`);
+            return;
+        }
+        
+        // Create individual tab content containers using Component utilities
+        const containerConfigs = this.props.tabs.map(tab => ({
+            id: `${tab.id}-content`,
+            className: 'tab-content-panel',
+            options: {
+                style: { display: 'none' }, // Hidden by default
+                attributes: {
+                    'role': 'tabpanel',
+                    'aria-labelledby': `tab-${tab.id}`
+                }
+            }
+        }));
+
+        const createdContainers = this.createMultipleContainers(containerConfigs, tabContentContainer);
+        
+        Logger.info(`[TabNavigation] Content container setup complete: ${createdContainers.size}/${this.props.tabs.length} containers ready`);
     }
 
     /**

@@ -47,6 +47,7 @@ PRESETS = {
         '!modernApp/css/modern-app.css',
         'tools/build_game_data.py',
         'tools/modern_css_combine.py',
+        'frontend/rules/rulebook.md',
 
     ],
 

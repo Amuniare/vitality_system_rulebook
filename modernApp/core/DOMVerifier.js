@@ -182,4 +182,111 @@ export class DOMVerifier {
 
         return report.join('\n');
     }
+
+    /**
+     * Validate that components are following self-contained architecture patterns
+     * This helps enforce architectural consistency across the application
+     */
+    validateArchitecturalPatterns() {
+        const patterns = {
+            selfContainedViolations: [],
+            goodPatterns: [],
+            recommendations: []
+        };
+
+        Logger.info('[DOMVerifier] Validating architectural patterns...');
+
+        // Check for common anti-patterns that violate self-contained architecture
+        
+        // 1. Check for orphaned content containers (containers without managing components)
+        const orphanedContainers = document.querySelectorAll('[id*="-content"]:not([data-component-managed])');
+        if (orphanedContainers.length > 0) {
+            orphanedContainers.forEach(container => {
+                patterns.selfContainedViolations.push({
+                    type: 'orphaned-container',
+                    element: container.id,
+                    message: `Container ${container.id} exists but may not be managed by a component`
+                });
+            });
+            
+            patterns.recommendations.push('Consider using TabNavigation or similar components that auto-create their content containers');
+        }
+
+        // 2. Check for components that should be self-contained
+        const tabNavigations = document.querySelectorAll('#tab-navigation, .tab-navigation');
+        tabNavigations.forEach(tabNav => {
+            const nextSibling = tabNav.nextElementSibling;
+            if (nextSibling && nextSibling.id === 'tab-content') {
+                patterns.goodPatterns.push({
+                    type: 'self-contained-tabs',
+                    message: 'TabNavigation appears to have proper content container structure'
+                });
+            }
+        });
+
+        // 3. Check for manual DOM dependencies in scripts
+        const hasManualDOMSetup = document.querySelectorAll('script').length > 0;
+        if (hasManualDOMSetup) {
+            patterns.recommendations.push('Use Component.createChildContainer() utilities instead of manual DOM creation');
+        }
+
+        // 4. Validate container hierarchy follows patterns
+        const componentContainers = document.querySelectorAll('[class*="component"], [id*="component"]');
+        componentContainers.forEach(container => {
+            const childContainers = container.querySelectorAll('[id$="-content"]');
+            if (childContainers.length > 0) {
+                patterns.goodPatterns.push({
+                    type: 'proper-hierarchy',
+                    message: `Component ${container.id || container.className} properly manages ${childContainers.length} child containers`
+                });
+            }
+        });
+
+        // Log results
+        if (patterns.selfContainedViolations.length === 0) {
+            Logger.info('[DOMVerifier] ✅ No architectural pattern violations detected');
+        } else {
+            Logger.warn(`[DOMVerifier] ⚠️ Found ${patterns.selfContainedViolations.length} architectural pattern violations`);
+            patterns.selfContainedViolations.forEach(violation => {
+                Logger.warn(`[DOMVerifier] ${violation.type}: ${violation.message}`);
+            });
+        }
+
+        if (patterns.goodPatterns.length > 0) {
+            Logger.info(`[DOMVerifier] ✅ Found ${patterns.goodPatterns.length} good architectural patterns`);
+        }
+
+        if (patterns.recommendations.length > 0) {
+            Logger.info('[DOMVerifier] 💡 Architectural recommendations:');
+            patterns.recommendations.forEach(rec => {
+                Logger.info(`[DOMVerifier]   - ${rec}`);
+            });
+        }
+
+        return patterns;
+    }
+
+    /**
+     * Add architectural validation to the verification process
+     */
+    verifyWithArchitecturalValidation(autoCreate = false) {
+        // First do normal verification
+        const normalResults = this.verify(autoCreate);
+        
+        // Then add architectural pattern validation
+        const architecturalPatterns = this.validateArchitecturalPatterns();
+        
+        // Enhance results with architectural findings
+        if (architecturalPatterns.selfContainedViolations.length > 0) {
+            normalResults.warnings = (normalResults.warnings || []).concat(
+                architecturalPatterns.selfContainedViolations.map(v => ({
+                    type: 'architectural',
+                    message: v.message
+                }))
+            );
+        }
+
+        Logger.info('[DOMVerifier] Enhanced verification with architectural validation complete');
+        return normalResults;
+    }
 }

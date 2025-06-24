@@ -34,19 +34,13 @@ After thoroughly reviewing your codebase, I've identified the core issues and a 
 - **Display exact rulebook text** from `frontend/rules/rulebook.md`
 - **NO shortened or modified rules** - must work exactly as specified in rulebook
 
-### 4. **Critical Rule Understanding Correction**
-- **CORRECT (old system)**: Flaws **COST 30 points** and give +tier stat bonus
-- **WRONG (my modernApp)**: I thought flaws gave you points back
-- **Traits**: Cost exactly 30 points each, always
-- **The old frontend/ system is accurate** - modernApp has fundamental rule errors
-
-### 5. **Architecture Goal**
+### 4. **Architecture Goal**
 - Unified data schema 
 - Universal components that render based on JSON
 - Data-driven UI where adding content = editing JSON, not code
 - 50%+ code reduction through reusable components
 
-### 6. **End Goal**
+### 5. **End Goal**
 - Exportable JSON, which can be used to import into roll20
 
 ## Your Direction

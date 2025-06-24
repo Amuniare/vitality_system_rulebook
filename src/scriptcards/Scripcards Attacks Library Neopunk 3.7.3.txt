@@ -3,7 +3,7 @@
     +++snlib+++
     --#sourcetoken| @{character_id}
 
-    --Rbyindex|[*S:character_id];repeating_attacks;0
+    --Rbyindex|[*S:character_id];repeating_attacks;{number}
 
 
   --/| ###################################################################################################
@@ -255,7 +255,7 @@
     --&DamageDice|+!
     --?[$CriticalEffect] -eq 1|&DamageDice;+>5
 
-    --?[$HighImpact] -eq 1|&DamageDice;+ {MIN:15}
+    --?[$HighImpact] -eq 1|&DamageDice;= 15
 
     --/| ==========NEW DAMAGE DICE MODIFIERS==========
 

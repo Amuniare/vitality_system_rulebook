@@ -616,4 +616,113 @@ export class Component {
             return [];
         }
     }
+
+    // --- Self-Contained Architecture Utilities ---
+    
+    /**
+     * Create a child container element - promotes self-contained architecture
+     * Components should create their own DOM structure rather than depending on external setup
+     * @param {string} id - ID for the container
+     * @param {string} className - CSS class(es) for the container
+     * @param {HTMLElement} parent - Parent element (defaults to this.container)
+     * @param {Object} options - Additional options
+     * @returns {HTMLElement} The created container
+     */
+    createChildContainer(id, className = '', parent = null, options = {}) {
+        const parentElement = parent || this.container;
+        if (!parentElement) {
+            Logger.error(`[Component][${this.constructor.name}] Cannot create child container - no parent for ${this.componentId}`);
+            return null;
+        }
+
+        // Check if container already exists
+        let container = document.getElementById(id);
+        if (container) {
+            Logger.debug(`[Component][${this.constructor.name}] Child container ${id} already exists`);
+            return container;
+        }
+
+        // Create new container
+        container = document.createElement(options.tagName || 'div');
+        container.id = id;
+        if (className) {
+            container.className = className;
+        }
+
+        // Apply styles
+        if (options.style) {
+            Object.assign(container.style, options.style);
+        }
+
+        // Apply attributes
+        if (options.attributes) {
+            Object.entries(options.attributes).forEach(([key, value]) => {
+                container.setAttribute(key, value);
+            });
+        }
+
+        // Append to parent
+        if (options.insertBefore) {
+            parentElement.insertBefore(container, options.insertBefore);
+        } else {
+            parentElement.appendChild(container);
+        }
+
+        Logger.debug(`[Component][${this.constructor.name}] Created child container: ${id} in ${this.componentId}`);
+        return container;
+    }
+
+    /**
+     * Create multiple related containers at once
+     * Useful for components that need multiple content areas (like tabs)
+     * @param {Array} containerConfigs - Array of container configurations
+     * @param {HTMLElement} parent - Parent element (defaults to this.container)
+     * @returns {Map} Map of container ID to container element
+     */
+    createMultipleContainers(containerConfigs, parent = null) {
+        const containers = new Map();
+        const parentElement = parent || this.container;
+
+        if (!parentElement) {
+            Logger.error(`[Component][${this.constructor.name}] Cannot create containers - no parent for ${this.componentId}`);
+            return containers;
+        }
+
+        containerConfigs.forEach(config => {
+            const container = this.createChildContainer(
+                config.id,
+                config.className || '',
+                parentElement,
+                config.options || {}
+            );
+            if (container) {
+                containers.set(config.id, container);
+            }
+        });
+
+        Logger.info(`[Component][${this.constructor.name}] Created ${containers.size} containers for ${this.componentId}`);
+        return containers;
+    }
+
+    /**
+     * Ensure a container exists or create it - promotes resilient architecture
+     * @param {string} id - Container ID
+     * @param {Object} fallbackConfig - Configuration for creating if not found
+     * @returns {HTMLElement} The found or created container
+     */
+    ensureContainer(id, fallbackConfig = {}) {
+        let container = document.getElementById(id);
+        
+        if (!container) {
+            Logger.debug(`[Component][${this.constructor.name}] Container ${id} not found, creating fallback`);
+            container = this.createChildContainer(
+                id,
+                fallbackConfig.className || '',
+                fallbackConfig.parent || this.container,
+                fallbackConfig.options || {}
+            );
+        }
+
+        return container;
+    }
 }

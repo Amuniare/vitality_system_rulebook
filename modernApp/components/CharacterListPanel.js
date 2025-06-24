@@ -228,12 +228,21 @@ export class CharacterListPanel extends Component {
         // List event handling
         if (this.listContainer) {
             this.addEventListener(this.listContainer, 'click', (e) => {
+                Logger.debug(`[CharacterListPanel] Click event received on:`, e.target);
+                
                 const action = e.target.dataset.action;
                 const listItem = e.target.closest('.character-list-item');
                 
-                if (!listItem) return;
+                Logger.debug(`[CharacterListPanel] Action found:`, action);
+                Logger.debug(`[CharacterListPanel] List item found:`, listItem);
+                
+                if (!listItem) {
+                    Logger.debug(`[CharacterListPanel] No list item found, ignoring click`);
+                    return;
+                }
                 
                 const characterId = listItem.dataset.characterId;
+                Logger.info(`[CharacterListPanel] Character list action: ${action} for character: ${characterId}`);
                 
                 switch (action) {
                     case 'select-character':
@@ -245,6 +254,8 @@ export class CharacterListPanel extends Component {
                     case 'delete-character':
                         this.handleDeleteCharacter(characterId);
                         break;
+                    default:
+                        Logger.debug(`[CharacterListPanel] Unknown action: ${action}`);
                 }
             });
         }

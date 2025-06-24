@@ -604,7 +604,7 @@ class ModernCharacterBuilder {
      * Handle tab switch request
      */
     async handleTabSwitch(tabId) {
-        Logger.debug(`[ModernCharacterBuilder] Tab switch requested: ${tabId}`);
+        Logger.info(`[ModernCharacterBuilder] Tab switch requested: ${tabId}`);
         
         if (tabId === this.currentTab) {
             Logger.debug(`[ModernCharacterBuilder] Already on tab ${tabId}, ignoring switch`);
@@ -613,9 +613,11 @@ class ModernCharacterBuilder {
         
         try {
             await this.switchToTab(tabId);
+            Logger.info(`[ModernCharacterBuilder] Tab switch completed successfully: ${tabId}`);
         } catch (error) {
             Logger.error(`[ModernCharacterBuilder] Tab switch failed:`, error);
-            // Tab navigation will handle error display
+            console.error('Tab switch error details:', error);
+            this.notificationSystem?.error(`Failed to switch to ${tabId} tab: ${error.message}`);
         }
     }
 
@@ -623,19 +625,22 @@ class ModernCharacterBuilder {
      * Handle character selection by ID (from universal components)
      */
     async handleCharacterSelectionById(characterId) {
-        Logger.debug(`[ModernCharacterBuilder] Character selection by ID requested: ${characterId}`);
+        Logger.info(`[ModernCharacterBuilder] Character selection by ID requested: ${characterId}`);
         
         try {
             const character = this.characterManager.getCharacter(characterId);
             if (character) {
                 await this.handleCharacterSelection(character);
+                Logger.info(`[ModernCharacterBuilder] Character selection completed: ${character.name}`);
             } else {
                 Logger.error(`[ModernCharacterBuilder] Character not found: ${characterId}`);
+                console.error('Available characters:', this.characterManager.getAllCharacters().map(c => c.id));
                 this.notificationSystem.error('Character not found');
             }
         } catch (error) {
             Logger.error('[ModernCharacterBuilder] Failed to select character by ID:', error);
-            this.notificationSystem.error('Failed to select character');
+            console.error('Character selection error details:', error);
+            this.notificationSystem.error(`Failed to select character: ${error.message}`);
         }
     }
 
