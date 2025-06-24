@@ -163,10 +163,19 @@ Your job is to fix this ModernApp, to work how it is intended to work, as laid o
 
 We'll be working on:
 
+Creating a document, which:
+- identifies identifying root cause of issues, and 
+- find solutions that align with our goals of making appropriate and effective use of components, core, systems, data and utils files, 
+- serve as a roadmap / implementation plan to address all issues
 
-Why is the tab-navigation empty, I can't test the app without it?
-identifying root cause
-finding and proposing solutions that align with our goals of making appropriate and effective use of components, core, systems, data and utils files
+
+Issues:
+- All issues that you see in the log
+- clicking the tabs, doesn't do anything and does even change anything in the log
+- tab-navigation buttons are visible, but don't work
+
+
+finding and proposing 
 
 
 
