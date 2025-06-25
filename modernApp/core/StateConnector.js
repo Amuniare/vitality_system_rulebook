@@ -160,7 +160,7 @@ export function connectToState(mapStateToProps, options = {}) {
     }
 
     const {
-        memoize = true,
+        memoize = false, // TEMPORARILY DISABLED FOR DEBUGGING
         shouldUpdate = null,
         displayName = null,
         debugMode = false
@@ -300,18 +300,31 @@ export function connectToState(mapStateToProps, options = {}) {
                     return customResult;
                 }
 
+                // ENHANCED DEBUGGING - Check for reference equality issue
+                const isExactSameReference = this.lastMappedProps === newMappedProps;
+                Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Reference comparison:`, {
+                    'lastMappedProps === newMappedProps': isExactSameReference,
+                    'lastMappedProps reference': this.lastMappedProps,
+                    'newMappedProps reference': newMappedProps,
+                    'lastMappedProps values': this.lastMappedProps,
+                    'newMappedProps values': newMappedProps
+                });
+
+                if (isExactSameReference) {
+                    Logger.warn(`[ConnectedComponent][${WrappedComponent.name}] MEMOIZATION ISSUE: Same object reference returned for different states!`);
+                }
+
                 // Default shallow comparison
                 const propsEqual = PropsManager.shallowCompare(this.lastMappedProps, newMappedProps);
                 const shouldUpdateComponent = !propsEqual;
                 
-                if (this.debugMode) {
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Props comparison:`, {
-                        lastProps: this.lastMappedProps,
-                        newProps: newMappedProps,
-                        propsEqual,
-                        shouldUpdate: shouldUpdateComponent
-                    });
-                }
+                Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Props comparison:`, {
+                    lastProps: this.lastMappedProps,
+                    newProps: newMappedProps,
+                    propsEqual,
+                    shouldUpdate: shouldUpdateComponent,
+                    referenceEqual: isExactSameReference
+                });
                 
                 return shouldUpdateComponent;
             }

@@ -29,12 +29,11 @@ class MainPoolTab extends Component {
 
     async init() {
         Logger.info('[MainPoolTab] Initializing...');
-        this.render();
         this.setupEventListeners();
         Logger.info('[MainPoolTab] Initialization complete');
     }
 
-    render() {
+    onRender() {
         if (!this.container) {
             Logger.warn('[MainPoolTab] No container available for render');
             return;
@@ -355,8 +354,8 @@ class MainPoolTab extends Component {
             // Update props
             this.props = nextProps;
             
-            // Re-render everything
-            this.render();
+            // Request re-render through proper component lifecycle
+            this._requestRender();
         } else {
             Logger.debug('[MainPoolTab] No significant changes, skipping re-render');
         }

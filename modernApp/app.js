@@ -310,6 +310,7 @@ class ModernCharacterBuilder {
                 }, headerContainer);
                 
                 await this.characterHeader.init();
+                this.characterHeader.mount(); // Mount the component to make it active
                 
                 // Listen for character name change events
                 this.characterHeader.on('character-name-changed', (data) => {
@@ -348,6 +349,7 @@ class ModernCharacterBuilder {
                 }, containerToUse);
                 
                 await this.characterListPanel.init();
+                this.characterListPanel.mount(); // Mount the component to make it active
                 
                 // Listen for character management events
                 this.characterListPanel.on('character-create-requested', () => this.handleCharacterCreation());
@@ -496,6 +498,9 @@ class ModernCharacterBuilder {
         Logger.debug(`[ModernCharacterBuilder] Switching to tab: ${tabId}`);
         
         try {
+            // Store previous tab before changing state
+            const previousTab = this.currentTab;
+            
             // Unmount current tab (proper Component lifecycle)
             if (this.activeTabData) {
                 if (this.activeTabData.instance.unmount) {
@@ -514,11 +519,7 @@ class ModernCharacterBuilder {
             // Show and mount new tab (proper Component lifecycle)
             tabData.container.style.display = 'block';
             if (tabData.instance.mount) {
-                tabData.instance.mount();
-            }
-            // Always call render after mounting
-            if (tabData.instance.render) {
-                tabData.instance.render();
+                tabData.instance.mount(); // This will automatically trigger _requestRender()
             }
             
             // Update state
@@ -532,9 +533,9 @@ class ModernCharacterBuilder {
             
             Logger.debug(`[ModernCharacterBuilder] Successfully switched to tab: ${tabId}`);
             
-            // Emit tab change event
+            // Emit tab change event with correct previous/current tab values
             EventBus.emit('TAB_CHANGED', {
-                previousTab: this.currentTab,
+                previousTab: previousTab,
                 currentTab: tabId
             });
             
@@ -699,15 +700,12 @@ class ModernCharacterBuilder {
         Logger.info(`[ModernCharacterBuilder] Character selection by ID requested: ${characterId}`);
         
         try {
-            const character = this.characterManager.getCharacter(characterId);
-            if (character) {
-                await this.handleCharacterSelection(character);
-                Logger.info(`[ModernCharacterBuilder] Character selection completed: ${character.name}`);
-            } else {
-                Logger.error(`[ModernCharacterBuilder] Character not found: ${characterId}`);
-                console.error('Available characters:', this.characterManager.getAllCharacters().map(c => c.id));
-                this.notificationSystem.error('Character not found');
-            }
+            // Use StateManager.loadCharacter() to handle the complete workflow
+            const character = await StateManager.loadCharacter(characterId);
+            
+            Logger.info(`[ModernCharacterBuilder] Character selection completed: ${character.name}`);
+            this.notificationSystem.success(`Loaded character: ${character.name}`);
+            
         } catch (error) {
             Logger.error('[ModernCharacterBuilder] Failed to select character by ID:', error);
             console.error('Character selection error details:', error);

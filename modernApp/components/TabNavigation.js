@@ -23,6 +23,7 @@ export class TabNavigation extends Component {
         
         this.currentTabId = this.props.activeTab;
         this.tabElements = [];
+        this._listenersAttached = false; // Prevent duplicate listener attachment
         
         Logger.debug(`[TabNavigation] Created with ID ${this.componentId}`);
         Logger.debug(`[TabNavigation] Container:`, container);
@@ -31,10 +32,10 @@ export class TabNavigation extends Component {
     }
 
     async onInit() {
-        // Create content containers for each tab (self-contained architecture)
-        this.createTabContentContainers();
+        // Content containers already exist in HTML - no need to create them
+        // this.createTabContentContainers();
         
-        this.attachEventListeners();
+        // Event listeners will be attached in onMount() after DOM elements exist
         
         // Listen for external tab changes
         this.subscribe('TAB_CHANGED', (data) => {
@@ -119,10 +120,36 @@ export class TabNavigation extends Component {
             classes: Array.from(el.classList)
         })));
         
+        // DEBUG: Check currentTabId state
+        Logger.info(`[TabNavigation] 🔍 currentTabId during render: "${this.currentTabId}"`);
+        Logger.debug(`[TabNavigation] Active tab should be: ${this.currentTabId}`);
+        
+        // Now attach event listeners to the rendered DOM elements
+        if (this.tabElements.length > 0) {
+            Logger.info(`[TabNavigation] 🎯 ATTACHING EVENT LISTENERS to ${this.tabElements.length} rendered tab buttons`);
+            
+            // Add flag to prevent duplicate listener attachment
+            if (!this._listenersAttached) {
+                this.attachEventListeners();
+                this._listenersAttached = true;
+                Logger.info(`[TabNavigation] ✅ Event listeners successfully attached`);
+            } else {
+                Logger.debug(`[TabNavigation] Event listeners already attached, skipping`);
+            }
+        } else {
+            Logger.error(`[TabNavigation] ❌ No tab elements found after render - cannot attach listeners`);
+        }
+        
         this.performanceMetrics.renderCount++;
         Logger.debug(`[TabNavigation] Rendered ${this.componentId} with ${this.props.tabs.length} tabs`);
         Logger.debug(`[TabNavigation] Container innerHTML after render:`, this.container.innerHTML);
         Logger.debug(`[TabNavigation] Container children count:`, this.container.children.length);
+    }
+
+    onMount() {
+        Logger.debug(`[TabNavigation] Mounting ${this.componentId}`);
+        // Event listeners will be attached in onRender() after DOM elements exist
+        Logger.info(`[TabNavigation] Successfully mounted ${this.componentId}`);
     }
 
     renderTab(tab) {
@@ -174,60 +201,40 @@ export class TabNavigation extends Component {
     }
 
     attachEventListeners() {
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Attaching event listeners to container:`, this.container);
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Container tagName:`, this.container?.tagName);
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Container ID:`, this.container?.id);
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Container classList:`, Array.from(this.container?.classList || []));
+        Logger.info(`[TabNavigation] 🎯 Attaching event listeners to container`);
+        Logger.debug(`[TabNavigation] Container ID: ${this.container?.id}`);
+        Logger.debug(`[TabNavigation] Available tab buttons: ${this.tabElements.length}`);
         
-        // Add global click listener for debugging ALL clicks
+        // Global click listener for debugging (can be removed later)
         document.addEventListener('click', (e) => {
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Document click detected on:`, e.target);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click target tag:`, e.target.tagName);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click target classes:`, Array.from(e.target.classList));
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click target data-tab:`, e.target.dataset?.tab);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click target closest('[data-tab]'):`, e.target.closest('[data-tab]'));
+            if (e.target.closest('[data-tab]')) {
+                Logger.info(`[TabNavigation] 🎯 GLOBAL: Document click detected on tab:`, e.target.closest('[data-tab]').dataset.tab);
+            }
         }, { once: false, passive: true });
         
         this.addEventListener(this.container, 'click', (e) => {
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: ======== TAB NAVIGATION CLICK EVENT ========`);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Click event received on:`, e.target);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event type:`, e.type);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event bubbles:`, e.bubbles);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event currentTarget:`, e.currentTarget);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Event target:`, e.target);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Target tagName:`, e.target.tagName);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Target classes:`, Array.from(e.target.classList));
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Target dataset:`, e.target.dataset);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Target data-tab:`, e.target.dataset?.tab);
+            Logger.info(`[TabNavigation] 🎯 CLICK EVENT RECEIVED!`);
+            Logger.debug(`[TabNavigation] Click target:`, e.target);
+            Logger.debug(`[TabNavigation] Target tag:`, e.target.tagName);
             
             const tabButton = e.target.closest('[data-tab]');
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Found tab button:`, tabButton);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab button tagName:`, tabButton?.tagName);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab button data-tab:`, tabButton?.dataset?.tab);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab button disabled:`, tabButton?.disabled);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab button classList:`, Array.from(tabButton?.classList || []));
+            Logger.debug(`[TabNavigation] Found tab button:`, tabButton);
             
             if (!tabButton || tabButton.disabled) {
-                Logger.debug(`[TabNavigation] ENHANCED DEBUG: No tab button or button disabled, ignoring click`);
-                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Reason - tabButton exists:`, !!tabButton);
-                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Reason - tabButton disabled:`, tabButton?.disabled);
+                Logger.debug(`[TabNavigation] Ignoring click - no tab button or disabled`);
                 return;
             }
 
             e.preventDefault();
             const tabId = tabButton.dataset.tab;
-            Logger.info(`[TabNavigation] ENHANCED DEBUG: Tab button clicked: ${tabId}`);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Current tab ID:`, this.currentTabId);
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab IDs match:`, tabId === this.currentTabId);
+            Logger.info(`[TabNavigation] 🎯 TAB CLICKED: ${tabId}`);
             
             if (tabId !== this.currentTabId) {
-                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Calling handleTabClick for tab:`, tabId);
+                Logger.info(`[TabNavigation] 🎯 SWITCHING TO TAB: ${tabId}`);
                 this.handleTabClick(tabId);
             } else {
-                Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab ${tabId} already active, ignoring click`);
+                Logger.debug(`[TabNavigation] Tab ${tabId} already active`);
             }
-            
-            Logger.debug(`[TabNavigation] ENHANCED DEBUG: ======== END TAB NAVIGATION CLICK EVENT ========`);
         });
 
         if (this.props.allowKeyboardNavigation) {
@@ -241,23 +248,21 @@ export class TabNavigation extends Component {
     }
 
     handleTabClick(tabId) {
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: ======== TAB CLICK HANDLER ========`);
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Tab "${tabId}" clicked`);
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Previous tab:`, this.currentTabId);
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Component ID:`, this.componentId);
+        Logger.info(`[TabNavigation] 🎯 HANDLING TAB CLICK: ${tabId}`);
+        Logger.debug(`[TabNavigation] Previous tab: ${this.currentTabId}`);
         
         // Emit tab switch request
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Emitting tab-switch-requested event`);
+        Logger.info(`[TabNavigation] 🎯 EMITTING tab-switch-requested event`);
         this.emitComponentEvent('tab-switch-requested', { 
             previousTab: this.currentTabId,
             newTab: tabId 
         });
         
         // Also emit legacy event for backward compatibility
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: Emitting legacy tab-selected event via EventBus`);
+        Logger.debug(`[TabNavigation] Emitting legacy tab-selected event via EventBus`);
         EventBus.emit('tab-selected', tabId);
         
-        Logger.debug(`[TabNavigation] ENHANCED DEBUG: ======== END TAB CLICK HANDLER ========`);
+        Logger.info(`[TabNavigation] 🎯 TAB CLICK HANDLING COMPLETE`);
     }
 
     handleKeyboardNavigation(e) {

@@ -58,7 +58,7 @@ export class SpecialAttacksTab {
         }
     }
 
-    render() {
+    onRender() {
         const state = this.stateManager.getState();
         const mainPool = state.pools.main;
         const availablePoints = this.stateManager.getAvailablePoints('main');
@@ -364,14 +364,14 @@ export class SpecialAttacksTab {
                 case 'view-details':
                     const attackId = e.target.closest('[data-attack-id]').dataset.attackId;
                     this.selectedAttack = this.getAttackById(attackId);
-                    this.render();
+                    this._requestRender();
                     break;
                     
                 case 'close-details':
                     if (e.target.classList.contains('attack-modal-overlay') || 
                         e.target.classList.contains('modal-close')) {
                         this.selectedAttack = null;
-                        this.render();
+                        this._requestRender();
                     }
                     break;
                     
@@ -382,14 +382,14 @@ export class SpecialAttacksTab {
                     } else {
                         this.comparisonAttacks.add(compareId);
                     }
-                    this.render();
+                    this._requestRender();
                     break;
                     
                 case 'close-comparison':
                     if (e.target.classList.contains('comparison-modal-overlay') || 
                         e.target.classList.contains('modal-close')) {
                         this.comparisonAttacks.clear();
-                        this.render();
+                        this._requestRender();
                     }
                     break;
             }
@@ -403,7 +403,7 @@ export class SpecialAttacksTab {
         this.container.querySelectorAll('.view-mode-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 this.viewMode = e.currentTarget.dataset.view;
-                this.render();
+                this._requestRender();
             });
         });
 
@@ -412,7 +412,7 @@ export class SpecialAttacksTab {
         if (comparisonBtn) {
             comparisonBtn.addEventListener('click', () => {
                 if (this.comparisonAttacks.size > 1) {
-                    this.render();
+                    this._requestRender();
                 }
             });
         }

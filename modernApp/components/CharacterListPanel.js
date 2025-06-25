@@ -230,7 +230,9 @@ export class CharacterListPanel extends Component {
             this.addEventListener(this.listContainer, 'click', (e) => {
                 Logger.debug(`[CharacterListPanel] Click event received on:`, e.target);
                 
-                const action = e.target.dataset.action;
+                // Find the nearest element with a data-action attribute
+                const actionElement = e.target.closest('[data-action]');
+                const action = actionElement?.dataset.action;
                 const listItem = e.target.closest('.character-list-item');
                 
                 Logger.debug(`[CharacterListPanel] Action found:`, action);

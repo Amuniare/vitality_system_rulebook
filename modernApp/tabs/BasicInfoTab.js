@@ -27,9 +27,7 @@ class BasicInfoTab extends Component {
         Logger.info('[BasicInfoTab][Dumb] Initialized.');
     }
     
-    render() {
-        super.render(); 
-
+    onRender() {
         const name = this.props.characterName;
         const tier = this.props.characterTier;
 
@@ -151,8 +149,12 @@ const mapStateToPropsBasicInfo = (globalState, ownProps) => {
     };
 };
 
-// Create and export the "Connected" component
-const ConnectedBasicInfoTab = connectToState(mapStateToPropsBasicInfo)(BasicInfoTab);
+// Create and export the "Connected" component with explicit debugging options
+const ConnectedBasicInfoTab = connectToState(mapStateToPropsBasicInfo, {
+    memoize: false,  // Disable memoization for debugging
+    debugMode: true, // Enable enhanced debugging
+    displayName: 'BasicInfoTab'
+})(BasicInfoTab);
 
 export { ConnectedBasicInfoTab as BasicInfoTab }; // Export connected component as the default for this module
 // For testing or advanced usage, you might also export the dumb component:

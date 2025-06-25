@@ -33,12 +33,11 @@ class ArchetypeTab extends Component {
 
     async init() {
         Logger.info('[ArchetypeTab] Initializing...');
-        this.render();
         this.setupEventListeners();
         Logger.info('[ArchetypeTab] Initialization complete');
     }
 
-    render() {
+    onRender() {
         if (!this.container) {
             Logger.warn('[ArchetypeTab] No container available for render');
             return;
@@ -361,7 +360,7 @@ class ArchetypeTab extends Component {
             this.props = nextProps;
             
             // Re-render everything
-            this.render();
+            this._requestRender();
         } else {
             Logger.debug('[ArchetypeTab] No archetype changes, skipping re-render');
         }

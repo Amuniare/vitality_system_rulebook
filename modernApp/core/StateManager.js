@@ -288,6 +288,45 @@ export class StateManager {
         return true;
     }
 
+    // Load a specific character by ID and set as active
+    static async loadCharacter(characterId) {
+        if (!this.initialized) {
+            Logger.error('[StateManager] loadCharacter() called before initialization');
+            throw new Error('StateManager not initialized');
+        }
+        
+        if (!characterId) {
+            Logger.error('[StateManager] loadCharacter() called with null/undefined characterId');
+            throw new Error('Character ID is required');
+        }
+        
+        Logger.info(`[StateManager] Loading character: ${characterId}`);
+        
+        try {
+            // Get character from CharacterManager
+            const character = this.characterManager.getCharacter(characterId);
+            if (!character) {
+                Logger.error(`[StateManager] Character not found: ${characterId}`);
+                throw new Error(`Character not found: ${characterId}`);
+            }
+            
+            Logger.info(`[StateManager] Found character: ${character.name} (${characterId})`);
+            
+            // Set as active character in CharacterManager
+            await this.characterManager.setActiveCharacter(characterId);
+            
+            // Update StateManager's internal state
+            await this.updateState(character, `Character loaded: ${character.name}`);
+            
+            Logger.info(`[StateManager] Successfully loaded character: ${character.name} (${characterId})`);
+            return character;
+            
+        } catch (error) {
+            Logger.error(`[StateManager] Failed to load character ${characterId}:`, error);
+            throw error;
+        }
+    }
+
     // Helper method to get character info
     static getCharacter() {
         return this.getState();

@@ -183,7 +183,7 @@ class AttributesTab extends Component {
         };
     }
 
-    render() {
+    onRender() {
         if (!this.container) return;
 
         const { character, pools } = this.props;
