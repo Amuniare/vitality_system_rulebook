@@ -614,18 +614,18 @@ export class StatCalculator {
                         bonuses.push({ source: 'Stalwart Penalty', value: -tier });
                     }
                     break;
-                case 'resilient':
+                case 'fortress':
                     if (stat === 'durability') {
-                        bonuses.push({ source: 'Resilient Archetype', value: tier });
+                        bonuses.push({ source: 'Fortress Archetype', value: tier });
                     }
                     break;
-                case 'fortress':
+                case 'resilient':
                     if (stat === 'resolve') {
-                        bonuses.push({ source: 'Fortress Archetype', value: tier });
+                        bonuses.push({ source: 'Resilient Archetype', value: tier });
                     } else if (stat === 'stability') {
-                        bonuses.push({ source: 'Fortress Archetype', value: tier });
+                        bonuses.push({ source: 'Resilient Archetype', value: tier });
                     } else if (stat === 'vitality') {
-                        bonuses.push({ source: 'Fortress Archetype', value: tier });
+                        bonuses.push({ source: 'Resilient Archetype', value: tier });
                     }
                     break;
                 case 'juggernaut':
