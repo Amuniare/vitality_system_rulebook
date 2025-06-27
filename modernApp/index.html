@@ -9,7 +9,14 @@
 <body>
     <div id="app">
         <header class="app-header">
-            <h1>Vitality Character Builder</h1>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h1>Vitality Character Builder</h1>
+                <a href="gallery.html" style="color: #4299e1; text-decoration: none; padding: 0.5rem 1rem; border: 1px solid #4299e1; border-radius: 4px; transition: all 0.2s;" 
+                   onmouseover="this.style.background='#4299e1'; this.style.color='white';" 
+                   onmouseout="this.style.background='transparent'; this.style.color='#4299e1';">
+                    📖 Character Gallery
+                </a>
+            </div>
             <!-- Character header for displaying character name and details -->
             <div id="character-header" class="character-header">
                 <!-- Character header content will be rendered here -->

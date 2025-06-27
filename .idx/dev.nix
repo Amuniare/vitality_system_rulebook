@@ -6,10 +6,11 @@
 
   # Use https://search.nixos.org/packages to find packages
   packages = [
+    pkgs.nodejs_20
+    pkgs.nodePackages.firebase-tools
     # pkgs.go
     # pkgs.python311
     # pkgs.python311Packages.pip
-    # pkgs.nodejs_20
     # pkgs.nodePackages.nodemon
   ];
 
@@ -25,16 +26,14 @@
     previews = {
       enable = true;
       previews = {
-        # web = {
-        #   # Example: run "npm run dev" with PORT set to IDX's defined port for previews,
-        #   # and show it in IDX's web preview panel
-        #   command = ["npm" "run" "dev"];
-        #   manager = "web";
-        #   env = {
-        #     # Environment variables to set for your server
-        #     PORT = "$PORT";
-        #   };
-        # };
+        web = {
+          # Firebase serve for development and testing
+          command = ["firebase" "serve" "--only" "hosting" "--port" "$PORT"];
+          manager = "web";
+          env = {
+            PORT = "$PORT";
+          };
+        };
       };
     };
 
@@ -42,8 +41,9 @@
     workspace = {
       # Runs when a workspace is first created
       onCreate = {
-        # Example: install JS dependencies from NPM
-        # npm-install = "npm install";
+        # Install dependencies for Firebase and modernApp
+        npm-install-modernapp = "cd modernApp && npm install";
+        npm-install-tests = "cd tests && npm install";
       };
       # Runs when the workspace is (re)started
       onStart = {

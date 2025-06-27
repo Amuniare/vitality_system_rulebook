@@ -5,6 +5,7 @@ import { EventBus } from './EventBus.js';
 import { DataMigration } from './DataMigration.js';
 import { ValidationSystem } from './ValidationSystem.js';
 import { SchemaSystem } from './SchemaSystem.js';
+import { FirebaseSync } from './FirebaseSync.js';
 
 /**
  * Enhanced CharacterManager with validation, change detection, and migration support
@@ -31,6 +32,10 @@ export class CharacterManager {
         this.lastSaveState = new Map(); // For change detection
         this.validationEnabled = true;
         this.migrationLog = [];
+        
+        // Firebase integration
+        this.firebaseSync = new FirebaseSync();
+        this.cloudSyncEnabled = true;
         
         // Storage keys
         this.STORAGE_KEYS = {
@@ -146,12 +151,24 @@ export class CharacterManager {
         
         const character = this.characters.get(characterId);
         
-        // Remove from storage
+        // Remove from local storage
         Storage.removeItem(`${this.STORAGE_KEYS.CHARACTER_PREFIX}${characterId}`);
         
         // Remove from memory
         this.characters.delete(characterId);
         this.lastSaveState.delete(characterId);
+        
+        // Attempt cloud deletion if enabled
+        if (this.cloudSyncEnabled && this.firebaseSync) {
+            const syncResult = await this.firebaseSync.deleteCharacter(characterId);
+            if (syncResult.success) {
+                Logger.debug(`[CharacterManager] Character deleted from cloud: ${character.name}`);
+            } else if (syncResult.queued) {
+                Logger.debug(`[CharacterManager] Character deletion queued for cloud sync: ${character.name}`);
+            } else {
+                Logger.warn(`[CharacterManager] Cloud deletion failed for: ${character.name}`);
+            }
+        }
         
         // If this was the active character, switch to another one
         if (this.activeCharacterId === characterId) {
@@ -208,9 +225,22 @@ export class CharacterManager {
             const characterToSave = await this.ensureCompleteCharacter(character);
             characterToSave.updatedAt = Date.now();
             
+            // Save to local storage first (always works)
             Storage.setItem(`${this.STORAGE_KEYS.CHARACTER_PREFIX}${characterToSave.id}`, characterToSave);
             this.characters.set(characterToSave.id, characterToSave);
             this.lastSaveState.set(characterToSave.id, this.createStateSnapshot(characterToSave));
+            
+            // Attempt cloud sync if enabled
+            if (this.cloudSyncEnabled && this.firebaseSync) {
+                const syncResult = await this.firebaseSync.saveCharacter(characterToSave.id, characterToSave);
+                if (syncResult.success) {
+                    Logger.debug(`[CharacterManager] Character synced to cloud: ${characterToSave.name}`);
+                } else if (syncResult.queued) {
+                    Logger.debug(`[CharacterManager] Character queued for cloud sync: ${characterToSave.name}`);
+                } else {
+                    Logger.warn(`[CharacterManager] Cloud sync failed for: ${characterToSave.name}`);
+                }
+            }
             
             Logger.debug(`[CharacterManager] Saved character: ${characterToSave.name} (${characterToSave.id})`);
             
@@ -566,13 +596,67 @@ export class CharacterManager {
         }
     }
 
+    // Cloud sync methods
+    async loadCharacterFromCloud(characterId) {
+        if (!this.cloudSyncEnabled || !this.firebaseSync) {
+            return null;
+        }
+
+        try {
+            const cloudCharacter = await this.firebaseSync.loadCharacter(characterId);
+            if (cloudCharacter) {
+                const completeCharacter = await this.ensureCompleteCharacter(cloudCharacter);
+                this.characters.set(characterId, completeCharacter);
+                this.lastSaveState.set(characterId, this.createStateSnapshot(completeCharacter));
+                Logger.info(`[CharacterManager] Loaded character from cloud: ${completeCharacter.name}`);
+                return completeCharacter;
+            }
+            return null;
+        } catch (error) {
+            Logger.error(`[CharacterManager] Failed to load character from cloud: ${characterId}`, error);
+            return null;
+        }
+    }
+
+    async getAllCloudCharacters(options = {}) {
+        if (!this.cloudSyncEnabled || !this.firebaseSync) {
+            return [];
+        }
+
+        try {
+            return await this.firebaseSync.getAllCharacters(options);
+        } catch (error) {
+            Logger.error('[CharacterManager] Failed to get cloud characters:', error);
+            return [];
+        }
+    }
+
+    getCloudSyncStatus() {
+        if (!this.firebaseSync) {
+            return { enabled: false, status: 'No Firebase sync initialized' };
+        }
+        
+        return {
+            enabled: this.cloudSyncEnabled,
+            ...this.firebaseSync.getStatus()
+        };
+    }
+
+    setCloudSyncEnabled(enabled) {
+        this.cloudSyncEnabled = enabled;
+        Logger.info(`[CharacterManager] Cloud sync ${enabled ? 'enabled' : 'disabled'}`);
+    }
+
     // Debug and utility methods
     getCharacterStats() {
+        const cloudStatus = this.getCloudSyncStatus();
         return {
             totalCharacters: this.characters.size,
             activeCharacterId: this.activeCharacterId,
             initialized: this.initialized,
-            validationEnabled: this.validationEnabled
+            validationEnabled: this.validationEnabled,
+            cloudSyncEnabled: this.cloudSyncEnabled,
+            cloudSyncStatus: cloudStatus
         };
     }
 
@@ -589,6 +673,11 @@ export class CharacterManager {
                 if (this.detectChanges(currentCharacter)) {
                     this.saveActiveCharacter(currentCharacter);
                 }
+            }
+            
+            // Cleanup Firebase sync
+            if (this.firebaseSync) {
+                this.firebaseSync.cleanup();
             }
             
             this.characters.clear();
