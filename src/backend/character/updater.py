@@ -551,6 +551,155 @@ class CharacterUpdater:
             logger.error(f"Full update failed: {e}")
             return False
 
+    def update_character_scriptcards_only(self, json_path: Path) -> bool:
+        """Update only the scriptcards/abilities for a character from JSON template"""
+        try:
+            # Load template data
+            template_data = load_json(json_path)
+            char_name = template_data["metadata"]["name"]
+            
+            # Skip template sheets
+            if self._should_skip_character(char_name):
+                logger.info(f"Skipping template sheet: {char_name}")
+                return True
+            
+            logger.info(f"Starting scriptcards-only update for: {char_name}")
+            
+            # Extract only abilities data from the character
+            abilities_data = self._extract_abilities_only(template_data)
+            if not abilities_data:
+                logger.error(f"No abilities found for character: {char_name}")
+                return False
+            
+            # Create handout with just abilities data
+            if not self._create_scriptcards_handout(char_name, abilities_data):
+                logger.error(f"Failed to create scriptcards handout for {char_name}")
+                return False
+            
+            # Navigate back to chat for API commands
+            self._navigate_back_to_chat()
+            
+            # Send scriptcards-only update command
+            self.chat.send_command(f"!update-scriptcards {char_name}")
+            response = self.chat.wait_for_response(timeout=30)
+            
+            success = response and f"Successfully updated scriptcards for: {char_name}" in response
+            
+            if success:
+                logger.info(f"Successfully updated scriptcards for: {char_name}")
+            else:
+                logger.error(f"Failed to update scriptcards for: {char_name}")
+                if response:
+                    logger.error(f"Response: {response}")
+            
+            # Always cleanup the handout
+            self._cleanup_scriptcards_handout(char_name)
+            
+            return success
+            
+        except Exception as e:
+            logger.error(f"Scriptcards update failed for {json_path}: {e}")
+            return False
+
+    def _extract_abilities_only(self, character_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Extract only abilities from character data and expand them with new scriptcards template"""
+        try:
+            char_name = character_data.get('metadata', {}).get('name', 'unknown')
+            
+            # Skip expansion for template sheets
+            if self._should_skip_character(char_name):
+                logger.debug(f"Skipping abilities extraction for template sheet: {char_name}")
+                return None
+            
+            # Load the new scriptcards template
+            template_path = Path("src/scriptcards/Scripcards Attacks Library Neopunk 3.7.3.txt")
+            if not template_path.exists():
+                logger.error(f"Scriptcards template not found: {template_path}")
+                return None
+            
+            with open(template_path, 'r', encoding='utf-8') as f:
+                new_template_content = f.read()
+            
+            # Extract abilities from character data
+            abilities = character_data.get('abilities', [])
+            if not abilities:
+                logger.warning(f"No abilities found for character: {char_name}")
+                return None
+            
+            # Create abilities-only data structure with new template content
+            abilities_only_data = {
+                'metadata': {
+                    'name': char_name,
+                    'type': 'abilities_only'
+                },
+                'abilities': []
+            }
+            
+            # Process each ability and replace with new template content
+            for ability in abilities:
+                # For attack abilities (those containing scriptcards), replace with new template
+                if 'content' in ability and '!scriptcard' in ability.get('content', ''):
+                    # Extract the attack index from the old content if possible
+                    import re
+                    index_match = re.search(r'--Rbyindex\|.*?;repeating_attacks;(\d+)', ability.get('content', ''))
+                    
+                    if index_match:
+                        attack_index = index_match.group(1)
+                        # Replace {number} placeholder with the actual index
+                        new_content = new_template_content.replace('{number}', attack_index)
+                        
+                        # Create new ability with updated content
+                        new_ability = ability.copy()
+                        new_ability['content'] = new_content
+                        abilities_only_data['abilities'].append(new_ability)
+                        
+                        logger.debug(f"Updated ability '{ability.get('name', 'unknown')}' with new scriptcards template")
+                    else:
+                        # If no index found, keep original content
+                        abilities_only_data['abilities'].append(ability)
+                        logger.warning(f"Could not find attack index in ability '{ability.get('name', 'unknown')}'")
+                else:
+                    # Non-scriptcard abilities, keep as-is
+                    abilities_only_data['abilities'].append(ability)
+            
+            logger.info(f"Extracted {len(abilities_only_data['abilities'])} abilities for {char_name}")
+            return abilities_only_data
+            
+        except Exception as e:
+            logger.error(f"Failed to extract abilities: {e}")
+            return None
+
+    def _create_scriptcards_handout(self, char_name: str, abilities_data: Dict[str, Any]) -> bool:
+        """Create a handout with abilities data only for the API to read"""
+        try:
+            logger.info(f"Creating scriptcards handout for character: {char_name}")
+            
+            # Navigate to journal to create handout
+            if not self._navigate_to_journal():
+                return False
+            
+            # Format data for handout
+            json_data = json.dumps(abilities_data, indent=2)
+            handout_content = f"SCRIPTCARDS_DATA_START\n{json_data}\nSCRIPTCARDS_DATA_END"
+            handout_name = f"ScriptcardsUpdater_{char_name}"
+            
+            # Create the handout
+            if self._create_handout_with_content(handout_name, handout_content):
+                logger.info(f"Successfully created scriptcards handout: {handout_name}")
+                return True
+            else:
+                logger.error(f"Failed to create scriptcards handout: {handout_name}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Failed to create scriptcards handout: {e}")
+            return False
+
+    def _cleanup_scriptcards_handout(self, char_name: str):
+        """Clean up scriptcards data handout"""
+        handout_name = f"ScriptcardsUpdater_{char_name}"
+        self.chat.send_command(f"!handout-delete {handout_name}")
+
     def cleanup_all_update_handouts(self):
         """Clean up all character update handouts"""
         try:

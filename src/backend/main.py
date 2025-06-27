@@ -123,6 +123,72 @@ def extract_all_characters():
         logger.info("Closing browser...")
         connection.disconnect()
 
+def sync_scriptcards_only():
+    """Sync scriptcards only for all characters from input directory - update only abilities"""
+    connection = Roll20Connection()
+    
+    try:
+        # Connect to Roll20
+        page = connection.connect()
+        
+        # Handle login
+        if not handle_login(page):
+            logger.error("Login failed")
+            return
+        
+        # Create interfaces
+        chat = ChatInterface(page)
+        
+        # Navigate to chat
+        chat.navigate_to_chat()
+        
+        # Create updater
+        updater = CharacterUpdater(chat)
+        
+        # Get all JSON files from characters\input
+        input_dir = Path("all_data") / "characters" / "input"
+        if not input_dir.exists():
+            logger.error(f"Input directory not found: {input_dir}")
+            return
+        
+        json_files = list(input_dir.glob("*.json"))
+        if not json_files:
+            logger.error(f"No JSON files found in {input_dir}")
+            return
+        
+        logger.info(f"Found {len(json_files)} character files to update scriptcards for")
+        
+        # Process each character file
+        successful = 0
+        failed = 0
+        
+        for json_file in json_files:
+            try:
+                logger.info(f"Updating scriptcards for: {json_file.name}")
+                
+                # Use the new scriptcards-only update method
+                success = updater.update_character_scriptcards_only(json_file)
+                
+                if success:
+                    successful += 1
+                    logger.info(f"Successfully updated scriptcards for: {json_file.name}")
+                else:
+                    failed += 1
+                    logger.error(f"Failed to update scriptcards for: {json_file.name}")
+                    
+            except Exception as e:
+                failed += 1
+                logger.error(f"Error updating scriptcards for {json_file.name}: {e}")
+        
+        logger.info(f"Scriptcards sync complete! {successful} successful, {failed} failed")
+        
+    except Exception as e:
+        logger.error(f"Scriptcards sync error: {e}")
+        sys.exit(1)
+    finally:
+        logger.info("Closing browser...")
+        connection.disconnect()
+
 def convert_character(input_path: Path, output_path: Path) -> bool:
     """Convert single character using complete schema system"""
     try:
@@ -446,8 +512,8 @@ def process_downloads():
 def main():
     """Main application entry"""
     parser = argparse.ArgumentParser(description="Roll20 API Automation Tool")
-    parser.add_argument("action", choices=["extract", "sync", "convert", "upload", "color-macros", "process-downloads", "test"], 
-                       help="Action to perform: extract/sync for Roll20 automation, convert/upload for schema system, color-macros, process-downloads, or test")
+    parser.add_argument("action", choices=["extract", "sync", "sync-scriptcards", "convert", "upload", "color-macros", "process-downloads", "test"], 
+                       help="Action to perform: extract/sync for Roll20 automation, sync-scriptcards for scriptcards-only updates, convert/upload for schema system, color-macros, process-downloads, or test")
     
     args = parser.parse_args()
     
@@ -456,6 +522,8 @@ def main():
         extract_all_characters()
     elif args.action == "sync":
         sync_characters()
+    elif args.action == "sync-scriptcards":
+        sync_scriptcards_only()
     elif args.action == "convert":
         return convert_all_characters()
     elif args.action == "upload":

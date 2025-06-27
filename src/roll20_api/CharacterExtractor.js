@@ -106,6 +106,15 @@ on('chat:message', function(msg) {
             case '!handout-cleanup-updates':
                 cleanupUpdateHandouts(msg.who);
                 break;
+
+            case '!update-scriptcards':
+                if (args.length < 2) {
+                    sendChat('CharacterExtractor', '/w ' + msg.who + ' Usage: !update-scriptcards CharacterName');
+                    return;
+                }
+                const scriptcardsCharName = args.slice(1).join(' ');
+                updateCharacterScriptcardsOnly(scriptcardsCharName, msg.who);
+                break;
         }
 
     } catch (error) {
@@ -1147,3 +1156,142 @@ function updateCharacterAbilitiesEnhanced(charId, abilities) {
         throw error;
     }
 }
+
+// ============================================================================
+// SCRIPTCARDS-ONLY UPDATE FUNCTIONS
+// ============================================================================
+
+function updateCharacterScriptcardsOnly(characterName, requestor) {
+    try {
+        log('Starting scriptcards-only update for character: ' + characterName);
+        
+        // Find the character
+        const characters = findObjs({
+            _type: 'character',
+            name: characterName
+        });
+        
+        if (characters.length === 0) {
+            sendChat('CharacterExtractor', '/w ' + requestor + ' Character "' + characterName + '" not found.');
+            return false;
+        }
+        
+        const character = characters[0];
+        log('Found character: ' + characterName);
+        
+        // Find the scriptcards data handout
+        const scriptcardsHandout = findScriptcardsHandout(characterName);
+        if (!scriptcardsHandout) {
+            sendChat('CharacterExtractor', '/w ' + requestor + ' No scriptcards handout found for "' + characterName + '".');
+            return false;
+        }
+        
+        log('Found scriptcards handout for: ' + characterName);
+        
+        // Parse the scriptcards data from handout
+        parseScriptcardsDataFromHandout(scriptcardsHandout, function(scriptcardsData) {
+            if (!scriptcardsData) {
+                sendChat('CharacterExtractor', '/w ' + requestor + ' Failed to parse scriptcards data from handout.');
+                return;
+            }
+            
+            log('Successfully parsed scriptcards data, starting abilities update...');
+            
+            // Update only the abilities using existing enhanced function
+            try {
+                updateCharacterAbilitiesEnhanced(character.get('_id'), scriptcardsData.abilities);
+                sendChat('CharacterExtractor', '/w ' + requestor + ' Successfully updated scriptcards for: ' + characterName);
+                log('Scriptcards update completed successfully: ' + characterName);
+            } catch (error) {
+                sendChat('CharacterExtractor', '/w ' + requestor + ' Failed to update scriptcards for: ' + characterName);
+                log('Scriptcards update failed: ' + characterName + ' - ' + error.toString());
+            }
+        });
+        
+        return true;
+        
+    } catch (error) {
+        log('Error updating scriptcards: ' + error.toString());
+        sendChat('CharacterExtractor', '/w ' + requestor + ' Error updating scriptcards: ' + error.toString());
+        return false;
+    }
+}
+
+function findScriptcardsHandout(characterName) {
+    const handoutName = 'ScriptcardsUpdater_' + characterName;
+    const handouts = findObjs({
+        _type: 'handout',
+        name: handoutName
+    });
+    
+    return handouts.length > 0 ? handouts[0] : null;
+}
+
+function parseScriptcardsDataFromHandout(handout, callback) {
+    try {
+        handout.get('notes', function(handoutNotes) {
+            try {
+                if (!handoutNotes) {
+                    log('Scriptcards handout notes are empty');
+                    callback(null);
+                    return;
+                }
+                
+                // Clean HTML content (same cleaning logic as main parser)
+                let cleanContent = handoutNotes;
+                
+                cleanContent = cleanContent.replace(/<p>/g, '');
+                cleanContent = cleanContent.replace(/<\/p>/g, '\n');
+                cleanContent = cleanContent.replace(/<br\s*\/?>/g, '\n');
+                cleanContent = cleanContent.replace(/<div>/g, '');
+                cleanContent = cleanContent.replace(/<\/div>/g, '\n');
+                
+                cleanContent = cleanContent.replace(/<[^>]*>/g, '');
+                
+                cleanContent = cleanContent.replace(/&amp;/g, '&');
+                cleanContent = cleanContent.replace(/&lt;/g, '<');
+                cleanContent = cleanContent.replace(/&gt;/g, '>');
+                cleanContent = cleanContent.replace(/&quot;/g, '"');
+                cleanContent = cleanContent.replace(/&#39;/g, "'");
+                cleanContent = cleanContent.replace(/&nbsp;/g, ' ');
+                
+                cleanContent = cleanContent.replace(/\n\s*\n/g, '\n');
+                cleanContent = cleanContent.trim();
+                
+                log('Cleaned scriptcards handout content preview: ' + cleanContent.substring(0, 200));
+                
+                // Look for scriptcards-specific markers
+                const startMarker = 'SCRIPTCARDS_DATA_START';
+                const endMarker = 'SCRIPTCARDS_DATA_END';
+                
+                const startIdx = cleanContent.indexOf(startMarker);
+                const endIdx = cleanContent.indexOf(endMarker);
+                
+                if (startIdx === -1 || endIdx === -1) {
+                    log('Scriptcards data markers not found in cleaned handout. Content preview: ' + cleanContent.substring(0, 200));
+                    callback(null);
+                    return;
+                }
+                
+                const jsonStart = cleanContent.indexOf('\n', startIdx) + 1;
+                const jsonStr = cleanContent.substring(jsonStart, endIdx).trim();
+                
+                log('Attempting to parse scriptcards JSON string (first 100 chars): ' + jsonStr.substring(0, 100));
+                
+                const scriptcardsData = JSON.parse(jsonStr);
+                log('Successfully parsed scriptcards data from handout');
+                callback(scriptcardsData);
+                
+            } catch (error) {
+                log('Error parsing scriptcards handout JSON: ' + error.toString());
+                log('Failed JSON string preview: ' + (jsonStr || 'undefined').substring(0, 200));
+                callback(null);
+            }
+        });
+        
+    } catch (error) {
+        log('Error getting scriptcards handout notes: ' + error.toString());
+        callback(null);
+    }
+}
+
