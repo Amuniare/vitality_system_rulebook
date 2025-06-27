@@ -643,8 +643,18 @@ class CharacterUpdater:
                 # Handle both indexed and expanded ability formats
                 if isinstance(content, int) and ability_type == 'indexed':
                     # This is an indexed ability - replace with new template using the index
-                    attack_index = str(content)
-                    new_content = new_template_content.replace('{number}', attack_index)
+                    attack_index = content
+                    attack_index_str = str(attack_index)
+                    
+                    logger.debug(f"Processing indexed ability '{ability.get('name', 'unknown')}' with index {attack_index} (type: {type(attack_index)})")
+                    
+                    # Validate attack index
+                    if attack_index < 0:
+                        logger.error(f"Invalid negative attack index {attack_index} for ability '{ability.get('name', 'unknown')}'")
+                        abilities_only_data['abilities'].append(ability)
+                        continue
+                    
+                    new_content = new_template_content.replace('{number}', attack_index_str)
                     
                     # Create new ability with updated content
                     new_ability = ability.copy()
@@ -652,7 +662,7 @@ class CharacterUpdater:
                     new_ability['type'] = 'expanded'  # Mark as expanded since we're replacing with full content
                     abilities_only_data['abilities'].append(new_ability)
                     
-                    logger.debug(f"Updated indexed ability '{ability.get('name', 'unknown')}' (index {attack_index}) with new scriptcards template")
+                    logger.debug(f"Successfully updated indexed ability '{ability.get('name', 'unknown')}' (index {attack_index} -> '{attack_index_str}') with new scriptcards template")
                     
                 elif isinstance(content, str) and '!scriptcard' in content:
                     # This is already expanded scriptcard content - extract index and replace
@@ -660,16 +670,26 @@ class CharacterUpdater:
                     index_match = re.search(r'--Rbyindex\|.*?;repeating_attacks;(\d+)', content)
                     
                     if index_match:
-                        attack_index = index_match.group(1)
+                        attack_index_str = index_match.group(1)
+                        attack_index = int(attack_index_str)
+                        
+                        logger.debug(f"Processing expanded ability '{ability.get('name', 'unknown')}' with extracted index {attack_index} ('{attack_index_str}')")
+                        
+                        # Validate attack index
+                        if attack_index < 0:
+                            logger.error(f"Invalid negative attack index {attack_index} for ability '{ability.get('name', 'unknown')}'")
+                            abilities_only_data['abilities'].append(ability)
+                            continue
+                        
                         # Replace {number} placeholder with the actual index
-                        new_content = new_template_content.replace('{number}', attack_index)
+                        new_content = new_template_content.replace('{number}', attack_index_str)
                         
                         # Create new ability with updated content
                         new_ability = ability.copy()
                         new_ability['content'] = new_content
                         abilities_only_data['abilities'].append(new_ability)
                         
-                        logger.debug(f"Updated expanded ability '{ability.get('name', 'unknown')}' with new scriptcards template")
+                        logger.debug(f"Successfully updated expanded ability '{ability.get('name', 'unknown')}' (index {attack_index}) with new scriptcards template")
                     else:
                         # If no index found, keep original content
                         abilities_only_data['abilities'].append(ability)

@@ -521,6 +521,7 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 - **Control (Resolve)**: You control the target on their next turn. Common uses are making them attack, protect you, or become Stunned. If you or an ally attack them, the Control ends.
 - **Stun (Resolve/Vitality)**: The target can take no actions or movement, their AV is reduced to 0, and any attacks that hit them are considered critical hits.
 - **Weaken (Vitality)**: Reduce the chosen stat by your Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances. This effect does not expire but the target cannot be affected by more than 1 instance of Weaken.
+  - **Drain** You gain a bonus to your Tier to the target Stat, while the target is weakened. If you use an AOE ability, you only gain the bonus once.
 - **Disable Specials (Resolve/Vitality)**: Target cannot use Special Attacks.
   - **Mimic**: You gain use of the disabled Special Attacks but using your own stats. 
 - **Frighten (Resolve)**: The target must move away from you and can only take the Hasten or Hide Actions. If there is nowhere to run or hide they may take the Dodge or Brace Actions.
@@ -695,7 +696,7 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
   - **Permanant (15p)** → Doesn't take your bonus action to maintain, lasts until destroyed
 
   
-### **Shield**
+### **SHIELD**
 *Personal protective shield*
 - **Cost**: 30p
 - **Effect:** Gain a personal shield with Tier×3 HP at start of each turn (not cumulative)
@@ -853,8 +854,10 @@ You cannot take a limit, if you are unlikely or unable to suffer the downside, o
 **Advanced Conditions** 
 - **Control (30p)**
 - **Stun (20p)**
-- **Weaken (20p) → Mimic (+20p)** 
+- **Weaken (20p)**
+  - **Drain (+30p)** 
 - **Disable Specials (10p)**
+  - **Mimic (+20p)** 
 - **Frighten (10p)**
 - **Enthrall (10p)**
 - **Frenzy (10p)**
