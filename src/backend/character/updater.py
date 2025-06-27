@@ -637,11 +637,27 @@ class CharacterUpdater:
             
             # Process each ability and replace with new template content
             for ability in abilities:
-                # For attack abilities (those containing scriptcards), replace with new template
-                if 'content' in ability and '!scriptcard' in ability.get('content', ''):
-                    # Extract the attack index from the old content if possible
+                content = ability.get('content', '')
+                ability_type = ability.get('type', '')
+                
+                # Handle both indexed and expanded ability formats
+                if isinstance(content, int) and ability_type == 'indexed':
+                    # This is an indexed ability - replace with new template using the index
+                    attack_index = str(content)
+                    new_content = new_template_content.replace('{number}', attack_index)
+                    
+                    # Create new ability with updated content
+                    new_ability = ability.copy()
+                    new_ability['content'] = new_content
+                    new_ability['type'] = 'expanded'  # Mark as expanded since we're replacing with full content
+                    abilities_only_data['abilities'].append(new_ability)
+                    
+                    logger.debug(f"Updated indexed ability '{ability.get('name', 'unknown')}' (index {attack_index}) with new scriptcards template")
+                    
+                elif isinstance(content, str) and '!scriptcard' in content:
+                    # This is already expanded scriptcard content - extract index and replace
                     import re
-                    index_match = re.search(r'--Rbyindex\|.*?;repeating_attacks;(\d+)', ability.get('content', ''))
+                    index_match = re.search(r'--Rbyindex\|.*?;repeating_attacks;(\d+)', content)
                     
                     if index_match:
                         attack_index = index_match.group(1)
@@ -653,14 +669,15 @@ class CharacterUpdater:
                         new_ability['content'] = new_content
                         abilities_only_data['abilities'].append(new_ability)
                         
-                        logger.debug(f"Updated ability '{ability.get('name', 'unknown')}' with new scriptcards template")
+                        logger.debug(f"Updated expanded ability '{ability.get('name', 'unknown')}' with new scriptcards template")
                     else:
                         # If no index found, keep original content
                         abilities_only_data['abilities'].append(ability)
                         logger.warning(f"Could not find attack index in ability '{ability.get('name', 'unknown')}'")
                 else:
-                    # Non-scriptcard abilities, keep as-is
+                    # Non-scriptcard abilities (or other types), keep as-is
                     abilities_only_data['abilities'].append(ability)
+                    logger.debug(f"Keeping non-scriptcard ability '{ability.get('name', 'unknown')}' unchanged")
             
             logger.info(f"Extracted {len(abilities_only_data['abilities'])} abilities for {char_name}")
             return abilities_only_data

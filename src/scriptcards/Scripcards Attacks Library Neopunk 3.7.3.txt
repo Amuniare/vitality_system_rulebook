@@ -1,7 +1,7 @@
 !scriptcard {{
   --/| ==========DECLARATIONS==========
     +++snlib+++
-    --#sourcetoken| @{character_id}
+    --#sourcetoken|@{character_id}
 
     --Rbyindex|[*S:character_id];repeating_attacks;{number}
 
