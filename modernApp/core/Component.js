@@ -205,9 +205,11 @@ export class Component {
             return;
         }
 
-        Logger.debug(`[Component][${this.constructor.name}] Update called for ${this.componentId}:`, {
+        Logger.info(`[Component][${this.constructor.name}] STATE PROPAGATION VERIFICATION: Update called for ${this.componentId}:`, {
             nextProps,
-            prevProps
+            prevProps,
+            componentName: this.constructor.name,
+            timestamp: Date.now()
         });
         
         const oldProps = this.props;
@@ -219,14 +221,21 @@ export class Component {
 
         // Check if props actually changed
         if (!PropsManager.shallowCompare(oldProps, this.props)) {
-            Logger.debug(`[Component][${this.constructor.name}] Props changed for ${this.componentId}, requesting render`);
+            Logger.info(`[Component][${this.constructor.name}] STATE PROPAGATION VERIFICATION: Props changed for ${this.componentId}, requesting render`, {
+                oldProps,
+                newProps: this.props,
+                componentName: this.constructor.name
+            });
             
             // Call lifecycle method
             this.onPropsUpdate(this.props, oldProps);
             
             this._requestRender();
+            Logger.info(`[Component][${this.constructor.name}] STATE PROPAGATION VERIFICATION: Render requested for ${this.componentId}`);
         } else {
-            Logger.debug(`[Component][${this.constructor.name}] Props did not change for ${this.componentId}, no render requested`);
+            Logger.info(`[Component][${this.constructor.name}] STATE PROPAGATION VERIFICATION: Props did not change for ${this.componentId}, no render requested`, {
+                props: this.props
+            });
         }
     }
 
@@ -505,8 +514,8 @@ export class Component {
             const prevProps = this.props;
             this.props = updatedProps;
             
-            // Call update lifecycle method
-            this.update(this.props, prevProps);
+            // Call lifecycle method directly (don't call update() to avoid circular dependency)
+            this.onPropsUpdate(this.props, prevProps);
             
             // Request re-render
             this._requestRender();

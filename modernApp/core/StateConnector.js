@@ -235,16 +235,29 @@ export function connectToState(mapStateToProps, options = {}) {
 
             _handleStateChange(eventData) {
                 const startTime = performance.now();
-                Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] _handleStateChange called`, eventData);
+                Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE CHANGE VERIFICATION: _handleStateChange called`, {
+                    eventData,
+                    componentId: this.componentId,
+                    timestamp: Date.now()
+                });
 
                 try {
                     // Get current state
                     const currentState = StateManager.getState();
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Current state:`, currentState);
+                    Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: Current state retrieved:`, {
+                        hasState: !!currentState,
+                        stateName: currentState?.name,
+                        stateId: currentState?.id,
+                        updateCount: eventData?.updateCount
+                    });
 
                     // Map state to props
                     const newMappedProps = optimizedMapStateToProps(currentState, this.ownProps);
-                    Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] New mapped props:`, newMappedProps);
+                    Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: New mapped props:`, {
+                        newMappedProps,
+                        hasNewProps: !!newMappedProps,
+                        propsKeys: newMappedProps ? Object.keys(newMappedProps) : []
+                    });
 
                     // Check if update is needed
                     const shouldComponentUpdate = this._shouldComponentUpdate(newMappedProps);
@@ -256,30 +269,37 @@ export function connectToState(mapStateToProps, options = {}) {
                         this.updateCount++;
                         this.lastUpdateTime = Date.now();
 
-                        Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Update #${this.updateCount} - Props changed:`, {
+                        Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: Update #${this.updateCount} - Props changed:`, {
                             oldProps,
-                            newProps: newMappedProps
+                            newProps: newMappedProps,
+                            updateCount: this.updateCount,
+                            eventUpdateCount: eventData?.updateCount
                         });
 
                         // Update the wrapped component
                         if (this.wrappedInstance && typeof this.wrappedInstance.update === 'function') {
-                            Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Calling wrapped instance update`);
+                            Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: Calling wrapped instance update method`);
                             this.wrappedInstance.update(newMappedProps, oldProps);
+                            Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: Wrapped instance update completed`);
                         } else {
-                            Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Fallback: updating props and rendering`);
+                            Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: Using fallback - updating props and rendering`);
                             // Fallback: recreate props and render
                             if (this.wrappedInstance) {
                                 Object.assign(this.wrappedInstance.props || {}, newMappedProps);
                                 if (typeof this.wrappedInstance.render === 'function') {
                                     this.wrappedInstance.render();
                                 }
+                                Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: Fallback update completed`);
                             }
                         }
                         
                         const duration = performance.now() - startTime;
-                        Logger.info(`[ConnectedComponent][${WrappedComponent.name}] Update #${this.updateCount} completed in ${duration.toFixed(2)}ms`);
+                        Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: Update #${this.updateCount} completed in ${duration.toFixed(2)}ms`);
                     } else {
-                        Logger.debug(`[ConnectedComponent][${WrappedComponent.name}] Props unchanged, skipping update`);
+                        Logger.info(`[ConnectedComponent][${WrappedComponent.name}] STATE VERIFICATION: Props unchanged, skipping update`, {
+                            lastProps: this.lastMappedProps,
+                            newProps: newMappedProps
+                        });
                     }
                 } catch (error) {
                     Logger.error(`[ConnectedComponent][${WrappedComponent.name}] Error handling state change:`, error);

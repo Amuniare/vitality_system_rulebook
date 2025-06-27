@@ -171,7 +171,7 @@ export class PurchaseButton extends Component {
         Logger.info(`[PurchaseButton] ${action} clicked for ${entityType}:`, entityId);
         
         // Set loading state
-        this.updateProps({ isLoading: true });
+        super.updateProps({ isLoading: true });
         
         try {
             // Call custom handler if provided, otherwise emit event
@@ -207,7 +207,7 @@ export class PurchaseButton extends Component {
             Logger.error(`[PurchaseButton] Error handling ${action}:`, error);
         } finally {
             // Clear loading state
-            this.updateProps({ isLoading: false });
+            super.updateProps({ isLoading: false });
         }
     }
 
@@ -242,19 +242,16 @@ export class PurchaseButton extends Component {
         event.target.classList.remove('btn-hover');
     }
 
-    // Update button state
-    updateProps(newProps) {
-        const oldProps = { ...this.props };
-        Object.assign(this.props, newProps);
-        
-        // Re-render if state changed
+    // Handle prop updates from base class
+    onPropsUpdate(nextProps, prevProps) {
+        // Check if state-related props changed
         const stateProps = ['isPurchased', 'isSelected', 'canPurchase', 'canRemove', 'isLoading'];
-        const stateChanged = stateProps.some(prop => oldProps[prop] !== this.props[prop]);
+        const stateChanged = stateProps.some(prop => prevProps[prop] !== nextProps[prop]);
         
         if (stateChanged) {
-            Logger.debug('[PurchaseButton] State changed, re-rendering:', newProps);
-            this.render();
-            this.setupEventListeners();
+            Logger.debug('[PurchaseButton] State props changed, will re-render via base class');
+            // Base class will handle re-render via _requestRender()
+            this.setupEventListeners(); // Re-attach event listeners after render
         }
     }
 
@@ -264,19 +261,19 @@ export class PurchaseButton extends Component {
         if (loadingText !== null) {
             updates.loadingText = loadingText;
         }
-        this.updateProps(updates);
+        super.updateProps(updates);
     }
 
     setPurchased(isPurchased) {
-        this.updateProps({ isPurchased });
+        super.updateProps({ isPurchased });
     }
 
     setSelected(isSelected) {
-        this.updateProps({ isSelected });
+        super.updateProps({ isSelected });
     }
 
     setCanPurchase(canPurchase) {
-        this.updateProps({ canPurchase });
+        super.updateProps({ canPurchase });
     }
 
     // Debug information

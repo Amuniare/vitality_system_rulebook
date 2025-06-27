@@ -10,8 +10,7 @@ class BasicInfoTab extends Component {
     static propSchema = {
         characterName: { type: 'string', default: 'New Character' },
         characterTier: { type: 'number', default: 4 },
-        // The 'character' prop itself could be passed if more data is needed
-        // character: { type: 'object', default: () => ({}) } 
+        character: { type: 'object', default: {} }
     };
 
     constructor(container, initialProps = {}) {
@@ -102,8 +101,8 @@ class BasicInfoTab extends Component {
         Logger.debug(`[BasicInfoTab][Dumb] Saving basic info: Name - ${name}, Tier - ${tier}`);
         
         try {
-            // Get current character state
-            const character = StateManager.getState();
+            // Use character from props (passed by StateConnector)
+            const character = this.props.character || {};
             
             // Update the specific fields
             const updatedCharacter = {
@@ -138,14 +137,14 @@ const mapStateToPropsBasicInfo = (globalState, ownProps) => {
         Logger.warn('[BasicInfoTab][mapStateToProps] Global state is null, returning default props.');
         return {
             characterName: BasicInfoTab.propSchema.characterName.default,
-            characterTier: BasicInfoTab.propSchema.characterTier.default
+            characterTier: BasicInfoTab.propSchema.characterTier.default,
+            character: {}
         };
     }
     return {
         characterName: globalState.name || BasicInfoTab.propSchema.characterName.default,
-        characterTier: globalState.tier || BasicInfoTab.propSchema.characterTier.default
-        // If passing the whole character:
-        // character: globalState 
+        characterTier: globalState.tier || BasicInfoTab.propSchema.characterTier.default,
+        character: globalState // Pass complete character for save operations
     };
 };
 
