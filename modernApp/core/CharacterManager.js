@@ -72,6 +72,16 @@ export class CharacterManager {
         Logger.info('[CharacterManager] Enhanced instance created with validation and migration support.');
     }
     
+    generateCharacterId() {
+        // Generate Roll20-compatible ID: dash + 16-character random alphanumeric
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let randomString = '';
+        for (let i = 0; i < 16; i++) {
+            randomString += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        }
+        return `-${randomString}`;
+    }
+    
     async init() {
         if (this.initialized) {
             Logger.warn('[CharacterManager] Already initialized.');
@@ -125,7 +135,7 @@ export class CharacterManager {
 
     // MISSING METHOD - Create new character
     async createNewCharacter(name = 'New Character') {
-        const characterId = `char_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const characterId = this.generateCharacterId();
         
         const newCharacter = {
             ...this.createDefaultCharacter(),
@@ -195,7 +205,7 @@ export class CharacterManager {
             // Generate new ID if one already exists
             if (this.characters.has(importedCharacter.id)) {
                 const originalId = importedCharacter.id;
-                importedCharacter.id = `char_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                importedCharacter.id = this.generateCharacterId();
                 Logger.info(`[CharacterManager] Character ID collision. Changed ${originalId} to ${importedCharacter.id}`);
             }
             
@@ -353,7 +363,7 @@ export class CharacterManager {
 
     createDefaultCharacter() {
         return {
-            id: 'default_' + Date.now(),
+            id: this.generateCharacterId(),
             name: 'New Character',
             tier: 4,
             schemaVersion: DataMigration.CURRENT_VERSION,
