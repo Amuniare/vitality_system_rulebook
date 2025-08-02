@@ -1797,9 +1797,9 @@
             "schemaType": "entity",
             "type": "boon",
             "name": "Utilitarian",
-            "description": "Gain 10 extra points for Expertise, Features, Senses, and Descriptors",
+            "description": "Gain 5 extra points for Expertise, Features, Senses, and Descriptors",
             "cost": {
-                "value": 15,
+                "value": 5,
                 "pool": "main",
                 "display": "15p"
             },
@@ -1807,8 +1807,8 @@
                 {
                     "type": "pool_mod",
                     "target": "utility",
-                    "value": 10,
-                    "display": "+10 Utility Points"
+                    "value": 5,
+                    "display": "+5 Utility Points"
                 }
             ],
             "ui": {

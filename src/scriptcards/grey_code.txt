@@ -1,0 +1,7 @@
+boxcode::{div style='color: #B3C7D2; background-color: #1E2228; border: 1px solid #4F5861; display: block; text-align: left; font-size: 13px; padding: 8px; margin-bottom: 2px; font-family: "Courier New", monospace; white-space: pre-wrap;'}||
+titlecode::{div style='color: #E8E8E8; background-color: #4F5861; text-align: left; line-height:20px; font-size: 18px; padding: 5px 8px; margin-bottom: 8px; font-family: "Syncopate", sans-serif; font-weight:bold; letter-spacing: 2px; text-transform: uppercase;'}||
+textcode::{/div}{div}{div style='text-align:left; font-size: 13px !important; font-family: "Courier New", monospace; padding:3px;'}||
+buttonwrapper::{div style='display:block; text-align:left; margin-top: 8px;'}||
+buttonstyle::style='display:inline-block; font-family:"Syncopate", sans-serif; text-transform:uppercase; color:#E8E8E8; background-color: #3A4047; border: 1px solid #4F5861; padding: 4px 8px; border-radius: 0;'||
+subtitlestyle::font-size:11pt; font-weight:bold; font-family:"Courier New", monospace; color:#8A9AA8; text-transform: uppercase;||
+footer::

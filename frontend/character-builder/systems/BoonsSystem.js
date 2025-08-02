@@ -122,7 +122,7 @@ export class BoonsSystem {
                     effects.conditionTargeting = 'vitality';
                     break;
                 case 'utilitarian':
-                    effects.utilityPointBonus += (boonDef.bonus?.utilityPoints || 10); // Use bonus from definition
+                    effects.utilityPointBonus += (boonDef.bonus?.utilityPoints || 5); // Use bonus from definition
                     break;
                 case 'speedOfThought':
                     effects.initiativeModification = 'intelligence_double';

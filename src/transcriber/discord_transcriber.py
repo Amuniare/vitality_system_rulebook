@@ -16,9 +16,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Campaign Configuration - EDIT THESE
-CAMPAIGN_NAME = "mutants"  # Current active campaign
+CAMPAIGN_NAME = "rogue_trader"  # Current active campaign
 TOKEN = os.getenv('DISCORD_TOKEN')
-CHANNEL_ID = 1335070851015639113
+CHANNEL_ID = 1388237799567654973
 
 # Session Detection Settings
 SESSION_GAP_HOURS = 12  # Hours of silence = new session
@@ -74,11 +74,11 @@ class SessionTranscriber:
         # This mapping handles the new bot format seen in session-17
         # It maps the name the bot uses back to the actual username
         self.bot_author_map = {
-            'a fucking synth': 'syrjayko',
-            'marquis (diego)': 'diegoslowing02',
+            'emmanual': 'syrjayko',
+            'diego': 'diegoslowing02',
             'trent': 'amuniare',
             'nick': 'bipolarfrenchie',
-            'pandora': 'sexissinful',
+            'jubb': 'sexissinful',
         }
         self.bot_message_pattern = re.compile(r'^\*\*(.*?)\*\*:\s*(.*)', re.DOTALL)
         # <<< MODIFIED SECTION END >>>

@@ -638,7 +638,7 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 
 **Biohacker (0p)** → All conditions you inflict target Vitality resistance instead
 
-**Utilitarian (15p)** → Gain 10 extra points for Features, Senses, Movement Abilities, and Descriptors
+**Utilitarian (15p)** → Gain 5 extra points for Features, Senses, Movement Abilities, and Descriptors
 
 **Lucky (30p)** → You have an extra effort.
 

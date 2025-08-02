@@ -35,10 +35,10 @@
         "id": "utilitarian",
         "name": "Utilitarian",
         "cost": 15,
-        "description": "Gain 10 extra points for Expertise, Features, Senses, and Descriptors",
+        "description": "Gain 5 extra points for Expertise, Features, Senses, and Descriptors",
         "effect": "utility_point_bonus",
         "category": "enhancement",
-        "bonus": { "utilityPoints": 10 }
+        "bonus": { "utilityPoints": 5 }
     },
     {
         "id": "perfectionist",

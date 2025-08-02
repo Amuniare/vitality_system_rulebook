@@ -13,7 +13,7 @@ import sys
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'root_modern_app_minus_partials'
+DEFAULT_PRESET = 'discord_bot'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude
@@ -119,6 +119,26 @@ PRESETS = {
         'README.md',
         'requirements.txt',
     ],
+
+    'rogue_trader': [
+        'frontend/campaigns/rogue_trader'
+    ],
+
+    'scriptcards': [
+        'src/scriptcards',
+    ],
+
+    'discord_bot': [
+        'src/transcriber/',
+        '--root',
+    ],
+    
+    'discord_bot_data': [
+        'src/transcriber/',
+        'all_data/rogue_trader/',
+        '--root',
+    ]
+
 }
 
 # ============================================================================
