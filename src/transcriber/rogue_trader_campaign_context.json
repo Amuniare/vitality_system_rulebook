@@ -1,0 +1,230 @@
+{
+  "campaign_info": {
+    "name": "Rogue Trader Campaign",
+    "setting": "Warhammer 40,000 Universe, Hesperus System",
+    "current_date": "009.M42 (41st Millennium)",
+    "world_state": "Post-Great Rift galaxy divided in half, Indomitus Crusade ongoing, unprecedented crisis for humanity",
+    "game_system": "Vitality RPG System (Warhammer 40K adaptation)",
+    "themes": [
+      "Tolerance - Challenging Imperial orthodoxy by finding cooperation with those the Imperium teaches you to hate",
+      "Responsibility - Bearing the heavy burden of command decisions affecting millions across worlds and generations",
+      "Discovery - Pushing beyond accepted boundaries to uncover dangerous truths and forbidden knowledge",
+      "Survival - Operating in the galaxy's most dangerous period where traditional support systems have collapsed",
+      "Faith vs Pragmatism - Balancing Imperial doctrine with practical necessities of frontier life"
+    ]
+  },
+  "player_characters": {
+    "active": [
+      {
+        "character_name": "Dame Venecia Delatorae",
+        "title": "Rogue Trader",
+        "player_name": "Emmanual",
+        "discord_display_name": "Emperor's Favorite Princess",
+        "discord_username": "emperor's favorite princess",
+        "background": "Daughter of the legendary 'Mad Rogue Trader', former Imperial Knight pilot",
+        "trauma": "Piloted Knight into Warp during 13th Black Crusade, saved High Lord's son, branded suspect by Inquisition",
+        "appearance": "Missing arms, whitened hair, vibrant purple Cadian eyes from Warp exposure",
+        "personality": "Friendly with crew, protective of psykers, pragmatic, results-oriented, unconventional Emperor worship",
+        "authority": "Warrant of Trade holder, dynasty leader, equivalent to Planetary Governor",
+        "mandate_focus": "Asset Recovery & Cleansing - cleanse corruption and salvage assets from lost territories"
+      },
+      {
+        "character_name": "Faust Gray",
+        "role": "Nascent Psyker",
+        "player_name": "Faust",
+        "discord_display_name": "Faust",
+        "discord_username": ".phan10m",
+        "background": "Former petty thief, recently awakened psyker, joined crew in M42.008",
+        "powers": "Telekinesis, Time manipulation, Mental abilities",
+        "personality": "Friendly but cautious, eager to prove worth, hidden agenda as reluctant ally",
+        "debt": "Owes Dame Venecia significant debt for help provided",
+        "mandate_focus": "Technology Acquisition - acquire Warp-resistant tech and psyker artifacts"
+      },
+      {
+        "character_name": "Sister Inés (Maria Inés Matamoros de los Colmenares)",
+        "role": "Sister of Battle",
+        "player_name": "Diego",
+        "discord_display_name": "Burn Baby Burn",
+        "discord_username": "burn baby burn",
+        "background": "Met Dame Venecia on Shrine World, joined crew in M42.002",
+        "equipment": "Heavy flamer",
+        "personality": "Deeply devout, zealous purification approach, hates Eldar, wary of psykers",
+        "motivation": "Seeking specific relic, follows Imperial doctrine absolutely",
+        "mandate_focus": "Asset Recovery & Cleansing - cleanse corruption and salvage assets"
+      },
+      {
+        "character_name": "Brother Rainard",
+        "role": "Ancient Warrior (Space Marine)",
+        "player_name": "Nick",
+        "discord_display_name": "Nick",
+        "discord_username": "bipolarfrenchie",
+        "background": "Thousands of years old, Dark Angel survivor of Caliban, former Blackshield",
+        "secrets": "Fought in Horus Heresy, seeks redemption for past involving Primarchs",
+        "appearance": "Wears robes over armor, cagey about past",
+        "personality": "Keeps to himself, critical of Ecclesiarchy, loyal to Emperor's true vision",
+        "mandate_focus": "Asset Recovery & Cleansing, seeks to make Imperium better"
+      },
+      {
+        "character_name": "Cinder (Celestine Vex)",
+        "role": "Unsanctioned Pyromancer Psyker",
+        "player_name": "Trent",
+        "discord_display_name": "Trent",
+        "discord_username": "amuniare",
+        "note": "GM also plays this character",
+        "background": "Powers awakened during Great Rift opening, accidentally killed family with uncontrolled surge",
+        "trauma": "Core trauma from first power use killing everyone present including family",
+        "mentors": "Taught by Elash Vyre, saved Shas'ur Vash'ya (Tau NPC)",
+        "personality": "Quiet, shy, compulsively obsessed with cleanliness, terrified of contaminating friends",
+        "mandate_focus": "Military Recruitment - helping other survivors like herself"
+      },
+      {
+        "character_name": "Sagoire",
+        "role": "Tech Priest Explorator", 
+        "player_name": "Deven",
+        "discord_display_name": "Deven",
+        "discord_username": "roathus",
+        "background": "Adeptus Mechanicus explorator seeking ancient technology and STCs",
+        "equipment": "Specialized tech-priest gear, archeotech tools",
+        "personality": "Devoted to Omnissiah, fascinated by ancient technology",
+        "mandate_focus": "Technology Acquisition - discover and analyze archeotech and STCs"
+      },
+      {
+        "character_name": "Vale (Valekh'da)",
+        "role": "Drukhari Harlequin",
+        "player_name": "Jubb",
+        "discord_display_name": "Jubb",
+        "discord_username": "jubb",
+        "background": "From Weeping Spiral masque, present at Fall of Cadia, helped Imperials escape through Webway",
+        "motivation": "Hates Chaos, acquiring money, recovering lost relics, 'last laugh against chaos'",
+        "personality": "Twisting things into jokes, argues with self, avoided by crew due to alien nature",
+        "status": "Stranded with ruined gear, no masque, accepted Venecia's offer"
+      }
+    ]
+  },
+  "major_npcs": {
+    "ship_crew": [
+      {
+        "name": "Elash Vyre",
+        "relationship": "Cinder's mentor",
+        "background": "Former Eldar Ranger and failed Farseer student, found Cinder during desperate early years, taught survival and Warp usage"
+      },
+      {
+        "name": "Shas'ur Vash'ya",
+        "species": "Tau",
+        "background": "Former Fire Caste pilot, saved by Elash and Cinder, provides tactical analysis"
+      }
+    ],
+    "imperial_contacts": [
+      {
+        "name": "Roboute Guilliman",
+        "title": "Lord Commander of the Imperium, Primarch",
+        "role": "Issued the current mandate, leads Indomitus Crusade"
+      },
+      {
+        "name": "High Lord (unnamed)",
+        "relationship": "Son saved by Dame Venecia, granted her Warrant of Trade"
+      }
+    ]
+  },
+  "major_factions": {
+    "imperium_of_man": {
+      "description": "Brutal fascist theocracy worshipping the God-Emperor",
+      "current_leader": "Roboute Guilliman as Imperial Regent",
+      "status": "Divided by Great Rift, fighting for survival",
+      "authority_structure": "High Lords of Terra > Sector Governors > Planetary Governors (Rogue Traders equivalent)"
+    },
+    "chaos": {
+      "description": "Four Dark Gods and their mortal followers including Traitor Space Marines",
+      "threat_level": "Primary existential threat to humanity",
+      "corruption_methods": "Through thought, emotion, contact with Warp energy"
+    },
+    "xenos_threats": [
+      "Orks - Savage fungoid warriors",
+      "Tyranids - Galactic locusts",
+      "Eldar - Ancient psychic species",
+      "Tau - Technologically advanced Greater Good empire",
+      "Necrons - Ancient robotic beings awakening"
+    ],
+    "inquisition": {
+      "role": "Emperor's secret police",
+      "authority": "Can override most Imperial authority",
+      "relationship_to_rogue_traders": "Generally respect Warrant privileges when cooperation serves Imperial interests"
+    }
+  },
+  "current_crisis": {
+    "great_rift": {
+      "cause": "Destruction of Cadia during Abaddon's 13th Black Crusade",
+      "effect": "Galaxy-spanning Warp storm dividing Imperium in half",
+      "consequences": [
+        "Imperium Sanctus vs Imperium Nihilus division",
+        "Warp travel far more dangerous",
+        "Daemons manifest freely in many regions",
+        "Time distortions across the galaxy"
+      ]
+    },
+    "indomitus_crusade": {
+      "leader": "Roboute Guilliman",
+      "purpose": "Reunite divided Imperium and establish new supply lines",
+      "rogue_trader_role": "Traditional Imperial logistics cannot reach isolated regions"
+    },
+    "resource_crisis": {
+      "causes": "Galaxy-wide warfare and broken supply lines",
+      "effects": [
+        "Massive demand for basic supplies in isolated systems",
+        "Premium pricing for goods crossing Great Rift",
+        "Critical need for alternative supply networks"
+      ]
+    }
+  },
+  "key_locations": {
+    "hesperus_system": "Primary operational area for current mandate",
+    "terra": "Seat of Imperial power, location of Golden Throne",
+    "mars": "Adeptus Mechanicus homeworld, source of technology",
+    "eternal_vigil": "Dame Venecia's flagship - prototype long-range exploration Light Cruiser"
+  },
+  "ship_information": {
+    "flagship": "Eternal Vigil",
+    "class": "Prototype long-range exploration Light Cruiser",
+    "special_features": "Enhanced Warp drives and sensor arrays",
+    "crew_composition": "40% Former Knight House Retainers, 40% Imperial Navy Personnel, 20% Questionable Recruits",
+    "modifications_needed": "Warp-resistant hull plating, enhanced Gellar fields, Knight deployment systems"
+  },
+  "dynasty_mandate": {
+    "primary_missions": [
+      "Supply Line Establishment - maintain supply lines for Crusade forces in dangerous regions",
+      "Asset Recovery & Cleansing - cleanse corruption and salvage Imperial assets",
+      "Technology Acquisition - acquire Warp-resistant tech and psyker artifacts",
+      "Military Recruitment - recruit from Warp exposure survivors and unsanctioned psykers"
+    ],
+    "special_authority": [
+      "Trade beyond Imperial borders",
+      "Negotiate with xenos species", 
+      "Recruit from any Imperial organization",
+      "Execute final wishes of Space Marines in Warp-touched regions"
+    ]
+  },
+  "game_mechanics": {
+    "system_name": "Vitality RPG System (Warhammer 40K)",
+    "core_mechanics": [
+      "Dynasty resource management",
+      "Warp travel and corruption risks",
+      "Authority and reputation systems",
+      "Trade and profit factor",
+      "Crew morale and loyalty"
+    ]
+  },
+  "session_continuity": {
+    "recent_major_events": [
+      "Dame Venecia received mandate from Guilliman",
+      "Crew assembled for Hesperus System mission",
+      "Initial deployment to establish operations"
+    ],
+    "ongoing_threads": [
+      "Establishing supply lines in Hesperus System",
+      "Managing diverse crew dynamics",
+      "Balancing Imperial doctrine with practical necessities",
+      "Investigating potential assets and threats in the system",
+      "Building dynasty resources and reputation"
+    ]
+  }
+}

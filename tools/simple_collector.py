@@ -13,7 +13,7 @@ import sys
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'discord_bot'
+DEFAULT_PRESET = 'discord_bot_data'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude

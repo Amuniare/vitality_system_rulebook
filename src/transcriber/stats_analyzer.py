@@ -1,33 +1,21 @@
-# <<< MODIFIED SCRIPT: stats_analyzer.py >>>
-# This script analyzes existing session transcripts to generate statistics.
-# It now includes player mapping for "amuniare" and derived engagement stats.
-
+"""
+Session statistics analyzer using shared character mapping
+"""
 from pathlib import Path
 import json
 from collections import defaultdict
 import re
+from character_mapping import ROGUE_TRADER_PLAYER_MAPPING
 
-# --- Configuration ---
-# This should match the CAMPAIGN_NAME in your transcriber.py
-CAMPAIGN_NAME = "mutants"
+# Configuration
+CAMPAIGN_NAME = "rogue_trader"
 
-# --- Player Mapping ---
-# Map Discord usernames (from the logs) to a canonical player name.
-# This handles cases where players change names or have multiple accounts.
-# Any author name from the logs NOT in this map will be treated as their own player.
-PLAYER_MAPPING = {
-    "bipolarfrenchie": "Nick",
-    "syrjayko": "Synth",
-    "sexissinful": "Pandora",
-    "diegoslowing02": "Marquis",
-    "jubbuh": "Jubb",
-    "amuniare": "Trent" # <<< ADDED THIS MAPPING
-    # "SeaVoice" and "uristmcvoice" are not in the map and will appear as themselves.
-}
+# Convert character mapping to legacy format for stats
+PLAYER_MAPPING = {k: v['canonical_name'] for k, v in ROGUE_TRADER_PLAYER_MAPPING.items()}
 
 class StatsAnalyzer:
     def __init__(self):
-        """Initializes the analyzer and finds the correct paths."""
+        """Initialize analyzer and find correct paths"""
         current_dir = Path.cwd()
         if (current_dir / "all_data").exists():
             base_dir = current_dir
@@ -44,7 +32,7 @@ class StatsAnalyzer:
         print(f"📂 Looking for session files in: {self.sessions_dir}")
 
     def analyze_all_sessions(self):
-        """Finds all session files, analyzes them, and saves the stats."""
+        """Find all session files, analyze them, and save stats"""
         session_files = sorted(self.sessions_dir.glob("session-*.txt"))
         
         if not session_files:
@@ -75,11 +63,10 @@ class StatsAnalyzer:
         engagement_stats = self._calculate_engagement_stats(overall_stats, session_stats)
         
         self.display_stats(session_stats, overall_stats, engagement_stats)
-        
         self.save_stats_to_tracker(session_stats, overall_stats, engagement_stats)
 
     def _calculate_overall_stats(self, session_stats):
-        """Aggregates stats from all sessions into a total."""
+        """Aggregate stats from all sessions"""
         overall = defaultdict(lambda: {'messages': 0, 'words': 0})
         for session_data in session_stats.values():
             for author, data in session_data.items():
@@ -88,125 +75,86 @@ class StatsAnalyzer:
         return dict(overall)
 
     def _calculate_engagement_stats(self, overall_stats, session_stats):
-        """Calculates sessions attended and average contributions."""
-        engagement = defaultdict(dict)
-        player_sessions = defaultdict(set)
-
-        # First, find out which sessions each player participated in
-        for session_name, authors in session_stats.items():
-            for author in authors.keys():
-                player_sessions[author].add(session_name)
+        """Calculate sessions attended and average contributions"""
+        engagement = {}
+        total_sessions = len(session_stats)
         
-        # Now calculate the derived stats for each player
-        for player, total_data in overall_stats.items():
-            sessions_attended = len(player_sessions.get(player, []))
-            
-            if sessions_attended > 0:
-                avg_messages = total_data['messages'] / sessions_attended
-                avg_words = total_data['words'] / sessions_attended
-            else: # Avoid division by zero
-                avg_messages = 0
-                avg_words = 0
+        for player in overall_stats:
+            sessions_attended = sum(1 for session in session_stats.values() if player in session)
+            avg_messages = overall_stats[player]['messages'] / sessions_attended if sessions_attended > 0 else 0
+            avg_words = overall_stats[player]['words'] / sessions_attended if sessions_attended > 0 else 0
             
             engagement[player] = {
-                "sessions_attended": sessions_attended,
-                "avg_messages_per_session": round(avg_messages, 1),
-                "avg_words_per_session": round(avg_words, 1)
+                'sessions_attended': sessions_attended,
+                'attendance_rate': (sessions_attended / total_sessions) * 100 if total_sessions > 0 else 0,
+                'avg_messages_per_session': avg_messages,
+                'avg_words_per_session': avg_words
             }
-        return dict(engagement)
+        
+        return engagement
 
     def display_stats(self, session_stats, overall_stats, engagement_stats):
-        """Prints all collected statistics in formatted tables."""
-        print("\n" + "="*60)
-        print("📊 OVERALL CAMPAIGN STATISTICS")
-        print("="*60)
+        """Display comprehensive statistics"""
+        print(f"\n" + "="*80)
+        print(f"📊 SESSION STATISTICS REPORT - {CAMPAIGN_NAME.upper()}")
+        print(f"="*80)
         
-        if not overall_stats:
-            print("No data to generate stats.")
-            return
-
-        sorted_players = sorted(overall_stats.items(), key=lambda item: item[1]['messages'], reverse=True)
-
-        print(f"{'Player':<25} | {'Total Messages':>15} | {'Total Words':>15}")
-        print("-" * 60)
+        print(f"\n📋 OVERALL STATISTICS:")
+        print(f"{'Player':<40} {'Messages':<10} {'Words':<10} {'Avg Words/Msg':<15}")
+        print("-" * 80)
         
-        total_messages = 0
-        total_words = 0
-
-        for player, data in sorted_players:
-            print(f"{player:<25} | {data['messages']:>15,} | {data['words']:>15,}")
-            total_messages += data['messages']
-            total_words += data['words']
-
-        print("-" * 60)
-        print(f"{'TOTAL':<25} | {total_messages:>15,} | {total_words:>15,}")
+        sorted_players = sorted(overall_stats.items(), key=lambda x: x[1]['messages'], reverse=True)
         
-        # --- New Player Engagement Section ---
-        print("\n" + "="*85)
-        print("PLAYER ENGAGEMENT (AVERAGES PER SESSION ATTENDED)")
-        print("="*85)
+        for player, stats in sorted_players:
+            avg_words_per_msg = stats['words'] / stats['messages'] if stats['messages'] > 0 else 0
+            print(f"{player:<40} {stats['messages']:<10} {stats['words']:<10} {avg_words_per_msg:<15.1f}")
         
-        print(f"{'Player':<25} | {'Sessions Attended':>20} | {'Avg Msgs/Session':>18} | {'Avg Words/Session':>18}")
-        print("-" * 85)
-
-        for player, data in sorted_players:
-            eng_data = engagement_stats.get(player, {})
-            sessions = eng_data.get('sessions_attended', 0)
-            avg_msgs = eng_data.get('avg_messages_per_session', 0)
-            avg_words = eng_data.get('avg_words_per_session', 0)
-            print(f"{player:<25} | {sessions:>20,} | {avg_msgs:>18,.1f} | {avg_words:>18,.1f}")
-
-        print("-" * 85)
+        print(f"\n📈 ENGAGEMENT STATISTICS:")
+        print(f"{'Player':<40} {'Sessions':<10} {'Attendance':<12} {'Avg Msg/Session':<16}")
+        print("-" * 80)
         
-        # --- Per Session Breakdown ---
-        for session_name, author_stats in session_stats.items():
-            print(f"\n--- {session_name.replace('-', ' ').title()} Statistics ---")
+        for player, stats in sorted_players:
+            engagement = engagement_stats[player]
+            print(f"{player:<40} {engagement['sessions_attended']:<10} "
+                  f"{engagement['attendance_rate']:<11.1f}% {engagement['avg_messages_per_session']:<16.1f}")
+        
+        print(f"\n📝 SESSION BREAKDOWN:")
+        for session_name in sorted(session_stats.keys()):
+            print(f"\n{session_name}:")
+            session_data = session_stats[session_name]
+            session_sorted = sorted(session_data.items(), key=lambda x: x[1]['messages'], reverse=True)
             
-            sorted_authors = sorted(author_stats.items(), key=lambda item: item[1]['messages'], reverse=True)
-            
-            print(f"{'Player':<25} | {'Messages':>10} | {'Words':>10}")
-            print("-" * 50)
-
-            session_total_messages = 0
-            session_total_words = 0
-            for author, data in sorted_authors:
-                print(f"{author:<25} | {data['messages']:>10,} | {data['words']:>10,}")
-                session_total_messages += data['messages']
-                session_total_words += data['words']
-
-            print("-" * 50)
-            print(f"{'SESSION TOTAL':<25} | {session_total_messages:>10,} | {session_total_words:>10,}")
-        print("\n" + "="*60)
+            for player, stats in session_sorted:
+                print(f"  {player:<35} {stats['messages']:>3} messages, {stats['words']:>4} words")
 
     def save_stats_to_tracker(self, session_stats, overall_stats, engagement_stats):
-        """Loads the tracker, adds all stats, and saves it back."""
+        """Save statistics to the session tracker file"""
         tracker_file = self.campaign_dir / "session_tracker.json"
         
-        if not tracker_file.exists():
-            print(f"⚠️ Tracker file not found at {tracker_file}. Creating a new one with stats.")
-            data = {}
+        # Load existing tracker or create new
+        if tracker_file.exists():
+            with open(tracker_file, 'r') as f:
+                tracker_data = json.load(f)
         else:
-            try:
-                with open(tracker_file, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-            except json.JSONDecodeError:
-                print(f"⚠️ Could not decode JSON from {tracker_file}. Creating a new one.")
-                data = {}
-
-        data['statistics'] = session_stats
-        data['overall_stats'] = overall_stats
-        data['engagement_stats'] = engagement_stats
+            tracker_data = {}
         
-        try:
-            with open(tracker_file, 'w', encoding='utf-8') as f:
-                json.dump(data, f, indent=2, sort_keys=True)
-            print(f"✅ Statistics successfully saved to {tracker_file}")
-        except Exception as e:
-            print(f"❌ Error saving stats to tracker file: {e}")
+        # Add statistics
+        tracker_data['statistics'] = {
+            'overall_stats': overall_stats,
+            'engagement_stats': engagement_stats,
+            'total_sessions_analyzed': len(session_stats),
+            'last_analysis': str(Path().cwd())
+        }
+        
+        # Save updated tracker
+        with open(tracker_file, 'w') as f:
+            json.dump(tracker_data, f, indent=2)
+        
+        print(f"\n💾 Statistics saved to: {tracker_file}")
 
-
-if __name__ == "__main__":
+def main():
     analyzer = StatsAnalyzer()
     analyzer.analyze_all_sessions()
-    print("\n🏁 Analysis complete!")
-    input("Press Enter to close...")
+
+if __name__ == "__main__":
+    main()

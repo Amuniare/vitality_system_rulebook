@@ -37,7 +37,7 @@ When Roboute Guilliman summoned hundreds of Rogue Traders to Terra, he tasked th
 ## SHIP & FLEET INFORMATION
 
 **Flagship: "Eternal Vigil"**  
-Prototype long-range exploration cruiser with enhanced Warp drives and sensor arrays. Gifted by the High Lord, still under field testing conditions.
+Prototype long-range exploration Light Cruiser with enhanced Warp drives and sensor arrays. Gifted by the High Lord, still under field testing conditions.
 
 **Ship Modifications to Acquire:** Warp-resistant hull plating and enhanced Gellar fields. Knight deployment systems for personal combat suit integration.
 
