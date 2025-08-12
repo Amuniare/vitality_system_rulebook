@@ -7,7 +7,7 @@ import unittest
 import time
 import logging
 from unittest.mock import MagicMock
-from chunking_utils import SessionChunker, ChunkingTimeoutError, ChunkingProgressError
+from ..core.chunking_engine import SessionChunker, ChunkingTimeoutError, ChunkingProgressError
 
 
 class TestChunkingEdgeCases(unittest.TestCase):

@@ -3,7 +3,7 @@
 Simple test to verify chunking fixes work for real-world scenarios
 """
 import time
-from chunking_utils import SessionChunker, ChunkingTimeoutError, ChunkingProgressError
+from ..core.chunking_engine import SessionChunker, ChunkingTimeoutError, ChunkingProgressError
 
 
 def test_large_realistic_session():

@@ -5,8 +5,13 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import json
 import logging
-from ai_processors import ProcessingPipeline
-from diagnostic_utils import ContentAnalyzer
+import sys
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from ai.ai_pipeline import AIPipeline
+from processing.content_analyzer import ContentAnalyzer
 
 class SessionTester:
     """Utilities for testing and validating session processing"""
@@ -57,7 +62,7 @@ class SessionTester:
         
         # Initialize pipeline
         try:
-            pipeline = ProcessingPipeline(str(self.campaign_dir.parent), campaign_name="rogue_trader")
+            pipeline = AIPipeline(str(self.campaign_dir.parent), campaign_name="rogue_trader")
         except Exception as e:
             print(f"❌ Failed to initialize pipeline: {e}")
             return

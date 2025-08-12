@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 from collections import defaultdict
 import re
-from character_mapping import ROGUE_TRADER_PLAYER_MAPPING
+from processing.speaker_mapper import ROGUE_TRADER_PLAYER_MAPPING
 
 # Configuration
 CAMPAIGN_NAME = "rogue_trader"

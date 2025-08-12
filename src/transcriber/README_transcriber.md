@@ -95,19 +95,19 @@ DISCORD_TOKEN=your_discord_token_here  # Optional, for live Discord import
 
 ```bash
 # Stage 2 only: Fast Python processing (no AI calls)
-python discord_transcriber.py --python-only --sessions "1-5"
+python discord_transcriber_new.py --python-only --sessions "1-5"
 
 # Stage 3 only: AI processing of existing processed files
-python discord_transcriber.py --ai-only --sessions "1-5"
+python discord_transcriber_new.py --ai-only --sessions "1-5"
 
 # Full pipeline: Both stages
-python discord_transcriber.py --full-pipeline --sessions "1-5"
+python discord_transcriber_new.py --full-pipeline --sessions "1-5"
 
 # Import new Discord sessions
-python discord_transcriber.py --import-discord
+python discord_transcriber_new.py --import-discord
 
 # Test mode for development/debugging
-python discord_transcriber.py --test-mode --test-session 1
+python discord_transcriber_new.py --test-mode --test-session 1
 ```
 
 ### **Command Reference**
