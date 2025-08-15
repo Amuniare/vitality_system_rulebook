@@ -1,4 +1,4 @@
-# Prestige Class
+# Prestige Class - Given
 
 ## Cinder
 
@@ -14,6 +14,24 @@ Commands the interaction between fire, lightning, and atmospheric pressure to cr
 
 #### Combat Feature
 **Quick Action - Perfect Conditions:** You and one adjacent ally immediately take a Hasten Action (move up to full Movement Speed again).
+
+---
+
+### Demolitions Expert
+**Session #:** 3
+**Dice Roll:** 81 on d100
+
+#### Feat 
+Brother Rainard eliminated large groups of enemies with improvised explosives crafted from mining equipment.
+
+#### Utility Feature
+Can scavenge materials to create breach charges and grenades from battlefield debris.
+
+#### Combat Feature
+You have a single grenade. Once per combat, when used, you can make your ranged attack roll against all creatures in a 3 Sp Burst instead. You don't suffer the normal downsides of making an AOE attack.
+
+
+---
 
 
 
@@ -34,6 +52,29 @@ Gain the perception filter feature and can use mind games as the roll for stealt
 **Upgraded Version:** Works in plain sight if you beat DC 10 + (2x Highest enemy tier)
 
 ---
+
+
+## Dame Venecia
+
+
+# Prestige Class - Created
+
+
+## Faust
+
+### Empower
+**Session #:** 4  
+**Dice Roll:** 41
+
+**Feat**  
+Using mind games with mental/time descriptor to enhance allies by showing them glimpses of successful outcomes.
+
+**Utility Feature**  
+Once per session, after an ally makes a utility check, but before the outcome is determined, you can give [Tier] bonus to that ally on that check.
+
+**Combat Feature**  
+**Quick Action - Assist:** Gain assist as a quick action.  
+**Upgraded Version:** You can apply the assist action to ALL controlled enemies within [Tier] Radius.
 
 
 ---
