@@ -28,10 +28,3 @@ Inspired by 70s sci-fi matte paintings & Warhammer codex covers
 4. Phrasing for Prompts
     "Vibrant, richly detailed 70s sci-fi concept art of a massive Rogue Trader starship in deep space. Gothic silhouette with cathedral spires, crimson and gold ornamentation, glowing stained glass, and navy blue hull. Cosmic Warp background in purples and yellow light. Stylized and surreal, matte-painted texture, hand-drawn linework, reminiscent of vintage Warhammer codex art."
 
-New-Item src\scriptcards\vale_harlequin.txt
-New-Item src\scriptcards\venecia_warrant.txt
-New-Item src\scriptcards\rainard_grimdark.txt
-New-Item src\scriptcards\cinder_flame.txt
-New-Item src\scriptcards\faust_cyber.txt
-New-Item src\scriptcards\ines_sacred.txt
-New-Item src\scriptcards\

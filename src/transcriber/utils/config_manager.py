@@ -7,7 +7,12 @@ from pathlib import Path
 from typing import Dict, Any, Optional, Union
 import json
 import logging
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv
+    DOTENV_AVAILABLE = True
+except ImportError:
+    DOTENV_AVAILABLE = False
 
 
 class ConfigManager:
@@ -16,8 +21,11 @@ class ConfigManager:
     def __init__(self, config_dir: Optional[Path] = None):
         self.logger = logging.getLogger(__name__)
         
-        # Load environment variables
-        load_dotenv()
+        # Load environment variables if dotenv is available
+        if DOTENV_AVAILABLE:
+            load_dotenv()
+        else:
+            self.logger.warning("python-dotenv not available - using system environment variables only")
         
         # Set up config directory
         if config_dir:

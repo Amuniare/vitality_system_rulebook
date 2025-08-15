@@ -35,19 +35,6 @@ Gain the perception filter feature and can use mind games as the roll for stealt
 
 ---
 
-### Empower
-**Session #:** 4  
-**Dice Roll:** 41
-
-**Feat**  
-Using mind games with mental/time descriptor to enhance allies by showing them glimpses of successful outcomes.
-
-**Utility Feature**  
-Once per session, after an ally makes a utility check, but before the outcome is determined, you can give [Tier] bonus to that ally on that check.
-
-**Combat Feature**  
-**Quick Action - Assist:** Gain assist as a quick action.  
-**Upgraded Version:** You can apply the assist action to ALL controlled enemies within [Tier] Radius.
 
 ---
 

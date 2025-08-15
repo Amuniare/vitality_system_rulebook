@@ -13,6 +13,12 @@ from typing import List, Dict, Optional
 import sys
 from pathlib import Path
 
+from .ai.ai_pipeline import AIPipeline
+from .core.session_loader import SessionLoader
+from .core.text_processor import TextProcessor
+from .utils.file_utils import FileManager
+from .utils.logging_utils import TranscriberLogger
+
 # Add the parent directory to sys.path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -25,15 +31,9 @@ class ModularTranscriber:
     def __init__(self, config_path: str = "."):
         self.config_path = Path(config_path)
         
-        # Initialize basic logger first
-        self.logger = logging.getLogger(__name__)
-        if not self.logger.handlers:
-            # Set up basic console logging if no handlers exist
-            handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
-            self.logger.setLevel(logging.INFO)
+        # Set up logging first
+        self._setup_logging()
+        self.logger = logging.getLogger('ModularTranscriber')
         
         # Lazy-load heavy components
         self._config = None
@@ -92,16 +92,14 @@ class ModularTranscriber:
     
     def _setup_logging(self):
         """Set up logging system"""
-        log_level = getattr(logging, self.config.get('logging.level', 'INFO').upper())
-        log_file = None
-        
-        if self.config.get('logging.file_output', True):
-            log_file = self.config_path / 'logs' / 'transcriber.log'
+        # Use default settings for initial setup
+        log_level = logging.INFO
+        log_file = self.config_path / 'logs' / 'transcriber.log'
         
         TranscriberLogger.setup_logging(
             level=log_level,
             log_file=log_file,
-            console_output=self.config.get('logging.console_output', True)
+            console_output=True
         )
     
     def _setup_data_directories(self):

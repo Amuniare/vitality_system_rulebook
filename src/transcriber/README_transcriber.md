@@ -94,6 +94,9 @@ DISCORD_TOKEN=your_discord_token_here  # Optional, for live Discord import
 ### **New Command Structure**
 
 ```bash
+
+ python -m src.transcriber.discord_transcriber_new --historical
+
 # Stage 2 only: Fast Python processing (no AI calls)
 python discord_transcriber_new.py --python-only --sessions "1-5"
 

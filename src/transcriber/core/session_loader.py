@@ -2,13 +2,19 @@
 Core module for loading and managing session data from Discord
 No AI dependencies - pure Python processing
 """
-import discord
 import asyncio
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 import json
 from typing import Dict, List, Optional
 import logging
+
+try:
+    import discord
+    DISCORD_AVAILABLE = True
+except ImportError:
+    discord = None
+    DISCORD_AVAILABLE = False
 
 
 class SessionLoader:
@@ -21,18 +27,23 @@ class SessionLoader:
         self.session_gap_hours = session_gap_hours
         self.logger = logging.getLogger(__name__)
         
-        # Set up Discord client
-        intents = discord.Intents.default()
-        intents.message_content = True
-        intents.guild_messages = True
-        self.client = discord.Client(intents=intents)
-        self.ready = asyncio.Event()
-        
-        # Set up Discord event handlers
-        @self.client.event
-        async def on_ready():
-            self.logger.info(f'Discord client logged in as {self.client.user}')
-            self.ready.set()
+        # Set up Discord client only if discord is available
+        if DISCORD_AVAILABLE:
+            intents = discord.Intents.default()
+            intents.message_content = True
+            intents.guild_messages = True
+            self.client = discord.Client(intents=intents)
+            self.ready = asyncio.Event()
+            
+            # Set up Discord event handlers
+            @self.client.event
+            async def on_ready():
+                self.logger.info(f'Discord client logged in as {self.client.user}')
+                self.ready.set()
+        else:
+            self.client = None
+            self.ready = None
+            self.logger.warning("Discord library not available - Discord functionality disabled")
     
     def setup_directories(self):
         """Create necessary directory structure"""
@@ -73,6 +84,14 @@ class SessionLoader:
     
     async def fetch_messages_from_discord(self, since_timestamp: Optional[datetime] = None) -> List[dict]:
         """Fetch messages from Discord channel"""
+        if not DISCORD_AVAILABLE:
+            self.logger.error("Discord library not available - cannot fetch messages")
+            return []
+        
+        if not self.client or not self.ready:
+            self.logger.error("Discord client not initialized")
+            return []
+        
         await self.ready.wait()
         
         try:
@@ -203,7 +222,10 @@ class SessionLoader:
     
     async def close_discord_connection(self):
         """Close Discord client connection"""
-        try:
-            await self.client.close()
-        except Exception as e:
-            self.logger.error(f"Error closing Discord connection: {e}")
+        if DISCORD_AVAILABLE and self.client:
+            try:
+                await self.client.close()
+            except Exception as e:
+                self.logger.error(f"Error closing Discord connection: {e}")
+        else:
+            self.logger.debug("No Discord connection to close")
