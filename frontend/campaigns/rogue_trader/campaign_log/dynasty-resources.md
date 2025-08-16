@@ -44,20 +44,17 @@
 - **Expanded Barracks**: Secondary weapon batteries replaced with death world quarters
 - **Enhanced Life Support**: Systems adapted for 29,500 total personnel capacity
 
-### **Keywords** (Choose 6):
+### **Keywords**:
 - **Storm Psyker Weather Command**: Orbital weather manipulation and atmospheric warfare systems
 - **Bone Hewer War Chambers**: Rapid deployment pods and close-quarters battle preparation facilities
 - **Griffin Launch Bays**: Custom hangar systems for aerial cavalry
-- **Ash Walker Tech Forges**: Advanced modification workshops for captured equipment and custom weapons
-- **Deep Void Reconnaissance**: Extended-range scanner networks and intelligence coordination systems
 - **Silent Running**: Stealth systems for covert operations and infiltration
 - **Enhanced Maneuverability**: Superior speed and agility for hit-and-run tactics
-- **Extended Supply Capacity**: Increased storage for long-range operations
 - **Environmental Adaptation**: Hostile atmosphere operations and extreme condition deployment
 
 
 
-# Dynasty Resources & Fleet Assets (Corrected)
+# Dynasty Resources & Fleet Assets
 
 ## **Special Resources**
 

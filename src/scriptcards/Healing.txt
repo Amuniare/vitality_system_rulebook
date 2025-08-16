@@ -1,0 +1,73 @@
+!scriptcard {{
+  --/| ==========HEALING ABILITY==========
+    +++snlib+++
+    --#sourcetoken|@{character_id}
+
+  --/| ###################################################################################################
+  --/| Formatting (using same style as your attack script)
+  --/| ###################################################################################################
+
+    --#overridetemplate| paper
+    --#hideTitleCard| 0
+    
+    --#titleCardBackground| #000000
+    --#titleFontFace| Quicksand
+    --#titleFontColor| #00ff00
+    --#titleFontSize| 1.4em
+    --#titleCardBottomBorder| 2px solid #00ff00
+    
+    --#evenRowBackground| #000000
+    --#oddRowBackground| #000000
+    --#bodyFontFace| Quicksand
+    --#bodyFontSize| 14px
+    --#evenRowFontColor| #ffffff
+    --#oddRowFontColor| #ffffff
+    --#tableBorder| 2px solid #00ff00
+    --#tableShadow| 0px 0px 15px #00ff00
+    
+    --#noRollHighlight| 1
+
+  --/| ==========BASIC VARIABLES==========
+    --&CharacterName| [*S:character_name]
+    --#title| [&CharacterName]'s Healing
+    --#leftsub| Restore Health
+    
+    --~count|array;getcount;SC_SelectedTokens
+    --#rightsub| healing [&count] target(s)
+
+  --/| ==========HEALING CALCULATION==========
+    --=HealingRoll| 30
+    
+    --~testvar|array;getfirst;SC_SelectedTokens
+    --:healloop|
+    
+    --+| [c][b] Healing [*[&testvar]:character_name] [/b] [/c]
+    
+    --+Healing Roll| [r] [$HealingRoll] [/r]
+    
+    --=CurrentHP| [*[&testvar]:t-bar3_value]
+    --=MaxHP| [*[&testvar]:t-bar3_max]
+    --=MissingHP| [$MaxHP] - [$CurrentHP]
+    
+    --?[$HealingRoll] -le [$MissingHP]|=ActualHealing;[$HealingRoll]
+    --?[$HealingRoll] -gt [$MissingHP]|=ActualHealing;[$MissingHP]
+    
+    --?[$ActualHealing] -lt 1|NoHealing
+    
+    -->LibSN_APPLY_DAMAGE_OR_HEALING|[&testvar];3;[$ActualHealing];0;0;0
+    -->LibSN_REMOVE_STATUS_MARKER_SET|[&testvar];dead
+    
+    --+Healing Applied| [r] [$ActualHealing] HP [/r]
+    --+|[br]
+    
+    --:ContinueLoop|
+    --~testvar|array;getnext;SC_SelectedTokens
+    --?[&testvar] -ne ArrayError|healloop
+    
+    --X|
+    
+    --:NoHealing|
+    --+| [*[&testvar]:character_name] is already at full health!
+    --+|[br]
+    -->ContinueLoop|
+}}

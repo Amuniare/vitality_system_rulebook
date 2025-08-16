@@ -330,7 +330,7 @@
     --~|array;define;myarray;
 
     --~count|array;getcount;SC_SelectedTokens
-    --#rightsub|vs. [&count] selected target(s)
+    --#rightsub| vs. [&count] selected target(s)
 
     --~testvar|array;getfirst;SC_SelectedTokens
     --:loop|
@@ -415,7 +415,8 @@
 
 
     --?[&MarkerSetupExists] -eq 0|PassSetupDefenses
-      --&AccuracyRollString|+ +[*S:char_tier]*2 [Setup]
+      --=SetupAmount| [*S:char_tier]*2 [Setup]
+      --&AccuracyRollString|+ +[$SetupAmount] [Setup]
       -->LibSN_REMOVE_STATUS_MARKER_SET|[&testvar];archery-target
       --&AttackNotes|+ Bonus from Setup Enemy,
     --:PassSetupDefenses|

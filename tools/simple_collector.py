@@ -13,7 +13,7 @@ import sys
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'rogue_trader'
+DEFAULT_PRESET = 'discord_bot_data'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude
@@ -32,61 +32,17 @@ PRESETS = {
     ],
     
     'root_modern_app': [
-        # Root files + the new modernApp
         '--root',
         'modernApp/',
         'tools/build_game_data.py'
     ],
     
-    'root_modern_app_minus_partials': [
-        # Example of exclusion: include modernApp but exclude the partials
-        '--root',
-
-        'modernApp/',
-        '!modernApp/data/unified-game-data.json',
-        '!modernApp/css/modern-app.css',
-        'tools/build_game_data.py',
-        'tools/modern_css_combine.py',
-        'frontend/rules/rulebook.md',
-
-    ],
 
 
-    'root_modern_app_minus_partials_plus_tests': [
-        # Example of exclusion: include modernApp but exclude the partials
-        '--root',
-
-        'modernApp/',
-        '!modernApp/data/partials/',
-        'tests/',
-        '!tests/node_modules/',
-        '!tests/output/',
-
-    ],
 
 
-    'root_modern_app_with_charater_builder_minus_partials': [
-        '--root',
-        'modernApp/',
-        '!modernApp/data/partials/',
-        'frontend/character-builder/',
-        '!frontend/character-builder/data/',
-    ],
 
-    # --- DEPRECATED PRESETS (kept for reference but point to archive) ---
-    'root_character_builder': [
-        '--root',
-        'frontend/character-builder/',
-        'frontend/rules/rulebook.md'
-    ],
-    'root_modern_character_builder': [
-        '--root',
-        'archive/character-builder/',
-        'frontend/rules/rulebook.md',
-        'modernApp/',
-        'tools/build_game_data.py'
-    ],
-    # --- END DEPRECATED ---
+
 
     'data_transfer': [
         'frontend/rules/rulebook.md',
@@ -124,6 +80,14 @@ PRESETS = {
         'frontend/campaigns/rogue_trader'
     ],
 
+
+    'character_builder': [
+        'all_data/characters/extracted/',
+        'all_data/characters/testing/',
+        'frontend/rules/rulebook.md'
+    ],
+
+
     'scriptcards': [
         'src/scriptcards',
     ],
@@ -135,7 +99,7 @@ PRESETS = {
     
     'discord_bot_data': [
         'src/transcriber/',
-        'all_data/rogue_trader/',
+        '--rogue_trader',
         '--root',
     ]
 
