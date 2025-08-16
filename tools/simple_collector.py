@@ -98,7 +98,7 @@ PRESETS = {
     ],
     
     'discord_bot_data': [
-        'src/transcriber/',
+        'all_data/rogue_trader/sessions/cleaned/',
         '--rogue_trader',
         '--root',
     ]

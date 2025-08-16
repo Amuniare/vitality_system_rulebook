@@ -48,7 +48,7 @@ class ConfigManager:
         return {
             'discord': {
                 'token_env_var': 'DISCORD_TOKEN',
-                'channel_id': None,  # Must be set by user
+                'channel_id_env_var': 'DISCORD_CHANNEL_ID',
                 'session_gap_hours': 12,
                 'message_batch_size': 1000
             },
@@ -166,13 +166,17 @@ class ConfigManager:
                 self.logger.error(f"Discord token not found in environment variable: {token_var}")
                 return False
             
-            channel_id = self.get('discord.channel_id')
-            if not channel_id:
-                self.logger.error("Discord channel ID not configured")
+            channel_id_var = self.get('discord.channel_id_env_var')
+            channel_id_str = self.get_env_var(channel_id_var)
+            
+            if not channel_id_str:
+                self.logger.error(f"Discord channel ID not found in environment variable: {channel_id_var}")
                 return False
             
-            if not isinstance(channel_id, int):
-                self.logger.error("Discord channel ID must be an integer")
+            try:
+                channel_id = int(channel_id_str)
+            except ValueError:
+                self.logger.error(f"Discord channel ID must be a valid integer: {channel_id_str}")
                 return False
             
             return True
@@ -265,9 +269,13 @@ class ConfigManager:
     
     def get_discord_config(self) -> Dict[str, Any]:
         """Get Discord-specific configuration"""
+        # Get channel_id from environment variable and convert to int
+        channel_id_str = self.get_env_var(self.get('discord.channel_id_env_var'))
+        channel_id = int(channel_id_str) if channel_id_str else None
+        
         return {
             'token': self.get_env_var(self.get('discord.token_env_var')),
-            'channel_id': self.get('discord.channel_id'),
+            'channel_id': channel_id,
             'session_gap_hours': self.get('discord.session_gap_hours'),
             'message_batch_size': self.get('discord.message_batch_size')
         }

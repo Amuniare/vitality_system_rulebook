@@ -7,11 +7,18 @@ import logging
 
 # Rogue Trader Campaign Character Mapping
 ROGUE_TRADER_PLAYER_MAPPING = {
-    'trent': {
+    'amuniare': {
         'canonical_name': 'amuniare [GM/Cinder]',
         'character_name': 'Cinder (Celestine Vex)',
         'role': 'GM / Unsanctioned Pyromancer Psyker',
         'discord_username': 'amuniare',
+        'powers': 'Pyromancer abilities, GM control'
+    },
+    'trent': {
+        'canonical_name': 'Trent [GM/Cinder]',
+        'character_name': 'Cinder (Celestine Vex)',
+        'role': 'GM / Unsanctioned Pyromancer Psyker',
+        'discord_username': 'Trent',
         'powers': 'Pyromancer abilities, GM control'
     },
     'emperor\'s favorite princess': {
@@ -21,7 +28,7 @@ ROGUE_TRADER_PLAYER_MAPPING = {
         'discord_username': 'emperor\'s favorite princess',
         'powers': 'Erratic warp presence, powerful psychic abilities'
     },
-    'faust': {
+    '.phan10m': {
         'canonical_name': '.phan10m [Faust Gray]',
         'character_name': 'Faust Gray',
         'role': 'Nascent Psyker',
@@ -35,14 +42,14 @@ ROGUE_TRADER_PLAYER_MAPPING = {
         'discord_username': 'burn baby burn',
         'powers': 'Faith-based abilities, combat expertise'
     },
-    'nick': {
+    'bipolarfrenchie': {
         'canonical_name': 'bipolarfrenchie [Brother Rainard]',
         'character_name': 'Brother Rainard',
         'role': 'Ancient Warrior (Space Marine)',
         'discord_username': 'bipolarfrenchie',
         'powers': 'Superhuman combat abilities, ancient knowledge'
     },
-    'deven': {
+    'roathus': {
         'canonical_name': 'roathus [Sagoire]',
         'character_name': 'Sagoire',
         'role': 'Tech Priest Explorator',
@@ -55,6 +62,27 @@ ROGUE_TRADER_PLAYER_MAPPING = {
         'role': 'Drukhari Harlequin',
         'discord_username': 'jubb',
         'powers': 'Harlequin abilities, xenos knowledge'
+    },
+    'nick': {
+        'canonical_name': 'Nick [Brother Rainard]',
+        'character_name': 'Brother Rainard',
+        'role': 'Ancient Warrior (Space Marine)',
+        'discord_username': 'Nick',
+        'powers': 'Superhuman combat abilities, ancient knowledge'
+    },
+    'deven': {
+        'canonical_name': 'Deven [Sagoire]',
+        'character_name': 'Sagoire',
+        'role': 'Tech Priest Explorator',
+        'discord_username': 'Deven',
+        'powers': 'Tech manipulation, augmented abilities'
+    },
+    'faust': {
+        'canonical_name': 'Faust [Faust Gray]',
+        'character_name': 'Faust Gray',
+        'role': 'Nascent Psyker',
+        'discord_username': 'Faust',
+        'powers': 'Telekinesis, Time manipulation, Mental abilities'
     },
 }
 
@@ -76,12 +104,25 @@ class CharacterMapper:
         # Normalize the discord name for matching
         normalized_name = discord_name.lower().strip()
         
+        # Remove bracketed content like [gm/cinder] or [brother rainard]
+        # This handles cases where speakers include character names in brackets
+        base_name = re.sub(r'\s*\[.*?\]', '', normalized_name).strip()
+        
+        # Try exact match with original name
         if normalized_name in self.mapping:
             return self.mapping[normalized_name]
+            
+        # Try exact match with base name (no brackets)
+        if base_name in self.mapping:
+            return self.mapping[base_name]
         
         # Try partial matching for name variations
         for mapped_name, char_info in self.mapping.items():
+            # Check if mapped name is contained in the detected name or vice versa
             if mapped_name in normalized_name or normalized_name in mapped_name:
+                return char_info
+            # Also check base name without brackets
+            if mapped_name in base_name or base_name in mapped_name:
                 return char_info
         
         return None

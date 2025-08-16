@@ -25,7 +25,20 @@ class TextProcessor:
             content = self.remove_discord_artifacts(content)
             
             if content.strip():
-                transcript_lines.append(f"{author}: {content}")
+                # Check if this is a seavoice bot message with embedded speakers
+                if author.lower() == 'seavoice' and '**' in content:
+                    # Extract embedded speaker: "**Name**: message content"
+                    embedded_match = re.match(r'\*\*([^*]+)\*\*:\s*(.+)', content)
+                    if embedded_match:
+                        embedded_author = embedded_match.group(1).strip()
+                        embedded_content = embedded_match.group(2).strip()
+                        transcript_lines.append(f"{embedded_author}: {embedded_content}")
+                    else:
+                        # Fallback to original format if pattern doesn't match
+                        transcript_lines.append(f"{author}: {content}")
+                else:
+                    # Normal Discord message
+                    transcript_lines.append(f"{author}: {content}")
         
         return '\n'.join(transcript_lines)
     

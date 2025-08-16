@@ -56,6 +56,21 @@ ROGUE_TRADER_PLAYER_MAPPING = {
         'discord_username': 'jubb',
         'powers': 'Harlequin abilities, xenos knowledge'
     },
+    # Direct Discord username mappings (for mixed old/new format sessions)
+    '.phan10m': {
+        'canonical_name': '.phan10m [Faust Gray]',
+        'character_name': 'Faust Gray',
+        'role': 'Nascent Psyker',
+        'discord_username': '.phan10m',
+        'powers': 'Telekinesis, Time manipulation, Mental abilities'
+    },
+    'roathus': {
+        'canonical_name': 'roathus [Sagoire]',
+        'character_name': 'Sagoire',
+        'role': 'Tech Priest Explorator',
+        'discord_username': 'roathus',
+        'powers': 'Tech manipulation, augmented abilities'
+    },
 }
 
 class CharacterMapper:

@@ -167,8 +167,17 @@ class ModularTranscriber:
         """Transcribe sessions from Discord (Stage 1)"""
         self.logger.info("Starting session transcription from Discord")
         
+        
         try:
             self.session_loader.setup_directories()
+            
+            # Establish Discord connection first
+            self.logger.info("Establishing Discord connection...")
+            connected = await self.session_loader.connect_to_discord(timeout=30)
+            
+            if not connected:
+                self.logger.error("Failed to connect to Discord - aborting transcription")
+                return []
             
             if historical:
                 self.logger.info("Importing all historical sessions...")
@@ -192,18 +201,47 @@ class ModularTranscriber:
     
     async def _import_all_sessions(self) -> List[int]:
         """Import all historical sessions"""
-        messages = await self.session_loader.fetch_messages_from_discord()
+        self.logger.info("Starting import of all historical sessions...")
+        
+        try:
+            # Add timeout for message fetching (10 minutes)
+            messages = await asyncio.wait_for(
+                self.session_loader.fetch_messages_from_discord(
+                    include_bots=getattr(self, '_include_bots', False),
+                    debug_authors=getattr(self, '_debug_authors', False)
+                ), 
+                timeout=600.0
+            )
+            self.logger.info(f"Successfully fetched {len(messages)} messages from Discord")
+        except asyncio.TimeoutError:
+            self.logger.error("Message fetching timed out after 10 minutes")
+            return []
+        except Exception as e:
+            self.logger.error(f"Error fetching messages: {e}")
+            return []
+            
         if not messages:
+            self.logger.info("No messages found to import")
             return []
         
+        self.logger.info("Grouping messages into sessions...")
         sessions = self.session_loader.group_messages_into_sessions(messages)
+        self.logger.info(f"Found {len(sessions)} sessions to save: {list(sessions.keys())}")
+        
         saved_sessions = []
         
         for session_num, session_messages in sessions.items():
+            self.logger.info(f"Processing session {session_num} with {len(session_messages)} messages...")
             transcript = self.text_processor.format_session_transcript(session_messages)
+            self.logger.info(f"Generated transcript for session {session_num}: {len(transcript)} characters")
+            
             if self.session_loader.save_raw_session(session_num, transcript):
                 saved_sessions.append(session_num)
+                self.logger.info(f"✅ Successfully saved session {session_num}")
+            else:
+                self.logger.error(f"❌ Failed to save session {session_num}")
         
+        self.logger.info(f"Import complete! Saved {len(saved_sessions)} sessions: {saved_sessions}")
         return saved_sessions
     
     async def _transcribe_new_sessions(self) -> List[int]:
@@ -216,10 +254,19 @@ class ModularTranscriber:
             from datetime import datetime
             try:
                 since_timestamp = datetime.fromisoformat(last_timestamp.replace('Z', '+00:00'))
+                self.logger.info(f"Looking for Discord messages after: {since_timestamp}")
             except ValueError:
                 since_timestamp = None
+                self.logger.warning(f"Failed to parse last timestamp: {last_timestamp}")
+        else:
+            self.logger.info("No previous timestamp found - looking for all messages")
         
-        messages = await self.session_loader.fetch_messages_from_discord(since_timestamp)
+        messages = await self.session_loader.fetch_messages_from_discord(
+            since_timestamp,
+            include_bots=getattr(self, '_include_bots', False),
+            debug_authors=getattr(self, '_debug_authors', False)
+        )
+        self.logger.info(f"Found {len(messages)} new messages from Discord")
         if not messages:
             return []
         
@@ -514,10 +561,13 @@ def main():
     # Validation options
     parser.add_argument('--validate-config', action='store_true', help='Validate configuration only')
     parser.add_argument('--test-api', action='store_true', help='Test API connection only')
+    parser.add_argument('--reset-tracker', action='store_true', help='Reset session tracker to force import of all messages')
     
     # Test mode options
     parser.add_argument('--test-mode', action='store_true', help='Run in test mode with manual verification')
     parser.add_argument('--test-session', type=int, help='Specific session number to test')
+    parser.add_argument('--include-bots', action='store_true', help='Include bot/webhook messages (for debugging)')
+    parser.add_argument('--debug-authors', action='store_true', help='Show detailed author information for first 20 messages')
     
     args = parser.parse_args()
     
@@ -525,9 +575,23 @@ def main():
         # Initialize transcriber
         transcriber = ModularTranscriber(args.config)
         
-        if args.debug:
-            from utils.logging_utils import set_debug_mode
-            set_debug_mode(True)
+        # Default behaviors: debug on, include bots, show authors
+        transcriber._include_bots = True  # Always include bot messages 
+        transcriber._debug_authors = True  # Always show author info
+        
+        # Always enable debug mode
+        from utils.logging_utils import set_debug_mode
+        set_debug_mode(True)
+        
+        # Reset session tracker automatically if using --historical
+        if args.historical:
+            print("🔄 Auto-resetting session tracker for historical import...")
+            tracker_file = transcriber.data_dir / "session_tracker.json"
+            if tracker_file.exists():
+                tracker_file.unlink()
+                print(f"✅ Deleted {tracker_file}")
+            else:
+                print("ℹ️ No session tracker found to reset")
         
         # Configuration validation
         if args.validate_config:
@@ -623,11 +687,23 @@ def main():
         
     except KeyboardInterrupt:
         print("\n👋 Processing cancelled by user")
+        # Ensure any Discord connections are properly closed
+        try:
+            if hasattr(transcriber, 'session_loader'):
+                asyncio.run(transcriber.session_loader.close_discord_connection())
+        except Exception:
+            pass
     except Exception as e:
         print(f"\n❌ Processing failed: {e}")
         if args.debug:
             import traceback
             traceback.print_exc()
+        # Ensure any Discord connections are properly closed on error
+        try:
+            if hasattr(transcriber, 'session_loader'):
+                asyncio.run(transcriber.session_loader.close_discord_connection())
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
