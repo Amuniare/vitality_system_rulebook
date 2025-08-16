@@ -17,6 +17,8 @@ Commands the interaction between fire, lightning, and atmospheric pressure to cr
 
 ---
 
+## Brother Rainard
+
 ### Demolitions Expert
 **Session #:** 3
 **Dice Roll:** 81 on d100
@@ -55,6 +57,24 @@ Gain the perception filter feature and can use mind games as the roll for stealt
 
 
 ## Dame Venecia
+
+
+
+### Heroic Intervention
+**Session #:** 4  
+**Dice Roll:** Natural 20 (50+ damage)
+
+**Feat**  
+While low on HP, made a dramatic dash to save allies and delivered a devastating natural 20 attack that killed both abominations threatening the party.
+
+**Utility Feature**  
+You have an uncanny ability to arrive exactly when needed. Once per session, when an ally is in immediate non-combat danger or needs your aid, you may roll a Communication check to arrive just in the nick of time to aid them, regardless of distance or obstacles. The more distance or obstacles, the higher the DC.
+
+**Combat Feature**  
+Once per combat, if an ally would be reduced to 0 hp and the enemy doing that is within [Tier] range of you, you may use a reaction to take a full turn. If you defeat the enemy, their attack does not occur.
+
+
+
 
 
 # Prestige Class - Created
@@ -113,16 +133,4 @@ Once per combat as an action, you may make a Communication check. Any enemies wi
 
 ---
 
-### Heroic Intervention
-**Session #:** 4  
-**Dice Roll:** Natural 20 (50+ damage)
-
-**Feat**  
-While low on HP, made a dramatic dash to save allies and delivered a devastating natural 20 attack that killed both abominations threatening the party.
-
-**Utility Feature**  
-You have an uncanny ability to arrive exactly when needed. Once per session, when an ally is in immediate non-combat danger or needs your aid, you may roll a Communication check to arrive just in the nick of time to aid them, regardless of distance or obstacles. The more distance or obstacles, the higher the DC.
-
-**Combat Feature**  
-Once per combat, if an ally would be reduced to 0 hp and is within [Tier] range of you, you may use a reaction to take a full turn. If you defeat the enemy, their attack does not occur.
 
