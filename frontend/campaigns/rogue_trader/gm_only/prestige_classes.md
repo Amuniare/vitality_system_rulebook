@@ -74,7 +74,24 @@ You have an uncanny ability to arrive exactly when needed. Once per session, whe
 Once per combat, if an ally would be reduced to 0 hp and the enemy doing that is within [Tier] range of you, you may use a reaction to take a full turn. If you defeat the enemy, their attack does not occur.
 
 
+---
 
+# Vale
+
+## **Warp-touched Assassin**
+**Session #:** 5  
+**Dice Roll:** Double Natural 20
+
+**Feat**  
+After being touched by the warp through death, learned to manipulate the flow of time and space. When a phasing Necron Wraith seemed untouchable, used warp-enhanced instincts to predict exactly when it would solidify, striking through its skull at the perfect moment.
+
+**Utility Feature**  
+You can step slightly "outside" normal time flow to observe situations without being noticed. Once per session, you can spend 5 minutes walking around and learn complete details about a location.
+
+**Combat Feature**  
+When you roll for an attack, roll 3d20, keep the highest result, and subtract 6 from the total.
+
+---
 
 
 # Prestige Class - Created
@@ -161,3 +178,42 @@ Once per combat as an action, you may make a Communication check. Any enemies wi
 
 
 
+## Custom Diego Feature
+
+
+## Custom Diego Feature
+
+## Uncontrolled Magic
+
+You can tap into chaotic magical forces at will. Each use provides one of the following benefits, then roll d100 on the Chaos table. Work with your GM to determine additional consequences.
+
+**Combat Benefits (choose one):**
+1. **Divine Healing** - Quick action, heal 25 HP
+2. **Sacred Barrier** - Quick action brace
+3. **Divine Empowerment** - Quick action empower
+
+**Utility Benefits (choose one):**
+1. **Emperor's Knowledge** - Gain + Tier on next skill check
+2. **Holy Insight** - Ask GM one yes/no question, the answer is always truthful, GM may choose to expand if yes/no wouldn't be clear
+
+---
+
+## Chaos Table (d100)
+
+| Roll | Name | Combat Effect | Visual/Permanent Effect |
+|------|------|---------------|-------------------------|
+| 1 | **Immediate Possession** | Character becomes demon incarnate, heals to full, gains 4 Tiers, immediately tries to kill entire party | - |
+| 2-10 | **Psychic Assault** | Take 25 psychic damage, stunned until end of next turn | Gain major mutation: third arm, face tentacles, or beast legs |
+| 11-20 | **Daemonic Weakness** | - 1 Tier, as if having used an effort, until end of encounter | Voice becomes raspy/demonic |
+| 21-30 | **Energy Burn** | Lose half current HP as daemonic energy burns through you | Gain permanent scar |
+| 31-40 | **Compelled Violence** | Must attack nearest ally on next turn | Eyes glow purple for rest of encounter |
+| 41-45 | **Corrupted Reflexes** | - Tier to AV, until end of encounter | Gain minor mutation (tentacle finger, third eye, etc.) |
+| 46-49 | **Weakened Defense** | - Tier to DR, until end of encounter | Gain minor mutation (hair turns purple, forked tongue, etc.) |
+| 50 | **Major Chaotic Surge** | Roll three times on this table, apply all effects | - |
+| 51-60 | **Chaotic Surge** | Roll twice on this table, apply both effects | - |
+| 61-70 | **Sacred Flight** | Gain flight, and increase movement by Tier, until end of encounter | Ethereal golden wings appear, skin shows faint scripture |
+| 71-80 | **Divine Strength** | Gain extra action this turn, until end of encounter | Hair changes to glowing silver |
+| 81-90 | **Emperor's Guidance** | Add Tier to all AC rolls, until end of encounter | Eyes glow golden (fades partially after encounter) |
+| 91-94 | **Righteous Fury** | Add Tier to all damage rolls, until end of encounter | Voice echoes divinely |
+| 95-99 | **Divine Protection** | Gain 20 HP regen, until end of encounter, gain prestige | - |
+| 100 | **Emperor's True Blessing** | Remove all corruption, heal to full, cure demonic presence, instant prestige class | - |

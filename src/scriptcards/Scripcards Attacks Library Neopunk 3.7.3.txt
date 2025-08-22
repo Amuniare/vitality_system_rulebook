@@ -126,6 +126,8 @@
     --=ScatterShot| [*R:ScatterShot]
 
     --=ReliableAccuracy| [*R:ReliableAccuracy]
+    --=SupremeAccuracy| 0
+
     --=HighImpact| [*R:HighImpact]
     --=ReliableEffect| [*R:ReliableEffect]
     --=ConsistentEffect| [*R:ConsistentEffect]
@@ -240,6 +242,7 @@
 
   --/| ==========Roll Modifiers==========
     --?[$ReliableAccuracy] -eq 1|&AccuracyDice; 2d20kh1 - 4
+    --?[$SupremeAccuracy] -eq 1|&AccuracyDice; 3d20kh1 - 6
 
 
     --?[$ReliableEffect] -eq 1|&DamageDice; 4d6kh3

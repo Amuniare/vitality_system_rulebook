@@ -11,6 +11,11 @@ import datetime
 import sys
 
 # ============================================================================
+# SKIP DIRECTORY TREE OPTION
+# ============================================================================
+SKIP_DIRECTORY_TREE = True  # Set to True to skip directory tree generation
+
+# ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
 DEFAULT_PRESET = 'rogue_trader'
@@ -77,9 +82,21 @@ PRESETS = {
     ],
 
     'rogue_trader': [
-        'frontend/campaigns/rogue_trader/'
+        'frontend/campaigns/rogue_trader/briefing/campaign_overview.md',
+        'frontend/campaigns/rogue_trader/campaign_log/dynasty-resources.md ',
+        'frontend/campaigns/rogue_trader/gm_only/arc_2_overview.md',
+        'frontend/campaigns/rogue_trader/campaign_log/session-summaries.md ',
+        'frontend/campaigns/rogue_trader/gm_only/scene_breakdown.md',
+        'frontend/campaigns/rogue_trader/campaign_log/player-characters.md',
+        'frontend/campaigns/rogue_trader/campaign_log/npcs.md',
+        'frontend/campaigns/rogue_trader/gm_only/worldbuilding.md',
+        'frontend/campaigns/rogue_trader/lore/factions.md'
     ],
 
+    'rogue_trader_and_rules': [
+        '--rogue_trader',
+        'frontend/rules/rulebook.md',
+    ],
 
     'character_builder': [
         'all_data/characters/extracted/',

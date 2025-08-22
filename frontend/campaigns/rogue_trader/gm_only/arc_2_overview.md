@@ -121,17 +121,17 @@
 
 ### Beastmen Tribal Breakdown
 
-**Loyalist Tribes** (~20,000 individuals):
+**Loyalist Tribes** (~10,000 individuals):
 - **Iron Maw Clan**: Most civilized, worship Emperor as "All-Father"
 - **Storm Caller Tribe**: Shamanic psykers, see Emperor as "Sky-Father"
 - **Blood Track Pack**: Hunters and scouts, practical loyalty to Governor
 
-**Chaos Corrupted Tribes** (~500,000 individuals):
+**Chaos Corrupted Tribes** (~200,000 individuals):
 - **Red Fang Horde**: Khorne worshippers, heavily mutated, led by Chieftain Gorthak
 - **Skull Taker Clan**: Cannibalistic berserkers, collect enemy heads
 - **Brass Claw Pack**: Partially mechanized mutations from Necron exposure
 
-**Neutral/Uncommitted** (~1,000,000 individuals):
+**Neutral/Uncommitted** (~500,000 individuals):
 - **Grey Pelt Tribe**: Isolationist, avoid all outside contact
 - **Lone Wolves**: Individual outcasts and exiles
 
@@ -605,4 +605,37 @@
 - **Strategic Thinking**: Long-term consequences of immediate tactical choices
 - **Relationship Building**: Developing ongoing alliances with powerful factions
 
-This arc establishes the dynasty as major players capable of handling sector-level crises while creating ongoing obligations and opportunities that will define future adventures.
+
+---
+
+
+
+
+## **Necron Lord: Vorthak the Strategist**
+
+### **Core Motivation & Methods**
+**Primary Goal:** Testing current galactic military capabilities while positioning for major expansion
+- **Strategic Patience:** Deliberately allows conflicts to unfold, gathering intelligence on Space Marine tactics, Chaos corruption methods, and local resistance capabilities
+- **Calculated Awakening:** Only awakening select tomb sections to avoid attracting massive Imperial response while he prepares
+- **Fortress World Vision:** Plans to transform this world into an impregnable staging ground for Necron expansion into the sector
+
+### **The Horrific Side Project**
+**Biotransference Experiments on Space Marines:**
+- **Location:** Deep tomb laboratories, several levels below where the Space Wolves initially fought
+- **Test Subjects:** Some of the "missing" Blood Claws and Grey Hunters aren't dead - they're being experimented on
+- **Goal:** Attempting to implant Necron consciousness matrices into enhanced human physiology
+- **Hypothesis:** Space Marine gene-seed might be compatible with Necron technology, creating superior hybrid warriors
+- **Current Status:** Early experiments showing "promising" results - part organic superhuman, part living metal horror
+
+### **Tactical Approach**
+- **Intelligence Gathering:** Uses scarab swarms and wraith reconnaissance to monitor all faction movements
+- **Weakness Assessment:** Allows each faction to reveal their capabilities through conflict
+- **Surgical Strikes:** Only intervenes when factions grow too unified or effective
+- **Psychological Warfare:** May eventually reveal the Space Marine experiments to demoralize the Space Wolves
+
+This gives you great hooks for:
+- **Rescue missions** into the deep tomb
+- **Horror reveals** when they find their transformed battle-brothers
+- **Moral dilemmas** about whether these hybrids can be saved or must be destroyed
+- **Intelligence warfare** as Vorthak learns their tactics
+
