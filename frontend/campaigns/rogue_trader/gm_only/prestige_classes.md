@@ -134,3 +134,30 @@ Once per combat as an action, you may make a Communication check. Any enemies wi
 ---
 
 
+
+
+## Vale
+
+
+
+
+**Combat Features:**
+
+- Quick Action - Perfect Timing: Gain a Quick Action that allows you to make a Direct Attack targeting Resolve using the Time descriptor to Setup an enemy.
+
+- When you roll for an attack, roll 3d20, keep the highest result, and subtract 6 from the total. (51% to 66% crit chance)
+
+- If you critically hit 4 times in a turn, not as a result of stun (must roll 15 or above), you rewind time, and may take another full turn, once per combat.
+
+- If you would be granted double tap, but defeated the enemy, you may ricochet instead.
+
+- Once per combat, you may attempt to rewind time to avoid an attack, the DC is the damage you just took from an attack, you must beat the DC in order to negate the damage.
+
+**Utility Features:**
+
+- You can step slightly "outside" normal time flow to observe situations without being noticed. Once per session, you can make a mobility check, spend an amount of minutes equal to your roll, walking around and learn details about a location.
+
+- Can glimpse moments into the immediate future and intervene to assist allies. Once per session, you can grant a +Tier to a check after the seeing the initial result.
+
+
+

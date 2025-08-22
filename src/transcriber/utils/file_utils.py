@@ -25,6 +25,14 @@ class FileManager:
                            subdirectory: str = "sessions") -> bool:
         """Save session processing result to appropriate file"""
         try:
+            # Directory mapping for different stages
+            stage_dirs = {
+                'cleaned': 'cleaned',
+                'timeline': 'ai-processed', 
+                'notes': 'ai-processed',
+                'summary': 'ai-processed'
+            }
+            
             # Determine file extension and header based on stage
             if stage in ['timeline', 'notes', 'summary']:
                 ext = '.md'
@@ -34,9 +42,10 @@ class FileManager:
                 ext = '.txt'
                 full_content = content
             
-            # Generate filename
+            # Generate filename and path
             filename = f"session-{session_number:02d}-{stage}{ext}"
-            file_path = self.base_dir / subdirectory / stage + "s" / filename
+            stage_dir = stage_dirs.get(stage, stage)
+            file_path = self.base_dir / subdirectory / stage_dir / filename
             
             # Ensure directory exists
             file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -72,10 +81,20 @@ class FileManager:
                          subdirectory: str = "sessions") -> Optional[str]:
         """Load session file content"""
         try:
+            # Directory mapping for different stages
+            stage_dirs = {
+                'cleaned': 'cleaned',
+                'timeline': 'ai-processed', 
+                'notes': 'ai-processed',
+                'summary': 'ai-processed',
+                'raw': 'raw'
+            }
+            
             # Determine file extension
             ext = '.md' if stage in ['timeline', 'notes', 'summary'] else '.txt'
             filename = f"session-{session_number:02d}-{stage}{ext}"
-            file_path = self.base_dir / subdirectory / stage + "s" / filename
+            stage_subdir = stage_dirs.get(stage, stage)
+            file_path = self.base_dir / subdirectory / stage_subdir / filename
             
             if not file_path.exists():
                 self.logger.warning(f"Session file not found: {file_path}")
@@ -92,7 +111,17 @@ class FileManager:
                                subdirectory: str = "sessions") -> List[int]:
         """List available session numbers for a given stage"""
         try:
-            stage_dir = self.base_dir / subdirectory / stage if stage != "raw" else self.base_dir / subdirectory / "raw"
+            # Directory mapping for different stages
+            stage_dirs = {
+                'cleaned': 'cleaned',
+                'timeline': 'ai-processed', 
+                'notes': 'ai-processed',
+                'summary': 'ai-processed',
+                'raw': 'raw'
+            }
+            
+            stage_subdir = stage_dirs.get(stage, stage)
+            stage_dir = self.base_dir / subdirectory / stage_subdir
             
             if not stage_dir.exists():
                 return []

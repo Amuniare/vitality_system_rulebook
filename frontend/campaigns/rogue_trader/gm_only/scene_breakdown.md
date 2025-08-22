@@ -765,3 +765,115 @@ Major Revelations & Achievements:
     7. System Liberation: All three major threats (genestealers, chaos, corruption) eliminated
 
 
+# Session 5
+
+## Scene 1: Quarterly Performance Reviews
+**Location:** Dame Venecia's office aboard ship during warp travel
+**Key Events:**
+- Dame Venecia conducts individual performance evaluations with each crew member
+- **Sister Inés Review:** Discussion of her role, loyalty, and concerns about unsanctioned psykers on the crew
+- **Vale Review:** Conversation about his death/resurrection experience and enhanced warp sensitivity
+- **Cinder Review:** Dame Venecia probes Cinder's self-worth and potential as an heir to the warrant of trade
+- **Sagoire Review:** Brief evaluation noting his reliability and usefulness
+
+## Scene 2: Space Wolf Intelligence Briefing  
+**Location:** Ship's barracks
+**Key Events:**
+- Dame Venecia meets with Castor (Space Wolf ally) about approaching Space Marines
+- Castor warns about Space Wolf temperament and suggests diplomatic caution
+- Reveals his own complicated history leaving his chapter to serve the Rogue Trader
+- Agreement to keep Castor's presence secret from other Space Wolves
+
+## Scene 3: Arrival at Feralholt System
+**Location:** Feral world system in orbit
+**Key Events:**
+- Party arrives to find Space Wolf ship in orbit around primitive world
+- Contact with Thrall Captain Magnus who explains the situation
+- Space Wolf pack led by a captain went planetside for recruitment 6 hours ago
+- Communication lost due to electromagnetic interference
+- Decision made to investigate the missing Space Marines
+
+## Scene 4: Planetfall and First Combat
+**Location:** Ironhold city outskirts  
+**Key Events:**
+- Party lands behind imperial forces engaged in battle with chaos-corrupted beastmen
+- **Major Combat:** Wolf-men chaos cultists vs. party and Governor Voss's forces
+- Introduction of Governor Ulrich Voss (Catachan-born planetary governor)
+- Cinder's area-of-effect fire attacks clear multiple enemies
+- Vale demonstrates enhanced combat abilities
+- Brother Rainard arrives via drop pod and joins the fight
+
+## Scene 5: Investigation Planning
+**Location:** Ironhold city
+**Key Events:**
+- Governor Voss explains the planetary situation: taming beastmen populations
+- Voss installed to manage feral world recruitment for Space Wolves
+- Dame Venecia offers her services to investigate missing Space Marines
+- Discussion of planetary politics and Voss's background as Catachan death world survivor
+- Agreement to venture into the wilderness to track the missing pack
+
+## Scene 6: The Forest Trek
+**Location:** Wilderness outside Ironhold
+**Key Events:**
+- Party follows Voss through forest valleys
+- Encounter with tamed beastmen settlements showing loyalty to the Governor
+- Discovery of Space Wolf tracks leading to cave system
+- Voss demonstrates his knowledge of local terrain and tribes
+- Mounting evidence that the missing Space Marines encountered serious resistance
+
+## Scene 7: Cave Complex Discovery
+**Location:** Cave entrance
+**Key Events:**
+- Discovery of cave system where Space Wolf tracks end
+- Voss detects blood scents and signs of battle
+- Brother Rainard confirms Space Marine blood detected
+- Party prepares for underground investigation
+- Ominous atmosphere as electromagnetic interference increases
+
+## Scene 8: Underground Necron Encounter
+**Location:** Necron tomb complex
+**Key Events:**
+- **Major Combat:** Party encounters Necron Warriors, Scarabs, and Wraiths
+- Discovery of Space Wolves under attack by Necron forces
+- Captain Bjorn leading tactical retreat with surviving Space Marines
+- Doom Stalker with devastating firepower threatens the entire force
+- Sister Inés uses faith-based powers against the undead threat
+
+## Scene 9: The Escalating Battle
+**Location:** Deep cave complex
+**Key Events:**
+- **Intensive Combat:** Multiple Necron units including Annihilation Barge
+- Vale achieves double natural 20s, instantly killing a Wraith
+- Dame Venecia's superior swordsmanship against phasing enemies  
+- Cinder's area-of-effect attacks proving crucial against swarms
+- Sagoire's technical abilities disrupting Necron systems
+- Brother Rainard taking heavy damage but continuing to fight
+
+## Scene 10: Tactical Coordination
+**Location:** Multi-level cave battlefield
+**Key Events:**
+- Space Wolves fighting running retreat while party provides support
+- Complex tactical situation with enemies on multiple levels
+- Dame Venecia's leadership coordinating combined Imperial forces
+- Governor Voss proving his combat competence alongside the party
+- Mounting casualties on both sides as Necrons demonstrate resilience
+
+## Scene 11: Session Cliffhanger
+**Location:** Active combat zone
+**Key Events:**
+- Battle still raging with multiple Necron threats remaining
+- Space Marines and party working together but heavily pressed
+- Doom Stalker's continued bombardment creating serious casualties
+- Session ends mid-combat with outcome uncertain
+
+## Major Themes & Developments:
+1. **Character Development:** Performance reviews reveal party dynamics and individual growth
+2. **Imperial Politics:** Complex relationships between Rogue Trader authority and Space Marine independence  
+3. **Escalating Threats:** From local chaos cultists to ancient Necron tomb awakening
+4. **Military Cooperation:** Successful integration of party abilities with Imperial Guard and Space Marine tactics
+5. **Ongoing Mystery:** The awakening of Necron forces suggests larger threats in the sector
+
+
+
+
+

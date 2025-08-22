@@ -13,11 +13,16 @@ from typing import List, Dict, Optional
 import sys
 from pathlib import Path
 
-from .ai.ai_pipeline import AIPipeline
-from .core.session_loader import SessionLoader
-from .core.text_processor import TextProcessor
-from .utils.file_utils import FileManager
-from .utils.logging_utils import TranscriberLogger
+try:
+    from .core.session_loader import SessionLoader
+    from .core.text_processor import TextProcessor
+    from .utils.file_utils import FileManager
+    from .utils.logging_utils import TranscriberLogger
+except ImportError:
+    from core.session_loader import SessionLoader
+    from core.text_processor import TextProcessor
+    from utils.file_utils import FileManager
+    from utils.logging_utils import TranscriberLogger
 
 # Add the parent directory to sys.path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -86,13 +91,21 @@ class ModularTranscriber:
         return self._file_manager
     
     @property
+    def ai_pipeline(self):
+        """Lazy-load AI pipeline"""
+        if self._ai_pipeline is None:
+            from ai.ai_pipeline import AIPipeline
+            self._ai_pipeline = AIPipeline(str(self.config_path), "rogue_trader")
+        return self._ai_pipeline
+    
+    @property
     def data_dir(self):
         """Get data directory"""
         return self.config_path / 'all_data' / 'rogue_trader'
     
     def _setup_logging(self):
         """Set up logging system"""
-        # Use default settings for initial setup
+        # Use info level for normal output
         log_level = logging.INFO
         log_file = self.config_path / 'logs' / 'transcriber.log'
         
@@ -150,6 +163,7 @@ class ModularTranscriber:
         """Lazy-loaded AI pipeline"""
         if self._ai_pipeline is None:
             try:
+                from ai.ai_pipeline import AIPipeline
                 ai_config = self.config.get_ai_config()
                 self._ai_pipeline = AIPipeline(
                     str(self.config_path),
@@ -301,6 +315,9 @@ class ModularTranscriber:
                 python_results = self.python_pipeline.process_raw_session(raw_content, session_number)
                 results[session_number] = python_results
                 
+                # Save Python processing results
+                self._save_python_results(session_number, python_results)
+                
                 # Generate and log processing report
                 report = self.python_pipeline.generate_processing_report(python_results)
                 self.logger.info(report)
@@ -346,6 +363,28 @@ class ModularTranscriber:
                 ai_results[session_number] = {'error': str(e)}
         
         return ai_results
+    
+    def _save_python_results(self, session_number: int, results: Dict):
+        """Save Python processing results to files"""
+        try:
+            # Save cleaned content if available
+            if results.get('cleaned_content') and results.get('ready_for_ai', False):
+                success = self.file_manager.save_session_result(
+                    session_number, 'cleaned', results['cleaned_content']
+                )
+                
+                if success:
+                    self.logger.info(f"✅ Saved cleaned content for session {session_number}")
+                else:
+                    self.logger.error(f"❌ Failed to save cleaned content for session {session_number}")
+            else:
+                if not results.get('cleaned_content'):
+                    self.logger.warning(f"No cleaned content to save for session {session_number}")
+                if not results.get('ready_for_ai', False):
+                    self.logger.warning(f"Session {session_number} not ready for AI - not saving cleaned content")
+                
+        except Exception as e:
+            self.logger.error(f"Error saving Python results for session {session_number}: {e}")
     
     def _save_ai_results(self, session_number: int, results: Dict[str, str], stages: List[str]):
         """Save AI processing results to files"""
@@ -648,20 +687,34 @@ def main():
             print(f"Python processing completed for {len(results)} sessions")
             
         elif args.ai_only:
-            # AI processing only - need to load Python results first
+            # AI processing only - load existing cleaned files
             if not session_numbers:
-                session_numbers = transcriber.session_loader.get_available_raw_sessions()
+                session_numbers = transcriber.file_manager.list_available_sessions('cleaned')
             
-            # Run Python processing to get ready sessions
-            python_results = transcriber.process_python_stages(session_numbers)
-            ready_sessions = {k: v for k, v in python_results.items() 
-                            if v.get('ready_for_ai', False)}
+            # Load cleaned content for each session
+            ready_sessions = {}
+            for session_num in session_numbers:
+                cleaned_content = transcriber.file_manager.load_session_file(session_num, 'cleaned')
+                if cleaned_content:
+                    ready_sessions[session_num] = {
+                        'session_number': session_num,
+                        'cleaned_content': cleaned_content,
+                        'ready_for_ai': True,
+                        'speaker_mapping': '',  # Could load from metadata if available
+                        'detected_speakers': [],  # Empty list since we don't have this data
+                        'needs_chunking': len(cleaned_content.split()) > 15000,
+                        'processing_stages': ['text_cleaning', 'speaker_mapping', 'content_analysis', 'final_validation'],
+                        'processing_metadata': {
+                            'word_count': len(cleaned_content.split()),
+                            'campaign_name': transcriber.config.get('files.campaign_name', 'rogue_trader')
+                        }
+                    }
             
             if ready_sessions:
                 ai_results = transcriber.process_ai_stages(ready_sessions, stages)
                 print(f"AI processing completed for {len(ai_results)} sessions")
             else:
-                print("No sessions ready for AI processing")
+                print("No cleaned sessions found for AI processing")
             
         else:
             # Full pipeline

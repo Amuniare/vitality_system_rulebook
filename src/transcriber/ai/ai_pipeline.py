@@ -110,7 +110,13 @@ class CleanupProcessor(AIProcessor):
                         
                 except Exception as e:
                     failed_chunks.append(i)
+                    error_str = str(e)
                     self.logger.error(f"Failed to process chunk {i}: {e}")
+                    
+                    # Check if it's a quota error that should pause processing
+                    if "quota" in error_str.lower() or "429" in error_str:
+                        self.logger.warning("Quota exceeded during chunk processing, stopping")
+                        break
             
             # Report processing results
             success_rate = len(processed_chunks) / len(chunks) * 100
@@ -180,7 +186,8 @@ class AIPipeline:
     """Main AI processing pipeline coordinator"""
     
     def __init__(self, config_path: str = ".", campaign_name: str = "rogue_trader", 
-                 api_key: Optional[str] = None, progress_callback: Optional[Callable] = None):
+                 api_key: Optional[str] = None, progress_callback: Optional[Callable] = None,
+                 enable_queue: bool = True):
         self.logger = logging.getLogger(__name__)
         self.config_path = Path(config_path)
         self.campaign_name = campaign_name
@@ -191,7 +198,10 @@ class AIPipeline:
             self.logger.info("Initializing AI Pipeline components...")
             
             self.template_manager = TemplateManager(config_path, campaign_name)
-            self.api_client = APIClient(api_key)
+            # Pass cache directory to API client for intelligent caching
+            cache_dir = self.config_path / 'cache'
+            # Start with fastest model for initial processing
+            self.api_client = APIClient(api_key, model_name='gemini-1.5-flash', cache_dir=cache_dir)
             
             # Initialize processors
             self.cleanup_processor = CleanupProcessor(self.template_manager, self.api_client)
@@ -233,6 +243,7 @@ class AIPipeline:
                 cleaned = self.cleanup_processor.process(
                     session_data['cleaned_content'],
                     session_number,
+                    character_info=session_data.get('speaker_mapping', ''),
                     previous_session_summary=session_data.get('previous_session_summary', '')
                 )
                 results['cleaned'] = cleaned
@@ -246,7 +257,11 @@ class AIPipeline:
                 current_stage += 1
                 self._report_progress(current_stage, total_stages, "timeline")
                 
-                timeline = self.timeline_processor.process(cleaned, session_number)
+                timeline = self.timeline_processor.process(
+                    cleaned, 
+                    session_number,
+                    character_info=session_data.get('speaker_mapping', '')
+                )
                 results['timeline'] = timeline
             else:
                 timeline = None
@@ -257,7 +272,11 @@ class AIPipeline:
                 current_stage += 1
                 self._report_progress(current_stage, total_stages, "notes")
                 
-                notes = self.notes_processor.process(timeline, session_number)
+                notes = self.notes_processor.process(
+                    timeline, 
+                    session_number,
+                    character_info=session_data.get('speaker_mapping', '')
+                )
                 results['notes'] = notes
             else:
                 notes = None
@@ -268,7 +287,12 @@ class AIPipeline:
                 current_stage += 1
                 self._report_progress(current_stage, total_stages, "summary")
                 
-                summary = self.summary_processor.process(notes, timeline, session_number)
+                summary = self.summary_processor.process(
+                    notes, 
+                    timeline, 
+                    session_number,
+                    character_info=session_data.get('speaker_mapping', '')
+                )
                 results['summary'] = summary
             else:
                 results['summary'] = None

@@ -17,13 +17,18 @@ class ChunkingProgressError(Exception):
 class SessionChunker:
     """Handles intelligent chunking of large session transcripts with progress tracking and timeout protection"""
     
-    def __init__(self, max_chunk_size: int = 8000, overlap_size: int = 200, 
-                 timeout_seconds: int = 600, progress_callback=None):
+    def __init__(self, max_chunk_size: int = 12000, overlap_size: int = 300, 
+                 timeout_seconds: int = 600, progress_callback=None, adaptive_sizing: bool = True):
         self.max_chunk_size = max_chunk_size  # words
         self.overlap_size = overlap_size      # words
         self.timeout_seconds = timeout_seconds  # maximum time for chunking operation
         self.progress_callback = progress_callback  # optional progress reporting callback
+        self.adaptive_sizing = adaptive_sizing  # use adaptive chunk sizing
         self.logger = logging.getLogger(__name__)
+        
+        # Efficiency improvements
+        self.min_chunk_efficiency = 0.7  # minimum chunk size as fraction of max
+        self.semantic_break_bonus = 1000  # extra words allowed for semantic breaks
     
     def should_chunk_session(self, text: str) -> bool:
         """Determine if a session needs to be chunked"""
@@ -70,7 +75,11 @@ class SessionChunker:
         return match.group(1).strip() if match else ""
     
     def chunk_session_intelligently(self, text: str, session_number: int) -> List[Dict]:
-        """Split session into overlapping chunks with context, with timeout and progress protection"""
+        """Create optimized chunks with adaptive sizing and semantic awareness"""
+        return self._chunk_with_adaptive_sizing(text, session_number)
+    
+    def _chunk_with_adaptive_sizing(self, text: str, session_number: int) -> List[Dict]:
+        """Split session into overlapping chunks with adaptive sizing and efficiency optimization"""
         if not text or not text.strip():
             raise ValueError(f"Cannot chunk empty or whitespace-only text for session {session_number}")
         
@@ -78,10 +87,13 @@ class SessionChunker:
         words = text.split()
         total_words = len(words)
         
-        if total_words <= self.max_chunk_size:
+        # Calculate optimal chunk size for this session
+        optimal_chunk_size = self._calculate_optimal_chunk_size(total_words)
+        
+        if total_words <= optimal_chunk_size:
             return [{'content': text, 'chunk_id': 0, 'start_context': '', 'end_context': ''}]
         
-        self.logger.info(f"Chunking session {session_number}: {total_words} words into ~{self.max_chunk_size} word chunks with {self.timeout_seconds}s timeout")
+        self.logger.info(f"Chunking session {session_number}: {total_words} words into ~{optimal_chunk_size} word chunks with {self.timeout_seconds}s timeout")
         
         # Find natural break points and pre-calculate line word positions for efficiency
         natural_breaks = self.detect_natural_breaks(text)
@@ -91,25 +103,26 @@ class SessionChunker:
         chunks = []
         current_word_pos = 0
         chunk_id = 0
-        max_iterations = max(50, (total_words // (self.max_chunk_size - self.overlap_size)) + 10)  # More generous safety limit
+        max_iterations = max(50, (total_words // (optimal_chunk_size - self.overlap_size)) + 10)  # More generous safety limit
         iteration_count = 0
         
         while current_word_pos < total_words and iteration_count < max_iterations:
             iteration_count += 1
             prev_word_pos = current_word_pos  # Track for infinite loop detection
             
-            # Calculate chunk boundaries
-            chunk_start = max(0, current_word_pos - self.overlap_size if chunk_id > 0 else 0)
-            chunk_end = min(total_words, current_word_pos + self.max_chunk_size)
+            # Calculate chunk boundaries with adaptive sizing
+            overlap = self._calculate_adaptive_overlap(chunk_id, total_words)
+            chunk_start = max(0, current_word_pos - overlap if chunk_id > 0 else 0)
+            chunk_end = min(total_words, current_word_pos + optimal_chunk_size)
             
             # Adjust chunk_end to natural break if possible (with safety checks)
             chunk_end = self._adjust_to_natural_break_safe(chunk_end, natural_breaks, line_word_positions, current_word_pos)
             
             # CRITICAL: Ensure progress is made to prevent infinite loops
-            min_advance = max(self.overlap_size, self.max_chunk_size // 10)  # More reasonable minimum
+            min_advance = max(overlap, optimal_chunk_size // 10)  # More reasonable minimum
             if chunk_end <= current_word_pos + min_advance:
                 # Force advancement if natural break adjustment stalls progress
-                chunk_end = min(total_words, current_word_pos + self.max_chunk_size // 2)
+                chunk_end = min(total_words, current_word_pos + optimal_chunk_size // 2)
                 self.logger.warning(f"Forced chunk advancement at position {current_word_pos} to prevent stall")
             
             # Extract chunk content
@@ -127,14 +140,16 @@ class SessionChunker:
                 'start_context': start_context,
                 'end_context': end_context,
                 'overlap_start': chunk_start < current_word_pos,
-                'overlap_end': chunk_end > current_word_pos + self.max_chunk_size
+                'overlap_end': chunk_end > current_word_pos + optimal_chunk_size,
+                'actual_size': len(chunk_words),
+                'efficiency_ratio': len(chunk_words) / optimal_chunk_size
             })
             
             # Calculate next position with guaranteed advancement
-            next_pos = chunk_end - self.overlap_size
+            next_pos = chunk_end - overlap
             if next_pos <= prev_word_pos:
                 # Force reasonable advancement if overlap causes stall
-                next_pos = prev_word_pos + max(1, self.overlap_size // 2)
+                next_pos = prev_word_pos + max(1, overlap // 2)
                 self.logger.warning(f"Forced minimal advancement at chunk {chunk_id} to ensure progress")
             
             current_word_pos = next_pos
@@ -171,8 +186,44 @@ class SessionChunker:
             error_msg = f"Chunking completed but exceeded timeout: {total_time:.2f}s > {self.timeout_seconds}s"
             self.logger.warning(error_msg)
         
-        self.logger.info(f"Successfully created {len(chunks)} chunks for session {session_number} in {total_time:.2f}s")
+        # Calculate efficiency metrics
+        avg_chunk_size = sum(len(chunk['content'].split()) for chunk in chunks) / len(chunks)
+        efficiency = avg_chunk_size / optimal_chunk_size
+        api_calls_saved = max(0, self._estimate_naive_chunks(total_words) - len(chunks))
+        
+        self.logger.info(f"Successfully created {len(chunks)} optimized chunks for session {session_number} in {total_time:.2f}s")
+        self.logger.info(f"Chunk efficiency: {efficiency:.1%}, estimated API calls saved: {api_calls_saved}")
+        
         return chunks
+    
+    def _calculate_optimal_chunk_size(self, total_words: int) -> int:
+        """Calculate optimal chunk size based on session length"""
+        if not self.adaptive_sizing:
+            return self.max_chunk_size
+        
+        # Scale chunk size based on total content to reduce API calls
+        if total_words <= 15000:
+            return self.max_chunk_size
+        elif total_words <= 30000:
+            return int(self.max_chunk_size * 1.3)  # 30% larger chunks
+        elif total_words <= 50000:
+            return int(self.max_chunk_size * 1.6)  # 60% larger chunks
+        else:
+            return int(self.max_chunk_size * 2.0)  # Double size for very large sessions
+    
+    def _calculate_adaptive_overlap(self, chunk_id: int, total_words: int) -> int:
+        """Calculate adaptive overlap based on position and session size"""
+        base_overlap = self.overlap_size
+        
+        # Reduce overlap for middle chunks to increase efficiency
+        if chunk_id > 2 and total_words > 20000:
+            return int(base_overlap * 0.7)  # 30% less overlap
+        
+        return base_overlap
+    
+    def _estimate_naive_chunks(self, total_words: int) -> int:
+        """Estimate how many chunks a naive algorithm would create"""
+        return max(1, (total_words + self.max_chunk_size - 1) // self.max_chunk_size)
     
     def _precalculate_line_positions(self, lines: List[str]) -> List[int]:
         """Pre-calculate cumulative word positions for each line for efficient lookups"""

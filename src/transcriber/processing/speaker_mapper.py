@@ -8,42 +8,56 @@ import logging
 # Rogue Trader Campaign Character Mapping
 ROGUE_TRADER_PLAYER_MAPPING = {
     'trent': {
-        'canonical_name': 'amuniare [GM/Cinder]',
+        'canonical_name': 'Trent [GM/Cinder]',
+        'character_name': 'Cinder (Celestine Vex)',
+        'role': 'GM / Unsanctioned Pyromancer Psyker',
+        'discord_username': 'amuniare',
+        'powers': 'Pyromancer abilities, GM control'
+    },
+    'amuniare': {
+        'canonical_name': 'Trent [GM/Cinder]',
         'character_name': 'Cinder (Celestine Vex)',
         'role': 'GM / Unsanctioned Pyromancer Psyker',
         'discord_username': 'amuniare',
         'powers': 'Pyromancer abilities, GM control'
     },
     'emperor\'s favorite princess': {
-        'canonical_name': 'emperor\'s favorite princess [Dame Venecia Delatorae]',
+        'canonical_name': 'Emmanual [Dame Venecia Delatorae]',
         'character_name': 'Dame Venecia Delatorae',
         'role': 'Rogue Trader',
         'discord_username': 'emperor\'s favorite princess',
         'powers': 'Erratic warp presence, powerful psychic abilities'
     },
     'faust': {
-        'canonical_name': '.phan10m [Faust Gray]',
+        'canonical_name': 'Phantom [Faust Gray]',
         'character_name': 'Faust Gray',
         'role': 'Nascent Psyker',
         'discord_username': '.phan10m',
         'powers': 'Telekinesis, Time manipulation, Mental abilities'
     },
     'burn baby burn': {
-        'canonical_name': 'burn baby burn [Sister Inés]',
+        'canonical_name': 'Diego [Sister Inés]',
         'character_name': 'Sister Inés (Maria Inés Matamoros de los Colmenares)',
         'role': 'Sister of Battle',
         'discord_username': 'burn baby burn',
         'powers': 'Faith-based abilities, combat expertise'
     },
     'nick': {
-        'canonical_name': 'bipolarfrenchie [Brother Rainard]',
+        'canonical_name': 'Nick [Brother Rainard]',
+        'character_name': 'Brother Rainard',
+        'role': 'Ancient Warrior (Space Marine)',
+        'discord_username': 'bipolarfrenchie',
+        'powers': 'Superhuman combat abilities, ancient knowledge'
+    },
+    'bipolarfrenchie': {
+        'canonical_name': 'Nick [Brother Rainard]',
         'character_name': 'Brother Rainard',
         'role': 'Ancient Warrior (Space Marine)',
         'discord_username': 'bipolarfrenchie',
         'powers': 'Superhuman combat abilities, ancient knowledge'
     },
     'deven': {
-        'canonical_name': 'roathus [Sagoire]',
+        'canonical_name': 'Deven [Sagoire]',
         'character_name': 'Sagoire',
         'role': 'Tech Priest Explorator',
         'discord_username': 'roathus',
@@ -58,14 +72,14 @@ ROGUE_TRADER_PLAYER_MAPPING = {
     },
     # Direct Discord username mappings (for mixed old/new format sessions)
     '.phan10m': {
-        'canonical_name': '.phan10m [Faust Gray]',
+        'canonical_name': 'Phantom [Faust Gray]',
         'character_name': 'Faust Gray',
         'role': 'Nascent Psyker',
         'discord_username': '.phan10m',
         'powers': 'Telekinesis, Time manipulation, Mental abilities'
     },
     'roathus': {
-        'canonical_name': 'roathus [Sagoire]',
+        'canonical_name': 'Deven [Sagoire]',
         'character_name': 'Sagoire',
         'role': 'Tech Priest Explorator',
         'discord_username': 'roathus',
@@ -91,12 +105,25 @@ class CharacterMapper:
         # Normalize the discord name for matching
         normalized_name = discord_name.lower().strip()
         
+        # Remove bracketed content like [gm/cinder] or [brother rainard]
+        # This handles cases where speakers include character names in brackets
+        base_name = re.sub(r'\s*\[.*?\]', '', normalized_name).strip()
+        
+        # Try exact match with original name
         if normalized_name in self.mapping:
             return self.mapping[normalized_name]
+            
+        # Try exact match with base name (no brackets)
+        if base_name in self.mapping:
+            return self.mapping[base_name]
         
         # Try partial matching for name variations
         for mapped_name, char_info in self.mapping.items():
+            # Check if mapped name is contained in the detected name or vice versa
             if mapped_name in normalized_name or normalized_name in mapped_name:
+                return char_info
+            # Also check base name without brackets
+            if mapped_name in base_name or base_name in mapped_name:
                 return char_info
         
         return None

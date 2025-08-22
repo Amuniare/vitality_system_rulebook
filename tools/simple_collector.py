@@ -13,7 +13,7 @@ import sys
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'discord_bot_data'
+DEFAULT_PRESET = 'rogue_trader'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude
@@ -77,7 +77,7 @@ PRESETS = {
     ],
 
     'rogue_trader': [
-        'frontend/campaigns/rogue_trader'
+        'frontend/campaigns/rogue_trader/'
     ],
 
 
@@ -96,6 +96,7 @@ PRESETS = {
         'src/transcriber/',
         '--root',
     ],
+    ''
     
     'discord_bot_data': [
         'all_data/rogue_trader/sessions/cleaned/',

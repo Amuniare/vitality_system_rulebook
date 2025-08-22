@@ -164,7 +164,7 @@ class SessionTester:
     
     def validate_character_mapping(self, session_number: int) -> Dict:
         """Test character mapping accuracy"""
-        from character_mapping import CharacterMapper
+        from processing.speaker_mapper import CharacterMapper
         
         mapper = CharacterMapper("rogue_trader")
         

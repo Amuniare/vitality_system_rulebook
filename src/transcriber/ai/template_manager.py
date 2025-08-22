@@ -74,7 +74,7 @@ class TemplateManager:
         default_templates = {
             "cleanup_processor": {
                 "system_prompt": "You are an expert at cleaning and organizing tabletop RPG session transcripts. Your job is to take raw Discord chat logs and convert them into clean, well-formatted session transcripts.",
-                "user_prompt_template": "Clean and format this raw session transcript from session {session_number}.\n\nCampaign Context: {campaign_context}\n\nCharacter Info: {character_info}\n\nRaw Transcript:\n{raw_transcript}\n\nPlease provide a clean, well-formatted version with proper speaker names and organized dialogue."
+                "user_prompt_template": "Clean and format this raw session transcript from session {session_number}.\n\nCampaign Context: {campaign_context}\n\nCharacter Info: {character_info}\n\nRaw Transcript:\n{raw_transcript}\n\nIMPORTANT: Replace Discord usernames with the canonical character names from the Character Info mappings (format: discord_username [Character Name]). For example, if you see 'trent:' or 'Trent:' in the raw transcript, replace it with 'amuniare [GM/Cinder]:' based on the character mappings provided.\n\nPlease provide a clean, well-formatted version with proper canonical speaker names and organized dialogue."
             },
             "timeline_processor": {
                 "system_prompt": "You are an expert at creating detailed timelines from RPG session transcripts. Create comprehensive bullet-point timelines.",

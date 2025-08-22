@@ -54,17 +54,29 @@ class ConfigManager:
             },
             'ai': {
                 'api_key_env_var': 'GEMINI_API_KEY',
-                'model_name': 'gemini-1.5-pro',
-                'rate_limit_delay': 60,  # seconds
+                'default_model': 'gemini-1.5-flash',  # Start with fastest model
+                'preferred_model': 'gemini-1.5-pro',   # Upgrade to this when possible
+                'enable_model_switching': True,
+                'enable_caching': True,
+                'cache_duration_hours': 24,
                 'max_retries': 3,
-                'retry_base_delay': 1.0
+                'retry_base_delay': 1.0,
+                'quota_management': {
+                    'enable_adaptive_limits': True,
+                    'fallback_on_quota': True,
+                    'queue_on_quota_exceeded': True
+                }
             },
             'processing': {
-                'max_chunk_size': 8000,  # words
-                'chunk_overlap_size': 200,  # words
+                'max_chunk_size': 12000,  # words (increased for efficiency)
+                'chunk_overlap_size': 300,  # words
+                'adaptive_chunking': True,  # Enable adaptive sizing
                 'chunking_timeout': 600,  # seconds
                 'quality_threshold': 50,  # minimum quality score
-                'speaker_retention_threshold': 80  # minimum speaker retention %
+                'speaker_retention_threshold': 80,  # minimum speaker retention %
+                'enable_job_queue': True,
+                'job_queue_file': 'job_queue.json',
+                'auto_resume_jobs': True
             },
             'files': {
                 'campaign_name': 'rogue_trader',
@@ -75,7 +87,10 @@ class ConfigManager:
                     'notes': 'sessions/notes',
                     'summaries': 'sessions/summaries'
                 },
+                'cache_directory': 'cache',
+                'queue_directory': 'queue',
                 'archive_after_sessions': 20,
+                'cleanup_old_jobs_days': 30,
                 'max_log_size_mb': 10,
                 'log_backup_count': 5
             },
@@ -252,19 +267,27 @@ class ConfigManager:
         return {
             'max_chunk_size': self.get('processing.max_chunk_size'),
             'chunk_overlap_size': self.get('processing.chunk_overlap_size'),
+            'adaptive_chunking': self.get('processing.adaptive_chunking'),
             'chunking_timeout': self.get('processing.chunking_timeout'),
             'quality_threshold': self.get('processing.quality_threshold'),
-            'speaker_retention_threshold': self.get('processing.speaker_retention_threshold')
+            'speaker_retention_threshold': self.get('processing.speaker_retention_threshold'),
+            'enable_job_queue': self.get('processing.enable_job_queue'),
+            'job_queue_file': self.get('processing.job_queue_file'),
+            'auto_resume_jobs': self.get('processing.auto_resume_jobs')
         }
     
     def get_ai_config(self) -> Dict[str, Any]:
         """Get AI-specific configuration"""
         return {
             'api_key': self.get_env_var(self.get('ai.api_key_env_var')),
-            'model_name': self.get('ai.model_name'),
-            'rate_limit_delay': self.get('ai.rate_limit_delay'),
+            'default_model': self.get('ai.default_model'),
+            'preferred_model': self.get('ai.preferred_model'),
+            'enable_model_switching': self.get('ai.enable_model_switching'),
+            'enable_caching': self.get('ai.enable_caching'),
+            'cache_duration_hours': self.get('ai.cache_duration_hours'),
             'max_retries': self.get('ai.max_retries'),
-            'retry_base_delay': self.get('ai.retry_base_delay')
+            'retry_base_delay': self.get('ai.retry_base_delay'),
+            'quota_management': self.get('ai.quota_management')
         }
     
     def get_discord_config(self) -> Dict[str, Any]:
@@ -284,8 +307,12 @@ class ConfigManager:
         """Print a summary of current configuration"""
         print("\n=== TRANSCRIBER CONFIGURATION SUMMARY ===")
         print(f"Campaign: {self.get('files.campaign_name')}")
-        print(f"AI Model: {self.get('ai.model_name')}")
-        print(f"Rate Limit: {self.get('ai.rate_limit_delay')}s")
+        print(f"Default AI Model: {self.get('ai.default_model')}")
+        print(f"Preferred AI Model: {self.get('ai.preferred_model')}")
+        print(f"Model Switching: {'✅ Enabled' if self.get('ai.enable_model_switching') else '❌ Disabled'}")
+        print(f"Caching: {'✅ Enabled' if self.get('ai.enable_caching') else '❌ Disabled'}")
+        print(f"Job Queue: {'✅ Enabled' if self.get('processing.enable_job_queue') else '❌ Disabled'}")
+        print(f"Adaptive Chunking: {'✅ Enabled' if self.get('processing.adaptive_chunking') else '❌ Disabled'}")
         print(f"Chunk Size: {self.get('processing.max_chunk_size')} words")
         print(f"Quality Threshold: {self.get('processing.quality_threshold')}%")
         
@@ -296,6 +323,35 @@ class ConfigManager:
         print(f"Discord Token: {'✅ Set' if discord_token else '❌ Missing'}")
         print(f"AI API Key: {'✅ Set' if ai_key else '❌ Missing'}")
         print("==========================================\n")
+    
+    def get_cache_config(self) -> Dict[str, Any]:
+        """Get caching configuration"""
+        return {
+            'cache_directory': self.get('files.cache_directory'),
+            'enable_caching': self.get('ai.enable_caching'),
+            'cache_duration_hours': self.get('ai.cache_duration_hours')
+        }
+    
+    def get_queue_config(self) -> Dict[str, Any]:
+        """Get job queue configuration"""
+        return {
+            'enable_job_queue': self.get('processing.enable_job_queue'),
+            'job_queue_file': self.get('processing.job_queue_file'),
+            'auto_resume_jobs': self.get('processing.auto_resume_jobs'),
+            'cleanup_old_jobs_days': self.get('files.cleanup_old_jobs_days')
+        }
+    
+    def validate_enhanced_config(self) -> Dict[str, bool]:
+        """Validate enhanced configuration settings"""
+        validation = {
+            'basic_config': self.validate_discord_config() and self.validate_ai_config(),
+            'model_switching': self.get('ai.enable_model_switching'),
+            'caching_setup': self.get('ai.enable_caching'),
+            'job_queue_setup': self.get('processing.enable_job_queue'),
+            'adaptive_chunking': self.get('processing.adaptive_chunking')
+        }
+        
+        return validation
 
 
 # Global config instance
@@ -307,3 +363,25 @@ def get_config(config_dir: Optional[Path] = None) -> ConfigManager:
     if _config_instance is None:
         _config_instance = ConfigManager(config_dir)
     return _config_instance
+
+def create_optimal_config() -> Dict[str, Any]:
+    """Create optimized configuration for quota-aware processing"""
+    return {
+        'ai': {
+            'default_model': 'gemini-1.5-flash',
+            'preferred_model': 'gemini-1.5-pro',
+            'enable_model_switching': True,
+            'enable_caching': True,
+            'quota_management': {
+                'enable_adaptive_limits': True,
+                'fallback_on_quota': True,
+                'queue_on_quota_exceeded': True
+            }
+        },
+        'processing': {
+            'max_chunk_size': 15000,  # Larger chunks for efficiency
+            'adaptive_chunking': True,
+            'enable_job_queue': True,
+            'auto_resume_jobs': True
+        }
+    }

@@ -1,0 +1,18 @@
+{
+  "cleanup_processor": {
+    "system_prompt": "You are an expert at cleaning and organizing tabletop RPG session transcripts. Your job is to take raw Discord chat logs and convert them into clean, well-formatted session transcripts.",
+    "user_prompt_template": "Clean and format this raw session transcript from session {session_number}.\n\nCampaign Context: {campaign_context}\n\nCharacter Info: {character_info}\n\nRaw Transcript:\n{raw_transcript}\n\nIMPORTANT: Replace Discord usernames with the canonical character names from the Character Info mappings (format: discord_username [Character Name]). For example, if you see 'trent:' or 'Trent:' in the raw transcript, replace it with 'amuniare [GM/Cinder]:' based on the character mappings provided.\n\nPlease provide a clean, well-formatted version with proper canonical speaker names and organized dialogue."
+  },
+  "timeline_processor": {
+    "system_prompt": "You are an expert at creating detailed timelines from RPG session transcripts. Create comprehensive bullet-point timelines.",
+    "user_prompt_template": "Create a detailed timeline for session {session_number}.\n\nCampaign Context: {campaign_context}\n\nCharacter Info: {character_info}\n\nCleaned Transcript:\n{cleaned_transcript}\n\nProvide a detailed timeline with bullet points for each major event."
+  },
+  "notes_processor": {
+    "system_prompt": "You are an expert at creating concise session notes from detailed timelines. Focus on key events, decisions, and outcomes.",
+    "user_prompt_template": "Create concise session notes for session {session_number}.\n\nCampaign Context: {campaign_context}\n\nCharacter Info: {character_info}\n\nDetailed Timeline:\n{detailed_timeline}\n\nProvide 5-10 key bullet points covering the most important events."
+  },
+  "summary_processor": {
+    "system_prompt": "You are an expert at writing narrative summaries of RPG sessions. Create engaging prose that captures the essence of the session.",
+    "user_prompt_template": "Write a narrative summary for session {session_number}.\n\nCampaign Context: {campaign_context}\n\nCharacter Info: {character_info}\n\nSession Notes:\n{session_notes}\n\nDetailed Timeline:\n{detailed_timeline}\n\nWrite an engaging 3-paragraph narrative summary."
+  }
+}

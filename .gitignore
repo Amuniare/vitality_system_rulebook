@@ -27,3 +27,5 @@ package-lock.json
 tests/output
 tests/playwright-report
 tests/tests
+cache
+
