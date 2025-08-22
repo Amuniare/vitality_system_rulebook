@@ -56,13 +56,7 @@ Attributes represent what type of things your character is good at in combat and
 
 
 
-### **ATTACK RESOLUTION**
-1. **Declare Attack** → Attack Type and target/s
-2. **Accuracy Check** → 1d20 + Tier + Focus vs target's Avoidance Score  
-3. **Effect Check** → Damage Roll vs target's Durability Score or Condition Check vs target's Resistance Score.
-- *Damage Roll:* 3d6 + Tier + (Power × 1.5) - Target's Durability  
-- *Condition Check:* 1d20 + Tier + Power vs Target's Resistance 
-4. **Apply Results** → Reduce HP by damage taken or apply condition effect
+
 
 
 
@@ -451,6 +445,15 @@ You add your Tier once to all skill checks
 
 
 # SECTION 4: ATTACK AND EFFECT TYPES
+
+
+### **ATTACK RESOLUTION**
+1. **Declare Attack** → Attack Type and target/s
+2. **Accuracy Check** → 1d20 + Tier + Focus vs target's Avoidance Score  
+3. **Effect Check** → Damage Roll vs target's Durability Score or Condition Check vs target's Resistance Score.
+- *Damage Roll:* 3d6 + Tier + (Power × 1.5) - Target's Durability  
+- *Condition Check:* 1d20 + Tier + Power vs Target's Resistance 
+4. **Apply Results** → Reduce HP by damage taken or apply condition effect
 
 ### **ATTACK TYPES**
 *Determines how attacks are delivered and their targeting methods*
