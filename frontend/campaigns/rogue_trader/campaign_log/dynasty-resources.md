@@ -3,7 +3,8 @@
 ---
 
 
-# **Flagship: "Eternal Vigil" (Viper-Class Light Cruiser)**
+# **Flagship: "Eternal Vigil"**
+*Viper-Class Light Cruiser*
 
 ### **Specifications**:
 - **Length**: ~5 kilometers
@@ -20,7 +21,8 @@
 
 ---
 
-# **Second Ship: "Hesperus Defiance" (Modified Sword-Class Assault Transport)**
+# **Second Ship: "Hesperus Defiance"**
+*Modified Sword-Class Assault Transport*
 
 ### **History**:
 - **Ancient Service**: 400 years of distinguished Imperial Navy service
@@ -40,10 +42,8 @@
 - **Special**: Designed for rapid strikes and escort duties
 
 ### **Frigate Modifications**:
-- **Expanded Barracks**: Secondary weapon batteries replaced with death world quarters
+- **Expanded Barracks**: Secondary weapon batteries replaced with death world quarters and 
 - **Enhanced Life Support**: Systems adapted for 29,500 total personnel capacity
-
-### **Keywords**:
 - **Storm Psyker Weather Command**: Orbital weather manipulation and atmospheric warfare systems
 - **Bone Hewer War Chambers**: Rapid deployment pods and close-quarters battle preparation facilities
 - **Griffin Launch Bays**: Custom hangar systems for aerial cavalry
