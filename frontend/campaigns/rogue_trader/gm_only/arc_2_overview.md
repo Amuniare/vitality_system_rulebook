@@ -88,36 +88,70 @@
 
 ### Grey Knights - Kill-Team Castor
 
+
+#### **Dramatic Entrance**
+• **Thunderhawk descent through storm-wracked atmosphere** - Twin-engined gunship breaks through cloud cover with retro-thrusters screaming
+• **Psychic presence announcement** - All psykers within 50 kilometers feel the approaching Grey Knights as a cold pressure in their minds
+• **Sanctified weaponry hum** - Nemesis weapons emanate low psychic resonance that makes reality feel more solid and ordered
+• **Terminator teleportation** - Justicar Castor and Terminators materialize in crackling energy fields directly onto the battlefield
+• **Incorruptible authority** - Their mere presence causes lesser daemons to flee and Chaos corruption to recoil
+• **Silent efficiency** - No battle cries or ceremony - they arrive, assess, and begin systematic elimination of supernatural threats
+
+#### **Unit Roster**
+
 **Justicar Castor** (Squad Leader)
-- **Rank**: 150+ years service, veteran of 23 major daemon incursions
-- **Personality**: Coldly analytical, absolutely focused on mission success
-- **Equipment**: Nemesis Force Sword, Storm Bolter, Terminator Armor
-- **Psychic Powers**: Powerful psyker specializing in daemon binding/banishment
+• **Rank**: 150+ years service, veteran of 23 major daemon incursions
+• **Personality**: Coldly analytical, absolutely focused on mission success
+• **Equipment**: Nemesis Force Sword, Storm Bolter, Terminator Armor
+• **Psychic Powers**: Powerful psyker specializing in daemon binding/banishment
 
 **4 Grey Knight Terminators**
-- **Role**: Heavy assault specialists for tomb penetration
-- **Equipment**: Nemesis weapons (2 swords, 1 halberd, 1 hammer), psycannons
-- **Capabilities**: Can fight C'tan shards directly (briefly)
+• **Role**: Heavy assault specialists for tomb penetration
+• **Equipment**: Nemesis weapons (2 swords, 1 halberd, 1 hammer), psycannons
+• **Capabilities**: Can fight C'tan shards directly (briefly)
+• **Armor**: Tactical Dreadnought Armor with built-in teleportation systems
+• **Deployment**: Deep strike capability for surgical insertion into high-threat zones
 
 **5 Grey Knight Strike Squad**
-- **Role**: Rapid assault and artifact recovery
-- **Equipment**: Nemesis Force Swords, Storm Bolters, standard power armor
-- **Specialization**: Psychic resonance detection for finding Tesseract Labyrinths
+• **Role**: Rapid assault and artifact recovery
+• **Equipment**: Nemesis Force Swords, Storm Bolters, standard power armor
+• **Specialization**: Psychic resonance detection for finding Tesseract Labyrinths
+• **Mobility**: Personal teleporters for battlefield repositioning
+• **Training**: Expert in close-quarters combat against supernatural entities
 
-**5 Grey Knight Interceptor Squad**
-- **Role**: Mobile reconnaissance and enemy elimination
-- **Equipment**: Personal teleporters, Nemesis weapons, incinerators
-- **Capability**: Can bypass Necron defensive positions via teleportation
+**10 Grey Knight Interceptor Squad**
+• **Role**: Mobile reconnaissance and enemy elimination
+• **Equipment**: Personal teleporters, Nemesis weapons, incinerators
+• **Capability**: Can bypass Necron defensive positions via teleportation
+• **Tactics**: Hit-and-run strikes, flanking maneuvers, rapid extraction
+• **Specialty**: Purging corrupted areas with blessed flame weapons
 
-**Mission Parameters**:
-- **Primary**: Recover minimum 3 Tesseract Labyrinths before full awakening
-- **Secondary**: Assess tomb threat level for potential Exterminatus recommendation
-- **Tertiary**: Eliminate any daemon corruption in beastmen population
+**1 Grey Knight Nemesis Dreadknight**
+• **Role**: Heavy assault walker for anti-armor operations
+• **Equipment**: Nemesis Doomfist, Heavy Psycannon, Personal Teleporter
+• **Pilot**: Veteran Grey Knight permanently bonded with machine spirit
+• **Capabilities**: Can engage Necron heavy constructs and tomb spyders
+• **Special**: Psychically-enhanced targeting systems ignore most Necron defenses
 
-**Authority Limitations**:
-- Cannot operate freely in Rogue Trader claimed territory without permission
-- Must justify actions to Inquisition if civilian casualties exceed acceptable parameters
-- Bound by Months of Shame protocols regarding Space Wolf cooperation
+**1 Grey Knight Thunderhawk**
+• **Role**: Orbital insertion and fire support platform
+• **Equipment**: Twin-linked Heavy Bolters, Typhoon Missile Launchers, Turbo-laser Destructor
+• **Crew**: Chapter serfs trained in daemon detection protocols
+• **Capabilities**: Orbital bombardment, troop transport (30 Grey Knights), aerial reconnaissance
+• **Special**: Sanctified hull provides protection against Warp-based attacks
+
+#### **Mission Parameters**
+• **Primary**: Recover minimum 3 Tesseract Labyrinths before full awakening
+• **Secondary**: Assess tomb threat level for potential Exterminatus recommendation  
+• **Tertiary**: Eliminate any daemon corruption in beastmen population
+• **Authority**: Absolute jurisdiction over supernatural threats, can override local command
+• **Extraction**: Will depart immediately upon mission completion - no extended cooperation
+
+#### **Authority Limitations**
+• Cannot operate freely in Rogue Trader claimed territory without permission
+• Must justify actions to Inquisition if civilian casualties exceed acceptable parameters
+• Bound by Months of Shame protocols regarding Space Wolf cooperation
+• **Classified Operations**: True mission objectives remain need-to-know basis
 
 ### Beastmen Tribal Breakdown
 
@@ -251,41 +285,13 @@
 
 **Moral Complexity**: Some gene-seed may be in dangerous positions requiring risk to living Marines
 
-#### Scene 7: Strategic Withdrawal and Grey Knights Arrival (30 minutes)
-**Location**: Return to Ironhold City as storm breaks
 
-**Debrief with Governor Voss**:
-- Revelation of full Necron threat scope
-- Governor's admission of hiding contact for three years
-- Discussion of options: report to sector (orbital bombardment) vs. handle locally
 
-**Grey Knights Dramatic Entrance**:
-- **Arrival**: Thunderhawk gunship descending through storm
-- **Impression**: Absolute authority and grim purpose
-- **Immediate Tension**: Space Wolves stiffen, hands move to weapons
-- **Cliffhanger**: "We need to talk. All of us. Now."
+
 
 ### Session 2: "Unholy Alliances" - Political Maneuvering
 
-#### Opening: Three-Way Authority Crisis (45 minutes)
-**Location**: Governor's command center  
-**Participants**: Players, Justicar Castor, Pack Leader Bjorn, Governor Voss
 
-**Competing Claims**:
-- **Grey Knights**: Inquisition authority over xenos threats
-- **Space Wolves**: Territorial rights over recruitment world
-- **Rogue Traders**: Legal claim to discoveries and salvage rights
-- **Governor**: Planetary authority and knowledge of local conditions
-
-**Information Exchange**:
-- **Grey Knights**: Reveal Tesseract Labyrinth mission, daemon imprisonment needs
-- **Space Wolves**: Demand gene-seed recovery priority and tribal integration rights
-- **Players**: Can broker compromise or choose sides
-
-**Negotiated Agreement Options**:
-1. **Joint Operation**: Share resources and intelligence, divide rewards
-2. **Sequential Priorities**: Handle immediate threat first, settle authority later
-3. **Territorial Division**: Assign specific responsibilities to each faction
 
 #### Scene 1: Necron Escalation - First Major Attack (60 minutes)
 **Location**: Ironhold City perimeter  

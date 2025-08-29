@@ -18,7 +18,7 @@ SKIP_DIRECTORY_TREE = True  # Set to True to skip directory tree generation
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'rogue_trader'
+DEFAULT_PRESET = 'rogue_trader_character_builder'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude
@@ -42,13 +42,6 @@ PRESETS = {
         'tools/build_game_data.py'
     ],
     
-
-
-
-
-
-
-
     'data_transfer': [
         'frontend/rules/rulebook.md',
         'modernApp/',
@@ -98,10 +91,12 @@ PRESETS = {
         'frontend/rules/rulebook.md',
     ],
 
-    'character_builder': [
+    'rogue_trader_character_builder': [
         'all_data/characters/extracted/',
-        'all_data/characters/testing/',
-        'frontend/rules/rulebook.md'
+        'frontend/rules/rulebook.md',
+        'all_data/characters/testing/template.json',
+        'frontend/campaigns/rogue_trader/gm_only/char_sheet_gen.md',
+        
     ],
 
 

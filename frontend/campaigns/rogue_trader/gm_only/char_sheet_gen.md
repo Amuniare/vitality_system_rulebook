@@ -1,614 +1,645 @@
-# **The Complete Character Creation Guide: A Comprehensive Journey (Updated)**
+# **THE COMPLETE CHARACTER CREATION GUIDE - PIECE 1: THEORETICAL FRAMEWORK AND SYSTEMS**
 
-## **The Foundation: Understanding the Problem Space**
+## **FOUNDATION: THE SYSTEMATIC ENGINEERING APPROACH**
 
-We began with your Arc 2 plan for Fenris Tertius - a complex multi-faction conflict involving Necrons, Space Wolves, Grey Knights, and various beastmen tribes. You needed character sheets created in JSON format for about 15 different enemy types, ranging from basic infantry to elite commanders and vehicles. The key insight came when you said: "review my other characters to get a feel for your building style" - this established that character creation isn't arbitrary but follows consistent, learnable patterns.
+Character creation in this system operates as systematic engineering, not creative improvisation. Every element follows rigorous principles learned through iterative development, systematic error correction, and pattern recognition across hundreds of character implementations. This is not a creative writing exercise - it's mechanical engineering with strict constraints that must be mastered, never circumvented.
 
-## **Breakthrough #1: The Template Discovery**
+We began with Arc 2 planning for Fenris Tertius - a complex multi-faction conflict involving Necrons, Space Wolves, Grey Knights, and beastmen tribes. The requirement: JSON character sheets for approximately 15 different enemy types, ranging from basic infantry to elite commanders and vehicles. The critical insight emerged when instructed to "review my other characters to get a feel for your building style" - establishing that character creation follows consistent, learnable patterns rather than arbitrary decisions.
 
-By analyzing your existing character JSONs (Sister Inés, Vale, Primus, Purestrain Genestealers, Hormagaunts, Lightning Psyker, etc.), I identified 6 distinct character templates you consistently use:
+**The Fundamental Principle**: Creativity emerges from clever combinations of existing elements, never from inventing new mechanics.
+
+## **BREAKTHROUGH #1: THE TEMPLATE DISCOVERY SYSTEM**
+
+Through systematic analysis of existing character JSONs (Sister Inés, Vale, Primus, Purestrain Genestealers, Hormagaunts, Lightning Psyker, Necron Warriors, Captain Bjorn, etc.), six distinct character templates were identified. These templates represent fundamental tactical roles in combat encounters, each with characteristic strengths, weaknesses, and optimization patterns that create tactical decisions for players.
 
 ### **Template 1: Basic Infantry**
 - **Power Level**: Tier 3-4, 10-25 HP
-- **Role**: Rank-and-file troops, cannon fodder, basic threats
-- **Combat**: 1-2 simple attacks, moderate accuracy/damage
-- **Defenses**: Basic survivability, relies on numbers rather than individual power
-- **Special Abilities**: Minimal unique abilities, often just basic traits
-- **Optimization**: Often uses "Peaked" or simple conditional traits for stat bonuses
-- **Examples**: PDF troopers, basic cultists, tribal warriors
+- **Role**: Rank-and-file troops, cannon fodder, numerical threats
+- **Combat Pattern**: 1-2 simple attacks, moderate accuracy and damage output
+- **Defensive Strategy**: Basic survivability, relies on numbers rather than individual durability
+- **Special Abilities**: Minimal unique abilities, often just basic traits for focused bonuses
+- **Optimization Philosophy**: Uses "Peaked" or simple conditional traits for stat enhancement
+- **Battlefield Function**: Swarm tactics, area denial through numbers, resource attrition
+- **Examples**: PDF troopers, basic cultists, tribal warriors, grunt-level xenos
 
-### **Template 2: Elite Infantry**
-- **Power Level**: Tier 4-5, 25-50 HP  
-- **Role**: Experienced soldiers, specialists, mid-tier threats
-- **Combat**: 2-3 attacks with meaningful special modifiers
-- **Defenses**: Good survivability in specialized areas
-- **Special Abilities**: 1-2 significant unique abilities
-- **Optimization**: Strategic use of flaws like "Balanced" to boost key stats
-- **Examples**: Space Marine squads, elite cultists, veteran troops
+**Statistical Characteristics**:
+- Combat Attributes: 6-8 total points (Tier × 2)
+- Utility Attributes: 3-4 total points (Tier)
+- Point Budget: 15-30 points main pool
+- Common Spending: Peaked trait (30p) for accuracy or damage focus
+
+### **Template 2: Elite Infantry**  
+- **Power Level**: Tier 4-5, 25-50 HP
+- **Role**: Experienced soldiers, specialists, mid-tier threats requiring tactical consideration
+- **Combat Pattern**: 2-3 attacks with meaningful special modifiers and tactical options
+- **Defensive Strategy**: Good survivability in specialized areas, condition resistances
+- **Special Abilities**: 1-2 significant unique abilities creating tactical complexity
+- **Optimization Philosophy**: Strategic use of Regeneration + defensive traits for sustainability
+- **Battlefield Function**: Elite strike forces, specialists, veteran formations
+- **Examples**: Space Marine squads, elite cultists, veteran troops, specialist xenos
+
+**Statistical Characteristics**:
+- Combat Attributes: 8-10 total points
+- Point Budget: 30-60 points main pool
+- Common Spending: Regeneration (60p) + Peaked trait (30p) combination
+- Defensive Focus: Resilient or Fortress archetypes with condition resistance
 
 ### **Template 3: Heavy Elite/Monster**
-- **Power Level**: Tier 5-6, 50-100 HP
-- **Role**: Leaders, champions, major threats requiring coordination to defeat
-- **Combat**: Multiple specialized attacks with extensive modifiers
-- **Defenses**: High across the board or specialized resistances
+- **Power Level**: Tier 5-6, 50-100 HP  
+- **Role**: Leaders, champions, major threats requiring coordinated player response
+- **Combat Pattern**: Multiple specialized attacks with extensive modifier combinations
+- **Defensive Strategy**: High statistics across multiple areas or specialized immunities
 - **Special Abilities**: Multiple unique abilities creating complex tactical challenges
-- **Optimization**: Minimal flaws, relies on high base stats and expensive abilities
-- **Examples**: Space Marine Captains, Chaos Champions, major xenos
+- **Optimization Philosophy**: Minimal limitations, relies on high base stats and expensive abilities
+- **Battlefield Function**: Centerpiece threats, boss encounters, tactical focal points
+- **Examples**: Space Marine Captains, Chaos Champions, major xenos creatures, elite vehicles
+
+**Statistical Characteristics**:
+- Combat Attributes: 10-12 total points
+- Point Budget: 60-120 points main pool
+- Common Spending: Multiple 60-90 point abilities, advanced trait combinations
+- Defensive Focus: Immutable or advanced defensive combinations
 
 ### **Template 4: Psyker/Caster**
-- **Power Level**: Variable tier, moderate HP
-- **Role**: Battlefield control, condition application, support/disruption
-- **Combat**: Direct/Ranged attacks focused on condition effects rather than raw damage
-- **Defenses**: High mental resistances, moderate physical protection
-- **Special Abilities**: Psyker abilities, condition-based effects, area control
-- **Optimization**: Physical limitations accepted for mental/magical bonuses
-- **Examples**: Chaos Sorcerers, Imperial Psykers, xenos mind-controllers
+- **Power Level**: Variable tier, moderate HP relative to combat capability
+- **Role**: Battlefield control, condition application, support and disruption specialist
+- **Combat Pattern**: Direct/Ranged attacks focused on condition effects rather than raw damage
+- **Defensive Strategy**: High mental resistances, moderate physical protection
+- **Special Abilities**: Condition-based effects, area control, mental manipulation
+- **Optimization Philosophy**: Accept physical limitations for mental/magical dominance
+- **Battlefield Function**: Force multipliers, area control, condition warfare
+- **Examples**: Chaos Sorcerers, Imperial Psykers, xenos mind-controllers, temporal manipulators
+
+**Statistical Characteristics**:
+- Combat Focus: High Power/Intelligence, moderate Focus
+- Archetype Preference: Direct Specialist + Crowd Control combination
+- Common Abilities: Counter, advanced condition effects, aura abilities
 
 ### **Template 5: Support/Specialist**
-- **Power Level**: Mid-tier, moderate HP
+- **Power Level**: Mid-tier, moderate HP with specialized utility focus
 - **Role**: Healing, utility, battlefield support, technical specialists
-- **Combat**: Limited but effective attacks, not primary combat role
-- **Defenses**: Good survivability but not front-line durability
-- **Special Abilities**: Healing, utility abilities, expertise bonuses
-- **Optimization**: Combat limitations accepted for utility bonuses
-- **Examples**: Medics, tech-priests, support characters
+- **Combat Pattern**: Limited but effective attacks, combat is secondary to utility role
+- **Defensive Strategy**: Good survivability but not front-line durability
+- **Special Abilities**: Healing abilities, utility effects, expertise bonuses
+- **Optimization Philosophy**: Accept combat limitations for utility capabilities
+- **Battlefield Function**: Force enablers, logistics, technical support, medical aid
+- **Examples**: Medics, tech-priests, support specialists, battlefield engineers
+
+**Statistical Characteristics**:
+- Balanced attributes with utility focus
+- Common Abilities: Heal (30p+), utility Features, expertise bonuses
+- Archetype Preference: Specialized utility + basic combat capability
 
 ### **Template 6: Vehicle/Construct**
-- **Power Level**: High tier, 50+ HP
+- **Power Level**: High tier, 50+ HP with specialized resistances
 - **Role**: Heavy weapons platforms, mobile artillery, armored threats
-- **Combat**: Multiple weapon systems, often heavy weapons with different roles
-- **Defenses**: Excellent durability, may have special resistances or immunities
-- **Special Abilities**: Vehicle-specific abilities like overwatch, targeting systems
-- **Optimization**: Mobility or targeting limitations balanced against firepower
-- **Examples**: Tanks, walkers, large constructs
+- **Combat Pattern**: Multiple weapon systems with different tactical roles
+- **Defensive Strategy**: Excellent durability, special resistances or immunities
+- **Special Abilities**: Vehicle-specific capabilities, targeting systems, heavy weapons
+- **Optimization Philosophy**: Balance mobility/targeting limitations against firepower
+- **Battlefield Function**: Heavy support, area denial, mobile firepower platforms
+- **Examples**: Tanks, walkers, large constructs, artillery pieces, flying vehicles
 
-**Critical Insight**: These templates aren't just guidelines - they represent fundamental tactical roles in your combat encounters. Each template fills a specific battlefield niche and has characteristic strengths/weaknesses that create interesting tactical decisions for players.
+**Statistical Characteristics**:
+- High Power/Focus for weapon systems
+- Archetype Preference: Cut Above or Extraordinary for point efficiency
+- Common Abilities: Regeneration for self-repair, specialized weapon systems
 
-## **Breakthrough #2: The Archetype System Crisis and Resolution**
+**Critical Template Insight**: These templates aren't guidelines - they're fundamental battlefield roles. Each fills a specific tactical niche with characteristic strengths/weaknesses creating interesting tactical decisions for players.
 
-This was our most important learning experience. I repeatedly confused the different archetype categories, leading to the critical correction: **"Why do you keep putting effect type as direct???"**
+## **BREAKTHROUGH #2: THE ARCHETYPE SYSTEM CRISIS AND MASTERY**
 
-### **The Seven Archetype Categories (COMPREHENSIVE)**
+The most critical learning experience involved systematic confusion of different archetype categories, leading to the fundamental correction: **"Why do you keep putting effect type as direct???"** This established the crucial distinction between how attacks are delivered versus what they accomplish.
 
-#### **1. MOVEMENT ARCHETYPES** - *How you move around the battlefield*
-- **Swift**: Movement speed increased by half your Tier (rounded up)
-  - **Tier 3-4**: +2 movement, **Tier 5-6**: +3 movement, etc.
-  - **Use Case**: Fast skirmishers, scouts, hit-and-run specialists
-- **Skirmisher**: No punish attacks for moving + +1 space melee reach
-  - **Use Case**: Mobile fighters who weave through enemy lines
-- **Behemoth**: Immune to Grabbed, Moved, Prone, Stunned
-  - **Use Case**: Heavy units that maintain positioning regardless of enemy interference
-- **Vanguard**: Enemies adjacent start turn with halved movement + punish attack movement
-  - **Use Case**: Zone control specialists who lock down areas
-- **Alternative Movement**: Flight, Teleportation, Portal, etc.
-  - **Use Case**: Specialized movement for unique tactical roles
-  - **Flight Example**: Anti-gravity vehicles, phase-shifting constructs
+### **THE SEVEN ARCHETYPE CATEGORIES - COMPREHENSIVE SYSTEM**
 
-#### **2. ATTACK TYPE ARCHETYPES** - *How you deliver attacks*
-- **Single Target**: Gain Melee AND Ranged attack types for 0p
-  - **Most versatile combat approach** - can engage at any range
-  - **Use Case**: 90% of characters - provides maximum tactical flexibility
-- **AOE Specialist**: Gain AOE attack type for 0p
-  - **Crowd control focus** - hits multiple enemies but weaker individual damage
-  - **Use Case**: Swarm clearers, area denial, explosives specialists
-- **Direct Specialist**: Gain Direct attack type for 0p
-  - **Reliable delivery** - cannot be dodged, perfect for consistent effects
-  - **Use Case**: Psykers, condition applicators, support characters
-  - **CRITICAL**: Direct attacks ignore accuracy entirely - accuracy bonuses are useless
+#### **CATEGORY 1: MOVEMENT ARCHETYPES - Battlefield Mobility Control**
 
-#### **3. EFFECT TYPE ARCHETYPES** - *What your attacks accomplish*
-- **Damage Specialist**: Focus purely on dealing damage
-  - **Maximum damage potential** against single targets
-  - **Can still use Basic Conditions as separate attacks**
-  - **Use Case**: 70% of combat characters - straightforward damage dealers
-- **Hybrid Specialist**: All attacks MUST combine damage and conditions
-  - **Mandatory Hybrid Attacks** - versatile but less powerful in each aspect
-  - **Use Case**: Characters who need to do damage AND apply effects
-  - **Technical**: Requires `"Hybrid": "2"` and `"RollCN": "3"` in JSON
-- **Crowd Control**: Free access to 2 Advanced condition effects (chosen at selection)
-  - **Trade-off**: -Tier to all Damage rolls
-  - **Use Case**: Pure support/control characters, debuffers
+**Swift**
+- **Mechanical Effect**: Movement speed increased by half Tier (rounded up)
+- **Scaling**: Tier 3-4: +2 movement, Tier 5-6: +3 movement, Tier 7-8: +4 movement, Tier 9-10: +5 movement
+- **Use Case**: Fast skirmishers, scouts, hit-and-run specialists, mobile flankers
+- **Tactical Implications**: Superior positioning, ability to engage/disengage at will
+- **Synergies**: Works excellently with ranged builds, kiting strategies
+- **JSON Implementation**: Tracking trait with `"traitMBonus": "X"`
 
-#### **4. DEFENSIVE ARCHETYPES** - *How you survive*
-- **Stalwart**: Subtract Tier from Avoidance Score + choose Physical OR Non-Physical half damage
-  - **Use Case**: Tanks with damage type specialization
-- **Fortress**: Add Tier again to Durability
-  - **Use Case**: Most common - consistent protection against all damage
-  - **INCOMPATIBILITY**: Cannot meaningfully stack with Shield unique ability
-- **Resilient**: Add Tier to all three Secondary Resistances (Resolve, Stability, Vitality)
-  - **Use Case**: Condition-resistant characters, chaos-corrupted beings
-  - **COMPATIBILITY**: Works well with Regeneration
-- **Immutable**: Choose one Secondary Resistance type for complete immunity
-  - **Use Case**: Highly specialized defensive builds
-- **Juggernaut**: Increase maximum Health Pool by 5 × Tier
-  - **Use Case**: High-HP tanks, regenerating creatures
-  - **CRITICAL INCOMPATIBILITY**: Cannot be combined with Regeneration ability
+**Skirmisher**
+- **Mechanical Effect**: No punish attacks for moving + +1 space melee reach extension
+- **Use Case**: Mobile fighters who weave through enemy lines, dancing combatants
+- **Tactical Implications**: Can reposition without penalty, extended melee threat range
+- **Synergies**: Excellent with melee builds requiring positioning flexibility
+- **JSON Implementation**: No stat bonuses, immunity and reach tracking
 
-#### **5. SPECIAL ATTACK ARCHETYPES** - *How you develop unique combat abilities*
-- **Normal**: Select 3 Specialty Upgrades at half cost + Limits provide Points × (Tier ÷ 6)
-  - **Maximum customization flexibility**
-- **Paragon**: Each special attack receives 10 × Tier points, cannot take Limits
-  - **Consistent performance without drawbacks**
-  - **Use Case**: Elite characters with reliable, powerful attacks
-- **One Trick**: Single attack with Tier × 20 points, cannot take Limits
-  - **High-risk, high-reward specialization**
-  - **Use Case**: Specialists with one devastating ability
-- **Dual-Natured**: Two distinct Special Attacks, each gets 15 × Tier points, cannot take Limits
-  - **Balanced versatility**
-  - **Use Case**: Most common for NPCs - provides tactical variety
-- **Basic**: Tier × 10 points for base attack improvements only, no special attacks
-  - **CRITICAL RULE**: Only use with Versatile Master unique ability
-  - **Why**: Base attack improvements only shine with extra quick actions
+**Behemoth**
+- **Mechanical Effect**: Complete immunity to Grabbed, Moved, Prone, and Stunned conditions
+- **Use Case**: Heavy units that maintain positioning regardless of enemy interference
+- **Tactical Implications**: Positional stability, immune to displacement tactics
+- **Synergies**: Perfect for heavy weapons platforms, defensive positions
+- **JSON Implementation**: No stat bonuses, immunity tracking only
 
-#### **6. UNIQUE ABILITY ARCHETYPES** - *Special capabilities beyond standard actions*
-- **Versatile Master**: Gain 2 Quick Actions per turn + convert Primary Actions to Quick Actions
-  - **Use Case**: Characters who need to act frequently or use Basic special attacks
-- **Extraordinary**: Additional points: (Tier - 2) × 15 added to main pool
-  - **Restriction**: Can only spend up to (Tier - 2) × 15 points on Flaws or Traits
-  - **Use Case**: Most common for NPCs - provides points for abilities and traits
-- **Cut Above**: Universal stat bonuses to all core stats
-  - **Tiers 1-4**: +1 to all, **Tiers 5-7**: +2 to all, **Tiers 8+**: +3 to all
-  - **Use Case**: Straightforward characters who don't need special abilities
-  - **OPTIMIZATION**: Often preferred over Extraordinary for vehicles/constructs
+**Vanguard**
+- **Mechanical Effect**: Adjacent enemies start turn with halved movement + punish attack on movement
+- **Use Case**: Zone control specialists who lock down battlefield areas
+- **Tactical Implications**: Area denial, forces enemies into disadvantageous positions
+- **Synergies**: Excellent for commanders, defensive specialists, area control
+- **JSON Implementation**: No stat bonuses, special ability tracking
 
-#### **7. UTILITY ARCHETYPES** - *Non-combat capabilities*
-- **Practical**: Select 3 skills, add Tier twice to skill checks using those skills
-  - **Use Case**: Player characters with specific skill focuses
-- **Specialized**: Choose an Attribute, add Tier twice to skill checks using that Attribute
-  - **Use Case**: Most common for NPCs - simple and effective
-- **Jack of All Trades**: Add Tier once to all skill checks
-  - **Use Case**: Versatile characters, leaders, generalists
-  - **RESTRICTION**: Only use Jack of All Trades or Specialized for generated characters
+**Alternative Movement Options**
+- **Flight**: Move in any direction, ignore ground obstacles, no terrain penalties
+- **Teleportation**: Instant movement to visible locations, -2 sp movement penalty
+- **Portal**: Create linked portals within movement range, tactical repositioning
+- **Burrowing**: Move through earth/rock at half speed, underground mobility
+- **Super Jump**: Leap full movement in single action, vertical mobility
+- **Swinging**: Connect to surfaces, move on any solid surface, enhanced mobility
 
-### **Critical Archetype Combination Rules**
-1. **Regeneration + Juggernaut**: Cannot be combined (learned through correction)
-2. **Basic Special Attack**: Only use with Versatile Master (learned through correction)
-3. **Effect Type**: Determines what attacks DO, not how they're delivered
-4. **Attack Type**: Determines delivery method, not effect type
-5. **Fortress + Shield**: Redundant/incompatible - don't stack defensive bonuses
-6. **Direct Attacks + Accuracy**: Accuracy bonuses are useless for Direct attack builds
+**Use Case Analysis**: Specialized movement for unique tactical roles and environmental challenges
 
-## **Breakthrough #3: Attack Modifier Rules and Restrictions (EXPANDED)**
+#### **CATEGORY 2: ATTACK TYPE ARCHETYPES - Combat Engagement Methods**
 
-Through multiple corrections, we discovered critical rules about attack modifiers:
+**Single Target**
+- **Mechanical Effect**: Gain Melee AND Ranged attack types for 0 points
+- **Use Case**: 90% of characters - provides maximum tactical flexibility
+- **Advantage**: Most versatile combat approach, can engage at any range effectively
+- **Tactical Implications**: No range restrictions, optimal positioning freedom
+- **Optimization**: Standard choice unless specific tactical role requires specialization
 
-### **Mandatory Pairings**
-- **Double Tap**: Must always be paired with **Crit AC** (Critical Accuracy)
-- **Powerful Critical**: Must always be paired with **Crit AC** (Critical Accuracy)
-- **Explosive Critical**: Must be paired with **Crit AC**, but avoid in most contexts
-- **Reasoning**: These abilities enhance critical hits, so you need the ability to crit more often
+**AOE Specialist** 
+- **Mechanical Effect**: Gain AOE attack type for 0 points
+- **Use Case**: Crowd control focus, swarm clearers, area denial specialists
+- **Trade-off**: Hits multiple enemies but weaker individual target damage
+- **Tactical Implications**: Excel against groups, weaker against single high-value targets
+- **Synergies**: Perfect for anti-infantry roles, defensive positions
 
-### **Incompatible Combinations**
-- **High Impact**: Cannot be paired with **Critical Effect** or **Reliable Effect**
-- **Enhanced Effect**: Cannot be paired with **High Impact**
-- **Reasoning**: These represent different approaches to damage enhancement
-- **Solution**: Choose one damage enhancement approach per attack
+**Direct Specialist**
+- **Mechanical Effect**: Gain Direct attack type for 0 points
+- **Use Case**: Psykers, condition applicators, support characters requiring reliable delivery
+- **Advantage**: Cannot be dodged, perfect for consistent effect application
+- **CRITICAL OPTIMIZATION RULE**: Direct attacks ignore accuracy entirely - accuracy bonuses are completely wasted
+- **Tactical Implications**: Guaranteed hit chance, ideal for support/control roles
 
-### **Valid Damage Enhancement Combinations**
-- **Enhanced Effect + Reliable Effect + Critical Effect**: All compatible
-- **High Impact + Armor Piercing + Brutal**: All compatible
-- **Crit AC + Powerful Critical + Double Tap**: All compatible
+#### **CATEGORY 3: EFFECT TYPE ARCHETYPES - Combat Purpose and Outcome**
 
-### **Attack Type Classifications**
-- **AttackType "0"**: Melee attacks
-- **AttackType "1"**: AOE attacks  
-- **AttackType "2"**: Ranged attacks
-- **AttackType "3"**: Direct attacks
+**Damage Specialist**
+- **Mechanical Effect**: Focus purely on dealing damage to enemy HP
+- **Use Case**: 70% of combat characters - straightforward damage dealers
+- **Advantage**: Maximum damage potential against single targets
+- **Flexibility**: Can still use Basic Conditions as separate attacks when needed
+- **Optimization**: Standard choice for primary combatants
 
-### **Effect Type Classifications**
-- **EffectType "0"**: Pure damage
-- **EffectType "4"**: Hybrid (damage + conditions)
-- **EffectType "9"**: Pure conditions
+**Hybrid Specialist**
+- **Mechanical Effect**: All attacks MUST combine damage and conditions simultaneously
+- **Use Case**: Characters needing to accomplish damage AND condition effects efficiently
+- **Trade-off**: Versatile but less powerful in each individual aspect
+- **Technical Requirement**: Must use Hybrid "2" and RollCN "3" in JSON implementation
+- **Tactical Implications**: Efficient action economy, applies pressure and control simultaneously
 
-### **Hybrid Attack Requirements**
-- **Hybrid "2"**: Must specify **RollCN "3"** (roll for conditions)
-- **Purpose**: Indicates the attack does both damage and applies conditions
-- **Example**: Twin Tesla Cannon with electrical stun effects
+**Crowd Control**
+- **Mechanical Effect**: Free access to 2 Advanced condition effects, -Tier to all damage rolls
+- **Use Case**: Pure support/control characters, debuffers, battlefield manipulators
+- **Trade-off**: Significantly reduced damage output for enhanced control capability
+- **Advanced Conditions Available**: Control, Stun, Weaken, Disable Specials, Frighten, Enthrall, Frenzy
+- **Tactical Implications**: Force multiplier through enemy debilitation rather than direct damage
 
-## **Breakthrough #4: Point Allocation and Spending Patterns (UPDATED)**
+#### **CATEGORY 4: DEFENSIVE ARCHETYPES - Survival Strategy Implementation**
 
-### **Main Pool Calculation**
-- **Formula**: (Tier - 2) × 15 points
-- **Tier 3**: 15 points, **Tier 4**: 30 points, **Tier 5**: 45 points, **Tier 6**: 60 points
+**Fortress**
+- **Mechanical Effect**: Add Tier again to Durability score
+- **Use Case**: Most common defensive choice - consistent protection against all damage types
+- **Advantage**: Simple, reliable, effective against all threats
+- **Scaling**: Tier 4: +4 Durability, Tier 6: +6 Durability, Tier 8: +8 Durability
+- **CRITICAL INCOMPATIBILITY**: Cannot meaningfully stack with Shield unique ability
+- **JSON Implementation**: Tracking trait with `"traitDrBonus": "X"`
 
-### **Extraordinary Bonus**
-- **Additional Points**: Same as base main pool
-- **Tier 3**: +15 points (30 total), **Tier 4**: +30 points (60 total), etc.
+**Resilient**
+- **Mechanical Effect**: Add Tier to all three Secondary Resistances (Resolve, Stability, Vitality)
+- **Use Case**: Condition-resistant characters, chaos-corrupted beings, mental defense specialists
+- **Advantage**: Superior protection against condition-based attacks and mental effects
+- **COMPATIBILITY**: Works excellently with Regeneration for comprehensive survivability
+- **Scaling**: Provides significant protection against all condition types
+- **JSON Implementation**: `"traitRsBonus": "X", "traitSbBonus": "X", "traitVtBonus": "X"`
 
-### **Common Spending Patterns**
-- **Regeneration**: Always costs 60 points regardless of tier
-- **Shield**: Variable cost, typically 60-90 points for meaningful protection
-- **Traits**: Always cost 30 points each
-- **Features**: DON'T MAKE THEM UP - stick to descriptions only
+**Stalwart**
+- **Mechanical Effect**: Subtract Tier from Avoidance Score + choose Physical OR Non-Physical half damage
+- **Use Case**: Tanks with damage type specialization, situational defense specialists
+- **Trade-off**: Reduced dodge capability for specialized damage resistance
+- **Strategic Application**: Excellent when enemy damage types are predictable
+- **Tactical Implications**: Requires tactical knowledge of enemy capabilities
 
-### **Regeneration Amounts by Tier**
-- **Tiers 1-4**: 20 HP per turn
-- **Tiers 5-6**: 30 HP per turn  
-- **Tiers 7-8**: 40 HP per turn
-- **Tiers 9-10**: 50 HP per turn
+**Immutable**
+- **Mechanical Effect**: Choose one Secondary Resistance type for complete immunity
+- **Use Case**: Highly specialized defensive builds, constructs, undead
+- **Most Common**: Resolve immunity for constructs and undead creatures
+- **Advantage**: Complete immunity to specific condition types
+- **JSON Implementation**: `"traitRsBonus": "50"` (or other resistance type)
 
-### **Critical Spending Rules**
-1. **NEVER INVENT FEATURES NOT IN THE RULES** (most important lesson)
-2. **It's okay to leave points unused** rather than force bad spending
-3. **Shield points should be specified** in the unique ability description
-4. **Regeneration + Resilient** is a strong defensive combination
-5. **Cut Above** often better than Extraordinary for high-tier vehicles
+**Juggernaut**
+- **Mechanical Effect**: Increase maximum Health Pool by 5 × Tier
+- **Use Case**: High-HP attrition warfare tanks, damage sponges
+- **Scaling**: Tier 4: +20 HP, Tier 6: +30 HP, Tier 8: +40 HP
+- **CRITICAL INCOMPATIBILITY**: Cannot be combined with Regeneration ability
+- **Tactical Implications**: Emphasizes durability through raw HP rather than damage mitigation
 
-### **Point Spending Optimization Patterns**
-- **Basic Infantry (30-45 points)**: Usually Peaked trait + leftover points
-- **Elite Infantry (60-90 points)**: Regeneration + Peaked, or Shield + abilities
-- **Heavy Elite/Vehicles (120+ points)**: Regeneration + Cut Above, or multiple abilities
+#### **CATEGORY 5: SPECIAL ATTACK ARCHETYPES - Combat Complexity and Capability**
 
-## **BREAKTHROUGH #5: The "STOP MAKING UP ABILITIES" Crisis**
+**Dual-Natured**
+- **Mechanical Effect**: Two distinct Special Attacks, each receives 15 × Tier points
+- **Use Case**: Most common choice for NPCs - provides tactical variety and flexibility
+- **Point Scaling**: Tier 4: 60p each, Tier 5: 75p each, Tier 6: 90p each, Tier 7: 105p each
+- **Restriction**: Cannot take Limits to generate additional points
+- **Advantage**: Balanced versatility with meaningful attack options
 
-**THIS WAS THE MOST CRITICAL CORRECTION IN THE ENTIRE PROCESS**
+**One Trick**
+- **Mechanical Effect**: Single attack receives Tier × 20 points for maximum power
+- **Use Case**: Specialists with signature devastating abilities, unique weapon users
+- **Point Scaling**: Tier 4: 80p, Tier 5: 100p, Tier 6: 120p, Tier 7: 140p, Tier 8: 160p
+- **Restriction**: Cannot take Limits, high-risk/high-reward specialization
+- **Tactical Implications**: Devastating single capability, vulnerable to counters
 
-### **The Problem**
-I repeatedly invented abilities that don't exist in the system:
-- **"Wraith Form"** (made up completely)
-- **"Fire Overwatch"** (not a real unique ability)
-- **"Power Armor"** (not a feature in the rules)
-- **"Astartes Physiology"** (completely invented)
-- **"Living Metal"**, **"Mindless"** (not real features)
-- **"Command Presence"** (sometimes real, sometimes made up)
+**Paragon**
+- **Mechanical Effect**: Each special attack receives 10 × Tier points consistently
+- **Use Case**: Elite characters with reliable, consistent power across multiple attacks
+- **Point Scaling**: Tier 4: 40p each, Tier 5: 50p each, Tier 6: 60p each, Tier 7: 70p each
+- **Restriction**: Cannot take Limits, emphasis on consistent performance
+- **Advantage**: Reliable power level without drawbacks or limitations
 
-### **The Corrections**
-- **"WTF, stop making up abilities"**
-- **"HOLY FUCK STOP MAKING UP ABILITIES"**
-- **"FUCKING INSANE"**
-- **"idk where you're getting this from, stop making shit up"**
+**Normal**
+- **Mechanical Effect**: Select 3 Specialty Upgrades at half cost + Limits provide additional points
+- **Use Case**: Maximum customization flexibility, complex builds with trade-offs
+- **Point Generation**: Limits provide Points × (Tier ÷ 6) with scaling efficiency
+- **Advantage**: Highest potential power through careful limit management
+- **Complexity**: Requires mastery of limit system and point optimization
 
-### **The Real Abilities (VERIFIED)**
-- **Regeneration**: Real ability, costs 60 points, HP amount varies by tier
-- **Shield**: Real ability, variable cost, must specify what kind of protection
-- **Invisibility**: Real ability (30 points)
-- **Boost**: Real ability (60 points)
-- **Base Summon**: Real ability system (10p per summon)
+**Specialist**
+- **Mechanical Effect**: All limits must apply to all attacks, enhanced limit returns
+- **Point Generation**: Limits provide Points × (Tier ÷ 3) for doubled efficiency
+- **Trade-off**: Higher returns but more restrictive playstyle requirements
+- **Use Case**: Characters with consistent limitations across all abilities
 
-### **The Lesson**
-- **ONLY USE ABILITIES EXPLICITLY MENTIONED IN THE RULES**
-- **When in doubt, use Regeneration or Shield - they're always valid**
-- **Features are for DESCRIPTIONS, not mechanical abilities**
-- **Don't try to be creative - stick to the system**
+**Straightforward**
+- **Mechanical Effect**: Single limit applies to all attacks, moderate returns
+- **Point Generation**: Limits provide Points × (Tier ÷ 2) for balanced efficiency
+- **Use Case**: Simple but effective approach with manageable trade-offs
 
-### **Safe Fallback Pattern**
-When you want special abilities but aren't sure what's legal:
-1. **Regeneration** (60p) - always works, specify HP amount
-2. **Shield** (60-90p) - always works, describe the protection type
-3. **Cut Above** - simple stat bonuses, no special abilities needed
-4. **Peaked Trait** - simple accuracy/damage bonus
+**Shared Uses**
+- **Mechanical Effect**: 10 shared uses among abilities, regenerate 1 use per turn
+- **Point Discount**: Tier × 5 points per use, cannot take Limits
+- **Use Case**: Resource management builds, attrition-based capabilities
 
-## **Breakthrough #6: Technical JSON Requirements (EXPANDED)**
+**Basic**
+- **Mechanical Effect**: Tier × 10 points for base attack improvements only, no special attacks
+- **CRITICAL RESTRICTION**: Only use with Versatile Master unique ability
+- **Rationale**: Base attack improvements shine with multiple actions per turn
+- **Use Case**: High-frequency action characters, condition specialists
 
-### **Calculated vs. Manual Fields**
-**CRITICAL DISCOVERY**: "Changing these numbers doesn't do anything... you have to change the strings, the numbers are auto-calculated"
+#### **CATEGORY 6: UNIQUE ABILITY ARCHETYPES - Special Capabilities Beyond Standard Actions**
 
-#### **Auto-Calculated Fields (Set to 0)**:
-```json
-"awarenessTotal": 0,
-"communicationTotal": 0,
-"intelligenceTotal": 0,
-"focusTotal": 0,
-"mobilityTotal": 0,
-"enduranceTotal": 0,
-"powerTotal": 0,
-"char_avoidance": 0,
-"char_durability": 0,
-"char_resolve": 0,
-"char_stability": 0,
-"char_vitality": 0,
-"char_accuracy": 0,
-"char_damage": 0,
-"char_conditions": 0,
-"char_movement": 0,
-"char_initiative": 0
+**Extraordinary**
+- **Mechanical Effect**: Additional points equal to main pool: (Tier - 2) × 15
+- **Restriction**: Can only spend up to (Tier - 2) × 15 points on Flaws or Traits
+- **Use Case**: Most common for NPCs - provides substantial points for abilities and traits
+- **Point Scaling**: Tier 4: +30p, Tier 5: +45p, Tier 6: +60p, Tier 7: +75p
+- **Optimization**: Ideal for characters requiring multiple unique abilities
+
+**Cut Above**
+- **Mechanical Effect**: Universal stat bonuses to all core stats
+- **Scaling**: Tiers 1-4: +1 to all, Tiers 5-7: +2 to all, Tiers 8+: +3 to all
+- **Use Case**: Straightforward characters, vehicles/constructs not requiring special abilities
+- **Advantage**: Simple implementation, no point management required
+- **JSON Implementation**: Set modifier fields to appropriate bonus values
+
+**Versatile Master**
+- **Mechanical Effect**: Gain 2 Quick Actions per turn + convert Primary Actions to Quick Actions
+- **Advanced Scaling**: At Tier 8, gain third Quick Action per turn
+- **Use Case**: Characters needing frequent actions, condition specialists, support roles
+- **Synergy**: Essential for Basic special attack archetype effectiveness
+- **Tactical Implications**: Action economy advantage, multiple engagements per turn
+
+#### **CATEGORY 7: UTILITY ARCHETYPES - Non-Combat Capability Development**
+
+**Specialized**
+- **Mechanical Effect**: Choose an Attribute, add Tier twice to skill checks using that Attribute
+- **Use Case**: Most common for NPCs - simple, effective, appropriate for generated characters
+- **Attribute Choices**: Intelligence (technical), Communication (social), Awareness (perceptual)
+- **RESTRICTION**: Only use Specialized or Jack of All Trades for generated characters
+
+**Jack of All Trades**
+- **Mechanical Effect**: Add Tier once to all skill checks across all categories
+- **Use Case**: Versatile characters, leaders, generalists requiring broad capability
+- **Advantage**: Covers all skill scenarios without specialization requirements
+
+**Practical**
+- **Mechanical Effect**: Select 3 specific skills, add Tier twice to checks using those skills
+- **Use Case**: Player characters with focused skill development and specific expertise
+- **Restriction**: More appropriate for player characters than generated NPCs
+
+### **CRITICAL ARCHETYPE COMBINATION RULES - LEARNED THROUGH ERROR CORRECTION**
+
+1. **Regeneration + Juggernaut**: Mechanically incompatible, cannot be combined
+2. **Basic Special Attack**: Only functional with Versatile Master unique ability
+3. **Effect Type vs. Attack Type**: Effect Type determines what attacks accomplish, Attack Type determines delivery method
+4. **Fortress + Shield**: Defensive redundancy, choose one approach rather than stacking
+5. **Direct Attacks + Accuracy**: Accuracy bonuses are completely wasted on Direct attack builds
+6. **Hybrid Requirements**: Must use proper JSON structure with RollCN "3", EffectType "4", Hybrid "2"
+
+## **BREAKTHROUGH #3: ATTACK MODIFIER RULES AND RESTRICTIONS**
+
+Through systematic error correction and pattern analysis, critical rules governing attack modifier combinations were discovered:
+
+### **Mandatory Pairings - Learned Through Correction**
+- **Double Tap**: Must always pair with Critical Accuracy (Critical Enhancement Dependency)
+- **Powerful Critical**: Must always pair with Critical Accuracy (Critical Enhancement Dependency)  
+- **Explosive Critical**: Must pair with Critical Accuracy (Critical Enhancement Dependency)
+- **Fundamental Principle**: Abilities that enhance critical hits require enhanced critical hit capability
+
+### **Incompatible Combinations - Discovered Through Error**
+- **High Impact**: Cannot pair with Critical Effect OR Reliable Effect (Damage Philosophy Conflict)
+- **Enhanced Effect**: Cannot pair with High Impact (Damage Philosophy Conflict)
+- **Fundamental Principle**: Different damage enhancement approaches represent conflicting mechanical philosophies
+
+### **Valid Combination Families - Systematic Compatibility**
+
+**Enhanced Dice Family** (All Compatible):
+- Enhanced Effect + Reliable Effect + Critical Effect + Consistent Effect
+- Philosophy: Enhance dice mechanics and rolling outcomes
+
+**Flat Damage Family** (All Compatible):
+- High Impact + Armor Piercing + Brutal + Finishing Blow + Culling Strike
+- Philosophy: Consistent damage values and armor/defense bypass
+
+**Critical Enhancement Family** (All Compatible):
+- Critical Accuracy + Powerful Critical + Double Tap + Explosive Critical + Ricochet
+- Philosophy: Enhanced critical hit frequency and effectiveness
+
+### **Attack Type Classifications - JSON Implementation**
+- **AttackType "0"**: Melee attacks - adjacent range, Tier bonus to accuracy OR damage
+- **AttackType "1"**: AOE attacks - area effect, -Tier to accuracy, various shapes
+- **AttackType "2"**: Ranged attacks - 15 space base range, -Tier accuracy if adjacent to hostile
+- **AttackType "3"**: Direct attacks - 30 space range, auto-hit, must be condition-only, -Tier to rolls
+
+### **Effect Type Classifications - Mechanical Implementation**
+- **EffectType "0"**: Pure damage focus - maximum HP reduction capability
+- **EffectType "4"**: Hybrid attacks - combines damage and conditions, requires both rolls
+- **EffectType "9"**: Pure conditions - no damage, focuses on battlefield control effects
+
+### **Hybrid Attack Implementation Requirements**
+- **Hybrid "2"**: Must specify for hybrid attacks combining damage and conditions
+- **RollCN "3"**: Required for condition rolls in hybrid or condition-only attacks
+- **Order of Resolution**: Choose damage or condition resolution first - first failure negates entire attack
+- **Penalty Application**: -Tier to ALL damage and condition rolls for versatility cost
+
+## **BREAKTHROUGH #4: POINT ALLOCATION AND SPENDING PATTERNS**
+
+### **Main Pool Calculation - Mathematical Foundation**
+- **Base Formula**: (Tier - 2) × 15 points
+- **Tier Progression**: T3: 15p, T4: 30p, T5: 45p, T6: 60p, T7: 75p, T8: 90p, T9: 105p, T10: 120p
+
+### **Extraordinary Archetype Bonus - Double Resources**
+- **Additional Points**: Same amount as base main pool calculation
+- **Total Available**: Effectively doubles point budget for ability purchases
+- **Restriction**: Can only spend bonus amount on Flaws or Traits, not unlimited ability spending
+
+### **Regeneration Scaling by Tier - Verified Pattern**
+- **Tiers 1-4**: 20 HP per turn recovery
+- **Tiers 5-6**: 30 HP per turn recovery  
+- **Tiers 7-8**: 40 HP per turn recovery
+- **Tiers 9-10**: 50 HP per turn recovery
+- **Cost**: Always 60 points regardless of tier level
+- **Activation**: Occurs at start of each turn automatically
+
+### **Shield Ability Variations - Flexible Implementation**
+- **Base Cost**: 30 points for Tier × 3 HP shield
+- **Shield Scaling**: Tier × 3 base, recovers same amount per turn
+- **Common Upgrades**:
+  - Increased Shielding (15p): +Tier × 3 max shield per purchase
+  - Quick Recovery (15p): +Tier × 3 recovery per turn per purchase
+  - Heavy Shield (-15p): Only recover Tier HP per turn, reduced cost
+- **Typical Implementations**: 60-90 points for meaningful battlefield protection
+
+### **Trait Cost Standards - Consistent Pricing**
+- **All Traits**: 30 points each, no exceptions
+- **Peaked Trait**: +Tier bonus to chosen stat, cannot use Efforts
+- **Conditional Traits**: +Tier bonus to two stats when conditions met, complex activation requirements
+- **Common Peaked Applications**: Accuracy (combat), Damage (combat), Conditions (control), Avoidance (defense), Durability (defense)
+
+### **Verified Unique Abilities - Confirmed Legal Options**
+
+**Regeneration** (60 points):
+- HP recovery varies by tier as specified above
+- Cannot combine with Juggernaut archetype
+- Works excellently with Resilient archetype
+- Standard description: "Regains X HP at start of each turn (Tier Y) - [appropriate description]"
+
+**Shield** (Variable 30-90 points):
+- Must specify protection type and mechanics
+- Cannot meaningfully stack with Fortress archetype
+- Base implementation provides immediate battlefield durability
+- Description must specify shield mechanics and protection type
+
+**Base Summon** (10 points per summon):
+- Creates minion with character's tier, 10 HP base, standard stats
+- Upgrades available for health progression, capabilities, quantity
+- Acts on summoner's initiative, no special attacks unless upgraded
+- Common upgrades: Mobile (5p), Extra Points (Xp), Health Progression tiers
+
+**Heal** (30 points base):
+- Base effect: 5 × Tier HP healing, 5 uses per rest
+- Extensive upgrade options for increased healing, charges, range, effects
+- Can target living beings, objects, or both depending on upgrades
+- Quick Action upgrade available for combat healing
+
+**Counter** (30 points):
+- Range: 30 spaces, must see target, declare target on turn
+- Effect: Roll Focus/Power + Tier vs target's resistance, nullifies action on success
+- Usage: Twice per round, only first use consumes reaction
+- Upgrades available for stunning, disabling, extra uses
+
+### **Custom Unique Abilities - Verified Implementation Patterns**
+
+**Healing with Resurrection** (Variable cost, 90p example):
+- Effect pattern: "Restore XdY×Z HP distributed as chosen, includes resurrection if brought to full health"
+- Usage: Command-level battlefield medicine and revival capabilities
+- Cost scaling: Based on healing amount and resurrection capability
+
+**Summon Abilities with Quick Action** (Base 10p + upgrades):
+- Pattern: "Quick Action to create a unit of [creature type]"
+- Implementation: Base Summon + custom quick action upgrade
+- Battlefield effect: Rapid deployment tactical advantage
+
+**Aura Abilities** (Variable cost, 30-90p range):
+- **Tactical Range**: 3 spaces for direct command influence
+- **Strategic Range**: 6 spaces for battlefield-wide effects
+- **Effect Types**: Accuracy bonus, all stats bonus, conditional buffs, specialized bonuses
+- **Activation**: Usually requires Action/Quick Action for initial activation and maintenance
+
+### **Critical Spending Rules - Error Prevention**
+
+1. **NEVER INVENT FEATURES NOT IN THE RULES**: Most critical error prevention rule
+2. **Unused Points Acceptable**: Better to leave points unused than force invalid spending
+3. **Shield Points Must Be Specified**: Description must include mechanical details
+4. **Regeneration + Resilient Synergy**: Strong defensive combination for survivability focus
+5. **Cut Above Often Superior**: For high-tier vehicles/constructs not requiring special abilities
+
+### **Point Spending Optimization Patterns - Proven Strategies**
+
+**Basic Infantry Pattern (30-45 point budget)**:
+- Primary: Peaked trait (30p) for accuracy or damage focus
+- Secondary: Leave remaining points unused rather than force poor spending
+- Philosophy: Simple, effective, focused capability enhancement
+
+**Elite Infantry Pattern (60-90 point budget)**:
+- **Option A**: Regeneration (60p) + Peaked trait (30p) for sustainability + focus
+- **Option B**: Shield (60p) + specialized trait (30p) for protection + capability
+- Philosophy: Significant survivability enhancement with tactical specialization
+
+**Heavy Elite/Vehicle Pattern (120+ point budget)**:
+- **Option A**: Regeneration (60p) + Cut Above bonuses for comprehensive enhancement
+- **Option B**: Multiple unique abilities (60p each) for complex tactical capabilities
+- **Option C**: Custom abilities for specialized battlefield roles
+- Philosophy: Maximum capability development with multiple tactical options
+
+## **BREAKTHROUGH #5: THE "STOP MAKING UP ABILITIES" CRISIS**
+
+**THIS REPRESENTS THE MOST CRITICAL ERROR CORRECTION IN THE ENTIRE DEVELOPMENT PROCESS**
+
+### **The Systematic Problem Pattern**
+Repeated invention of abilities that don't exist in the system, including:
+- **"Wraith Form"**: Completely fabricated ability with no rules basis
+- **"Fire Overwatch"**: Not a real unique ability, confused with different mechanic
+- **"Power Armor"**: Not a feature in the rules system, description only
+- **"Astartes Physiology"**: Completely invented biological enhancement
+- **"Living Metal"**: Not a real feature, purely descriptive element
+- **"Mindless"**: Made-up immunity that doesn't exist in system
+- **"Command Presence"**: Sometimes real, sometimes completely fabricated
+
+### **The Error Correction Process - Critical Learning**
+- **"WTF, stop making up abilities"** - Initial correction attempt
+- **"HOLY FUCK STOP MAKING UP ABILITIES"** - Escalated correction for persistence
+- **"FUCKING INSANE"** - Reaction to continued invention despite corrections
+- **"idk where you're getting this from, stop making shit up"** - Final clarity on the problem
+
+### **Verified Abilities - Confirmed Legal Options Only**
+- **Regeneration**: 60 points, HP amount varies by tier, always legal and functional
+- **Shield**: Variable cost 30-90 points, must specify protection type and mechanics
+- **Invisibility**: 30 points, advanced concealment and stealth capabilities
+- **Boost**: 60 points, temporary tier enhancement with duration/source limitations
+- **Base Summon**: 10 points per summon, modular upgrade system for capability enhancement
+- **Heal**: 30 points base, extensive upgrade tree for enhanced capabilities
+- **Counter**: 30 points, reactive ability nullification system
+
+### **The Fundamental Lesson - Constraint-Based Design**
+- **ONLY USE ABILITIES EXPLICITLY MENTIONED IN THE RULES**: No exceptions, no interpretations
+- **When uncertain, use Regeneration or Shield**: Always valid, always functional
+- **Features are for descriptions, not mechanical abilities**: Purely narrative elements
+- **Resist creative impulses**: Stick to proven system elements rather than innovation
+- **Safe fallback pattern**: Regeneration (60p) + Peaked trait (30p) when uncertain about alternatives
+
+### **Safe Implementation Patterns - Error Prevention**
+1. **Regeneration** (60p): Always works, specify HP amount based on tier
+2. **Shield** (60-90p): Always functional, describe protection type (armor, energy, etc.)
+3. **Cut Above**: Universal stat bonuses, no special abilities required, simple implementation
+4. **Peaked Trait**: Basic stat enhancement, always legal, choose relevant stat for character role
+5. **Features as Descriptions Only**: Use for narrative flavor, never mechanical effects
+
+## **BREAKTHROUGH #6: COMMAND HIERARCHY AND TACTICAL SYNERGY SYSTEMS**
+
+**Command Aura Mechanics - Advanced Tactical Layer**
+
+**Command Source Implementation**:
+- **Role**: Higher-tier commanders providing battlefield leadership
+- **Cost Structure**: Commander pays points for unique ability generating actual mechanical effect
+- **Effect Description**: "All allies within X spaces gain +Tier bonus to [specific stats/all stats]"
+- **Range Scaling**: 3 spaces for tactical command, 6 spaces for strategic battlefield influence
+- **Activation**: Usually requires action economy investment for activation and maintenance
+
+**Command Recipient Implementation**:
+- **Role**: Lower-tier officers and elite units capable of receiving and relaying commands
+- **Cost Structure**: 0 points - purely tracking mechanism for command capability
+- **JSON Structure**: Trait with traitActive "0" (default OFF state)
+- **Player Control**: Manual activation when positioned within command range of source
+- **Tactical Decision**: Balance between command bonus utilization and individual combat effectiveness
+
+**Hierarchical Command Structure Example**:
+```
+Royal Warden (Tier 6 Commander)
+├── Provides +6 Accuracy to all allies within 3 spaces
+├── Immortals (Tier 4 Captains) - Receive command bonus
+│   └── Can command lower-tier units when hierarchically structured
+└── Lychguard (Tier 5 Elites) - Receive command bonus
+    └── Enhanced effectiveness under command leadership
 ```
 
-#### **Manual Control Fields**:
+**Tactical Layer Implementation**:
+- **Positioning Decisions**: Command ranges create meaningful positioning choices
+- **Command Structure Importance**: Hierarchy becomes tactically significant target priority
+- **Action Economy Considerations**: When to activate command abilities vs. personal combat actions
+- **Stacking Potential**: Multiple command layers can enhance units through different capability areas
+
+### **JSON Implementation Pattern - Technical Structure**
+
+**Command Source (Royal Warden Example)**:
 ```json
-"char_focus": "3",           // Controls Focus attribute
-"char_power": "4",           // Controls Power attribute  
-"char_mobility": "2",        // Controls Mobility attribute
-"char_endurance": "1",       // Controls Endurance attribute
-"char_awareness": "2",       // Controls Awareness attribute
-"char_communication": "0",   // Controls Communication attribute
-"char_intelligence": "1",    // Controls Intelligence attribute
-"char_tier": "5",           // Controls character tier
-"char_hp": "50/50"          // Controls hit points
-```
-
-### **Primary Action Defaults**
-**Default all to "off" unless specifically needed**:
-```json
-"char_avPrimaryAction": "off",
-"char_drPrimaryAction": "off",
-"char_rsPrimaryAction": "off",
-"char_sbPrimaryAction": "off",
-"char_vtPrimaryAction": "off",
-"char_movementPrimaryAction": "off",
-"char_acPrimaryAction": "off",
-"char_dgPrimaryAction": "off",
-"char_cnPrimaryAction": "off"
-```
-
-**Exception**: Turn "on" only for characters with specific quick action abilities:
-- **Khorne Shaman**: `"char_cnPrimaryAction": "on"` (conditions quick action from Versatile Master)
-
-### **ID Naming Conventions**
-- **No underscores in repeating section IDs**: Use `-CHAOSAttack1` not `-CHAOS_Attack1`
-- **Descriptive prefixes**: `-BJORNAttack1`, `-NECRONWARRIORSUnique1`
-- **Consistent numbering**: Attack1, Attack2, Feature1, Feature2, etc.
-
-### **Feature Descriptions**
-**Always include `featuresDesc` field**:
-```json
-"features": {
-  "-CHAOSFeature1": {
-    "char_features": "Chaos Mutations",
-    "featuresDesc": "Physical corruption grants enhanced strength and resilience"
+"uniqueabilities": {
+  "-ROYALWARDENUnique2": {
+    "char_uniqueAbilities": "Commanders Aura",
+    "uniqueAbilitiesDesc": "All allies within 3 spaces gain +Tier bonus to Accuracy"
   }
 }
 ```
 
-### **Hybrid Attack JSON Structure**
+**Command Recipients (Immortals/Lychguard Example)**:
 ```json
-{
-  "AttackName": "Twin Tesla Cannon",
-  "leftsub": "Ranged",
-  "AttackType": "2",
-  "RollCN": "3",           // Must be 3 for hybrid
-  "EffectType": "4",       // Must be 4 for hybrid
-  "Hybrid": "2",           // Must be 2 for hybrid
-  "ConditionsStringModifiers": "Stun"  // Specify the condition
+"traits": {
+  "-IMMORTALSTrait3": {
+    "traitName": "Commanders Aura",
+    "traitActive": "0",      // Default OFF for player control
+    "traitAcBonus": "4"      // +Tier bonus when activated
+  }
 }
 ```
 
-## **Breakthrough #7: Individual vs. Unit Design Philosophy**
+### **Archetype Tracking Traits System - Bonus Source Identification**
 
-**Critical Correction**: When I created "Lascannon Team" and "Lasgun Volley," you corrected: **"Each is just one guy making the attack, not teams. So just Lascannon is fine."**
+**Purpose and Implementation**:
+- **Primary Function**: Help players identify where bonuses originate on character sheets
+- **Mechanical Benefit**: Clear source identification for manual calculation verification
+- **Player Understanding**: Enhanced comprehension of character capabilities and interactions
+- **Cost Structure**: All tracking traits cost 0 points, purely informational
 
-### **Design Philosophy**
-- **Individual Combatants**: NPCs represent single fighters, not abstract units
-- **Tactical Flexibility**: Each character should have both ranged and melee options when possible
-- **Personal Scale**: Combat is personal and tactical, not strategic unit management
+**Standard Tracking Trait Patterns**:
 
-### **Attack Naming Conventions**
-- **Good**: "Lascannon", "Bolt Pistol", "Chainsword", "Feral Claws"
-- **Bad**: "Lascannon Team", "Coordinated Volley", "Squad Tactics"
+**Swift Archetype Tracking**:
+```json
+"traitName": "Swift",
+"traitActive": "1",
+"traitMBonus": "3"        // Shows +3 movement from Swift archetype at Tier 6
+```
 
-### **Equipment Approach**
-- Characters have individual weapons and gear
-- Attacks represent personal combat abilities
-- Avoid team-based or coordinated attack names
+**Resilient Archetype Tracking**:
+```json
+"traitName": "Resilient", 
+"traitActive": "1",
+"traitRsBonus": "6",      // +6 to Resolve from archetype
+"traitSbBonus": "6",      // +6 to Stability from archetype  
+"traitVtBonus": "6"       // +6 to Vitality from archetype
+```
 
-## **Breakthrough #8: Trait and Ability Optimization Patterns (EXPANDED)**
+**Fortress Archetype Tracking**:
+```json
+"traitName": "Fortress",
+"traitActive": "1", 
+"traitDrBonus": "7"       // +7 to Durability from archetype at Tier 7
+```
 
-### **Common Trait Patterns**
-- **"Peaked"**: Most common, +Tier to chosen stat, cannot use Efforts
-  - **Cost**: 30 points
-  - **Use Case**: Simple stat boost for NPCs who don't need Efforts
-  - **Stat Options**: Accuracy (most common), Avoidance, Damage, Conditions
-- **Conditional Traits**: Bonus when specific conditions met
-  - **"Pack Fighter"**: +Tier bonus when adjacent to allies
-  - **"Pack Hunter"**: +Tier bonus vs isolated enemies, must have adjacent allies
-  - **"Frenzy"**: +Tier bonus when below half HP or when enemy damaged
+**Immutable Archetype Tracking**:
+```json
+"traitName": "Immutable Resolve",
+"traitActive": "1",
+"traitRsBonus": "50"      // Complete immunity = +50 bonus to Resolve
+```
 
-### **Ability Cost Standards**
-- **Regeneration**: 60 points, amount varies by tier
-- **Shield**: 60-90 points depending on protection level
-- **Command Presence Aura**: 45 points for leadership abilities (when it exists)
+**Benefits of Tracking System**:
+- Clear bonus source identification for complex builds
+- Easy verification of manual calculations during play
+- Enhanced player understanding of character construction
+- Simplified debugging of character mechanical interactions
 
-### **Unique Ability Descriptions (MUST BE SPECIFIC)**
-- **Regeneration**: "Regains X HP at start of each turn (Tier Y) - Living metal self-repair"
-- **Shield**: "Power armor energy barriers and reinforced ceramite plating"
-- **DON'T INVENT**: Stick to describing real mechanical effects
-
-### **Vehicle/Construct Optimization Patterns**
-- **High Tier (6+)**: Cut Above + Regeneration is often optimal
-- **Defensive**: Fortress OR Resilient, not both with Shield
-- **Movement**: Flight for anti-grav vehicles, Behemoth for heavy ground units
-- **Weapons**: Always dual-natured for tactical variety
-
-## **Breakthrough #9: Direct Attack Build Optimization**
-
-### **Critical Insight**: Direct Attacks Don't Need Accuracy
-- **Direct attacks cannot miss** - they automatically hit
-- **Accuracy bonuses are completely wasted** on Direct attack builds
-- **Focus bonuses should go to other stats** like Avoidance or Conditions
-- **Peaked trait should target useful stats** not Accuracy
-
-### **Direct Attack Archetype Optimization**
-- **Attack Type**: Direct Specialist (0p for Direct attacks)
-- **Traits**: Peaked with Avoidance bonus, not Accuracy
-- **Attributes**: Lower Focus, higher Mobility for Avoidance
-- **Unique Abilities**: Cut Above for universal bonuses
-
-### **Direct Attack Examples Done Right**
-- **Canoptek Wraiths**: Direct attacks + Peaked Avoidance bonus
-- **Khorne Shaman**: Direct attacks + Peaked Conditions bonus
-- **Phase/Psychic units**: Direct delivery + condition focus
-
-## **Evolution of Understanding: Learning Through Iteration (UPDATED)**
-
-### **Phase 1: Template Recognition**
-- Started with random stat assignment
-- Learned to identify consistent patterns in existing characters
-- Developed template system for systematic character creation
-
-### **Phase 2: Archetype Mastery**
-- Initially confused different archetype categories
-- Learned precise definitions and use cases for each archetype
-- Discovered mandatory combinations and restrictions
-
-### **Phase 3: Technical Precision**
-- Understood JSON structure and calculation system
-- Learned which fields to modify vs. which are auto-calculated
-- Mastered ID conventions and structural requirements
-
-### **Phase 4: Mechanical Optimization**
-- Learned specific rules about attack modifier combinations
-- Understood point costs and spending optimization
-- Discovered restrictions like Regeneration + Juggernaut incompatibility
-
-### **Phase 5: Design Philosophy**
-- Understood individual vs. unit design approach
-- Learned narrative consistency requirements
-- Developed systematic approach to ability descriptions
-
-### **Phase 6: The "Stop Making Up Abilities" Crisis**
-- **Most important lesson**: Only use abilities that exist in the rules
-- Learned to resist creative impulses and stick to system constraints
-- Developed safe fallback patterns for when unsure
-
-### **Phase 7: Advanced Build Optimization**
-- Direct attack build optimization (accuracy is useless)
-- Defensive archetype compatibility rules
-- Point spending efficiency patterns
-- Vehicle/construct specialization techniques
-
-## **The Comprehensive Character Creation Process (UPDATED)**
-
-### **Step 1: Template Identification**
-1. **Determine Role**: What battlefield function does this character serve?
-2. **Assign Template**: Basic Infantry, Elite Infantry, Heavy Elite, Psyker, Support, or Vehicle
-3. **Set Stats**: Tier, HP, and attribute point allocation based on template
-
-### **Step 2: Archetype Selection (Systematic Approach)**
-
-#### **Movement Archetype** - *Based on tactical role*
-- **Swift**: Fast skirmishers, scouts, mobile threats
-- **Skirmisher**: Mobile fighters who weave through lines  
-- **Behemoth**: Heavy units that hold ground
-- **Vanguard**: Area control specialists
-- **Flight**: Anti-gravity vehicles, phase-shifting units
-
-#### **Attack Type Archetype** - *Based on engagement method*
-- **Single Target**: 90% of characters - maximum flexibility
-- **AOE Specialist**: Crowd control, swarm clearers
-- **Direct Specialist**: Psykers, reliable effect delivery, phase attacks
-
-#### **Effect Type Archetype** - *Based on combat goal*
-- **Damage Specialist**: 70% of characters - straightforward damage
-- **Hybrid Specialist**: Damage + conditions combined (vehicles with special weapons)
-- **Crowd Control**: Pure condition application (-Tier to damage)
-
-#### **Defensive Archetype** - *Based on survival method*
-- **Fortress**: Most common - consistent protection (don't combine with Shield)
-- **Resilient**: Condition resistance, chaos corruption (works with Regeneration)
-- **Stalwart**: Specialized damage resistance
-- **Juggernaut**: High HP tanks (NEVER with Regeneration)
-
-#### **Special Attack Archetype** - *Based on complexity needs*
-- **Dual-Natured**: Most common for NPCs - tactical variety
-- **One Trick**: Specialists with signature abilities
-- **Paragon**: Elite characters with reliable power
-- **Basic**: Only with Versatile Master unique ability
-
-#### **Unique Ability Archetype** - *Based on special needs*
-- **Extraordinary**: Most common for NPCs - extra points for abilities
-- **Cut Above**: Straightforward stat bonuses (great for vehicles)
-- **Versatile Master**: Multiple actions, condition specialists
-
-#### **Utility Archetype** - *Based on skill needs*
-- **Specialized**: Most common for NPCs - simple and effective
-- **Jack of All Trades**: Only use Jack or Specialized for generated characters
-
-### **Step 3: Point Allocation and Spending (SAFE PATTERNS)**
-1. **Calculate Main Pool**: (Tier - 2) × 15
-2. **Add Extraordinary Bonus**: Same amount again if using Extraordinary
-3. **Safe Major Purchases**: 
-   - **Regeneration** (60p) - always legal, specify HP amount by tier
-   - **Shield** (60-90p) - always legal, describe protection type
-   - **Peaked Trait** (30p) - always legal, choose useful stat
-4. **NEVER INVENT ABILITIES** - stick to confirmed legal options
-
-### **Step 4: Attack Design (UPDATED RULES)**
-1. **Choose Attack Types**: Usually one ranged, one melee for flexibility
-2. **Select Modifiers**: Follow combination rules 
-   - **Double Tap + Crit AC** (mandatory pairing)
-   - **Enhanced Effect + Reliable Effect + Critical Effect** (compatible)
-   - **High Impact + Armor Piercing + Brutal** (compatible)
-   - **NEVER**: High Impact + Enhanced Effect
-   - **NEVER**: High Impact + Critical Effect/Reliable Effect
-3. **Direct Attack Builds**: Don't waste points on accuracy bonuses
-4. **Name Appropriately**: Individual weapons, not team abilities
-
-### **Step 5: Technical Implementation**
-1. **Set Attributes**: Only modify base strings like `"char_focus": "3"`
-2. **Leave Calculated Fields**: Set totals and derived stats to 0
-3. **Configure Primary Actions**: Default to "off", enable only if needed
-4. **Use Proper IDs**: No underscores, descriptive prefixes
-5. **Add Descriptions**: Feature descriptions, ability details
-6. **Hybrid Attacks**: Use proper JSON structure with RollCN "3", EffectType "4", Hybrid "2"
-
-### **Step 6: Quality Assurance (EXPANDED)**
-1. **Verify Template Consistency**: Stats match expected template pattern
-2. **Check Archetype Logic**: Combinations make sense for character concept
-3. **Validate Restrictions**: No incompatible combinations or invented features
-4. **Test Narrative Fit**: Character makes sense in setting and role
-5. **Ability Verification**: Are all abilities confirmed to exist in the rules?
-6. **Point Efficiency**: Are points spent optimally or reasonably left unused?
-
-## **Common Mistakes and How to Avoid Them (UPDATED)**
-
-### **Making Up Abilities (MOST CRITICAL)**
-- **Mistake**: Inventing features like "Power Armor", "Fire Overwatch", "Wraith Form"
-- **Solution**: ONLY use confirmed abilities like Regeneration, Shield, real traits
-- **Safe Pattern**: When in doubt, use Regeneration + Peaked trait
-
-### **Archetype Confusion**
-- **Mistake**: Mixing up Attack Type and Effect Type
-- **Solution**: Attack Type = delivery method, Effect Type = what it accomplishes
-
-### **Attack Modifier Violations**
-- **Mistake**: High Impact + Enhanced Effect, Double Tap without Crit AC
-- **Solution**: Learn mandatory pairings and incompatible combinations
-
-### **Defensive Redundancy**
-- **Mistake**: Fortress + Shield, Regeneration + Juggernaut
-- **Solution**: Choose one primary defensive approach per character
-
-### **Direct Attack Accuracy Waste**
-- **Mistake**: Putting accuracy bonuses on Direct attack builds
-- **Solution**: Direct attacks auto-hit, focus bonuses elsewhere
-
-### **JSON Technical Errors**
-- **Mistake**: Modifying calculated fields, using underscores in IDs
-- **Solution**: Only modify base attribute strings, follow naming conventions
-
-### **Template Inconsistencies**
-- **Mistake**: Tier 3 character with 100 HP, Tier 6 character with 10 HP
-- **Solution**: Follow template HP and stat guidelines consistently
-
-## **Advanced Optimization Strategies (UPDATED)**
-
-### **Point Efficiency**
-- **Extraordinary + Regeneration + Peaked**: Most reliable combination
-- **Cut Above + Regeneration**: Great for high-tier vehicles
-- **It's okay to leave points unused** rather than invent bad abilities
-
-### **Defensive Optimization**
-- **Resilient + Regeneration**: Maximum survivability with condition resistance
-- **Fortress + High HP**: Traditional tank approach
-- **Stalwart + Specialized resistance**: Situational but powerful
-
-### **Offensive Optimization**
-- **Crit AC + Powerful Critical + Double Tap**: Maximum critical potential
-- **Enhanced Effect + Reliable Effect**: Consistent damage
-- **Hybrid Attacks**: Damage and conditions efficiently combined
-
-### **Vehicle/Construct Patterns**
-- **Movement**: Flight for anti-grav, Behemoth for heavy ground units
-- **Defense**: Cut Above + Regeneration often optimal
-- **Weapons**: Always dual-natured for tactical variety
-- **Attributes**: High Power + Focus, moderate everything else
-
-## **The Complete Reference Framework (FINAL)**
-
-This guide captures not just the mechanical rules but the design philosophy, optimization patterns, and systematic approach needed to create characters that fit seamlessly into your established universe. Every rule learned through correction, every pattern discovered through analysis, and every optimization technique developed through iteration is documented here.
-
-**The most critical lesson**: Character creation is systematic engineering following established patterns and verified abilities. NEVER INVENT ABILITIES - stick to confirmed options like Regeneration, Shield, and basic traits. When in doubt, use safe fallback patterns rather than creative solutions.
-
-**Use this guide as both rulebook and emergency reference** - when facing uncertainty, return to the verified abilities, check the archetype combinations, follow the proven patterns, and resist the urge to invent new mechanics. Master these constraints, and you can create any character concept while maintaining mechanical consistency and narrative coherence.
-
-**The key insight**: Creativity comes from clever combinations of existing elements, not from inventing new ones. Work within the system's constraints to achieve your design goals.

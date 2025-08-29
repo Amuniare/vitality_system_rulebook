@@ -2,9 +2,8 @@
 
 ---
 
-# Fleet Assets
 
-## **Flagship: "Eternal Vigil" (Viper-Class Light Cruiser)**
+# **Flagship: "Eternal Vigil" (Viper-Class Light Cruiser)**
 
 ### **Specifications**:
 - **Length**: ~5 kilometers
@@ -21,7 +20,7 @@
 
 ---
 
-## **Second Ship: "Hesperus Defiance" (Modified Sword-Class Assault Transport)**
+# **Second Ship: "Hesperus Defiance" (Modified Sword-Class Assault Transport)**
 
 ### **History**:
 - **Ancient Service**: 400 years of distinguished Imperial Navy service
@@ -54,9 +53,8 @@
 
 
 
-# Dynasty Resources & Fleet Assets
+# Other Dynasty Resources 
 
-## **Special Resources**
 
 ### **Archeotech & Ancient Technology**
 - **Dark Age Workshop**: Master-level tools and rare earth materials for crafting anything

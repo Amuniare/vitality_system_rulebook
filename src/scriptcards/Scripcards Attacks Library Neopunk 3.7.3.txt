@@ -102,7 +102,7 @@
 
   --/| ==========Attack Basic Variables==========
     --&AttackName| [*R:AttackName]
-    --#leftsub| [*R:leftsub]
+    --#leftsub| [*R:leftsub] 
     --=AttackType| [*R:AttackType]
 
     --=RollCN| [*R:RollCN]
@@ -558,7 +558,7 @@
         -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];red;2
         -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];red;Blank, 1
         -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];red
-        --+Applying| Bleed to [*[&testvar]:character_name]
+        --+Applying | Bleed to [*[&testvar]:character_name]
       --:PassBleed|
 
       --/| ==========NEW DAMAGE EFFECTS==========
@@ -641,7 +641,7 @@
         --?[$LastingCondition] -eq 0 -or [$EnemyCnFailAmount] -lt 10|PassDisarmLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one
         --:PassDisarmLasting|
-        --+Applying| Disarm to [*[&testvar]:character_name]
+        --+Applying | Disarm to [*[&testvar]:character_name]
       --:PassDisarm|
 
       --?[$EffectType] -ne 2|PassGrab
@@ -651,7 +651,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassGrabLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab
         --:PassGrabLasting|
-        --+Applying| Grab to [*[&testvar]:character_name]
+        --+Applying | Grab to [*[&testvar]:character_name]
       --:PassGrab|
 
       --?[$EffectType] -ne 3|PassShove
@@ -661,7 +661,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassShoveLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain
         --:PassShoveLasting|
-        --+Applying| Shove to [*[&testvar]:character_name]
+        --+Applying | Shove to [*[&testvar]:character_name]
       --:PassShove|
 
       --?[$EffectType] -ne 4|PassDaze
@@ -671,7 +671,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDazeLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled
         --:PassDazeLasting|
-        --+Applying| Daze to [*[&testvar]:character_name]
+        --+Applying | Daze to [*[&testvar]:character_name]
       --:PassDaze|
 
       --?[$EffectType] -ne 5|PassBlind
@@ -681,7 +681,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassBlindLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye
         --:PassBlindLasting|
-        --+Applying| Blind to [*[&testvar]:character_name]
+        --+Applying | Blind to [*[&testvar]:character_name]
       --:PassBlind|
 
       --?[$EffectType] -ne 6|PassTaunt
@@ -691,7 +691,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassTauntLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming
         --:PassTauntLasting|
-        --+Applying| Taunt to [*[&testvar]:character_name]
+        --+Applying | Taunt to [*[&testvar]:character_name]
       --:PassTaunt|
 
       --?[$EffectType] -ne 7|PassSetup
@@ -701,7 +701,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassSetupLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];archery-target
         --:PassSetupLasting|
-        --+Applying| Setup to [*[&testvar]:character_name]
+        --+Applying | Setup to [*[&testvar]:character_name]
       --:PassSetup|
 
       --?[$EffectType] -ne 8|PassControl
@@ -711,7 +711,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassControlLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull
         --:PassControlLasting|
-        --+Applying| Control to [*[&testvar]:character_name]
+        --+Applying | Control to [*[&testvar]:character_name]
       --:PassControl|
 
       --?[$EffectType] -ne 9|PassStun
@@ -721,7 +721,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassStunLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix
         --:PassStunLasting|
-        --+Applying| Stun to [*[&testvar]:character_name]
+        --+Applying | Stun to [*[&testvar]:character_name]
       --:PassStun|
 
       --?[$EffectType] -ne 10|PassWeaken
@@ -731,7 +731,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassWeakenLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive
         --:PassWeakenLasting|
-        --+Applying| Weaken to [*[&testvar]:character_name]
+        --+Applying | Weaken to [*[&testvar]:character_name]
       --:PassWeaken|
 
       --?[$EffectType] -ne 11|PassDisableSpecials
@@ -741,7 +741,7 @@
         --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDisableSpecialsLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb
         --:PassDisableSpecialsLasting|
-        --+Applying| Disable Specials to [*[&testvar]:character_name]
+        --+Applying | Disable Specials to [*[&testvar]:character_name]
       --:PassDisableSpecials|
 
       --?[$Cursed] -eq 0|PassCursed
@@ -749,14 +749,14 @@
         --=CursedThreshold| [$EnemyCnFailAmount]*2-[$RemainingHP]
         --?[$CursedThreshold] -lt 0|PassCursed
           -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];pink;1
-          --+Applying| Cursed to [*[&testvar]:character_name]
+          --+Applying | Cursed to [*[&testvar]:character_name]
       --:PassCursed|
 
       --?[$OverwhelmingAffliction] -eq 0|PassOverwhelmingAffliction
         --=OverwhelmingAfflictionThreshold| -[*[&testvar]:char_tier]*3+[$EnemyCnFailAmount]
         --?[$OverwhelmingAfflictionThreshold] -lt 0|PassOverwhelmingAffliction
           -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];pink;1
-          --+Applying| Overwhelming Affliction to [*[&testvar]:character_name]
+          --+Applying | Overwhelming Affliction to [*[&testvar]:character_name]
       --:PassOverwhelmingAffliction|
 
       --/| ==========NEW CONDITION EFFECTS==========
