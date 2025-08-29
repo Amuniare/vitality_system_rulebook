@@ -8,7 +8,8 @@
 
 ### **Specifications**:
 - **Length**: ~5 kilometers
-- **Crew Complement**: ~25,000 personnel (Service (~20,000), Combat Personnel (~5,000))
+- **Base Crew**: 20,000 Service Personel
+- **Combat Force**: 5,000 Combat Personel
 - **Combat Focus**: Long-range exploration and prototype testing platform
 - **Weapon Systems**: Macro-cannons, lance arrays
 - **Special**: Enhanced warp drives and advanced sensor arrays
@@ -64,11 +65,6 @@
 ### **Xenos Technology** 
 - **Harlequin Performance Cache**: Holo-suit technology and mist stave
 - **Eldar Weaponry**: Advanced alien combat equipment
-
-### **Military Forces**
-- **10,000 Ash Walkers**: Elite death world scouts/scavengers/tech specialists (equipped with Sagoire's stun rifle technology - one prototype given, they manufacture more)
-- **5,000 Bone Hewers**: Death world warriors/hunters (half the clan)
-- **500 Storm Psykers**: Weather-controlling psychic warriors with griffin mounts
 
 
 

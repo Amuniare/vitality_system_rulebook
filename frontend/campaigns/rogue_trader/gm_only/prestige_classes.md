@@ -58,20 +58,21 @@ Gain the perception filter feature and can use mind games as the roll for stealt
 
 ## Dame Venecia
 
-
-
-### Heroic Intervention
+### Warp Shadow
 **Session #:** 4  
-**Dice Roll:** Natural 20 (50+ damage)
+**Dice Roll:** 41
 
 **Feat**  
-While low on HP, made a dramatic dash to save allies and delivered a devastating natural 20 attack that killed both abominations threatening the party.
+During the chaos ritual, successfully used Auratic Sway to block psychic intrusion with overwhelming warp presence, creating a psychic firewall powered by her Imperial Knight's machine spirit.
 
 **Utility Feature**  
-You have an uncanny ability to arrive exactly when needed. Once per session, when an ally is in immediate non-combat danger or needs your aid, you may roll a Communication check to arrive just in the nick of time to aid them, regardless of distance or obstacles. The more distance or obstacles, the higher the DC.
+You can use Auratic Sway to protect allies from environmental psychic hazards and mind-affecting effects during exploration.
 
 **Combat Feature**  
-Once per combat, if an ally would be reduced to 0 hp and the enemy doing that is within [Tier] range of you, you may use a reaction to take a full turn. If you defeat the enemy, their attack does not occur.
+When allies within [Tier] radius of you are targeted by psychic attacks or mind control, roll a Communication check. All allies within [Tier] radius can increase their resolve defense to be equal to your roll.
+
+
+
 
 
 ---
@@ -118,18 +119,18 @@ Once per session, after an ally makes a utility check, but before the outcome is
 
 ## Dame Venecia
 
-### Warp Anchor
+### Heroic Intervention
 **Session #:** 4  
-**Dice Roll:** 41
+**Dice Roll:** Natural 20 (50+ damage)
 
 **Feat**  
-During the chaos ritual, successfully used Auratic Sway to block psychic intrusion with overwhelming warp presence, creating a psychic firewall powered by her Imperial Knight's machine spirit.
+While low on HP, made a dramatic dash to save allies and delivered a devastating natural 20 attack that killed both abominations threatening the party.
 
 **Utility Feature**  
-You can use Auratic Sway to protect allies from environmental psychic hazards and mind-affecting effects during exploration.
+You have an uncanny ability to arrive exactly when needed. Once per session, when an ally is in immediate non-combat danger or needs your aid, you may roll a Communication check to arrive just in the nick of time to aid them, regardless of distance or obstacles. The more distance or obstacles, the higher the DC.
 
 **Combat Feature**  
-When allies within [Tier] radius of you are targeted by psychic attacks or mind control, roll a Communication check. All allies within [Tier] radius can increase their resolve defense to be equal to your roll.
+Once per combat, if an ally would be reduced to 0 hp and the enemy doing that is within [Tier] range of you, you may use a reaction to take a full turn. If you defeat the enemy, their attack does not occur.
 
 ---
 
