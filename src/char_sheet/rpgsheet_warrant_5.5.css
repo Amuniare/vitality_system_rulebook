@@ -279,7 +279,7 @@ div.expertises,
 div.features,
 div.traits,
 div.uniques {
-    gap: .5rem;
+    gap: 0.5rem;
 }
 
 /* Expertises Container */
@@ -326,6 +326,25 @@ div.expertises > details {
     width: 100%;
     min-width: 0;
 }
+
+/* Target only expertise containers */
+div.expertises .repitem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    padding: 0.25rem;
+}
+
+div.expertises .repitem input {
+    margin: 0;
+}
+
+div.expertises .repitem input[type="text"] {
+    width: 280px;
+    min-width: 200px;
+}
+
 
 /* Form Elements - Parchment Style */
 .charsheet textarea {
@@ -454,6 +473,8 @@ select {
     background: #8B0000;
     box-shadow: 0 4px 8px rgba(139, 0, 0, 0.3);
 }
+
+
 
 /* Expertise Grid Layouts */
 .expertises-grid,
