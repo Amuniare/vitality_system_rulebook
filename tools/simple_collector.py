@@ -18,7 +18,7 @@ SKIP_DIRECTORY_TREE = True  # Set to True to skip directory tree generation
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'rogue_trader_character_builder'
+DEFAULT_PRESET = 'rogue_trader'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude

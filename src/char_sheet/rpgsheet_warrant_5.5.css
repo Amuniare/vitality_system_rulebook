@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Uncial+Antiqua&display=swap');
+@import url('https://fonts.googleapis.com/css?family=IM+Fell+English:ital@0;1&family=Uncial+Antiqua&display=swap');
 
 :root {
     --bg-primary: #fdf5e6;           /* Parchment background */
@@ -21,7 +21,6 @@
     color: var(--text-light);
     background: var(--bg-primary);
     background-image: 
-        url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="paper" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><rect width="100" height="100" fill="%23fdf5e6"/><circle cx="20" cy="20" r="1" fill="%23f0e6d6" opacity="0.3"/><circle cx="80" cy="60" r="1" fill="%23f0e6d6" opacity="0.2"/><circle cx="40" cy="80" r="1" fill="%23f0e6d6" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23paper)"/></svg>'),
         linear-gradient(45deg, rgba(165, 141, 94, 0.02) 0%, transparent 25%, rgba(165, 141, 94, 0.01) 50%, transparent 75%, rgba(165, 141, 94, 0.02) 100%);
 }
 
@@ -76,10 +75,7 @@ div.features,
 div.other {
     border: 2px solid var(--border-color);
     background: var(--bg-secondary);
-    box-shadow: 
-        0 4px 15px rgba(165, 141, 94, 0.15),
-        inset 0 0 10px rgba(165, 141, 94, 0.08),
-        inset 1px 1px 3px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(165, 141, 94, 0.15);
     backdrop-filter: blur(2px);
     border-radius: 3px;
 }
@@ -93,15 +89,15 @@ div.uniques {
     padding: 1.25rem;
 }
 
-/* Heading Styles - Medieval Manuscript */
+/* Heading Styles - Now using Georgia instead of Uncial Antiqua */
 h1, h2, h3, h4, h5, h6 {
     color: var(--crimson);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    font-family: 'Uncial Antiqua', cursive;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     letter-spacing: 0.05em;
     line-height: 1.4;
     margin-bottom: .75rem;
-    font-weight: normal;
+    font-weight: bold; /* Made headings bold for better hierarchy */
 }
 
 /* Header Section */
@@ -109,7 +105,7 @@ div.header {
     display: grid;
     grid-template-columns: repeat(5, auto);
     column-gap: .5rem;
-    font-family: 'Uncial Antiqua', cursive;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     align-items: center;
     justify-items: center;
     text-align: center;
@@ -118,9 +114,7 @@ div.header {
     border-bottom: 4px double var(--border-color);
     padding: 0.5rem;
     background: var(--bg-primary);
-    box-shadow: 
-        0 4px 15px rgba(165, 141, 94, 0.2),
-        inset 0 2px 5px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 15px rgba(165, 141, 94, 0.2);
 }
 
 /* Ensure all direct children of header are centered */
@@ -147,10 +141,7 @@ div.basics {
     background: var(--bg-secondary);
     height: auto;
     min-height: 260px;
-    box-shadow: 
-        0 0 20px rgba(165, 141, 94, 0.15),
-        inset 0 0 10px rgba(165, 141, 94, 0.05),
-        inset 2px 2px 5px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(165, 141, 94, 0.15);
 }
 
 /* Stats Section */
@@ -236,24 +227,20 @@ div.buttons button {
     border: 1px solid var(--border-color);
     padding: 0.5rem 1rem;
     cursor: pointer;
-    font-family: 'Uncial Antiqua', cursive;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-size: 0.8rem;
     border-radius: 3px;
-    box-shadow: 
-        0 2px 5px rgba(165, 141, 94, 0.2),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 5px rgba(165, 141, 94, 0.2);
 }
 
 div.buttons button:hover {
     background: var(--crimson);
     color: var(--bg-primary);
     border-color: var(--crimson);
-    box-shadow: 
-        0 4px 10px rgba(122, 0, 0, 0.3),
-        inset 1px 1px 3px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(122, 0, 0, 0.3);
 }
 
 div.buttons button.active {
@@ -350,9 +337,7 @@ div.expertises > details {
     color: var(--text-light);
     border: 2px solid var(--border-color);
     border-radius: 3px;
-    box-shadow: 
-        inset 2px 2px 5px rgba(165, 141, 94, 0.2),
-        inset -1px -1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 2px 2px 5px rgba(165, 141, 94, 0.2);
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
@@ -363,12 +348,10 @@ div.expertises > details {
     background: var(--bg-primary);
     color: var(--crimson);
     cursor: pointer;
-    font-family: 'Uncial Antiqua', cursive;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     transition: all 0.3s ease;
     border-radius: 3px;
-    box-shadow: 
-        0 2px 4px rgba(165, 141, 94, 0.2),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 4px rgba(165, 141, 94, 0.2);
     font-weight: bold;
 }
 
@@ -380,9 +363,7 @@ div.expertises > details {
     border-radius: 2px;
     padding: 0.5rem;
     font-family: Georgia, 'Times New Roman', Times, serif;
-    box-shadow: 
-        inset 1px 1px 3px rgba(165, 141, 94, 0.2),
-        inset -1px -1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 1px 1px 3px rgba(165, 141, 94, 0.2);
 }
 
 .charsheet input[type=text] {
@@ -399,9 +380,7 @@ div.expertises > details {
     cursor: pointer;
     position: relative;
     border-radius: 2px;
-    box-shadow: 
-        inset 1px 1px 3px rgba(165, 141, 94, 0.2),
-        inset -1px -1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 1px 1px 3px rgba(165, 141, 94, 0.2);
 }
 
 .charsheet input[type=checkbox]:checked::before {
@@ -423,9 +402,7 @@ select {
     padding: 0.5rem;
     font-family: Georgia, 'Times New Roman', Times, serif;
     border-radius: 2px;
-    box-shadow: 
-        inset 1px 1px 3px rgba(165, 141, 94, 0.2),
-        inset -1px -1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 1px 1px 3px rgba(165, 141, 94, 0.2);
 }
 
 /* Repeating Button Changes */
@@ -443,13 +420,11 @@ select {
     padding: 0 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Uncial Antiqua', cursive;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-radius: 3px;
-    box-shadow: 
-        0 2px 4px rgba(165, 141, 94, 0.2),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 4px rgba(165, 141, 94, 0.2);
 }
 
 .repcontrol .repcontrol_add:hover,
@@ -458,9 +433,7 @@ select {
     background: var(--crimson);
     color: var(--bg-primary);
     border-color: var(--crimson);
-    box-shadow: 
-        0 4px 8px rgba(122, 0, 0, 0.3),
-        inset 1px 1px 3px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px rgba(122, 0, 0, 0.3);
 }
 
 /* Specific colors for different actions */
@@ -490,9 +463,7 @@ select {
     position: relative;
     border: 1px solid var(--border-color);
     border-radius: 3px;
-    box-shadow: 
-        inset 1px 1px 3px rgba(165, 141, 94, 0.15),
-        inset -1px -1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 1px 1px 3px rgba(165, 141, 94, 0.15);
 }
 
 /* Compact Attacks Grid - 4 Column Horizontal Layout */
@@ -505,9 +476,7 @@ select {
     border: 1px solid var(--border-color);
     background: var(--bg-secondary);
     border-radius: 3px;
-    box-shadow: 
-        inset 1px 1px 3px rgba(165, 141, 94, 0.15),
-        inset -1px -1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 1px 1px 3px rgba(165, 141, 94, 0.15);
 }
 
 /* Horizontal label + input layout */
@@ -518,7 +487,7 @@ select {
     justify-content: space-between;
     color: var(--text-light);
     font-size: 0.9rem;
-    font-family: 'Uncial Antiqua', cursive;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     text-transform: uppercase;
     font-weight: normal;
     letter-spacing: 0;
@@ -544,9 +513,7 @@ select {
     appearance: textfield;
     flex-shrink: 0;
     border-radius: 2px;
-    box-shadow: 
-        inset 1px 1px 2px rgba(165, 141, 94, 0.2),
-        inset -1px -1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 1px 1px 2px rgba(165, 141, 94, 0.2);
 }
 
 /* Remove spinner buttons */
@@ -560,9 +527,7 @@ select {
 .attacks-grid-compact input[type="number"]:hover,
 .attacks-grid-compact input[type="number"]:focus {
     border-color: var(--accent-primary);
-    box-shadow: 
-        0 0 5px var(--accent-primary),
-        inset 1px 1px 3px rgba(165, 141, 94, 0.2);
+    box-shadow: 0 0 5px var(--accent-primary);
     outline: none;
 }
 
@@ -592,7 +557,7 @@ select {
     text-align: center;
     color: var(--text-light);
     font-size: 0.8rem;
-    font-family: 'Uncial Antiqua', cursive;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     text-transform: uppercase;
     font-weight: normal;
     letter-spacing: 0;
@@ -619,9 +584,7 @@ select {
     -moz-appearance: textfield;
     appearance: textfield;
     border-radius: 2px;
-    box-shadow: 
-        inset 1px 1px 2px rgba(165, 141, 94, 0.2),
-        inset -1px -1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 1px 1px 2px rgba(165, 141, 94, 0.2);
 }
 
 /* Attacks Grid */
@@ -641,7 +604,7 @@ select {
     text-align: center;
     color: var(--text-light);
     font-size: 0.8rem;
-    font-family: 'Uncial Antiqua', cursive;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     text-transform: uppercase;
     font-weight: normal;
     letter-spacing: 0;
@@ -668,9 +631,7 @@ select {
     -moz-appearance: textfield;
     appearance: textfield;
     border-radius: 2px;
-    box-shadow: 
-        inset 1px 1px 2px rgba(165, 141, 94, 0.2),
-        inset -1px -1px 1px rgba(255, 255, 255, 0.3);
+    box-shadow: inset 1px 1px 2px rgba(165, 141, 94, 0.2);
 }
 
 /* Multi-word label handling */
@@ -696,112 +657,106 @@ select {
 .bonuses-grid input[type="number"]:hover,
 .bonuses-grid input[type="number"]:focus {
     border-color: var(--accent-primary);
-    box-shadow: 
-        0 0 5px var(--accent-primary),
-        inset 1px 1px 3px rgba(165, 141, 94, 0.2);
+    box-shadow: 0 0 5px var(--accent-primary);
     outline: none;
 }
 
-/* Roll Template Styles */
+/* ####### FIXED ROLL TEMPLATE STYLES ####### */
 .sheet-rolltemplate-rolls {
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: Georgia, 'Times New Roman', Times, serif !important;
 }
 
 .sheet-rolltemplate-rolls .sheet-container {
-    border: 2px solid #a58d5e;
-    border-radius: 3px;
-    box-shadow:
-        0 0 0 1px rgba(165, 141, 94, 0.3),
-        0 0 20px rgba(165, 141, 94, 0.2),
-        0 0 30px rgba(165, 141, 94, 0.1),
-        inset 0 0 20px rgba(165, 141, 94, 0.05);
+    border: 2px solid #a58d5e !important;
+    border-radius: 3px !important;
+    box-shadow: 0 0 20px rgba(165, 141, 94, 0.2) !important;
     position: relative;
-    background: #fdf5e6;
+    background: #fdf5e6 !important;
     margin: 2px;
 }
 
 .sheet-rolltemplate-rolls .sheet-header {
-    background-color: #f5ebe0;
-    color: #7a0000;
+    background-color: #f5ebe0 !important;
+    color: #7a0000 !important;
     text-align: left;
     text-transform: uppercase;
     padding: 12px 15px;
-    border-bottom: 2px solid #a58d5e;
-    font-family: 'Uncial Antiqua', cursive;
+    border-bottom: 2px solid #a58d5e !important;
+    font-family: Georgia, 'Times New Roman', Times, serif !important;
     letter-spacing: 0.05em;
     position: relative;
-    box-shadow: 
-        0 2px 10px rgba(165, 141, 94, 0.1),
-        inset 0 1px 3px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 10px rgba(165, 141, 94, 0.1) !important;
 }
 
 .sheet-rolltemplate-rolls .sheet-title,
 .sheet-rolltemplate-rolls .sheet-name {
-    font-size: 1.2em;
-    font-weight: normal;
-    color: #7a0000;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    font-size: 1.2em !important;
+    font-weight: normal !important;
+    color: #7a0000 !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+    font-family: Georgia, 'Times New Roman', Times, serif !important;
 }
 
 .sheet-rolltemplate-rolls .sheet-subtitle {
-    font-size: 0.9em;
-    color: rgba(122, 0, 0, 0.7);
+    font-size: 0.9em !important;
+    color: rgba(122, 0, 0, 0.7) !important;
     letter-spacing: 0.05em;
     margin-top: 4px;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2) !important;
+    font-family: Georgia, 'Times New Roman', Times, serif !important;
 }
 
 .sheet-rolltemplate-rolls .inlinerollresult.fullfail,
 .sheet-rolltemplate-rolls .inlinerollresult.fullcrit,
 .sheet-rolltemplate-rolls .inlinerollresult.importantroll{
-    border: 2px solid #fdf5e6;
+    border: 2px solid #fdf5e6 !important;
+    background-color: #fdf5e6 !important;
 }
 
 .sheet-rolltemplate-rolls .inlinerollresult {
-    color: #2a2121;
-    background-color: #fdf5e6;
-    border: 2px solid #fdf5e6;
-    border-radius: 2px;
-    box-shadow: 
-        inset 1px 1px 2px rgba(165, 141, 94, 0.2),
-        inset -1px -1px 1px rgba(255, 255, 255, 0.3);
+    color: #2a2121 !important;
+    background-color: #fdf5e6 !important;
+    border: 2px solid #fdf5e6 !important;
+    border-radius: 2px !important;
+    box-shadow: inset 1px 1px 2px rgba(165, 141, 94, 0.2) !important;
+    font-family: Georgia, 'Times New Roman', Times, serif !important;
 }
 
 .sheet-rolltemplate-rolls .sheet-content {
-    display: grid;
-    color: #2a2121;
-    background-color: #fdf5e6;
-    grid-template-columns: auto auto;
-    line-height: 1.6em;
+    display: grid !important;
+    color: #2a2121 !important;
+    background-color: #fdf5e6 !important;
+    grid-template-columns: auto auto !important;
+    line-height: 1.6em !important;
     position: relative;
     gap: 4px;
     padding: 10px;
-    box-shadow: 
-        inset 0 2px 10px rgba(165, 141, 94, 0.1),
-        inset 0 0 20px rgba(165, 141, 94, 0.03);
+    box-shadow: inset 0 2px 10px rgba(165, 141, 94, 0.1) !important;
+    font-family: Georgia, 'Times New Roman', Times, serif !important;
 }
 
 .sheet-rolltemplate-rolls .sheet-content > div {
     padding: 8px 12px;
     position: relative;
+    font-family: Georgia, 'Times New Roman', Times, serif !important;
+    background-color: transparent !important;
 }
 
 .sheet-rolltemplate-rolls .sheet-content .sheet-key {
-    font-weight: bold;
+    font-weight: bold !important;
     padding-right: 15px;
     text-align: right;
-    color: #7a0000;
+    color: #7a0000 !important;
     letter-spacing: 0.05em;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2) !important;
+    font-family: Georgia, 'Times New Roman', Times, serif !important;
 }
 
 .sheet-rolltemplate-rolls .sheet-content :nth-child(4n+3),
 .sheet-rolltemplate-rolls .sheet-content :nth-child(4n) {
-    background: rgba(165, 141, 94, 0.03);
-    border: 0px solid rgba(165, 141, 94, 0.15);
-    box-shadow: 
-        inset 0 0 10px rgba(165, 141, 94, 0.03),
-        0 0 8px rgba(165, 141, 94, 0.05);
+    background: rgba(165, 141, 94, 0.03) !important;
+    border: 0px solid rgba(165, 141, 94, 0.15) !important;
+    box-shadow: inset 0 0 10px rgba(165, 141, 94, 0.03) !important;
 }
 
 /* Hover and Focus States */
@@ -810,17 +765,13 @@ select:focus,
 button:focus {
     outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 
-        0 0 8px var(--accent-primary),
-        inset 1px 1px 3px rgba(165, 141, 94, 0.2);
+    box-shadow: 0 0 8px var(--accent-primary);
 }
 
 button:hover,
 input[type="checkbox"]:hover {
     border-color: var(--accent-primary);
-    box-shadow: 
-        0 0 8px var(--accent-primary),
-        inset 1px 1px 3px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 8px var(--accent-primary);
 }
 
 /* Hidden Element Styles */
@@ -850,14 +801,4 @@ input[type="checkbox"]:hover {
     .bonuses-grid {
         grid-template-columns: 1fr;
     }
-}
-
-/* Special decorative elements */
-hr {
-    border: none;
-    height: 3px;
-    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="10" xmlns="http://www.w3.org/2000/svg"><g fill="%23cfa32b"><path d="M0 5h3l2-5 2 5h93zM0 5h3l2 5 2-5h93z"/></g></svg>');
-    background-size: 50px;
-    margin: 2rem 0;
-    opacity: 0.5;
 }

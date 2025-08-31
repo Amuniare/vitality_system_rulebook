@@ -874,6 +874,295 @@ Major Revelations & Achievements:
 5. **Ongoing Mystery:** The awakening of Necron forces suggests larger threats in the sector
 
 
+# Session 6 Scene Breakdown: The Grey Knights Arrival
+
+## Scene 1: Necron Threat Assessment (Opening Discussion)
+**Location:** Outside the Necron cave complex  
+**Key Events:**
+- Party discusses the scope of the Necron threat with Governor Voss
+- Sagoire demonstrates extensive Necron knowledge (rolls 42 on intelligence check)
+- **Key Intelligence Revealed:**
+  - Necrons are 60-million-year-old tomb world inhabitants who went dormant
+  - Awakening triggered by human technology presence  
+  - Possess reality-altering weaponry and living metal construction
+  - Can transfer consciousness between bodies, making them nearly immortal
+  - Awaken in phases: scouts first, then decide whether to fully activate
+- **Strategic Options:** Can potentially convince them to return to dormancy if they believe the galaxy isn't worth conquering yet
+
+## Scene 2: Character Recovery and Bonding
+**Location:** Trekking back to Ironhold City  
+**Key Events:**
+- Dame Venecia shows vulnerability, leaning on Sagoire for support due to injuries
+- Sister Inés observes Venecia's moment of weakness with suspicion
+- Faust reveals new time manipulation abilities, including perception filters
+- **Character Development:** First time the crew sees Dame Venecia in a genuinely weakened state
+
+## Scene 3: Return to Ironhold - Chaos Beastmen Attack
+**Location:** Ironhold city outskirts  
+**Key Events:**
+- City guards report Chaos beastmen attacked during party's absence
+- Casualties: Several dozen PDF killed, 30-40 captured
+- Governor Voss acknowledges losses but maintains operational focus
+- Party offered quarters in Governor's manor for rest and planning
+
+## Scene 4: Evening Conversations - Character Backstories
+**Location:** Governor's manor dining hall  
+**Key Events:**
+- **Alcohol and Revelations:** Governor shares aged wine, leads to personal discussions
+- **Character Ages Revealed:**
+  - Cinder: 22 years old
+  - Vale: ~1000 years old (90-year childhood for Eldar)
+  - Dame Venecia: Complicated due to ancestral memories
+  - Faust's Vision: Sees his birth - cut from dying mother by Space Marines in gray armor (Iron Hands) with Inquisitor present, planet glassed afterward
+- **Dame Venecia's Heritage:** Discusses how ancestral memories work - not linear time but accessible experiences and emotions from predecessors
+- **Sister Inés's Background:** Taken by her order at age 8, became full Sister at 20
+- **Sagoire:** Refuses to discuss age or origins, considers them irrelevant to function
+
+## Scene 5: Strategic Planning Session
+**Location:** Manor dining hall (continued)  
+**Key Events:**
+- Governor Voss outlines tactical options:
+  - **Option A:** Assist Space Wolves with Necron problem
+  - **Option B:** Deal with local Chaos tribes while they have strong allies
+- **Dame Venecia's Decision:** Prioritize Space Wolf assistance, then address Chaos
+- **Proposed Strategy:** Use Necron weapons against Chaos forces, potentially making them fight each other
+
+## Scene 6: Space Wolf Coordination
+**Location:** Space Wolf Strike Cruiser  
+**Key Events:**
+- Meeting with surviving Space Wolves (4 Grey Hunters remaining)
+- **Space Wolf Strategy:** Hit-and-run tactics exploiting their regenerating shields
+- **Problem:** Need to recover fallen battle-brothers' bodies from tomb entrance
+- **Sagoire's Weapon Modifications:** Improves bolt pistol range and accuracy for upcoming fight
+- **Grim Discovery:** Apothecary harvesting organs from dead Space Marines in background
+
+## Scene 7: The Tomb Assault - Major Combat Sequence
+**Location:** Necron tomb entrance and interior chambers  
+**Key Events:**
+- **Opening Gambit:** Dame Venecia baits reaction attacks to create space for party positioning
+- **Faust's Major Success:** Mind controls 9 Necron Warriors and 3 Scarab swarms with critical success (37 roll + double effort)
+- **Coordinated Assault:** 
+  - Controlled Necrons turn on their former allies
+  - Space Wolves and party provide supporting fire
+  - Vale and Dame Venecia use hit-and-run tactics
+- **Sister Inés's Divine Intervention:** Survives lethal damage through faith-based resurrection mechanic
+- **Combat Resolution:** Successfully clear exterior tomb defenses
+
+## Scene 8: Tomb Interior Exploration  
+**Location:** Deep within Necron tomb complex  
+**Key Events:**
+- **Vale's Time-Step Reconnaissance:** Uses temporal abilities to scout ahead safely
+- **Horrific Discoveries:**
+  - Surgical chambers with Chaos beastmen being dissected by invisible forces
+  - Maze-like architecture that's a "living machine in motion"
+  - Continental-scale complex extending deep underground
+  - Only upper levels currently active
+- **Ominous Voice:** Deep mechanical voice taunts about Space Marines making "excellent test subjects"
+- **Strategic Withdrawal:** Party decides tomb is too dangerous for immediate full assault
+
+## Scene 9: Grey Knights Arrival - The Game Changer
+**Location:** Ironhold city, during return journey  
+**Key Events:**
+- **Dramatic Entrance:** Strike Cruiser descends through parting storm clouds
+- **Force Composition:** 
+  - Justicar Castor (Brother Captain)
+  - 4 Grey Knight Terminators
+  - Strike Squad and Interceptor Squad  
+  - Nemesis Dreadknight
+- **Immediate Authority:** Governor Voss shows extreme deference
+- **Mission Parameters:** Grey Knights seek C'tan imprisonment device (Tesseract Labyrinth)
+
+## Scene 10: The Secret Mission - Private Conference
+**Location:** Forest outside Ironhold  
+**Key Events:**
+- **Classified Information:** Justicar Castor reveals Grey Knights' true purpose:
+  - Necron Tesseract technology can permanently imprison daemons
+  - This knowledge is among the Imperium's most guarded secrets
+  - Threat of execution for sharing information extends to everyone Dame Venecia has ever contacted
+- **Strategic Alliance:** 
+  - Grey Knights will handle main tomb assault
+  - Dame Venecia's crew will provide distraction assault from different entrance
+  - Two-week timeline for Chaos cleanup and assault preparation
+- **Moral Complexity:** Dame Venecia agrees to likely suicide mission for greater Imperial good
+
+## Scene 11: New Mission Parameters
+**Location:** Return to party  
+**Key Events:**
+- **Revised Strategy:** Party must eliminate Chaos beastmen threat while Grey Knights conduct preliminary tomb raids
+- **Dame Venecia's Plan:** Use controlled Necrons to bait Chaos forces into fighting each other
+- **Faust's Deception Campaign:** Attempts to manipulate Chaos tribes into unified assault on tomb
+- **Mixed Results:** Successfully clears one tomb entrance but fails to create unified Chaos force
+- **Timeline:** Two weeks of preparation before coordinated tomb assault
+
+## Major Character Developments:
+1. **Dame Venecia:** Shows vulnerability and humanity beneath command authority
+2. **Faust:** Gains significant new psychic abilities, demonstrates strategic value
+3. **Sister Inés:** Experiences divine intervention, reinforcing her faith
+4. **Vale:** Develops temporal scout abilities, becoming party's reconnaissance expert
+5. **Sagoire:** Proves invaluable for technical knowledge and equipment modification
+
+## Strategic Situation End of Session:
+- **Immediate Threat:** Chaos beastmen require elimination within two weeks
+- **Long-term Mission:** Coordinated tomb assault with Grey Knights as distraction force
+- **Resources:** Controlled Necron forces, Space Wolf alliance, death world army availability
+- **Stakes:** Failure means loss of potentially war-changing anti-daemon technology
+
+The session establishes the Grey Knights as the primary drivers of the tomb assault while positioning the party as essential but expendable support forces in a mission of galactic significance.
 
 
+# Session 7 Scene Breakdown: The Grey Knights Alliance
 
+## Scene 1: Opening Recap & Grey Knights Introduction
+**Location:** Ironhold City outskirts  
+**Key Events:**
+- Recap: Party successfully recovered fallen Space Marine corpses and returned to town
+- **Grey Knights Arrival:** Mysterious "gray marines" appear - all are psychers according to Cinder's aura sight
+- **Private Meeting:** Grey Knights leader takes Dame Venecia aside for classified discussion in the woods
+- **Mission Parameters:** Dame Venecia returns visibly stressed, announces two-week timeline for tomb assault as distraction force
+
+**Major Reveals:**
+- Dame Venecia recognizes these aren't standard Space Marines but won't elaborate
+- Party tasked with breaching tomb and "fucking around for two days" as distraction
+- Clear expectation they likely won't survive the mission
+
+## Scene 2: Strategic Planning Meeting
+**Location:** Command post/meeting area  
+**Key Events:**
+- Dame Venecia briefs crew on dire situation: "we presumed to all be dead in two weeks"
+- **Equipment Status:** Ash Walkers commissioned to scavenge Necron tech, created portable regenerating walls with Sagoire's help
+- **Task Assignments:** Dame Venecia delegates individual missions to crew members
+- **Cinder's Observation:** All Grey Knights are psychers with reality-calming presence around them
+
+**Character Insights:**
+- Dame Venecia unusually stressed and delegating rather than controlling directly
+- Recognition that this is likely a suicide mission
+
+## Scene 3: Intelligence Gathering - Chaos Infiltration
+**Location:** Various chaos encampments  
+**Key Events:**
+- **Faust & Cinder Team Up:** Infiltrate chaos tribes using deception and stealth
+- **Target Identified:** Strongest werewolf leader with enhanced mental defenses (Resolve 40)
+- **Tactical Shift:** Instead of permanent control, use memory sharing and emotion amplification to generate anti-Necron hatred
+- **Mixed Results:** Successfully anger some chaos forces into attacking Necrons but fail to unite full chaos strength
+
+**Combat Outcome:**
+- Chaos forces attack Necron perimeter but get "decimated" 
+- Limited success - cleared some chaos presence but didn't create massive unified assault
+
+## Scene 4: Engineering Solutions
+**Location:** Workshop/technical areas  
+**Key Events:**
+- **Sagoire's Inventions:** Creates multiple tactical devices:
+  - EMP-style device to disrupt Necron targeting (powered by Cinder's lightning)
+  - "Space Marine Launcher" - gravity cannon to launch allies into combat
+  - Medical servitor for field healing
+- **Equipment Integration:** Devices designed to work with party abilities
+- **Durability Concerns:** All devices have limited uses before breaking
+
+## Scene 5: Space Wolf Coordination  
+**Location:** Space Wolf Strike Cruiser and Ironhold  
+**Key Events:**
+- **Brother Rainard's Diplomacy:** Successfully recruits 4 surviving Space Wolves for joint assault
+- **Military Intelligence:** Space Wolves share tactical knowledge about fighting Necrons
+- **Command Structure:** New Space Wolf captain (promoted after battle royale) agrees to debt repayment through cooperation
+- **Historical Context:** Space Wolves warn about Grey Knights' reputation for killing allies to maintain secrecy
+
+## Scene 6: Tomb Approach & Infiltration
+**Location:** Necron tomb entrance complex  
+**Key Events:**
+- **Vale's Reconnaissance:** Uses time-step ability to scout ahead (21 minutes of exploration)
+- **Trap Discovery:** Identifies hallway with wall-mounted guns and waiting Necron forces
+- **Tactical Assessment:** Three paths forward - two dead ends, one heavily trapped
+- **Team Positioning:** Prepare for coordinated assault on known trap location
+
+## Scene 7: The Hallway Gambit - Major Victory
+**Location:** Necron defensive corridor  
+**Key Events:**
+- **Faust's Masterwork:** Mind controls 9 Necron Warriors and 3 Scarab Swarms with exceptional success (37 roll)
+- **Controlled Chaos:** Enemy forces turn on each other, Scarabs self-destruct
+- **Wall Evolution:** Party's regenerating walls consume defeated Necrons, growing from 50 to 100 HP and becoming thicker
+- **Complete Victory:** Trap neutralized with minimal party resources expended
+
+**Strategic Implications:**
+- Party's Necron walls now powered by consuming enemy corpses
+- Demonstrates Faust's growing psychic mastery
+- Establishes effective tactics for tomb exploration
+
+## Scene 8: Navigation Choices & Scout Failures
+**Location:** Three-way junction in tomb complex  
+**Key Events:**
+- **Multiple Scouting Attempts:** Various party members try to assess paths safely
+- **Brother Rainard's Assessment:** Awareness check suggests one path appears "safe"
+- **Faust's Foresight:** Time powers provide limited intel but don't reveal card contents
+- **Path Selection:** Party chooses apparently safe route based on Rainard's judgment
+
+## Scene 9: The Survivor - Tech-Priest Discovery
+**Location:** Sprung trap chamber  
+**Key Events:**
+- **Ancient Survivor:** Discover Tech-Priest who has been trapped in tomb for 20 years
+- **Information Exchange:** 
+  - He was investigating electromagnetic disturbances when tomb was less active
+  - Unaware of Great Rift and major galactic changes (learns 10 years have passed since Rift)
+  - Offers technical expertise and knowledge of tomb layout
+- **Recruitment:** Tech-Priest joins party, desperate to return to Adeptus Mechanicus
+
+**Character Development:**
+- Demonstrates consequences of tomb exploration
+- Provides potential technical support and local knowledge
+
+## Scene 10: Terminator Graveyard
+**Location:** Chamber of fallen Death Watch Terminators  
+**Key Events:**
+- **Archaeological Discovery:** Five ancient Terminator-armored Space Marines with Tyrannic Great Swords
+- **Historical Context:** Faust's memory reading reveals these were Death Watch from Horus Heresy era
+- **The Vision:** Sees entire Chapter assault on tomb, massive Space Marine casualties, fallen Imperial Titan
+- **Equipment Recovery:** 5 sets of Terminator armor (+1 Durability tier, -half tier movement) and ancient power weapons
+- **Psychological Impact:** Faust shaken by vision of Chapter-level defeat, party realizes scope of tomb's deadliness
+
+**Equipment Gained:**
+- Brother Rainard dons Terminator armor (major durability boost, movement penalty)
+- Access to superior ancient weaponry
+
+## Scene 11: The Temporal Trap
+**Location:** Necron Temporal Obelisk chamber  
+**Key Events:**
+- **Trap Activation:** Temporal obelisk slows entire party (stunned, -2 Actions)
+- **Enemy Deployment:** Necron Immortals, Lychguard, Annihilation Barge, and Chronomancer
+- **Faust's Innovation:** Attempts to hack obelisk, eventually succeeds in granting party extra turn
+- **Coordinated Assault:** Party and controlled Necrons work together
+- **Space Wolf Support:** Captain Ragnar and surviving Grey Hunters provide crucial backup
+
+## Scene 12: Victory & Temporal Mastery
+**Location:** Same chamber, post-combat  
+**Key Events:**
+- **Sagoire's Expertise:** Masters temporal field technology with exceptional roll
+- **Time Manipulation:** Successfully creates "Groundhog Day" effect, allowing party to rest and reset
+- **Full Recovery:** Party emerges completely uninjured and well-rested
+- **Technology Acquisition:** Gain temporal field generator and Aeon Staff
+- **Enemy Confusion:** Necrons experience temporal loops, become disoriented
+
+**Strategic Gains:**
+- Party now has time manipulation technology
+- Proven ability to defeat major Necron defensive positions
+- Established rest area within hostile tomb
+
+## Scene 13: Future Glimpse - Session Cliffhanger
+**Location:** Next chamber threshold  
+**Key Events:**
+- **Stasis Discovery:** Find temporal stasis field containing ancient being
+- **Ancient Eldar:** Discover figure in stasis for "60 million years" - predating known Eldar history
+- **Pre-Fall Eldar:** Potentially from before the Fall of the Eldar Empire
+
+**Implications:**
+- Connection to Necron-era galactic history
+- Potential source of ancient knowledge
+- Setup for major revelations about galactic prehistory
+
+## Major Themes & Developments:
+1. **Escalating Stakes:** From local threat to galactic archaeological significance
+2. **Team Coordination:** Increasingly sophisticated tactical cooperation
+3. **Technology Integration:** Party successfully adapting alien technology
+4. **Historical Revelations:** Uncovering deep galactic history and ancient conflicts
+5. **Time Manipulation:** New strategic capabilities through temporal technology
+
+The session successfully transitioned from preparation phase to active tomb exploration, with the party proving more capable than expected against Necron defenses while uncovering increasingly significant historical discoveries.

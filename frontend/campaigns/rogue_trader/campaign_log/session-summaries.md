@@ -1,6 +1,6 @@
 # Arc 1: Hesperus
 
-## **Session 1: The Silent Scream of Hesperus Relay**
+### **Session 1: The Silent Scream of Hesperus Relay**
 
 Dame Venecia Delatorae's crew responded to a desperate distress call from Hesperus Prime Relay while salvaging in the treacherous Spectre Nebula. The fragmented message spoke of attacks from a "green moon," a deaf governor, and something called "Seraph's Echo" that must not be awakened. Upon reaching the damaged relay station, they discovered it under siege by approximately 100 agricultural workers from Veridia Secundus, armed with converted farming equipment. Dame Venecia's attempt at diplomatic surrender using her Auratic Sway met with unnatural resistance, while Faust's psychic amplification revealed supernatural forces at work. The battle showcased Brother Rainard's combat prowess and Sister Inés's devastating heavy flamer work, though Vale's inspection of a dying farmer resulted in a dangerous genestealer infection.
 
@@ -8,7 +8,7 @@ The investigation phase revealed each crew member's unique infiltration skills a
 
 The session concluded with Dame Venecia's leadership during the planetary council meeting, where her assessment of Governor Hax as an "incompetent puppet" proved accurate. Colonel Armitage's honest military briefing revealed the true scope of the rebellion across the agricultural moons and plans to deploy death world soldiers for suppression. Brother Rainard's Space Marine presence had struck immediate terror into the governor, demonstrating the crew's formidable reputation. With Dame Venecia's authorization for intervention secured and the discovery of genestealer infiltration, chaos cult coordination, and the mysterious Seraph's Echo project, the crew prepared for a multi-front war against "The Verdant Kin," while Faust remained behind to maintain his crucial chaos cult infiltration.
 
-## **Session 2: Into the Verdant Kin**
+### **Session 2: Into the Verdant Kin**
 
 The crew's arrival on Veridia Secundus immediately revealed the horrifying extent of genestealer infiltration through their careful observation skills. Supervisor Coch's eerily perfect worker coordination and the spaceport's 200% productivity increase caught Dame Venecia's tactical eye, while the unnaturally quiet atmosphere unnerved the entire team. At the northern community center, Vale and Sister Inés maintained crucial discipline when encountering advanced hybrid evolution - a woman with pure black eyes and child with ridged forehead awaiting a "harvest festival." Brother Rainard's strategic warning about potential underground escape tunnels proved prescient, while Faust's suggestion of asteroid bombardment revealed the crew's growing understanding of the infection's planetary scale.
 
@@ -16,7 +16,7 @@ Sagoire's technical analysis of building destruction methods and fuel sources pr
 
 The underground infiltration showcased Vale's acrobatic skills as they tested the neo-hybrids' responsiveness, discovering the creatures behaved like mindless zombies under Faust's mental deception. The horrifying discovery of dead Adeptus Mechanicus personnel lined along the tunnel walls vindicated Sagoire's understanding of the technical personnel exodus from the system archives. The session's cliffhanger came when Vale's second acrobatics attempt failed catastrophically, creating noise and suspicious behavior that threatened to expose the entire infiltration just as they reached the heart of the cult's stronghold, with Dame Venecia's supernatural presence beginning to manifest in barely contained rage.
 
-## **Session 3: The Thanatos Assault**
+### **Session 3: The Thanatos Assault**
 
 The underground warren erupted into brutal combat that highlighted each crew member's combat specialties. Faust's mind control powers proved devastatingly effective, turning enemies against each other in psychological warfare that demonstrated his growing psychic mastery. However, the psychic assault's spread to party members created a dangerous crisis when Sister Inés fell under enemy control and was forced to attack her allies. Brother Rainard's tactical genius shone as he improvised explosives from mining equipment, systematically eliminating large groups of enemies with calculated precision. Vale's agility and combat expertise complemented the team's ranged capabilities as they fought through hybrids, pure strain genestealers, and the powerful Magus.
 
@@ -24,7 +24,7 @@ The crash landing on Thanatos tested everyone's survival instincts as Brother Ra
 
 The final confrontation in the Patriarch's terraforming facility became an epic showcase of coordinated teamwork. Faust's mind control abilities again proved decisive in controlling enemy forces and turning them against each other. Vale's combat prowess earned particular recognition with multiple critical strikes and follow-up attacks, though the battle's intensity pushed everyone to their limits when Vale died and required Faust's time manipulation powers for revival. Sagoire's ranged combat expertise proved decisive against the controlled Patriarch, while Brother Rainard's relentless assault continued even after taking massive damage. Dame Venecia's tactical leadership coordinated the complex battle against multiple high-level enemies while the environment itself posed deadly hazards, ultimately securing victory and advancing all party members to Tier 5.
 
-## **Session 4: The Hesperus Reckoning**
+### **Session 4: The Hesperus Reckoning**
 
 Dame Venecia's masterful infiltration of the Tzeentchian chaos cult showcased her political acumen and supernatural presence. Posing as "Count Venesia," she used her purple-glowing Cadian mutation eyes and references to "Cadia's sky opening up" to convince the cult contact of her chaos allegiance. Her offer of Faust and Cinder as psykers to assist with their daemon transformation ritual set the perfect trap. When the moment came, Faust's exceptional mind control (roll 41) successfully hijacked the ritual's daemon component, while Dame Venecia's Auratic Sway (roll 41) channeled her Imperial Knight's machine spirit through the Warp. The coordinated effort resulted in the simultaneous incineration of thousands of cultists across the city, with Dame Venecia's house horns ringing triumphantly over their greatest victory.
 
@@ -35,7 +35,7 @@ Dame Venecia's defining character moment came when Inquisitor Vex offered her ei
 
 # Arc 2: Fenris
 
-## **Session 5: The Necron Awakening**
+### **Session 5: The Necron Awakening**
 
 Dame Venecia's quarterly performance reviews during warp travel revealed a crew transformed by their trials, with each member finding their place in her expanding operation. Her discussion with Vale about his death and resurrection experience showed genuine concern for the psychological toll of his enhanced warp sensitivity, while Sister Inés's review touched on her unwavering faith and growing concerns about unsanctioned psykers aboard the ship. Sagoire's brief but positive evaluation highlighted his increasing technical expertise and reliability in critical situations.
 
@@ -44,3 +44,35 @@ The arrival at Fenris system revealed a Space Wolf vessel in orbit around a fera
 Following Space Wolf tracks through the wilderness and past tamed beastmen settlements, the party discovered the trail leading into a cave system where signs of battle and Space Marine blood painted an ominous picture. Deep underground, they entered an ancient Necron tomb where they found the missing Space Marines under assault by mechanical warriors, Scarabs, and phasing Wraiths. The brutal battle left the crew battered and wounded, with Sister Inés taking serious injuries before managing to heal herself through faith.
 
 Vale's combat skills proved exceptional during the fight, but the awakened Necron forces and their devastating weapons forced a desperate retreat. The crew escaped with the surviving Space Wolves, but were forced to abandon the bodies of the fallen Marines in the ancient tomb complex as they fled the overwhelming mechanical threat.
+
+
+### Session 6: The Grey Knights Intervention
+
+After escaping the awakening Necron tomb, Dame Venecia's crew learned the true scope of their enemy from Sagoire's extensive knowledge. These 60-million-year-old tomb world inhabitants possess reality-altering weaponry and living metal bodies that make them nearly immortal, awakening in phases to judge whether the galaxy is ripe for conquest. The trek back to Ironhold revealed Dame Venecia's vulnerability as she leaned on Sagoire for support, showing her human side for the first time.
+
+Evening conversations over Governor Voss's aged wine brought unexpected revelations. Faust's time-vision revealed his traumatic birth - cut from his dying mother by gray-armored Space Marines with an Inquisitor present, his homeworld subsequently glassed. Dame Venecia discussed how her ancestral memories create a complex relationship with identity, while other crew members shared their backgrounds. The party then coordinated with the surviving Space Wolves for a return assault on the tomb entrance.
+
+The coordinated attack proved successful through teamwork and Faust's exceptional psychic control, mind-dominating nine Necron Warriors and three Scarab swarms who turned on their former allies. Sister Inés experienced divine intervention when lethal damage was miraculously healed. Vale's temporal scouting revealed the tomb's horrifying interior: surgical chambers dissecting Chaos beastmen, maze-like living architecture, and a continental-scale complex extending deep underground. A mechanical voice taunted about Space Marines making "excellent test subjects," suggesting some Blood Claws might still be alive below.
+
+The session climaxed with the dramatic arrival of Grey Knights - elite daemon hunters operating under direct Imperial authority. Justicar Castor revealed one of the Imperium's most guarded secrets to Dame Venecia: Necron Tesseract technology can permanently imprison daemons, solving their eternal return to the Warp. The Grey Knights seek these devices from the tomb, but sharing this knowledge carries a death sentence for Dame Venecia and everyone she's ever contacted.
+
+The alliance formed around mutual necessity - the Grey Knights will conduct the primary assault while Dame Venecia's crew provides a crucial distraction from another entrance. Both parties understand the likely outcome: the Rogue Trader's forces will probably die, but their sacrifice enables recovery of technology that could transform humanity's war against Chaos. Faust's attempts to manipulate Chaos tribes into fighting Necrons achieved mixed results, clearing one tomb entrance but failing to unite them into a major force.
+
+The crew now has two weeks to eliminate Chaos beastmen across Fenris Tertius while preparing for a coordinated tomb assault that has escalated from local crisis to galactic significance. Dame Venecia's warrant of trade may become the key to humanity's eternal struggle against the forces of the Warp, with the next mission potentially being their last in service to the Golden Throne.
+
+### Session 7: The Grey Knights Alliance
+
+
+The arrival of the mysterious Grey Knights changed everything. These silver-armored psychic warriors took Dame Venecia aside for a classified briefing that left her visibly shaken. When she returned, the news was grim: the party had two weeks to assault the Necron tomb as a distraction force while the Grey Knights pursued their secret objective. Survival was not expected.
+
+The crew split up to prepare. Faust and Cinder infiltrated chaos werewolf tribes, using psychological manipulation to turn them against the Necrons - though only some tribes took the bait. Sagoire crafted ingenious devices including an EMP disruptor and a gravity cannon for launching space marines into battle. Brother Rainard successfully recruited the surviving Space Wolves, learning disturbing rumors about Grey Knights killing allies to preserve their secrets.
+
+When the tomb assault began, the party's coordination proved exceptional. Vale scouted a trapped corridor filled with Necron defenders, setting up Faust's masterwork: mind controlling nine Necron Warriors and three Scarab Swarms simultaneously. The controlled enemies turned on each other in devastating friendly fire, while the party's regenerating walls consumed the corpses and grew stronger.
+
+Deeper in the tomb, they discovered a Tech-Priest who had been trapped for twenty years, unaware that the Great Rift had torn the galaxy apart. In another chamber, they found the remains of Death Watch Terminators from the Horus Heresy era - Brother Rainard claimed ancient Terminator armor while Faust's visions revealed the tomb had already destroyed an entire Space Marine Chapter and even felled an Imperial Titan.
+
+The climactic battle came in a temporal chamber where a Chronomancer's obelisk slowed time itself. Through desperate innovation, Faust hacked the alien device while Sagoire mastered its technology completely. Their breakthrough allowed them to reset the entire encounter, emerging fully rested and equipped with time manipulation capabilities.
+
+As the session ended, they discovered something that changed everything: a stasis field containing a figure frozen for sixty million years - an Eldar from before the Fall, predating known galactic history.
+
+

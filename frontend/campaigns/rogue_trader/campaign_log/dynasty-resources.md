@@ -66,6 +66,11 @@
 - **Harlequin Performance Cache**: Holo-suit technology and mist stave
 - **Eldar Weaponry**: Advanced alien combat equipment
 
+# Projects
+### Necron Walls
+- Created from the Necrodermis metal
+- These three durable walls will regenerate to recover their shape, acting as portable, healing cover.
+- They did 
 
 
 

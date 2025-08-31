@@ -218,3 +218,53 @@ You can tap into chaotic magical forces at will. Each use provides one of the fo
 | 91-94 | **Righteous Fury** | Add Tier to all damage rolls, until end of encounter | Voice echoes divinely |
 | 95-99 | **Divine Protection** | Gain 20 HP regen, until end of encounter, gain prestige | - |
 | 100 | **Emperor's True Blessing** | Remove all corruption, heal to full, cure demonic presence, instant prestige class | - |
+
+
+
+
+
+
+## Dame Venecia - Tower Defence Gamer
+
+
+**Already Granted**
+- **Enhanced Necron Walls** - Your walls have doubled maximum HP (100 instead of 50)
+
+
+
+**Combat Features:**
+- **Adaptive Density** - As a quick action, make a DC (10 + Tier x 2) Communication check to reshape an adjacent wall: create a dome (3 SP diameter, -Tier DR) or double length (-Tier DR)
+- **Reinforced Structure** - Walls gain + Tier to Stability
+- **Tactical Repositioning** - As a quick action, make a DC (10 + Tier x 2) Communication check to command a wall within (Tier) spaces of you to move up to (Tier) spaces in any direction
+- **Adaptive Formation** - As a quick action, make a DC (20 + Tier × 2) Communication check. On success, two walls within range link together into a network that shares incoming damage equally across both connected segments until one segment is destroyed. Linked walls function as a single unit for damage purposes.
+- **Aggressive Restructure** - Walls can form crude weapon attachments, gaining a base attack and backlash against adjacent enemies
+- **Endless Hunger** - At the end of an encounter, count necron corpses consumed (Large entities count as 4 corpses, Huge count as 9, etc.). The wall gains the Specialized: Power. For every 30 necron corpses consumed, you may attempt a DC (20 + Tier × 2) Power check. On success, create one new wall. Every 5 additional corpses beyond the required 30 grants +1 to the Power roll. These newly created walls belong to you and can be deployed in future encounters.
+
+
+
+
+**Utility Features:**
+- **Protective Haven** - Walls can form temporary shelter allowing rest in dangerous areas; the wall gains specialized: Endurance; make Endurance roll vs GM-set DC based on environmental threats
+- **Necrodermis Study** - Study walls to create weaker versions for troops. Base requirement: 10 necron corpses + 2 days crafting = portable cover for 5 soldiers (requires Technology feature). Make an Intelligence check to determine crafting efficiency: DC 20: Standard rate - 1 set of portable cover every 2 days. Each +5 above DC 20 doubles the production rate. Failure means the crafting of 1 wall instead takes 4 days. The necron corpse requirement remains constant (10 corpses per 5-soldier coverage set).
+- **Environmental Resistance** - The wall gains specialized: Endurance; make Endurance rolls using wall's DR to protect against environmental hazards (radiation, toxic atmosphere, extreme temperatures)
+- **Mobile Fortress** - Walls can slowly reshape to form bridges, ramps, or basic structures; requires 10 minutes per major modification
+
+
+
+
+## Sagoire - Temporal Engineering Mastery
+
+
+**Combat Features:**
+- **Temporal Reversal** - Once per combat, make Intelligence roll (DC = damage taken) to reverse an attack that hit you, preventing the damage
+- **Acceleration Field** - Once per combat, as an action, create 3 SP burst granting extra turn to all inside; DC 20 + (5 × number of people in field)
+- **Temporal Advantage** - Gain (Tier) to Initiative; if you going before all enemies, you may move your full movement without it counting as movement on your turn
+- **Probability Analysis** - Once per combat, after seeing a roll result, declare it was "calculated" and add (Tier) to any ally's roll
+
+
+**Utility Features:**
+- **Time Optimization Chamber** - Once per session, create a temporal bubble lasting 1 hour of real time. Make an Intelligence roll to determine the time dilation rate: ((Intelligence roll - 20) × 5) hours pass inside the bubble for every 1 hour outside. Use this accelerated time for extended planning, rest, research, or other non-combat activities. Minimum rate is 1:1 if the roll is 20 or below.
+- **Information Processing** - Once per session, accelerate your personal perception of time to rapidly process complex data or information. This grants you the equivalent of days of research time compressed into minutes of real time. When using this ability, declare before making any Intelligence-based check to gain an additional (Tier) bonus to that roll.
+- **Causal Mathematics** - You may make a Intelligence check to analyze probability chains to predict likely outcomes of complex plans, to determine exact time and circumstances of past events by studying their effects on the present
+
+

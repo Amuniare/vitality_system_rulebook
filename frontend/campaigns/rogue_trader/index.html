@@ -51,14 +51,6 @@
                 <p>A Warhammer 40,000 Campaign of Power, Corruption, and Discovery</p>
             </header>
 
-            <!-- Main top-level tabs -->
-            <div class="tab-container">
-                <ul class="tab-nav">
-                    <li><button class="tab-button active" data-tab="briefing">Briefing</button></li>
-                    <li><button class="tab-button" data-tab="lore">Lore Archives</button></li>
-                    <li><button class="tab-button" data-tab="logbook">Campaign Log</button></li>
-                </ul>
-            </div>
 
             <!-- Single content area that gets updated -->
             <div class="tab-content active" id="content-display">
@@ -117,18 +109,33 @@
                 await this.loadDocument(this.tabConfig[this.activeMainTab].docs[this.activeDocKey].path);
             }
             
-            // Renders the sidebar based on the active main tab
+            // Renders the sidebar with all sections and their documents
             renderSidebar() {
                 const navContent = document.getElementById('nav-content');
                 if (!navContent) return;
 
-                const currentTabDocs = this.tabConfig[this.activeMainTab].docs;
-                let navHTML = Object.entries(currentTabDocs).map(([key, doc]) => `
-                    <a href="#" class="nav-item h2 ${key === this.activeDocKey ? 'active' : ''}" 
-                       data-action="select-doc" data-doc-key="${key}">
-                        ${doc.label}
-                    </a>
-                `).join('');
+                let navHTML = '';
+                
+                // Generate hierarchical navigation for all tabs
+                Object.entries(this.tabConfig).forEach(([tabKey, tabData]) => {
+                    // Add main section header (h1)
+                    navHTML += `
+                        <a href="#" class="nav-item h1" data-action="select-section" data-section="${tabKey}">
+                            ${tabData.label}
+                        </a>
+                    `;
+                    
+                    // Add documents under this section (h2)
+                    Object.entries(tabData.docs).forEach(([docKey, doc]) => {
+                        const isActive = (tabKey === this.activeMainTab && docKey === this.activeDocKey);
+                        navHTML += `
+                            <a href="#" class="nav-item h2 ${isActive ? 'active' : ''}" 
+                               data-action="select-doc" data-tab="${tabKey}" data-doc-key="${docKey}">
+                                ${doc.label}
+                            </a>
+                        `;
+                    });
+                });
                 
                 navContent.innerHTML = navHTML;
             }
@@ -178,48 +185,43 @@
                 return text.toLowerCase().replace(/[^\\w\\s-]/g, '').replace(/\\s+/g, '-').trim();
             }
             
-            async handleMainTabSwitch(newTabKey) {
-                if (newTabKey === this.activeMainTab) return;
+            async handleSectionClick(sectionKey) {
+                // For section headers, load the default document for that section
+                if (sectionKey === this.activeMainTab) return;
 
-                this.activeMainTab = newTabKey;
-                this.activeDocKey = this.tabConfig[newTabKey].defaultDoc;
-
-                // Update active class on main tabs
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.tab === newTabKey);
-                });
+                this.activeMainTab = sectionKey;
+                this.activeDocKey = this.tabConfig[sectionKey].defaultDoc;
 
                 this.renderSidebar();
-                const defaultDocPath = this.tabConfig[newTabKey].docs[this.activeDocKey].path;
+                const defaultDocPath = this.tabConfig[sectionKey].docs[this.activeDocKey].path;
                 await this.loadDocument(defaultDocPath);
             }
 
-            async handleDocSwitch(docKey) {
-                if (docKey === this.activeDocKey) return;
+            async handleDocSwitch(tabKey, docKey) {
+                if (tabKey === this.activeMainTab && docKey === this.activeDocKey) return;
                 
+                this.activeMainTab = tabKey;
                 this.activeDocKey = docKey;
                 
                 // Update active class in sidebar
-                document.querySelectorAll('#nav-content .nav-item').forEach(item => {
-                    item.classList.toggle('active', item.dataset.docKey === docKey);
-                });
+                this.renderSidebar();
                 
-                const docPath = this.tabConfig[this.activeMainTab].docs[docKey].path;
+                const docPath = this.tabConfig[tabKey].docs[docKey].path;
                 await this.loadDocument(docPath);
             }
 
             setupEventListeners() {
                 document.addEventListener('click', (e) => {
-                    const mainTabButton = e.target.closest('.tab-button');
+                    const sectionLink = e.target.closest('.nav-item[data-action="select-section"]');
                     const docLink = e.target.closest('.nav-item[data-action="select-doc"]');
                     const menuToggle = e.target.closest('.menu-toggle');
 
-                    if (mainTabButton) {
+                    if (sectionLink) {
                         e.preventDefault();
-                        this.handleMainTabSwitch(mainTabButton.dataset.tab);
+                        this.handleSectionClick(sectionLink.dataset.section);
                     } else if (docLink) {
                         e.preventDefault();
-                        this.handleDocSwitch(docLink.dataset.docKey);
+                        this.handleDocSwitch(docLink.dataset.tab, docLink.dataset.docKey);
                     } else if (menuToggle) {
                          document.getElementById('sidebar').classList.toggle('open');
                     }

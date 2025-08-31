@@ -308,18 +308,57 @@
 
     </div>
 
-    <!-- Notes  -->
-
+    <!-- Notes Section - Now with Character Attributes & Notes -->
     <div class="notes">
-        <h4>Notes</h4>
-        <fieldset class="repeating_notes">
-            <button type="roll" name="char_notes"
-                value="&{template:rolls} {{title=@{char_notes} }} {{subtitle=@{character_name} }} {{desc=@{notesDesc} }}"></button>
-            <input type="text" name="attr_char_notes" value="">
-            <details>
-                <textarea name="attr_notesDesc" value=""></textarea>
-            </details>
-        </fieldset>
+        <h4>Character Attributes & Notes</h4>
+        
+        <div class="notes-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+            
+            <!-- Left Column: Character Attributes -->
+            <div class="character-attributes">
+                <h5>Character Attributes</h5>
+                
+                <div class="attribute-item" style="margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="attr_char_swift" value="1">
+                        <span>Swift (+½ Tier to Movement)</span>
+                    </label>
+                </div>
+                
+                <div class="attribute-item" style="margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="attr_char_structure_vehicle" value="1">
+                        <span>Structure / Vehicle</span>
+                    </label>
+                </div>
+                
+                <div class="attribute-item" style="margin-bottom: 10px;">
+                    <label style="display: flex; flex-direction: column; gap: 5px;">
+                        <span>Resistance Type:</span>
+                        <select name="attr_char_resistance_type" style="padding: 4px;">
+                            <option value="none">None</option>
+                            <option value="physical">Physical</option>
+                            <option value="energy">Energy</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Right Column: Notes -->
+            <div class="notes-column">
+                <h5>Notes</h5>
+                <fieldset class="repeating_notes">
+                    <button type="roll" name="char_notes"
+                        value="&{template:rolls} {{title=@{char_notes} }} {{subtitle=@{character_name} }} {{desc=@{notesDesc} }}"></button>
+                    <input type="text" name="attr_char_notes" value="">
+                    <details>
+                        <textarea name="attr_notesDesc" value=""></textarea>
+                    </details>
+                </fieldset>
+            </div>
+            
+        </div>
     </div>
 
 
