@@ -720,13 +720,6 @@
             primaryCheckbox: "char_cnPrimaryAction",
             bonusField: "traitCnBonus"
         },
-        char_movement: {
-            base: 0,
-            keys: ["char_tier", "char_mobility", "char_movementMod"],
-            weakenKey: "char_weakenMovement",
-            primaryCheckbox: "char_movementPrimaryAction",
-            bonusField: "traitMBonus"
-        },
         char_initiative: {
             base: 0,
             keys: ["char_tier", "char_mobility", "char_focus", "char_awareness", "char_initiativeMod"],
@@ -793,6 +786,60 @@
             });
         });
     };
+
+    // Special movement calculation with Swift and minimum tier 6
+    on('change:char_tier change:char_mobility change:char_movementMod change:char_swift change:char_weakenMovement change:char_movementPrimaryAction sheet:opened change:repeating_traits remove:repeating_traits', function () {
+        const requiredKeys = ["char_tier", "char_mobility", "char_movementMod", "char_swift", "char_weakenMovement", "char_movementPrimaryAction"];
+
+        getAttrs(requiredKeys, function (values) {
+            const tier = parseInt(values.char_tier) || 0;
+            const mobility = parseInt(values.char_mobility) || 0;
+            
+            // Base movement: Tier + Mobility, but minimum tier of 6
+            let total = Math.max(tier, 6) + mobility;
+            
+            // Add movement modifier
+            total += (parseInt(values.char_movementMod) || 0);
+            
+            // Add Swift bonus (+½ Tier, rounded up) - uses actual tier, not the minimum 6
+            if (values.char_swift === "1") {
+                total += Math.ceil(tier / 2);
+            }
+
+            // Handle traits (same pattern as generic function)
+            getSectionIDs("repeating_traits", ids => {
+                if (!ids || ids.length === 0) {
+                    // Complete calculation without traits
+                    total -= (parseInt(values.char_weakenMovement) || 0);
+                    if (values.char_movementPrimaryAction === "on") {
+                        total += tier;
+                    }
+                    setAttrs({ char_movement: total });
+                    return;
+                }
+
+                const fields = ids.flatMap(id => [
+                    `repeating_traits_${id}_traitActive`,
+                    `repeating_traits_${id}_traitMBonus`
+                ]);
+
+                getAttrs(fields, traitValues => {
+                    ids.forEach(id => {
+                        if (traitValues[`repeating_traits_${id}_traitActive`] === "1") {
+                            total += parseInt(traitValues[`repeating_traits_${id}_traitMBonus`]) || 0;
+                        }
+                    });
+
+                    total -= (parseInt(values.char_weakenMovement) || 0);
+                    if (values.char_movementPrimaryAction === "on") {
+                        total += tier;
+                    }
+
+                    setAttrs({ char_movement: total });
+                });
+            });
+        });
+    });
 
     // Initialize calculations for each attribute
     Object.entries(attributeCalculations).forEach(([attrKey, config]) => calculateAttribute(attrKey, config));
