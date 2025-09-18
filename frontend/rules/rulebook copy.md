@@ -249,19 +249,17 @@ Upgrade Options:
    - Utility: Awareness, Communication, Intelligence (Tier points)
 
 3. **Purchase Abilities**
-   - Main pool: 1p
+   - Main pool: 20p at Level 1, 40p at Level 2-3, 60p at Level 4-5
    - Buy Attack/Effect Types, Boons, Traits, Flaws
    - Select Unique Abilities
 
 4. **Create Special Attacks**
-   - Points from Archetype/Limits system
-   - First (Tier × 10) = full value
-   - Next (Tier × 20) = half value  
-   - Remainder = quarter value
+   - Archetypes determine the number of attack you have
+   - As well as the number of points you have
 
 5. **Utility Options**
-   - Expertise, Features, Senses, Descriptors
-   - 5 × (Tier - 1) points
+   - Features, Senses, Descriptors
+   - 5 × (Tier) points
 
 
 # SECTION 3: CORE CHARACTER ARCHETYPES
@@ -283,8 +281,8 @@ Upgrade Options:
 - Consistent positioning regardless of enemy interference
 
 **Vanguard**
-- Enemies that start their turn next to your have their movement speed halved until the start of their next turn.
-- As part of a reaction Punish attack, you may move up to your full movement speed towards the target until the end of their turn.
+- Double your movement speed on turn 1
+- Punish Attacks do not consume your reaction and reduce targets movement to 0 on hit
 - Enhanced zone control and battlefield presence
 
 **Mole**
@@ -295,75 +293,14 @@ Upgrade Options:
 
 **Alternative Movement** *(Choose one instead of a standard movement archetype)*
 - **Flight:** Move in any direction, ignore ground obstacles, no terrain penalties.
-- **Teleportation:** Instant movement to visible locations. -2 sp movement penalty.
+- **Teleportation:** Instant movement to visible locations, -2 sp movement penalty when teleporting.
 - **Portal:** Create a pair of linked portals within your movement range, anyone can move and act through them, they persist until the start of your next turn.
-- **Swinging:** Move to any point that has a stable surface you can connect to and you can move your full speed on any solid surface. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+.
-- **Super Jump:** You can jump up to your full movement speed in one leap. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+.
-
-### **ATTACK TYPE ARCHETYPES**
-*Defines how you attack and engage enemies*
-
-**Single Target**
-- Gain Melee AND Ranged attack types for 0p
-- Specializes in single-target elimination
-- Most versatile combat approach
-
-**AOE Specialist**
-- Gain AOE attack type for 0p
-- Excels at crowd control and managing multiple targets
-- Weaker than single target but hits many
-
-**Direct Specialist** 
-- Gain Direct attack type for 0p
-- Reliable effect delivery that cannot be dodged
-- Perfect for consistent results
 
 
 
-### **EFFECT TYPE ARCHETYPES**
-*Determines the impact of successful attacks*
-
-**Damage Specialist**
-- Focus purely on dealing damage
-- Maximum damage potential
-- Can still use Basic Conditions as separate attacks
-
-**Hybrid Specialist**
-- All attacks MUST combine damage and conditions
-- Mandatory Hybrid Attacks
-- Versatile but less powerful in each aspect
-
-**Crowd Control**
-- Free access to 2 Advanced condition effects (chosen at selection)
-- Trade-off: -Tier to all Damage rolls
-- Specializes in enemy control and debilitation
-- Strong team support role
-
-### **UNIQUE ABILITY ARCHETYPES**
-*Defines special capabilities beyond standard actions*
-
-**Versatile Master**
-- Gain 2 Quick Actions per turn
-- When you select this archetype or advance Tiers, select a number of Primary Actions equal to half your Tier rounded up. You can use each of those Primary Actions as Quick Actions.
-- At Tier 8: Gain a third Quick Action
-
-**Extraordinary**
-- Additional points: (Tier - 2) × 15 added to main pool
-- Can only spend up to (Tier - 2) × 15 points on Flaws or Traits
-- For characters seeking to specialize in Unique Abilities
-
-**Cut Above**
-- Universal stat bonuses to all core stats: Accuracy, Damage, Conditions, Avoidance, Durability, Resistances, Initiative, Movement
-- Tiers 1-4: +1 to all | Tiers 5-7: +2 to all | Tiers 8+: +3 to all
-- For straightforward characters
 
 ### **DEFENSIVE ARCHETYPES** 
 *Choose one to define core defensive capabilities*
-
-**Stalwart**
-- Subtract your Tier from your Avoidance Score
-- Choose Physical OR Non-Physical damage: take half damage from that type
-- Specialized damage resistance
 
 **Fortress** 
 - Add your Tier again to Durability
@@ -378,59 +315,40 @@ Upgrade Options:
 - You gain complete immunity in that resistance type
 - Unshakeable defense against specific attacks
 
-**Juggernaut**
-- Increase your maximum Health Pool by 5 × Tier
-- Extra health reserves for attrition warfare
 
 ### **SPECIAL ATTACK ARCHETYPES**
 *Defines development and use of unique combat abilities*
 
-**Normal**
-- Select 3 Specialty Upgrades at half cost
-- Limits provide Points × (Tier ÷ 6)
-- Maximum customization flexibility
-
-**Specialist**
-- All limits selected must be applied to all attacks
-- Limits provide Points × (Tier ÷ 3)
-- Higher return but restricted playstyle
-
-**Paragon**
-- Each special attack receives 10 × Tier points
-- Cannot take Limits
-- Consistent performance without drawbacks
-
-**One Trick**
-- Single attack with Tier × 20 points
-- Cannot take Limits
+**Focused Attacker**
+- Single Special Attack 
+- Tier × 20 points 
 - High-risk, high-reward specialization
 
-**Straightforward**
-- Choose single Limit for all attacks  
-- Limit returns Points × (Tier ÷ 2)
-- Simple but effective approach
-
-**Shared Uses**
-- 10 shared uses among abilities, each attack costs 1-3 uses
-- Regenerate 1 Use per turn
-- Tier × 5 point discount per use, cannot take Limits
-
 **Dual-Natured**
-- Two distinct Special Attacks, each gets 15 × Tier points
-- Cannot take Limits
+- Two distinct Special Attacks
+- Each gets 15 × Tier points
 - Balanced versatility
 
-**Basic**
-- Tier × 10 points for base attack improvements only
-- No special attacks
-- Good for builds that use base attack
+**Versitile Master**
+- 5 Special Attacks
+- Each receives 10 × Tier points
+- Consistent performance without drawbacks
+
+
+**Shared Uses**
+- 3 Special Attacks 
+- 10 shared uses among abilities
+- Each attack costs 1,2 or 3 uses
+- Action to regain 5 uses
+- Tier × 10 points per use
+
+**Specialist**
+- You don't have any Special Attacks
+- You instead receive (Tier - 2) * 20 extra points in your base pool
 
 
 ### **UTILITY ARCHETYPES**
 *Defines non-combat capabilities and specialized skills*
-
-**Practical**  
-Select 3 skills, you add your Tier twice to any skill checks made using those skills
 
 **Specialized**  
 Choose an Attribute, you add your Tier twice to any skill checks made using that Attribute
@@ -446,7 +364,7 @@ You add your Tier once to all skill checks
 1. **Declare Attack** → Attack Type and target/s
 2. **Accuracy Check** → 1d20 + Tier + Focus vs target's Avoidance Score  
 3. **Effect Check** → Damage Roll vs target's Durability Score or Condition Check vs target's Resistance Score.
-- *Damage Roll:* 3d6 + Tier + (Power × 1.5) - Target's Durability  
+- *Damage Roll:* 3d6 + Tier + Power - Target's Durability  
 - *Condition Check:* 1d20 + Tier + Power vs Target's Resistance 
 4. **Apply Results** → Reduce HP by damage taken or apply condition effect
 
@@ -462,55 +380,47 @@ You add your Tier once to all skill checks
 - **Range:** 15 spaces base
 - **Penalty:** -Tier to Accuracy if adjacent to hostile character
 
-**DIRECT ATTACK** 
-- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
-- **Restriction:** Must be Condition attack only
-- **Penalty:** -Tier to all Damage and Condition rolls
-
 **AREA ATTACK** 
 - **Range:** Originates from your position
 - **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
 - **Penalty:** -Tier to all Accuracy checks
 
-### **HYBRID ATTACKS**
-*Combine damage and conditions in single attack*
-*Available to all Attack Types, unlocked by Effect Type Archetype or purchased for Special Attacks*
+**DIRECT CONDITION ATTACK** 
+- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
+- **Restriction:** Must be Condition attack only
+- **Penalty:** Tier Condition
 
-- Attack applies both Damage AND Condition
-- **Order of Resolution:** Choose Damage or Condition to resolve first - if first effect fails, entire attack fails
-- **Penalty:** -Tier to ALL Damage and Condition rolls
-- **Rule:** When combined with Direct or Area attacks, only the Hybrid penalty applies
+**DIRECT AREA CONDITION ATTACK** 
+- **Range:** Originates from your position
+- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
+- **Penalty:** Tier x2 Condition
+
+**DIRECT DAMAGE ATTACK** 
+- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
+- **Restriction:** Must be Condition attack only
+- **Penalty:** Flat 13 - Tier
+
+**DIRECT AREA DAMAGE ATTACK** 
+- **Range:** Originates from your position
+- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
+- **Penalty:** Flat 13 - Tier x2
+
 
 ### **BASIC CONDITIONS**  
-These represent mundane impairments that any character can apply through Base Attacks. All Basic Conditions either take effect instantly or last until the **end of your next turn** if they have a duration unless otherwise specified.
-  - **Disarm (Stability)**: Forces the target to drop something they're holding. The dropped item can be picked up as a Quick Action. You may attempt to launch the item in any direction a number of spaces equal to how successful your roll was assuming you have the Cpacity to move it. 
+These represent mundane impairments that any character can apply through Attacks. All Basic Conditions either take effect instantly or last until the **start of your next turn** if they have a duration unless otherwise specified.
 
-  - **Grab (Stability)**: The target cannot move. As an Action the target can make a Stability check against the Condition roll to break free early or as part of their movement to drag you with them follwing the rules for Capacity.
 
-  - **Shove (Stability)**: Push or pull the target (Condition roll - Resistance) spaces. Collisions deal falling damage to both entities and you can expend 5 Shoving spaces to knock the target prone. 
-    - Prone: Adjacent attacks against you gain +Tier to Accuracy, ranged attacks against you suffer -Tier to Accuracy, standing cost 3 movement spaces.
+**CONTROL** 
 
-  - **Blind (Vitality)**: Targets treats all others as visually Hidden. Hidden attackers ignore the target's base Tier Avoidance bonus. When attacking you must roll a Perception check vs the target's Stealth check, the attack is assumed to have missed on a failure.
+**DISABLE** 
 
-  - **Daze (Vitality)**: Target cannot take Quick Actions or Reactions.
+**WEAKEN** 
 
-  - **Setup (Resolve)**: The next Accuracy check against the target adds double your Tier to their regular bonus.
+**BIND** 
 
-  - **Taunt (Resolve)**: Target's suffer a reduction to their Accuracy checks equal to double your Tier against all targets other than you.
+**FEAR** 
 
-### **ADVANCED CONDITIONS**
-Complex effects unlocked by Effect Type Archetype or purchased for Special Attacks. All Advanced Conditions either take effect instantly or last until the **start of your next turn** if they have a duration unless otherwise specified.
-
-- **Control (Resolve)**: You control the target on their next turn. Common uses are making them attack, protect you, or become Stunned. If you or an ally attack them, the Control ends.
-- **Stun (Resolve/Vitality)**: The target can take no actions or movement, their AV is reduced to 0, and any attacks that hit them are considered critical hits.
-- **Weaken (Vitality)**: Reduce the chosen stat by your Tier: Accuracy/Damage/Conditions/Avoidance/Durability/All Resistances. This effect does not expire but the target cannot be affected by more than 1 instance of Weaken.
-  - **Drain** You gain a bonus to your Tier to the target Stat, while the target is weakened. If you use an AOE ability, you only gain the bonus once.
-- **Disable Specials (Resolve/Vitality)**: Target cannot use Special Attacks.
-  - **Mimic**: You gain use of the disabled Special Attacks but using your own stats. 
-- **Frighten (Resolve)**: The target must move away from you and can only take the Hasten or Hide Actions. If there is nowhere to run or hide they may take the Dodge or Brace Actions.
-- **Enthrall (Resolve)**: The target must defend you.
-- **Frenzy (Resolve)**: Target attacks the nearest character indiscriminantly. 
-
+**TAUNT** 
 
 
 
@@ -529,25 +439,19 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 
 **Available Flaws:**
 
-- **Balanced** → Must have at least half your Tier rounded down in each Combat Attribute, can only add Tier bonus once to each stat across Flaws, Traits, and Primary Actions
 
 - **Slow** → No Movement Archetype
+
+- **Frail** → No Defensive Archetype
 
 - **Combat Focused** → No Utility abilities
 
 - **Sickly** → Maximum Health Pool reduced by 30
 
-- **Unresponsive** → Cannot take Reactions, don't add Tier to Initiative, cannot benefit from Surprise rounds
-
 - **Peaked** → Cannot use Efforts
-
-- **Weak** → 1 fewer Combat Attribute Points
 
 - **Power Loss** → Lose powers under specific circumstances (discuss with GM)
 
-- **Single Target Specialist** → Choose Melee OR Ranged attacks only
-
-- **Equipment Dependent** → Choose specific item; lose access to one Archetype benefit without it, it is noticable and you can be disarmed of it.
 
 
 
@@ -576,24 +480,25 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 - **Overwhelm** → Dealt damage to enemy this turn
 - **Infection** → Applied Condition this turn
 - **Infected** → Applied Condition last turn
-- **Temporary 3** → Activate for 3 turns, recharges after 1 minute rest
+- **Temporary 3** → Activate for 5 turns, recharges after 1 minute rest
 
 **TIER 2 CONDITIONS** *(Moderately difficult)*
 - **Timid** → At max HP with no conditions
 - **Revenge** → Been damaged since last turn
 - **Unbreakable** → Been hit but took no damage since last turn
-- **Unhealthy 2** → 75+ points below max HP
+- **Bloodied** → At 50 Hit Points or less
 - **Untouchable** → All attacks missed since last turn
 - **Slaughter** → Defeated enemy last turn
 - **Onslaught** → Defeated enemy this turn
 - **Patient** → Turn 5 or later
-- **Temporary 2** → Activate for 2 turns, recharges after 1 minute rest
+- **Temporary 2** → Activate for 3 turns, recharges after 1 minute rest
 
 **TIER 3 CONDITIONS** *(Hardest to maintain)*
-- **Quickdraw** → First 2 rounds of combat
-- **Temporary 1** → Activate for 1 turn, recharges after 1 minute rest
+- **Finale** → Turn 8 or later
+- **Quickdraw** → First 3 rounds of combat
+- **Temporary 1** → Activate for 2 turns, recharges after 1 minute rest
 - **Irregular 2** → Roll d20, DC 10 to activate each turn
-- **Near Death** → At 0 Hit Points
+- **Near Death** → At 25 Hit Points or less
 - **Dangerous** → No allies within 15 spaces, no civilians within 30 spaces
 - **Avenger** → Ally unconscious or great peril occurred
 
@@ -616,20 +521,17 @@ Complex effects unlocked by Effect Type Archetype or purchased for Special Attac
 
 **Psychic (0p)** → All conditions you inflict target Resolve resistance instead
 
-
 **Telekinetic (0p)** → All conditions you inflict target Stability resistance instead
 
 **Biohacker (0p)** → All conditions you inflict target Vitality resistance instead
 
-**Utilitarian (15p)** → Gain 5 extra points for Features, Senses, Movement Abilities, and Descriptors
+**Try-Hard (20p)** → You have an extra effort.
 
-**Lucky (30p)** → You have an extra effort.
+**Lucky (20p)** → 3 rerolls per day, keep the higher roll
 
-**Perfectionist (15p)** → Reroll any natural 1s on d20 rolls
+**Perfectionist (20p)** → Reroll any rolls that are below a 5.
 
-**Combat Reflexes (15p)** → You can take an additional Reaction each round.
-
-**Robot (30p)** → Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for healing purposes.
+**Robot (20p)** → Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for healing purposes.
 
 ### **OTHER UNIQUE ABILITIES**
 *Specialized powers and abilities for character customization*
