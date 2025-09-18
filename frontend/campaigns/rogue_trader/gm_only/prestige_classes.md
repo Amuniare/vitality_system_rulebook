@@ -95,6 +95,13 @@ When you roll for an attack, roll 3d20, keep the highest result, and subtract 6 
 ---
 
 
+
+
+
+
+
+
+
 # Prestige Class - Created
 
 
@@ -225,7 +232,8 @@ You can tap into chaotic magical forces at will. Each use provides one of the fo
 
 
 ## Dame Venecia - Tower Defence Gamer
-
+**Session #:** 7
+**Dice Roll:** 99 (d100)
 
 **Already Granted**
 - **Enhanced Necron Walls** - Your walls have doubled maximum HP (100 instead of 50)
@@ -235,7 +243,8 @@ You can tap into chaotic magical forces at will. Each use provides one of the fo
 **Combat Features:**
 - **Adaptive Density** - As a quick action, make a DC (10 + Tier x 2) Communication check to reshape an adjacent wall: create a dome (3 SP diameter, -Tier DR) or double length (-Tier DR)
 - **Reinforced Structure** - Walls gain + Tier to Stability
-- **Tactical Repositioning** - As a quick action, make a DC (10 + Tier x 2) Communication check to command a wall within (Tier) spaces of you to move up to (Tier) spaces in any direction
+- **Tactical Repositioning** - As a quick action, command any number of your walls to move. Make a Communication check and calculate your total movement pool: (Communication check result - 15 - Tier). Distribute this movement pool among the selected walls as you choose. Each wall can move up to its allocated movement in any direction. 
+
 - **Adaptive Formation** - As a quick action, make a DC (20 + Tier × 2) Communication check. On success, two walls within range link together into a network that shares incoming damage equally across both connected segments until one segment is destroyed. Linked walls function as a single unit for damage purposes.
 - **Aggressive Restructure** - Walls can form crude weapon attachments, gaining a base attack and backlash against adjacent enemies
 - **Endless Hunger** - At the end of an encounter, count necron corpses consumed (Large entities count as 4 corpses, Huge count as 9, etc.). The wall gains the Specialized: Power. For every 30 necron corpses consumed, you may attempt a DC (20 + Tier × 2) Power check. On success, create one new wall. Every 5 additional corpses beyond the required 30 grants +1 to the Power roll. These newly created walls belong to you and can be deployed in future encounters.
@@ -253,13 +262,14 @@ You can tap into chaotic magical forces at will. Each use provides one of the fo
 
 
 ## Sagoire - Temporal Engineering Mastery
-
+**Session #:** 7
+**Dice Roll:** 42 ()
 
 **Combat Features:**
 - **Temporal Reversal** - Once per combat, make Intelligence roll (DC = damage taken) to reverse an attack that hit you, preventing the damage
 - **Acceleration Field** - Once per combat, as an action, create 3 SP burst granting extra turn to all inside; DC 20 + (5 × number of people in field)
 - **Temporal Advantage** - Gain (Tier) to Initiative; if you going before all enemies, you may move your full movement without it counting as movement on your turn
-- **Probability Analysis** - Once per combat, after seeing a roll result, declare it was "calculated" and add (Tier) to any ally's roll
+- **Probability Analysis** - Once per combat, after seeing a roll result, you can manipulate the probably and add your (Tier) to any ally's roll
 
 
 **Utility Features:**

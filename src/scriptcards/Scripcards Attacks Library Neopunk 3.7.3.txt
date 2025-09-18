@@ -548,7 +548,6 @@
         --?[$Brutal] -ne 1 -or [$DamageAmount] -lt 10|PassBrutalNote
           --&AttackNotes|+ Brutal Applied,
         --:PassBrutalNote|
-        --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=BrutalBonus; [$DamageAmount] - 10
         --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=BrutalBonus; [$BrutalBonus]/2 {CEIL}
         --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=DamageAmount; [$DamageAmount] + [$BrutalBonus]
 

@@ -18,7 +18,7 @@ SKIP_DIRECTORY_TREE = True  # Set to True to skip directory tree generation
 # ============================================================================
 # DEFAULT PRESET (when run without arguments)
 # ============================================================================
-DEFAULT_PRESET = 'rogue_trader'
+DEFAULT_PRESET = 'rogue_trader_character_builder'
 
 # ============================================================================
 # PRESETS - Define what to include and exclude
@@ -274,7 +274,8 @@ def calculate_file_stats(files):
 def generate_output(files, preset_name, output_file='codebase.txt'):
     """Generate the output file."""
     stats = calculate_file_stats(files)
-    tree = build_directory_tree()
+    if not SKIP_DIRECTORY_TREE:
+        tree = build_directory_tree()
     
     output_lines = []
     
@@ -296,7 +297,8 @@ def generate_output(files, preset_name, output_file='codebase.txt'):
     write_section("CODEBASE COLLECTION", header_content)
     
     # Directory tree and File list
-    write_section("DIRECTORY STRUCTURE", tree)
+    if not SKIP_DIRECTORY_TREE:
+        write_section("DIRECTORY STRUCTURE", tree)
     
     file_list_content = []
     for file_path in files:
