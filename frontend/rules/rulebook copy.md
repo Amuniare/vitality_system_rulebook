@@ -175,7 +175,7 @@ You fall 20 spaces at the end of each of your turns. Fall damage is equal to the
 **Reactions**
 - Occur outside your turn
 - Abilities marked as Reactions
-- **Base Reaction** - **Punish**: You can make an Attack when an opponent within your melee reach takes a Vulnerable Action.
+- **Base Reaction** - **Punish**: You can make a Special Attack when an opponent within your melee reach takes a Vulnerable Action.
 
   <br>
 
@@ -357,71 +357,6 @@ Choose an Attribute, you add your Tier twice to any skill checks made using that
 You add your Tier once to all skill checks
 
 
-# SECTION 4: ATTACK AND EFFECT TYPES
-
-
-### **ATTACK RESOLUTION**
-1. **Declare Attack** → Attack Type and target/s
-2. **Accuracy Check** → 1d20 + Tier + Focus vs target's Avoidance Score  
-3. **Effect Check** → Damage Roll vs target's Durability Score or Condition Check vs target's Resistance Score.
-- *Damage Roll:* 3d6 + Tier + Power - Target's Durability  
-- *Condition Check:* 1d20 + Tier + Power vs Target's Resistance 
-4. **Apply Results** → Reduce HP by damage taken or apply condition effect
-
-### **ATTACK TYPES**
-*Determines how attacks are delivered and their targeting methods*
-*Unlocked by Attack Type Archetype or purchased for Special Attacks*
-
-**MELEE ATTACK** 
-- **Range:** Adjacent targets only
-- **Benefit:** Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls
-
-**RANGED ATTACK** 
-- **Range:** 15 spaces base
-- **Penalty:** -Tier to Accuracy if adjacent to hostile character
-
-**AREA ATTACK** 
-- **Range:** Originates from your position
-- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
-- **Penalty:** -Tier to all Accuracy checks
-
-**DIRECT CONDITION ATTACK** 
-- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
-- **Restriction:** Must be Condition attack only
-- **Penalty:** Tier Condition
-
-**DIRECT AREA CONDITION ATTACK** 
-- **Range:** Originates from your position
-- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
-- **Penalty:** Tier x2 Condition
-
-**DIRECT DAMAGE ATTACK** 
-- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
-- **Restriction:** Must be Condition attack only
-- **Penalty:** Flat 13 - Tier
-
-**DIRECT AREA DAMAGE ATTACK** 
-- **Range:** Originates from your position
-- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
-- **Penalty:** Flat 13 - Tier x2
-
-
-### **BASIC CONDITIONS**  
-These represent mundane impairments that any character can apply through Attacks. All Basic Conditions either take effect instantly or last until the **start of your next turn** if they have a duration unless otherwise specified.
-
-
-**CONTROL** 
-
-**DISABLE** 
-
-**WEAKEN** 
-
-**BIND** 
-
-**FEAR** 
-
-**TAUNT** 
-
 
 
 
@@ -439,7 +374,6 @@ These represent mundane impairments that any character can apply through Attacks
 
 **Available Flaws:**
 
-
 - **Slow** → No Movement Archetype
 
 - **Frail** → No Defensive Archetype
@@ -451,8 +385,6 @@ These represent mundane impairments that any character can apply through Attacks
 - **Peaked** → Cannot use Efforts
 
 - **Power Loss** → Lose powers under specific circumstances (discuss with GM)
-
-
 
 
 
@@ -529,7 +461,7 @@ These represent mundane impairments that any character can apply through Attacks
 
 **Lucky (20p)** → 3 rerolls per day, keep the higher roll
 
-**Perfectionist (20p)** → Reroll any rolls that are below a 5.
+**Perfectionist (20p)** → You can reroll once, any roll that is equal to or below your Tier.
 
 **Robot (20p)** → Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for healing purposes.
 
@@ -699,64 +631,103 @@ These represent mundane impairments that any character can apply through Attacks
 
 # SECTION 7: SPECIAL ATTACKS
 
-### **BASIC RULES**
-**Special Attack Allocation:** You get Special Attacks equal to your Tier, unless otherwise specified by your Special Attack Archetype  
-**Starting Points:** No base points unless granted by your Special Attack Archetype  
-**Point Generation:** Take Limits on attacks to gain points for Upgrades, unless your archetype doesn't let you take limits
+### **ATTACK RESOLUTION**
+1. **Declare Attack** → Attack Type and target/s
+2. **Accuracy Check** → 1d20 + Tier + Focus vs target's Avoidance Score  
+3. **Effect Check** → Damage Roll vs target's Durability Score or Condition Check vs target's Resistance Score.
+- *Damage Roll:* 3d6 + Tier + Power - Target's Durability  
+- *Condition Check:* 1d20 + Tier + Power vs Target's Resistance 
+4. **Apply Results** → Reduce HP by damage taken or apply condition effect
 
-### **POINT CALCULATION FROM LIMITS**
-**Limit Value Scaling:**
-- **First (Tier × 10) points of Limits** → Full value
-- **Next (Tier × 20) points of Limits** → Half value  
-- **All remaining Limit points** → Quarter value
+### **ATTACK TYPES**
+*Determines how attacks are delivered and their targeting methods*
+*Unlocked by Attack Type Archetype or purchased for Special Attacks*
 
-**Example (Tier 5):**
-- 50 points of Limits = 50 upgrade points
-- 100 points of Limits = 75 upgrade points  
-- 150 points of Limits = 100 upgrade points
-- 250 points of Limits = 125 upgrade points
+**MELEE ATTACK** 
+- **Range:** Adjacent targets only
+- **Benefit:** Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls
 
-**Breaking Down the Math (Tier 5 Example):**
-- **250 Points of Limits:** 50×1.0 + 100×0.5 + 100×0.25 = 125 upgrade points
+**RANGED ATTACK** 
+- **Range:** 15 spaces base
+- **Penalty:** -Tier to Accuracy if adjacent to hostile character
 
-**Limit Restrictions:**
-You cannot take a limit, if you are unlikely or unable to suffer the downside, or if more than half of the effect of the limit is mitigated by other means.
-**Examples:**
-- Charge-Up / Extended Charge-Up, and Cooldown 2
-- Cooldown 3 and Reserves 3
+**AREA ATTACK** 
+- **Range:** Originates from your position
+- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
+- **Penalty:** -Tier to all Accuracy checks
+
+**DIRECT CONDITION ATTACK** 
+- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
+- **Restriction:** Must be Condition attack only
+- **Penalty:** Tier Condition
+
+**DIRECT AREA CONDITION ATTACK** 
+- **Range:** Originates from your position
+- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
+- **Penalty:** Tier x2 Condition
+
+**DIRECT DAMAGE ATTACK** 
+- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
+- **Restriction:** Must be Condition attack only
+- **Penalty:** Flat 13 - Tier
+
+**DIRECT AREA DAMAGE ATTACK** 
+- **Range:** Originates from your position
+- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
+- **Penalty:** Flat 13 - Tier x2
+
 
 ### **ATTACK & EFFECT TYPE ACCESS**
-**Free Access:** Use Attack and Effect Types from your chosen Archetypes  
+**Free Access:** Use any attack type, damage is free.
 
-**Purchased Access:** You can purchase Attack Types, Effect Types, and Generic Upgrades for individual use on Special Attacks.
+**Purchased Access:** You can purchase Conditions, and Generic Upgrades for individual use on Special Attacks.
 
-**Attack Types**
-- **Melee (20p)**
-- **Ranged (20p)**
-- **Direct (30p)**
-- **Area (30p)**  
+## **CONDITIONS**
 
-**Advanced Conditions** 
-- **Control (30p)**
-- **Stun (20p)**
-- **Weaken (20p)**
-  - **Drain (+30p)** 
-- **Disable Specials (10p)**
-  - **Mimic (+20p)** 
-- **Frighten (10p)**
-- **Enthrall (10p)**
-- **Frenzy (10p)**
+**Control** *(30p)*
+* **Above 50 HP:** Influenced
+* **Above 25 HP:** Compelled  
+* **Above 10 HP:** Dominated
+* **Below 10 HP:** Enslaved
+
+**Disable** *(25p)*
+* **Above 50 HP:** Hindered
+* **Above 25 HP:** Impaired
+* **Above 10 HP:** Stunned
+* **Below 10 HP:** Catatonic
+
+**Weaken** *(20p)*
+* **Above 50 HP:** Exposed
+* **Above 25 HP:** Vulnerable
+* **Above 10 HP:** Crippled
+* **Below 10 HP:** Broken
+
+**Brawl** *(20p)*
+* **Above 50 HP:** Entangled
+* **Above 25 HP:** Immobillized
+* **Above 10 HP:** Grappled
+* **Below 10 HP:** Takedown
+
+**Frighten** *(15p)*
+* **Above 50 HP:** Unnerved
+* **Above 25 HP:** Frightened
+* **Above 10 HP:** Terrified
+* **Below 10 HP:** Broken Will
+
+**Taunt** *(15p)*
+* **Above 50 HP:** Distracted
+* **Above 25 HP:** Fixated
+* **Above 10 HP:** Obsessed
+* **Below 10 HP:** Devoted
+
+
 
 **Generic Attack Upgrades:**
-- **Extended Range (10p):** Ranged attacks reach 30 spaces instead of 15
-- **Long Range (20p):** Ranged attacks reach 100 spaces instead of 15  
-- **Perception Range (10p):** Direct attacks can target anyone you can see instead of 30 spaces
-- **Enhanced Scale (20p):** Double the size of Area attacks (6sp radius, 12sp cone, 24sp line)
+- **Extended Range (20p):** Ranged attacks reach 30 spaces instead of 15
+- **Long Range (30p):** Ranged attacks reach 100 spaces instead of 15  
+- **Perception Range (20p):** Direct attacks can target anyone you can see instead of 30 spaces
+- **Enhanced Scale (20p):** Increase the size of Area attacks for Burst: +2sp, for Cone: +4sp, for Line: +8sp
 - **Precise (30p):** Choose which targets are affected by Area attacks
-- **Ranged AOE  (20p):** Area attacks can originate from designated point within 15 spaces
-- **Direct Area (30p):** Area attacks auto-hit (no Accuracy roll needed), must be Condition only  
-- **Hybrid (30p):** Attack becomes Hybrid, inflicting both a Condition and Damage.  
-
 
 
 
@@ -1087,10 +1058,6 @@ Restriction: Cannot apply to AOE attacks
 **20p - Lasting Condition**  
 Effect: If Condition roll exceeds Resistance by 10+, condition duration extends by 1 turn  
 
-**60p - Mass Effect**  
-Effect: Single Direct condition attack targets up to Tier enemies simultaneously  
-Effect Modifier: -Tier penalty to Condition rolls  
-
 **60p - Collateral Condition**  
 Effect: Successful condition triggers attack against all targets within 3-space burst  
 Restriction: Cannot apply to AOE attacks, triggers only once per attack  
@@ -1278,100 +1245,8 @@ Selection: Choose Accuracy, Damage, or Conditions when purchasing
 These abilities represent your character's capabilities outside of combat. 
 
 **Point Pools**
-- Utility Points: 5 × (Tier - 2)
+- Utility Points: 5 × (Tier) points
 - Can be spend on Features, Senses, Movement Abilites, or Descriptors
-
-
-
-## Skills
-
-Specialized knowledge, training, or unique abilities that enhance your effectiveness at a task. Skills can represent peak human achievement, superhuman talent, or distinctive capabilities that improve standard actions.
-
-#### Mobility
-- **Climbing** – Navigating vertical terrain with speed and control
-- **Acrobatics** – Tumbling, flipping, and maintaining balance in motion
-- **Stealth** – Moving silently and remaining unseen
-
-#### Power
-- **Force** – Breaking, lifting, shoving, and overpowering obstacles
-- **Leaping** – Explosive jumps and extended aerial movement
-- **Grappling** – Holding, pinning, or throwing in close combat
-
-#### Endurance
-- **Exertion** – Sustained effort under physical stress
-- **Resistance** – Withstanding pain, illness, toxins, or conditions
-
-#### Focus
-- **Vehicles** – Operating and maneuvering mechanical transports
-- **Crafting** – Building, repairing, and shaping physical tools or items
-- **Sleight of Hand** – Subtle, dexterous manipulation or concealment
-
-#### Awareness
-- **Tracking** – Following trails, signs, or behavioral patterns
-- **Searching** – Scanning for hidden, lost, or obscured details
-- **Perception** – Noticing changes, cues, or threats in real time
-- **Sense Motives** – Reading intent, emotion, or deception in others
-
-#### Communication
-- **Persuasion** – Convincing others with logic, charm, or appeal
-- **Deception** – Misleading through lies, trickery, or half-truths
-- **Intimidation** – Coercing through fear, threat, or force of presence
-- **Disguise** – Altering appearance or identity convincingly
-- **Understand** – Interpreting tone, language, and hidden meaning
-
-#### Intelligence
-- **Strategy** – Tactical decision-making and multi-step planning
-- **Innovate** – Developing new methods, systems, or breakthroughs
-- **Decoding** – Interpreting codes, puzzles, or unfamiliar systems
-- **Research** – Investigating topics, gathering data, or studying deeply
-- **Problem Solving** – Applying logic and creativity to overcome challenges
-
-### Talents
-
-    
-Each character also has 2 Talents, specific task that they are good at such as cooking or military history. You add your Tier twice to skill checks made regarding your Talent. Work with your GM to determine your Talents.
-
-Here are some sample Talents: 
-
-
-
-#### Mobility
-- **Vertical Environments** – Comfortable in areas with ladders, walls, cliffs, or scaffolding
-- **Confined Spaces** – Familiar with cramped hallways, vents, crawlspaces, or tight tunnels
-- **Treacherous Terrain** – Adept in swamps, rubble, slick surfaces, or loose ground
-
-#### Power
-- **Close Quarters Combat** – Environments where space is limited and brute force rules
-- **Heavy Industry** – Warehouses, loading zones, construction sites, or factories
-
-#### Endurance
-- **Extreme Weather** – Cold, heat, storms, or other harsh conditions
-- **Long Operations** – Familiarity with extended missions, watches, or survival situations
-
-#### Focus
-- **High-Speed Environments** – Vehicles, races, or fast-paced operations
-- **Workshops & Labs** – Precision workspaces with tools, components, and procedures
-- **Disaster Zones** – Fires, crashes, malfunctions, or other chaotic settings
-
-#### Awareness
-- **Urban Areas** – Streets, alleys, rooftops, and the social rhythms of cities
-- **Wilderness** – Forests, deserts, mountains, and other natural landscapes
-- **Chaotic Scenes** – Riots, protests, crowds, or high-distraction areas
-- **Low Visibility** – Darkness, fog, smoke, or other sight-limiting conditions
-
-#### Communication
-- **Formal Settings** – Boardrooms, courtrooms, or ceremonial environments
-- **Underground Culture** – Black markets, street deals, or hidden social networks
-- **Diplomatic Zones** – Neutral ground, political meetings, or cultural exchanges
-- **Public Forums** – Rallies, stages, broadcasts, or press interactions
-
-#### Intelligence
-- **Academic Environments** – Libraries, universities, conferences, or scholarly debates
-- **Time-Critical Situations** – Puzzles under pressure, quick analysis, or rapid decision-making
-- **Hostile Information** – Contested data, propaganda, misinformation, or adversarial intelligence
-- **Collaborative Projects** – Team research, group problem-solving, or multi-expert consultation
-
-
 
 
 ## Features
