@@ -334,13 +334,13 @@ Upgrade Options:
 - Each receives 10 × Tier points
 - Consistent performance without drawbacks
 
-
 **Shared Uses**
 - 3 Special Attacks 
 - 10 shared uses among abilities
-- Each attack costs 1,2 or 3 uses
+- Attack 1 costs 1 Use and receives 10 × Tier points
+- Attack 2 costs 1 Use and receives 15 × Tier points
+- Attack 3 costs 1 Use and receives 20 × Tier points
 - Action to regain 5 uses
-- Tier × 10 points per use
 
 **Specialist**
 - You don't have any Special Attacks
@@ -1104,9 +1104,6 @@ Banned Combination: Cannot combine with Brutal
 Requirement: Expend all Movement and one Quick Action to charge  
 Effect: Make same Ranged attack three times against single target, -Tier to Accuracy rolls  
 
-**60p - Scatter Shot**  
-Effect: Single Ranged attack targets up to Tier enemies simultaneously  
-Effect Modifier: -Tier penalty to Accuracy rolls  
 
 #### Universal Combat Techniques
 
@@ -1174,6 +1171,18 @@ Effect: Critical hits allow choice of Grab, 3-space forced movement, or Prone co
 Effect: +Tier damage against targets you have Grabbed  
 Requirement: Must have Grab condition active on target  
 
+**Cost**: 
+
+**Unreliable 5** 
+Cost: 40p
+Limit: Roll d20 before use; if under 5, attack fails and action is wasted
+Effect: Gain Critical Effect
+Tags: [Limit], 
+
+**Unreliable 10** 
+Cost: 20p
+Limit: Roll d20 before use; if under 10, attack fails and action is wasted
+Effect: Gain Critical Effect
 
 
 ### VARIABLE BONUSES
@@ -1275,7 +1284,7 @@ You can recall any information you've previously encountered with perfect accura
 You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don't know, you can attempt to decipher its meaning over time using intelligence.
 
 **Lock**
-You can place a protective barrier around a container or room. Your bonus to resist someone breaking into the container or room is 3 × your Intelligence. You can only have one lock active at a time, but you can disable and activate a new one at any time from anywhere.
+You can place a protective barrier around a container or room. You can only have a number of locks, equal to your tier, active at a time.
 
 **Multi-limbed**
 You have additional limbs. Each purchase of this feature grants you one extra limb.
@@ -1477,7 +1486,7 @@ You can tap into chaotic magical forces at will. Each use provides a small benef
 **Bleeding Edge**
 Your technology is the most advanced and powerful there is, allowing you greater feats beyond what normal technology can accomplish. However, it can only be repaired, maintained, modified, or upgraded using very specific or hard-to-find tools, methods, or materials.
 
-**Chameleon**
+**Shapeshifter**
 You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters.
 
 **Consciousness Projection**
