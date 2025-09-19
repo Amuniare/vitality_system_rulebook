@@ -695,7 +695,7 @@ You can build an attack that does damage for free or purchase a Condition to mak
 **Taunt** *(15p)*
 The target must include you in any attacks it makes until the end of your next turn.
 
-**Taunt** *(15p)*: The target cannot attack you until the end of your next turn.
+**Charm** *(15p)*: The target cannot attack you until the end of your next turn.
 
 
 
