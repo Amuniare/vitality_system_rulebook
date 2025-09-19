@@ -25,7 +25,7 @@
 
 
 
-Your Tier grants a bonus to most actions, your core stats, your avaiable character points, and determines your max attribute ranks. Anything that refers to your Tier is referencing this number.
+Your Tier grants a bonus to most actions, your core stats, your avaiable character points, and determines your max attribute ranks. Anything that refers to your Tier is referencing your Tier Bonus number.
 
 ### **ATTRIBUTES**
 Attributes represent what type of things your character is good at in combat and utility situations. 
@@ -49,8 +49,8 @@ Attributes represent what type of things your character is good at in combat and
 **Condition Check:** 1d20 + Tier + Power vs Target's Resistance 
 
 **Defenses**  
-**Avoidance Score:** 10 + Tier + Mobility  
-**Durability Score:** Tier + Endurance 
+**Avoidance Score:** 5 + Tier + Mobility  
+**Durability Score:** Tier + Endurance  
 **Resolve Score:** 10 + Tier + Focus  
 **Stability Score:** 10 + Tier + Power  
 **Vitality Score:** 10 + Tier + Endurance 
@@ -62,9 +62,9 @@ Attributes represent what type of things your character is good at in combat and
 
 
 ### **HEALTH SYSTEM**
-**Player HP:** All players have 100 total HP at default.
+**Player HP:** All players have 100 total maximum HP.
 
-**Survival Check:** When you reach 0 HP roll 1d20 + Endurance vs however many HP you are below 0. 
+**Survival Check:** When you reach 0 HP, roll 1d20 + Endurance vs however many HP you are below 0. 
 - If you beat that number you may choose to remain concious. 
 - If you fail, you fall unconcious.
 - If you fail by 20 or more, you die.
@@ -76,7 +76,7 @@ Any damage taken while at or below 0 HP forces you to make another Survival Chec
 
 **Resting and HP Recovery:** After a period of time of little to no activity based on the setting you recover HP, Efforts, and the uses of certain abilities.
 
-- **Gritty Setting**: A rest occurs after 8 hours of inactivity, during which you regain 10 HP per hour.
+- **Gritty Setting**: A rest occurs after 8 hours of inactivity, during which you regain 10 HP per hour, then 20 extra after completing the rest.
 - **Grounded Setting**: A rest occurs after 4 hours of inactivity, during which you regain 25 HP per hour.
 - **Heroic Setting**: A rest occurs after 1 hour of inactivity, during which you regain 25 HP per 15 minutes. 
 
@@ -102,6 +102,7 @@ You can only use 2 Efforts per rest, a 3rd one can be used but will knock you un
 ### **Capacity Score**
 - Determines how much weight you can lift, push, and carry. 
 - You can move anything thats weight is equal to or less than your Capacity Score without need for a check. 
+- Your Capacity Score is equal to your Power, you can purchase the Super Strength Feature to additionally add your Tier.
 - With a Power Check you can move something with a weight above your Capacity Score. DC 20 for 1 rank higher and +10 to DC for each rank after that.
 - What each weightclass represents varies depending on the setting. 
 
@@ -138,12 +139,14 @@ You can only use 2 Efforts per rest, a 3rd one can be used but will knock you un
 
 
 ### **Falling**
-You fall 20 spaces at the end of each of your turns. Fall damage is equal to the number of spaces fallen or moved to a maximum of 150.
+You fall 20 spaces at the end of each of your turns. Fall damage is equal to the number of spaces fallen or moved to a maximum of 150. 
+
+In Heroic Settings, when calculating Fall Damage caused by height, multiple your Durability by 5.
  
 
 ### **STACKING BONUSES & RULE INTERACTIONS**
 
-**Stacking Bonuses** - As you build your character, you will receive bonuses from different sources (Flaws + Traits + Special Attacks + Archetypes), these bonuses are additive, unless otherwise stated.
+**Stacking Bonuses** - As you build your character, you will receive bonuses from different sources (Flaws + Traits + Upgrades + Archetypes), these bonuses are additive, unless otherwise stated.
 
 **Specific vs General Rule** - When a specific ability, feature, or rule contradicts a general game rule, the specific rule takes precedence. If two specific rules conflict, the more restrictive rule applies. When in doubt, the GM makes the final determination.
 
@@ -168,21 +171,21 @@ You fall 20 spaces at the end of each of your turns. Fall damage is equal to the
 
 **Movement**
 - **Base:** Mobility + (2 x Tier)
-- You can move a number of Spaces (sp) equal to your movement
-- Can be split up before/after actions
+- You can move a number of Spaces (sp) equal to your movement. Spaces normally represent 2 meters, though this may change depending on setting. Such as a Heroic Setting may have each space represent a city block
+- Movement can be split up before/after actions
 - Difficult terrain costs extra movement
 
 **Reactions**
-- Occur outside your turn
+- Normally occur outside of your turn
 - Abilities marked as Reactions
-- **Base Reaction** - **Punish**: You can make a Special Attack when an opponent within your melee reach takes a Vulnerable Action.
+- **Base Reaction** - **Punish**: You can make an Attack when an opponent within your melee reach takes a Vulnerable Action.
 
   <br>
 
   *Vulnerable Actions*:
 - Moving out of an enemy's melee range.
 - Attempting to use a complex device within an enemy's melee range.
-- Other complex actions that a character would not be able to defend themselves while doing left to GM discretion.
+- Other complex actions that a character would not reasonably be able to defend themselves while doing left to GM discretion.
 
 
 
@@ -209,17 +212,14 @@ Upgrade Options:
 
 #### **SUPPORT ACTIONS** 
 
-**Assist Action**
-- **Base:** An adjacent ally can add your Tier to their next Accuracy Check, Damage Roll, or Condition Check before the end of their next turn.
-- **30p Upgrade:** Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.
+**Assist Action**: An adjacent ally can add your Tier to their next Accuracy Check, Damage Roll, or Condition Check before the end of their next turn. Can also be used if you are adjacent to their target instead.
+- **30p Commander:** Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.
+- **30p Inspiring:** When you take an Assist Action, all allies within 2 Spaces of you, excluding yourself, also add your Tier to their Avoidance, Durability, or Resistances, chosen when you purchase this ability.
 
-**Carry Action**
-- **Base:** Pick up and move willing characters or objects with you during your movement. If the targets total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
-- **15p Upgrade:** No movement speed penalty and once you've taken this action once on a turn, you can continue to reuse it for free until the end of this turn. 
+**Carry Action**: Pick up and move willing characters or objects with you during your movement. If the targets total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
 
-**Protect Action**
-- **Base:** You can use a reaction to make the next non-direct attack that would hit an adjacent ally hit you instead.
-- **30p Upgrade:** You can protect all adjacent allies simultaneously, you gain extra reactions equal to half your Tier (rounded up), to use the Protect Action.
+**Protect Action**: You can use a reaction to make the next non-direct attack that would hit an adjacent ally hit you instead.
+- **30p Upgrade:** You can protect all adjacent allies simultaneously, you gain extra reactions equal to your Tier to use the Protect Action.
 
 
 ####  **PERSONAL ACTIONS**
@@ -240,7 +240,7 @@ Upgrade Options:
 ### **CHARACTER CREATION STEPS**
 1. **Choose Archetypes** (6 categories)
    - Movement Archetype
-   - Special Attack Archetype
+   - Attack Archetype
    - Defensive Archetype
    - Utility Archetype
 
@@ -250,10 +250,10 @@ Upgrade Options:
 
 3. **Purchase Abilities**
    - Main pool: 20p at Level 1, 40p at Level 2-3, 60p at Level 4-5
-   - Buy Attack/Effect Types, Boons, Traits, Flaws
+   - Boons, Traits, Flaws, Special Abilities
    - Select Unique Abilities
 
-4. **Create Special Attacks**
+4. **Create Attacks**
    - Archetypes determine the number of attack you have
    - As well as the number of points you have
 
@@ -334,13 +334,13 @@ Upgrade Options:
 - Each receives 10 × Tier points
 - Consistent performance without drawbacks
 
+
 **Shared Uses**
 - 3 Special Attacks 
 - 10 shared uses among abilities
-- Attack 1 costs 1 Use and receives 10 × Tier points
-- Attack 2 costs 1 Use and receives 15 × Tier points
-- Attack 3 costs 1 Use and receives 20 × Tier points
+- Each attack costs 1,2 or 3 uses
 - Action to regain 5 uses
+- Tier × 10 points per use
 
 **Specialist**
 - You don't have any Special Attacks
@@ -1104,6 +1104,9 @@ Banned Combination: Cannot combine with Brutal
 Requirement: Expend all Movement and one Quick Action to charge  
 Effect: Make same Ranged attack three times against single target, -Tier to Accuracy rolls  
 
+**60p - Scatter Shot**  
+Effect: Single Ranged attack targets up to Tier enemies simultaneously  
+Effect Modifier: -Tier penalty to Accuracy rolls  
 
 #### Universal Combat Techniques
 
@@ -1171,18 +1174,6 @@ Effect: Critical hits allow choice of Grab, 3-space forced movement, or Prone co
 Effect: +Tier damage against targets you have Grabbed  
 Requirement: Must have Grab condition active on target  
 
-**Cost**: 
-
-**Unreliable 5** 
-Cost: 40p
-Limit: Roll d20 before use; if under 5, attack fails and action is wasted
-Effect: Gain Critical Effect
-Tags: [Limit], 
-
-**Unreliable 10** 
-Cost: 20p
-Limit: Roll d20 before use; if under 10, attack fails and action is wasted
-Effect: Gain Critical Effect
 
 
 ### VARIABLE BONUSES
@@ -1284,7 +1275,7 @@ You can recall any information you've previously encountered with perfect accura
 You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don't know, you can attempt to decipher its meaning over time using intelligence.
 
 **Lock**
-You can place a protective barrier around a container or room. You can only have a number of locks, equal to your tier, active at a time.
+You can place a protective barrier around a container or room. Your bonus to resist someone breaking into the container or room is 3 × your Intelligence. You can only have one lock active at a time, but you can disable and activate a new one at any time from anywhere.
 
 **Multi-limbed**
 You have additional limbs. Each purchase of this feature grants you one extra limb.
@@ -1486,7 +1477,7 @@ You can tap into chaotic magical forces at will. Each use provides a small benef
 **Bleeding Edge**
 Your technology is the most advanced and powerful there is, allowing you greater feats beyond what normal technology can accomplish. However, it can only be repaired, maintained, modified, or upgraded using very specific or hard-to-find tools, methods, or materials.
 
-**Shapeshifter**
+**Chameleon**
 You can effortlessly alter details about yourself, like hair color, hair length, skin tone, or eye color. You can't change things like bone structure, body shape, height, weight, or other drastic features. This ability can help you blend into a crowd or adopt a new persona during social encounters.
 
 **Consciousness Projection**
