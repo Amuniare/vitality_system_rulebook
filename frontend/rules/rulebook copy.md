@@ -704,8 +704,12 @@ The target must include you in any attacks it makes until the end of your next t
 ## **Generic Attack Upgrades:**
 - **Extended Range (20p):** Ranged attacks reach 30 spaces instead of 15
 - **Long Range (30p):** Ranged attacks reach 100 spaces instead of 15  
-- **Perception Range (20p):** Direct attacks can target anyone you can see instead of 30 spaces
-- **Enhanced Scale (20p):** Increase the size of Area attacks for Burst: +2sp, for Cone: +4sp, for Line: +8sp
+- **Extended Direct Range (20p):** Direct attacks can target up to 30 Spaces away
+- **Perception Range (20p):** Direct attacks can target anyone you can see instead of 30 Spaces away.
+- **Enhanced Scale (20p):** Increase the size of Area attacks. 
+  - Burst: +2sp
+  - Cone: +4sp
+  - Line: +8sp
 - **Precise (30p):** Choose which targets are affected by Area attacks
 
 
