@@ -626,7 +626,7 @@ You add your Tier once to all skill checks
 
 
 
-# SECTION 7: SPECIAL ATTACKS
+# SECTION 7:  ATTACKS
 
 ### **ATTACK RESOLUTION**
 1. **Declare Attack** → Attack Type and target/s
@@ -642,7 +642,7 @@ You add your Tier once to all skill checks
 
 **MELEE ATTACK** 
 - **Range:** Adjacent targets only
-- **Benefit:** Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls
+- **Benefit:** Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls, chosen when attacking.
 
 **RANGED ATTACK** 
 - **Range:** 15 spaces base
@@ -654,72 +654,54 @@ You add your Tier once to all skill checks
 - **Penalty:** -Tier to all Accuracy checks
 
 **DIRECT CONDITION ATTACK** 
-- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
-- **Restriction:** Must be Condition attack only
-- **Penalty:** Tier Condition
+- **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
+- **Restriction:** Must be a Condition Effect
+- **Penalty:** -Tier Condition Roll
 
 **DIRECT AREA CONDITION ATTACK** 
 - **Range:** Originates from your position
-- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
-- **Penalty:** Tier x2 Condition
+- **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
+- **Penalty:** -Tier x2 Condition Roll
 
 **DIRECT DAMAGE ATTACK** 
-- **Range:** 30 spaces, auto-hit (no Accuracy roll needed)
+- **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
 - **Restriction:** Must be Condition attack only
 - **Penalty:** Flat 13 - Tier
 
 **DIRECT AREA DAMAGE ATTACK** 
 - **Range:** Originates from your position
-- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
+- **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Penalty:** Flat 13 - Tier x2
 
 
-### **ATTACK & EFFECT TYPE ACCESS**
-**Free Access:** Use any attack type, damage is free.
-
-**Purchased Access:** You can purchase Conditions, and Generic Upgrades for individual use on Special Attacks.
+### **DAMAGE & CONDITIONS **
+You can build an attack that does damage for free or purchase a Condition to make it a Condition attack that applies a debuff to the target instead of dealing damage.
 
 ## **CONDITIONS**
 
-**Control** *(30p)*
-* **Above 50 HP:** Influenced
-* **Above 25 HP:** Compelled  
-* **Above 10 HP:** Dominated
-* **Below 10 HP:** Enslaved
+**Control** *(30p)*: Gain control of the target until the start of your next turn. You can force them to take any actions available to them including attacking or stunning themseleves until the control ends. Targets add 1/5th of their remaining HP to the Resistance Score against this attack. 
 
-**Disable** *(25p)*
-* **Above 50 HP:** Hindered
-* **Above 25 HP:** Impaired
-* **Above 10 HP:** Stunned
-* **Below 10 HP:** Catatonic
+**Stun** *(25p)*: The target cannot act on their turn, their Avoidance is considered 0, all attacks that hit them are automatic critical attack rolls. Targets add 1/5th of their remaining HP to the Resistance Score against this attack. 
 
-**Weaken** *(20p)*
-* **Above 50 HP:** Exposed
-* **Above 25 HP:** Vulnerable
-* **Above 10 HP:** Crippled
-* **Below 10 HP:** Broken
+**Weaken** *(20p)*: Reduce one of the targets stats, chosen when you build this attack, by 2 times your Tier until the end of your next turn.
 
-**Brawl** *(20p)*
-* **Above 50 HP:** Entangled
-* **Above 25 HP:** Immobillized
-* **Above 10 HP:** Grappled
-* **Below 10 HP:** Takedown
+**Brawl** *(20p)*: 
+- Push your target a number of Spaces up to 3 times your Tier. If they collide with something they both take falling damage equal to 3 times your Tier + 10. The floor does not count unless they moved spaces to reach the floor.
+- Knock the target Prone granting melee attacks an extra Tier to their attack roll. It expends half of their Movement to stand up.
+- Grab the target preventing them from moving, this effect does not end until the target or an adjacent character to the target uses an action to break the grapple.
 
-**Frighten** *(15p)*
-* **Above 50 HP:** Unnerved
-* **Above 25 HP:** Frightened
-* **Above 10 HP:** Terrified
-* **Below 10 HP:** Broken Will
+**Frighten** *(15p)*: The target spends its turn moving away from you as quickly as it can until the end of your next turn.
 
 **Taunt** *(15p)*
-* **Above 50 HP:** Distracted
-* **Above 25 HP:** Fixated
-* **Above 10 HP:** Obsessed
-* **Below 10 HP:** Devoted
+The target must include you in any attacks it makes until the end of your next turn.
+
+**Taunt** *(15p)*: The target cannot attack you until the end of your next turn.
 
 
 
-**Generic Attack Upgrades:**
+
+
+## **Generic Attack Upgrades:**
 - **Extended Range (20p):** Ranged attacks reach 30 spaces instead of 15
 - **Long Range (30p):** Ranged attacks reach 100 spaces instead of 15  
 - **Perception Range (20p):** Direct attacks can target anyone you can see instead of 30 spaces
@@ -729,7 +711,7 @@ You add your Tier once to all skill checks
 
 
 ### **CREATION CHECKLIST**
-1. **Check Special Attack Archetype:** Quantity, base points, Limits availability, conversion rates
+1. **Check Attack Archetype:** Number of attacks and points available on each one
 2. **Check Attack/Effect Archetypes:** Which types cost nothing vs require upgrade points
 3. **Apply Limits (if available):** Generate additional upgrade points using scaling formula
 4. **Select Attack Types:** Use archetype types or purchase non-archetype types
@@ -743,175 +725,6 @@ You add your Tier once to all skill checks
 
 
 
-##  LIMITS SYSTEM 
-
-### **Charge-Up**
-**Cost**: 40p
-*Must use Primary Action on consecutive turns to charge before using attack*
-
-+50p **Extended Charge** Must charge for two turns before using
-* +60p **Triple Charge** Must charge three turns before using
-* +50p **Cascade Failure** If interrupted during any charge turn, lose ability for rest of combat
-* +50p **Escalating Exposure** Each charge turn reduces your Durability by 5
-
-+20p **Rooted While Charging** Cannot move between charge-up and release
-* +30p **Immobilized** Cannot move until end of turn after releasing attack
-* +30p **Anchored** If moved from position by any effect, lose charge
-* +50p **Melee** The attack you are making is a melee attack
-
-+40p **Concentration** Lose charge if you take damage or gain conditions
-* +50p **Fragile Concentration** Concentration breaks if any character moves adjacent to you 
-* +60p **Cascade Failure** If concentration broken, you cannot attempt any attack with Concentration for rest of combat
-* +60p **Proximity Sensitivity** Concentration breaks if any character moves within 5 spaces of you
-
-+40p **Exposed While Charging** Avoidance reduced by 2×Tier while charging
-* +80p **Fragile** Avoidance becomes 0 while charging, all attacks are critical hits
-* +40p **Beacon** All enemies within 30 spaces know your exact location while charging
-* +60p **Vulnerable** Take double damage from all sources while charging
-
-+Variable **Power Lock** Disable specific defensive ability while charging, gain points equal to that ability's cost
-* +30p **Extended Lock** Disabled ability remains unusable until end of next turn
-* +Variable **Multiple Lock** Disable second defensive ability, gain its cost in points
-* +50p **System Failure** Requires Concentration - If interrupted, all locked abilities unusable for rest of combat
-
-+20p **Focused Charging** Must also spend Quick Action on charge and release turns
-* +50p **Total Focus** Must spend Primary Action, Quick Action, and Movement on charge turns
-* +30p **Ally Coordination** Adjacent ally must attack same target you're charging against or charge fails
-* +Variable **Reaction Delay** Cannot use Reactions while charging, gain points equal to cost of reaction abilities you have purchased
-
-
-
-### **Reserves**
-**Cost**: 10p
-*Can only be used 3 times per combat. Regain all uses after combat ends*
-
-+20p **Reserves 2** Reduce to 2 uses per combat
-* +40p **Reserves 1** Reduce to 1 use per combat
-* +20p **Extended Recovery** Regain uses after full rest instead of after combat, once per day
-
-
-+20p **Volatile Uses** Each time you take damage, lose 1 use
-* +30p **Condition Trigger** Each time you gain a condition, lose 1 use
-* +30p **Critical Failure** If you roll a natural 1 on any d20, lose 1 use
-* +40p **Life Drain** If out of uses, and you would lose 1, take 15 damage instead
-
-+20p **Shared Pool** Multiple special attacks share same use pool, total uses divided among them, +1 use to the pool for each special attack added
-* +20p **Reduced Reserves** Reduce pool by 1 use
-* +40p **Pool Drain** If any attack in pool misses, remove an extra use
-* +30p **Cascade Lock** If any attack in pool misses, no attacks in pool can be used for 1 turn
-
-
-+30p **Steady** Cannot use until turn 3 of combat
-* +30p **Patient** Cannot use until 5 of combat
-* +30p **Unhealthy** Must be below half HP to use
-* +60p **Timid** Cannot use unless you are at full hit points and are not affected by any conditions
-
-
-
-### **Cooldown**
-**Cost**: 10p
-*Cannot use again for 1 turn after use*
-
-+20p **Cooldown 2** Cannot use again for 2 turns after use
-* +30p **Cooldown 3** Cannot use again for 3 turns after use
-* +40p **Permanent Injury** Each use of this limit, permanantly increases all cooldown cooldown periods by 1 turn, until you take a full rest
-* +50p **Fates** Roll a d4-1 when the attack is made, the cooldown is extended by the result
-
-+20p **Failure Extension** If attack misses or fails effect, cooldown period increases by 1 turn
-* +30p **Doubling Failure** If attack misses or fails effect, cooldown period increases by 1 turn
-
-+20p **Shared Cooldown** Choose 2 other of your special attacks, they can't be used while you are cooling down from this attack
-* +30p **Increased Cooldown** Choose 1 of your more special attacks, they can't be used while you are cooling down from this attack
-* +40p **Mass Cooldown** All of your special attacks cannot be used while you are cooling down from this attack
-
-+40p **Death Proximity** Cooldown increases by 1 turn for every 25 HP below maximum
-* +60p **Trigger Extension** Taking damage or gaining conditions adds 1 turn to current cooldown
-* +40p **Condition Spiral** Conditions aquired last until the end of your cooldown period
-
-+30p **Healthy** Your cooldowns don't go down unless you are above 50 HP and not affected by any advanced conditions
-* +50p **Pinnacle of Health** Your cooldowns don't go down unless you are at max HP and not affected by any conditions
-* +50p **Timid** You cannot use this attack unless you are at max HP and not affected by any conditions
-
-### **Unreliable**
-**Cost**: 30p
-*Roll d20 before use; if under 5, attack fails and action is wasted*
-
-+50p **Unreliable 10** Must roll 10+ or attack fails
-* +100p **Unreliable 15** Must roll 15+ or attack fails
-* +200p **Unreliable 20** Must roll 20 or attack fails
-* +50p **Double Check** Must make reliability check twice, both must succeed
-
-+30p **Stress Breakdown** Reliability DC increases by 1 each turn of combat
-* +50p **Rapid Degradation** Reliability DC increases by an additional 1 each turn of combat
-* +40p **Health Dependent** DC increases by 1 for every 10 HP missing
-* +40p **Fearful** DC increases by 5 if an enemy is adjacent to you
-
-+30p **Equipment Dependent** You have a specific, noticeable and disarmable item, in order to do any attack. There needs to be a reason, you wouldn't always have this item on you. (discuss with GM)
-* +50p **Fragile Gear** If you fail the Unreliable roll, the item breaks and won't be fixed until you spend 8 hours, or meet another specified condition (discuss with GM)
-* +30p **Maintenance** Equipment breaks if attack fails, requires action to repair
-
-+50p **Cascading Failure** Each failure increases next reliability DC by 5
-* +50p **Spread Effect** Failed checks increase DC for all your special attacks
-* +50p **Critical Cascade** Failures in combat make ability unusable for rest of session
-
-+30p **Attrition** When unreliable roll fails, take 15 damage
-* +40p **Attrition 2** When unreliable roll fails, take an additional 15 damage
-* +60p **Concussive Kickback** When unreliable roll fails, gain Stun condition, until the start of your next turn
-* +100p **Exhaustive** When unreliable roll fails, you must spend an effort or fall unconscious
-
-
-
-### **Combo Move**
-**Cost**: 30p
-*You must have hit an enemy on your last turn*
-
-+40p **Revenge** You must have done damage on inflicted a condition on your last turn
-* +50p **Kill History** You must have defeated an enemy on your last turn
-* +50p **Perfect Opening** You must have critically hit on your last turn
-* +50p **Follow-Up** You must hit the same enemy as you did last turn
-
-
-+20p **Switch Hitter** Can only target enemies you have not damaged this combat
-* +50p **First Blood** Can only target enemies no ally has damaged this combat
-* +40p **Finishing Move** Can only target enemies below half max HP
-
-+30p **Ally Setup** Ally must have hit the same enemy you're about to attack this turn
-* +40p **Coordination** Ally attack must have damaged or inflicted a condition on the same enemy you're about to attack this turn
-* +40p **Perfect Teamwork** Must be a specific Ally, chosen when limit taken
-
-+30p **Steady** Cannot use until turn 3 of combat
-* +50p **Patient** Cannot use until turn 5 of combat
-
-+30p **Escalation** Cannot use until an ally is below half HP
-* +50p **Desperation** Cannot use until ally is unconscious
-
-+20p **Set Up** Must have hit with a specific special attack (chosen when limit taken)
-* +60p **Solid Set Up** Must have damaged or inflicted a condition with a specific special attack (chosen when limit taken)
-* +70p **Perfect Opening** Must have critically hit with specific special attack
-
-
-
-### **Unhealthy**
-**Cost**: 20p
-*Can only use when below max HP*
-
-+30p **Unhealthy 2** Can only use when at 75 HP or below
-* +40p **Unhealthy 3** Can only use when at 50 HP or below
-* +50p **Unhealthy 4** Can only use when at 25 HP or below
-* +50p **Unhealthy 5** Can only use when at 0 HP or below
-
-+30p **Fresh Wound 1** Must have taken 15+ damage since the end of your last turn to use
-* +40p **Fresh Wound 2** Must have taken 30+ damage since the end of your last turn to use
-* +50p **Continuous Suffering** Must have taken damage on every turn for the last 3 turns, cannot be caused by Attrition
-* +40p **Condition Lock** Must be afflicted by a condition
-
-+20p **Attrition 1** Each use costs 15 HP, paid after attack resolves
-* +30p **Attrition X** Each successive use costs additional 15 HP (15, 30, 45, etc.)
-* +80p **Concussed** You become stunned until the end of your next turn
-
-+60p **Desperation** Can only use when an ally is at 25 HP or below
-* +80p **Last Resort** Can only use when 2+ allies are at 25 HP or below
-* +100p **Avenger** Can when an ally is unconscious
 
 
 
@@ -1808,3 +1621,172 @@ Heroes with immense wealth, such as billionaires, royalty, or corporate executiv
 
 
 
+##  LIMITS SYSTEM 
+
+### **Charge-Up**
+**Cost**: 40p
+*Must use Primary Action on consecutive turns to charge before using attack*
+
++50p **Extended Charge** Must charge for two turns before using
+* +60p **Triple Charge** Must charge three turns before using
+* +50p **Cascade Failure** If interrupted during any charge turn, lose ability for rest of combat
+* +50p **Escalating Exposure** Each charge turn reduces your Durability by 5
+
++20p **Rooted While Charging** Cannot move between charge-up and release
+* +30p **Immobilized** Cannot move until end of turn after releasing attack
+* +30p **Anchored** If moved from position by any effect, lose charge
+* +50p **Melee** The attack you are making is a melee attack
+
++40p **Concentration** Lose charge if you take damage or gain conditions
+* +50p **Fragile Concentration** Concentration breaks if any character moves adjacent to you 
+* +60p **Cascade Failure** If concentration broken, you cannot attempt any attack with Concentration for rest of combat
+* +60p **Proximity Sensitivity** Concentration breaks if any character moves within 5 spaces of you
+
++40p **Exposed While Charging** Avoidance reduced by 2×Tier while charging
+* +80p **Fragile** Avoidance becomes 0 while charging, all attacks are critical hits
+* +40p **Beacon** All enemies within 30 spaces know your exact location while charging
+* +60p **Vulnerable** Take double damage from all sources while charging
+
++Variable **Power Lock** Disable specific defensive ability while charging, gain points equal to that ability's cost
+* +30p **Extended Lock** Disabled ability remains unusable until end of next turn
+* +Variable **Multiple Lock** Disable second defensive ability, gain its cost in points
+* +50p **System Failure** Requires Concentration - If interrupted, all locked abilities unusable for rest of combat
+
++20p **Focused Charging** Must also spend Quick Action on charge and release turns
+* +50p **Total Focus** Must spend Primary Action, Quick Action, and Movement on charge turns
+* +30p **Ally Coordination** Adjacent ally must attack same target you're charging against or charge fails
+* +Variable **Reaction Delay** Cannot use Reactions while charging, gain points equal to cost of reaction abilities you have purchased
+
+
+
+### **Reserves**
+**Cost**: 10p
+*Can only be used 3 times per combat. Regain all uses after combat ends*
+
++20p **Reserves 2** Reduce to 2 uses per combat
+* +40p **Reserves 1** Reduce to 1 use per combat
+* +20p **Extended Recovery** Regain uses after full rest instead of after combat, once per day
+
+
++20p **Volatile Uses** Each time you take damage, lose 1 use
+* +30p **Condition Trigger** Each time you gain a condition, lose 1 use
+* +30p **Critical Failure** If you roll a natural 1 on any d20, lose 1 use
+* +40p **Life Drain** If out of uses, and you would lose 1, take 15 damage instead
+
++20p **Shared Pool** Multiple special attacks share same use pool, total uses divided among them, +1 use to the pool for each special attack added
+* +20p **Reduced Reserves** Reduce pool by 1 use
+* +40p **Pool Drain** If any attack in pool misses, remove an extra use
+* +30p **Cascade Lock** If any attack in pool misses, no attacks in pool can be used for 1 turn
+
+
++30p **Steady** Cannot use until turn 3 of combat
+* +30p **Patient** Cannot use until 5 of combat
+* +30p **Unhealthy** Must be below half HP to use
+* +60p **Timid** Cannot use unless you are at full hit points and are not affected by any conditions
+
+
+
+### **Cooldown**
+**Cost**: 10p
+*Cannot use again for 1 turn after use*
+
++20p **Cooldown 2** Cannot use again for 2 turns after use
+* +30p **Cooldown 3** Cannot use again for 3 turns after use
+* +40p **Permanent Injury** Each use of this limit, permanantly increases all cooldown cooldown periods by 1 turn, until you take a full rest
+* +50p **Fates** Roll a d4-1 when the attack is made, the cooldown is extended by the result
+
++20p **Failure Extension** If attack misses or fails effect, cooldown period increases by 1 turn
+* +30p **Doubling Failure** If attack misses or fails effect, cooldown period increases by 1 turn
+
++20p **Shared Cooldown** Choose 2 other of your special attacks, they can't be used while you are cooling down from this attack
+* +30p **Increased Cooldown** Choose 1 of your more special attacks, they can't be used while you are cooling down from this attack
+* +40p **Mass Cooldown** All of your special attacks cannot be used while you are cooling down from this attack
+
++40p **Death Proximity** Cooldown increases by 1 turn for every 25 HP below maximum
+* +60p **Trigger Extension** Taking damage or gaining conditions adds 1 turn to current cooldown
+* +40p **Condition Spiral** Conditions aquired last until the end of your cooldown period
+
++30p **Healthy** Your cooldowns don't go down unless you are above 50 HP and not affected by any advanced conditions
+* +50p **Pinnacle of Health** Your cooldowns don't go down unless you are at max HP and not affected by any conditions
+* +50p **Timid** You cannot use this attack unless you are at max HP and not affected by any conditions
+
+### **Unreliable**
+**Cost**: 30p
+*Roll d20 before use; if under 5, attack fails and action is wasted*
+
++50p **Unreliable 10** Must roll 10+ or attack fails
+* +100p **Unreliable 15** Must roll 15+ or attack fails
+* +200p **Unreliable 20** Must roll 20 or attack fails
+* +50p **Double Check** Must make reliability check twice, both must succeed
+
++30p **Stress Breakdown** Reliability DC increases by 1 each turn of combat
+* +50p **Rapid Degradation** Reliability DC increases by an additional 1 each turn of combat
+* +40p **Health Dependent** DC increases by 1 for every 10 HP missing
+* +40p **Fearful** DC increases by 5 if an enemy is adjacent to you
+
++30p **Equipment Dependent** You have a specific, noticeable and disarmable item, in order to do any attack. There needs to be a reason, you wouldn't always have this item on you. (discuss with GM)
+* +50p **Fragile Gear** If you fail the Unreliable roll, the item breaks and won't be fixed until you spend 8 hours, or meet another specified condition (discuss with GM)
+* +30p **Maintenance** Equipment breaks if attack fails, requires action to repair
+
++50p **Cascading Failure** Each failure increases next reliability DC by 5
+* +50p **Spread Effect** Failed checks increase DC for all your special attacks
+* +50p **Critical Cascade** Failures in combat make ability unusable for rest of session
+
++30p **Attrition** When unreliable roll fails, take 15 damage
+* +40p **Attrition 2** When unreliable roll fails, take an additional 15 damage
+* +60p **Concussive Kickback** When unreliable roll fails, gain Stun condition, until the start of your next turn
+* +100p **Exhaustive** When unreliable roll fails, you must spend an effort or fall unconscious
+
+
+
+### **Combo Move**
+**Cost**: 30p
+*You must have hit an enemy on your last turn*
+
++40p **Revenge** You must have done damage on inflicted a condition on your last turn
+* +50p **Kill History** You must have defeated an enemy on your last turn
+* +50p **Perfect Opening** You must have critically hit on your last turn
+* +50p **Follow-Up** You must hit the same enemy as you did last turn
+
+
++20p **Switch Hitter** Can only target enemies you have not damaged this combat
+* +50p **First Blood** Can only target enemies no ally has damaged this combat
+* +40p **Finishing Move** Can only target enemies below half max HP
+
++30p **Ally Setup** Ally must have hit the same enemy you're about to attack this turn
+* +40p **Coordination** Ally attack must have damaged or inflicted a condition on the same enemy you're about to attack this turn
+* +40p **Perfect Teamwork** Must be a specific Ally, chosen when limit taken
+
++30p **Steady** Cannot use until turn 3 of combat
+* +50p **Patient** Cannot use until turn 5 of combat
+
++30p **Escalation** Cannot use until an ally is below half HP
+* +50p **Desperation** Cannot use until ally is unconscious
+
++20p **Set Up** Must have hit with a specific special attack (chosen when limit taken)
+* +60p **Solid Set Up** Must have damaged or inflicted a condition with a specific special attack (chosen when limit taken)
+* +70p **Perfect Opening** Must have critically hit with specific special attack
+
+
+
+### **Unhealthy**
+**Cost**: 20p
+*Can only use when below max HP*
+
++30p **Unhealthy 2** Can only use when at 75 HP or below
+* +40p **Unhealthy 3** Can only use when at 50 HP or below
+* +50p **Unhealthy 4** Can only use when at 25 HP or below
+* +50p **Unhealthy 5** Can only use when at 0 HP or below
+
++30p **Fresh Wound 1** Must have taken 15+ damage since the end of your last turn to use
+* +40p **Fresh Wound 2** Must have taken 30+ damage since the end of your last turn to use
+* +50p **Continuous Suffering** Must have taken damage on every turn for the last 3 turns, cannot be caused by Attrition
+* +40p **Condition Lock** Must be afflicted by a condition
+
++20p **Attrition 1** Each use costs 15 HP, paid after attack resolves
+* +30p **Attrition X** Each successive use costs additional 15 HP (15, 30, 45, etc.)
+* +80p **Concussed** You become stunned until the end of your next turn
+
++60p **Desperation** Can only use when an ally is at 25 HP or below
+* +80p **Last Resort** Can only use when 2+ allies are at 25 HP or below
+* +100p **Avenger** Can when an ally is unconscious
