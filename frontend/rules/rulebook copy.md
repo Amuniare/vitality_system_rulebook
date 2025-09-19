@@ -441,26 +441,26 @@ You add your Tier once to all skill checks
 
 
 
-# SECTION 6: UNIQUE ABILITIES
+# SECTION 6: Special ABILITIES
 
-### **BOONS**
+### **Traits**
 *Permanent abilities that change how your character is built*
 *Cost: Variable, drawn from main pool points*
 
 
-**Psychic (0p)** → All conditions you inflict target Resolve resistance instead
+**Psychic (Free)** → All conditions you inflict target Resolve resistance instead
 
-**Telekinetic (0p)** → All conditions you inflict target Stability resistance instead
+**Telekinetic (Free)** → All conditions you inflict target Stability resistance instead
 
-**Biohacker (0p)** → All conditions you inflict target Vitality resistance instead
+**Biohacker (Free)** → All conditions you inflict target Vitality resistance instead
 
-**Try-Hard (20p)** → You have an extra effort.
+**Try-Hard** → You have an extra effort.
 
-**Lucky (20p)** → 3 rerolls per day, keep the higher roll
+**Lucky** → 3 rerolls per day, keep the higher roll
 
-**Perfectionist (20p)** → You can reroll once, any roll that is equal to or below your Tier.
+**Perfectionist** → You can reroll once, any roll that is equal to or below your Tier.
 
-**Robot (20p)** → Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for healing purposes.
+**Robot** → Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for healing purposes.
 
 ### **OTHER UNIQUE ABILITIES**
 *Specialized powers and abilities for character customization*
