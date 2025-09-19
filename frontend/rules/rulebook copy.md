@@ -13,13 +13,13 @@
 
 ### **TIER SYSTEM**
 
-| Level | Tier Bonus | Main Pool Points |
+| Level | Tier Bonus | Number of Boons |
 |-------|------------|------------------|
-| Level 1 | +3 Tier Bonus | 20 Points |
-| Level 2 | +3 Tier Bonus | 40 Points |
-| Level 3 | +4 Tier Bonus | 40 Points |
-| Level 4 | +4 Tier Bonus | 60 Points |
-| Level 5 | +5 Tier Bonus | 60 Points |
+| Level 1 | +3 Tier Bonus | 1 Boon |
+| Level 2 | +3 Tier Bonus | 2 Boons |
+| Level 3 | +4 Tier Bonus | 3 Boons |
+| Level 4 | +4 Tier Bonus | 4 Boons |
+| Level 5 | +5 Tier Bonus | 5 Boons |
 
 
 
@@ -179,6 +179,7 @@ In Heroic Settings, when calculating Fall Damage caused by height, multiple your
 - Normally occur outside of your turn
 - Abilities marked as Reactions
 - **Base Reaction** - **Punish**: You can make an Attack when an opponent within your melee reach takes a Vulnerable Action.
+- **Base Reaction - Protect**: You can use a reaction to make the next non-direct attack that would hit an adjacent ally hit you instead. You may also take this reaction if you are adjacent to the attacker.
 
   <br>
 
@@ -191,9 +192,6 @@ In Heroic Settings, when calculating Fall Damage caused by height, multiple your
 
 ### **PRIMARY ACTIONS**
 All characters can take these actions at base, no special training or abilities required.
-
-Upgrade Options:
-- **30p Quick Action:** Any Standard Primary Action becomes a Quick Action.
 
 
 #### **FIGHTING ACTIONS**
@@ -213,13 +211,9 @@ Upgrade Options:
 #### **SUPPORT ACTIONS** 
 
 **Assist Action**: An adjacent ally can add your Tier to their next Accuracy Check, Damage Roll, or Condition Check before the end of their next turn. Can also be used if you are adjacent to their target instead.
-- **30p Commander:** Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.
-- **30p Inspiring:** When you take an Assist Action, all allies within 2 Spaces of you, excluding yourself, also add your Tier to their Avoidance, Durability, or Resistances, chosen when you purchase this ability.
 
 **Carry Action**: Pick up and move willing characters or objects with you during your movement. If the targets total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
 
-**Protect Action**: You can use a reaction to make the next non-direct attack that would hit an adjacent ally hit you instead.
-- **30p Upgrade:** You can protect all adjacent allies simultaneously, you gain extra reactions equal to your Tier to use the Protect Action.
 
 
 ####  **PERSONAL ACTIONS**
@@ -245,17 +239,16 @@ Upgrade Options:
    - Utility Archetype
 
 2. **Assign Attributes**
-   - Combat: Focus, Power, Mobility, Endurance (Tier × 2 points)
+   - **Combat**: Focus, Power, Mobility, Endurance (Tier × 2 points)
    - Utility: Awareness, Communication, Intelligence (Tier points)
 
-3. **Purchase Abilities**
-   - Main pool: 20p at Level 1, 40p at Level 2-3, 60p at Level 4-5
-   - Boons, Traits, Flaws, Special Abilities
-   - Select Unique Abilities
+3. **Purchase Boons**
+   - **Main pool**: Pick a number of Boons equal to your Level
+   - Conditional Bonuses, Passive Bonuses, Special Abilities, Traits
+  
 
 4. **Create Attacks**
-   - Archetypes determine the number of attack you have
-   - As well as the number of points you have
+   - Archetypes determine the number of attacks you have and the number of points you have to spend on them well as the number of points you have to spend on each of them.
 
 5. **Utility Options**
    - Features, Senses, Descriptors
@@ -316,7 +309,7 @@ Upgrade Options:
 - Unshakeable defense against specific attacks
 
 
-### **SPECIAL ATTACK ARCHETYPES**
+### **ATTACK ARCHETYPES**
 *Defines development and use of unique combat abilities*
 
 **Focused Attacker**
@@ -335,23 +328,29 @@ Upgrade Options:
 - Consistent performance without drawbacks
 
 
-**Shared Uses**
-- 3 Special Attacks 
-- 10 shared uses among abilities
-- Each attack costs 1,2 or 3 uses
-- Action to regain 5 uses
+**Shared Charges**
+- Build 3 attacks
+  - One attack consumes 1 charge
+  - One attack consumes 2 charges
+  - One attack consumes 3 charges
+- 10 shared charges among attacks
+- Action to regain 5 charges
 - Tier × 10 points per use
 
 **Specialist**
-- You don't have any Special Attacks
-- You instead receive (Tier - 2) * 20 extra points in your base pool
+- You cannot purchase Attack Upgrades
+- You instead receive Tier - 2 extra boons
+- If you attack simply use the base formulas plus the bonus from any Boons you have purchased
 
 
 ### **UTILITY ARCHETYPES**
 *Defines non-combat capabilities and specialized skills*
 
 **Specialized**  
-Choose an Attribute, you add your Tier twice to any skill checks made using that Attribute
+Choose an Attribute, you add your Tier three times to any skill checks made using that Attribute
+
+**Practical**  
+Choose 2 Attributes, you add your Tier twice to all skill checks using those Attributes
 
 **Jack of All Trades**  
 You add your Tier once to all skill checks
@@ -361,10 +360,10 @@ You add your Tier once to all skill checks
 
 
 
-# SECTION 5: TRAITS AND FLAWS
+# SECTION 5: CONDITIONAL AND PASSIVE BONUSES
 
-### **FLAWS**
-*Permanent disadvantages that grant stat bonuses*
+### **PASSIVE BONUSES**
+*Permanent stat bonuses with a drawback*
 
 **Cost:** 30p each  
 **Benefit:** +Tier bonus to ONE chosen stat 
