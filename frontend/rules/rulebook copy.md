@@ -360,15 +360,14 @@ You add your Tier once to all skill checks
 
 
 
-# SECTION 5: CONDITIONAL AND PASSIVE BONUSES
+# SECTION 5: PASSIVE AND CONDITIONAL BONUSES
 
 ### **PASSIVE BONUSES**
 *Permanent stat bonuses with a drawback*
 
-**Cost:** 30p each  
-**Benefit:** +Tier bonus to ONE chosen stat 
-**Stats:** Accuracy, Damage, Conditions, Avoidance, Durability, Speed, or All Resistances  
-**Limit:** You can only gain any specific stat bonus once from a Flaw
+**Benefit:** +Tier bonus to ONE chosen stat  
+**Stats:** Accuracy, Damage, Conditions, Avoidance, Durability, Speed (Tier x 2), or All Resistances  
+**Limit:** You can only gain any specific stat bonus once from a Passive Bonus
 
 
 **Available Flaws:**
@@ -387,16 +386,15 @@ You add your Tier once to all skill checks
 
 
 
-### **TRAITS**
-*Conditional bonuses activated by circumstances*
-
-**Cost:** 30p per Trait  
+### **CONDITIONAL BONUSES**
+*Bonuses only granted under specific circumstances*
+ 
 **Benefit:** +Tier bonus to TWO chosen stats when conditions met  
-**Stats:** Accuracy, Damage, Conditions, Avoidance, Durability, Speed, or All Resistances  
+**Stats:** Accuracy, Damage, Conditions, Avoidance, Durability, Speed (Tier x 2), or All Resistances  
 **Selection:** Choose combination of conditions totaling up to 3 Tiers  
-**Limit:** You can only gain any specific stat bonus once from a Trait
+**Limit:** You can only gain any specific stat bonus once from a Conditional Bonus
 
-### **TRAIT CONDITIONS**
+### **CONDITIONS**
 
 **TIER 1 CONDITIONS** *(Easy to maintain)*
 - **Rooted** → Cannot move this turn
