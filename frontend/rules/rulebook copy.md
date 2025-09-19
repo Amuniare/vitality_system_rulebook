@@ -954,22 +954,14 @@ Frequency: Once per turn maximum
 
 #### Sequential Attack Systems
 
-**20p - Analyzing Strike**  
-Effect: +1 to chosen stat (Accuracy/Damage/Conditions) per previous Analyzing Strike against same target  
-Maximum Bonus: Equal to Tier  
-Reset Condition: Bonus resets if you skip attacking target for one turn or activate it on another target 
+
 
 **30p - Follow-Up Strike**  
 Effect: Successful hit with successful effect allows one Base Attack against same target  
 Frequency: Once per turn maximum  
 
-**40p - Counterattack**  
-Effect: Using attack against enemy that missed you or failed their effect adds Tier to chosen roll  
-Bonus Selection: Choose Accuracy, Damage, or Condition when purchasing  
-Restriction: Cannot use with limits requiring you to be attacked or affected  
 
-**40p - Exploit**  
-Effect: +Tier to Damage and Condition rolls against targets currently afflicted by any Condition  
+
 
 #### Combat Control
 
@@ -984,9 +976,7 @@ Effect: Damaging target with Power score equal to or less than yours allows 1-sp
 **20p - Martial Artist**  
 Effect: Critical hits allow choice of Grab, 3-space forced movement, or Prone condition  
 
-**30p - Grappler**  
-Effect: +Tier damage against targets you have Grabbed  
-Requirement: Must have Grab condition active on target  
+
 
 
 
@@ -1006,21 +996,13 @@ Requirement: Must have Grab condition active on target
 **20p - Lucky Strike**  
 Effect: Using Effort on this attack allows rolling extra die on the Effort roll  
 
-**20p - Compressed Release**  
-Requirement: Active Aura ability  
-Effect: Disable Aura until start of next turn, +Tier to Accuracy, Damage and Condition rolls  
+
 
 #### Environmental Bonuses
 
-**30p - Domain**  
-Requirement: Active Barrier ability  
-Effect: +Tier to chosen roll when attacking targets within your Barrier  
-Selection: Choose Accuracy, Damage, or Conditions when purchasing  
 
-**30p - Tower Defense**  
-Requirement: Active Wall ability  
-Effect: +Tier to chosen roll when attacking targets on opposite side of your Wall  
-Selection: Choose Accuracy, Damage, or Conditions when purchasing  
+
+
 
 #### Sustained Attack Systems
 
@@ -1038,19 +1020,260 @@ Selection: Choose Accuracy, Damage, or Conditions when purchasing
 
 
 
+
+#### Uses
+
+**Charges 1** 
+Cost: 20p
+Limit: Single use, recharges after 1 minute rest
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Charges 2** 
+Cost: 30p
+Limit: Activate for 3 turns, recharges after 1 minute rest
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
+
+#### HP Based
+
+**Timid** 
+Cost: 20p
+Limit: At max HP with no conditions
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Near Death** 
+Cost: 10p
+Limit: At 25 Hit Points or less
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Bloodied** 
+Cost: 20p
+Limit: At 50 Hit Points or less
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Unhealthy** 
+Cost: 30p
+Limit: 50 points below max HP
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
+##### Conditional
+
+**Vengeful** 
+Cost: 30p
+Limit: Been hit since last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Revenge** 
+Cost: 20p
+Limit: Been damaged since last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Unbreakable** 
+Cost: 20p
+Limit: Been hit but took no damage since last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Untouchable** 
+Cost: 20p
+Limit: All attacks missed since last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Avenger** 
+Cost: 10p
+Limit: Ally unconscious or great peril occurred
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Passive** 
+Cost: 30p
+Limit: Not attacked since last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Careful** 
+Cost: 30p
+Limit: Not damaged since last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
+
+
+#### Squential
+
+**Combo Move** 
+Cost: 30p
+Limit: Hit same enemy last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Infected** 
+Cost: 30p
+Limit: Applied Condition last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Relentless** 
+Cost: 30p
+Limit: Dealt damage to enemy last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Slaughter** 
+Cost: 20p
+Limit: Defeated enemy last turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
+
+
+
+#### Positioning
+
+**Rooted** 
+Cost: 30p
+Limit: Cannot move this turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Long Distance Fighter** 
+Cost: 30p
+Limit: No enemies within 5 spaces
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Dangerous** 
+Cost: 10p
+Limit: No allies within 15 spaces, no civilians within 30 spaces
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
+
+
+#### Random
+
+
+**Unreliable 1** 
+Cost: 30p
+Limit: Roll d20, DC 5 to activate each turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Unreliable 2** 
+Cost: 10p
+Limit: Roll d20, DC 10 to activate each turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+#### Time based
+
+**Quickdraw** 
+Cost: 10p
+Limit: First round of combat
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Steady** 
+Cost: 30p
+Limit: Turn 3 or later
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Patient** 
+Cost: 20p
+Limit: Turn 5 or later
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Finale** 
+Cost: 10p
+Limit: Turn 8 or later
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+#### Other
+
+**Charge Up** 
+Cost: 10p
+Limit: Spend an action on your previous turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Charge Up 2** 
+Cost: 10p
+Limit: Spend an two actions on your previous two turns
+Effect: +(2 x Tier) to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Exhausting** 
+Cost: 10p
+Limit: Costs an effort to make attack
+Effect: +(2 x Tier) to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Cooldown** 
+Cost: +20p
+Limit: Cannot use again for 3 turns after use
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Unreliable 15** 
+Cost: +10p
+Limit: Must roll 15+ or attack fails
+Effect: +(2 x Tier) to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Attrition** 
+Cost: +30p
+Limit: Each use costs 20 HP, 
+Restriction: Can't have regeneration, leech or healing abilities
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Sacrifice** 
+Cost: +20p
+Limit: Sacrifice a minion adjacent to you or your target (chosen when purchasing this upgrade)
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
+#### New
+
+**Drain Reserves** 
+Cost: +20p
+Limit: You must have a healing ability, you lose a healing charge
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Shield Burst** 
+Cost: +10p
+Limit: Must have at least half max hit points in your shield, drain shield to 0
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Blood Magic** 
+Cost: +10p
+Limit: Pay 15 HP to activate
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
+
+
+
+#### Reworked
+**Tower Defense**  
+Cost: +30p
+Limit: You must have an Active Wall ability, targets must be adjacent to the wall.
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Compressed Release** 
+Cost: +20p
+Limit: You must have an Active Aura ability, Disable Aura until start of next turn
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Domain** 
+Cost: +30p
+Limit: Attacking targets within your Barrier
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Grappler** 
+Cost: +30p
+Limit: Must have Grab condition active on target
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+**Exploit** 
+Cost: +30p
+Limit: Against targets currently afflicted by any Condition
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
+
+
+
 ### BANNED COMBINATIONS
 
 **Brutal + Heavy Strike**: Damage multiplication effects stack inappropriately  
 **Brutal + Headshot**: Damage multiplication effects stack inappropriately  
 **Critical Effect + Consistent Effect**: Dice reroll conflicts  
-
-
-
-
-
-
-
-
 
 
 
