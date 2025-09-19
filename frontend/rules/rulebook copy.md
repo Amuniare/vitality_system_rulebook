@@ -796,6 +796,9 @@ Effect: Critical hits trigger attack against all enemies within 3 spaces of targ
 Restriction: Cannot apply to AOE attacks, secondary attacks cannot crit from Stun  
 Exclusion: Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical  
 
+**Martial Artist**  
+Cost: 20p
+Effect: Critical hits allow choice of Grab, 3-space forced movement, or Prone condition  
 
 
 ### DAMAGE BONUSES
@@ -897,16 +900,10 @@ Restriction: Cannot apply to AOE attacks
 Cost: 20p
 Effect: If Condition roll exceeds Resistance by 10+, condition duration extends by 1 turn  
 
-**Collateral Condition**  
+**Contagious**  
 Cost: 60p
 Effect: Successful condition triggers attack against all targets within 3-space burst  
 Restriction: Cannot apply to AOE attacks, triggers only once per attack  
-
-**Contagious**  
-Cost: 40p
-Effect: Successful condition triggers attack against nearest enemy  
-Maximum Triggers: Tier/2 times per attack (rounded down)  
-Restriction: Cannot apply to AOE attacks  
 
 **Cursed**  
 Cost: 30p
@@ -923,34 +920,25 @@ Effect: If Condition roll exceeds Resistance by 3×Tier, condition becomes perma
 
 #### Melee Specialization
 
-**Heavy Strike**  
-Cost: 40p
-Requirement: Expend all Movement and one Quick Action to charge  
-Effect: +3×Tier to Damage and Condition rolls, -Tier to Accuracy rolls  
-Banned Combination: Cannot combine with Brutal  
-
 **Quick Strikes**  
 Cost: 40p
-Requirement: Expend all Movement and one Quick Action to charge  
-Effect: Make same Melee attack three times against single target, -Tier to Accuracy rolls  
+Effect: Make same attack three times against single target  
+Effect Modifier: -Tier to Accuracy, Damage, and Condition rolls  
+Usage: Works with Melee or Ranged attacks  
 
 **Whirlwind Strike**  
-Cost: 30p
+Cost: 20p
 Effect: Single Melee attack targets up to Tier enemies simultaneously  
 Effect Modifier: -Tier penalty to Accuracy rolls  
 
 #### Ranged Specialization
 
-**Headshot**  
-Cost: 60p
-Requirement: Expend all Movement and one Quick Action to charge  
-Effect: +3×Tier to Damage and Condition rolls, -Tier to Accuracy rolls  
-Banned Combination: Cannot combine with Brutal  
 
 **Barrage**  
 Cost: 60p
-Requirement: Expend all Movement and one Quick Action to charge  
-Effect: Make same Ranged attack three times against single target, -Tier to Accuracy rolls  
+Effect: Make same attack three times against single target  
+Effect Modifier: -Tier to Accuracy, Damage, and Condition rolls  
+Usage: Works with Melee or Ranged attacks  
 
 **Scatter Shot**  
 Cost: 60p
@@ -959,11 +947,6 @@ Effect Modifier: -Tier penalty to Accuracy rolls
 
 #### Universal Combat Techniques
 
-**Flurry of Blows**  
-Cost: 40p
-Effect: Make same attack three times against single target  
-Effect Modifier: -Tier to Accuracy, Damage, and Condition rolls  
-Usage: Works with Melee or Ranged attacks  
 
 **Pounce**  
 Cost: 20p
@@ -993,16 +976,6 @@ Effect: Successful hit with successful effect allows identical attack against sa
 Usage: Must hit and succeed on both Accuracy and Effect
 Frequency: Once per turn maximum   
 
-#### Sequential Attack Systems
-
-
-
-**Follow-Up Strike**  
-Cost: 30p
-Effect: Successful hit with successful effect allows one Base Attack against same target  
-Frequency: Once per turn maximum  
-
-
 
 
 #### Combat Control
@@ -1015,11 +988,9 @@ Frequency: Once per turn
 
 **Bully**  
 Cost: 10p
-Effect: Damaging target with Power score equal to or less than yours allows 1-space forced movement  
+Effect: Damaging target with lower Power score allows forced movement equal to the difference between your Power scores
 
-**Martial Artist**  
-Cost: 20p
-Effect: Critical hits allow choice of Grab, 3-space forced movement, or Prone condition  
+
 
 
 
@@ -1035,17 +1006,6 @@ Effect: Critical hits allow choice of Grab, 3-space forced movement, or Prone co
 **Captain Slayer**: Bonus applies against 25 maximum HP enemies  
 **Elite Slayer**: Bonus applies against 50 maximum HP enemies  
 **Boss Slayer**: Bonus applies against 100 maximum HP enemies  
-
-#### Resource-Based Bonuses
-
-**Lucky Strike**  
-Cost: 20p
-Effect: Using Effort on this attack allows rolling extra die on the Effort roll  
-
-
-
-#### Environmental Bonuses
-
 
 
 
