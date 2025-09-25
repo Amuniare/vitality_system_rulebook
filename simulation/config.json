@@ -1,7 +1,7 @@
 {
   "single_attack_type": null,
   "attack_types": ["melee", "ranged", "area", "direct_damage", "direct_area_damage"],
-  "simulations_per_test": 50,
+  "simulations_per_test": 10,
   "max_turns": 100,
   "target_hp": 100,
   "tier": 3,

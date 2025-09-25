@@ -248,8 +248,11 @@ touch vitality_simulator/{models,combat,analysis,config,utils}/__init__.py
 ## Implementation Priority
 
 ### CRITICAL Priority (Must Fix First) ⚡
-1. **Phase 0.1-0.3** - Code Architecture Refactoring (addresses technical debt)
-2. **Phase 2.1** - Fix Attack Type Filtering (critical bug fix)
+1. **Phase 7.1** - Fix Slayer Upgrade Logic Bug (using current HP instead of max HP)
+2. **Phase 7.2** - Fix Powerful Condition Critical Compatibility Bug (requires Critical Accuracy)
+3. **Phase 7.3** - Enhance Diagnostic Reports (add scenarios and limits coverage)
+4. **Phase 0.1-0.3** - Code Architecture Refactoring (addresses technical debt)
+5. **Phase 2.1** - Fix Attack Type Filtering (critical bug fix)
 
 ### High Priority (Core Features)
 3. **Phase 1.1** ✅ - Individual Upgrade Summary Report (COMPLETED)
@@ -268,6 +271,82 @@ touch vitality_simulator/{models,combat,analysis,config,utils}/__init__.py
 12. **Phase 4.2** - Parallel Processing
 13. **Phase 5.1** - Scenario-Specific Recommendations
 14. **Phase 5.2** - Interactive Configuration
+
+## Phase 7: Critical Bug Fixes ⚡ URGENT
+
+### 7.1 Fix Slayer Upgrade Logic Bug
+- **Goal**: Fix slayer upgrades to check against max HP instead of current HP
+- **Problem**: Slayer upgrades (Minion/Captain/Elite/Boss Slayer) are incorrectly checking against current HP instead of max HP
+- **Evidence**: Performance analysis shows identical rankings for all slayer variants, suggesting logic error
+- **Implementation**:
+  - Review slayer upgrade logic in combat resolution
+  - Change HP threshold checks from `target.current_hp` to `target.max_hp`
+  - Verify slayer bonuses apply correctly at combat start
+  - Update all slayer upgrade tests to use max HP thresholds
+- **Files**: Combat resolution functions, slayer upgrade definitions
+- **Impact**: This bug significantly affects slayer upgrade effectiveness rankings
+
+### 7.2 Fix Powerful Condition Critical Compatibility Bug
+- **Goal**: Fix Powerful Condition Critical to require Critical Accuracy upgrade
+- **Problem**: Powerful Condition Critical is appearing in builds without Critical Accuracy
+- **Evidence**: Diagnostic shows "Making melee attack with ['double_tap']" instead of required critical accuracy
+- **Implementation**:
+  - Update Powerful Condition Critical prerequisites to require Critical Accuracy
+  - Add validation to prevent builds with Powerful Condition Critical without Critical Accuracy
+  - Review all upgrade compatibility checks for similar issues
+  - Update build generation to respect upgrade prerequisites
+- **Files**: Upgrade definition validation, build generation logic
+- **Impact**: This bug allows invalid builds that shouldn't be possible per game rules
+
+### 7.3 Enhance Diagnostic Reports Structure
+- **Goal**: Improve diagnostic report organization and coverage
+- **Problem**: Current diagnostic reports need better organization and coverage of scenarios/limits
+- **Implementation**:
+  - **Phase 7.3a**: Verify diagnostic reports include all three enemy scenarios (1×100, 2×50, 4×25)
+  - **Phase 7.3b**: Verify diagnostic reports include all limit types (unreliable and turn-based)
+  - **Phase 7.3c**: Create diagnostic subfolder structure:
+    ```
+    diagnostics/
+    ├── base_attacks/
+    │   ├── melee_diagnostic.txt
+    │   ├── ranged_diagnostic.txt
+    │   ├── area_diagnostic.txt
+    │   ├── direct_damage_diagnostic.txt
+    │   └── direct_area_damage_diagnostic.txt
+    ├── upgrades/
+    │   ├── power_attack_diagnostic.txt
+    │   ├── high_impact_diagnostic.txt
+    │   ├── critical_effect_diagnostic.txt
+    │   └── [one file per upgrade...]
+    ├── limits/
+    │   ├── unreliable_1_diagnostic.txt
+    │   ├── unreliable_2_diagnostic.txt
+    │   ├── unreliable_3_diagnostic.txt
+    │   ├── quickdraw_diagnostic.txt
+    │   └── [one file per limit...]
+    └── combinations/
+        ├── critical_synergy_diagnostic.txt
+        ├── multi_attack_synergy_diagnostic.txt
+        └── [key combination diagnostics...]
+    ```
+  - **Phase 7.3d**: Each diagnostic file should contain:
+    - Detailed mechanic explanation
+    - Combat resolution examples across all scenarios
+    - Dice roll sequences and calculations
+    - Performance comparison with/without the upgrade/limit
+- **Benefits**: Easier debugging, better understanding of individual mechanics
+
+### 7.4 Performance Analysis Accuracy Issues
+- **Goal**: Investigate anomalies in upgrade performance rankings
+- **Problem**: Some upgrades showing suspiciously similar or low performance improvements
+- **Evidence**: Multiple finishing blow ranks showing 0.0 or 0.1 DPT improvements
+- **Implementation**:
+  - Review finishing blow logic for correct threshold calculations
+  - Verify DPT calculations account for instant defeats properly
+  - Check for floating-point precision issues in performance calculations
+  - Add validation that performance improvements make logical sense
+- **Files**: Performance analysis functions, finishing blow upgrade logic
+- **Impact**: Ensures accurate build recommendations and upgrade rankings
 
 ## Phase 6: Multi-Enemy Combat System ✅ COMPLETED
 
@@ -303,7 +382,11 @@ touch vitality_simulator/{models,combat,analysis,config,utils}/__init__.py
 - ✅ **Phase 2.1** - Attack type filtering bug fixed
 - ✅ **Phase 1.1** - Upgrade performance analysis implemented
 - ✅ **Phase 1.2** - Limit performance analysis implemented
-- ✅ **Phase 6** - Multi-enemy combat system implemented (NEW)
+- ✅ **Phase 6** - Multi-enemy combat system implemented
+- 🚨 **Phase 7.1** - CRITICAL: Slayer upgrade logic bug (using current HP instead of max HP)
+- 🚨 **Phase 7.2** - CRITICAL: Powerful Condition Critical compatibility bug (missing Critical Accuracy requirement)
+- 🚨 **Phase 7.3** - URGENT: Diagnostic reports need enhanced structure and coverage
+- 🚨 **Phase 7.4** - URGENT: Performance analysis accuracy issues (finishing blow anomalies)
 - 🔄 **Phase 0** - Architecture refactoring needed (blocking further development)
 - 🔄 **Phase 1.3** - Synergy analysis partially implemented
 
@@ -332,5 +415,5 @@ touch vitality_simulator/{models,combat,analysis,config,utils}/__init__.py
 # Other
 
 - need the build summary report to show the top 50 builds
-- need another report produce, which lists every upgrade and ranks them by their average build rank, giving their avg ranking, then 50% would be the middle, so if 40k attacks, and the avg is 20k, then that's 50%, 10k would be 75%
+- need another report produce, which lists every upgrade and limit and ranks them by their average build rank, giving their avg ranking, then 50% would be the middle, so if 40k attacks, and the avg is 20k, then that's 50%, 10k would be 75%
 - also, need both of to have sections which do the same for attack types

@@ -127,8 +127,8 @@ def print_configuration_report(config: SimulationConfig):
 
 
 def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
-    """Generate comprehensive individual upgrade performance analysis"""
-    print(f"\nGenerating upgrade performance analysis...")
+    """Generate comprehensive individual upgrade and limit performance analysis"""
+    print(f"\nGenerating upgrade and limit performance analysis...")
 
     # Create test cases from config
     test_cases = []
@@ -140,6 +140,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
             test_cases.append((case_name, attacker, defender))
 
     upgrade_results = {}
+    limit_results = {}
 
     # Determine which attack types to test
     attack_types = config.attack_types_filter if config.attack_types_filter else ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
@@ -229,16 +230,120 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
 
             upgrade_results[upgrade_name] = upgrade_data
 
-    return upgrade_results
+    # Test each limit individually
+    for limit_name in LIMITS.keys():
+        if config.limits_filter and limit_name not in config.limits_filter:
+            continue
+
+        print(f"  Testing {limit_name}...")
+        limit_data = {
+            'name': limit_name,
+            'cost': LIMITS[limit_name].cost,
+            'attack_type_results': {},
+            'overall_avg_dpt': 0,
+            'overall_avg_improvement': 0,
+            'cost_effectiveness': 0
+        }
+
+        attack_type_results = []
+
+        # Test limit with each attack type
+        for attack_type in attack_types:
+            # All limits are compatible with all attack types
+            limit_cost = LIMITS[limit_name].cost
+            if limit_cost > config.max_points:
+                continue
+
+            # Test base attack vs limit attack for each test case
+            case_results = []
+            for case_name, attacker, defender in test_cases:
+                # Base attack performance
+                base_build = AttackBuild(attack_type, [], [])
+                limit_build = AttackBuild(attack_type, [], [limit_name])
+
+                # Run simulations for base build across all scenarios
+                base_total_dpt = 0
+                scenario_count = 0
+                fight_scenarios = [
+                    (1, 100),  # 1×100 HP Boss
+                    (2, 50),   # 2×50 HP Enemies
+                    (4, 25)    # 4×25 HP Enemies
+                ]
+
+                for num_enemies, enemy_hp in fight_scenarios:
+                    base_results_batch, base_avg_turns, base_dpt = run_simulation_batch(
+                        attacker, base_build, config.num_runs, config.target_hp, defender,
+                        num_enemies=num_enemies, enemy_hp=enemy_hp)
+                    base_total_dpt += base_dpt
+                    scenario_count += 1
+
+                base_avg_dpt = base_total_dpt / scenario_count
+
+                # Run simulations for limit build across all scenarios
+                limit_total_dpt = 0
+                scenario_count = 0
+
+                for num_enemies, enemy_hp in fight_scenarios:
+                    limit_results_batch, limit_avg_turns, limit_dpt = run_simulation_batch(
+                        attacker, limit_build, config.num_runs, config.target_hp, defender,
+                        num_enemies=num_enemies, enemy_hp=enemy_hp)
+                    limit_total_dpt += limit_dpt
+                    scenario_count += 1
+
+                limit_avg_dpt = limit_total_dpt / scenario_count
+
+                # Calculate improvement
+                dpt_improvement = limit_avg_dpt - base_avg_dpt
+                percent_improvement = (dpt_improvement / base_avg_dpt * 100) if base_avg_dpt > 0 else 0
+
+                case_results.append({
+                    'case': case_name,
+                    'base_dpt': base_avg_dpt,
+                    'limit_dpt': limit_avg_dpt,
+                    'improvement': dpt_improvement,
+                    'percent_improvement': percent_improvement
+                })
+
+            # Calculate average for this attack type
+            if case_results:
+                avg_base_dpt = sum(r['base_dpt'] for r in case_results) / len(case_results)
+                avg_limit_dpt = sum(r['limit_dpt'] for r in case_results) / len(case_results)
+                avg_improvement = sum(r['improvement'] for r in case_results) / len(case_results)
+                avg_percent_improvement = sum(r['percent_improvement'] for r in case_results) / len(case_results)
+
+                limit_data['attack_type_results'][attack_type] = {
+                    'avg_base_dpt': avg_base_dpt,
+                    'avg_limit_dpt': avg_limit_dpt,
+                    'avg_improvement': avg_improvement,
+                    'avg_percent_improvement': avg_percent_improvement,
+                    'case_results': case_results
+                }
+
+                attack_type_results.append({
+                    'attack_type': attack_type,
+                    'avg_limit_dpt': avg_limit_dpt,
+                    'avg_improvement': avg_improvement,
+                    'avg_percent_improvement': avg_percent_improvement
+                })
+
+        # Calculate overall averages
+        if attack_type_results:
+            limit_data['overall_avg_dpt'] = sum(r['avg_limit_dpt'] for r in attack_type_results) / len(attack_type_results)
+            limit_data['overall_avg_improvement'] = sum(r['avg_improvement'] for r in attack_type_results) / len(attack_type_results)
+            limit_data['cost_effectiveness'] = limit_data['overall_avg_improvement'] / limit_data['cost'] if limit_data['cost'] > 0 else 0
+
+            limit_results[limit_name] = limit_data
+
+    return upgrade_results, limit_results
 
 
-def write_upgrade_performance_report(upgrade_results: Dict, config: SimulationConfig):
-    """Write comprehensive upgrade performance report to file"""
+def write_upgrade_performance_report(upgrade_results: Dict, limit_results: Dict, config: SimulationConfig):
+    """Write comprehensive upgrade and limit performance report to file"""
     with open('reports/upgrade_performance_summary.txt', 'w', encoding='utf-8') as f:
-        f.write("VITALITY SYSTEM - INDIVIDUAL UPGRADE PERFORMANCE ANALYSIS\n")
+        f.write("VITALITY SYSTEM - INDIVIDUAL UPGRADE & LIMIT PERFORMANCE ANALYSIS\n")
         f.write("="*80 + "\n\n")
-        f.write("This report shows how each upgrade performs individually compared to base attacks.\n")
-        f.write("Improvements are measured in Damage Per Turn (DPT) increases.\n\n")
+        f.write("This report shows how each upgrade and limit performs individually compared to base attacks.\n")
+        f.write("Improvements are measured in Damage Per Turn (DPT) increases across all enemy scenarios.\n\n")
 
         # Sort by cost effectiveness
         sorted_upgrades = sorted(upgrade_results.values(), key=lambda x: x['cost_effectiveness'], reverse=True)
@@ -287,7 +392,54 @@ def write_upgrade_performance_report(upgrade_results: Dict, config: SimulationCo
                 f.write(f"{attack_type.title()}: Base {results['avg_base_dpt']:.1f} DPT → {results['avg_upgrade_dpt']:.1f} DPT "
                        f"(+{results['avg_improvement']:.1f}, {results['avg_percent_improvement']:+.1f}%)\n")
 
-    print(f"Upgrade performance report saved to reports/upgrade_performance_summary.txt")
+        # Sort limits by cost effectiveness
+        sorted_limits = sorted(limit_results.values(), key=lambda x: x['cost_effectiveness'], reverse=True)
+
+        f.write(f"\n\nLIMIT COST-EFFECTIVENESS RANKING\n")
+        f.write("-" * 80 + "\n")
+        f.write(f"{'Rank':<4} {'Limit':<25} {'Cost':<6} {'Avg DPT+':<10} {'Avg %+':<10} {'DPT/Cost':<10}\n")
+        f.write("-" * 80 + "\n")
+
+        for i, limit_data in enumerate(sorted_limits, 1):
+            f.write(f"{i:<4} {limit_data['name']:<25} {limit_data['cost']:>4}p "
+                   f"{limit_data['overall_avg_improvement']:>8.1f} "
+                   f"{(limit_data['overall_avg_improvement']/limit_data['overall_avg_dpt']*100) if limit_data['overall_avg_dpt'] > 0 else 0:>8.1f}% "
+                   f"{limit_data['cost_effectiveness']:>8.2f}\n")
+
+        # Sort limits by absolute DPT improvement
+        sorted_limits_by_dpt = sorted(limit_results.values(), key=lambda x: x['overall_avg_improvement'], reverse=True)
+
+        f.write(f"\n\nLIMIT ABSOLUTE DPT IMPROVEMENT RANKING\n")
+        f.write("-" * 80 + "\n")
+        f.write(f"{'Rank':<4} {'Limit':<25} {'Cost':<6} {'Avg DPT+':<10} {'Best Attack Type':<15}\n")
+        f.write("-" * 80 + "\n")
+
+        for i, limit_data in enumerate(sorted_limits_by_dpt, 1):
+            # Find best attack type for this limit
+            best_attack_type = ""
+            best_improvement = 0
+            for attack_type, results in limit_data['attack_type_results'].items():
+                if results['avg_improvement'] > best_improvement:
+                    best_improvement = results['avg_improvement']
+                    best_attack_type = f"{attack_type} (+{best_improvement:.1f})"
+
+            f.write(f"{i:<4} {limit_data['name']:<25} {limit_data['cost']:>4}p "
+                   f"{limit_data['overall_avg_improvement']:>8.1f} {best_attack_type:<15}\n")
+
+        # Detailed per-limit analysis
+        f.write(f"\n\nDETAILED LIMIT ANALYSIS\n")
+        f.write("="*80 + "\n")
+
+        for limit_name, limit_data in sorted(limit_results.items()):
+            f.write(f"\n{limit_data['name'].upper()}\n")
+            f.write(f"Cost: {limit_data['cost']} points | Overall Avg DPT Improvement: {limit_data['overall_avg_improvement']:.1f} | Cost Effectiveness: {limit_data['cost_effectiveness']:.2f}\n")
+            f.write("-" * 60 + "\n")
+
+            for attack_type, results in limit_data['attack_type_results'].items():
+                f.write(f"{attack_type.title()}: Base {results['avg_base_dpt']:.1f} DPT → {results['avg_limit_dpt']:.1f} DPT "
+                       f"(+{results['avg_improvement']:.1f}, {results['avg_percent_improvement']:+.1f}%)\n")
+
+    print(f"Upgrade & Limit performance report saved to reports/upgrade_performance_summary.txt")
 
 
 def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: SimulationConfig):
@@ -296,6 +448,7 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
 
     # Track upgrade appearances and their ranking positions
     upgrade_rankings = {}  # upgrade_name -> list of ranking positions
+    limit_rankings = {}    # limit_name -> list of ranking positions
     attack_type_rankings = {}  # attack_type -> list of ranking positions
 
     # Process each build result to track upgrade positions
@@ -311,6 +464,12 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
                 upgrade_rankings[upgrade] = []
             upgrade_rankings[upgrade].append(rank)
 
+        # Track limit rankings
+        for limit in build.limits:
+            if limit not in limit_rankings:
+                limit_rankings[limit] = []
+            limit_rankings[limit].append(rank)
+
     total_builds = len(all_build_results)
 
     # Calculate statistics for upgrades
@@ -320,6 +479,20 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
         percentile = (avg_position / total_builds) * 100
         upgrade_stats.append({
             'name': upgrade_name,
+            'avg_rank': avg_position,
+            'percentile': percentile,
+            'appearances': len(positions),
+            'best_rank': min(positions),
+            'worst_rank': max(positions)
+        })
+
+    # Calculate statistics for limits
+    limit_stats = []
+    for limit_name, positions in limit_rankings.items():
+        avg_position = sum(positions) / len(positions)
+        percentile = (avg_position / total_builds) * 100
+        limit_stats.append({
+            'name': limit_name,
             'avg_rank': avg_position,
             'percentile': percentile,
             'appearances': len(positions),
@@ -343,13 +516,14 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
 
     # Sort by average rank (lower is better)
     upgrade_stats.sort(key=lambda x: x['avg_rank'])
+    limit_stats.sort(key=lambda x: x['avg_rank'])
     attack_type_stats.sort(key=lambda x: x['avg_rank'])
 
     # Write the report
     with open('reports/upgrade_ranking_report.txt', 'w', encoding='utf-8') as f:
-        f.write("VITALITY SYSTEM - UPGRADE RANKING REPORT\n")
+        f.write("VITALITY SYSTEM - UPGRADE, LIMIT & ATTACK TYPE RANKING REPORT\n")
         f.write("="*80 + "\n\n")
-        f.write("This report shows upgrade and attack type performance based on average ranking\n")
+        f.write("This report shows upgrade, limit, and attack type performance based on average ranking\n")
         f.write("positions across all tested builds. Lower percentiles indicate better performance.\n")
         f.write(f"Total builds tested: {total_builds}\n\n")
 
@@ -363,6 +537,18 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
             f.write(f"{i:<4} {stats['name']:<25} {stats['avg_rank']:>8.1f} "
                    f"{stats['percentile']:>9.1f}% {stats['appearances']:>4} "
                    f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
+
+        # Limit Rankings Section
+        if limit_stats:
+            f.write(f"\n\nLIMIT RANKINGS BY AVERAGE POSITION\n")
+            f.write("-" * 80 + "\n")
+            f.write(f"{'Rank':<4} {'Limit':<25} {'Avg Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
+            f.write("-" * 80 + "\n")
+
+            for i, stats in enumerate(limit_stats, 1):
+                f.write(f"{i:<4} {stats['name']:<25} {stats['avg_rank']:>8.1f} "
+                       f"{stats['percentile']:>9.1f}% {stats['appearances']:>4} "
+                       f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
 
         # Attack Type Rankings Section
         f.write(f"\n\nATTACK TYPE RANKINGS BY AVERAGE POSITION\n")
@@ -378,14 +564,14 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
         # Percentile Explanation
         f.write(f"\n\nPERCENTILE EXPLANATION\n")
         f.write("-" * 40 + "\n")
-        f.write("Percentile shows where the upgrade/attack type ranks on average:\n")
+        f.write("Percentile shows where the upgrade/limit/attack type ranks on average:\n")
         f.write("- 0-25%: Top quartile (excellent performance)\n")
         f.write("- 25-50%: Above average performance\n")
         f.write("- 50-75%: Below average performance\n")
         f.write("- 75-100%: Bottom quartile (poor performance)\n")
 
-    print("Upgrade ranking report saved to reports/upgrade_ranking_report.txt")
-    return upgrade_stats, attack_type_stats
+    print("Upgrade, Limit & Attack Type ranking report saved to reports/upgrade_ranking_report.txt")
+    return upgrade_stats, limit_stats, attack_type_stats
 
 
 def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: SimulationConfig):
@@ -490,18 +676,18 @@ def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: Simu
     print("Upgrade pairing analysis report saved to reports/upgrade_pairing_analysis.txt")
 
 
-def generate_diagnostic_report(config: SimulationConfig):
-    """Generate diagnostic report showing base attack types and individual upgrades with detailed calculations"""
-    print("Generating diagnostic mechanics report...")
+def generate_diagnostic_base_attacks_report(config: SimulationConfig):
+    """Generate diagnostic report for base attack types across all scenarios"""
+    print("Generating base attacks diagnostic report...")
 
-    from game_data import UPGRADES, ATTACK_TYPES
+    from game_data import ATTACK_TYPES
     from simulation import simulate_combat_verbose
 
-    with open('reports/diagnostic_mechanics_report.txt', 'w', encoding='utf-8') as f:
-        f.write("VITALITY SYSTEM - DIAGNOSTIC MECHANICS REPORT\n")
+    with open('reports/diagnostic_base_attacks_report.txt', 'w', encoding='utf-8') as f:
+        f.write("VITALITY SYSTEM - BASE ATTACK TYPES DIAGNOSTIC REPORT\n")
         f.write("="*80 + "\n\n")
-        f.write("This report shows detailed combat mechanics calculations for verification.\n")
-        f.write("Single combat simulation per test case to demonstrate core mechanics.\n\n")
+        f.write("This report shows detailed combat mechanics for base attack types across all scenarios.\n")
+        f.write("Tests 1×100, 2×50, and 4×25 HP enemy configurations for each attack type.\n\n")
 
         # Test cases from config
         test_cases = []
@@ -529,16 +715,47 @@ def generate_diagnostic_report(config: SimulationConfig):
                 f.write(f"Defender: F:{defender.focus} P:{defender.power} M:{defender.mobility} E:{defender.endurance} T:{defender.tier}\n")
                 f.write(f"Defender Avoidance: {defender.avoidance}, Durability: {defender.durability}\n")
 
-                # Run single detailed simulation
-                turns = simulate_combat_verbose(attacker, base_build, config.target_hp, f, defender,
-                                             num_enemies=1, enemy_hp=100)
-                f.write(f"Combat completed in {turns} turns\n")
+                # Test all three scenarios
+                fight_scenarios = [
+                    ("1×100 HP Boss", 1, 100),
+                    ("2×50 HP Enemies", 2, 50),
+                    ("4×25 HP Enemies", 4, 25)
+                ]
+
+                for scenario_name, num_enemies, enemy_hp in fight_scenarios:
+                    f.write(f"\n  {scenario_name}:\n")
+                    turns = simulate_combat_verbose(attacker, base_build, config.target_hp, f, defender,
+                                                 num_enemies=num_enemies, enemy_hp=enemy_hp)
+                    f.write(f"  Combat completed in {turns} turns\n")
 
             f.write("\n" + "="*60 + "\n\n")
 
-        # Test individual upgrades
-        f.write("INDIVIDUAL UPGRADES\n")
+    print("Base attacks diagnostic report saved to reports/diagnostic_base_attacks_report.txt")
+
+
+def generate_diagnostic_upgrades_report(config: SimulationConfig):
+    """Generate diagnostic report for individual upgrades across all scenarios"""
+    print("Generating upgrades diagnostic report...")
+
+    from game_data import UPGRADES, RuleValidator
+    from simulation import simulate_combat_verbose
+
+    with open('reports/diagnostic_upgrades_report.txt', 'w', encoding='utf-8') as f:
+        f.write("VITALITY SYSTEM - UPGRADES DIAGNOSTIC REPORT\n")
         f.write("="*80 + "\n\n")
+        f.write("This report shows detailed combat mechanics for individual upgrades across all scenarios.\n")
+        f.write("Tests 1×100, 2×50, and 4×25 HP enemy configurations for each upgrade.\n\n")
+
+        # Test cases from config
+        test_cases = []
+        for i, att_config in enumerate(config.attacker_configs):
+            for j, def_config in enumerate(config.defender_configs):
+                attacker = Character(*att_config)
+                defender = Character(*def_config)
+                case_name = f"Att{i+1}_Def{j+1}"
+                test_cases.append((case_name, attacker, defender))
+
+        attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
         for upgrade_name, upgrade_data in UPGRADES.items():
             f.write(f"{upgrade_name.upper()} ({upgrade_data.cost} points)\n")
@@ -547,7 +764,6 @@ def generate_diagnostic_report(config: SimulationConfig):
             # Test with compatible attack types
             compatible_attacks = []
             for attack_type in attack_types:
-                from game_data import RuleValidator
                 is_valid, errors = RuleValidator.validate_combination(attack_type, [upgrade_name])
                 if is_valid:
                     compatible_attacks.append(attack_type)
@@ -568,14 +784,88 @@ def generate_diagnostic_report(config: SimulationConfig):
                 f.write(f"Defender: F:{defender.focus} P:{defender.power} M:{defender.mobility} E:{defender.endurance} T:{defender.tier}\n")
                 f.write(f"Defender Avoidance: {defender.avoidance}, Durability: {defender.durability}\n")
 
-                # Run single detailed simulation
-                turns = simulate_combat_verbose(attacker, upgrade_build, config.target_hp, f, defender,
-                                             num_enemies=1, enemy_hp=100)
-                f.write(f"Combat completed in {turns} turns\n")
+                # Test all three scenarios
+                fight_scenarios = [
+                    ("1×100 HP Boss", 1, 100),
+                    ("2×50 HP Enemies", 2, 50),
+                    ("4×25 HP Enemies", 4, 25)
+                ]
+
+                for scenario_name, num_enemies, enemy_hp in fight_scenarios:
+                    f.write(f"\n  {scenario_name}:\n")
+                    turns = simulate_combat_verbose(attacker, upgrade_build, config.target_hp, f, defender,
+                                                 num_enemies=num_enemies, enemy_hp=enemy_hp)
+                    f.write(f"  Combat completed in {turns} turns\n")
 
             f.write("\n" + "="*60 + "\n\n")
 
-    print("Diagnostic mechanics report saved to reports/diagnostic_mechanics_report.txt")
+    print("Upgrades diagnostic report saved to reports/diagnostic_upgrades_report.txt")
+
+
+def generate_diagnostic_limits_report(config: SimulationConfig):
+    """Generate diagnostic report for individual limits across all scenarios"""
+    print("Generating limits diagnostic report...")
+
+    from game_data import LIMITS
+    from simulation import simulate_combat_verbose
+
+    with open('reports/diagnostic_limits_report.txt', 'w', encoding='utf-8') as f:
+        f.write("VITALITY SYSTEM - LIMITS DIAGNOSTIC REPORT\n")
+        f.write("="*80 + "\n\n")
+        f.write("This report shows detailed combat mechanics for individual limits across all scenarios.\n")
+        f.write("Tests 1×100, 2×50, and 4×25 HP enemy configurations for each limit.\n\n")
+
+        # Test cases from config
+        test_cases = []
+        for i, att_config in enumerate(config.attacker_configs):
+            for j, def_config in enumerate(config.defender_configs):
+                attacker = Character(*att_config)
+                defender = Character(*def_config)
+                case_name = f"Att{i+1}_Def{j+1}"
+                test_cases.append((case_name, attacker, defender))
+
+        attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+
+        for limit_name, limit_data in LIMITS.items():
+            f.write(f"{limit_name.upper()} ({limit_data.cost} points)\n")
+            f.write("-" * 50 + "\n")
+
+            # Test with first attack type (all limits work with all attack types)
+            test_attack = attack_types[0]
+            f.write(f"Testing with {test_attack} attack\n")
+
+            limit_build = AttackBuild(test_attack, [], [limit_name])
+
+            for case_name, attacker, defender in test_cases:
+                f.write(f"\nTest Case: {case_name}\n")
+                f.write(f"Attacker: F:{attacker.focus} P:{attacker.power} M:{attacker.mobility} E:{attacker.endurance} T:{attacker.tier}\n")
+                f.write(f"Defender: F:{defender.focus} P:{defender.power} M:{defender.mobility} E:{defender.endurance} T:{defender.tier}\n")
+                f.write(f"Defender Avoidance: {defender.avoidance}, Durability: {defender.durability}\n")
+
+                # Test all three scenarios
+                fight_scenarios = [
+                    ("1×100 HP Boss", 1, 100),
+                    ("2×50 HP Enemies", 2, 50),
+                    ("4×25 HP Enemies", 4, 25)
+                ]
+
+                for scenario_name, num_enemies, enemy_hp in fight_scenarios:
+                    f.write(f"\n  {scenario_name}:\n")
+                    turns = simulate_combat_verbose(attacker, limit_build, config.target_hp, f, defender,
+                                                 num_enemies=num_enemies, enemy_hp=enemy_hp)
+                    f.write(f"  Combat completed in {turns} turns\n")
+
+            f.write("\n" + "="*60 + "\n\n")
+
+    print("Limits diagnostic report saved to reports/diagnostic_limits_report.txt")
+
+
+def generate_diagnostic_report(config: SimulationConfig):
+    """Generate all diagnostic reports"""
+    print("Generating comprehensive diagnostic reports...")
+    generate_diagnostic_base_attacks_report(config)
+    generate_diagnostic_upgrades_report(config)
+    generate_diagnostic_limits_report(config)
 
 
 def generate_individual_report(build: AttackBuild, config: SimulationConfig):

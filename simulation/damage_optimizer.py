@@ -134,18 +134,18 @@ def main():
 
     # Generate upgrade performance report if requested
     if config.test_single_upgrades:
-        upgrade_results = generate_upgrade_performance_report(config)
-        write_upgrade_performance_report(upgrade_results, config)
+        upgrade_results, limit_results = generate_upgrade_performance_report(config)
+        write_upgrade_performance_report(upgrade_results, limit_results, config)
 
     print(f"\nSimulation complete!")
     print(f"- Tested {len(builds)} builds")
-    print(f"- Diagnostic mechanics report saved to reports/diagnostic_mechanics_report.txt")
+    print(f"- Diagnostic reports saved to reports/diagnostic_*_report.txt")
     print(f"- Results saved to reports/combat_log.txt")
     print(f"- Summary saved to reports/build_summary.txt")
     print(f"- Upgrade ranking analysis saved to reports/upgrade_ranking_report.txt")
     print(f"- Upgrade pairing analysis saved to reports/upgrade_pairing_analysis.txt")
     if config.test_single_upgrades:
-        print(f"- Upgrade analysis saved to reports/upgrade_performance_summary.txt")
+        print(f"- Upgrade & Limit analysis saved to reports/upgrade_performance_summary.txt")
 
     # Show top results
     print(f"\nTop {min(20, len(build_results))} builds by average DPT:")

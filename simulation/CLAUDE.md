@@ -27,9 +27,10 @@ The simulator generates and tests all valid build combinations within the 60-poi
 - All attack types (melee, ranged, area, direct_damage, direct_area_damage)
 - Single upgrades, two-upgrade combinations, and three-upgrade combinations
 - All slayer upgrade variants
-- Various limit (unreliable) combinations
+- All limit (unreliable) combinations including unreliable activation checks and turn-based limits
+- Mixed upgrade/limit combinations optimized for point efficiency
 
-Each build is tested with 10 simulation runs across 4 different attacker/defender stat configurations. Each simulation run includes all three enemy scenarios, with the final DPT being the average performance across all scenarios. This comprehensive approach reveals tactical strengths and weaknesses of different build types.
+Each build is tested with 50 simulation runs across 4 different attacker/defender stat configurations. Each simulation run includes all three enemy scenarios (1×100, 2×50, 4×25 HP), with the final DPT being the average performance across all scenarios. This comprehensive approach reveals tactical strengths and weaknesses of different build types, limit risk/reward ratios, and multi-target effectiveness.
 
 ## Architecture and Core Systems
 
@@ -130,8 +131,10 @@ ATTACK_TYPES = {
 - ✅ **Bleed condition tracking with proper replacement rules (per enemy)
 - ✅ **Multi-attack handling (Quick Strikes/Barrage)
 - ✅ **Comprehensive dice rolling with explosion mechanics
-- ✅ **Individual upgrade performance analysis reports
-- ✅ **Limit performance analysis with risk/reward metrics
+- ✅ **Individual upgrade and limit performance analysis reports
+- ✅ **Limit performance analysis with risk/reward metrics across all scenarios
+- ✅ **Turn-based limit activation (Quickdraw, Steady, Patient, Finale)
+- ✅ **Unreliable limit DC checks and failure handling
 
 ### Known Issues
 
@@ -149,9 +152,13 @@ ATTACK_TYPES = {
 
 **Output Files:**
 - `combat_log.txt`: Detailed turn-by-turn combat logs with multi-enemy scenarios
-- `build_summary.txt`: Top-performing builds ranked by average DPT
-- `upgrade_performance_summary.txt`: Individual upgrade analysis and rankings
-- `upgrade_ranking_report.txt`: Upgrade and attack type percentile rankings
+- `build_summary.txt`: Top 50 builds ranked by average DPT
+- `upgrade_performance_summary.txt`: Individual upgrade and limit analysis and rankings
+- `upgrade_ranking_report.txt`: Upgrade, limit, and attack type percentile rankings
+- `enhanced_ranking_report.txt`: Comprehensive percentile-based performance analysis with average build positions
+- `diagnostic_base_attacks_report.txt`: Base attack type mechanics across all scenarios
+- `diagnostic_upgrades_report.txt`: Individual upgrade mechanics across all scenarios
+- `diagnostic_limits_report.txt`: Individual limit mechanics across all scenarios
 
 **Configuration:**
 - `config.json`: Simulation parameters and test case configurations
@@ -173,7 +180,7 @@ The simulator produces comprehensive analytical reports to help understand build
 ### 2. Build Summary Report (`build_summary.txt`)
 **Purpose**: Top 50 builds ranked by performance
 **Content**:
-- Top 50 builds ranked by average DPT across all test configurations
+- **Top 50 builds ranked by average DPT across all test configurations**
 - Build details including attack type, upgrades, and limits
 - Average DPT performance for each build
 - **Attack Type Performance Summary**:
@@ -182,25 +189,34 @@ The simulator produces comprehensive analytical reports to help understand build
   - Count of builds using each attack type
   - Ranked by overall performance
 
-### 3. Upgrade Performance Analysis (`upgrade_performance_summary.txt`)
-**Purpose**: Individual upgrade effectiveness analysis
+### 3. Upgrade & Limit Performance Analysis (`upgrade_performance_summary.txt`)
+**Purpose**: Individual upgrade and limit effectiveness analysis across all enemy scenarios
 **Generated when**: `test_single_upgrades` is enabled in config
 **Content**:
-- **Cost-Effectiveness Ranking**: Upgrades ranked by DPT improvement per point cost
-- **Absolute DPT Improvement Ranking**: Upgrades ranked by raw DPT increase
+- **Upgrade Cost-Effectiveness Ranking**: Upgrades ranked by DPT improvement per point cost
+- **Limit Cost-Effectiveness Ranking**: Limits ranked by DPT improvement per point cost
+- **Absolute DPT Improvement Rankings**: Upgrades and limits ranked by raw DPT increase
 - **Detailed Per-Upgrade Analysis**:
-  - Performance with each compatible attack type
+  - Performance with each compatible attack type across all scenarios (1v1, 1v2, 1v4)
   - Base vs upgraded DPT comparisons
   - Percentage improvements
   - Best attack type pairings for each upgrade
+- **Detailed Per-Limit Analysis**:
+  - Performance across all attack types and scenarios
+  - Risk/reward analysis for unreliable limits
+  - Turn-based activation effectiveness
 
-### 4. Upgrade Ranking Report (`upgrade_ranking_report.txt`)
-**Purpose**: Percentile-based upgrade and attack type rankings
+### 4. Upgrade, Limit & Attack Type Ranking Report (`upgrade_ranking_report.txt`)
+**Purpose**: Percentile-based upgrade, limit, and attack type rankings
 **Content**:
 - **Upgrade Rankings by Average Position**:
   - Every upgrade ranked by average build ranking position
   - Percentile scores (lower percentiles = better performance)
   - Usage frequency and best/worst rankings
+- **Limit Rankings by Average Position**:
+  - Every limit ranked by average build ranking position
+  - Percentile performance analysis showing reliability vs. power trade-offs
+  - Usage statistics and performance ranges
 - **Attack Type Rankings by Average Position**:
   - Attack types ranked by average build ranking position
   - Percentile performance analysis
@@ -211,7 +227,47 @@ The simulator produces comprehensive analytical reports to help understand build
   - 50-75%: Below average performance
   - 75-100%: Bottom quartile (poor performance)
 
-### 5. Individual Build Reports (Optional)
+### 5. Enhanced Build Performance Ranking Report (`enhanced_ranking_report.txt`)
+**Purpose**: Comprehensive upgrade, limit, and attack type performance analysis with percentile rankings based on average build positions
+**Content**:
+- **Upgrade Performance Rankings**:
+  - Every upgrade ranked by their average build ranking position across all builds that use them
+  - Percentile scores showing where each upgrade typically places (e.g., 20th percentile = top 20% of builds)
+  - For example: If 40,000 total builds exist and an upgrade's average ranking is 20,000, that's 50th percentile (middle performance)
+  - If average ranking is 10,000, that's 75th percentile (top 25% performance)
+  - Usage statistics and performance consistency metrics
+- **Limit Performance Rankings**:
+  - Every limit ranked by their average build ranking position across all builds that use them
+  - Percentile analysis showing typical performance placement
+  - Risk/reward analysis comparing unreliable vs turn-based limits
+  - Performance consistency across different build configurations
+- **Attack Type Performance Rankings**:
+  - Attack types ranked by their average build ranking position
+  - Percentile performance showing which attack types typically produce higher-ranking builds
+  - Performance analysis across different enemy scenarios (1v1, 1v2, 1v4)
+  - Synergy analysis with different upgrade categories
+
+### 6. Diagnostic Mechanics Reports
+**Purpose**: Detailed combat mechanics verification across all scenarios
+**Generated**: Automatically with each run
+**Content**:
+
+#### Base Attacks Report (`diagnostic_base_attacks_report.txt`)
+- Turn-by-turn combat resolution for all attack types
+- Testing across 1×100, 2×50, and 4×25 HP enemy configurations
+- Dice rolls, accuracy checks, and damage calculations
+
+#### Upgrades Report (`diagnostic_upgrades_report.txt`)
+- Individual upgrade mechanics demonstration
+- Combat resolution showing upgrade effects in action
+- Compatibility testing with different attack types
+
+#### Limits Report (`diagnostic_limits_report.txt`)
+- Turn-based and unreliable limit activation mechanics
+- DC check results and failure handling
+- Performance across different combat lengths and scenarios
+
+### 7. Individual Build Reports
 **Purpose**: Deep-dive analysis of specific builds
 **Generated when**: `generate_individual_logs` is enabled in config
 **Content**:
