@@ -19,14 +19,7 @@ this doesn't make sense, it's likely still going by HP, not by max hP:
 
 
 
-when looking at diagnostics, i noticed this:
-POWERFUL_CONDITION_CRITICAL (20 points)
-    Making melee attack with ['double_tap']
 
 
-this also seems like a mistake:
-9    finishing_blow_2            40p      0.1 melee (+0.6)   
-10   elite_slayer_dmg            20p      0.1 melee (+0.2)   
-11   elite_slayer_acc            20p      0.0 melee (+0.3)   
-12   double_tap                  30p      0.0 melee (+0.2)   
-13   finishing_blow_3            60p      0.0 ranged (+0.1)  
+
+charge up not appearing in diagnostic limit report

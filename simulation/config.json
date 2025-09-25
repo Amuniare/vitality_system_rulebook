@@ -1,6 +1,6 @@
 {
   "single_attack_type": null,
-  "attack_types": ["melee", "melee_ac", "melee_dg", "area", "direct_damage"],
+  "attack_types": [ "melee_ac", "melee_dg", "ranged", "area", "direct_damage", "area_direct_damage"],
   "simulations_per_test": 5,
   "max_turns": 100,
   "target_hp": 100,
@@ -18,6 +18,16 @@
   "combat_log_level": "detailed",
   "include_statistical_analysis": true,
   "generate_synergy_analysis": false,
+  "logging": {
+    "level": "summary",
+    "separate_files": true,
+    "log_top_builds_only": true,
+    "top_builds_for_detailed_log": 50,
+    "sample_rate": 1,
+    "scenarios_to_log": ["1x100", "2x50", "4x25"],
+    "generate_individual_build_logs": false,
+    "verbose_logging": false
+  },
   "attacker_configs": [
     [3, 0, 0, 0, 3],
     [0, 3, 0, 0, 3],

@@ -135,6 +135,15 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 if damage > 0:
                     enemies_hit.append(target_idx+1)
 
+                # Check for finishing blow after damage is applied
+                finishing_conditions = [c for c in conditions if c.startswith('finishing_')]
+                if finishing_conditions and enemy['hp'] > 0:  # Only check if enemy still alive
+                    threshold = int(finishing_conditions[0].split('_')[1])
+                    if enemy['hp'] <= threshold:
+                        if log_file:
+                            log_file.write(f"    ⚡ FINISHING BLOW! Enemy {target_idx+1} at {enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
+                        enemy['hp'] = 0  # Enemy is defeated
+
                 # Apply conditions to this enemy
                 if 'bleed' in conditions:
                     old_bleed_count = len(enemy['bleed_stacks'])
@@ -172,6 +181,15 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     log_file.write(f"\n  ATTACK RESULT:\n")
                     log_file.write(f"    Damage dealt to Enemy {target_idx+1}: {damage}\n")
                     log_file.write(f"    Enemy {target_idx+1} HP: {target_enemy['hp'] + damage} -> {target_enemy['hp']}\n")
+
+                # Check for finishing blow after damage is applied
+                finishing_conditions = [c for c in conditions if c.startswith('finishing_')]
+                if finishing_conditions and target_enemy['hp'] > 0:  # Only check if enemy still alive
+                    threshold = int(finishing_conditions[0].split('_')[1])
+                    if target_enemy['hp'] <= threshold:
+                        if log_file:
+                            log_file.write(f"    ⚡ FINISHING BLOW! Enemy {target_idx+1} at {target_enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
+                        target_enemy['hp'] = 0  # Enemy is defeated
 
                 # Apply conditions to target
                 if 'bleed' in conditions:

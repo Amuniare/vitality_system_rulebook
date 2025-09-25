@@ -80,6 +80,9 @@ class SimulationConfig:
     show_top_builds: int = 10
     generate_individual_logs: bool = False
 
+    # Logging configuration
+    logging: dict = None
+
     def __post_init__(self):
         """Set default configurations if not provided"""
         if self.attacker_configs is None:
@@ -94,6 +97,18 @@ class SimulationConfig:
             self.defender_configs = [
                 (3, 3, 3, 3, 3),  # Balanced Tier 3 defender
             ]
+
+        if self.logging is None:
+            self.logging = {
+                "level": "summary",
+                "separate_files": True,
+                "log_top_builds_only": True,
+                "top_builds_for_detailed_log": 50,
+                "sample_rate": 1,
+                "scenarios_to_log": ["1x100", "2x50", "4x25", "10x10"],
+                "generate_individual_build_logs": False,
+                "verbose_logging": False
+            }
 
 
 class AttackBuild:

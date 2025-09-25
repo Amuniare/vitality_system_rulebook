@@ -316,10 +316,14 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             elif 'boss_slayer_dmg' in build.upgrades and defender.max_hp <= 100:
                 slayer_damage_bonus += attacker.tier
 
-        # Apply powerful condition critical bonus
+        # Apply critical hit damage bonus
         critical_damage_bonus = 0
-        if is_critical and 'powerful_condition_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
+        if is_critical:
+            # Base critical hit bonus
             critical_damage_bonus = attacker.tier
+            # Additional bonus if they have powerful condition critical
+            if 'powerful_condition_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
+                critical_damage_bonus += attacker.tier
 
         damage = dice_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus
 
@@ -365,7 +369,10 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 log_file.write(f"      Slayer bonus: +{slayer_damage_bonus} [{slayer_type} vs {defender.max_hp}HP]\n")
 
             if critical_damage_bonus > 0:
-                log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Powerful Condition Critical]\n")
+                if 'powerful_condition_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
+                    log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit +{attacker.tier} + Powerful Condition Critical +{attacker.tier}]\n")
+                else:
+                    log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit]\n")
 
             if overhit_bonus > 0:
                 log_file.write(f"      Overhit bonus: +{overhit_bonus} [Exceeded avoidance by {accuracy_roll + total_accuracy - defender.avoidance}]\n")
@@ -424,7 +431,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if log_file:
                 log_file.write(f"      Total with triple attack: {damage_dealt} damage\n")
 
-    # Handle finishing blow
+    # Handle finishing blow - note: actual HP check must be done in simulation after damage is applied
     finishing_threshold = 0
     if 'finishing_blow_1' in build.upgrades:
         finishing_threshold = 5
@@ -433,11 +440,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     elif 'finishing_blow_3' in build.upgrades:
         finishing_threshold = 15
 
-    # Check if finishing blow applies (this would need target's current HP, using damage as proxy)
-    if finishing_threshold > 0 and damage_dealt >= finishing_threshold:
-        if log_file:
-            log_file.write(f"      Finishing Blow activated (threshold: {finishing_threshold})!\n")
-        # In actual implementation, would need to check target's remaining HP
+    # Add finishing blow threshold to conditions if applicable
+    if finishing_threshold > 0:
         conditions_applied.append(f'finishing_{finishing_threshold}')
 
     # Handle bleed

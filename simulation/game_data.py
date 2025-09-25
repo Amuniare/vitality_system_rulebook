@@ -55,6 +55,8 @@ LIMITS = {
     'steady': Limit('steady', 30, 1, 0),                # Cost 30p, +Tier bonus, turn 3 or later
     'patient': Limit('patient', 20, 1, 0),              # Cost 20p, +Tier bonus, turn 5 or later
     'finale': Limit('finale', 10, 1, 0),                # Cost 10p, +Tier bonus, turn 8 or later
+    'charge_up': Limit('charge_up', 10, 1, 0),          # Cost 10p, +Tier bonus, spend action on previous turn
+    'charge_up_2': Limit('charge_up_2', 10, 2, 0),     # Cost 10p, +2×Tier bonus, spend actions on previous two turns
 }
 
 # Rule Validation System

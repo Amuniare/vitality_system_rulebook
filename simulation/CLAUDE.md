@@ -10,12 +10,14 @@ This is a combat damage optimization simulator for the Vitality System TTRPG. Th
 - Fight 1: 1×100 HP Boss (traditional single-target)
 - Fight 2: 2×50 HP Enemies (medium group)
 - Fight 3: 4×25 HP Enemies (large group)
+- Fight 4: 10×10 HP Enemies (swarm)
 
 This provides realistic performance analysis showing how builds perform across different tactical scenarios, with AOE attacks demonstrating clear advantages against multiple enemies.
 
 ## Common Development Tasks
 
 ### Running the Simulator
+IMPORTANT: Running the simulator takes more than 2+ minutes so claude code will timeout.
 ```bash
 python damage_optimizer.py
 ```
@@ -56,7 +58,7 @@ Each build is tested with 50 simulation runs across 4 different attacker/defende
 - **Triple attacks**: Quick Strikes (any attack type) and Barrage (ranged only) make 3 attacks with penalties
 - **Armor Piercing**: Ignores endurance portion of durability, -Tier/2 accuracy penalty
 - **Brutal**: Extra damage when exceeding DR by 10+ (50% of excess damage)
-- **Critical hits**: Natural 20 or 15-20 with Critical Accuracy
+- **Critical hits**: Natural 20 or 15-20 with Critical Accuracy, on a critical hit, increase damage by tier
 - **Advantage**: Reliable Accuracy grants advantage but with -4 accuracy penalty
 - **Slayer bonuses**: Conditional accuracy/damage bonuses based on target HP thresholds
 
