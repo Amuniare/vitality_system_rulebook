@@ -27,7 +27,7 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
             test_slayers=data.get('test_slayers', True),
             test_limits=data.get('test_limits', True),
             verbose_logging=data.get('verbose_logging', True),
-            show_top_builds=data.get('show_top_builds', 10),
+            show_top_builds=data.get('top_builds_count', data.get('show_top_builds', 10)),
             generate_individual_logs=data.get('generate_individual_logs', False),
             min_dpt_threshold=data.get('min_dpt_threshold', 0.0),
         )
@@ -143,7 +143,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
     limit_results = {}
 
     # Determine which attack types to test
-    attack_types = config.attack_types_filter if config.attack_types_filter else ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+    attack_types = config.attack_types_filter if config.attack_types_filter else ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
     # Test each upgrade individually
     for upgrade_name in UPGRADES.keys():
@@ -701,7 +701,7 @@ def generate_diagnostic_base_attacks_report(config: SimulationConfig):
         f.write("BASE ATTACK TYPES (NO UPGRADES)\n")
         f.write("="*80 + "\n\n")
 
-        attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
         for attack_type in attack_types:
             f.write(f"{attack_type.upper()} ATTACK\n")
@@ -755,16 +755,24 @@ def generate_diagnostic_upgrades_report(config: SimulationConfig):
                 case_name = f"Att{i+1}_Def{j+1}"
                 test_cases.append((case_name, attacker, defender))
 
-        attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
         for upgrade_name, upgrade_data in UPGRADES.items():
             f.write(f"{upgrade_name.upper()} ({upgrade_data.cost} points)\n")
             f.write("-" * 50 + "\n")
 
+            # Build upgrade list including prerequisites
+            from game_data import PREREQUISITES
+            upgrade_list = [upgrade_name]
+            if upgrade_name in PREREQUISITES:
+                prerequisite_upgrades = PREREQUISITES[upgrade_name]
+                upgrade_list = prerequisite_upgrades + [upgrade_name]
+                f.write(f"Note: Testing with prerequisites: {', '.join(prerequisite_upgrades)}\n")
+
             # Test with compatible attack types
             compatible_attacks = []
             for attack_type in attack_types:
-                is_valid, errors = RuleValidator.validate_combination(attack_type, [upgrade_name])
+                is_valid, errors = RuleValidator.validate_combination(attack_type, upgrade_list)
                 if is_valid:
                     compatible_attacks.append(attack_type)
 
@@ -776,7 +784,7 @@ def generate_diagnostic_upgrades_report(config: SimulationConfig):
             test_attack = compatible_attacks[0]
             f.write(f"Testing with {test_attack} attack\n")
 
-            upgrade_build = AttackBuild(test_attack, [upgrade_name], [])
+            upgrade_build = AttackBuild(test_attack, upgrade_list, [])
 
             for case_name, attacker, defender in test_cases:
                 f.write(f"\nTest Case: {case_name}\n")
@@ -824,7 +832,7 @@ def generate_diagnostic_limits_report(config: SimulationConfig):
                 case_name = f"Att{i+1}_Def{j+1}"
                 test_cases.append((case_name, attacker, defender))
 
-        attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
         for limit_name, limit_data in LIMITS.items():
             f.write(f"{limit_name.upper()} ({limit_data.cost} points)\n")

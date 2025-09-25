@@ -37,6 +37,10 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         if build.attack_type == 'melee':
             # In original, melee_choice was hardcoded to 'damage'
             log_file.write(f" (choosing +{attacker.tier} damage)")
+        elif build.attack_type == 'melee_ac':
+            log_file.write(f" (choosing +{attacker.tier} accuracy)")
+        elif build.attack_type == 'melee_dg':
+            log_file.write(f" (choosing +{attacker.tier} damage)")
         log_file.write(f"\n  Upgrades: {', '.join(build.upgrades) if build.upgrades else 'None'}\n")
         log_file.write(f"  Limits: {', '.join(build.limits) if build.limits else 'None'}\n")
         log_file.write(f"  Total Cost: {build.total_cost} points\n")

@@ -21,7 +21,7 @@ def main():
     print_configuration_report(config)
 
     # Generate builds to test
-    attack_types = config.attack_types_filter or ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+    attack_types = config.attack_types_filter or ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
     builds = generate_valid_builds(config.max_points, attack_types)
 
     # Filter builds if needed

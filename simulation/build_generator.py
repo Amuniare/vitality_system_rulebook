@@ -18,7 +18,7 @@ class BuildGenerator:
         """Generate all valid build combinations within point budget"""
         valid_builds = []
         if attack_types is None:
-            attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+            attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
         # Generate builds for each attack type
         for attack_type in attack_types:
@@ -107,7 +107,7 @@ def generate_single_upgrade_builds(max_points: int = 60, attack_types: List[str]
     """Generate builds with exactly one upgrade for testing individual upgrade effectiveness"""
     valid_builds = []
     if attack_types is None:
-        attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
     for attack_type in attack_types:
         for upgrade_name in UPGRADES.keys():
@@ -125,7 +125,7 @@ def generate_slayer_builds(max_points: int = 60, attack_types: List[str] = None)
     """Generate builds focused on slayer upgrades for analysis"""
     valid_builds = []
     if attack_types is None:
-        attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
     slayer_upgrades = [u for u in UPGRADES.keys() if 'slayer' in u]
 
@@ -145,7 +145,7 @@ def generate_limit_builds(max_points: int = 60, attack_types: List[str] = None) 
     """Generate builds with different limit combinations for analysis"""
     valid_builds = []
     if attack_types is None:
-        attack_types = ['melee', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
     for attack_type in attack_types:
         for limit_name in LIMITS.keys():

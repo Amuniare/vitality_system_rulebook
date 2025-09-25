@@ -25,7 +25,7 @@ This roadmap addresses the key issues identified in the combat damage optimizati
 - **Goal**: Organize code into logical Python packages
 - **Implementation**:
   ```
-  vitality_simulator/
+  simulation/
   ├── __init__.py
   ├── models/
   │   ├── __init__.py
@@ -61,9 +61,9 @@ This roadmap addresses the key issues identified in the combat damage optimizati
 
 #### Step 1: Create Package Structure
 ```bash
-mkdir -p vitality_simulator/{models,combat,analysis,config,utils}
-touch vitality_simulator/__init__.py
-touch vitality_simulator/{models,combat,analysis,config,utils}/__init__.py
+mkdir -p simulation/{models,combat,analysis,config,utils}
+touch simulation/__init__.py
+touch simulation/{models,combat,analysis,config,utils}/__init__.py
 ```
 
 #### Step 2: Extract Core Models (lines 13-104)

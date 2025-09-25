@@ -182,9 +182,10 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         elif 'boss_slayer_acc' in build.upgrades and defender.max_hp <= 100:
             slayer_accuracy_bonus += attacker.tier
 
-    # Apply melee accuracy bonus if chosen (hardcoded to damage for simulation)
+    # Apply melee accuracy bonus for melee_ac variant
     melee_accuracy_bonus = 0
-    # Note: In the original, melee_choice was hardcoded to 'damage', so no accuracy bonus
+    if build.attack_type == 'melee_ac':
+        melee_accuracy_bonus = attacker.tier
 
     total_accuracy = base_accuracy + accuracy_mod + slayer_accuracy_bonus + melee_accuracy_bonus
 
@@ -288,8 +289,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         flat_bonus = attacker.tier + attacker.power
         flat_bonus += attack_type.damage_mod * attacker.tier
 
-        # Melee choice: +Tier damage (hardcoded in original)
-        if build.attack_type == 'melee':
+        # Melee damage bonus for original melee and melee_dg variant
+        if build.attack_type in ['melee', 'melee_dg']:
             flat_bonus += attacker.tier
 
         # Apply upgrade bonuses/penalties
@@ -332,7 +333,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 flat_parts.append(f"{mod_value:+d} [{build.attack_type.title()}]")
 
             # Melee damage bonus
-            if build.attack_type == 'melee':
+            if build.attack_type in ['melee', 'melee_dg']:
                 flat_parts.append(f"+{attacker.tier} [Melee]")
 
             # Upgrade damage modifiers
@@ -400,7 +401,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     if allow_multi and 'triple_attack' in [UPGRADES[u].special_effect for u in build.upgrades]:
         # Check triple attack restrictions
         skip_triple_attack = False
-        if 'quick_strikes' in build.upgrades and build.attack_type != 'melee':
+        if 'quick_strikes' in build.upgrades and build.attack_type not in ['melee', 'melee_ac', 'melee_dg']:
             if log_file:
                 log_file.write(f"      Quick strikes only works with melee attacks - skipping triple attack\n")
             skip_triple_attack = True

@@ -9,6 +9,8 @@ from typing import List, Tuple
 # Attack Types
 ATTACK_TYPES = {
     'melee': AttackType('melee', 0),  # Choose +Tier accuracy OR +Tier damage when attacking (hardcoded to damage for simulation)
+    'melee_ac': AttackType('melee_ac', 0),  # Melee with +Tier accuracy bonus
+    'melee_dg': AttackType('melee_dg', 0),  # Melee with +Tier damage bonus
     'ranged': AttackType('ranged', 0),
     'area': AttackType('area', 0, accuracy_mod=-1),
     'direct_damage': AttackType('direct_damage', 0, is_direct=True, direct_damage_base=13),
@@ -73,7 +75,7 @@ MUTUAL_EXCLUSIONS = [
 ]
 
 ATTACK_TYPE_RESTRICTIONS = {
-    'quick_strikes': ['melee'],
+    'quick_strikes': ['melee', 'melee_ac', 'melee_dg'],
     'barrage': ['ranged'],
 }
 
