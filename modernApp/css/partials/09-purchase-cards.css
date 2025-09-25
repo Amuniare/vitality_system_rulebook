@@ -1,0 +1,163 @@
+.purchase-grid { /* Used by MainPoolTab, ArchetypeTab details */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl); /* Or remove if parent .section-content provides padding */
+}
+
+.purchase-card { /* Base for UniversalCard */
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    display: flex; /* For aligning button to bottom if needed */
+    flex-direction: column; /* For aligning button to bottom */
+}
+
+.purchase-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--color-accent-primary), transparent);
+    transform: translateX(-100%);
+    transition: transform var(--transition-slow);
+}
+
+.purchase-card:hover:not(.disabled) {
+    border-color: var(--color-border-active);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+.purchase-card:hover:not(.disabled)::before {
+    transform: translateX(0);
+}
+
+.purchase-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.purchase-card.purchased {
+    background-color: rgba(var(--color-accent-success-rgb, 76, 175, 80), 0.05); /* Assuming --rgb variable for opacity */
+    border-color: var(--color-accent-success);
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    margin-bottom: var(--spacing-md);
+}
+
+.card-header h4 {
+    color: var(--color-text-primary);
+    margin-bottom: 0;
+    flex-grow: 1; /* Allow h4 to take space */
+    margin-right: var(--spacing-sm); /* Space before cost */
+}
+
+.cost { /* Cost display on cards */
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-accent-primary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-mono);
+    white-space: nowrap; /* Prevent cost from wrapping */
+}
+
+/* Card Content */
+.card-description {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+    flex-grow: 1; /* Allow description to push button down */
+}
+
+.card-effects,
+.card-requirements {
+    background-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-sm); /* Standardize font size inside these blocks */
+}
+
+.card-effects strong,
+.card-requirements strong {
+    display: block;
+    color: var(--color-text-primary);
+    /* font-size already inherited or use var(--font-size-sm) */
+    margin-bottom: var(--spacing-sm);
+}
+
+.card-effects ul,
+.card-requirements ul {
+    list-style: none;
+    margin: 0;
+    padding: 0; /* Remove default ul padding */
+}
+
+.card-effects li,
+.card-requirements li {
+    color: var(--color-text-secondary);
+    /* font-size already inherited */
+    padding-left: var(--spacing-lg);
+    position: relative;
+    margin-bottom: var(--spacing-xs);
+}
+
+.card-effects li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent-primary);
+}
+
+.card-requirements li::before {
+    content: '▸'; /* Or '⚠' if it's always unmet */
+    position: absolute;
+    left: 0;
+    color: var(--color-accent-warning);
+}
+
+/* Card Status Messages */
+.requirement-warning { /* For unmet requirements text */
+    color: var(--color-accent-danger);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.requirement-warning::before {
+    content: '⚠';
+    font-size: var(--font-size-lg); /* Make icon larger */
+}
+
+.purchased-indicator {
+    color: var(--color-accent-success);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.purchased-indicator::before {
+    content: '✓';
+    font-size: var(--font-size-lg); /* Make icon larger */
+}

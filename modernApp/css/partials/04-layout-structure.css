@@ -1,0 +1,170 @@
+/* ... (existing styles) ... */
+
+/* =====================================================
+   LAYOUT STRUCTURE (MODIFIED for 3 columns)
+   ===================================================== */
+   .app-container { /* Parent of app-header, tab-navigation, app-main */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-main { /* Parent of character-manager-panel, tab-container, character-summary */
+    flex: 1; /* Takes remaining vertical space */
+    display: flex;
+    overflow: hidden; /* Important for independent scrolling of columns */
+}
+
+.character-manager-panel {
+    width: 260px; /* Adjust as needed */
+    background-color: var(--color-bg-secondary);
+    border-right: 1px solid var(--color-border-primary);
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.character-manager-panel h3 {
+    color: var(--color-accent-primary);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border-secondary);
+    padding-bottom: var(--spacing-sm);
+}
+
+#character-list-controls {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.character-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Allows list to take remaining space for scrolling */
+    overflow-y: auto; /* Enable scrolling for the list itself */
+}
+
+.character-list-item {
+    padding: var(--spacing-sm) var(--spacing-xs); /* Less horizontal padding */
+    border-bottom: 1px solid var(--color-border-primary);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.character-list-item:hover {
+    background-color: var(--color-bg-hover);
+}
+
+.character-list-item.active {
+    background-color: var(--color-accent-primary);
+    color: white;
+}
+.character-list-item.active .char-name {
+    color: white;
+    font-weight: 600;
+}
+.character-list-item.active .btn-icon {
+    color: white; /* Ensure icon buttons are visible on active background */
+}
+
+
+.character-list-item .char-name {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-grow: 1;
+}
+.character-list-item.active .char-name {
+    color: white;
+}
+
+
+.character-list-item .char-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-shrink: 0; /* Prevent action buttons from shrinking */
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    font-size: var(--font-size-base); /* Adjust icon size */
+    line-height: 1;
+}
+.btn-icon:hover {
+    color: var(--color-accent-primary);
+}
+.btn-icon.btn-danger:hover {
+    color: var(--color-accent-danger);
+}
+.btn-icon i { /* If you use <i> for icons */
+    display: inline-block;
+}
+
+
+.tab-container { /* Main content area (center column) */
+    flex: 1; /* Takes up available space */
+    overflow-y: auto;
+    padding: var(--spacing-xl);
+    background-color: var(--color-bg-primary); /* Ensure it has a background */
+}
+
+.character-summary { /* Right sidebar */
+    width: 280px; /* Default width */
+    background-color: var(--color-bg-secondary);
+    border-left: 1px solid var(--color-border-primary);
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+/* Responsive adjustments for the 3-column layout */
+@media (max-width: 1024px) { /* Example breakpoint */
+    .character-manager-panel {
+        width: 220px;
+    }
+    .character-summary {
+        width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-main {
+        flex-direction: column; /* Stack columns on smaller screens */
+    }
+    .character-manager-panel,
+    .character-summary {
+        width: 100%; /* Full width when stacked */
+        border-right: none;
+        border-left: none;
+        border-bottom: 1px solid var(--color-border-primary);
+        max-height: 250px; /* Limit height when stacked, make scrollable */
+        overflow-y: auto;
+    }
+    .character-summary {
+        border-top: 1px solid var(--color-border-primary); /* Separator if summary is last */
+        border-bottom: none;
+    }
+    .tab-container {
+        padding: var(--spacing-md);
+        flex: 1; /* Ensure it still tries to take available space */
+    }
+}
+
+
+/* ... (rest of your existing CSS, especially .btn styles, form styles, etc.) ... */

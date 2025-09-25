@@ -1,0 +1,18 @@
+::-webkit-scrollbar {
+    width: 10px; /* Slightly thinner */
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-primary); /* Match primary background */
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-full); /* Fully rounded thumb */
+    /* border: 2px solid var(--color-bg-secondary); /* Removed border for cleaner look */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-secondary); /* Darker on hover */
+}

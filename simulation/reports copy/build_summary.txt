@@ -1,0 +1,23 @@
+VITALITY SYSTEM - BUILD PERFORMANCE SUMMARY
+================================================================================
+
+Top 10 builds ranked by average DPT across all test configurations:
+
+ 1. area | Upgrades: bleed | Cost: 60 | Avg DPT: 15.3
+ 2. area | Upgrades: bleed | Cost: 60 | Avg DPT: 15.2
+ 3. area | Upgrades: bleed | Cost: 60 | Avg DPT: 14.3
+ 4. direct_area_damage | Upgrades: bleed | Cost: 60 | Avg DPT: 12.5
+ 5. direct_area_damage | Upgrades: bleed | Cost: 60 | Avg DPT: 12.5
+ 6. direct_area_damage | Upgrades: bleed | Cost: 60 | Avg DPT: 12.5
+ 7. area | Upgrades: boss_slayer_acc, accurate_attack, overhit | Cost: 60 | Avg DPT: 11.8
+ 8. area | Upgrades: boss_slayer_acc, overhit | Cost: 50 | Avg DPT: 11.5
+ 9. area | Upgrades: boss_slayer_dmg, accurate_attack, overhit | Cost: 60 | Avg DPT: 11.5
+10. area | Upgrades: high_impact, boss_slayer_acc | Cost: 40 | Avg DPT: 11.4
+
+
+ATTACK TYPE PERFORMANCE SUMMARY
+--------------------------------------------------------------------------------
+Rank Attack Type          Avg DPT    Best DPT   Worst DPT   Count 
+--------------------------------------------------------------------------------
+1    area                    13.0     15.3      11.4    7
+2    direct_area_damage      12.5     12.5      12.5    3

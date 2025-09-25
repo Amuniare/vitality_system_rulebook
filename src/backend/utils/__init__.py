@@ -1,0 +1,1 @@
+from .scriptcards_templates import ScriptCardsTemplateManager, expand_character_abilities

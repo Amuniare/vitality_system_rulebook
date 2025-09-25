@@ -1,0 +1,63 @@
+/* .tab-navigation from index.html maps to .nav-tabs from original if it's the main app tab bar */
+.tab-navigation { /* Styles for the main tab bar <nav> */
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--color-border-primary);
+    padding: var(--spacing-md) var(--spacing-xl); /* Added padding for better look */
+    background-color: var(--color-bg-secondary); /* Consistent with header */
+}
+
+.tab-btn { /* Styles for individual tab buttons in main navigation */
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    cursor: pointer;
+    position: relative;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+    border-bottom: 2px solid transparent; /* For active state indicator */
+}
+
+.tab-btn:hover {
+    color: var(--color-text-primary);
+}
+
+.tab-btn.active {
+    color: var(--color-accent-primary);
+    border-bottom-color: var(--color-accent-primary);
+}
+
+/* .section-tabs for internal tab-like navigation within a tab's content */
+.section-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.section-tab {
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.section-tab:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-secondary);
+}
+
+.section-tab.active {
+    background-color: var(--color-accent-primary);
+    color: white; /* Ensure text is readable on accent background */
+    border-color: var(--color-accent-primary);
+}

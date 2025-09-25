@@ -1,0 +1,1675 @@
+/* ==========================================================================
+   modernApp/css/modern-app.css
+   
+   Original Base + Consolidated Component Styles
+   ========================================================================== */
+/* =====================================================
+   RESET & BASE STYLES (Original)
+   ===================================================== */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   CSS CUSTOM PROPERTIES (THEME VARIABLES) (Original)
+   ===================================================== */
+:root {
+    /* Colors */
+    --color-bg-primary: #0f1419;
+    --color-bg-secondary: #1a1f2e;
+    --color-bg-tertiary: #252a3a;
+    --color-bg-card: #1e2330;
+    --color-bg-hover: #2a3142;
+    
+    --color-accent-primary: #4a9eff;
+    --color-accent-secondary: #357abd;
+    --color-accent-success: #4CAF50;
+    --color-accent-warning: #ff9800;
+    --color-accent-danger: #ff6b6b;
+    
+    --color-text-primary: #e8eaed;
+    --color-text-secondary: #9aa0a6;
+    --color-text-muted: #5f6368;
+    
+    --color-border-primary: #3c4043;
+    --color-border-secondary: #5f6368;
+    --color-border-active: #4a9eff;
+
+    /* For box-shadow focus, assuming --color-accent-primary-rgb for rgba or using a fixed one */
+    --color-accent-primary-shadow: rgba(74, 158, 255, 0.25);
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+    
+    /* Typography */
+    --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-mono: 'Fira Code', 'Consolas', 'Monaco', monospace;
+    
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-xxl: 1.5rem;
+    --font-size-xxxl: 2rem;
+    
+    /* Borders & Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-full: 9999px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(74, 158, 255, 0.4);
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 300ms ease;
+    --transition-slow: 500ms ease;
+}
+
+/* =====================================================
+   GLOBAL STYLES (Original)
+   ===================================================== */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-md);
+}
+
+h1 { font-size: var(--font-size-xxxl); }
+h2 { font-size: var(--font-size-xxl); }
+h3 { font-size: var(--font-size-xl); }
+h4 { font-size: var(--font-size-lg); }
+
+p {
+    margin-bottom: var(--spacing-md);
+}
+
+strong {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Links */
+a {
+    color: var(--color-accent-primary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-accent-secondary);
+}
+
+/* Lists */
+ul, ol {
+    margin-left: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+li {
+    margin-bottom: var(--spacing-xs);
+}
+
+/* =====================================================
+   LAYOUT STRUCTURE (Original)
+   ===================================================== */
+/* ... (existing styles) ... */
+
+/* =====================================================
+   LAYOUT STRUCTURE (MODIFIED for 3 columns)
+   ===================================================== */
+   .app-container { /* Parent of app-header, tab-navigation, app-main */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-main { /* Parent of character-manager-panel, tab-container, character-summary */
+    flex: 1; /* Takes remaining vertical space */
+    display: flex;
+    overflow: hidden; /* Important for independent scrolling of columns */
+}
+
+.character-manager-panel {
+    width: 260px; /* Adjust as needed */
+    background-color: var(--color-bg-secondary);
+    border-right: 1px solid var(--color-border-primary);
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.character-manager-panel h3 {
+    color: var(--color-accent-primary);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border-secondary);
+    padding-bottom: var(--spacing-sm);
+}
+
+#character-list-controls {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.character-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* Allows list to take remaining space for scrolling */
+    overflow-y: auto; /* Enable scrolling for the list itself */
+}
+
+.character-list-item {
+    padding: var(--spacing-sm) var(--spacing-xs); /* Less horizontal padding */
+    border-bottom: 1px solid var(--color-border-primary);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.character-list-item:hover {
+    background-color: var(--color-bg-hover);
+}
+
+.character-list-item.active {
+    background-color: var(--color-accent-primary);
+    color: white;
+}
+.character-list-item.active .char-name {
+    color: white;
+    font-weight: 600;
+}
+.character-list-item.active .btn-icon {
+    color: white; /* Ensure icon buttons are visible on active background */
+}
+
+
+.character-list-item .char-name {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-grow: 1;
+}
+.character-list-item.active .char-name {
+    color: white;
+}
+
+
+.character-list-item .char-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-shrink: 0; /* Prevent action buttons from shrinking */
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    font-size: var(--font-size-base); /* Adjust icon size */
+    line-height: 1;
+}
+.btn-icon:hover {
+    color: var(--color-accent-primary);
+}
+.btn-icon.btn-danger:hover {
+    color: var(--color-accent-danger);
+}
+.btn-icon i { /* If you use <i> for icons */
+    display: inline-block;
+}
+
+
+.tab-container { /* Main content area (center column) */
+    flex: 1; /* Takes up available space */
+    overflow-y: auto;
+    padding: var(--spacing-xl);
+    background-color: var(--color-bg-primary); /* Ensure it has a background */
+}
+
+.character-summary { /* Right sidebar */
+    width: 280px; /* Default width */
+    background-color: var(--color-bg-secondary);
+    border-left: 1px solid var(--color-border-primary);
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+/* Responsive adjustments for the 3-column layout */
+@media (max-width: 1024px) { /* Example breakpoint */
+    .character-manager-panel {
+        width: 220px;
+    }
+    .character-summary {
+        width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-main {
+        flex-direction: column; /* Stack columns on smaller screens */
+    }
+    .character-manager-panel,
+    .character-summary {
+        width: 100%; /* Full width when stacked */
+        border-right: none;
+        border-left: none;
+        border-bottom: 1px solid var(--color-border-primary);
+        max-height: 250px; /* Limit height when stacked, make scrollable */
+        overflow-y: auto;
+    }
+    .character-summary {
+        border-top: 1px solid var(--color-border-primary); /* Separator if summary is last */
+        border-bottom: none;
+    }
+    .tab-container {
+        padding: var(--spacing-md);
+        flex: 1; /* Ensure it still tries to take available space */
+    }
+}
+
+
+/* ... (rest of your existing CSS, especially .btn styles, form styles, etc.) ... */
+
+/* =====================================================
+   NAVIGATION & TABS (Original)
+   ===================================================== */
+/* .tab-navigation from index.html maps to .nav-tabs from original if it's the main app tab bar */
+.tab-navigation { /* Styles for the main tab bar <nav> */
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--color-border-primary);
+    padding: var(--spacing-md) var(--spacing-xl); /* Added padding for better look */
+    background-color: var(--color-bg-secondary); /* Consistent with header */
+}
+
+.tab-btn { /* Styles for individual tab buttons in main navigation */
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    cursor: pointer;
+    position: relative;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+    border-bottom: 2px solid transparent; /* For active state indicator */
+}
+
+.tab-btn:hover {
+    color: var(--color-text-primary);
+}
+
+.tab-btn.active {
+    color: var(--color-accent-primary);
+    border-bottom-color: var(--color-accent-primary);
+}
+
+/* .section-tabs for internal tab-like navigation within a tab's content */
+.section-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.section-tab {
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.section-tab:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-secondary);
+}
+
+.section-tab.active {
+    background-color: var(--color-accent-primary);
+    color: white; /* Ensure text is readable on accent background */
+    border-color: var(--color-accent-primary);
+}
+
+/* =====================================================
+   TAB CONTENT (Original & Enhanced)
+   ===================================================== */
+/* .tab-content refers to the div#tab-content in index.html */
+#tab-content { /* More specific selector */
+    animation: fadeIn var(--transition-base);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.tab-content-panel {
+    /* display: none; /* app.js handles this via style.display */
+    /* Add any common padding or styles for all tab panels here if needed */
+    /* For example, if they all should have some base padding: */
+    /* padding: var(--spacing-md); */ 
+    /* However, individual tabs might want to control their own padding. */
+    /* The fadeIn animation might be better applied here if panels are toggled with an 'active' class */
+}
+
+/* If you want to use the fadeIn on panel switch */
+.tab-content-panel[style*="display: block;"] { /* Selects when display is block */
+     animation: fadeIn var(--transition-base);
+}
+
+/* =====================================================
+   POOL HEADER & INFO (Original)
+   ===================================================== */
+.pool-header { /* This class is used in MainPoolTab, ArchetypeTab, SpecialAttacksTab */
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    border: 1px solid var(--color-border-primary);
+}
+
+.pool-header h2 {
+    color: var(--color-accent-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.pool-summary {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.pool-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-size: var(--font-size-lg);
+}
+
+.pool-label {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.pool-value { /* Used by PointPoolDisplay and PoolHeader */
+    color: var(--color-accent-primary);
+    font-weight: 600;
+    font-size: var(--font-size-xl);
+    font-family: var(--font-mono);
+}
+
+.pool-breakdown {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-accent-success); /* Or a more neutral color like --color-text-secondary */
+    background-color: rgba(76, 175, 80, 0.1); /* Example, adjust if needed */
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(76, 175, 80, 0.3); /* Example, adjust if needed */
+}
+
+/* =====================================================
+   SECTION CONTENT (Original)
+   ===================================================== */
+.section-content { /* Used by MainPoolTab for the wrapper */
+    background-color: var(--color-bg-secondary); /* Or --color-bg-primary if sections should blend more */
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--color-border-primary);
+}
+
+.section-header { /* Used by MainPoolTab and others */
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-header h3 {
+    color: var(--color-accent-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.section-header p {
+    color: var(--color-text-secondary);
+    margin-bottom: 0; /* Often p in header doesn't need large bottom margin */
+}
+
+/* =====================================================
+   PURCHASE GRID & CARDS (Original)
+   ===================================================== */
+.purchase-grid { /* Used by MainPoolTab, ArchetypeTab details */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl); /* Or remove if parent .section-content provides padding */
+}
+
+.purchase-card { /* Base for UniversalCard */
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+    display: flex; /* For aligning button to bottom if needed */
+    flex-direction: column; /* For aligning button to bottom */
+}
+
+.purchase-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--color-accent-primary), transparent);
+    transform: translateX(-100%);
+    transition: transform var(--transition-slow);
+}
+
+.purchase-card:hover:not(.disabled) {
+    border-color: var(--color-border-active);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+.purchase-card:hover:not(.disabled)::before {
+    transform: translateX(0);
+}
+
+.purchase-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.purchase-card.purchased {
+    background-color: rgba(var(--color-accent-success-rgb, 76, 175, 80), 0.05); /* Assuming --rgb variable for opacity */
+    border-color: var(--color-accent-success);
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    margin-bottom: var(--spacing-md);
+}
+
+.card-header h4 {
+    color: var(--color-text-primary);
+    margin-bottom: 0;
+    flex-grow: 1; /* Allow h4 to take space */
+    margin-right: var(--spacing-sm); /* Space before cost */
+}
+
+.cost { /* Cost display on cards */
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-accent-primary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-mono);
+    white-space: nowrap; /* Prevent cost from wrapping */
+}
+
+/* Card Content */
+.card-description {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    margin-bottom: var(--spacing-md);
+    flex-grow: 1; /* Allow description to push button down */
+}
+
+.card-effects,
+.card-requirements {
+    background-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-sm); /* Standardize font size inside these blocks */
+}
+
+.card-effects strong,
+.card-requirements strong {
+    display: block;
+    color: var(--color-text-primary);
+    /* font-size already inherited or use var(--font-size-sm) */
+    margin-bottom: var(--spacing-sm);
+}
+
+.card-effects ul,
+.card-requirements ul {
+    list-style: none;
+    margin: 0;
+    padding: 0; /* Remove default ul padding */
+}
+
+.card-effects li,
+.card-requirements li {
+    color: var(--color-text-secondary);
+    /* font-size already inherited */
+    padding-left: var(--spacing-lg);
+    position: relative;
+    margin-bottom: var(--spacing-xs);
+}
+
+.card-effects li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent-primary);
+}
+
+.card-requirements li::before {
+    content: '▸'; /* Or '⚠' if it's always unmet */
+    position: absolute;
+    left: 0;
+    color: var(--color-accent-warning);
+}
+
+/* Card Status Messages */
+.requirement-warning { /* For unmet requirements text */
+    color: var(--color-accent-danger);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.requirement-warning::before {
+    content: '⚠';
+    font-size: var(--font-size-lg); /* Make icon larger */
+}
+
+.purchased-indicator {
+    color: var(--color-accent-success);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.purchased-indicator::before {
+    content: '✓';
+    font-size: var(--font-size-lg); /* Make icon larger */
+}
+
+/* =====================================================
+   BUTTONS (Original & Enhanced)
+   ===================================================== */
+.btn {
+    display: inline-block;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 1px solid transparent; /* Base border for consistency */
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    text-align: center;
+    text-decoration: none;
+    line-height: 1.5;
+    user-select: none; /* Prevent text selection on click */
+}
+
+.btn-primary {
+    background-color: var(--color-accent-primary);
+    color: white; /* Ensure contrast */
+    border-color: var(--color-accent-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--color-accent-secondary);
+    border-color: var(--color-accent-secondary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm); /* Softer shadow for buttons */
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+    background-color: var(--color-accent-primary); /* Darken slightly on active */
+}
+
+.btn:disabled, /* General disabled state for all buttons */
+.btn-primary:disabled {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-muted);
+    border-color: var(--color-border-primary); /* Muted border */
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none; /* No transform on disabled */
+    box-shadow: none; /* No shadow on disabled */
+}
+
+/* Button on purchase cards */
+.purchase-btn {
+    width: 100%;
+    margin-top: auto; /* Pushes button to the bottom of flex container (.purchase-card) */
+}
+
+/* Secondary Button Style (example if needed) */
+.btn-secondary {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-primary);
+}
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-bg-hover);
+    border-color: var(--color-border-secondary);
+}
+
+/* =====================================================
+   SUMMARY SECTION (Original)
+   ===================================================== */
+/* .character-summary from index.html is the main container */
+.character-summary > h3 { /* Targeting the h3 directly inside the summary aside */
+    color: var(--color-accent-primary);
+    margin-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border-primary);
+    padding-bottom: var(--spacing-md);
+}
+#summary-content .summary-section { /* Styling for sections within summary-content */
+    background-color: transparent; /* Override .section-content if it's too dark for sidebar */
+    border: none; /* Remove border if inside sidebar */
+    padding: 0; /* Remove padding if inside sidebar */
+    margin-top: var(--spacing-lg); /* Space between summary sections */
+}
+#summary-content .summary-section:first-child {
+    margin-top: 0;
+}
+#summary-content .summary-section h4 {
+    color: var(--color-text-primary); /* Less emphasis than accent */
+    font-size: var(--font-size-lg); /* Slightly smaller */
+    margin-bottom: var(--spacing-sm);
+}
+#summary-content .summary-section p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+#summary-content .summary-section p strong {
+    color: var(--color-text-primary);
+}
+#summary-content .progress-indicator {
+    margin-right: var(--spacing-sm);
+}
+#summary-content .progress-indicator.completed {
+    color: var(--color-accent-success);
+}
+#summary-content .progress-indicator.pending {
+    color: var(--color-accent-warning);
+}
+
+
+/* Legacy #pool-summary - might not be used if PointPoolDisplay is used in summary */
+#pool-summary {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-family: var(--font-mono);
+}
+
+/* =====================================================
+   UTILITY CLASSES (Original)
+   ===================================================== */
+.text-muted {
+    color: var(--color-text-muted) !important; /* Ensure it overrides for specific cases */
+}
+
+.text-center {
+    text-align: center;
+}
+
+.no-items { /* Message for empty lists/grids */
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: var(--spacing-xxl) var(--spacing-md); /* More vertical padding */
+    font-size: var(--font-size-lg);
+    border: 1px dashed var(--color-border-secondary); /* Visual cue for empty area */
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-card); /* Slight background */
+}
+
+/* =====================================================
+   LOADING STATES (Original)
+   ===================================================== */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-border-secondary); /* Use secondary for track */
+    border-top-color: var(--color-accent-primary); /* Accent for spinner part */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite; /* Slightly faster spin */
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =====================================================
+   SCROLLBAR STYLING (Original)
+   ===================================================== */
+::-webkit-scrollbar {
+    width: 10px; /* Slightly thinner */
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-primary); /* Match primary background */
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-full); /* Fully rounded thumb */
+    /* border: 2px solid var(--color-bg-secondary); /* Removed border for cleaner look */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-secondary); /* Darker on hover */
+}
+
+/* ==========================================================================
+   CONSOLIDATED COMPONENT-SPECIFIC STYLES
+   (Styles extracted from JS components are placed below)
+   ========================================================================== */
+/*
+   Component: modernApp/components/CollapsibleSection.js
+   -----------------------------------------------------
+*/
+.collapsible-section {
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    background-color: var(--color-bg-secondary);
+    overflow: hidden; /* To contain content when collapsing */
+}
+.collapsible-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background-color var(--transition-fast);
+}
+.collapsible-header:hover {
+    background-color: var(--color-bg-hover);
+}
+.collapsible-title {
+    margin: 0; /* Remove default h3 margin */
+    font-size: var(--font-size-lg);
+    color: var(--color-accent-primary);
+}
+.collapsible-toggle-icon {
+    font-size: 1.5rem; /* Make icon larger */
+    font-weight: bold;
+    color: var(--color-text-secondary);
+    transition: transform var(--transition-fast); /* Smooth rotation */
+}
+.collapsible-section.open .collapsible-toggle-icon {
+    transform: rotate(45deg); /* Example for open state, adjust as needed for +/- */
+}
+.collapsible-content {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-primary);
+    background-color: var(--color-bg-card); /* Or var(--color-bg-primary) */
+    /* max-height: 0; /* For CSS transition - more complex setup needed with JS */
+    /* overflow: hidden; /* For CSS transition */
+    /* transition: max-height var(--transition-base) ease-out; /* For CSS transition */
+}
+/* .collapsible-section.open .collapsible-content { */
+    /* max-height: 1000px; /* Adjust to a large enough value for CSS transition */
+/* } */
+
+
+/*
+   Component: modernApp/components/Modal.js
+   -----------------------------------------------------
+*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050; /* High z-index */
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    padding: var(--spacing-md); /* Padding for smaller screens */
+}
+.modal-overlay.open {
+    opacity: 1;
+}
+.modal-content {
+    background-color: var(--color-bg-secondary);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg); /* Larger radius for modals */
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 600px; /* Slightly larger max-width */
+    max-height: 90vh;
+    overflow-y: auto; /* Scroll for content taller than max-height */
+    transform: scale(0.95) translateY(-20px); /* Initial state for animation */
+    transition: transform var(--transition-base), opacity var(--transition-base);
+    opacity: 0; /* Start hidden for animation */
+}
+.modal-overlay.open .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-primary);
+    padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg); /* More space after header */
+}
+.modal-title {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    color: var(--color-text-primary);
+}
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xxl);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0; /* No padding for a cleaner icon button */
+    width: var(--font-size-xxl); /* Square button */
+    height: var(--font-size-xxl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full); /* Circular hover effect */
+}
+.modal-close-btn:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-hover);
+}
+.modal-body {
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+}
+.modal-body p {
+    margin-bottom: var(--spacing-md); /* Consistent paragraph spacing */
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl); /* More space above buttons */
+}
+body.modal-open {
+    overflow: hidden; 
+}
+
+/*
+   Component: modernApp/components/PointPoolDisplay.js
+   -----------------------------------------------------
+*/
+.point-pools-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+.pool-info-item { /* This is also used in summary, ensure consistency or make more specific */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    font-size: var(--font-size-base); /* Base font size for these items */
+}
+.pool-info-item .pool-label {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+.pool-info-item .pool-value { /* This is also styled in original .pool-value, ensure they align */
+    color: var(--color-text-primary); /* Changed from accent to primary for less emphasis */
+    font-weight: 600;
+    font-family: var(--font-mono, monospace);
+}
+.pool-info-item .pool-value.over-budget {
+    color: var(--color-accent-danger);
+    font-weight: bold; /* Emphasize over-budget */
+}
+
+/*
+   Component: modernApp/components/UniversalForm.js
+   -----------------------------------------------------
+*/
+.universal-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md); /* Consistent gap between form groups */
+}
+.form-group {
+    margin-bottom: var(--spacing-lg); /* Increased margin for better separation */
+}
+.form-label {
+    display: block;
+    margin-bottom: var(--spacing-xs); /* Smaller margin between label and input */
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    font-size: var(--font-size-sm); /* Slightly smaller labels */
+}
+.form-input, 
+.form-select, 
+.form-textarea {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-bg-tertiary); /* Darker background for inputs */
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    box-sizing: border-box;
+}
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+}
+.form-input:focus, 
+.form-select:focus, 
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 2px var(--color-accent-primary-shadow);
+}
+.form-textarea {
+    min-height: 120px; /* Slightly taller textarea */
+    resize: vertical;
+}
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-md); /* Consistent margin */
+    padding: var(--spacing-sm) 0; /* Padding for better touch targets */
+}
+.form-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    font-weight: normal;
+    color: var(--color-text-primary);
+    flex-grow: 1; /* Allow label text to take space */
+}
+.form-checkbox {
+    width: auto; /* Default size */
+    height: 1.2em; /* Slightly larger for easier clicking */
+    width: 1.2em;
+    margin-right: var(--spacing-sm);
+    accent-color: var(--color-accent-primary);
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+}
+.form-error-message {
+    color: var(--color-accent-danger);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+    display: block;
+    min-height: 1.2em; /* Reserve space to prevent layout jumps */
+}
+.form-actions {
+    margin-top: var(--spacing-lg); /* Consistent spacing for action buttons */
+    display: flex; /* Allow multiple buttons */
+    justify-content: flex-start; /* Or flex-end, or space-between */
+    gap: var(--spacing-md);
+}
+
+/*
+   Component: modernApp/components/UniversalList.js
+   -----------------------------------------------------
+*/
+.sr-only {
+    position: absolute !important; /* Ensure it's truly off-screen */
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+.list-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl); /* More space before the list */
+    align-items: center;
+}
+.list-search {
+    flex-grow: 1;
+    min-width: 250px; /* Good minimum for search */
+}
+.list-search .form-input {
+    margin-bottom: 0; 
+}
+.list-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md); /* More gap for filter dropdowns */
+}
+.list-filters .form-select {
+    margin-bottom: 0;
+    min-width: 150px; /* Ensure filter dropdowns are not too small */
+}
+.entity-grid { /* For list items, can be same as purchase-grid or styled uniquely */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+/*
+   Component: modernApp/components/SearchableSelect.js
+   -----------------------------------------------------
+*/
+.searchable-select {
+    position: relative;
+    user-select: none;
+}
+.searchable-select .select-display {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color var(--transition-fast);
+    min-height: calc(var(--font-size-base) * 1.5 + 2 * var(--spacing-sm) + 2px); /* Match input height */
+}
+.searchable-select .select-display:hover {
+    border-color: var(--color-border-secondary);
+}
+.searchable-select.open .select-display {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 2px var(--color-accent-primary-shadow);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.searchable-select .selected-value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1; /* Allow text to take up space */
+}
+.searchable-select .arrow {
+    transition: transform var(--transition-fast);
+    margin-left: var(--spacing-sm);
+    flex-shrink: 0;
+}
+.searchable-select.open .arrow {
+    transform: rotate(180deg);
+}
+.searchable-select .options-container {
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    right: 0;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-accent-primary); /* Keep border consistent when open */
+    border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    z-index: 1050; /* Above other elements */
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: var(--shadow-md); /* Add shadow for dropdown */
+}
+.searchable-select .search-input {
+    width: calc(100% - (2 * var(--spacing-sm))); 
+    margin: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    box-sizing: border-box;
+}
+.searchable-select .search-input:focus {
+    border-color: var(--color-accent-secondary);
+    outline: none;
+}
+.searchable-select .options-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.searchable-select .options-list li {
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    margin-bottom: 0;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+.searchable-select .options-list li:hover,
+.searchable-select .options-list li.highlighted {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+.searchable-select .options-list li.selected {
+    background-color: var(--color-accent-primary);
+    color: white; /* Ensure contrast on accent */
+    font-weight: 500;
+}
+.searchable-select .options-list li.no-results {
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--color-text-muted);
+    cursor: default;
+    text-align: center; /* Center "no results" message */
+}
+
+/* =====================================================
+   NOTIFICATION SYSTEM (If not already styled globally)
+   ===================================================== */
+#notification-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 2000; /* Above modals */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: auto; /* Allow content to define width */
+    max-width: 350px; /* Max width for notifications */
+}
+
+.notification {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity var(--transition-base), transform var(--transition-base);
+    border-left: 4px solid var(--color-border-primary); /* Default border */
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.notification.hide { /* For animating out if needed, though JS usually just removes */
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.notification-info {
+    border-left-color: var(--color-accent-primary);
+}
+.notification-success {
+    border-left-color: var(--color-accent-success);
+}
+.notification-warning {
+    border-left-color: var(--color-accent-warning);
+}
+.notification-error {
+    border-left-color: var(--color-accent-danger);
+}
+
+.notification-message {
+    flex-grow: 1;
+    font-size: var(--font-size-sm);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    line-height: 1;
+    border-radius: var(--radius-full);
+}
+.notification-close:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-hover);
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN (Original - ensure this is at the end)
+   ===================================================== */
+@media (max-width: 1024px) {
+    .character-summary { /* Was .app-sidebar */
+        width: 240px;
+    }
+    
+    .purchase-grid, .entity-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .character-summary { /* Was .app-sidebar */
+        display: none; /* Or implement off-canvas toggle */
+    }
+    
+    .tab-container { /* Was .app-content */
+        padding: var(--spacing-md);
+    }
+    
+    .pool-header, .section-content {
+        padding: var(--spacing-lg);
+    }
+    
+    .purchase-grid, .entity-grid, .attacks-grid {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+    }
+    
+    .tab-navigation { /* Was .nav-tabs */
+        overflow-x: auto; /* Allow horizontal scrolling for many tabs */
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        padding-left: var(--spacing-md); /* Ensure padding on scrollable tabs */
+        padding-right: var(--spacing-md);
+    }
+
+    .details-content { /* From SpecialAttacksTab */
+        grid-template-columns: 1fr;
+    }
+    
+    .attack-modal, .comparison-modal, .modal-content { /* Generalizing modal width */
+        margin: var(--spacing-md);
+        max-width: calc(100% - (2 * var(--spacing-md))); /* Full width with margins */
+    }
+    
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch; /* Make filters full width */
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .attacks-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 14px; /* Adjust base font size for very small screens */
+    }
+    
+    .pool-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm); /* Reduced gap */
+    }
+    
+    .section-tabs {
+        gap: var(--spacing-xs);
+    }
+    
+    .section-tab {
+        flex: 1 1 auto; /* Allow tabs to take equal width if possible */
+        text-align: center;
+        padding: var(--spacing-sm); /* Adjust padding */
+    }
+
+    .app-header {
+        padding: var(--spacing-md);
+    }
+    .app-header h1 {
+        font-size: var(--font-size-xl); /* Smaller main title */
+    }
+    .tab-navigation {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    .tab-btn {
+        padding: var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+    #notification-container {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+        gap: var(--spacing-xs);
+    }
+    .notification {
+        padding: var(--spacing-sm);
+    }
+}
+
+/* =====================================================
+   PRINT STYLES (Original)
+   ===================================================== */
+@media print {
+    body {
+        background: white !important; /* Ensure override */
+        color: black !important;
+        font-size: 10pt; /* Adjust for print */
+    }
+    
+    .app-header,
+    .character-summary, /* Was .app-sidebar */
+    .tab-navigation,    /* Was .nav-tabs */
+    .section-tabs,
+    .btn,
+    .modal-overlay, /* Hide modals in print */
+    #notification-container /* Hide notifications */
+     {
+        display: none !important; /* Ensure override */
+    }
+    
+    .purchase-card, .attack-card, .collapsible-section { /* General card styles for print */
+        break-inside: avoid;
+        border: 1px solid #ccc !important; /* Lighter border for print */
+        margin-bottom: 10px; /* Spacing for print */
+        box-shadow: none !important;
+        padding: 8px !important; /* Reduced padding */
+    }
+    .purchase-card::before {
+        display: none; /* Hide decorative elements */
+    }
+
+    .tab-container, #tab-content, .section-content {
+        padding: 0 !important;
+        border: none !important;
+        background-color: white !important;
+        box-shadow: none !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+    }
+    a {
+        color: #0000EE !important; /* Standard link color for print */
+        text-decoration: underline !important;
+    }
+    :root { /* Override variables for print if necessary, though direct !important is stronger */
+        --color-text-primary: black;
+        --color-text-secondary: #333;
+        /* etc. */
+    }
+}
+
+/* =====================================================
+   ATTRIBUTE CONTROLS (Original)
+   ===================================================== */
+/* Attribute Controls */
+.attribute-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    margin-bottom: 0.5rem;
+}
+
+.attribute-label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.attribute-value-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.attribute-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    background: white;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.attribute-btn:hover:not(.disabled) {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.attribute-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.attribute-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    min-width: 2rem;
+    text-align: center;
+}
+
+/* Point Pool Display */
+.point-pool-display {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pool-section {
+    margin-bottom: 1rem;
+}
+
+.pool-section:last-child {
+    margin-bottom: 0;
+}
+
+.pool-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+}
+
+.pool-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.pool-values {
+    font-size: 1.125rem;
+    font-weight: bold;
+}
+
+.pool-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.pool-bar-fill {
+    height: 100%;
+    background: var(--success-color);
+    transition: width 0.3s ease;
+}
+
+.pool-bar-overflow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background: var(--error-color);
+}
+
+.pool-remaining {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.remaining-positive {
+    color: var(--success-color);
+}
+
+.remaining-negative {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+/* Hierarchical Cards */
+.hierarchical-entity-card {
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.child-entities {
+    background: var(--bg-secondary);
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.child-entities-header {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.child-entity-card {
+    margin-left: 2rem;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+}
+
+/* Attributes Tab Layout */
+.attributes-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.attributes-grid {
+    margin-top: 1rem;
+}
+
+.derived-stats {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* ==========================================================================
+   END OF FILE
+   ========================================================================== */

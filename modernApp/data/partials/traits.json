@@ -1,0 +1,32 @@
+{
+    "trait_custom": {
+      "id": "trait_custom",
+      "schemaType": "entity",
+      "type": "trait",
+      "name": "Custom Trait",
+      "description": "Define a set of conditions under which you gain powerful bonuses. Costs 30 Main Pool Points. Allows selection of trait conditions totaling 3 'Trait Condition Points' (e.g., three Tier 1 conditions, or one Tier 1 and one Tier 2, or one Tier 3). Upon configuring the conditions, you also choose two different core stats (Accuracy, Damage, Conditions, Avoidance, Durability, All Resistances, or Movement) to receive a +Tier bonus when all selected trait conditions are met.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [],
+      "effects": [
+        {
+          "type": "conditional_multi_stat_bonus",
+          "num_stats_to_choose": 2,
+          "stat_options": ["accuracy", "damage", "conditions", "avoidance", "durability", "allResistances", "movement"],
+          "bonus_value": "tier",
+          "condition_logic": "all_selected_trait_conditions_met",
+          "display": "+Tier to 2 chosen stats when all selected trait conditions are met."
+        }
+      ],
+      "configuration_rules": {
+        "condition_pool_points": 3,
+        "condition_entity_type": "trait_condition",
+        "selection_prompt": "Select trait conditions that sum up to 3 points (Tier 1 = 1pt, Tier 2 = 2pts, Tier 3 = 3pts)."
+      },
+      "ui": {
+        "component": "trait_builder_card",
+        "category": "Traits",
+        "tags": ["customizable", "conditional_bonus"]
+      },
+      "sourceFile": "traits.json"
+    }
+  }

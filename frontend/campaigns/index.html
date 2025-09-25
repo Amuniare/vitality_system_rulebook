@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitality System - Campaign Lore</title>
+    <link rel="stylesheet" href="../rules/viewer/style.css">
+    <style>
+        /* Campaign-specific styling */
+        .campaign-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .campaign-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .campaign-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+
+        .nav-links {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            margin: 0.5rem;
+            border: 2px solid #3498db;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background: #2c3e50;
+        }
+
+        .nav-link:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .campaign-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .campaign-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            color: #333;
+            text-decoration: none;
+            display: block;
+        }
+
+        .campaign-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #3498db;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .campaign-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .campaign-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .campaign-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .breadcrumb {
+            background: #2c3e50;
+            color: #bdc3c7;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+        }
+
+        .breadcrumb a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .campaign-note {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            color: #6c757d;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .campaign-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-link {
+                display: block;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="campaign-container">
+        <div class="breadcrumb">
+            <a href="../index.html">Vitality System Hub</a> > <strong>Campaign Lore</strong>
+        </div>
+
+        <header class="campaign-header">
+            <h1>Campaign Lore</h1>
+            <p>World building and campaign settings for the Vitality System</p>
+            
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Hub Home</a>
+                <a href="../rules/index.html" class="nav-link">Rulebook</a>
+                <a href="../character-builder/character-builder.html" class="nav-link">Character Builder</a>
+            </div>
+        </header>
+
+        <main>
+            <div class="campaign-grid">
+                <a href="mutants/index.html" class="campaign-card">
+                    <h3>Mutants Campaign</h3>
+                    <span class="campaign-status status-active">Active</span>
+                </a>
+                <a href="rogue_trader/index.html" class="campaign-card">
+                    <h3>Rogue Trader Campaign</h3>
+                    <span class="campaign-status status-active">Active</span>
+                </a>
+            </div>
+
+            <div class="campaign-note">
+                <h3>Additional Campaigns</h3>
+                <p>Additional campaign materials and settings will be added as they are developed.</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

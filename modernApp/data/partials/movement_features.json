@@ -1,0 +1,74 @@
+{
+    "movement_feature_utility_wallWalking": {
+      "id": "movement_feature_utility_wallWalking",
+      "schemaType": "entity",
+      "type": "movement_feature",
+      "name": "Wall Walking",
+      "description": "Move on walls and ceilings at normal speed, defying gravity on solid surfaces. You can change orientation as part of your movement without spending additional actions.",
+      "cost": { "value": 5, "pool": "utility", "display": "5p" },
+      "requirements": [],
+      "effects": [],
+      "ui": { "component": "card", "category": "Movement", "tags": ["utility", "movement", "supernatural"] },
+      "sourceFile": "movement_features.json"
+    },
+    "movement_feature_utility_burrowing": {
+      "id": "movement_feature_utility_burrowing",
+      "schemaType": "entity",
+      "type": "movement_feature",
+      "name": "Burrowing",
+      "description": "Move through earth, sand, or loose rock at half speed. You create temporary tunnels that collapse after you pass unless you spend a Primary Action to make them permanent.",
+      "cost": { "value": 5, "pool": "utility", "display": "5p" },
+      "requirements": [],
+      "effects": [],
+      "ui": { "component": "card", "category": "Movement", "tags": ["utility", "movement", "environmental"] },
+      "sourceFile": "movement_features.json"
+    },
+    "movement_feature_utility_flight": {
+      "id": "movement_feature_utility_flight",
+      "schemaType": "entity",
+      "type": "movement_feature",
+      "name": "Flight",
+      "description": "Move in any direction at full speed with perfect maneuverability. You can hover in place and are unaffected by ground-based obstacles or terrain penalties.",
+      "cost": { "value": 10, "pool": "utility", "display": "10p" },
+      "requirements": [],
+      "effects": [],
+      "ui": { "component": "card", "category": "Movement", "tags": ["utility", "movement", "flight"] },
+      "sourceFile": "movement_features.json"
+    },
+    "movement_feature_utility_phasing": {
+      "id": "movement_feature_utility_phasing",
+      "schemaType": "entity",
+      "type": "movement_feature",
+      "name": "Phasing",
+      "description": "Selectively phase parts of your body or your entire body through solid barriers at normal speed. You must end your movement in an unoccupied space.",
+      "cost": { "value": 10, "pool": "utility", "display": "10p" },
+      "requirements": [],
+      "effects": [],
+      "ui": { "component": "card", "category": "Movement", "tags": ["utility", "movement", "supernatural"] },
+      "sourceFile": "movement_features.json"
+    },
+    "movement_feature_utility_shortRangeTeleportation": {
+      "id": "movement_feature_utility_shortRangeTeleportation",
+      "schemaType": "entity",
+      "type": "movement_feature",
+      "name": "Short-Range Teleportation",
+      "description": "Instantly teleport to any visible location within your movement range. This movement ignores obstacles and opportunity attacks. You cannot teleport to occupied spaces or locations you cannot clearly see.",
+      "cost": { "value": 10, "pool": "utility", "display": "10p" },
+      "requirements": [],
+      "effects": [],
+      "ui": { "component": "card", "category": "Movement", "tags": ["utility", "movement", "teleportation"] },
+      "sourceFile": "movement_features.json"
+    },
+    "movement_feature_utility_portalCreation": {
+      "id": "movement_feature_utility_portalCreation",
+      "schemaType": "entity",
+      "type": "movement_feature",
+      "name": "Portal Creation",
+      "description": "Create two linked portals as part of your movement action. Each portal occupies one space and can be placed anywhere within your movement range. Your movement is consumed equal to the total distance between both portal locations. Any creature or object can move through either portal to instantly emerge from the other. Portals persist until the start of your next turn or until you create new ones. Only one pair of portals can exist at a time.",
+      "cost": { "value": 10, "pool": "utility", "display": "10p" },
+      "requirements": [],
+      "effects": [],
+      "ui": { "component": "card", "category": "Movement", "tags": ["utility", "movement", "teleportation", "area_control"] },
+      "sourceFile": "movement_features.json"
+    }
+  }

@@ -1,0 +1,131 @@
+{
+    "flaw_balanced": {
+      "id": "flaw_balanced",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Balanced",
+      "description": "Must have at least half your Tier rounded down in each Combat Attribute, and can only add your Tier bonus once to each stat across Flaws, Traits, and Primary Actions.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [{ "type": "rule", "value": "balanced_attributes_rule", "display": "Must maintain minimum combat attribute requirements." }],
+      "effects": [{ "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["build_restriction", "attributes"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_slow": {
+      "id": "flaw_slow",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Slow",
+      "description": "You cannot select a Movement Archetype.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [{ "type": "rule", "value": "no_movement_archetype", "display": "Cannot select any movement archetype." }],
+      "effects": [{ "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["movement", "archetype_restriction"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_combatFocused": {
+      "id": "flaw_combatFocused",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Combat Focused",
+      "description": "You cannot purchase any Utility abilities.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [{ "type": "rule", "value": "no_utility_abilities", "display": "Cannot purchase utility abilities." }],
+      "effects": [{ "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["utility_restriction", "combat"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_sickly": {
+      "id": "flaw_sickly",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Sickly",
+      "description": "Your maximum Health Pool is reduced by 30.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [],
+      "effects": [
+        { "type": "stat_penalty", "target": "hp_max", "value": 30, "display": "-30 Max HP" },
+        { "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }
+      ],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["health", "physical"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_unresponsive": {
+      "id": "flaw_unresponsive",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Unresponsive",
+      "description": "You cannot take Reactions, you do not add your Tier to Initiative, and you cannot benefit from Surprise rounds.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [
+        { "type": "rule_change", "value": "no_reactions", "display": "Cannot take Reactions" },
+        { "type": "stat_penalty", "target": "initiative", "value": "tier", "display": "-Tier from Initiative" },
+        { "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }
+      ],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["initiative", "action_economy"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_peaked": {
+      "id": "flaw_peaked",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Peaked",
+      "description": "You cannot use Efforts.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [{ "type": "rule", "value": "no_effort_system", "display": "No effort system access." }],
+      "effects": [{ "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["resource_restriction"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_weak": {
+      "id": "flaw_weak",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Weak",
+      "description": "You get 1 fewer Combat Attribute Point per Tier.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [],
+      "effects": [
+        { "type": "pool_mod", "target": "combatAttributes", "value": "-1 * tier", "display": "-1 Combat Attribute point per Tier" },
+        { "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }
+      ],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["attributes", "point_pool"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_powerLoss": {
+      "id": "flaw_powerLoss",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Power Loss",
+      "description": "You lose your powers under specific circumstances, determined in discussion with the GM.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [{ "type": "rule", "value": "conditional_power_loss", "display": "Conditional power loss (GM discretion)." }],
+      "effects": [{ "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["narrative", "conditional"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_singleTargetSpecialist": {
+      "id": "flaw_singleTargetSpecialist",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Single Target Specialist",
+      "description": "You can only choose Melee OR Ranged attacks, not both.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [{ "type": "rule", "value": "single_attack_type", "display": "Limited to one attack type." }],
+      "effects": [{ "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["combat", "attack_type_restriction"] },
+      "sourceFile": "flaws.json"
+    },
+    "flaw_equipmentDependent": {
+      "id": "flaw_equipmentDependent",
+      "schemaType": "entity",
+      "type": "flaw",
+      "name": "Equipment Dependent",
+      "description": "Choose a specific item; you lose access to one Archetype benefit without it. The item is noticeable and you can be disarmed of it.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "requirements": [{ "type": "rule", "value": "equipment_dependent_archetype", "display": "Archetype benefit tied to equipment." }],
+      "effects": [{ "type": "stat_choice", "value": "tier", "options": ["accuracy", "damage", "conditions", "avoidance", "durability", "speed", "allResistances"], "display": "+Tier bonus to one chosen stat" }],
+      "ui": { "component": "card", "category": "Flaws", "tags": ["equipment", "narrative"] },
+      "sourceFile": "flaws.json"
+    }
+}

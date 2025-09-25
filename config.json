@@ -1,0 +1,93 @@
+{
+  "single_attack_type": null,
+  "attack_types": [
+    "melee",
+    "ranged",
+    "area",
+    "direct_damage",
+    "direct_area_damage"
+  ],
+  "simulations_per_test": 10,
+  "max_turns": 100,
+  "target_hp": 100,
+  "tier": 3,
+  "tier_range": [
+    3,
+    3
+  ],
+  "max_points": 60,
+  "max_upgrades": 3,
+  "detailed_logging": true,
+  "individual_testing": true,
+  "top_builds_count": 100,
+  "test_cases": [
+    {
+      "name": "Focus=3,Power=0 vs Avoid=3,End=0 (T3)",
+      "attacker": {
+        "focus": 3,
+        "power": 0,
+        "mobility": 3,
+        "endurance": 0,
+        "tier": 3
+      },
+      "defender": {
+        "focus": 0,
+        "power": 0,
+        "mobility": 3,
+        "endurance": 0,
+        "tier": 3
+      }
+    },
+    {
+      "name": "Focus=3,Power=0 vs Avoid=0,End=3 (T3)",
+      "attacker": {
+        "focus": 3,
+        "power": 0,
+        "mobility": 3,
+        "endurance": 0,
+        "tier": 3
+      },
+      "defender": {
+        "focus": 0,
+        "power": 0,
+        "mobility": 0,
+        "endurance": 3,
+        "tier": 3
+      }
+    },
+    {
+      "name": "Focus=0,Power=3 vs Avoid=3,End=0 (T3)",
+      "attacker": {
+        "focus": 0,
+        "power": 3,
+        "mobility": 3,
+        "endurance": 0,
+        "tier": 3
+      },
+      "defender": {
+        "focus": 0,
+        "power": 0,
+        "mobility": 3,
+        "endurance": 0,
+        "tier": 3
+      }
+    },
+    {
+      "name": "Focus=0,Power=3 vs Avoid=0,End=3 (T3)",
+      "attacker": {
+        "focus": 0,
+        "power": 3,
+        "mobility": 3,
+        "endurance": 0,
+        "tier": 3
+      },
+      "defender": {
+        "focus": 0,
+        "power": 0,
+        "mobility": 0,
+        "endurance": 3,
+        "tier": 3
+      }
+    }
+  ]
+}

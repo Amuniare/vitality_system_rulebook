@@ -1,0 +1,49 @@
+@media print {
+    body {
+        background: white !important; /* Ensure override */
+        color: black !important;
+        font-size: 10pt; /* Adjust for print */
+    }
+    
+    .app-header,
+    .character-summary, /* Was .app-sidebar */
+    .tab-navigation,    /* Was .nav-tabs */
+    .section-tabs,
+    .btn,
+    .modal-overlay, /* Hide modals in print */
+    #notification-container /* Hide notifications */
+     {
+        display: none !important; /* Ensure override */
+    }
+    
+    .purchase-card, .attack-card, .collapsible-section { /* General card styles for print */
+        break-inside: avoid;
+        border: 1px solid #ccc !important; /* Lighter border for print */
+        margin-bottom: 10px; /* Spacing for print */
+        box-shadow: none !important;
+        padding: 8px !important; /* Reduced padding */
+    }
+    .purchase-card::before {
+        display: none; /* Hide decorative elements */
+    }
+
+    .tab-container, #tab-content, .section-content {
+        padding: 0 !important;
+        border: none !important;
+        background-color: white !important;
+        box-shadow: none !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+    }
+    a {
+        color: #0000EE !important; /* Standard link color for print */
+        text-decoration: underline !important;
+    }
+    :root { /* Override variables for print if necessary, though direct !important is stronger */
+        --color-text-primary: black;
+        --color-text-secondary: #333;
+        /* etc. */
+    }
+}

@@ -1,0 +1,30 @@
+/* .tab-content refers to the div#tab-content in index.html */
+#tab-content { /* More specific selector */
+    animation: fadeIn var(--transition-base);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.tab-content-panel {
+    /* display: none; /* app.js handles this via style.display */
+    /* Add any common padding or styles for all tab panels here if needed */
+    /* For example, if they all should have some base padding: */
+    /* padding: var(--spacing-md); */ 
+    /* However, individual tabs might want to control their own padding. */
+    /* The fadeIn animation might be better applied here if panels are toggled with an 'active' class */
+}
+
+/* If you want to use the fadeIn on panel switch */
+.tab-content-panel[style*="display: block;"] { /* Selects when display is block */
+     animation: fadeIn var(--transition-base);
+}

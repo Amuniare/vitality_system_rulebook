@@ -1,0 +1,46 @@
+[
+    {
+      "id": "player_character",
+      "name": "Player Character",
+      "description": "A unique, player-controlled character with a full range of abilities.",
+      "hp": 100
+    },
+    {
+      "id": "npc_ally",
+      "name": "NPC Ally",
+      "description": "A friendly non-player character that assists the party.",
+      "hp": 50
+    },
+    {
+      "id": "other",
+      "name": "Other",
+      "description": "Select a specific character type from the sub-categories.",
+      "hp": 10,
+      "subTypes": [
+        {
+          "id": "minion",
+          "name": "Minion",
+          "description": "A standard, non-unique character. Typically found in groups and defeated easily.",
+          "hp": 10
+        },
+        {
+          "id": "captain",
+          "name": "Captain",
+          "description": "A more durable character that often leads minions. A moderate threat.",
+          "hp": 25
+        },
+        {
+          "id": "vanguard",
+          "name": "Vanguard",
+          "description": "A powerful and resilient character, a significant threat on the battlefield.",
+          "hp": 50
+        },
+        {
+          "id": "boss",
+          "name": "Boss",
+          "description": "A major antagonist with a large health pool and unique, dangerous abilities.",
+          "hp": 100
+        }
+      ]
+    }
+  ]

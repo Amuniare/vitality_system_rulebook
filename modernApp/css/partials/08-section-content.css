@@ -1,0 +1,20 @@
+.section-content { /* Used by MainPoolTab for the wrapper */
+    background-color: var(--color-bg-secondary); /* Or --color-bg-primary if sections should blend more */
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--color-border-primary);
+}
+
+.section-header { /* Used by MainPoolTab and others */
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-header h3 {
+    color: var(--color-accent-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.section-header p {
+    color: var(--color-text-secondary);
+    margin-bottom: 0; /* Often p in header doesn't need large bottom margin */
+}

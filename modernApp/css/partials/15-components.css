@@ -1,0 +1,402 @@
+/*
+   Component: modernApp/components/CollapsibleSection.js
+   -----------------------------------------------------
+*/
+.collapsible-section {
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    background-color: var(--color-bg-secondary);
+    overflow: hidden; /* To contain content when collapsing */
+}
+.collapsible-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background-color var(--transition-fast);
+}
+.collapsible-header:hover {
+    background-color: var(--color-bg-hover);
+}
+.collapsible-title {
+    margin: 0; /* Remove default h3 margin */
+    font-size: var(--font-size-lg);
+    color: var(--color-accent-primary);
+}
+.collapsible-toggle-icon {
+    font-size: 1.5rem; /* Make icon larger */
+    font-weight: bold;
+    color: var(--color-text-secondary);
+    transition: transform var(--transition-fast); /* Smooth rotation */
+}
+.collapsible-section.open .collapsible-toggle-icon {
+    transform: rotate(45deg); /* Example for open state, adjust as needed for +/- */
+}
+.collapsible-content {
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-primary);
+    background-color: var(--color-bg-card); /* Or var(--color-bg-primary) */
+    /* max-height: 0; /* For CSS transition - more complex setup needed with JS */
+    /* overflow: hidden; /* For CSS transition */
+    /* transition: max-height var(--transition-base) ease-out; /* For CSS transition */
+}
+/* .collapsible-section.open .collapsible-content { */
+    /* max-height: 1000px; /* Adjust to a large enough value for CSS transition */
+/* } */
+
+
+/*
+   Component: modernApp/components/Modal.js
+   -----------------------------------------------------
+*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050; /* High z-index */
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    padding: var(--spacing-md); /* Padding for smaller screens */
+}
+.modal-overlay.open {
+    opacity: 1;
+}
+.modal-content {
+    background-color: var(--color-bg-secondary);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg); /* Larger radius for modals */
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 600px; /* Slightly larger max-width */
+    max-height: 90vh;
+    overflow-y: auto; /* Scroll for content taller than max-height */
+    transform: scale(0.95) translateY(-20px); /* Initial state for animation */
+    transition: transform var(--transition-base), opacity var(--transition-base);
+    opacity: 0; /* Start hidden for animation */
+}
+.modal-overlay.open .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-primary);
+    padding-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg); /* More space after header */
+}
+.modal-title {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    color: var(--color-text-primary);
+}
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xxl);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0; /* No padding for a cleaner icon button */
+    width: var(--font-size-xxl); /* Square button */
+    height: var(--font-size-xxl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full); /* Circular hover effect */
+}
+.modal-close-btn:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-hover);
+}
+.modal-body {
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+}
+.modal-body p {
+    margin-bottom: var(--spacing-md); /* Consistent paragraph spacing */
+}
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl); /* More space above buttons */
+}
+body.modal-open {
+    overflow: hidden; 
+}
+
+/*
+   Component: modernApp/components/PointPoolDisplay.js
+   -----------------------------------------------------
+*/
+.point-pools-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+.pool-info-item { /* This is also used in summary, ensure consistency or make more specific */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    font-size: var(--font-size-base); /* Base font size for these items */
+}
+.pool-info-item .pool-label {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+.pool-info-item .pool-value { /* This is also styled in original .pool-value, ensure they align */
+    color: var(--color-text-primary); /* Changed from accent to primary for less emphasis */
+    font-weight: 600;
+    font-family: var(--font-mono, monospace);
+}
+.pool-info-item .pool-value.over-budget {
+    color: var(--color-accent-danger);
+    font-weight: bold; /* Emphasize over-budget */
+}
+
+/*
+   Component: modernApp/components/UniversalForm.js
+   -----------------------------------------------------
+*/
+.universal-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md); /* Consistent gap between form groups */
+}
+.form-group {
+    margin-bottom: var(--spacing-lg); /* Increased margin for better separation */
+}
+.form-label {
+    display: block;
+    margin-bottom: var(--spacing-xs); /* Smaller margin between label and input */
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    font-size: var(--font-size-sm); /* Slightly smaller labels */
+}
+.form-input, 
+.form-select, 
+.form-textarea {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-bg-tertiary); /* Darker background for inputs */
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    box-sizing: border-box;
+}
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+}
+.form-input:focus, 
+.form-select:focus, 
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 2px var(--color-accent-primary-shadow);
+}
+.form-textarea {
+    min-height: 120px; /* Slightly taller textarea */
+    resize: vertical;
+}
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-md); /* Consistent margin */
+    padding: var(--spacing-sm) 0; /* Padding for better touch targets */
+}
+.form-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    font-weight: normal;
+    color: var(--color-text-primary);
+    flex-grow: 1; /* Allow label text to take space */
+}
+.form-checkbox {
+    width: auto; /* Default size */
+    height: 1.2em; /* Slightly larger for easier clicking */
+    width: 1.2em;
+    margin-right: var(--spacing-sm);
+    accent-color: var(--color-accent-primary);
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+}
+.form-error-message {
+    color: var(--color-accent-danger);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+    display: block;
+    min-height: 1.2em; /* Reserve space to prevent layout jumps */
+}
+.form-actions {
+    margin-top: var(--spacing-lg); /* Consistent spacing for action buttons */
+    display: flex; /* Allow multiple buttons */
+    justify-content: flex-start; /* Or flex-end, or space-between */
+    gap: var(--spacing-md);
+}
+
+/*
+   Component: modernApp/components/UniversalList.js
+   -----------------------------------------------------
+*/
+.sr-only {
+    position: absolute !important; /* Ensure it's truly off-screen */
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+.list-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl); /* More space before the list */
+    align-items: center;
+}
+.list-search {
+    flex-grow: 1;
+    min-width: 250px; /* Good minimum for search */
+}
+.list-search .form-input {
+    margin-bottom: 0; 
+}
+.list-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md); /* More gap for filter dropdowns */
+}
+.list-filters .form-select {
+    margin-bottom: 0;
+    min-width: 150px; /* Ensure filter dropdowns are not too small */
+}
+.entity-grid { /* For list items, can be same as purchase-grid or styled uniquely */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+/*
+   Component: modernApp/components/SearchableSelect.js
+   -----------------------------------------------------
+*/
+.searchable-select {
+    position: relative;
+    user-select: none;
+}
+.searchable-select .select-display {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color var(--transition-fast);
+    min-height: calc(var(--font-size-base) * 1.5 + 2 * var(--spacing-sm) + 2px); /* Match input height */
+}
+.searchable-select .select-display:hover {
+    border-color: var(--color-border-secondary);
+}
+.searchable-select.open .select-display {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 2px var(--color-accent-primary-shadow);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.searchable-select .selected-value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1; /* Allow text to take up space */
+}
+.searchable-select .arrow {
+    transition: transform var(--transition-fast);
+    margin-left: var(--spacing-sm);
+    flex-shrink: 0;
+}
+.searchable-select.open .arrow {
+    transform: rotate(180deg);
+}
+.searchable-select .options-container {
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    right: 0;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-accent-primary); /* Keep border consistent when open */
+    border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    z-index: 1050; /* Above other elements */
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: var(--shadow-md); /* Add shadow for dropdown */
+}
+.searchable-select .search-input {
+    width: calc(100% - (2 * var(--spacing-sm))); 
+    margin: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    box-sizing: border-box;
+}
+.searchable-select .search-input:focus {
+    border-color: var(--color-accent-secondary);
+    outline: none;
+}
+.searchable-select .options-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.searchable-select .options-list li {
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    margin-bottom: 0;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+.searchable-select .options-list li:hover,
+.searchable-select .options-list li.highlighted {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+.searchable-select .options-list li.selected {
+    background-color: var(--color-accent-primary);
+    color: white; /* Ensure contrast on accent */
+    font-weight: 500;
+}
+.searchable-select .options-list li.no-results {
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--color-text-muted);
+    cursor: default;
+    text-align: center; /* Center "no results" message */
+}
+

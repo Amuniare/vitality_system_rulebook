@@ -1,0 +1,44 @@
+{
+  "name": "vitality-system-modernapp",
+  "version": "3.0.0",
+  "description": "Modern Vitality System Character Builder with Firebase integration",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "firebase serve --only hosting",
+    "dev": "firebase serve --only hosting",
+    "build": "echo 'No build step required - static files'",
+    "deploy": "firebase deploy --only hosting",
+    "deploy:full": "firebase deploy",
+    "deploy:quick": "node scripts/deploy-quick.js",
+    "serve": "python3 -m http.server 8080",
+    "serve:firebase": "firebase serve",
+    "rules:deploy": "firebase deploy --only firestore:rules,firestore:indexes",
+    "test": "echo 'Tests run from parent directory'",
+    "setup": "npm install && echo 'Setup complete. Run npm start to begin development.'"
+  },
+  "keywords": [
+    "character-builder",
+    "rpg",
+    "vitality-system",
+    "firebase",
+    "webapp"
+  ],
+  "author": "Vitality System Team",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^10.7.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/vitality_system_rulebook.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/vitality_system_rulebook/issues"
+  },
+  "homepage": "https://vitality-system-builder.web.app"
+}

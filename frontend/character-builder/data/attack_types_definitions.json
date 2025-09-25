@@ -1,0 +1,78 @@
+{
+    "melee_ac": {
+        "id": "melee_ac",
+        "name": "Melee (AC)",
+        "rangeKey": "MELEE_RANGE", 
+        "description": "Adjacent targets only",
+        "benefit": "Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls",
+        "costKey": "melee", 
+        "restrictions": [],
+        "bonuses": { "tierToAccuracy": true }
+    },
+    "melee_dg_cn": {
+        "id": "melee_dg_cn",
+        "name": "Melee (DG / CN)",
+        "rangeKey": "MELEE_RANGE", 
+        "description": "Adjacent targets only",
+        "benefit": "Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls",
+        "costKey": "melee", 
+        "restrictions": [],
+        "bonuses": { "tierToDamageAndConditions": true }
+    },
+    "ranged": {
+        "id": "ranged",
+        "name": "Ranged Attack",
+        "rangeKey": "RANGED_RANGE",
+        "description": "15 spaces base range",
+        "benefit": "Standard ranged combat",
+        "penalty": "-Tier to Accuracy if adjacent to hostile character",
+        "costKey": "ranged",
+        "restrictions": ["adjacency_penalty"],
+        "bonuses": {}
+    },
+    "direct": {
+        "id": "direct",
+        "name": "Direct Attack",
+        "rangeKey": "DIRECT_RANGE",
+        "description": "30 spaces, auto-hit (no Accuracy roll needed)",
+        "benefit": "Cannot be dodged",
+        "penalty": "-Tier to all Damage and Condition rolls",
+        "costKey": "direct",
+        "restrictions": ["condition_only", "accuracy_penalty"],
+        "bonuses": { "autoHit": true }
+    },
+    "area": {
+        "id": "area",
+        "name": "Area Attack",
+        "range": "self",
+        "description": "Affects multiple targets in area",
+        "areaOptions": [
+            { "type": "radius", "sizeKey": "AOE_RADIUS", "description": "3sp Radius Burst" },
+            { "type": "cone", "sizeKey": "AOE_CONE", "description": "6sp Cone" },
+            { "type": "line", "sizeKey": "AOE_LINE", "description": "12sp Line" }
+        ],
+        "penalty": "-Tier to all Accuracy rolls",
+        "costKey": "area",
+        "restrictions": ["area_penalty"],
+        "bonuses": { "multiTarget": true }
+    },
+    "area_direct": {
+        "id": "area_direct",
+        "name": "Direct Area Attack",
+        "range": "self",
+        "description": "Affects multiple targets in an area and automatically hits them. This attack is typically limited to applying conditions only.",
+        "costKey": "direct_area",
+        "discounts": {
+            "aoeSpecialist": "area",
+            "directSpecialist": "direct"
+        },
+        "areaOptions": [
+            { "type": "radius", "sizeKey": "AOE_RADIUS", "description": "3sp Radius Burst" },
+            { "type": "cone", "sizeKey": "AOE_CONE", "description": "6sp Cone" },
+            { "type": "line", "sizeKey": "AOE_LINE", "description": "12sp Line" }
+        ],
+        "penalty": "-Tier to all Damage and Condition rolls",
+        "restrictions": ["area_penalty", "condition_only"],
+        "bonuses": { "multiTarget": true, "autoHit": true }
+    }
+}

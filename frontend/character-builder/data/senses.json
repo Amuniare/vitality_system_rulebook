@@ -1,0 +1,138 @@
+{
+    "tier1": {
+        "cost": 1,
+        "senses": [
+            {
+                "id": "darkvision",
+                "name": "Darkvision",
+                "description": "Make Awareness checks to see clearly in complete darkness as if it were dim light."
+            },
+            {
+                "id": "enhancedHearing",
+                "name": "Enhanced Hearing",
+                "description": "Make Awareness checks to hear sounds at frequencies beyond the normal human range or at much greater distances."
+            },
+            {
+                "id": "scentEnhancement",
+                "name": "Scent Enhancement",
+                "description": "Make Awareness checks to identify specific individuals, substances, or emotional states through smell."
+            },
+            {
+                "id": "tactileSensitivity",
+                "name": "Tactile Sensitivity",
+                "description": "Make Awareness checks to detect minute textures, vibrations, or temperature differences through touch."
+            },
+            {
+                "id": "magneticSense",
+                "name": "Magnetic Sense",
+                "description": "Make Awareness checks to determine cardinal directions and detect magnetic fields or metal objects."
+            },
+            {
+                "id": "scentTracking",
+                "name": "Scent Tracking",
+                "description": "Make Awareness checks to follow trails by scent, even hours or days old."
+            }
+        ]
+    },
+    "tier3": {
+        "cost": 3,
+        "senses": [
+            {
+                "id": "echolocation",
+                "name": "Echolocation",
+                "description": "Make Awareness checks to navigate and identify objects in complete darkness using sound reflection. Range: Tier \u00d7 10 Sp."
+            },
+            {
+                "id": "thermalVision",
+                "name": "Thermal Vision",
+                "description": "Make Awareness checks to see heat signatures through walls and detect living creatures by their body temperature."
+            },
+            {
+                "id": "microscopicVision",
+                "name": "Microscopic Vision",
+                "description": "Make Awareness checks to see cellular-level detail, identify microscopic organisms, or examine fine craftsmanship."
+            },
+            {
+                "id": "tremorSense",
+                "name": "Tremor Sense",
+                "description": "Make Awareness checks to detect movement and identify creatures through ground vibrations. Range: Tier \u00d7 5 Sp."
+            },
+            {
+                "id": "auraSight",
+                "name": "Aura Sight",
+                "description": "Make Awareness checks to perceive emotional states, health conditions, and supernatural auras around living beings."
+            },
+            {
+                "id": "timeSense",
+                "name": "Time Sense",
+                "description": "Make Awareness checks to perceive temporal distortions, time dilation effects, or chronological inconsistencies."
+            }
+        ]
+    },
+    "tier5": {
+        "cost": 5,
+        "senses": [
+            {
+                "id": "xrayVision",
+                "name": "X-Ray Vision",
+                "description": "Make Awareness checks to see through solid objects up to Tier \u00d7 2 Sp thick, revealing hidden structures or concealed items."
+            },
+            {
+                "id": "psychicResonance",
+                "name": "Psychic Resonance",
+                "description": "Make Awareness checks to detect psychic activity, mental powers in use, or lingering psychic imprints."
+            },
+            {
+                "id": "dimensionalSight",
+                "name": "Dimensional Sight",
+                "description": "Make Awareness checks to see into adjacent dimensions, detect dimensional rifts, or spot interdimensional travelers."
+            },
+            {
+                "id": "lifeDetection",
+                "name": "Life Detection",
+                "description": "Make Awareness checks to sense all living creatures within Tier \u00d7 100 Sp, regardless of concealment or barriers."
+            },
+            {
+                "id": "energySight",
+                "name": "Energy Sight",
+                "description": "Make Awareness checks to see all forms of energy (electrical, magical, radioactive) as visible spectrums."
+            },
+            {
+                "id": "precognition",
+                "name": "Precognition",
+                "description": "Make Awareness checks to glimpse potential futures."
+            }
+        ]
+    },
+    "tier10": {
+        "cost": 10,
+        "senses": [
+            {
+                "id": "scrying",
+                "name": "Scrying",
+                "description": "Make Awareness checks to remotely view any location you can clearly visualize or have previously visited. You can see and hear as if you were present at that location. Range is unlimited but clarity decreases with distance and unfamiliarity."
+            },
+            {
+                "id": "auraAnalysis",
+                "name": "Aura Analysis",
+                "description": "Make Awareness checks to perceive detailed information about any living being's powers, health status, emotional state, recent activities, and supernatural nature. This reveals their capabilities, conditions, and recent significant experiences through their personal aura."
+            },
+            {
+                "id": "truthSight",
+                "name": "Truth Sight",
+                "description": "Make Awareness checks to see through all forms of deception, illusion, disguise, and concealment. This reveals the true nature of people, objects, and situations, cutting through magical and mundane forms of misdirection."
+            }
+        ]
+    },
+    "unique": {
+        "cost": "variable",
+        "senses": [
+            {
+                "id": "uniqueSense",
+                "name": "Unique Sense",
+                "description": "Gain a supernatural sense for a specific phenomenon within 10 spaces at Tier 1, doubling each additional Tier. You automatically detect obvious manifestations; subtle ones require opposed Awareness checks. Examples include effects from a Descriptor (Electricity, Space, Time, Magic), a type of being (Human, divine beings, eldritch horror, powered person), or usage of an ability (Teleporting, Burrowing, specific Feature usage).",
+                "customizable": true
+            }
+        ]
+    }
+}

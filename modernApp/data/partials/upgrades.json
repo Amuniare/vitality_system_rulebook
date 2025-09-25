@@ -1,0 +1,1616 @@
+{
+    "upgrade_generic_extended_range": {
+      "id": "upgrade_generic_extended_range",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Extended Range",
+      "description": "Ranged attacks reach 30 spaces instead of 15.",
+      "cost": {
+        "value": 10,
+        "pool": "special_attack_points",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Generic Attack Upgrades",
+        "tags": [
+          "range",
+          "ranged"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_generic_long_range": {
+      "id": "upgrade_generic_long_range",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Long Range",
+      "description": "Ranged attacks reach 100 spaces instead of 15.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Generic Attack Upgrades",
+        "tags": [
+          "range",
+          "ranged"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_generic_perception_range": {
+      "id": "upgrade_generic_perception_range",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Perception Range",
+      "description": "Direct attacks can target anyone you can see instead of 30 spaces.",
+      "cost": {
+        "value": 10,
+        "pool": "special_attack_points",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Generic Attack Upgrades",
+        "tags": [
+          "range",
+          "direct"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_generic_enhanced_scale": {
+      "id": "upgrade_generic_enhanced_scale",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Enhanced Scale",
+      "description": "Double the size of Area attacks (e.g., 6sp radius, 12sp cone, 24sp line).",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p",
+        "stackable": true
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Generic Attack Upgrades",
+        "tags": [
+          "area_of_effect",
+          "size"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_generic_precise": {
+      "id": "upgrade_generic_precise",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Precise",
+      "description": "Choose which targets are affected by Area attacks.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Generic Attack Upgrades",
+        "tags": [
+          "area_of_effect",
+          "utility"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_generic_ranged_aoe": {
+      "id": "upgrade_generic_ranged_aoe",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Ranged AOE",
+      "description": "Area attacks can originate from a designated point within 15 spaces.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Generic Attack Upgrades",
+        "tags": [
+          "area_of_effect",
+          "range"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_accurateattack": {
+      "id": "upgrade_accuracy_accurateattack",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Accurate Attack",
+      "description": "+Tier to Accuracy rolls, -Tier to Damage and Condition rolls. A basic accuracy/damage trade-off.",
+      "cost": {
+        "value": 10,
+        "pool": "special_attack_points",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "accuracy",
+          "tradeoff"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_reliableaccuracy": {
+      "id": "upgrade_accuracy_reliableaccuracy",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Reliable Accuracy",
+      "description": "Advantage on Accuracy rolls, but suffer a -4 penalty to all Accuracy rolls. For consistent hitting with a reduced total bonus.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "accuracy",
+          "dice_manipulation"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_criticalaccuracy": {
+      "id": "upgrade_accuracy_criticalaccuracy",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Critical Accuracy",
+      "description": "Your critical hit range is expanded to 15-20 on the d20.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks"
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "critical_hit",
+          "accuracy"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_powerfulcritical": {
+      "id": "upgrade_accuracy_powerfulcritical",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Powerful Critical",
+      "description": "Add your Tier bonus again to Damage and Condition rolls on critical hits. Enhances the strength of your critical hit effects.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "critical_hit",
+          "damage",
+          "condition"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_overhit": {
+      "id": "upgrade_accuracy_overhit",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Overhit",
+      "description": "When your Accuracy roll exceeds the target's Avoidance by 5 or more, add half the difference to your Effect roll. Rewards high accuracy against low-defense targets.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "accuracy",
+          "damage",
+          "condition"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_blitz": {
+      "id": "upgrade_accuracy_blitz",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Blitz",
+      "description": "+1 Accuracy for every 6 spaces you moved toward the target this turn. A mobile attacker bonus that stacks with movement.",
+      "cost": {
+        "value": 10,
+        "pool": "special_attack_points",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "accuracy",
+          "movement"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_ricochet": {
+      "id": "upgrade_accuracy_ricochet",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Ricochet",
+      "description": "Critical hits trigger an additional attack against a different target within range.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "critical_hit",
+          "multi_target"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_doubletap": {
+      "id": "upgrade_accuracy_doubletap",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Double-Tap",
+      "description": "Critical hits trigger the same attack again against the same target.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "critical_hit",
+          "single_target"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_accuracy_explosivecritical": {
+      "id": "upgrade_accuracy_explosivecritical",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Explosive Critical",
+      "description": "Critical hits trigger an attack against all enemies within 3 spaces of the target, if the attack would also hit them.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks"
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Accuracy Bonuses",
+        "tags": [
+          "critical_hit",
+          "area_of_effect"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_powerattack": {
+      "id": "upgrade_damage_powerattack",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Power Attack",
+      "description": "+Tier to Damage rolls, -Tier to Accuracy rolls. A basic damage/accuracy trade-off.",
+      "cost": {
+        "value": 10,
+        "pool": "special_attack_points",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "core_damage_modifiers",
+          "damage",
+          "tradeoff"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_highimpact": {
+      "id": "upgrade_damage_highimpact",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "High Impact",
+      "description": "Replace your 3d6 damage roll with a flat 15 damage. Eliminates damage variance for consistent output.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "core_damage_modifiers",
+          "damage",
+          "reliable"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_enhancedeffect": {
+      "id": "upgrade_damage_enhancedeffect",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Enhanced Effect",
+      "description": "Add one additional damage die to your damage rolls. This increases your damage potential and average.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "core_damage_modifiers",
+          "damage",
+          "dice"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_reliableeffect": {
+      "id": "upgrade_damage_reliableeffect",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Reliable Effect",
+      "description": "Roll an extra damage die, then drop the lowest result.",
+      "cost": {
+        "value": 10,
+        "pool": "special_attack_points",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "dice_manipulation",
+          "damage",
+          "reliable"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_consistenteffect": {
+      "id": "upgrade_damage_consistenteffect",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Consistent Effect",
+      "description": "Reroll all 1s on damage dice.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "dice_manipulation",
+          "damage",
+          "reliable"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_criticaleffect": {
+      "id": "upgrade_damage_criticaleffect",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Critical Effect",
+      "description": "All effect dice explode on rolls of 5 or 6. Dice continue rolling when showing 5-6, and results are cumulative.",
+      "cost": {
+        "value": 50,
+        "pool": "special_attack_points",
+        "display": "50p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "dice_manipulation",
+          "damage",
+          "critical_hit"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_armorpiercing": {
+      "id": "upgrade_damage_armorpiercing",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Armor Piercing",
+      "description": "Suffer a -Tier penalty to your Attack rolls to ignore the target's Durability bonus from their Endurance attribute. For Direct attacks, reduce the Damage roll instead of the Attack roll.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "armor_and_defense_bypass",
+          "damage",
+          "tradeoff"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_brutal": {
+      "id": "upgrade_damage_brutal",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Brutal",
+      "description": "When your Damage roll exceeds the target's Durability by 10 or more, you deal extra damage equal to half the difference.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "armor_and_defense_bypass",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_bleed": {
+      "id": "upgrade_damage_bleed",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Bleed",
+      "description": "The target takes the identical damage again at the end of your next 2 turns.",
+      "cost": {
+        "value": 60,
+        "pool": "special_attack_points",
+        "display": "60p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "damage_over_time_and_area",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_splashdamage": {
+      "id": "upgrade_damage_splashdamage",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Splash Damage",
+      "description": "Adjacent targets take Tier+1d6 damage if your Attack roll would hit their Avoidance. Applies to Melee and Ranged attacks only.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "damage_over_time_and_area",
+          "damage",
+          "area_of_effect"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_environmental": {
+      "id": "upgrade_damage_environmental",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Environmental",
+      "description": "All hexes hit by the attack become hazardous terrain until the start of your next turn. Each rank after the first is an extra turn. Any character entering or ending their turn in an affected space takes the attack's Damage and Condition. Cannot have 'Precise' upgrade.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p per rank",
+        "per": "rank",
+        "stackable": true
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "damage_over_time_and_area",
+          "damage",
+          "area_of_effect"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_shatter": {
+      "id": "upgrade_damage_shatter",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Shatter",
+      "description": "Deal double damage to structures and vehicles. A specialized anti-object enhancement.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "utility_effects",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_leech": {
+      "id": "upgrade_damage_leech",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Leech",
+      "description": "Regain HP equal to half the damage you deal.",
+      "cost": {
+        "value": 80,
+        "pool": "special_attack_points",
+        "display": "80p"
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks"
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "utility_effects",
+          "healing"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_finishingblow": {
+      "id": "upgrade_damage_finishingblow",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Finishing Blow",
+      "description": "If your attack reduces an enemy to 5×rank HP or below, the enemy is defeated instead. Maximum 3 ranks.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p per rank",
+        "per": "rank",
+        "stackable": true,
+        "maxStacks": 3
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks"
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "instant_defeat_mechanics",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_damage_cullingstrike": {
+      "id": "upgrade_damage_cullingstrike",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Culling Strike",
+      "description": "If your attack reduces an enemy below 1/5 of their maximum HP, the enemy is defeated instead.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks"
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Damage Bonuses",
+        "tags": [
+          "instant_defeat_mechanics",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_condition_criticalcondition": {
+      "id": "upgrade_condition_criticalcondition",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Critical Condition",
+      "description": "Your Condition rolls critically hit on a 15-20 range on the d20.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks"
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Condition Bonuses",
+        "tags": [
+          "critical_hit",
+          "condition"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_condition_lastingcondition": {
+      "id": "upgrade_condition_lastingcondition",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Lasting Condition",
+      "description": "If your Condition roll exceeds the target's Resistance by 10 or more, the condition's duration extends by 1 turn.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Condition Bonuses",
+        "tags": [
+          "condition",
+          "duration"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_condition_masseffect": {
+      "id": "upgrade_condition_masseffect",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Mass Effect",
+      "description": "A single Direct condition attack can target up to your Tier in enemies simultaneously. Suffers a -Tier penalty to Condition rolls.",
+      "cost": {
+        "value": 60,
+        "pool": "special_attack_points",
+        "display": "60p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Condition Bonuses",
+        "tags": [
+          "condition",
+          "multi_target"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_condition_collateralcondition": {
+      "id": "upgrade_condition_collateralcondition",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Collateral Condition",
+      "description": "A successful condition triggers the attack against all targets within a 3-space burst.",
+      "cost": {
+        "value": 60,
+        "pool": "special_attack_points",
+        "display": "60p"
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks, and triggers only once per attack."
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Condition Bonuses",
+        "tags": [
+          "condition",
+          "area_of_effect"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_condition_contagious": {
+      "id": "upgrade_condition_contagious",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Contagious",
+      "description": "A successful condition triggers the attack against the nearest enemy. Can chain up to Tier/2 times (rounded down) per attack.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks"
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Condition Bonuses",
+        "tags": [
+          "condition",
+          "chain"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_condition_cursed": {
+      "id": "upgrade_condition_cursed",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Cursed",
+      "description": "If 2 × (Condition roll - Resistance) is greater than or equal to the target's remaining HP, the condition becomes permanent.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Condition Bonuses",
+        "tags": [
+          "condition",
+          "permanent"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_condition_overwhelmingaffliction": {
+      "id": "upgrade_condition_overwhelmingaffliction",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Overwhelming Affliction",
+      "description": "If your Condition roll exceeds the target's Resistance by 3 × Tier, the condition becomes permanent regardless of the target's HP.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Condition Bonuses",
+        "tags": [
+          "condition",
+          "permanent"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_heavystrike": {
+      "id": "upgrade_specialized_heavystrike",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Heavy Strike",
+      "description": "Expend all Movement and one Quick Action to charge, adding +3×Tier to Damage and Condition rolls, but -Tier to Accuracy rolls.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "melee_specialization",
+          "damage",
+          "charge"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_quickstrikes": {
+      "id": "upgrade_specialized_quickstrikes",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Quick Strikes",
+      "description": "Expend all Movement and one Quick Action to charge, allowing you to make the same Melee attack three times against a single target, but with a -Tier penalty to Accuracy rolls.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "melee_specialization",
+          "multi_attack"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_whirlwindstrike": {
+      "id": "upgrade_specialized_whirlwindstrike",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Whirlwind Strike",
+      "description": "A single Melee attack targets up to your Tier in enemies simultaneously, but with a -Tier penalty to Accuracy rolls.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "melee_specialization",
+          "area_of_effect"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_headshot": {
+      "id": "upgrade_specialized_headshot",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Headshot",
+      "description": "Expend all Movement and one Quick Action to charge, adding +3×Tier to Damage and Condition rolls, but -Tier to Accuracy rolls.",
+      "cost": {
+        "value": 60,
+        "pool": "special_attack_points",
+        "display": "60p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "ranged_specialization",
+          "damage",
+          "charge"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_barrage": {
+      "id": "upgrade_specialized_barrage",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Barrage",
+      "description": "Expend all Movement and one Quick Action to charge, allowing you to make the same Ranged attack three times against a single target, but with a -Tier penalty to Accuracy rolls.",
+      "cost": {
+        "value": 60,
+        "pool": "special_attack_points",
+        "display": "60p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "ranged_specialization",
+          "multi_attack"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_scattershot": {
+      "id": "upgrade_specialized_scattershot",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Scatter Shot",
+      "description": "A single Ranged attack targets up to your Tier in enemies simultaneously, but with a -Tier penalty to Accuracy rolls.",
+      "cost": {
+        "value": 60,
+        "pool": "special_attack_points",
+        "display": "60p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "ranged_specialization",
+          "area_of_effect"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_flurryofblows": {
+      "id": "upgrade_specialized_flurryofblows",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Flurry of Blows",
+      "description": "Make the same attack three times against a single target, with a -Tier penalty to Accuracy, Damage, and Condition rolls. Works with Melee or Ranged attacks.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "universal_combat_techniques",
+          "multi_attack"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_pounce": {
+      "id": "upgrade_specialized_pounce",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Pounce",
+      "description": "Move up to 6 spaces in a straight line toward the target as part of the attack. This movement occurs during the attack resolution.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "universal_combat_techniques",
+          "movement"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_splinter": {
+      "id": "upgrade_specialized_splinter",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Splinter",
+      "description": "Defeating an enemy triggers another attack against a new target before your turn ends. Can chain up to Tier/2 additional attacks (rounded up).",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [
+        {
+          "type": "rule",
+          "value": "no_aoe",
+          "display": "Cannot apply to AOE attacks"
+        }
+      ],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "universal_combat_techniques",
+          "chain"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_menacing": {
+      "id": "upgrade_specialized_menacing",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Menacing",
+      "description": "Reducing an enemy to 0 HP allows an Intimidation attempt against all enemies within 3 spaces of the target. Enemies with HP less than or equal to your Intimidation bonus will surrender.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "tactical_enhancements",
+          "social"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_disengage": {
+      "id": "upgrade_specialized_disengage",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Disengage",
+      "description": "A successful hit prevents opportunity attacks from all hit targets until the end of your turn.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "tactical_enhancements",
+          "movement"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_extraattack": {
+      "id": "upgrade_specialized_extraattack",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Extra Attack",
+      "description": "A successful hit with a successful effect allows an identical attack against the same target. Must succeed on both Accuracy and Effect. Can only occur once per turn.",
+      "cost": {
+        "value": 50,
+        "pool": "special_attack_points",
+        "display": "50p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "tactical_enhancements",
+          "multi_attack"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_analyzingstrike": {
+      "id": "upgrade_specialized_analyzingstrike",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Analyzing Strike",
+      "description": "+1 to a chosen stat (Accuracy/Damage/Conditions) for each previous Analyzing Strike against the same target. The bonus is capped at your Tier and resets if you skip attacking the target for one turn or activate it on another target.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "sequential_attack_systems",
+          "stacking"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_followupstrike": {
+      "id": "upgrade_specialized_followupstrike",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Follow-Up Strike",
+      "description": "A successful hit with a successful effect allows one Base Attack against the same target. Can only occur once per turn.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "sequential_attack_systems",
+          "action_economy"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_counterattack": {
+      "id": "upgrade_specialized_counterattack",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Counterattack",
+      "description": "Using an attack against an enemy that missed you or failed their effect against you adds your Tier to a chosen roll (Accuracy, Damage, or Condition, selected at purchase).",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "sequential_attack_systems",
+          "reactive"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_exploit": {
+      "id": "upgrade_specialized_exploit",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Exploit",
+      "description": "+Tier to Damage and Condition rolls against targets currently afflicted by any Condition.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "sequential_attack_systems",
+          "condition"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_prioritytarget": {
+      "id": "upgrade_specialized_prioritytarget",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Priority Target",
+      "description": "After hitting a target, mark them as the Priority Target until the start of your next turn. Other characters gain a Tier/2 Accuracy bonus (rounded up) against this target. Can only be used once per turn.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "combat_control",
+          "support"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_bully": {
+      "id": "upgrade_specialized_bully",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Bully",
+      "description": "Damaging a target with a Power score equal to or less than yours allows you to force a 1-space movement.",
+      "cost": {
+        "value": 10,
+        "pool": "special_attack_points",
+        "display": "10p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "combat_control",
+          "forced_movement"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_martialartist": {
+      "id": "upgrade_specialized_martialartist",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Martial Artist",
+      "description": "Critical hits allow you to choose to apply Grab, a 3-space forced movement, or the Prone condition.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "combat_control",
+          "critical_hit"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_specialized_grappler": {
+      "id": "upgrade_specialized_grappler",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Grappler",
+      "description": "Deal +Tier damage against targets you have Grabbed.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Specialized Combat",
+        "tags": [
+          "combat_control",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_minionslayer": {
+      "id": "upgrade_variable_minionslayer",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Minion Slayer",
+      "description": "Choose Accuracy, Damage, or Condition when purchasing. Bonus applies against enemies with 10 maximum HP.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "enemy_type_bonuses",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_captainslayer": {
+      "id": "upgrade_variable_captainslayer",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Captain Slayer",
+      "description": "Choose Accuracy, Damage, or Condition when purchasing. Bonus applies against enemies with 25 maximum HP.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "enemy_type_bonuses",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_eliteslayer": {
+      "id": "upgrade_variable_eliteslayer",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Elite Slayer",
+      "description": "Choose Accuracy, Damage, or Condition when purchasing. Bonus applies against enemies with 50 maximum HP.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "enemy_type_bonuses",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_bossslayer": {
+      "id": "upgrade_variable_bossslayer",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Boss Slayer",
+      "description": "Choose Accuracy, Damage, or Condition when purchasing. Bonus applies against enemies with 100 maximum HP.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "enemy_type_bonuses",
+          "damage"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_luckystrike": {
+      "id": "upgrade_variable_luckystrike",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Lucky Strike",
+      "description": "Using an Effort on this attack allows you to roll an extra die on the Effort roll.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "resource_based_bonuses",
+          "effort"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_compressedrelease": {
+      "id": "upgrade_variable_compressedrelease",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Compressed Release",
+      "description": "If you have an active Aura ability, you can disable it until the start of your next turn to add +Tier to your Accuracy, Damage, and Condition rolls.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "resource_based_bonuses",
+          "aura"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_domain": {
+      "id": "upgrade_variable_domain",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Domain",
+      "description": "If you have an active Barrier ability, gain +Tier to a chosen roll when attacking targets within your Barrier. Select Accuracy, Damage, or Conditions when purchasing.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "environmental_bonuses",
+          "barrier"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_towerdefense": {
+      "id": "upgrade_variable_towerdefense",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Tower Defense",
+      "description": "If you have an active Wall ability, gain +Tier to a chosen roll when attacking targets on the opposite side of your Wall. Select Accuracy, Damage, or Conditions when purchasing.",
+      "cost": {
+        "value": 30,
+        "pool": "special_attack_points",
+        "display": "30p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "environmental_bonuses",
+          "wall"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_channeled": {
+      "id": "upgrade_variable_channeled",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Channeled",
+      "description": "For Ranged or AOE attacks. Spend your Primary Action + Movement on subsequent turns to repeat the attack. Gain +Tier to a chosen roll for each consecutive turn channeling (maximum 5 turns). Select Accuracy, Damage, or Conditions when purchasing.",
+      "cost": {
+        "value": 40,
+        "pool": "special_attack_points",
+        "display": "40p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "sustained_attack_systems",
+          "channel"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    },
+    "upgrade_variable_focused": {
+      "id": "upgrade_variable_focused",
+      "schemaType": "entity",
+      "type": "upgrade",
+      "name": "Focused",
+      "description": "For Melee attacks. Spend your Primary Action + Movement on subsequent turns to repeat the attack. Gain +Tier to a chosen roll for each consecutive turn focusing (maximum 5 turns). Select Accuracy, Damage, or Conditions when purchasing.",
+      "cost": {
+        "value": 20,
+        "pool": "special_attack_points",
+        "display": "20p"
+      },
+      "requirements": [],
+      "effects": [],
+      "ui": {
+        "component": "card",
+        "category": "Variable Bonuses",
+        "tags": [
+          "sustained_attack_systems",
+          "channel"
+        ]
+      },
+      "sourceFile": "upgrades.json"
+    }
+  }

@@ -1,0 +1,23 @@
+
+{
+  "name": "modernapp-tests",
+  "version": "1.0.0",
+  "description": "Playwright tests for the ModernApp character builder.",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "modernapp"
+  ],
+  "author": "AI Assisted Development",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "dependencies": {}
+}

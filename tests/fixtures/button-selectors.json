@@ -1,0 +1,35 @@
+{
+    "basicInfoTab": {
+        "characterNameInput": "#character-name",
+        "characterTierSelect": "#character-tier",
+        "saveButton": "button[data-action='save-basic-info']"
+    },
+    "archetypeTab": {
+        "movementArchetypeSelect": "#archetype-select-movement",
+        "attackTypeArchetypeSelect": "#archetype-select-attackType",
+        "effectTypeArchetypeSelect": "#archetype-select-effectType",
+        "uniqueAbilityArchetypeSelect": "#archetype-select-uniqueAbility",
+        "defensiveArchetypeSelect": "#archetype-select-defensive",
+        "specialAttackArchetypeSelect": "#archetype-select-specialAttack",
+        "utilityArchetypeSelect": "#archetype-select-utility"
+    },
+    "mainPoolTab": {
+        "flawsSectionButton": "button.section-tab[data-section-key='flaws']",
+        "traitsSectionButton": "button.section-tab[data-section-key='traits']",
+        "boonsSectionButton": "button.section-tab[data-section-key='boons']",
+        "actionUpgradesSectionButton": "button.section-tab[data-section-key='action_upgrades']",
+        "uniqueAbilitiesSectionButton": "button.section-tab[data-section-key='unique_abilities_purchasable']",
+        "purchaseButtonGeneric": ".purchase-card button[data-action='purchase']",
+        "removeButtonGeneric": ".purchase-card button[data-action='remove']"
+    },
+    "tabNavigation": {
+        "basicInfoTabButton": "button.tab-btn[data-tab='basic-info']",
+        "archetypesTabButton": "button.tab-btn[data-tab='archetypes']",
+        "mainPoolTabButton": "button.tab-btn[data-tab='main-pool']"
+    },
+    "generic": {
+        "notificationSuccess": ".notification.notification-success",
+        "notificationError": ".notification.notification-error",
+        "notificationWarning": ".notification.notification-warning"
+    }
+}

@@ -1,0 +1,102 @@
+@media (max-width: 1024px) {
+    .character-summary { /* Was .app-sidebar */
+        width: 240px;
+    }
+    
+    .purchase-grid, .entity-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .character-summary { /* Was .app-sidebar */
+        display: none; /* Or implement off-canvas toggle */
+    }
+    
+    .tab-container { /* Was .app-content */
+        padding: var(--spacing-md);
+    }
+    
+    .pool-header, .section-content {
+        padding: var(--spacing-lg);
+    }
+    
+    .purchase-grid, .entity-grid, .attacks-grid {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+    }
+    
+    .tab-navigation { /* Was .nav-tabs */
+        overflow-x: auto; /* Allow horizontal scrolling for many tabs */
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        padding-left: var(--spacing-md); /* Ensure padding on scrollable tabs */
+        padding-right: var(--spacing-md);
+    }
+
+    .details-content { /* From SpecialAttacksTab */
+        grid-template-columns: 1fr;
+    }
+    
+    .attack-modal, .comparison-modal, .modal-content { /* Generalizing modal width */
+        margin: var(--spacing-md);
+        max-width: calc(100% - (2 * var(--spacing-md))); /* Full width with margins */
+    }
+    
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch; /* Make filters full width */
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .attacks-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 14px; /* Adjust base font size for very small screens */
+    }
+    
+    .pool-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm); /* Reduced gap */
+    }
+    
+    .section-tabs {
+        gap: var(--spacing-xs);
+    }
+    
+    .section-tab {
+        flex: 1 1 auto; /* Allow tabs to take equal width if possible */
+        text-align: center;
+        padding: var(--spacing-sm); /* Adjust padding */
+    }
+
+    .app-header {
+        padding: var(--spacing-md);
+    }
+    .app-header h1 {
+        font-size: var(--font-size-xl); /* Smaller main title */
+    }
+    .tab-navigation {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    .tab-btn {
+        padding: var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+    #notification-container {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+        gap: var(--spacing-xs);
+    }
+    .notification {
+        padding: var(--spacing-sm);
+    }
+}

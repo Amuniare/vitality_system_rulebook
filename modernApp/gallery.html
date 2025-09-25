@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Gallery - Vitality System</title>
+    <link rel="stylesheet" href="css/modern-app.css">
+    <style>
+        .gallery-header {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .gallery-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        
+        .gallery-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .gallery-controls {
+            max-width: 1200px;
+            margin: 0 auto 2rem auto;
+            padding: 0 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .gallery-filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .gallery-stats {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .character-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .character-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .character-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .character-card-header {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            padding: 1rem;
+            position: relative;
+        }
+        
+        .character-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem 0;
+        }
+        
+        .character-type {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .character-tier {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .character-card-body {
+            padding: 1rem;
+        }
+        
+        .character-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .stat-label {
+            color: #666;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .character-card-footer {
+            padding: 0 1rem 1rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-view {
+            flex: 1;
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        
+        .btn-view:hover {
+            background: #3182ce;
+        }
+        
+        .btn-import {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        
+        .btn-import:hover {
+            background: #38a169;
+        }
+        
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #4299e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-state {
+            text-align: center;
+            padding: 3rem;
+            color: #e53e3e;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .filter-select {
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .search-input {
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            width: 200px;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .gallery-filters {
+                justify-content: center;
+            }
+            
+            .character-grid {
+                grid-template-columns: 1fr;
+                padding: 0 0.5rem;
+            }
+            
+            .search-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-header">
+        <h1>Vitality System Character Gallery</h1>
+        <p>Explore characters created by the community</p>
+    </div>
+    
+    <div class="gallery-controls">
+        <div class="gallery-filters">
+            <input type="text" id="search-input" class="search-input" placeholder="Search characters...">
+            <select id="tier-filter" class="filter-select">
+                <option value="">All Tiers</option>
+                <option value="1">Tier 1</option>
+                <option value="2">Tier 2</option>
+                <option value="3">Tier 3</option>
+                <option value="4">Tier 4</option>
+                <option value="5">Tier 5</option>
+                <option value="6">Tier 6</option>
+                <option value="7">Tier 7</option>
+                <option value="8">Tier 8</option>
+                <option value="9">Tier 9</option>
+                <option value="10">Tier 10</option>
+            </select>
+            <select id="type-filter" class="filter-select">
+                <option value="">All Types</option>
+                <option value="standard">Standard</option>
+                <option value="heroic">Heroic</option>
+                <option value="legendary">Legendary</option>
+                <option value="minion">Minion</option>
+                <option value="elite">Elite</option>
+                <option value="boss">Boss</option>
+            </select>
+        </div>
+        
+        <div class="gallery-stats">
+            <span id="character-count">Loading characters...</span>
+        </div>
+    </div>
+    
+    <div id="character-grid" class="character-grid">
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <div>Loading characters from the gallery...</div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { FirebaseSync } from './core/FirebaseSync.js';
+        import { Logger } from './utils/Logger.js';
+        
+        class CharacterGallery {
+            constructor() {
+                this.firebaseSync = new FirebaseSync();
+                this.characters = [];
+                this.filteredCharacters = [];
+                this.searchTerm = '';
+                this.tierFilter = '';
+                this.typeFilter = '';
+                
+                this.init();
+            }
+            
+            async init() {
+                Logger.info('[Gallery] Initializing character gallery');
+                
+                // Set up event listeners
+                this.setupEventListeners();
+                
+                // Load characters
+                await this.loadCharacters();
+            }
+            
+            setupEventListeners() {
+                const searchInput = document.getElementById('search-input');
+                const tierFilter = document.getElementById('tier-filter');
+                const typeFilter = document.getElementById('type-filter');
+                
+                searchInput.addEventListener('input', (e) => {
+                    this.searchTerm = e.target.value.toLowerCase();
+                    this.filterCharacters();
+                });
+                
+                tierFilter.addEventListener('change', (e) => {
+                    this.tierFilter = e.target.value;
+                    this.filterCharacters();
+                });
+                
+                typeFilter.addEventListener('change', (e) => {
+                    this.typeFilter = e.target.value;
+                    this.filterCharacters();
+                });
+            }
+            
+            async loadCharacters() {
+                try {
+                    Logger.info('[Gallery] Loading characters from Firebase');
+                    this.characters = await this.firebaseSync.getAllCharacters({
+                        limitCount: 100,
+                        orderByField: 'updatedAt',
+                        orderDirection: 'desc'
+                    });
+                    
+                    Logger.info(`[Gallery] Loaded ${this.characters.length} characters`);
+                    this.filteredCharacters = [...this.characters];
+                    this.renderCharacters();
+                    this.updateStats();
+                    
+                } catch (error) {
+                    Logger.error('[Gallery] Failed to load characters:', error);
+                    this.renderError();
+                }
+            }
+            
+            filterCharacters() {
+                this.filteredCharacters = this.characters.filter(character => {
+                    const matchesSearch = !this.searchTerm || 
+                        character.name.toLowerCase().includes(this.searchTerm) ||
+                        (character.mainArchetype && character.mainArchetype.toLowerCase().includes(this.searchTerm));
+                    
+                    const matchesTier = !this.tierFilter || 
+                        character.tier === parseInt(this.tierFilter);
+                    
+                    const matchesType = !this.typeFilter || 
+                        character.characterType === this.typeFilter;
+                    
+                    return matchesSearch && matchesTier && matchesType;
+                });
+                
+                this.renderCharacters();
+                this.updateStats();
+            }
+            
+            renderCharacters() {
+                const grid = document.getElementById('character-grid');
+                
+                if (this.filteredCharacters.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <h3>No characters found</h3>
+                            <p>Try adjusting your search or filter criteria, or check back later for new characters!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                grid.innerHTML = this.filteredCharacters.map(character => 
+                    this.renderCharacterCard(character)
+                ).join('');
+                
+                // Add event listeners to import buttons
+                this.attachCardListeners();
+            }
+            
+            renderCharacterCard(character) {
+                const updatedDate = character.updatedAt ? 
+                    new Date(character.updatedAt.seconds * 1000).toLocaleDateString() : 
+                    'Unknown';
+                
+                return `
+                    <div class="character-card" data-character-id="${character.id}">
+                        <div class="character-card-header">
+                            <h3 class="character-name">${character.name || 'Unnamed Character'}</h3>
+                            <p class="character-type">${this.formatCharacterType(character.characterType || 'standard')}</p>
+                            <div class="character-tier">Tier ${character.tier || 1}</div>
+                        </div>
+                        
+                        <div class="character-card-body">
+                            <div class="character-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Archetype:</span>
+                                    <span class="stat-value">${character.mainArchetype || 'None'}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Level:</span>
+                                    <span class="stat-value">${character.level || 1}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Points:</span>
+                                    <span class="stat-value">${character.totalPoints || 0}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Updated:</span>
+                                    <span class="stat-value">${updatedDate}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="character-card-footer">
+                            <a href="index.html?load=${character.id}" class="btn-view">View/Edit</a>
+                            <button class="btn-import" data-action="import" data-character-id="${character.id}">
+                                Import
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            attachCardListeners() {
+                const importButtons = document.querySelectorAll('[data-action="import"]');
+                importButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const characterId = e.target.dataset.characterId;
+                        this.importCharacter(characterId);
+                    });
+                });
+            }
+            
+            async importCharacter(characterId) {
+                try {
+                    Logger.info(`[Gallery] Importing character: ${characterId}`);
+                    
+                    // Load full character data
+                    const characterData = await this.firebaseSync.loadCharacter(characterId);
+                    if (!characterData) {
+                        throw new Error('Character not found');
+                    }
+                    
+                    // Create new character with imported data
+                    const importedCharacter = {
+                        ...characterData,
+                        id: `char_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                        name: `${characterData.name} (Copy)`,
+                        createdAt: Date.now(),
+                        updatedAt: Date.now()
+                    };
+                    
+                    // Save to local storage
+                    localStorage.setItem(
+                        `vitality_character_${importedCharacter.id}`,
+                        JSON.stringify(importedCharacter)
+                    );
+                    
+                    // Update character list
+                    const characterList = JSON.parse(localStorage.getItem('vitality_character_list') || '[]');
+                    characterList.push({
+                        id: importedCharacter.id,
+                        name: importedCharacter.name,
+                        tier: importedCharacter.tier,
+                        characterType: importedCharacter.characterType,
+                        createdAt: importedCharacter.createdAt,
+                        updatedAt: importedCharacter.updatedAt
+                    });
+                    localStorage.setItem('vitality_character_list', JSON.stringify(characterList));
+                    
+                    // Redirect to main app with the imported character
+                    window.location.href = `index.html?load=${importedCharacter.id}`;
+                    
+                } catch (error) {
+                    Logger.error('[Gallery] Import failed:', error);
+                    alert('Failed to import character. Please try again.');
+                }
+            }
+            
+            formatCharacterType(type) {
+                return type.charAt(0).toUpperCase() + type.slice(1);
+            }
+            
+            updateStats() {
+                const countElement = document.getElementById('character-count');
+                const total = this.characters.length;
+                const filtered = this.filteredCharacters.length;
+                
+                if (filtered === total) {
+                    countElement.textContent = `${total} character${total !== 1 ? 's' : ''}`;
+                } else {
+                    countElement.textContent = `${filtered} of ${total} characters`;
+                }
+            }
+            
+            renderError() {
+                const grid = document.getElementById('character-grid');
+                grid.innerHTML = `
+                    <div class="error-state" style="grid-column: 1 / -1;">
+                        <h3>Failed to load characters</h3>
+                        <p>There was an error connecting to the character database. Please try again later.</p>
+                        <button onclick="location.reload()" class="btn-view" style="margin-top: 1rem;">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Initialize gallery when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new CharacterGallery();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "single_attack_type": null,
+  "attack_types": ["melee", "ranged", "area", "direct_damage", "direct_area_damage"],
+  "simulations_per_test": 50,
+  "max_turns": 100,
+  "target_hp": 100,
+  "tier": 3,
+  "tier_range": [3, 3],
+  "max_points": 60,
+  "max_upgrades": 5,
+  "upgrade_filter": null,
+  "limit_filter": null,
+  "max_combination_size": 5,
+  "focus_builds": null,
+  "detailed_logging": true,
+  "individual_testing": true,
+  "top_builds_count": 50,
+  "combat_log_level": "detailed",
+  "include_statistical_analysis": true,
+  "generate_synergy_analysis": false,
+  "attacker_configs": [
+    [3, 0, 0, 0, 3],
+    [0, 3, 0, 0, 3],
+    [3, 0, 0, 0, 3],
+    [0, 3, 0, 0, 3]
+  ],
+  "defender_configs": [
+    [0, 0, 3, 0, 3],
+    [0, 0, 0, 3, 3],
+    [0, 0, 0, 3, 3],
+    [0, 0, 3, 0, 3]
+  ]
+}

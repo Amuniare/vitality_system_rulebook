@@ -1,0 +1,370 @@
+{
+    "archetype_movement_swift": {
+      "id": "archetype_movement_swift",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Swift",
+      "description": "Movement speed increased by half your Tier (rounded up). Traverse the battlefield quicker.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "stat_bonus", "target": "movement", "value": "ceil(tier/2)", "display": "+⌈Tier/2⌉ Movement" }],
+      "ui": { "component": "card", "category": "movement", "tags": ["speed", "positioning"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_movement_skirmisher": {
+      "id": "archetype_movement_skirmisher",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Skirmisher",
+      "description": "Does not trigger Punish Attacks for moving. +1 space melee attack reach. Maneuver through enemy lines freely.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [
+        { "type": "immunity", "target": "punish_attacks", "display": "Immune to Punish Attacks" },
+        { "type": "stat_bonus", "target": "reach", "value": 1, "display": "+1 Reach" }
+      ],
+      "ui": { "component": "card", "category": "movement", "tags": ["melee", "safety", "tactical"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_movement_behemoth": {
+      "id": "archetype_movement_behemoth",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Behemoth",
+      "description": "Cannot be Grabbed, Moved, knocked Prone, or Stunned. Consistent positioning regardless of enemy interference.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "immunity", "target": ["grabbed", "moved", "prone", "stunned"], "display": "Immune to forced movement and stun" }],
+      "ui": { "component": "card", "category": "movement", "tags": ["defense", "immovable", "tank"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_movement_vanguard": {
+      "id": "archetype_movement_vanguard",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Vanguard",
+      "description": "Enemies that start their turn next to you have their movement speed halved until the start of their next turn. As part of a reaction Punish attack, you may move up to your full movement speed towards the target until the end of their turn. Enhanced zone control and battlefield presence.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [
+          { "type": "aura_effect", "target": "adjacent_enemies", "value": "halve_movement", "display": "Adjacent enemies have halved movement" },
+          { "type": "action_mod", "target": "punish_attack", "value": "allow_full_movement", "display": "Can move during Punish reaction"}
+      ],
+      "ui": { "component": "card", "category": "movement", "tags": ["control", "reaction", "tank"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_attackType_singleTarget": {
+      "id": "archetype_attackType_singleTarget",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Single Target",
+      "description": "Gain Melee AND Ranged attack types for 0p. Specializes in single-target elimination. The most versatile combat approach.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [
+        { "type": "grant_ability", "value": "attack_type_melee", "display": "Grants Melee Attack Type" },
+        { "type": "grant_ability", "value": "attack_type_ranged", "display": "Grants Ranged Attack Type" }
+      ],
+      "ui": { "component": "card", "category": "attackType", "tags": ["versatile", "combat"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_attackType_aoeSpecialist": {
+      "id": "archetype_attackType_aoeSpecialist",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "AOE Specialist",
+      "description": "Gain AOE attack type for 0p. Excels at crowd control and managing multiple targets. Weaker than single target but hits many.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "grant_ability", "value": "attack_type_area", "display": "Grants Area Attack Type" }],
+      "ui": { "component": "card", "category": "attackType", "tags": ["crowd_control", "area_of_effect"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_attackType_directSpecialist": {
+      "id": "archetype_attackType_directSpecialist",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Direct Specialist",
+      "description": "Gain Direct attack type for 0p. Provides reliable effect delivery that cannot be dodged. Perfect for consistent results.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "grant_ability", "value": "attack_type_direct", "display": "Grants Direct Attack Type" }],
+      "ui": { "component": "card", "category": "attackType", "tags": ["reliable", "debuff"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_effectType_damageSpecialist": {
+      "id": "archetype_effectType_damageSpecialist",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Damage Specialist",
+      "description": "Focus purely on dealing damage for maximum potential. Can still use Basic Conditions as separate attacks.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [],
+      "ui": { "component": "card", "category": "effectType", "tags": ["damage", "offense"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_effectType_hybridSpecialist": {
+      "id": "archetype_effectType_hybridSpecialist",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Hybrid Specialist",
+      "description": "All attacks MUST combine damage and conditions. A versatile but less powerful approach in each aspect.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "attacks_must_be_hybrid", "display": "All attacks must be Hybrid" }],
+      "effects": [],
+      "ui": { "component": "card", "category": "effectType", "tags": ["hybrid", "versatile"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_effectType_crowdControl": {
+      "id": "archetype_effectType_crowdControl",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Crowd Control",
+      "description": "Free access to 2 Advanced condition effects (chosen at selection), but suffer -Tier to all Damage rolls. Specializes in enemy control and debilitation, a strong team support role.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [
+        { "type": "stat_penalty", "target": "damage", "value": "tier", "display": "-Tier to Damage Rolls" },
+        { "type": "grant_ability", "subType": "advanced_condition", "count": 2, "display": "Grants 2 free Advanced Conditions" }
+      ],
+      "ui": { "component": "card", "category": "effectType", "tags": ["control", "debuff", "support"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_uniqueAbility_versatileMaster": {
+      "id": "archetype_uniqueAbility_versatileMaster",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Versatile Master",
+      "description": "Gain 2 Quick Actions per turn. When you select this archetype or advance Tiers, select a number of Primary Actions equal to half your Tier rounded up. You can use each of those Primary Actions as Quick Actions. At Tier 8, gain a third Quick Action.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "action_economy", "value": "versatile_master_rules", "display": "Gain extra Quick Actions and convert Primary Actions"}],
+      "ui": { "component": "card", "category": "uniqueAbility", "tags": ["action_economy", "tactical"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_uniqueAbility_extraordinary": {
+      "id": "archetype_uniqueAbility_extraordinary",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Extraordinary",
+      "description": "Gain an additional (Tier - 2) × 15 points added to your main pool. You can only spend up to (Tier - 2) × 15 points on Flaws or Traits. Ideal for characters specializing in Unique Abilities.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "flaw_trait_spending_limit", "display": "Spending limit on Flaws/Traits" }],
+      "effects": [{ "type": "pool_mod", "target": "main", "value": "(tier - 2) * 15", "display": "+(Tier-2)x15 Main Pool Points" }],
+      "ui": { "component": "card", "category": "uniqueAbility", "tags": ["resource_management", "specialist"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_uniqueAbility_cutAbove": {
+      "id": "archetype_uniqueAbility_cutAbove",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Cut Above",
+      "description": "Gain universal stat bonuses to all core stats: Accuracy, Damage, Conditions, Avoidance, Durability, Resistances, Initiative, and Movement. Tiers 1-4: +1 | Tiers 5-7: +2 | Tiers 8+: +3.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "stat_bonus", "target": "all_core_stats", "value": "tier_based", "display": "+1/+2/+3 to all stats based on Tier" }],
+      "ui": { "component": "card", "category": "uniqueAbility", "tags": ["stat_stick", "generalist"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_defensive_stalwart": {
+      "id": "archetype_defensive_stalwart",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Stalwart",
+      "description": "Subtract your Tier from your Avoidance Score. Choose Physical OR Non-Physical damage: you take half damage from that type. Provides specialized damage resistance.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [
+          { "type": "stat_penalty", "target": "avoidance", "value": "tier", "display": "-Tier from Avoidance" },
+          { "type": "resistance", "target": "choice", "options": ["physical", "non_physical"], "value": "half", "display": "Half damage from chosen type" }
+      ],
+      "ui": { "component": "card", "category": "defensive", "tags": ["tank", "specialized_defense"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_defensive_fortress": {
+      "id": "archetype_defensive_fortress",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Fortress",
+      "description": "Add your Tier again to Durability. Provides consistent protection against all damage.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "stat_bonus", "target": "durability", "value": "tier", "display": "+Tier to Durability" }],
+      "ui": { "component": "card", "category": "defensive", "tags": ["tank", "damage_reduction"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_defensive_resilient": {
+      "id": "archetype_defensive_resilient",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Resilient",
+      "description": "Add your Tier to all three Secondary Resistances (Resolve, Stability, Vitality). Makes you exceptionally good at resisting condition effects.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [
+          { "type": "stat_bonus", "target": "resolve", "value": "tier" },
+          { "type": "stat_bonus", "target": "stability", "value": "tier" },
+          { "type": "stat_bonus", "target": "vitality", "value": "tier", "display": "+Tier to all Resistances" }
+      ],
+      "ui": { "component": "card", "category": "defensive", "tags": ["condition_resistance", "tank"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_defensive_immutable": {
+      "id": "archetype_defensive_immutable",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Immutable",
+      "description": "Choose one Secondary Resistance type to gain complete immunity to it. An unshakeable defense against specific attacks.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "immunity", "target": "choice", "options": ["resolve", "stability", "vitality"], "display": "Immunity to one chosen Resistance" }],
+      "ui": { "component": "card", "category": "defensive", "tags": ["specialized_defense", "immunity"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_defensive_juggernaut": {
+      "id": "archetype_defensive_juggernaut",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Juggernaut",
+      "description": "Increase your maximum Health Pool by 5 × Tier. Provides extra health reserves for attrition warfare.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "stat_bonus", "target": "hp_max", "value": "tier*5", "display": "+5 x Tier to Max HP" }],
+      "ui": { "component": "card", "category": "defensive", "tags": ["tank", "health"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_specialAttack_normal": {
+      "id": "archetype_specialAttack_normal",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Normal",
+      "description": "Select 3 Specialty Upgrades at half cost. Limits provide Points × (Tier ÷ 6). Allows maximum customization flexibility.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "cost_modifier", "target": "specialty_upgrades", "value": 0.5, "count": 3, "display": "3 half-cost Specialty Upgrades" }],
+      "pointSystem": { "method": "limits", "multiplier": "tier/6" },
+      "ui": { "component": "card", "category": "specialAttack", "tags": ["flexible", "customization"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_specialAttack_specialist": {
+      "id": "archetype_specialAttack_specialist",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Specialist",
+      "description": "All limits selected must be applied to all attacks. Limits provide Points × (Tier ÷ 3). A higher return for a restricted playstyle.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "must_use_3_specific_limits", "display": "All attacks must use the same 3 limits" }],
+      "pointSystem": { "method": "limits", "multiplier": "tier/3" },
+      "ui": { "component": "card", "category": "specialAttack", "tags": ["specialist", "high_reward"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_specialAttack_paragon": {
+      "id": "archetype_specialAttack_paragon",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Paragon",
+      "description": "Each special attack receives 10 × Tier points. Cannot take Limits. Provides consistent performance without drawbacks.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "cannot_use_limits", "display": "Cannot use Limits" }],
+      "pointSystem": { "method": "fixed", "value": "tier*10", "per": "attack" },
+      "ui": { "component": "card", "category": "specialAttack", "tags": ["consistent", "simple"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_specialAttack_oneTrick": {
+      "id": "archetype_specialAttack_oneTrick",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "One Trick",
+      "description": "You can only create a single attack, but it gets Tier × 20 points. Cannot take Limits. High-risk, high-reward specialization.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "max_one_special_attack", "display": "Only 1 Special Attack" }],
+      "pointSystem": { "method": "fixed", "value": "tier*20" },
+      "ui": { "component": "card", "category": "specialAttack", "tags": ["specialist", "high_power"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_specialAttack_straightforward": {
+      "id": "archetype_specialAttack_straightforward",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Straightforward",
+      "description": "Choose a single Limit to apply to all attacks. That Limit returns Points × (Tier ÷ 2). A simple but effective approach.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "max_one_limit_per_attack", "display": "Max 1 limit per attack" }],
+      "pointSystem": { "method": "limits", "multiplier": "tier/2" },
+      "ui": { "component": "card", "category": "specialAttack", "tags": ["simple", "effective"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_specialAttack_sharedUses": {
+      "id": "archetype_specialAttack_sharedUses",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Shared Uses",
+      "description": "You have 10 shared uses among abilities, and each attack costs 1-3 uses. Regenerate 1 Use per turn. Gain a Tier × 5 point discount per use cost. Cannot take Limits.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "cannot_use_limits", "display": "Cannot use Limits" }],
+      "pointSystem": { "method": "shared_resource", "uses": 10, "regen": 1, "point_discount_per_use": "tier*5" },
+      "ui": { "component": "card", "category": "specialAttack", "tags": ["resource_management", "tactical"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_specialAttack_dualNatured": {
+      "id": "archetype_specialAttack_dualNatured",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Dual-Natured",
+      "description": "You can create two distinct Special Attacks, and each gets 15 × Tier points. Cannot take Limits. A balanced and versatile option.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "max_two_special_attacks", "display": "Max 2 Special Attacks" }],
+      "pointSystem": { "method": "fixed", "value": "tier*15", "per": "attack" },
+      "ui": { "component": "card", "category": "specialAttack", "tags": ["versatile", "balanced"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_specialAttack_basic": {
+      "id": "archetype_specialAttack_basic",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Basic",
+      "description": "Gain Tier × 10 points for base attack improvements only. No special attacks can be created. Good for builds that rely on their base attack.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "no_special_attacks", "display": "No Special Attacks allowed" }],
+      "pointSystem": { "method": "fixed", "value": "tier*10", "target": "base_attack" },
+      "ui": { "component": "card", "category": "specialAttack", "tags": ["simple", "base_attack"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_utility_specialized": {
+      "id": "archetype_utility_specialized",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Specialized",
+      "description": "Gain double Tier bonus for one chosen core stat. Cannot purchase additional Expertise.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "no_expertise_purchase", "display": "Cannot purchase Expertise" }],
+      "effects": [{ "type": "stat_choice", "value": "tier*2", "target": "core_attributes", "display": "Tier x 2 bonus to a chosen core stat"}],
+      "ui": { "component": "card", "category": "utility", "tags": ["skill_monkey", "specialist"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_utility_practical": {
+      "id": "archetype_utility_practical",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Practical",
+      "description": "Select 3 skills to gain proficiency in, each granting a 2 x Tier bonus to checks.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [],
+      "effects": [{ "type": "skill_choice", "count": 3, "bonus": "tier*2", "display": "Proficiency in 3 chosen skills" }],
+      "ui": { "component": "card", "category": "utility", "tags": ["skills", "versatile"] },
+      "sourceFile": "archetypes.json"
+    },
+    "archetype_utility_jackOfAllTrades": {
+      "id": "archetype_utility_jackOfAllTrades",
+      "schemaType": "entity",
+      "type": "archetype",
+      "name": "Jack of All Trades",
+      "description": "Adds Tier bonus to ALL skill checks. Cannot purchase specialized Expertise.",
+      "cost": { "value": 0, "pool": "selection", "display": "Choice" },
+      "requirements": [{ "type": "rule", "value": "no_specialized_expertise_purchase", "display": "Cannot purchase specialized Expertise" }],
+      "effects": [{ "type": "stat_bonus", "target": "all_skill_checks", "value": "tier", "display": "+Tier to all skill checks" }],
+      "ui": { "component": "card", "category": "utility", "tags": ["skills", "generalist"] },
+      "sourceFile": "archetypes.json"
+    }
+  }

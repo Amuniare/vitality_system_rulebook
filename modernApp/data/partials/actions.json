@@ -1,0 +1,189 @@
+{
+    "action_upgrade_base_attack_quick": {
+      "id": "action_upgrade_base_attack_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Base Attack",
+      "description": "Allows the Base Attack action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "base_attack", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "base_attack"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_dodge_quick": {
+      "id": "action_upgrade_dodge_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Dodge",
+      "description": "Allows the Dodge action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "dodge", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "defense"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_brace_quick": {
+      "id": "action_upgrade_brace_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Brace",
+      "description": "Allows the Brace action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "brace", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "defense"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_fortify_quick": {
+      "id": "action_upgrade_fortify_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Fortify",
+      "description": "Allows the Fortify action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "fortify", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "defense"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_aim_quick": {
+      "id": "action_upgrade_aim_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Aim",
+      "description": "Allows the Aim action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "aim", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "offense"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_empower_quick": {
+      "id": "action_upgrade_empower_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Empower",
+      "description": "Allows the Empower action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "empower", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "offense"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_refine_quick": {
+      "id": "action_upgrade_refine_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Refine",
+      "description": "Allows the Refine action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "refine", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "offense"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_assist_quick": {
+      "id": "action_upgrade_assist_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Assist",
+      "description": "Allows the Assist action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "assist", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "support"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_assist_enhanced": {
+      "id": "action_upgrade_assist_enhanced",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Enhanced Assist",
+      "description": "Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_enhancement", "target": "assist", "value": "enhanced_range_and_targets" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["support", "range"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_carry_quick": {
+      "id": "action_upgrade_carry_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Carry",
+      "description": "Allows the Carry action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "carry", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "utility"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_carry_enhanced": {
+      "id": "action_upgrade_carry_enhanced",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Effortless Carry",
+      "description": "No movement speed penalty. Once you've taken this action once on a turn, you can continue to reuse it for free until the end of this turn.",
+      "cost": { "value": 15, "pool": "main", "display": "15p" },
+      "effects": [{ "type": "action_enhancement", "target": "carry", "value": "no_penalty_free_reuse" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["utility", "movement"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_protect_quick": {
+      "id": "action_upgrade_protect_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Protect",
+      "description": "Allows the Protect action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "protect", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "defense", "reaction"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_protect_enhanced": {
+      "id": "action_upgrade_protect_enhanced",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Guardian",
+      "description": "You can protect all adjacent allies simultaneously and gain extra reactions equal to half your Tier (rounded up) to use only for the Protect Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_enhancement", "target": "protect", "value": "multi_target_extra_reactions" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["defense", "reaction", "support"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_use_quick": {
+      "id": "action_upgrade_use_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Use",
+      "description": "Allows the Use action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "use", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "utility"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_hasten_quick": {
+      "id": "action_upgrade_hasten_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Hasten",
+      "description": "Allows the Hasten action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "hasten", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "movement"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_hide_quick": {
+      "id": "action_upgrade_hide_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Hide",
+      "description": "Allows the Hide action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "hide", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "stealth"] },
+      "sourceFile": "actions.json"
+    },
+    "action_upgrade_prepare_quick": {
+      "id": "action_upgrade_prepare_quick",
+      "schemaType": "entity",
+      "type": "action_upgrade",
+      "name": "Quick Prepare",
+      "description": "Allows the Prepare action to be used as a Quick Action instead of a Primary Action.",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [{ "type": "action_conversion", "target": "prepare", "value": "quick" }],
+      "ui": { "component": "card", "category": "Action Upgrades", "tags": ["action_economy", "tactical"] },
+      "sourceFile": "actions.json"
+    }
+  }

@@ -1,0 +1,196 @@
+/* Attribute Controls */
+.attribute-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    margin-bottom: 0.5rem;
+}
+
+.attribute-label {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.attribute-value-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.attribute-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    background: white;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.attribute-btn:hover:not(.disabled) {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.attribute-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.attribute-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    min-width: 2rem;
+    text-align: center;
+}
+
+/* Point Pool Display */
+.point-pool-display {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pool-section {
+    margin-bottom: 1rem;
+}
+
+.pool-section:last-child {
+    margin-bottom: 0;
+}
+
+.pool-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+}
+
+.pool-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.pool-values {
+    font-size: 1.125rem;
+    font-weight: bold;
+}
+
+.pool-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.pool-bar-fill {
+    height: 100%;
+    background: var(--success-color);
+    transition: width 0.3s ease;
+}
+
+.pool-bar-overflow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background: var(--error-color);
+}
+
+.pool-remaining {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.remaining-positive {
+    color: var(--success-color);
+}
+
+.remaining-negative {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+/* Hierarchical Cards */
+.hierarchical-entity-card {
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.child-entities {
+    background: var(--bg-secondary);
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.child-entities-header {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.child-entity-card {
+    margin-left: 2rem;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+}
+
+/* Attributes Tab Layout */
+.attributes-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.attributes-grid {
+    margin-top: 1rem;
+}
+
+.derived-stats {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-weight: bold;
+    color: var(--primary-color);
+}

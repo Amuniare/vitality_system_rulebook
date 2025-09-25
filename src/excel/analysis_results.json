@@ -1,0 +1,5174 @@
+{
+  "file_info": {
+    "path": "c:\\Users\\Trent\\OneDrive\\Documents\\GitHub\\roll20_manager_v2\\src\\excel\\char_sheet.xlsx",
+    "size_kb": 54.8,
+    "sheets": [
+      "VL Table",
+      "DataValidation",
+      "Template",
+      "Pandora"
+    ]
+  },
+  "template_data": {
+    "input_schema": {
+      "D2": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Pandora"
+      },
+      "G2": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D3": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "G4": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "G6": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D20": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Single Target"
+      },
+      "D21": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Damage"
+      },
+      "D22": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Skirmisher"
+      },
+      "D23": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Cut Above"
+      },
+      "D24": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Straightforward"
+      },
+      "D25": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Jack of All Trades"
+      },
+      "E32": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E33": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E34": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E36": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E37": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D39": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Resolve"
+      },
+      "E40": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E41": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E42": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D55": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E55": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F55": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D56": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E56": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F56": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D57": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E57": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F57": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D58": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E58": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F58": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D59": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E59": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F59": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D60": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E60": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F60": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D61": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E61": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F61": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D62": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E62": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F62": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D63": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E63": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F63": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D64": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E64": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F64": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D65": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E65": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F65": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D66": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E66": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F66": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D67": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E67": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F67": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D68": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E68": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "F68": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B72": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C72": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D72": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E72": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H72": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B73": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C73": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D73": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E73": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H73": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B74": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C74": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D74": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E74": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H74": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B75": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C75": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D75": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E75": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H75": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B76": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C76": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D76": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E76": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H76": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B77": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C77": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D77": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E77": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H77": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B81": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C81": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D81": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E81": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H81": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B82": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C82": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D82": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E82": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H82": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B83": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C83": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D83": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E83": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H83": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B84": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C84": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D84": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E84": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H84": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B85": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C85": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D85": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E85": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H85": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B86": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C86": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D86": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E86": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H86": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B90": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C90": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D90": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E90": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H90": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B91": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C91": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D91": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E91": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H91": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B92": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C92": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D92": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E92": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H92": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B93": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C93": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D93": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E93": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H93": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B94": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C94": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D94": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E94": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H94": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B95": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C95": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D95": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "E95": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "H95": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B100": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C100": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D100": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H100": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B101": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Melee Only"
+      },
+      "C101": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D101": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Avoidance"
+      },
+      "H101": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B102": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C102": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D102": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H102": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B103": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C103": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D103": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H103": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B104": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Peaked"
+      },
+      "C104": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D104": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Accuracy"
+      },
+      "H104": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B105": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C105": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D105": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H105": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D111": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D112": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Melee DG"
+      },
+      "H114": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B115": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Bleed"
+      },
+      "C115": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 60
+      },
+      "D115": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Specialty Upgrade"
+      },
+      "H115": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B116": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Untouchable"
+      },
+      "C116": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 40
+      },
+      "D116": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Limit"
+      },
+      "H116": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B117": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C117": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D117": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H117": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B118": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Powerful Critical"
+      },
+      "C118": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 20
+      },
+      "D118": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H118": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B119": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Overhit"
+      },
+      "C119": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D119": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H119": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B120": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Power Attack"
+      },
+      "C120": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 10
+      },
+      "D120": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H120": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B121": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C121": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D121": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H121": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B122": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C122": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D122": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H122": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B123": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C123": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D123": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H123": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D126": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D127": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Melee DG"
+      },
+      "H129": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B130": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Bleed"
+      },
+      "C130": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 60
+      },
+      "D130": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Specialty Upgrade"
+      },
+      "H130": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B131": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Untouchable"
+      },
+      "C131": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 40
+      },
+      "D131": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Limit"
+      },
+      "H131": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B132": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C132": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D132": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H132": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B133": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Boss Slayer"
+      },
+      "C133": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 20
+      },
+      "D133": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H133": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B134": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "High Impact"
+      },
+      "C134": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 20
+      },
+      "D134": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H134": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B135": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Vanguard Slayer"
+      },
+      "C135": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 20
+      },
+      "D135": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H135": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B136": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C136": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D136": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H136": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B137": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C137": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D137": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H137": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B138": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C138": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D138": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H138": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D141": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D142": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Melee DG"
+      },
+      "H144": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B145": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Bleed"
+      },
+      "C145": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 60
+      },
+      "D145": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Specialty Upgrade"
+      },
+      "H145": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B146": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Untouchable"
+      },
+      "C146": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 40
+      },
+      "D146": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Limit"
+      },
+      "H146": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B147": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C147": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D147": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H147": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B148": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Heavy Strike"
+      },
+      "C148": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 40
+      },
+      "D148": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H148": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B149": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "High Impact"
+      },
+      "C149": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 20
+      },
+      "D149": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H149": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B150": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C150": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D150": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H150": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B151": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C151": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D151": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H151": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B152": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C152": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D152": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H152": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B153": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C153": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D153": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H153": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D156": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D157": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "H159": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B160": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Bleed"
+      },
+      "C160": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 60
+      },
+      "D160": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Specialty Upgrade"
+      },
+      "H160": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B161": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Untouchable"
+      },
+      "C161": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 40
+      },
+      "D161": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Limit"
+      },
+      "H161": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B162": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C162": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D162": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H162": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B163": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Whirlwind"
+      },
+      "C163": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D163": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H163": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B164": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "High Impact"
+      },
+      "C164": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 20
+      },
+      "D164": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H164": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B165": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Accurate"
+      },
+      "C165": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 10
+      },
+      "D165": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H165": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B166": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C166": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D166": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H166": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B167": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C167": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D167": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H167": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B168": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C168": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D168": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H168": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D171": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D172": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Melee AC Weaken DR"
+      },
+      "H174": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B175": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Weaken"
+      },
+      "C175": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D175": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H175": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B176": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Untouchable"
+      },
+      "C176": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 40
+      },
+      "D176": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Limit"
+      },
+      "H176": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B177": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C177": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D177": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H177": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B178": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Whirlwind"
+      },
+      "C178": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D178": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H178": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B179": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Overhit"
+      },
+      "C179": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D179": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H179": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B180": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C180": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D180": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H180": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B181": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C181": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D181": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H181": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B182": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C182": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D182": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H182": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B183": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C183": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D183": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H183": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D186": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D187": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Melee AC Stun"
+      },
+      "H189": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B190": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Stun"
+      },
+      "C190": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D190": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H190": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B191": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Untouchable"
+      },
+      "C191": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 40
+      },
+      "D191": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Limit"
+      },
+      "H191": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B192": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C192": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D192": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H192": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B193": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Overhit"
+      },
+      "C193": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 30
+      },
+      "D193": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H193": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B194": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Lasting Condition"
+      },
+      "C194": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 20
+      },
+      "D194": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H194": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B195": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": "Accuracy"
+      },
+      "C195": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": 10
+      },
+      "D195": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": "Upgrade"
+      },
+      "H195": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B196": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C196": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D196": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H196": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B197": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C197": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D197": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H197": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B198": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C198": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D198": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H198": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D201": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "D202": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "H204": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B205": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C205": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D205": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H205": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B206": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C206": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D206": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H206": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B207": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C207": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D207": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H207": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B208": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C208": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D208": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H208": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B209": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C209": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D209": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H209": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B210": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C210": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D210": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H210": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B211": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C211": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D211": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H211": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B212": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C212": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D212": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H212": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B213": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C213": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D213": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H213": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B219": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C219": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D219": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E219": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H219": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B220": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C220": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D220": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E220": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H220": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B221": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C221": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D221": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E221": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H221": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B222": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C222": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D222": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E222": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H222": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B223": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C223": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D223": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E223": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H223": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B224": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C224": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D224": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E224": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H224": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B225": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C225": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D225": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E225": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H225": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B226": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C226": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D226": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E226": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H226": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B227": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C227": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D227": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E227": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H227": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B228": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C228": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D228": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E228": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H228": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B229": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C229": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D229": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E229": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H229": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B230": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C230": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D230": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E230": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H230": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B231": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C231": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D231": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E231": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H231": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B232": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C232": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D232": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E232": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H232": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B233": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C233": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D233": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E233": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H233": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B234": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C234": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D234": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E234": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H234": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "B235": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      },
+      "C235": {
+        "input_type": "number_input",
+        "style_name": "input",
+        "value": null
+      },
+      "D235": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "E235": {
+        "input_type": "dropdown_input",
+        "style_name": "note",
+        "value": null
+      },
+      "H235": {
+        "input_type": "text_input",
+        "style_name": "good",
+        "value": null
+      }
+    },
+    "calculations": {
+      "G3": {
+        "formula": null,
+        "result": null,
+        "style_name": "calculation",
+        "section": "Hero Name / Moniker"
+      },
+      "C32": {
+        "formula": null,
+        "result": "d20",
+        "style_name": "calculation",
+        "section": "Accuracy"
+      },
+      "D32": {
+        "formula": "=$D$9+$D$4",
+        "result": 6,
+        "style_name": "calculation",
+        "section": "Accuracy"
+      },
+      "G32": {
+        "formula": "=10.5+D32+F32+SUMIF($D$100:$D$105,B32,$E$100:$E$105)+SUMIF($F$100:$F$105,B32,$G$100:$G$105)+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 24.5,
+        "style_name": "calculation",
+        "section": "Accuracy"
+      },
+      "C33": {
+        "formula": null,
+        "result": "3d6",
+        "style_name": "calculation",
+        "section": "Damage"
+      },
+      "D33": {
+        "formula": "=ROUNDUP($D$11*1.5,0)+$D$4",
+        "result": 15,
+        "style_name": "calculation",
+        "section": "Damage"
+      },
+      "G33": {
+        "formula": "=10.5+D33+F33+SUMIF($D$100:$D$105,B33,$E$100:$E$105)+SUMIF($F$100:$F$105,B33,$G$100:$G$105)+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 27.5,
+        "style_name": "calculation",
+        "section": "Damage"
+      },
+      "C34": {
+        "formula": null,
+        "result": "d20",
+        "style_name": "calculation",
+        "section": "Conditions"
+      },
+      "D34": {
+        "formula": "=$D$4*2",
+        "result": 12,
+        "style_name": "calculation",
+        "section": "Conditions"
+      },
+      "G34": {
+        "formula": "=10.5+D34+F34+SUMIF($D$100:$D$105,B34,$E$100:$E$105)+SUMIF($F$100:$F$105,B34,$G$100:$G$105)+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 24.5,
+        "style_name": "calculation",
+        "section": "Conditions"
+      },
+      "C36": {
+        "formula": "=10",
+        "result": 10,
+        "style_name": "calculation",
+        "section": "Avoidance"
+      },
+      "D36": {
+        "formula": "=$D$10+$D$4",
+        "result": 12,
+        "style_name": "calculation",
+        "section": "Avoidance"
+      },
+      "G36": {
+        "formula": "=C36+D36+F36+SUMIF($D$100:$D$105,B36,$E$100:$E$105)+SUMIF($F$100:$F$105,B36,$G$100:$G$105)+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Avoidance"
+      },
+      "C37": {
+        "formula": null,
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Durability"
+      },
+      "D37": {
+        "formula": "=ROUNDUP($D$12*1.5,0)+$D$4",
+        "result": 6,
+        "style_name": "calculation",
+        "section": "Durability"
+      },
+      "G37": {
+        "formula": "=C37+D37+F37+SUMIF($D$100:$D$105,B37,$E$100:$E$105)+SUMIF($F$100:$F$105,B37,$G$100:$G$105)+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 8,
+        "style_name": "calculation",
+        "section": "Durability"
+      },
+      "C40": {
+        "formula": "=10",
+        "result": 10,
+        "style_name": "calculation",
+        "section": "Resistance: Resolve"
+      },
+      "D40": {
+        "formula": "=$D$9+IF($D$39=\"Resolve\",2*$D$4,$D$4)",
+        "result": 12,
+        "style_name": "calculation",
+        "section": "Resistance: Resolve"
+      },
+      "G40": {
+        "formula": "=C40+D40+F40+SUMIF($D$100:$D$105,B40,$E$100:$E$105)+SUMIF($F$100:$F$105,B40,$G$100:$G$105)+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 24,
+        "style_name": "calculation",
+        "section": "Resistance: Resolve"
+      },
+      "C41": {
+        "formula": "=10",
+        "result": 10,
+        "style_name": "calculation",
+        "section": "Resistance: Stability"
+      },
+      "D41": {
+        "formula": "=$D$11+IF(D39=\"Stability\",2*$D$4,$D$4)",
+        "result": 12,
+        "style_name": "calculation",
+        "section": "Resistance: Stability"
+      },
+      "G41": {
+        "formula": "=C41+D41+F41+SUMIF($D$100:$D$105,B41,$E$100:$E$105)+SUMIF($F$100:$F$105,B41,$G$100:$G$105)+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 24,
+        "style_name": "calculation",
+        "section": "Resistance: Stability"
+      },
+      "C42": {
+        "formula": "=10",
+        "result": 10,
+        "style_name": "calculation",
+        "section": "Resistance: Vitality"
+      },
+      "D42": {
+        "formula": "=$D$12+IF(D39=\"Vitality\",2*$D$4,$D$4)",
+        "result": 6,
+        "style_name": "calculation",
+        "section": "Resistance: Vitality"
+      },
+      "G42": {
+        "formula": "=C42+D42+F42+SUMIF($D$100:$D$105,B42,$E$100:$E$105)+SUMIF($F$100:$F$105,B42,$G$100:$G$105)+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 18,
+        "style_name": "calculation",
+        "section": "Resistance: Vitality"
+      },
+      "D44": {
+        "formula": "=$D$10+$D$9+$D$15+$D$4+IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0)",
+        "result": 16,
+        "style_name": "calculation",
+        "section": "Initiative"
+      },
+      "D45": {
+        "formula": "=_xlfn.LET(\n_xlpm.movAndTier, $D$4+$D$10,\n_xlpm.movBase,  6+$D$10,\n_xlpm.movStart,IF(_xlpm.movAndTier>_xlpm.movBase,_xlpm.movAndTier,_xlpm.movBase),\n_xlpm.CutAbove, IF($D$23=\"Cut Above\",_xlfn.IFS($D$4<5,1,$D$4<8,2,D4>7,3),0),\n\n_xlpm.mType, _xlfn.IFS(\nAND($D$22=\"Swift\",$D$4<5),2,\nAND($D$22=\"Swift\",$D$4<7),3,\nAND($D$22=\"Swift\",$D$4<9),4,\nAND($D$22=\"Swift\",$D$4<11),5,\n$D$22=\"Vanguard\", $D$12,\n$D$22=\"Alternative Locomotion: Swinging\",1,\n$D$22=\"Alternative Locomotion: Super Jump\",1,\n$D$22=\"Alternative Locomotion: Teleportation\",-2,\n$D$22<>\"Swift\",0),\n\n_xlpm.movTotal, _xlpm.movStart+_xlpm.mType+_xlpm.CutAbove,\n_xlpm.movTotal\n)",
+        "result": 14,
+        "style_name": "calculation",
+        "section": "Movement"
+      },
+      "D46": {
+        "formula": "=SUM($E$69:$G$69,$C$87,$C$78,$C$96,$C$106)&\" / \"&$D$4*15-30+IF(D23=\"Extraordinary\",$D$4*15-30,0)",
+        "result": "60 / 60",
+        "style_name": "calculation",
+        "section": "Main Pool Points Spent"
+      },
+      "G55": {
+        "formula": "=_xlfn.IFS(AND(F55=\"Yes\",$D$23=\"Versatile Master\"),10,F55=\"Yes\",30,F55=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Base Attack"
+      },
+      "G56": {
+        "formula": "=_xlfn.IFS(AND(F56=\"Yes\",$D$23=\"Versatile Master\"),10,F56=\"Yes\",30,F56=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Dodge Action"
+      },
+      "G57": {
+        "formula": "=_xlfn.IFS(AND(F57=\"Yes\",$D$23=\"Versatile Master\"),10,F57=\"Yes\",30,F57=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Brace Action"
+      },
+      "G58": {
+        "formula": "=_xlfn.IFS(AND(F58=\"Yes\",$D$23=\"Versatile Master\"),10,F58=\"Yes\",30,F58=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Fortify Action"
+      },
+      "G59": {
+        "formula": "=_xlfn.IFS(AND(F59=\"Yes\",$D$23=\"Versatile Master\"),10,F59=\"Yes\",30,F59=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Aim Action"
+      },
+      "G60": {
+        "formula": "=_xlfn.IFS(AND(F60=\"Yes\",$D$23=\"Versatile Master\"),10,F60=\"Yes\",30,F60=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Empower Action"
+      },
+      "G61": {
+        "formula": "=_xlfn.IFS(AND(F61=\"Yes\",$D$23=\"Versatile Master\"),10,F61=\"Yes\",30,F61=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Refine Action"
+      },
+      "G62": {
+        "formula": "=_xlfn.IFS(AND(F62=\"Yes\",$D$23=\"Versatile Master\"),10,F62=\"Yes\",30,F62=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Assist Action"
+      },
+      "G63": {
+        "formula": "=_xlfn.IFS(AND(F63=\"Yes\",$D$23=\"Versatile Master\"),10,F63=\"Yes\",30,F63=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Carry Action"
+      },
+      "G64": {
+        "formula": "=_xlfn.IFS(AND(F64=\"Yes\",$D$23=\"Versatile Master\"),10,F64=\"Yes\",30,F64=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Protect Action"
+      },
+      "G65": {
+        "formula": "=_xlfn.IFS(AND(F65=\"Yes\",$D$23=\"Versatile Master\"),10,F65=\"Yes\",30,F65=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Use Action"
+      },
+      "G66": {
+        "formula": "=_xlfn.IFS(AND(F66=\"Yes\",$D$23=\"Versatile Master\"),10,F66=\"Yes\",30,F66=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Hasten Action"
+      },
+      "G67": {
+        "formula": "=_xlfn.IFS(AND(F67=\"Yes\",$D$23=\"Versatile Master\"),10,F67=\"Yes\",30,F67=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Hide Action"
+      },
+      "G68": {
+        "formula": "=_xlfn.IFS(AND(F68=\"Yes\",$D$23=\"Versatile Master\"),10,F68=\"Yes\",30,F68=\"\",\"\")",
+        "result": null,
+        "style_name": "calculation",
+        "section": "Prepare Action"
+      },
+      "B69": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Prepare Action"
+      },
+      "E69": {
+        "formula": "=SUM(E55:E68)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Prepare Action"
+      },
+      "G69": {
+        "formula": "=SUM(G55:G68)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Prepare Action"
+      },
+      "B78": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C78": {
+        "formula": "=SUM(C72:C77,E72:E77)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B87": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C87": {
+        "formula": "=SUM(C81:C86,E81:E86)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B96": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C96": {
+        "formula": "=SUM(C90:C95,E90:E95)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B106": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C106": {
+        "formula": "=SUM(C100:C105)",
+        "result": 60,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C109": {
+        "formula": "=COUNTA(D111,D126,D141,D156,D171,D186,D201)&\" / \"&$D$4&\" Special Attacks\"",
+        "result": "0 / 6 Special Attacks",
+        "style_name": "calculation",
+        "section": "Special Attacks Section"
+      },
+      "C114": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$24=\"One Trick\",$D$4*20,$D$24=\"Paragon\",$D$4*10,$D$24=\"Dual-Natured\",$D$4*15),0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E114": {
+        "formula": "=_xlfn.IFS(D114=\"\",0,D114=\"Upgrade\",1,AND(D114=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D114=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D114=\"Limit\",$D$24=\"Normal\"),$D$4/6,D114=\"Limit\",1,D114=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F114": {
+        "formula": "=_xlfn.IFS(D114=\"\",0,D114=\"Upgrade\",0,D114=\"Limit\",($C114)*$E114,D114=\"Specialty Upgrade\",0,D114=\"Specialty Limit\",($C114)*$E114)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G114": {
+        "formula": "=_xlfn.IFS(D114=\"\",0,D114=\"Upgrade\",($C114)*$E114,D114=\"Limit\",0,D114=\"Specialty Upgrade\",($C114)*$E114,D114=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E115": {
+        "formula": "=_xlfn.IFS(D115=\"\",0,D115=\"Upgrade\",1,AND(D115=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D115=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D115=\"Limit\",$D$24=\"Normal\"),$D$4/6,D115=\"Limit\",1,D115=\"Specialty Upgrade\",0.5)",
+        "result": 0.5,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F115": {
+        "formula": "=_xlfn.IFS(D115=\"\",0,D115=\"Upgrade\",0,D115=\"Limit\",($C115)*$E115,D115=\"Specialty Upgrade\",0,D115=\"Specialty Limit\",($C115)*$E115)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G115": {
+        "formula": "=_xlfn.IFS(D115=\"\",0,D115=\"Upgrade\",($C115)*$E115,D115=\"Limit\",0,D115=\"Specialty Upgrade\",($C115)*$E115,D115=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E116": {
+        "formula": "=_xlfn.IFS(D116=\"\",0,D116=\"Upgrade\",1,AND(D116=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D116=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D116=\"Limit\",$D$24=\"Normal\"),$D$4/6,D116=\"Limit\",1,D116=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F116": {
+        "formula": "=_xlfn.IFS(D116=\"\",0,D116=\"Upgrade\",0,D116=\"Limit\",($C116)*$E116,D116=\"Specialty Upgrade\",0,D116=\"Specialty Limit\",($C116)*$E116)",
+        "result": 120,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G116": {
+        "formula": "=_xlfn.IFS(D116=\"\",0,D116=\"Upgrade\",($C116)*$E116,D116=\"Limit\",0,D116=\"Specialty Upgrade\",($C116)*$E116,D116=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E117": {
+        "formula": "=_xlfn.IFS(D117=\"\",0,D117=\"Upgrade\",1,AND(D117=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D117=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D117=\"Limit\",$D$24=\"Normal\"),$D$4/6,D117=\"Limit\",1,D117=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F117": {
+        "formula": "=_xlfn.IFS(D117=\"\",0,D117=\"Upgrade\",0,D117=\"Limit\",($C117)*$E117,D117=\"Specialty Upgrade\",0,D117=\"Specialty Limit\",($C117)*$E117)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G117": {
+        "formula": "=_xlfn.IFS(D117=\"\",0,D117=\"Upgrade\",($C117)*$E117,D117=\"Limit\",0,D117=\"Specialty Upgrade\",($C117)*$E117,D117=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E118": {
+        "formula": "=_xlfn.IFS(D118=\"\",0,D118=\"Upgrade\",1,AND(D118=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D118=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D118=\"Limit\",$D$24=\"Normal\"),$D$4/6,D118=\"Limit\",1,D118=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F118": {
+        "formula": "=_xlfn.IFS(D118=\"\",0,D118=\"Upgrade\",0,D118=\"Limit\",($C118)*$E118,D118=\"Specialty Upgrade\",0,D118=\"Specialty Limit\",($C118)*$E118)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G118": {
+        "formula": "=_xlfn.IFS(D118=\"\",0,D118=\"Upgrade\",($C118)*$E118,D118=\"Limit\",0,D118=\"Specialty Upgrade\",($C118)*$E118,D118=\"Specialty Limit\",0)",
+        "result": 20,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E119": {
+        "formula": "=_xlfn.IFS(D119=\"\",0,D119=\"Upgrade\",1,AND(D119=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D119=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D119=\"Limit\",$D$24=\"Normal\"),$D$4/6,D119=\"Limit\",1,D119=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F119": {
+        "formula": "=_xlfn.IFS(D119=\"\",0,D119=\"Upgrade\",0,D119=\"Limit\",($C119)*$E119,D119=\"Specialty Upgrade\",0,D119=\"Specialty Limit\",($C119)*$E119)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G119": {
+        "formula": "=_xlfn.IFS(D119=\"\",0,D119=\"Upgrade\",($C119)*$E119,D119=\"Limit\",0,D119=\"Specialty Upgrade\",($C119)*$E119,D119=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E120": {
+        "formula": "=_xlfn.IFS(D120=\"\",0,D120=\"Upgrade\",1,AND(D120=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D120=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D120=\"Limit\",$D$24=\"Normal\"),$D$4/6,D120=\"Limit\",1,D120=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F120": {
+        "formula": "=_xlfn.IFS(D120=\"\",0,D120=\"Upgrade\",0,D120=\"Limit\",($C120)*$E120,D120=\"Specialty Upgrade\",0,D120=\"Specialty Limit\",($C120)*$E120)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G120": {
+        "formula": "=_xlfn.IFS(D120=\"\",0,D120=\"Upgrade\",($C120)*$E120,D120=\"Limit\",0,D120=\"Specialty Upgrade\",($C120)*$E120,D120=\"Specialty Limit\",0)",
+        "result": 10,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E121": {
+        "formula": "=_xlfn.IFS(D121=\"\",0,D121=\"Upgrade\",1,AND(D121=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D121=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D121=\"Limit\",$D$24=\"Normal\"),$D$4/6,D121=\"Limit\",1,D121=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F121": {
+        "formula": "=_xlfn.IFS(D121=\"\",0,D121=\"Upgrade\",0,D121=\"Limit\",($C121)*$E121,D121=\"Specialty Upgrade\",0,D121=\"Specialty Limit\",($C121)*$E121)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G121": {
+        "formula": "=_xlfn.IFS(D121=\"\",0,D121=\"Upgrade\",($C121)*$E121,D121=\"Limit\",0,D121=\"Specialty Upgrade\",($C121)*$E121,D121=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E122": {
+        "formula": "=_xlfn.IFS(D122=\"\",0,D122=\"Upgrade\",1,AND(D122=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D122=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D122=\"Limit\",$D$24=\"Normal\"),$D$4/6,D122=\"Limit\",1,D122=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F122": {
+        "formula": "=_xlfn.IFS(D122=\"\",0,D122=\"Upgrade\",0,D122=\"Limit\",($C122)*$E122,D122=\"Specialty Upgrade\",0,D122=\"Specialty Limit\",($C122)*$E122)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G122": {
+        "formula": "=_xlfn.IFS(D122=\"\",0,D122=\"Upgrade\",($C122)*$E122,D122=\"Limit\",0,D122=\"Specialty Upgrade\",($C122)*$E122,D122=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E123": {
+        "formula": "=_xlfn.IFS(D123=\"\",0,D123=\"Upgrade\",1,AND(D123=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D123=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D123=\"Limit\",$D$24=\"Normal\"),$D$4/6,D123=\"Limit\",1,D123=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F123": {
+        "formula": "=_xlfn.IFS(D123=\"\",0,D123=\"Upgrade\",0,D123=\"Limit\",($C123)*$E123,D123=\"Specialty Upgrade\",0,D123=\"Specialty Limit\",($C123)*$E123)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G123": {
+        "formula": "=_xlfn.IFS(D123=\"\",0,D123=\"Upgrade\",($C123)*$E123,D123=\"Limit\",0,D123=\"Specialty Upgrade\",($C123)*$E123,D123=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B124": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F124": {
+        "formula": "=_xlfn.LET(_xlpm.a,$D$4,\n_xlpm.b,_xlpm.a*10,\n_xlpm.c,_xlpm.a*20,\n_xlpm.d,_xlpm.a*30,\n_xlpm.sum, _xlfn.IFS(\nSUM(F114:F123)<(_xlpm.b+1),SUM(F114:F123),\nSUM(F114:F123)<(_xlpm.c+1),(SUM(F114:F123)-_xlpm.b)/2+_xlpm.b,\nSUM(F114:F123)>(_xlpm.c),(SUM(F114:F123)-_xlpm.c)/4+(_xlpm.b*1.5)),\n_xlpm.sum\n)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G124": {
+        "formula": "=SUM(G114:G123)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C129": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$24=\"One Trick\",$D$4*20,$D$24=\"Paragon\",$D$4*10,$D$24=\"Dual-Natured\",$D$4*15),0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E129": {
+        "formula": "=_xlfn.IFS(D129=\"\",0,D129=\"Upgrade\",1,AND(D129=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D129=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D129=\"Limit\",$D$24=\"Normal\"),$D$4/6,D129=\"Limit\",1,D129=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F129": {
+        "formula": "=_xlfn.IFS(D129=\"\",0,D129=\"Upgrade\",0,D129=\"Limit\",($C129)*$E129,D129=\"Specialty Upgrade\",0,D129=\"Specialty Limit\",($C129)*$E129)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G129": {
+        "formula": "=_xlfn.IFS(D129=\"\",0,D129=\"Upgrade\",($C129)*$E129,D129=\"Limit\",0,D129=\"Specialty Upgrade\",($C129)*$E129,D129=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E130": {
+        "formula": "=_xlfn.IFS(D130=\"\",0,D130=\"Upgrade\",1,AND(D130=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D130=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D130=\"Limit\",$D$24=\"Normal\"),$D$4/6,D130=\"Limit\",1,D130=\"Specialty Upgrade\",0.5)",
+        "result": 0.5,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F130": {
+        "formula": "=_xlfn.IFS(D130=\"\",0,D130=\"Upgrade\",0,D130=\"Limit\",($C130)*$E130,D130=\"Specialty Upgrade\",0,D130=\"Specialty Limit\",($C130)*$E130)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G130": {
+        "formula": "=_xlfn.IFS(D130=\"\",0,D130=\"Upgrade\",($C130)*$E130,D130=\"Limit\",0,D130=\"Specialty Upgrade\",($C130)*$E130,D130=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E131": {
+        "formula": "=_xlfn.IFS(D131=\"\",0,D131=\"Upgrade\",1,AND(D131=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D131=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D131=\"Limit\",$D$24=\"Normal\"),$D$4/6,D131=\"Limit\",1,D131=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F131": {
+        "formula": "=_xlfn.IFS(D131=\"\",0,D131=\"Upgrade\",0,D131=\"Limit\",($C131)*$E131,D131=\"Specialty Upgrade\",0,D131=\"Specialty Limit\",($C131)*$E131)",
+        "result": 120,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G131": {
+        "formula": "=_xlfn.IFS(D131=\"\",0,D131=\"Upgrade\",($C131)*$E131,D131=\"Limit\",0,D131=\"Specialty Upgrade\",($C131)*$E131,D131=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E132": {
+        "formula": "=_xlfn.IFS(D132=\"\",0,D132=\"Upgrade\",1,AND(D132=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D132=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D132=\"Limit\",$D$24=\"Normal\"),$D$4/6,D132=\"Limit\",1,D132=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F132": {
+        "formula": "=_xlfn.IFS(D132=\"\",0,D132=\"Upgrade\",0,D132=\"Limit\",($C132)*$E132,D132=\"Specialty Upgrade\",0,D132=\"Specialty Limit\",($C132)*$E132)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G132": {
+        "formula": "=_xlfn.IFS(D132=\"\",0,D132=\"Upgrade\",($C132)*$E132,D132=\"Limit\",0,D132=\"Specialty Upgrade\",($C132)*$E132,D132=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E133": {
+        "formula": "=_xlfn.IFS(D133=\"\",0,D133=\"Upgrade\",1,AND(D133=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D133=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D133=\"Limit\",$D$24=\"Normal\"),$D$4/6,D133=\"Limit\",1,D133=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F133": {
+        "formula": "=_xlfn.IFS(D133=\"\",0,D133=\"Upgrade\",0,D133=\"Limit\",($C133)*$E133,D133=\"Specialty Upgrade\",0,D133=\"Specialty Limit\",($C133)*$E133)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G133": {
+        "formula": "=_xlfn.IFS(D133=\"\",0,D133=\"Upgrade\",($C133)*$E133,D133=\"Limit\",0,D133=\"Specialty Upgrade\",($C133)*$E133,D133=\"Specialty Limit\",0)",
+        "result": 20,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E134": {
+        "formula": "=_xlfn.IFS(D134=\"\",0,D134=\"Upgrade\",1,AND(D134=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D134=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D134=\"Limit\",$D$24=\"Normal\"),$D$4/6,D134=\"Limit\",1,D134=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F134": {
+        "formula": "=_xlfn.IFS(D134=\"\",0,D134=\"Upgrade\",0,D134=\"Limit\",($C134)*$E134,D134=\"Specialty Upgrade\",0,D134=\"Specialty Limit\",($C134)*$E134)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G134": {
+        "formula": "=_xlfn.IFS(D134=\"\",0,D134=\"Upgrade\",($C134)*$E134,D134=\"Limit\",0,D134=\"Specialty Upgrade\",($C134)*$E134,D134=\"Specialty Limit\",0)",
+        "result": 20,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E135": {
+        "formula": "=_xlfn.IFS(D135=\"\",0,D135=\"Upgrade\",1,AND(D135=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D135=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D135=\"Limit\",$D$24=\"Normal\"),$D$4/6,D135=\"Limit\",1,D135=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F135": {
+        "formula": "=_xlfn.IFS(D135=\"\",0,D135=\"Upgrade\",0,D135=\"Limit\",($C135)*$E135,D135=\"Specialty Upgrade\",0,D135=\"Specialty Limit\",($C135)*$E135)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G135": {
+        "formula": "=_xlfn.IFS(D135=\"\",0,D135=\"Upgrade\",($C135)*$E135,D135=\"Limit\",0,D135=\"Specialty Upgrade\",($C135)*$E135,D135=\"Specialty Limit\",0)",
+        "result": 20,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E136": {
+        "formula": "=_xlfn.IFS(D136=\"\",0,D136=\"Upgrade\",1,AND(D136=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D136=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D136=\"Limit\",$D$24=\"Normal\"),$D$4/6,D136=\"Limit\",1,D136=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F136": {
+        "formula": "=_xlfn.IFS(D136=\"\",0,D136=\"Upgrade\",0,D136=\"Limit\",($C136)*$E136,D136=\"Specialty Upgrade\",0,D136=\"Specialty Limit\",($C136)*$E136)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G136": {
+        "formula": "=_xlfn.IFS(D136=\"\",0,D136=\"Upgrade\",($C136)*$E136,D136=\"Limit\",0,D136=\"Specialty Upgrade\",($C136)*$E136,D136=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E137": {
+        "formula": "=_xlfn.IFS(D137=\"\",0,D137=\"Upgrade\",1,AND(D137=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D137=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D137=\"Limit\",$D$24=\"Normal\"),$D$4/6,D137=\"Limit\",1,D137=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F137": {
+        "formula": "=_xlfn.IFS(D137=\"\",0,D137=\"Upgrade\",0,D137=\"Limit\",($C137)*$E137,D137=\"Specialty Upgrade\",0,D137=\"Specialty Limit\",($C137)*$E137)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G137": {
+        "formula": "=_xlfn.IFS(D137=\"\",0,D137=\"Upgrade\",($C137)*$E137,D137=\"Limit\",0,D137=\"Specialty Upgrade\",($C137)*$E137,D137=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E138": {
+        "formula": "=_xlfn.IFS(D138=\"\",0,D138=\"Upgrade\",1,AND(D138=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D138=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D138=\"Limit\",$D$24=\"Normal\"),$D$4/6,D138=\"Limit\",1,D138=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F138": {
+        "formula": "=_xlfn.IFS(D138=\"\",0,D138=\"Upgrade\",0,D138=\"Limit\",($C138)*$E138,D138=\"Specialty Upgrade\",0,D138=\"Specialty Limit\",($C138)*$E138)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G138": {
+        "formula": "=_xlfn.IFS(D138=\"\",0,D138=\"Upgrade\",($C138)*$E138,D138=\"Limit\",0,D138=\"Specialty Upgrade\",($C138)*$E138,D138=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B139": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F139": {
+        "formula": "=_xlfn.LET(_xlpm.a,$D$4,\n_xlpm.b,_xlpm.a*10,\n_xlpm.c,_xlpm.a*20,\n_xlpm.d,_xlpm.a*30,\n_xlpm.sum, _xlfn.IFS(\nSUM(F129:F138)<(_xlpm.b+1),SUM(F129:F138),\nSUM(F129:F138)<(_xlpm.c+1),(SUM(F129:F138)-_xlpm.b)/2+_xlpm.b,\nSUM(F129:F138)>(_xlpm.c),(SUM(F129:F138)-_xlpm.c)/4+(_xlpm.b*1.5)),\n_xlpm.sum\n)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G139": {
+        "formula": "=SUM(G129:G138)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C144": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$24=\"One Trick\",$D$4*20,$D$24=\"Paragon\",$D$4*10,$D$24=\"Dual-Natured\",$D$4*15),0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E144": {
+        "formula": "=_xlfn.IFS(D144=\"\",0,D144=\"Upgrade\",1,AND(D144=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D144=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D144=\"Limit\",$D$24=\"Normal\"),$D$4/6,D144=\"Limit\",1,D144=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F144": {
+        "formula": "=_xlfn.IFS(D144=\"\",0,D144=\"Upgrade\",0,D144=\"Limit\",($C144)*$E144,D144=\"Specialty Upgrade\",0,D144=\"Specialty Limit\",($C144)*$E144)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G144": {
+        "formula": "=_xlfn.IFS(D144=\"\",0,D144=\"Upgrade\",($C144)*$E144,D144=\"Limit\",0,D144=\"Specialty Upgrade\",($C144)*$E144,D144=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E145": {
+        "formula": "=_xlfn.IFS(D145=\"\",0,D145=\"Upgrade\",1,AND(D145=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D145=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D145=\"Limit\",$D$24=\"Normal\"),$D$4/6,D145=\"Limit\",1,D145=\"Specialty Upgrade\",0.5)",
+        "result": 0.5,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F145": {
+        "formula": "=_xlfn.IFS(D145=\"\",0,D145=\"Upgrade\",0,D145=\"Limit\",($C145)*$E145,D145=\"Specialty Upgrade\",0,D145=\"Specialty Limit\",($C145)*$E145)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G145": {
+        "formula": "=_xlfn.IFS(D145=\"\",0,D145=\"Upgrade\",($C145)*$E145,D145=\"Limit\",0,D145=\"Specialty Upgrade\",($C145)*$E145,D145=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E146": {
+        "formula": "=_xlfn.IFS(D146=\"\",0,D146=\"Upgrade\",1,AND(D146=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D146=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D146=\"Limit\",$D$24=\"Normal\"),$D$4/6,D146=\"Limit\",1,D146=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F146": {
+        "formula": "=_xlfn.IFS(D146=\"\",0,D146=\"Upgrade\",0,D146=\"Limit\",($C146)*$E146,D146=\"Specialty Upgrade\",0,D146=\"Specialty Limit\",($C146)*$E146)",
+        "result": 120,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G146": {
+        "formula": "=_xlfn.IFS(D146=\"\",0,D146=\"Upgrade\",($C146)*$E146,D146=\"Limit\",0,D146=\"Specialty Upgrade\",($C146)*$E146,D146=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E147": {
+        "formula": "=_xlfn.IFS(D147=\"\",0,D147=\"Upgrade\",1,AND(D147=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D147=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D147=\"Limit\",$D$24=\"Normal\"),$D$4/6,D147=\"Limit\",1,D147=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F147": {
+        "formula": "=_xlfn.IFS(D147=\"\",0,D147=\"Upgrade\",0,D147=\"Limit\",($C147)*$E147,D147=\"Specialty Upgrade\",0,D147=\"Specialty Limit\",($C147)*$E147)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G147": {
+        "formula": "=_xlfn.IFS(D147=\"\",0,D147=\"Upgrade\",($C147)*$E147,D147=\"Limit\",0,D147=\"Specialty Upgrade\",($C147)*$E147,D147=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E148": {
+        "formula": "=_xlfn.IFS(D148=\"\",0,D148=\"Upgrade\",1,AND(D148=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D148=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D148=\"Limit\",$D$24=\"Normal\"),$D$4/6,D148=\"Limit\",1,D148=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F148": {
+        "formula": "=_xlfn.IFS(D148=\"\",0,D148=\"Upgrade\",0,D148=\"Limit\",($C148)*$E148,D148=\"Specialty Upgrade\",0,D148=\"Specialty Limit\",($C148)*$E148)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G148": {
+        "formula": "=_xlfn.IFS(D148=\"\",0,D148=\"Upgrade\",($C148)*$E148,D148=\"Limit\",0,D148=\"Specialty Upgrade\",($C148)*$E148,D148=\"Specialty Limit\",0)",
+        "result": 40,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E149": {
+        "formula": "=_xlfn.IFS(D149=\"\",0,D149=\"Upgrade\",1,AND(D149=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D149=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D149=\"Limit\",$D$24=\"Normal\"),$D$4/6,D149=\"Limit\",1,D149=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F149": {
+        "formula": "=_xlfn.IFS(D149=\"\",0,D149=\"Upgrade\",0,D149=\"Limit\",($C149)*$E149,D149=\"Specialty Upgrade\",0,D149=\"Specialty Limit\",($C149)*$E149)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G149": {
+        "formula": "=_xlfn.IFS(D149=\"\",0,D149=\"Upgrade\",($C149)*$E149,D149=\"Limit\",0,D149=\"Specialty Upgrade\",($C149)*$E149,D149=\"Specialty Limit\",0)",
+        "result": 20,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E150": {
+        "formula": "=_xlfn.IFS(D150=\"\",0,D150=\"Upgrade\",1,AND(D150=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D150=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D150=\"Limit\",$D$24=\"Normal\"),$D$4/6,D150=\"Limit\",1,D150=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F150": {
+        "formula": "=_xlfn.IFS(D150=\"\",0,D150=\"Upgrade\",0,D150=\"Limit\",($C150)*$E150,D150=\"Specialty Upgrade\",0,D150=\"Specialty Limit\",($C150)*$E150)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G150": {
+        "formula": "=_xlfn.IFS(D150=\"\",0,D150=\"Upgrade\",($C150)*$E150,D150=\"Limit\",0,D150=\"Specialty Upgrade\",($C150)*$E150,D150=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E151": {
+        "formula": "=_xlfn.IFS(D151=\"\",0,D151=\"Upgrade\",1,AND(D151=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D151=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D151=\"Limit\",$D$24=\"Normal\"),$D$4/6,D151=\"Limit\",1,D151=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F151": {
+        "formula": "=_xlfn.IFS(D151=\"\",0,D151=\"Upgrade\",0,D151=\"Limit\",($C151)*$E151,D151=\"Specialty Upgrade\",0,D151=\"Specialty Limit\",($C151)*$E151)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G151": {
+        "formula": "=_xlfn.IFS(D151=\"\",0,D151=\"Upgrade\",($C151)*$E151,D151=\"Limit\",0,D151=\"Specialty Upgrade\",($C151)*$E151,D151=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E152": {
+        "formula": "=_xlfn.IFS(D152=\"\",0,D152=\"Upgrade\",1,AND(D152=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D152=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D152=\"Limit\",$D$24=\"Normal\"),$D$4/6,D152=\"Limit\",1,D152=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F152": {
+        "formula": "=_xlfn.IFS(D152=\"\",0,D152=\"Upgrade\",0,D152=\"Limit\",($C152)*$E152,D152=\"Specialty Upgrade\",0,D152=\"Specialty Limit\",($C152)*$E152)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G152": {
+        "formula": "=_xlfn.IFS(D152=\"\",0,D152=\"Upgrade\",($C152)*$E152,D152=\"Limit\",0,D152=\"Specialty Upgrade\",($C152)*$E152,D152=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E153": {
+        "formula": "=_xlfn.IFS(D153=\"\",0,D153=\"Upgrade\",1,AND(D153=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D153=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D153=\"Limit\",$D$24=\"Normal\"),$D$4/6,D153=\"Limit\",1,D153=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F153": {
+        "formula": "=_xlfn.IFS(D153=\"\",0,D153=\"Upgrade\",0,D153=\"Limit\",($C153)*$E153,D153=\"Specialty Upgrade\",0,D153=\"Specialty Limit\",($C153)*$E153)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G153": {
+        "formula": "=_xlfn.IFS(D153=\"\",0,D153=\"Upgrade\",($C153)*$E153,D153=\"Limit\",0,D153=\"Specialty Upgrade\",($C153)*$E153,D153=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B154": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F154": {
+        "formula": "=_xlfn.LET(_xlpm.a,$D$4,\n_xlpm.b,_xlpm.a*10,\n_xlpm.c,_xlpm.a*20,\n_xlpm.d,_xlpm.a*30,\n_xlpm.sum, _xlfn.IFS(\nSUM(F144:F153)<(_xlpm.b+1),SUM(F144:F153),\nSUM(F144:F153)<(_xlpm.c+1),(SUM(F144:F153)-_xlpm.b)/2+_xlpm.b,\nSUM(F144:F153)>(_xlpm.c),(SUM(F144:F153)-_xlpm.c)/4+(_xlpm.b*1.5)),\n_xlpm.sum\n)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G154": {
+        "formula": "=SUM(G144:G153)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C159": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$24=\"One Trick\",$D$4*20,$D$24=\"Paragon\",$D$4*10,$D$24=\"Dual-Natured\",$D$4*15),0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E159": {
+        "formula": "=_xlfn.IFS(D159=\"\",0,D159=\"Upgrade\",1,AND(D159=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D159=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D159=\"Limit\",$D$24=\"Normal\"),$D$4/6,D159=\"Limit\",1,D159=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F159": {
+        "formula": "=_xlfn.IFS(D159=\"\",0,D159=\"Upgrade\",0,D159=\"Limit\",($C159)*$E159,D159=\"Specialty Upgrade\",0,D159=\"Specialty Limit\",($C159)*$E159)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G159": {
+        "formula": "=_xlfn.IFS(D159=\"\",0,D159=\"Upgrade\",($C159)*$E159,D159=\"Limit\",0,D159=\"Specialty Upgrade\",($C159)*$E159,D159=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E160": {
+        "formula": "=_xlfn.IFS(D160=\"\",0,D160=\"Upgrade\",1,AND(D160=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D160=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D160=\"Limit\",$D$24=\"Normal\"),$D$4/6,D160=\"Limit\",1,D160=\"Specialty Upgrade\",0.5)",
+        "result": 0.5,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F160": {
+        "formula": "=_xlfn.IFS(D160=\"\",0,D160=\"Upgrade\",0,D160=\"Limit\",($C160)*$E160,D160=\"Specialty Upgrade\",0,D160=\"Specialty Limit\",($C160)*$E160)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G160": {
+        "formula": "=_xlfn.IFS(D160=\"\",0,D160=\"Upgrade\",($C160)*$E160,D160=\"Limit\",0,D160=\"Specialty Upgrade\",($C160)*$E160,D160=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E161": {
+        "formula": "=_xlfn.IFS(D161=\"\",0,D161=\"Upgrade\",1,AND(D161=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D161=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D161=\"Limit\",$D$24=\"Normal\"),$D$4/6,D161=\"Limit\",1,D161=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F161": {
+        "formula": "=_xlfn.IFS(D161=\"\",0,D161=\"Upgrade\",0,D161=\"Limit\",($C161)*$E161,D161=\"Specialty Upgrade\",0,D161=\"Specialty Limit\",($C161)*$E161)",
+        "result": 120,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G161": {
+        "formula": "=_xlfn.IFS(D161=\"\",0,D161=\"Upgrade\",($C161)*$E161,D161=\"Limit\",0,D161=\"Specialty Upgrade\",($C161)*$E161,D161=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E162": {
+        "formula": "=_xlfn.IFS(D162=\"\",0,D162=\"Upgrade\",1,AND(D162=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D162=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D162=\"Limit\",$D$24=\"Normal\"),$D$4/6,D162=\"Limit\",1,D162=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F162": {
+        "formula": "=_xlfn.IFS(D162=\"\",0,D162=\"Upgrade\",0,D162=\"Limit\",($C162)*$E162,D162=\"Specialty Upgrade\",0,D162=\"Specialty Limit\",($C162)*$E162)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G162": {
+        "formula": "=_xlfn.IFS(D162=\"\",0,D162=\"Upgrade\",($C162)*$E162,D162=\"Limit\",0,D162=\"Specialty Upgrade\",($C162)*$E162,D162=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E163": {
+        "formula": "=_xlfn.IFS(D163=\"\",0,D163=\"Upgrade\",1,AND(D163=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D163=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D163=\"Limit\",$D$24=\"Normal\"),$D$4/6,D163=\"Limit\",1,D163=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F163": {
+        "formula": "=_xlfn.IFS(D163=\"\",0,D163=\"Upgrade\",0,D163=\"Limit\",($C163)*$E163,D163=\"Specialty Upgrade\",0,D163=\"Specialty Limit\",($C163)*$E163)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G163": {
+        "formula": "=_xlfn.IFS(D163=\"\",0,D163=\"Upgrade\",($C163)*$E163,D163=\"Limit\",0,D163=\"Specialty Upgrade\",($C163)*$E163,D163=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E164": {
+        "formula": "=_xlfn.IFS(D164=\"\",0,D164=\"Upgrade\",1,AND(D164=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D164=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D164=\"Limit\",$D$24=\"Normal\"),$D$4/6,D164=\"Limit\",1,D164=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F164": {
+        "formula": "=_xlfn.IFS(D164=\"\",0,D164=\"Upgrade\",0,D164=\"Limit\",($C164)*$E164,D164=\"Specialty Upgrade\",0,D164=\"Specialty Limit\",($C164)*$E164)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G164": {
+        "formula": "=_xlfn.IFS(D164=\"\",0,D164=\"Upgrade\",($C164)*$E164,D164=\"Limit\",0,D164=\"Specialty Upgrade\",($C164)*$E164,D164=\"Specialty Limit\",0)",
+        "result": 20,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E165": {
+        "formula": "=_xlfn.IFS(D165=\"\",0,D165=\"Upgrade\",1,AND(D165=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D165=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D165=\"Limit\",$D$24=\"Normal\"),$D$4/6,D165=\"Limit\",1,D165=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F165": {
+        "formula": "=_xlfn.IFS(D165=\"\",0,D165=\"Upgrade\",0,D165=\"Limit\",($C165)*$E165,D165=\"Specialty Upgrade\",0,D165=\"Specialty Limit\",($C165)*$E165)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G165": {
+        "formula": "=_xlfn.IFS(D165=\"\",0,D165=\"Upgrade\",($C165)*$E165,D165=\"Limit\",0,D165=\"Specialty Upgrade\",($C165)*$E165,D165=\"Specialty Limit\",0)",
+        "result": 10,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E166": {
+        "formula": "=_xlfn.IFS(D166=\"\",0,D166=\"Upgrade\",1,AND(D166=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D166=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D166=\"Limit\",$D$24=\"Normal\"),$D$4/6,D166=\"Limit\",1,D166=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F166": {
+        "formula": "=_xlfn.IFS(D166=\"\",0,D166=\"Upgrade\",0,D166=\"Limit\",($C166)*$E166,D166=\"Specialty Upgrade\",0,D166=\"Specialty Limit\",($C166)*$E166)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G166": {
+        "formula": "=_xlfn.IFS(D166=\"\",0,D166=\"Upgrade\",($C166)*$E166,D166=\"Limit\",0,D166=\"Specialty Upgrade\",($C166)*$E166,D166=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E167": {
+        "formula": "=_xlfn.IFS(D167=\"\",0,D167=\"Upgrade\",1,AND(D167=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D167=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D167=\"Limit\",$D$24=\"Normal\"),$D$4/6,D167=\"Limit\",1,D167=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F167": {
+        "formula": "=_xlfn.IFS(D167=\"\",0,D167=\"Upgrade\",0,D167=\"Limit\",($C167)*$E167,D167=\"Specialty Upgrade\",0,D167=\"Specialty Limit\",($C167)*$E167)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G167": {
+        "formula": "=_xlfn.IFS(D167=\"\",0,D167=\"Upgrade\",($C167)*$E167,D167=\"Limit\",0,D167=\"Specialty Upgrade\",($C167)*$E167,D167=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E168": {
+        "formula": "=_xlfn.IFS(D168=\"\",0,D168=\"Upgrade\",1,AND(D168=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D168=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D168=\"Limit\",$D$24=\"Normal\"),$D$4/6,D168=\"Limit\",1,D168=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F168": {
+        "formula": "=_xlfn.IFS(D168=\"\",0,D168=\"Upgrade\",0,D168=\"Limit\",($C168)*$E168,D168=\"Specialty Upgrade\",0,D168=\"Specialty Limit\",($C168)*$E168)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G168": {
+        "formula": "=_xlfn.IFS(D168=\"\",0,D168=\"Upgrade\",($C168)*$E168,D168=\"Limit\",0,D168=\"Specialty Upgrade\",($C168)*$E168,D168=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B169": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F169": {
+        "formula": "=_xlfn.LET(_xlpm.a,$D$4,\n_xlpm.b,_xlpm.a*10,\n_xlpm.c,_xlpm.a*20,\n_xlpm.d,_xlpm.a*30,\n_xlpm.sum, _xlfn.IFS(\nSUM(F159:F168)<(_xlpm.b+1),SUM(F159:F168),\nSUM(F159:F168)<(_xlpm.c+1),(SUM(F159:F168)-_xlpm.b)/2+_xlpm.b,\nSUM(F159:F168)>(_xlpm.c),(SUM(F159:F168)-_xlpm.c)/4+(_xlpm.b*1.5)),\n_xlpm.sum\n)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G169": {
+        "formula": "=SUM(G159:G168)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C174": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$24=\"One Trick\",$D$4*20,$D$24=\"Paragon\",$D$4*10,$D$24=\"Dual-Natured\",$D$4*15),0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E174": {
+        "formula": "=_xlfn.IFS(D174=\"\",0,D174=\"Upgrade\",1,AND(D174=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D174=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D174=\"Limit\",$D$24=\"Normal\"),$D$4/6,D174=\"Limit\",1,D174=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F174": {
+        "formula": "=_xlfn.IFS(D174=\"\",0,D174=\"Upgrade\",0,D174=\"Limit\",($C174)*$E174,D174=\"Specialty Upgrade\",0,D174=\"Specialty Limit\",($C174)*$E174)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G174": {
+        "formula": "=_xlfn.IFS(D174=\"\",0,D174=\"Upgrade\",($C174)*$E174,D174=\"Limit\",0,D174=\"Specialty Upgrade\",($C174)*$E174,D174=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E175": {
+        "formula": "=_xlfn.IFS(D175=\"\",0,D175=\"Upgrade\",1,AND(D175=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D175=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D175=\"Limit\",$D$24=\"Normal\"),$D$4/6,D175=\"Limit\",1,D175=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F175": {
+        "formula": "=_xlfn.IFS(D175=\"\",0,D175=\"Upgrade\",0,D175=\"Limit\",($C175)*$E175,D175=\"Specialty Upgrade\",0,D175=\"Specialty Limit\",($C175)*$E175)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G175": {
+        "formula": "=_xlfn.IFS(D175=\"\",0,D175=\"Upgrade\",($C175)*$E175,D175=\"Limit\",0,D175=\"Specialty Upgrade\",($C175)*$E175,D175=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E176": {
+        "formula": "=_xlfn.IFS(D176=\"\",0,D176=\"Upgrade\",1,AND(D176=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D176=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D176=\"Limit\",$D$24=\"Normal\"),$D$4/6,D176=\"Limit\",1,D176=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F176": {
+        "formula": "=_xlfn.IFS(D176=\"\",0,D176=\"Upgrade\",0,D176=\"Limit\",($C176)*$E176,D176=\"Specialty Upgrade\",0,D176=\"Specialty Limit\",($C176)*$E176)",
+        "result": 120,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G176": {
+        "formula": "=_xlfn.IFS(D176=\"\",0,D176=\"Upgrade\",($C176)*$E176,D176=\"Limit\",0,D176=\"Specialty Upgrade\",($C176)*$E176,D176=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E177": {
+        "formula": "=_xlfn.IFS(D177=\"\",0,D177=\"Upgrade\",1,AND(D177=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D177=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D177=\"Limit\",$D$24=\"Normal\"),$D$4/6,D177=\"Limit\",1,D177=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F177": {
+        "formula": "=_xlfn.IFS(D177=\"\",0,D177=\"Upgrade\",0,D177=\"Limit\",($C177)*$E177,D177=\"Specialty Upgrade\",0,D177=\"Specialty Limit\",($C177)*$E177)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G177": {
+        "formula": "=_xlfn.IFS(D177=\"\",0,D177=\"Upgrade\",($C177)*$E177,D177=\"Limit\",0,D177=\"Specialty Upgrade\",($C177)*$E177,D177=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E178": {
+        "formula": "=_xlfn.IFS(D178=\"\",0,D178=\"Upgrade\",1,AND(D178=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D178=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D178=\"Limit\",$D$24=\"Normal\"),$D$4/6,D178=\"Limit\",1,D178=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F178": {
+        "formula": "=_xlfn.IFS(D178=\"\",0,D178=\"Upgrade\",0,D178=\"Limit\",($C178)*$E178,D178=\"Specialty Upgrade\",0,D178=\"Specialty Limit\",($C178)*$E178)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G178": {
+        "formula": "=_xlfn.IFS(D178=\"\",0,D178=\"Upgrade\",($C178)*$E178,D178=\"Limit\",0,D178=\"Specialty Upgrade\",($C178)*$E178,D178=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E179": {
+        "formula": "=_xlfn.IFS(D179=\"\",0,D179=\"Upgrade\",1,AND(D179=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D179=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D179=\"Limit\",$D$24=\"Normal\"),$D$4/6,D179=\"Limit\",1,D179=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F179": {
+        "formula": "=_xlfn.IFS(D179=\"\",0,D179=\"Upgrade\",0,D179=\"Limit\",($C179)*$E179,D179=\"Specialty Upgrade\",0,D179=\"Specialty Limit\",($C179)*$E179)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G179": {
+        "formula": "=_xlfn.IFS(D179=\"\",0,D179=\"Upgrade\",($C179)*$E179,D179=\"Limit\",0,D179=\"Specialty Upgrade\",($C179)*$E179,D179=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E180": {
+        "formula": "=_xlfn.IFS(D180=\"\",0,D180=\"Upgrade\",1,AND(D180=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D180=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D180=\"Limit\",$D$24=\"Normal\"),$D$4/6,D180=\"Limit\",1,D180=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F180": {
+        "formula": "=_xlfn.IFS(D180=\"\",0,D180=\"Upgrade\",0,D180=\"Limit\",($C180)*$E180,D180=\"Specialty Upgrade\",0,D180=\"Specialty Limit\",($C180)*$E180)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G180": {
+        "formula": "=_xlfn.IFS(D180=\"\",0,D180=\"Upgrade\",($C180)*$E180,D180=\"Limit\",0,D180=\"Specialty Upgrade\",($C180)*$E180,D180=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E181": {
+        "formula": "=_xlfn.IFS(D181=\"\",0,D181=\"Upgrade\",1,AND(D181=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D181=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D181=\"Limit\",$D$24=\"Normal\"),$D$4/6,D181=\"Limit\",1,D181=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F181": {
+        "formula": "=_xlfn.IFS(D181=\"\",0,D181=\"Upgrade\",0,D181=\"Limit\",($C181)*$E181,D181=\"Specialty Upgrade\",0,D181=\"Specialty Limit\",($C181)*$E181)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G181": {
+        "formula": "=_xlfn.IFS(D181=\"\",0,D181=\"Upgrade\",($C181)*$E181,D181=\"Limit\",0,D181=\"Specialty Upgrade\",($C181)*$E181,D181=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E182": {
+        "formula": "=_xlfn.IFS(D182=\"\",0,D182=\"Upgrade\",1,AND(D182=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D182=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D182=\"Limit\",$D$24=\"Normal\"),$D$4/6,D182=\"Limit\",1,D182=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F182": {
+        "formula": "=_xlfn.IFS(D182=\"\",0,D182=\"Upgrade\",0,D182=\"Limit\",($C182)*$E182,D182=\"Specialty Upgrade\",0,D182=\"Specialty Limit\",($C182)*$E182)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G182": {
+        "formula": "=_xlfn.IFS(D182=\"\",0,D182=\"Upgrade\",($C182)*$E182,D182=\"Limit\",0,D182=\"Specialty Upgrade\",($C182)*$E182,D182=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E183": {
+        "formula": "=_xlfn.IFS(D183=\"\",0,D183=\"Upgrade\",1,AND(D183=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D183=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D183=\"Limit\",$D$24=\"Normal\"),$D$4/6,D183=\"Limit\",1,D183=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F183": {
+        "formula": "=_xlfn.IFS(D183=\"\",0,D183=\"Upgrade\",0,D183=\"Limit\",($C183)*$E183,D183=\"Specialty Upgrade\",0,D183=\"Specialty Limit\",($C183)*$E183)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G183": {
+        "formula": "=_xlfn.IFS(D183=\"\",0,D183=\"Upgrade\",($C183)*$E183,D183=\"Limit\",0,D183=\"Specialty Upgrade\",($C183)*$E183,D183=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B184": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F184": {
+        "formula": "=_xlfn.LET(_xlpm.a,$D$4,\n_xlpm.b,_xlpm.a*10,\n_xlpm.c,_xlpm.a*20,\n_xlpm.d,_xlpm.a*30,\n_xlpm.sum, _xlfn.IFS(\nSUM(F174:F183)<(_xlpm.b+1),SUM(F174:F183),\nSUM(F174:F183)<(_xlpm.c+1),(SUM(F174:F183)-_xlpm.b)/2+_xlpm.b,\nSUM(F174:F183)>(_xlpm.c),(SUM(F174:F183)-_xlpm.c)/4+(_xlpm.b*1.5)),\n_xlpm.sum\n)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G184": {
+        "formula": "=SUM(G174:G183)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C189": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$24=\"One Trick\",$D$4*20,$D$24=\"Paragon\",$D$4*10,$D$24=\"Dual-Natured\",$D$4*15),0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E189": {
+        "formula": "=_xlfn.IFS(D189=\"\",0,D189=\"Upgrade\",1,AND(D189=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D189=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D189=\"Limit\",$D$24=\"Normal\"),$D$4/6,D189=\"Limit\",1,D189=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F189": {
+        "formula": "=_xlfn.IFS(D189=\"\",0,D189=\"Upgrade\",0,D189=\"Limit\",($C189)*$E189,D189=\"Specialty Upgrade\",0,D189=\"Specialty Limit\",($C189)*$E189)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G189": {
+        "formula": "=_xlfn.IFS(D189=\"\",0,D189=\"Upgrade\",($C189)*$E189,D189=\"Limit\",0,D189=\"Specialty Upgrade\",($C189)*$E189,D189=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E190": {
+        "formula": "=_xlfn.IFS(D190=\"\",0,D190=\"Upgrade\",1,AND(D190=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D190=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D190=\"Limit\",$D$24=\"Normal\"),$D$4/6,D190=\"Limit\",1,D190=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F190": {
+        "formula": "=_xlfn.IFS(D190=\"\",0,D190=\"Upgrade\",0,D190=\"Limit\",($C190)*$E190,D190=\"Specialty Upgrade\",0,D190=\"Specialty Limit\",($C190)*$E190)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G190": {
+        "formula": "=_xlfn.IFS(D190=\"\",0,D190=\"Upgrade\",($C190)*$E190,D190=\"Limit\",0,D190=\"Specialty Upgrade\",($C190)*$E190,D190=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E191": {
+        "formula": "=_xlfn.IFS(D191=\"\",0,D191=\"Upgrade\",1,AND(D191=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D191=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D191=\"Limit\",$D$24=\"Normal\"),$D$4/6,D191=\"Limit\",1,D191=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F191": {
+        "formula": "=_xlfn.IFS(D191=\"\",0,D191=\"Upgrade\",0,D191=\"Limit\",($C191)*$E191,D191=\"Specialty Upgrade\",0,D191=\"Specialty Limit\",($C191)*$E191)",
+        "result": 120,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G191": {
+        "formula": "=_xlfn.IFS(D191=\"\",0,D191=\"Upgrade\",($C191)*$E191,D191=\"Limit\",0,D191=\"Specialty Upgrade\",($C191)*$E191,D191=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E192": {
+        "formula": "=_xlfn.IFS(D192=\"\",0,D192=\"Upgrade\",1,AND(D192=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D192=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D192=\"Limit\",$D$24=\"Normal\"),$D$4/6,D192=\"Limit\",1,D192=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F192": {
+        "formula": "=_xlfn.IFS(D192=\"\",0,D192=\"Upgrade\",0,D192=\"Limit\",($C192)*$E192,D192=\"Specialty Upgrade\",0,D192=\"Specialty Limit\",($C192)*$E192)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G192": {
+        "formula": "=_xlfn.IFS(D192=\"\",0,D192=\"Upgrade\",($C192)*$E192,D192=\"Limit\",0,D192=\"Specialty Upgrade\",($C192)*$E192,D192=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E193": {
+        "formula": "=_xlfn.IFS(D193=\"\",0,D193=\"Upgrade\",1,AND(D193=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D193=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D193=\"Limit\",$D$24=\"Normal\"),$D$4/6,D193=\"Limit\",1,D193=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F193": {
+        "formula": "=_xlfn.IFS(D193=\"\",0,D193=\"Upgrade\",0,D193=\"Limit\",($C193)*$E193,D193=\"Specialty Upgrade\",0,D193=\"Specialty Limit\",($C193)*$E193)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G193": {
+        "formula": "=_xlfn.IFS(D193=\"\",0,D193=\"Upgrade\",($C193)*$E193,D193=\"Limit\",0,D193=\"Specialty Upgrade\",($C193)*$E193,D193=\"Specialty Limit\",0)",
+        "result": 30,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E194": {
+        "formula": "=_xlfn.IFS(D194=\"\",0,D194=\"Upgrade\",1,AND(D194=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D194=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D194=\"Limit\",$D$24=\"Normal\"),$D$4/6,D194=\"Limit\",1,D194=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F194": {
+        "formula": "=_xlfn.IFS(D194=\"\",0,D194=\"Upgrade\",0,D194=\"Limit\",($C194)*$E194,D194=\"Specialty Upgrade\",0,D194=\"Specialty Limit\",($C194)*$E194)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G194": {
+        "formula": "=_xlfn.IFS(D194=\"\",0,D194=\"Upgrade\",($C194)*$E194,D194=\"Limit\",0,D194=\"Specialty Upgrade\",($C194)*$E194,D194=\"Specialty Limit\",0)",
+        "result": 20,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E195": {
+        "formula": "=_xlfn.IFS(D195=\"\",0,D195=\"Upgrade\",1,AND(D195=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D195=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D195=\"Limit\",$D$24=\"Normal\"),$D$4/6,D195=\"Limit\",1,D195=\"Specialty Upgrade\",0.5)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F195": {
+        "formula": "=_xlfn.IFS(D195=\"\",0,D195=\"Upgrade\",0,D195=\"Limit\",($C195)*$E195,D195=\"Specialty Upgrade\",0,D195=\"Specialty Limit\",($C195)*$E195)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G195": {
+        "formula": "=_xlfn.IFS(D195=\"\",0,D195=\"Upgrade\",($C195)*$E195,D195=\"Limit\",0,D195=\"Specialty Upgrade\",($C195)*$E195,D195=\"Specialty Limit\",0)",
+        "result": 10,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E196": {
+        "formula": "=_xlfn.IFS(D196=\"\",0,D196=\"Upgrade\",1,AND(D196=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D196=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D196=\"Limit\",$D$24=\"Normal\"),$D$4/6,D196=\"Limit\",1,D196=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F196": {
+        "formula": "=_xlfn.IFS(D196=\"\",0,D196=\"Upgrade\",0,D196=\"Limit\",($C196)*$E196,D196=\"Specialty Upgrade\",0,D196=\"Specialty Limit\",($C196)*$E196)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G196": {
+        "formula": "=_xlfn.IFS(D196=\"\",0,D196=\"Upgrade\",($C196)*$E196,D196=\"Limit\",0,D196=\"Specialty Upgrade\",($C196)*$E196,D196=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E197": {
+        "formula": "=_xlfn.IFS(D197=\"\",0,D197=\"Upgrade\",1,AND(D197=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D197=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D197=\"Limit\",$D$24=\"Normal\"),$D$4/6,D197=\"Limit\",1,D197=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F197": {
+        "formula": "=_xlfn.IFS(D197=\"\",0,D197=\"Upgrade\",0,D197=\"Limit\",($C197)*$E197,D197=\"Specialty Upgrade\",0,D197=\"Specialty Limit\",($C197)*$E197)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G197": {
+        "formula": "=_xlfn.IFS(D197=\"\",0,D197=\"Upgrade\",($C197)*$E197,D197=\"Limit\",0,D197=\"Specialty Upgrade\",($C197)*$E197,D197=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E198": {
+        "formula": "=_xlfn.IFS(D198=\"\",0,D198=\"Upgrade\",1,AND(D198=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D198=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D198=\"Limit\",$D$24=\"Normal\"),$D$4/6,D198=\"Limit\",1,D198=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F198": {
+        "formula": "=_xlfn.IFS(D198=\"\",0,D198=\"Upgrade\",0,D198=\"Limit\",($C198)*$E198,D198=\"Specialty Upgrade\",0,D198=\"Specialty Limit\",($C198)*$E198)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G198": {
+        "formula": "=_xlfn.IFS(D198=\"\",0,D198=\"Upgrade\",($C198)*$E198,D198=\"Limit\",0,D198=\"Specialty Upgrade\",($C198)*$E198,D198=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B199": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F199": {
+        "formula": "=_xlfn.LET(_xlpm.a,$D$4,\n_xlpm.b,_xlpm.a*10,\n_xlpm.c,_xlpm.a*20,\n_xlpm.d,_xlpm.a*30,\n_xlpm.sum, _xlfn.IFS(\nSUM(F189:F198)<(_xlpm.b+1),SUM(F189:F198),\nSUM(F189:F198)<(_xlpm.c+1),(SUM(F189:F198)-_xlpm.b)/2+_xlpm.b,\nSUM(F189:F198)>(_xlpm.c),(SUM(F189:F198)-_xlpm.c)/4+(_xlpm.b*1.5)),\n_xlpm.sum\n)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G199": {
+        "formula": "=SUM(G189:G198)",
+        "result": 90,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C204": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$24=\"One Trick\",$D$4*20,$D$24=\"Paragon\",$D$4*10,$D$24=\"Dual-Natured\",$D$4*15),0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E204": {
+        "formula": "=_xlfn.IFS(D204=\"\",0,D204=\"Upgrade\",1,AND(D204=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D204=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D204=\"Limit\",$D$24=\"Normal\"),$D$4/6,D204=\"Limit\",1,D204=\"Specialty Upgrade\",0.5)",
+        "result": 3,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F204": {
+        "formula": "=_xlfn.IFS(D204=\"\",0,D204=\"Upgrade\",0,D204=\"Limit\",($C204)*$E204,D204=\"Specialty Upgrade\",0,D204=\"Specialty Limit\",($C204)*$E204)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G204": {
+        "formula": "=_xlfn.IFS(D204=\"\",0,D204=\"Upgrade\",($C204)*$E204,D204=\"Limit\",0,D204=\"Specialty Upgrade\",($C204)*$E204,D204=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E205": {
+        "formula": "=_xlfn.IFS(D205=\"\",0,D205=\"Upgrade\",1,AND(D205=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D205=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D205=\"Limit\",$D$24=\"Normal\"),$D$4/6,D205=\"Limit\",1,D205=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F205": {
+        "formula": "=_xlfn.IFS(D205=\"\",0,D205=\"Upgrade\",0,D205=\"Limit\",($C205)*$E205,D205=\"Specialty Upgrade\",0,D205=\"Specialty Limit\",($C205)*$E205)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G205": {
+        "formula": "=_xlfn.IFS(D205=\"\",0,D205=\"Upgrade\",($C205)*$E205,D205=\"Limit\",0,D205=\"Specialty Upgrade\",($C205)*$E205,D205=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E206": {
+        "formula": "=_xlfn.IFS(D206=\"\",0,D206=\"Upgrade\",1,AND(D206=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D206=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D206=\"Limit\",$D$24=\"Normal\"),$D$4/6,D206=\"Limit\",1,D206=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F206": {
+        "formula": "=_xlfn.IFS(D206=\"\",0,D206=\"Upgrade\",0,D206=\"Limit\",($C206)*$E206,D206=\"Specialty Upgrade\",0,D206=\"Specialty Limit\",($C206)*$E206)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G206": {
+        "formula": "=_xlfn.IFS(D206=\"\",0,D206=\"Upgrade\",($C206)*$E206,D206=\"Limit\",0,D206=\"Specialty Upgrade\",($C206)*$E206,D206=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E207": {
+        "formula": "=_xlfn.IFS(D207=\"\",0,D207=\"Upgrade\",1,AND(D207=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D207=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D207=\"Limit\",$D$24=\"Normal\"),$D$4/6,D207=\"Limit\",1,D207=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F207": {
+        "formula": "=_xlfn.IFS(D207=\"\",0,D207=\"Upgrade\",0,D207=\"Limit\",($C207)*$E207,D207=\"Specialty Upgrade\",0,D207=\"Specialty Limit\",($C207)*$E207)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G207": {
+        "formula": "=_xlfn.IFS(D207=\"\",0,D207=\"Upgrade\",($C207)*$E207,D207=\"Limit\",0,D207=\"Specialty Upgrade\",($C207)*$E207,D207=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E208": {
+        "formula": "=_xlfn.IFS(D208=\"\",0,D208=\"Upgrade\",1,AND(D208=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D208=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D208=\"Limit\",$D$24=\"Normal\"),$D$4/6,D208=\"Limit\",1,D208=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F208": {
+        "formula": "=_xlfn.IFS(D208=\"\",0,D208=\"Upgrade\",0,D208=\"Limit\",($C208)*$E208,D208=\"Specialty Upgrade\",0,D208=\"Specialty Limit\",($C208)*$E208)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G208": {
+        "formula": "=_xlfn.IFS(D208=\"\",0,D208=\"Upgrade\",($C208)*$E208,D208=\"Limit\",0,D208=\"Specialty Upgrade\",($C208)*$E208,D208=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E209": {
+        "formula": "=_xlfn.IFS(D209=\"\",0,D209=\"Upgrade\",1,AND(D209=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D209=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D209=\"Limit\",$D$24=\"Normal\"),$D$4/6,D209=\"Limit\",1,D209=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F209": {
+        "formula": "=_xlfn.IFS(D209=\"\",0,D209=\"Upgrade\",0,D209=\"Limit\",($C209)*$E209,D209=\"Specialty Upgrade\",0,D209=\"Specialty Limit\",($C209)*$E209)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G209": {
+        "formula": "=_xlfn.IFS(D209=\"\",0,D209=\"Upgrade\",($C209)*$E209,D209=\"Limit\",0,D209=\"Specialty Upgrade\",($C209)*$E209,D209=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E210": {
+        "formula": "=_xlfn.IFS(D210=\"\",0,D210=\"Upgrade\",1,AND(D210=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D210=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D210=\"Limit\",$D$24=\"Normal\"),$D$4/6,D210=\"Limit\",1,D210=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F210": {
+        "formula": "=_xlfn.IFS(D210=\"\",0,D210=\"Upgrade\",0,D210=\"Limit\",($C210)*$E210,D210=\"Specialty Upgrade\",0,D210=\"Specialty Limit\",($C210)*$E210)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G210": {
+        "formula": "=_xlfn.IFS(D210=\"\",0,D210=\"Upgrade\",($C210)*$E210,D210=\"Limit\",0,D210=\"Specialty Upgrade\",($C210)*$E210,D210=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E211": {
+        "formula": "=_xlfn.IFS(D211=\"\",0,D211=\"Upgrade\",1,AND(D211=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D211=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D211=\"Limit\",$D$24=\"Normal\"),$D$4/6,D211=\"Limit\",1,D211=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F211": {
+        "formula": "=_xlfn.IFS(D211=\"\",0,D211=\"Upgrade\",0,D211=\"Limit\",($C211)*$E211,D211=\"Specialty Upgrade\",0,D211=\"Specialty Limit\",($C211)*$E211)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G211": {
+        "formula": "=_xlfn.IFS(D211=\"\",0,D211=\"Upgrade\",($C211)*$E211,D211=\"Limit\",0,D211=\"Specialty Upgrade\",($C211)*$E211,D211=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E212": {
+        "formula": "=_xlfn.IFS(D212=\"\",0,D212=\"Upgrade\",1,AND(D212=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D212=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D212=\"Limit\",$D$24=\"Normal\"),$D$4/6,D212=\"Limit\",1,D212=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F212": {
+        "formula": "=_xlfn.IFS(D212=\"\",0,D212=\"Upgrade\",0,D212=\"Limit\",($C212)*$E212,D212=\"Specialty Upgrade\",0,D212=\"Specialty Limit\",($C212)*$E212)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G212": {
+        "formula": "=_xlfn.IFS(D212=\"\",0,D212=\"Upgrade\",($C212)*$E212,D212=\"Limit\",0,D212=\"Specialty Upgrade\",($C212)*$E212,D212=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "E213": {
+        "formula": "=_xlfn.IFS(D213=\"\",0,D213=\"Upgrade\",1,AND(D213=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D213=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D213=\"Limit\",$D$24=\"Normal\"),$D$4/6,D213=\"Limit\",1,D213=\"Specialty Upgrade\",0.5)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F213": {
+        "formula": "=_xlfn.IFS(D213=\"\",0,D213=\"Upgrade\",0,D213=\"Limit\",($C213)*$E213,D213=\"Specialty Upgrade\",0,D213=\"Specialty Limit\",($C213)*$E213)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G213": {
+        "formula": "=_xlfn.IFS(D213=\"\",0,D213=\"Upgrade\",($C213)*$E213,D213=\"Limit\",0,D213=\"Specialty Upgrade\",($C213)*$E213,D213=\"Specialty Limit\",0)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B214": {
+        "formula": null,
+        "result": "Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "F214": {
+        "formula": "=_xlfn.LET(_xlpm.a,$D$4,\n_xlpm.b,_xlpm.a*10,\n_xlpm.c,_xlpm.a*20,\n_xlpm.d,_xlpm.a*30,\n_xlpm.sum, _xlfn.IFS(\nSUM(F204:F213)<(_xlpm.b+1),SUM(F204:F213),\nSUM(F204:F213)<(_xlpm.c+1),(SUM(F204:F213)-_xlpm.b)/2+_xlpm.b,\nSUM(F204:F213)>(_xlpm.c),(SUM(F204:F213)-_xlpm.c)/4+(_xlpm.b*1.5)),\n_xlpm.sum\n)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "G214": {
+        "formula": "=SUM(G204:G213)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B236": {
+        "formula": null,
+        "result": "Expertises Subtotal",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C236": {
+        "formula": "=SUMIF($D$219:$D$235,_xlfn.TEXTBEFORE(B236,\"s \",),$C$219:$C$235)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "D236": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$25=\"Specialist\", 1,$D$25=\"Jack of All Trades\", 1, $D$25=\"Practical\", 1),1)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B237": {
+        "formula": null,
+        "result": "Features Subtotal",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C237": {
+        "formula": "=SUMIF($D$219:$D$235,_xlfn.TEXTBEFORE(B237,\"s \",),$C$219:$C$235)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "D237": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$25=\"Specialist\", 1,$D$25=\"Jack of All Trades\", 1, $D$25=\"Practical\", 1),1)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B238": {
+        "formula": null,
+        "result": "Senses Subtotal",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C238": {
+        "formula": "=SUMIF($D$219:$D$235,_xlfn.TEXTBEFORE(B238,\"s \",),$C$219:$C$235)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "D238": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$25=\"Specialist\", 1,$D$25=\"Jack of All Trades\", 1, $D$25=\"Practical\", 1),1)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B239": {
+        "formula": null,
+        "result": "Descriptors Subtotal",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C239": {
+        "formula": "=SUMIF($D$219:$D$235,_xlfn.TEXTBEFORE(B239,\"s \",),$C$219:$C$235)",
+        "result": 0,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "D239": {
+        "formula": "=_xlfn.IFNA(_xlfn.IFS($D$25=\"Specialist\", 1,$D$25=\"Jack of All Trades\", 1, $D$25=\"Practical\", 1),1)",
+        "result": 1,
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "B240": {
+        "formula": null,
+        "result": "Utility Point Pool Total",
+        "style_name": "calculation",
+        "section": "Notes"
+      },
+      "C240": {
+        "formula": "=C236*D236+C237*D237+C238*D238+C239*D239&\" / \"&$D$4*5-5+_xlfn.IFNA(_xlfn.IFS($D$25=\"Specialized\", -5,$D$25=\"Jack of All Trades\", -5, $D$25=\"Practical\", 0),0)",
+        "result": "0 / 20",
+        "style_name": "calculation",
+        "section": "Notes"
+      }
+    },
+    "labels": {
+      "B2": "Character Name",
+      "F2": "Input Cost",
+      "B3": "Hero Name / Moniker",
+      "F3": "Formula Cell",
+      "B4": "Character Tier",
+      "F4": "Dropdown Text",
+      "F5": "Input Number",
+      "F6": "Input Text",
+      "F7": "Formula Cell",
+      "B9": "Focus",
+      "H9": "Adds to Resolve, Initiative, Accuracy score",
+      "B10": "Mobility",
+      "H10": "Adds to Movement Speed, Initiative, Avoidance score",
+      "B11": "Power",
+      "H11": "Adds to Stability, Capacity, Damage score",
+      "B12": "Endurance",
+      "H12": "Adds to Vitality and Durability score",
+      "B15": "Awareness",
+      "H15": "Your character's ability to notice things in the world.",
+      "B16": "Communication",
+      "H16": "Your character\u2019s social skills.",
+      "B17": "Intelligence",
+      "H17": "Your character\u2019s knowledge and reasoning.",
+      "D19": "Archetypes",
+      "B20": "Attack Type",
+      "B21": "Effect Type",
+      "B22": "Movement Type",
+      "B23": "Unique Abilities",
+      "B24": "Special Attacks",
+      "B25": "Utility",
+      "C31": "Base",
+      "D31": "Stat Bonus",
+      "E31": "Modifier Name",
+      "F31": "Modifier Bonus",
+      "G31": "Total/Average",
+      "B32": "Accuracy",
+      "H32": "Accuracy: 1d20+Tier+Focus (FC) vs Avoidance",
+      "B33": "Damage",
+      "H33": "Damage: 3d6+Tier+Power (PW) vs Durability",
+      "B34": "Conditions",
+      "H34": "Condition: 1d20+Tier*2 vs Resistance",
+      "B36": "Avoidance",
+      "H36": "Accuracy vs Avoidance: 10+Tier+Mobility (MB)",
+      "B37": "Durability",
+      "H37": "Damage vs Durability: Tier+Endurance (EN)",
+      "B39": "Primary Resistance",
+      "B40": "Resistance: Resolve",
+      "H40": "Condition vs Resistance: 10+Tier+Attribute",
+      "B41": "Resistance: Stability",
+      "H41": "Condition vs Resistance: 10+Tier+Attribute",
+      "B42": "Resistance: Vitality",
+      "H42": "Condition vs Resistance: 10+Tier+Attribute",
+      "B44": "Initiative",
+      "B45": "Movement",
+      "B46": "Main Pool Points Spent",
+      "B54": "Primary Actions",
+      "D54": "Modifiers",
+      "E54": "Cost",
+      "F54": "Quick Action",
+      "G54": "Cost",
+      "H54": "Notes",
+      "B55": "Base Attack",
+      "H55": "You can make a base attack.",
+      "B56": "Dodge Action",
+      "H56": "Increase your Avoidance by your Tier until the start of your next turn.",
+      "B57": "Brace Action",
+      "H57": "Increase your DR by your Tier until the start of your next turn.",
+      "B58": "Fortify Action",
+      "H58": "Increase all types of Resistance by your Tier until the start of your next turn.",
+      "B59": "Aim Action",
+      "H59": "Increase your next attacks Accuracy roll by your Tier until the end of your next turn.",
+      "B60": "Empower Action",
+      "H60": "Increase your Damage by your Tier until the end of your next turn.",
+      "B61": "Refine Action",
+      "H61": "Increase your Condition roll by your Tier until the end of your next turn.",
+      "B62": "Assist Action",
+      "H62": "You take the Aim, Empower, or Refine Actions but targeting an adjacent ally instead.",
+      "B63": "Carry Action",
+      "H63": "Pick up and move a willing character with you. You move at half speed while moving them.",
+      "B64": "Protect Action",
+      "H64": "Pick an adjacent character or object. The next non-direct attack made against them automatically hits you instead.\u00a0",
+      "B65": "Use Action",
+      "H65": "Interact with a thing in the environment that takes most of your attention such as a car, computer, or heavy object. Picking up small items or simple tasks such as pressing a button only consumes a Quick Action.",
+      "B66": "Hasten Action",
+      "H66": "You can move your full Movement Speed again.",
+      "B67": "Hide Action",
+      "H67": "While outside of the Direct Perception of a character you can attempt to conceal your presence from them with a Stealth check vs their Perception. Once hidden, they remember your last known location and may investigate or attack that area. You remain hidden until you take a noticeable action such as attacking or entering their Direct Perception again. On your turn you may attempt to move from cover to cover, making another check. Depending on the distance, your GM may grant your roll a penalty.",
+      "B68": "Prepare Action",
+      "H68": "You delay your action until a specified point chosen when you take this action. GM determines if the specified scenario is specific enough.",
+      "B71": "Movement",
+      "C71": "Cost",
+      "D71": "Notes / Modifiers",
+      "E71": "Cost",
+      "H71": "Notes",
+      "B80": "Attack and Effect Types",
+      "C80": "Cost",
+      "D80": "Notes / Modifiers",
+      "E80": "Cost",
+      "H80": "Notes",
+      "B89": "Unique Abilties",
+      "C89": "Cost",
+      "D89": "Notes / Modifiers",
+      "E89": "Cost",
+      "H89": "Notes",
+      "B99": "Traits / Flaws",
+      "C99": "Cost",
+      "D99": "Stat",
+      "E99": "Bonus",
+      "H99": "Notes",
+      "B109": "Special Attacks Section",
+      "B111": "Attack Name",
+      "B112": "Attack Type",
+      "B113": "Upgrade or Limit Name",
+      "C113": "Refund / Cost",
+      "D113": "Upgrade / Limit / Specialty",
+      "E113": "Multipler",
+      "F113": "Refund",
+      "G113": "Cost",
+      "H113": "Notes",
+      "B114": "Starting Points",
+      "D114": "Limit",
+      "B126": "Attack Name",
+      "B127": "Attack Type",
+      "B128": "Upgrade or Limit Name",
+      "C128": "Cost / Discount",
+      "D128": "Upgrade / Limit / Specialty",
+      "E128": "Multipler",
+      "F128": "Discount",
+      "G128": "Cost",
+      "H128": "Notes",
+      "B129": "Starting Points",
+      "D129": "Limit",
+      "B141": "Attack Name",
+      "B142": "Attack Type",
+      "B143": "Upgrade or Limit Name",
+      "C143": "Cost / Discount",
+      "D143": "Upgrade / Limit / Specialty",
+      "E143": "Multipler",
+      "F143": "Discount",
+      "G143": "Cost",
+      "H143": "Notes",
+      "B144": "Starting Points",
+      "D144": "Limit",
+      "B156": "Attack Name",
+      "B157": "Attack Type",
+      "B158": "Upgrade or Limit Name",
+      "C158": "Cost / Discount",
+      "D158": "Upgrade / Limit / Specialty",
+      "E158": "Multipler",
+      "F158": "Discount",
+      "G158": "Cost",
+      "H158": "Notes",
+      "B159": "Starting Points",
+      "D159": "Limit",
+      "B171": "Attack Name",
+      "B172": "Attack Type",
+      "B173": "Upgrade or Limit Name",
+      "C173": "Cost / Discount",
+      "D173": "Upgrade / Limit / Specialty",
+      "E173": "Multipler",
+      "F173": "Discount",
+      "G173": "Cost",
+      "H173": "Notes",
+      "B174": "Starting Points",
+      "D174": "Limit",
+      "B186": "Attack Name",
+      "B187": "Attack Type",
+      "B188": "Upgrade or Limit Name",
+      "C188": "Cost / Discount",
+      "D188": "Upgrade / Limit / Specialty",
+      "E188": "Multipler",
+      "F188": "Discount",
+      "G188": "Cost",
+      "H188": "Notes",
+      "B189": "Starting Points",
+      "D189": "Limit",
+      "B201": "Attack Name",
+      "B202": "Attack Type",
+      "B203": "Upgrade or Limit Name",
+      "C203": "Cost / Discount",
+      "D203": "Upgrade / Limit / Specialty",
+      "E203": "Multipler",
+      "F203": "Discount",
+      "G203": "Cost",
+      "H203": "Notes",
+      "B204": "Starting Points",
+      "D204": "Limit",
+      "B218": "Features and Expertises",
+      "C218": "Cost",
+      "D218": "Type",
+      "E218": "Stat",
+      "H218": "Notes"
+    },
+    "sections": {
+      "Character Name": {
+        "start_row": 2
+      },
+      "Hero Name / Moniker": {
+        "start_row": 3
+      },
+      "Character Tier": {
+        "start_row": 4
+      },
+      "Focus": {
+        "start_row": 9
+      },
+      "Mobility": {
+        "start_row": 10
+      },
+      "Power": {
+        "start_row": 11
+      },
+      "Endurance": {
+        "start_row": 12
+      },
+      "Awareness": {
+        "start_row": 15
+      },
+      "Communication": {
+        "start_row": 16
+      },
+      "Intelligence": {
+        "start_row": 17
+      },
+      "Archetypes": {
+        "start_row": 19
+      },
+      "Attack Type": {
+        "start_row": 202
+      },
+      "Effect Type": {
+        "start_row": 21
+      },
+      "Movement Type": {
+        "start_row": 22
+      },
+      "Unique Abilities": {
+        "start_row": 23
+      },
+      "Special Attacks": {
+        "start_row": 24
+      },
+      "Utility": {
+        "start_row": 25
+      },
+      "Base": {
+        "start_row": 31
+      },
+      "Stat Bonus": {
+        "start_row": 31
+      },
+      "Modifier Name": {
+        "start_row": 31
+      },
+      "Modifier Bonus": {
+        "start_row": 31
+      },
+      "Total/Average": {
+        "start_row": 31
+      },
+      "Accuracy": {
+        "start_row": 32
+      },
+      "Damage": {
+        "start_row": 33
+      },
+      "Conditions": {
+        "start_row": 34
+      },
+      "Avoidance": {
+        "start_row": 36
+      },
+      "Durability": {
+        "start_row": 37
+      },
+      "Primary Resistance": {
+        "start_row": 39
+      },
+      "Resistance: Resolve": {
+        "start_row": 40
+      },
+      "Resistance: Stability": {
+        "start_row": 41
+      },
+      "Resistance: Vitality": {
+        "start_row": 42
+      },
+      "Initiative": {
+        "start_row": 44
+      },
+      "Movement": {
+        "start_row": 71
+      },
+      "Main Pool Points Spent": {
+        "start_row": 46
+      },
+      "Primary Actions": {
+        "start_row": 54
+      },
+      "Modifiers": {
+        "start_row": 54
+      },
+      "Cost": {
+        "start_row": 218
+      },
+      "Quick Action": {
+        "start_row": 54
+      },
+      "Notes": {
+        "start_row": 218
+      },
+      "Base Attack": {
+        "start_row": 55
+      },
+      "Dodge Action": {
+        "start_row": 56
+      },
+      "Brace Action": {
+        "start_row": 57
+      },
+      "Fortify Action": {
+        "start_row": 58
+      },
+      "Aim Action": {
+        "start_row": 59
+      },
+      "Empower Action": {
+        "start_row": 60
+      },
+      "Refine Action": {
+        "start_row": 61
+      },
+      "Assist Action": {
+        "start_row": 62
+      },
+      "Carry Action": {
+        "start_row": 63
+      },
+      "Protect Action": {
+        "start_row": 64
+      },
+      "Use Action": {
+        "start_row": 65
+      },
+      "Hasten Action": {
+        "start_row": 66
+      },
+      "Hide Action": {
+        "start_row": 67
+      },
+      "Prepare Action": {
+        "start_row": 68
+      },
+      "Notes / Modifiers": {
+        "start_row": 89
+      },
+      "Attack and Effect Types": {
+        "start_row": 80
+      },
+      "Unique Abilties": {
+        "start_row": 89
+      },
+      "Traits / Flaws": {
+        "start_row": 99
+      },
+      "Stat": {
+        "start_row": 218
+      },
+      "Bonus": {
+        "start_row": 99
+      },
+      "Special Attacks Section": {
+        "start_row": 109
+      },
+      "Attack Name": {
+        "start_row": 201
+      },
+      "Upgrade or Limit Name": {
+        "start_row": 203
+      },
+      "Refund / Cost": {
+        "start_row": 113
+      },
+      "Upgrade / Limit / Specialty": {
+        "start_row": 203
+      },
+      "Multipler": {
+        "start_row": 203
+      },
+      "Refund": {
+        "start_row": 113
+      },
+      "Cost / Discount": {
+        "start_row": 203
+      },
+      "Discount": {
+        "start_row": 203
+      },
+      "Features and Expertises": {
+        "start_row": 218
+      },
+      "Type": {
+        "start_row": 218
+      }
+    },
+    "formula_debug": {
+      "E192": {
+        "cell_value": "<openpyxl.worksheet.formula.ArrayFormula object at 0x000002683AB33AD0>",
+        "cell_data_type": "f",
+        "has_formula_attr": false,
+        "formula_attr": null,
+        "extracted_formula": "=_xlfn.IFS(D192=\"\",0,D192=\"Upgrade\",1,AND(D192=\"Limit\",$D$24=\"Specialist\"),$D$4/3,AND(D192=\"Limit\",$D$24=\"Straightforward\"),$D$4/2,AND(D192=\"Limit\",$D$24=\"Normal\"),$D$4/6,D192=\"Limit\",1,D192=\"Specialty Upgrade\",0.5)",
+        "style": "calculation"
+      }
+    },
+    "validation_resolved": {},
+    "analysis": {
+      "sheet_analyzed": "Pandora",
+      "total_number_inputs": 137,
+      "total_text_inputs": 286,
+      "total_dropdowns": 111,
+      "total_calculations": 306,
+      "formulas_found": 284,
+      "formulas_missed": 22,
+      "sections_found": [
+        "Character Name",
+        "Hero Name / Moniker",
+        "Character Tier",
+        "Focus",
+        "Mobility",
+        "Power",
+        "Endurance",
+        "Awareness",
+        "Communication",
+        "Intelligence",
+        "Archetypes",
+        "Attack Type",
+        "Effect Type",
+        "Movement Type",
+        "Unique Abilities",
+        "Special Attacks",
+        "Utility",
+        "Base",
+        "Stat Bonus",
+        "Modifier Name",
+        "Modifier Bonus",
+        "Total/Average",
+        "Accuracy",
+        "Damage",
+        "Conditions",
+        "Avoidance",
+        "Durability",
+        "Primary Resistance",
+        "Resistance: Resolve",
+        "Resistance: Stability",
+        "Resistance: Vitality",
+        "Initiative",
+        "Movement",
+        "Main Pool Points Spent",
+        "Primary Actions",
+        "Modifiers",
+        "Cost",
+        "Quick Action",
+        "Notes",
+        "Base Attack",
+        "Dodge Action",
+        "Brace Action",
+        "Fortify Action",
+        "Aim Action",
+        "Empower Action",
+        "Refine Action",
+        "Assist Action",
+        "Carry Action",
+        "Protect Action",
+        "Use Action",
+        "Hasten Action",
+        "Hide Action",
+        "Prepare Action",
+        "Notes / Modifiers",
+        "Attack and Effect Types",
+        "Unique Abilties",
+        "Traits / Flaws",
+        "Stat",
+        "Bonus",
+        "Special Attacks Section",
+        "Attack Name",
+        "Upgrade or Limit Name",
+        "Refund / Cost",
+        "Upgrade / Limit / Specialty",
+        "Multipler",
+        "Refund",
+        "Cost / Discount",
+        "Discount",
+        "Features and Expertises",
+        "Type"
+      ]
+    }
+  },
+  "vl_table": {
+    "Alternative Locomotion: Flight": " You can move your full movement in any direction.",
+    "Alternative Locomotion: Teleportation": "You can instantly move your movement speed to any location you can see. -2 to your Movement Speed up to Tier 6 and -3 from Tier 7 to 10. ",
+    "Alternative Locomotion: Portal": " You can create a portal between 2 points",
+    "Alternative Locomotion: Swinging": "You can move through the air if you have a point to grapple onto. Increase your movement speed by 1 space up to Tier 6 and by 2 for 7 and higher. ",
+    "Alternative Locomotion: Super Jump": "You can jump an amount equal to your full movement. Increase your movement speed by 1 space up to Tier 6 and by 2 for 7 and higher.",
+    "Swift": "Increase your movement speed by half your Tier (round up).",
+    "Skirmisher": "You don\u2019t provoke attacks of opportunity.",
+    "Parkour Runner": "You are unaffected by difficult terrain; you can swim or move through difficult terrain at normal speed. You can walk on water and stick to all surfaces. ",
+    "Behemoth": "You can\u2019t be slowed or knocked prone. Additionally, you are immune to the dazed condition.",
+    "Bulwark": "Your reach is increased by 1 space. Additionally, you may make an opportunity attack when an enemy attempts to enter your reach.",
+    "Mole": "You can burrow through most materials and barriers. You move through rock and anything softer at your normal speed. For anything harder, you move through at half speed or slower at GM discretion. When selecting this archetype, determine whether you leave a tunnel behind when you burrow. If you do not, you may not end your turn underground.",
+    "Vanguard": "Add your Endurance to your movement speed.  Get to your allies and enemies faster while being able to absorb hits.",
+    "AOE Specialist": "You gain the AOE Attack Type for 0p.\u00a0",
+    "Direct Specialist": "You gain the Direct Attack Type for 0p.\u00a0",
+    "Single Target": "You gain both Melee and Ranged Attack Types for 0p.\u00a0",
+    "Damage": "Your primary effect type is damage. Also, you can still access Basic Conditions as separate attacks.",
+    "Hybrid": "You gain the Hybrid for 0p. All attacks must be Hybrid.\u00a0",
+    "Crowd Control / De-buffer": "You gain all Advanced condition effects, for 0p. Subtract your Tier from your Damage rolls.\u00a0",
+    "Versatile Master": "You have 2 Quick Actions. Making a Primary Action a Quick Action only cost 10 points.",
+    "Cut Above": "Increase the following stats by 1: Accuracy, Damage, Conditions, Avoidance, Durability, Resistances, Initiative, Movement. If you are Tier 5-7, instead increase by 2, if you are Tier 8+, increase by 3.",
+    "Extraordinary": "You gain an additional (Tier -2) x 15 in points for your main pool of points. You cannot use these points to purchase Traits or Flaws.",
+    "Specialized": "You may pick 1 core stat with which to be proficient, checks involving that core stat always add your Tier bonus twice to rolls. You can\u2019t purchase Expertise. You get less points in your Utility point pool.",
+    "Jack of All Trades": "Add your Tier bonus once to all Skill Checks. You cannot purchase Expertise. You get less points in your Utility point pool.",
+    "Practical": "Purchase Expertise, Features, Senses, Descriptors normally. ",
+    "Straightforward": "Focuses on creating powerful attacks at the cost of versatility. You can only use 1 specific Limit chosen when you take this archetype, that limit must be on all attacks. That limit returns its normal Points x (Tier/2).",
+    "Paragon": "Straightforward and simple, with reliable attacks of consistent power. No trade-offs, ideal for balanced gameplay.Each special attack gets 10 \u00d7 Tier points to distribute. You cannot take any limits.",
+    "One Trick": "Best for building a single, incredibly powerful ability that fits a high-risk, high-reward playstyle. You only have a single special attack. You have Tier \u00d7 20 points to create this ability.",
+    "Specialist": "Focuses on creating powerful attacks at the cost of meeting multiple conditions for each of your attacks. You can only use 3 specific Limits chosen when you take this archetype, those limits must be on each attack each return their normal Points x (Tier/3).",
+    "Shared Uses": "Flexible and encourages tactical planning. Perfect for spellcaster-style builds with strong resource management needs. You cannot take any limits. You have 10 shared uses. Each special attack uses between 1-3 mana, chosen when building, and gives a discount of Tier \u00d7 10 points upon use.",
+    "Normal: Special Attacks": "Maximum flexibility for creating unique or specialized abilities.   You get 3 Specialty Upgrades. All limits return Points x (Tier / 6)",
+    "Dual-Natured": "For those seeking a balance between Raw Power and Versatility. You have 2 Special Attack, each gets 15 x Tier points to procure upgrades. You cannot take any limits.",
+    "Basic": "For those seeking a more simple but powerful style of gameplay. You can add up to 10 x Tier points of upgrades on your base attack.  You cannot take any limits."
+  },
+  "validation_rules": {
+    "Template": [
+      {
+        "ranges": [
+          "D39"
+        ],
+        "type": "list",
+        "formula": "\"Resolve,Stability,Vitality\""
+      },
+      {
+        "ranges": [
+          "D20"
+        ],
+        "type": "list",
+        "formula": "ArcAT"
+      },
+      {
+        "ranges": [
+          "D21"
+        ],
+        "type": "list",
+        "formula": "ArcET"
+      },
+      {
+        "ranges": [
+          "D22"
+        ],
+        "type": "list",
+        "formula": "ArcM"
+      },
+      {
+        "ranges": [
+          "D23"
+        ],
+        "type": "list",
+        "formula": "ArcUA"
+      },
+      {
+        "ranges": [
+          "D24"
+        ],
+        "type": "list",
+        "formula": "ArcSA"
+      },
+      {
+        "ranges": [
+          "D25"
+        ],
+        "type": "list",
+        "formula": "ArcU"
+      },
+      {
+        "ranges": [
+          "F55:F68"
+        ],
+        "type": "list",
+        "formula": "YesBlank"
+      }
+    ],
+    "Pandora": [
+      {
+        "ranges": [
+          "D39"
+        ],
+        "type": "list",
+        "formula": "\"Resolve,Stability,Vitality\""
+      },
+      {
+        "ranges": [
+          "D20"
+        ],
+        "type": "list",
+        "formula": "ArcAT"
+      },
+      {
+        "ranges": [
+          "D21"
+        ],
+        "type": "list",
+        "formula": "ArcET"
+      },
+      {
+        "ranges": [
+          "D22"
+        ],
+        "type": "list",
+        "formula": "ArcM"
+      },
+      {
+        "ranges": [
+          "D23"
+        ],
+        "type": "list",
+        "formula": "ArcUA"
+      },
+      {
+        "ranges": [
+          "D24"
+        ],
+        "type": "list",
+        "formula": "ArcSA"
+      },
+      {
+        "ranges": [
+          "D25"
+        ],
+        "type": "list",
+        "formula": "ArcU"
+      },
+      {
+        "ranges": [
+          "F55:F68"
+        ],
+        "type": "list",
+        "formula": "YesBlank"
+      }
+    ]
+  }
+}

@@ -1,0 +1,82 @@
+{
+    "boon_simple_psychic": {
+      "id": "boon_simple_psychic",
+      "schemaType": "entity",
+      "type": "boon",
+      "name": "Psychic",
+      "description": "All conditions you inflict target Resolve resistance",
+      "cost": { "value": 0, "pool": "main", "display": "Free" },
+      "effects": [{ "type": "condition_targeting", "value": "resolve", "display": "Conditions target Resolve" }],
+      "ui": { "component": "card", "category": "Supernatural", "tags": ["psychic", "condition"] },
+      "sourceFile": "boons.json"
+    },
+    "boon_simple_robot": {
+      "id": "boon_simple_robot",
+      "schemaType": "entity",
+      "type": "boon",
+      "name": "Robot",
+      "description": "Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity",
+      "cost": { "value": 30, "pool": "main", "display": "30p" },
+      "effects": [
+        { "type": "immunity", "target": ["vitality_conditions", "resolve_conditions"], "display": "Immune to Vitality/Resolve conditions" },
+        { "type": "vulnerability", "target": ["hacking", "electricity"], "display": "Vulnerable to Hacking/Electricity" }
+      ],
+      "ui": { "component": "card", "category": "Construct", "tags": ["robot", "defense"] },
+      "sourceFile": "boons.json"
+    },
+    "boon_simple_telekinetic": {
+      "id": "boon_simple_telekinetic",
+      "schemaType": "entity",
+      "type": "boon",
+      "name": "Telekinetic",
+      "description": "All conditions you inflict target Stability resistance",
+      "cost": { "value": 0, "pool": "main", "display": "Free" },
+      "effects": [{ "type": "condition_targeting", "value": "stability", "display": "Conditions target Stability" }],
+      "ui": { "component": "card", "category": "Supernatural", "tags": ["psychic", "condition"] },
+      "sourceFile": "boons.json"
+    },
+    "boon_simple_biohacker": {
+      "id": "boon_simple_biohacker",
+      "schemaType": "entity",
+      "type": "boon",
+      "name": "Biohacker",
+      "description": "All conditions you inflict target Vitality resistance",
+      "cost": { "value": 0, "pool": "main", "display": "Free" },
+      "effects": [{ "type": "condition_targeting", "value": "vitality", "display": "Conditions target Vitality" }],
+      "ui": { "component": "card", "category": "Supernatural", "tags": ["tech", "condition"] },
+      "sourceFile": "boons.json"
+    },
+    "boon_simple_utilitarian": {
+      "id": "boon_simple_utilitarian",
+      "schemaType": "entity",
+      "type": "boon",
+      "name": "Utilitarian",
+      "description": "Gain 5 extra points for Expertise, Features, Senses, and Descriptors",
+      "cost": { "value": 15, "pool": "main", "display": "15p" },
+      "effects": [{ "type": "pool_mod", "target": "utility", "value": 5, "display": "+5 Utility Points" }],
+      "ui": { "component": "card", "category": "Enhancement", "tags": ["utility", "points"] },
+      "sourceFile": "boons.json"
+    },
+    "boon_simple_perfectionist": {
+      "id": "boon_simple_perfectionist",
+      "schemaType": "entity",
+      "type": "boon",
+      "name": "Perfectionist",
+      "description": "Reroll any natural 1s on d20 rolls",
+      "cost": { "value": 15, "pool": "main", "display": "15p" },
+      "effects": [{ "type": "reroll", "target": "d20_natural_1", "display": "Reroll natural 1s" }],
+      "ui": { "component": "card", "category": "Enhancement", "tags": ["luck", "dice"] },
+      "sourceFile": "boons.json"
+    },
+    "boon_simple_combatReflexes": {
+      "id": "boon_simple_combatReflexes",
+      "schemaType": "entity",
+      "type": "boon",
+      "name": "Combat Reflexes",
+      "description": "Gain additional Reaction per turn",
+      "cost": { "value": 15, "pool": "main", "display": "15p" },
+      "effects": [{ "type": "stat_bonus", "target": "reactions", "value": 1, "display": "+1 Reaction" }],
+      "ui": { "component": "card", "category": "Enhancement", "tags": ["action_economy", "combat"] },
+      "sourceFile": "boons.json"
+    }
+}

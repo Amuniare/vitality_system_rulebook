@@ -1,0 +1,261 @@
+[
+    {
+        "id": "aura",
+        "name": "Aura",
+        "baseCost": 30,
+        "description": "A passive field around you affecting enemies or allies. It requires an Action to activate and a Quick Action each turn to maintain.",
+        "category": "area_effect",
+        "baseProperties": {
+            "radius": 1,
+            "activation": "action",
+            "maintenance": "quick_action_per_turn"
+        },
+        "auraTypes": [
+            {
+                "id": "attack_aura",
+                "name": "Attack Aura",
+                "description": "Makes a melee Base Attack against anything entering or ending its turn in the radius. Can only affect the same target once per round. Suffers a -Tier penalty to Accuracy."
+            },
+            {
+                "id": "obscuring_aura",
+                "name": "Obscuring Aura",
+                "description": "Provides visual cover, prevents sight-based abilities, and attacks through the aura suffer a -Tier penalty to Accuracy. You can see through your Aura and are unpenalized."
+            },
+            {
+                "id": "bolster_aura",
+                "name": "Bolster Aura",
+                "description": "Allies in the radius receive the benefit of your Fighting Actions."
+            }
+        ],
+        "upgrades": [
+            { "id": "increasedRadius", "name": "Increased Radius", "cost": 5, "per": "space", "description": "+X radius per purchase." },
+            { "id": "rangedOrigin", "name": "Ranged Origin", "cost": 15, "description": "Originates from another point you can see within 15 spaces. If centered on an ally, the point will move with them." },
+            { "id": "variableSize", "name": "Variable Size", "cost": 5, "description": "Change the size of the aura with each activation to any unlocked size." },
+            { "id": "additionalEffect", "name": "Additional Effect", "cost": 30, "description": "A second aura type is active simultaneously." },
+            { "id": "conditionEffect", "name": "Condition Effect", "cost": 0, "description": "The Attack Aura inflicts a Basic Condition instead of damage." },
+            { "id": "directEffect", "name": "Direct Effect", "cost": 30, "description": "The Attack Aura auto-hits without an Accuracy roll, but suffers a -Tier penalty to Damage and Condition rolls." },
+            { "id": "precise", "name": "Precise", "cost": 15, "description": "The Attack Aura only affects chosen targets." },
+            { "id": "squadSight", "name": "Squad Sight", "cost": 30, "description": "Your allies can also see through your Obscuring Aura." },
+            { "id": "passiveBuff", "name": "Passive Buff", "cost": 30, "per": "action", "description": "You and allies in the Bolster Aura are always under the effect of X specified Fighting Actions. This bonus stacks for allies but not for your own Fighting Actions." }
+        ]
+    },
+    {
+        "id": "createWall",
+        "name": "Create Wall",
+        "baseCost": 30,
+        "description": "Create a temporary battlefield structure. It requires an Action to summon and a Quick Action each turn to maintain. The wall has Tier uses per rest.",
+        "category": "battlefield_control",
+        "baseProperties": {
+            "size": "Tier × 5 spaces, must be at least 1 space high or 1 space long",
+            "hp": 50,
+            "conditions": "full immunity",
+            "avoidance": 0,
+            "durability": "10 + Tier",
+            "uses": "Tier uses per rest",
+            "activation": "action",
+            "maintenance": "quick_action_per_turn"
+        },
+        "upgrades": [
+            { "id": "increasedSize", "name": "Increased Size", "cost": 15, "per": "tier", "description": "Increase the number of spaces by an additional Tier × 5 per purchase." },
+            { "id": "shapeable", "name": "Shapeable", "cost": 30, "description": "Freely manipulate the size and shape of the wall." },
+            { "id": "bendable", "name": "Bendable", "cost": 5, "per": "bend", "description": "Add a 90-degree bend to the wall." },
+            { "id": "permeable", "name": "Permeable", "cost": 30, "description": "You and your allies can move through the wall once per turn. Enemies must succeed on a Stability check vs 10 + (Tier × 2) to pass through." },
+            { "id": "firingPosition", "name": "Firing Position", "cost": 30, "description": "Targets on one side of the wall can target characters on the other side. This must be declared when the wall is created." },
+            { "id": "damaging", "name": "Damaging", "cost": 30, "description": "Touching or making a melee attack against the wall triggers a Direct Base Attack against the character." },
+            { "id": "tough", "name": "Tough", "cost": 30, "description": "The wall has 100 HP instead of 50 HP." },
+            { "id": "heavilyArmored", "name": "Heavily Armored", "cost": 30, "per": "tier", "description": "+Tier Durability per purchase." },
+            { "id": "moveable", "name": "Moveable", "cost": 30, "description": "You can move the wall using your movement, where each space moved consumes 1 space of your Movement." },
+            { "id": "transparent", "name": "Transparent", "cost": 15, "description": "The wall is see-through." },
+            { "id": "rapidSummon", "name": "Rapid Summon", "cost": 15, "per": "tier", "description": "Add your Tier to the placement roll per purchase." },
+            { "id": "permanent", "name": "Permanent", "cost": 15, "description": "The wall does not require maintenance and lasts until destroyed." }
+        ]
+    },
+    {
+        "id": "shield",
+        "name": "Shield",
+        "baseCost": 30,
+        "description": "A personal protective shield. You gain a shield with Tier×3 HP at the start of each turn (not cumulative). The shield's HP is depleted before your regular HP. You cannot boost your Avoidance or Durability outside of Fighting Actions or external sources.",
+        "category": "defensive",
+        "baseProperties": {
+            "shieldHp": "Tier × 3",
+            "recovery": "Tier × 3 per turn",
+            "restriction": "Cannot boost Avoidance or Durability outside Fighting Actions"
+        },
+        "upgrades": [
+            { "id": "increasedShielding", "name": "Increased Shielding", "cost": 15, "per": "tier", "description": "+Tier×3 max shield HP per purchase (recovery stays the same)." },
+            { "id": "quickRecovery", "name": "Quick Recovery", "cost": 15, "per": "tier", "description": "Recover an additional Tier×3 HP per turn per purchase." },
+            { "id": "heavyShield", "name": "Heavy Shield", "cost": -15, "description": "Only recover Tier HP per turn (this cannot be increased)." },
+            { "id": "areaShield", "name": "Area Shield", "cost": 15, "description": "While the shield has HP, all ranged or AOE attacks against adjacent squares hit the shield instead." },
+            { "id": "source", "name": "Source", "cost": "variable", "description": "You do not naturally regain your shield. Instead, determine a trigger and amount of shield recharged with your GM (e.g., regain shield equal to damage dealt)." }
+        ]
+    },
+    {
+        "id": "backlash",
+        "name": "Backlash",
+        "baseCost": 30,
+        "description": "An automatic counterattack system. When you are hit by a Melee Attack, you can make a Base Attack against the attacker. You have 2 uses per round, which reset at the start of your turn.",
+        "category": "reactive",
+        "baseProperties": {
+            "trigger": "When hit by Melee Attack",
+            "effect": "Make Base Attack against attacker",
+            "uses": "2 uses per round, reset at start of turn"
+        },
+        "upgrades": [
+            { "id": "additionalUses", "name": "Additional Uses", "cost": 15, "per": "use", "description": "Gain additional uses per purchase." },
+            { "id": "distantResponse", "name": "Distant Response", "cost": 30, "description": "Can be triggered by any attack type, and you can respond with a Ranged or Direct Base Attack." },
+            { "id": "explosiveResponse", "name": "Explosive Response", "cost": 30, "description": "The counterattack becomes a 3-space AOE Burst instead of a single target attack." }
+        ]
+    },
+    {
+        "id": "boost",
+        "name": "Boost",
+        "baseCost": 60,
+        "description": "A temporary power enhancement. As a Free Action, you can increase your Tier by half (rounded up). The duration is determined by the chosen option below.",
+        "category": "enhancement",
+        "baseProperties": {
+            "effect": "Increase Tier by half (rounded up)",
+            "activation": "free_action"
+        },
+        "durationOptions": [
+            {
+                "id": "short",
+                "name": "Short",
+                "description": "Lasts for 4 consecutive turns, can be used once per fight, and recharges after 3 rounds of rest (you are stunned while resting, and taking damage resets the rest timer)."
+            },
+            {
+                "id": "source",
+                "name": "Source",
+                "description": "Activates when you access a specific environment or descriptor (discuss with GM)."
+            }
+        ],
+        "upgrades": [
+            { "id": "awakened", "name": "Awakened", "cost": 15, "description": "Pick an additional Movement Archetype when purchasing this ability." },
+            { "id": "unstoppable", "name": "Unstoppable", "cost": 30, "description": "Pick an additional Defensive Archetype when purchasing this ability." },
+            { "id": "affectsOthers", "name": "Affects Others", "cost": 15, "description": "You can target other characters instead of yourself." },
+            { "id": "affectsOthersOnly", "name": "Affects Others Only", "cost": 0, "description": "You can only target others, not yourself." }
+        ]
+    },
+    {
+        "id": "baseSummon",
+        "name": "Base Summon",
+        "baseCost": 10,
+        "description": "Create a basic summon with stats equal to your Tier, 10 HP (minion), no Special Attacks or Utility abilities. It acts on your initiative.",
+        "category": "summoning",
+        "baseProperties": {
+            "tier": "character_tier",
+            "hp": 10,
+            "type": "minion",
+            "stats": "standard",
+            "specialAttacks": "none",
+            "utility": "none"
+        },
+        "upgrades": [
+            { "id": "mobile", "name": "Mobile", "cost": 5, "description": "The summon gets a Movement archetype." },
+            { "id": "extraPoints", "name": "Extra Points", "cost": "variable", "description": "The summon gains X points for its base abilities." },
+            { "id": "minionHorde", "name": "Minion Horde", "cost": 5, "per": "minion", "description": "Gain X additional 10 HP minions." },
+            { "id": "alternateSummons", "name": "Alternate Summons", "cost": 5, "per": "variant", "description": "A resummoned creature can have different stats." },
+            { "id": "resummon", "name": "Resummon", "cost": 15, "per": "use", "description": "Can be resummoned X additional times after defeat." },
+            { "id": "helpfulCompanion", "name": "Helpful Companion", "cost": 15, "description": "The summon gets access to the Utility section." },
+            { "id": "source", "name": "Source", "cost": 15, "per": "condition", "description": "Requires specific conditions to summon; the summon adds your Tier to a chosen stat." },
+            { "id": "captain", "name": "Captain", "cost": 10, "description": "The summon has 25 HP instead of 10 HP." },
+            { "id": "elite", "name": "Elite", "cost": 10, "description": "The summon has 50 HP instead of 25 HP.", "requires": "captain" },
+            { "id": "boss", "name": "Boss", "cost": 10, "description": "The summon has 100 HP instead of 50 HP.", "requires": "elite" },
+            { "id": "heroic", "name": "Heroic", "cost": 15, "description": "The summon gets a Special Attacks archetype and can have special attacks." },
+            { "id": "unique", "name": "Unique", "cost": 15, "description": "The summon gets a Unique Abilities archetype." },
+            { "id": "massSummoner", "name": "Mass Summoner", "cost": 30, "description": "Summon all your summons as a single action, and modifiers apply to all." },
+            { "id": "gameHunter", "name": "Game Hunter", "cost": 40, "description": "You can summon defeated enemies under specific conditions (requires GM approval)." }
+        ]
+    },
+    {
+        "id": "invisibility",
+        "name": "Invisibility",
+        "baseCost": 30,
+        "description": "An advanced concealment ability. You become Invisible and can take the Hide Action even while in the line of sight of enemies. You are unaffected by sight-based abilities.",
+        "category": "stealth",
+        "baseProperties": {
+            "effect": "You are Invisible",
+            "hideAction": "Can Hide while in line of sight",
+            "immunity": "Unaffected by sight-based abilities"
+        },
+        "upgrades": []
+    },
+    {
+        "id": "regeneration",
+        "name": "Regeneration",
+        "baseCost": 60,
+        "description": "A rapid healing ability. You regain HP at the start of each turn based on your Tier (Tiers 1-4: 20 HP, Tiers 5-6: 30 HP, Tiers 7-8: 40 HP, Tiers 9-10: 50 HP). If unconscious, you wake up once healed to full HP. You cannot boost your Avoidance or Durability outside of Fighting Actions or external sources.",
+        "category": "healing",
+        "baseProperties": {
+            "healing": {
+                "tiers_1_4": "20 HP",
+                "tiers_5_6": "30 HP",
+                "tiers_7_8": "40 HP",
+                "tiers_9_10": "50 HP"
+            },
+            "unconscious": "Wake up once healed to full HP",
+            "restriction": "Cannot boost Avoidance or Durability outside of Fighting Actions"
+        },
+        "upgrades": []
+    },
+    {
+        "id": "heal",
+        "name": "Heal",
+        "baseCost": 30,
+        "description": "Restore health to other characters. Touch a living being to heal them for (5 × Tier) HP. You have 5 uses per rest.",
+        "category": "healing",
+        "baseProperties": {
+            "healing": "5 × Tier HP",
+            "uses": "5 uses per rest",
+            "range": "touch",
+            "action": "action",
+            "target": "living beings"
+        },
+        "upgrades": [
+            {
+                "id": "increasedCharges",
+                "name": "Increased Charges",
+                "cost": 15,
+                "per": "purchase", 
+                "description": "Double the number of charges per purchase." 
+            },
+            {
+                "id": "increasedHealing",
+                "name": "Increased Healing",
+                "cost": 30,
+                "per": "purchase", 
+                "description": "Double the HP healed per purchase." 
+            },
+            { "id": "greaterHealing", "name": "Greater Healing", "cost": 15, "description": "Use an additional charge on the same target with the same action." },
+            { "id": "restorativeOnly", "name": "Restorative Only", "cost": 0, "description": "This ability removes all Conditions instead of healing damage." },
+            { "id": "restorative", "name": "Restorative", "cost": 15, "description": "This ability also removes all Conditions." },
+            { "id": "healsObjectsOnly", "name": "Heals Objects Only", "cost": 0, "description": "This ability works on objects instead of living beings." },
+            { "id": "healsObjects", "name": "Heals Objects", "cost": 15, "description": "This ability works on both objects and living beings." },
+            { "id": "ranged", "name": "Ranged", "cost": 15, "description": "You can target a creature up to 15 spaces away." },
+            { "id": "sharedHealing", "name": "Shared Healing", "cost": 15, "description": "Pick an additional target within range per use, costing an extra charge." },
+            { "id": "massHealing", "name": "Mass Healing", "cost": 30, "description": "Heal any number of selected targets within 6 spaces of you, expending a charge for each target." },
+            { "id": "quickHealing", "name": "Quick Healing", "cost": 30, "description": "You can use this ability as a Quick Action." },
+            { "id": "versatileHealer", "name": "Versatile Healer", "cost": 15, "per": "version", "description": "You can build an additional version of your Heal, including this upgrade, for each purchase." }
+        ]
+    },
+    {
+        "id": "counter",
+        "name": "Counter",
+        "baseCost": 30,
+        "description": "Nullify enemy actions. On your turn, declare a target you can see within 30 spaces. As a Reaction to that target taking an action, you can make a check (Focus or Power + Tier vs their Resistance). On success, their action is nullified. You can use this twice per round, but only the first use consumes your reaction.",
+        "category": "control",
+        "baseProperties": {
+            "range": "30 spaces",
+            "visibility": "must see target",
+            "usage": "Declare target on your turn, twice per round",
+            "roll": "Focus or Power + Tier vs their Resolve/Stability/Vitality",
+            "success": "Action nullified and lost",
+            "failure": "They know you tried, immune until you rest"
+        },
+        "upgrades": [
+            { "id": "stunningCounter", "name": "Stunning Counter", "cost": 15, "description": "A successful Counter also stuns the target until the end of their turn." },
+            { "id": "disablingCounter", "name": "Disabling Counter", "cost": 15, "description": "The target cannot use the attempted action again until the end of their next turn." },
+            { "id": "extraCounter", "name": "Extra Counter", "cost": 15, "per": "use", "description": "Gain X extra uses per round." },
+            { "id": "source", "name": "Source", "cost": "negative_variable", "description": "This can only disable specific power types (discuss with GM)." }
+        ]
+    }
+]

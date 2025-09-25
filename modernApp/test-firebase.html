@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Integration Test - Vitality System</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border-left: 4px solid #4299e1;
+        }
+        
+        .test-result {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .test-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .test-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .test-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        button {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.25rem;
+        }
+        
+        button:hover {
+            background: #3182ce;
+        }
+        
+        button:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #f7fafc;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-success { background: #48bb78; }
+        .status-error { background: #f56565; }
+        .status-warning { background: #ed8936; }
+        .status-info { background: #4299e1; }
+    </style>
+</head>
+<body>
+    <h1>🔥 Firebase Integration Test</h1>
+    <p>This page tests the Firebase integration for the Vitality System Character Builder.</p>
+    
+    <div class="test-section">
+        <h2>🔧 Configuration Tests</h2>
+        <div id="config-tests">
+            <div class="test-result test-info">Running configuration tests...</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🌐 Connection Tests</h2>
+        <div id="connection-tests">
+            <div class="test-result test-info">Running connection tests...</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>💾 Database Tests</h2>
+        <button onclick="runDatabaseTests()">Run Database Tests</button>
+        <button onclick="runCharacterTests()">Test Character Operations</button>
+        <button onclick="runGalleryTests()">Test Gallery Operations</button>
+        <div id="database-tests">
+            <div class="test-result test-info">Click buttons to run database tests...</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 Performance Tests</h2>
+        <button onclick="runPerformanceTests()">Run Performance Tests</button>
+        <div id="performance-tests">
+            <div class="test-result test-info">Click button to run performance tests...</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔍 Debug Information</h2>
+        <button onclick="showDebugInfo()">Show Debug Info</button>
+        <div id="debug-info"></div>
+    </div>
+
+    <script type="module">
+        import { db, auth, isFirebaseAvailable, getFirebaseStatus } from './config/firebase.js';
+        import { FirebaseSync } from './core/FirebaseSync.js';
+        import { CharacterManager } from './core/CharacterManager.js';
+        
+        let firebaseSync = null;
+        let characterManager = null;
+        
+        // Test utilities
+        function addTestResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const result = document.createElement('div');
+            result.className = `test-result test-${type}`;
+            result.innerHTML = `<span class="status-indicator status-${type}"></span>${message}`;
+            container.appendChild(result);
+        }
+        
+        function clearTestResults(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+        }
+        
+        // Configuration Tests
+        async function runConfigTests() {
+            clearTestResults('config-tests');
+            
+            try {
+                // Test Firebase availability
+                if (isFirebaseAvailable()) {
+                    addTestResult('config-tests', '✅ Firebase SDK loaded successfully', 'success');
+                } else {
+                    addTestResult('config-tests', '❌ Firebase SDK not available', 'error');
+                    return;
+                }
+                
+                // Test configuration
+                const status = getFirebaseStatus();
+                addTestResult('config-tests', `📋 Project ID: ${status.projectId}`, 'info');
+                addTestResult('config-tests', `🌐 Auth Domain: ${status.authDomain}`, 'info');
+                addTestResult('config-tests', `🔧 Emulator Mode: ${status.emulator ? 'Yes' : 'No'}`, status.emulator ? 'warning' : 'info');
+                
+                // Test database instance
+                if (db) {
+                    addTestResult('config-tests', '✅ Firestore database instance created', 'success');
+                } else {
+                    addTestResult('config-tests', '❌ Firestore database instance failed', 'error');
+                }
+                
+                // Test auth instance
+                if (auth) {
+                    addTestResult('config-tests', '✅ Firebase Auth instance created', 'success');
+                } else {
+                    addTestResult('config-tests', '❌ Firebase Auth instance failed', 'error');
+                }
+                
+            } catch (error) {
+                addTestResult('config-tests', `❌ Configuration test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Connection Tests
+        async function runConnectionTests() {
+            clearTestResults('connection-tests');
+            
+            try {
+                // Test FirebaseSync initialization
+                firebaseSync = new FirebaseSync();
+                await firebaseSync.init();
+                
+                const syncStatus = firebaseSync.getStatus();
+                if (syncStatus.syncEnabled) {
+                    addTestResult('connection-tests', '✅ FirebaseSync initialized successfully', 'success');
+                    addTestResult('connection-tests', `🌐 Online: ${syncStatus.isOnline}`, syncStatus.isOnline ? 'success' : 'warning');
+                    addTestResult('connection-tests', `📡 Firebase Available: ${syncStatus.firebaseAvailable}`, syncStatus.firebaseAvailable ? 'success' : 'error');
+                } else {
+                    addTestResult('connection-tests', '⚠️ FirebaseSync disabled (offline mode)', 'warning');
+                }
+                
+                // Test CharacterManager initialization
+                characterManager = CharacterManager.getInstance();
+                await characterManager.init();
+                
+                const managerStatus = characterManager.getCloudSyncStatus();
+                if (managerStatus.enabled) {
+                    addTestResult('connection-tests', '✅ CharacterManager cloud sync enabled', 'success');
+                } else {
+                    addTestResult('connection-tests', '⚠️ CharacterManager cloud sync disabled', 'warning');
+                }
+                
+            } catch (error) {
+                addTestResult('connection-tests', `❌ Connection test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Database Tests
+        window.runDatabaseTests = async function() {
+            clearTestResults('database-tests');
+            
+            if (!firebaseSync) {
+                addTestResult('database-tests', '❌ FirebaseSync not initialized. Run connection tests first.', 'error');
+                return;
+            }
+            
+            try {
+                // Test basic read operation
+                addTestResult('database-tests', '🔍 Testing read operations...', 'info');
+                const characters = await firebaseSync.getAllCharacters({ limitCount: 1 });
+                addTestResult('database-tests', `✅ Read test completed. Found ${characters.length} characters.`, 'success');
+                
+                // Test write operation with test data
+                addTestResult('database-tests', '✏️ Testing write operations...', 'info');
+                const testCharacter = {
+                    id: `test_${Date.now()}`,
+                    name: 'Test Character',
+                    tier: 1,
+                    characterType: 'standard',
+                    createdAt: Date.now(),
+                    updatedAt: Date.now()
+                };
+                
+                const saveResult = await firebaseSync.saveCharacter(testCharacter.id, testCharacter);
+                if (saveResult.success) {
+                    addTestResult('database-tests', '✅ Write test completed successfully', 'success');
+                    
+                    // Test read of written data
+                    const readCharacter = await firebaseSync.loadCharacter(testCharacter.id);
+                    if (readCharacter && readCharacter.name === testCharacter.name) {
+                        addTestResult('database-tests', '✅ Read-back test completed successfully', 'success');
+                    } else {
+                        addTestResult('database-tests', '❌ Read-back test failed', 'error');
+                    }
+                    
+                    // Clean up test data
+                    await firebaseSync.deleteCharacter(testCharacter.id);
+                    addTestResult('database-tests', '🧹 Test data cleaned up', 'info');
+                    
+                } else if (saveResult.queued) {
+                    addTestResult('database-tests', '⏳ Write operation queued (offline mode)', 'warning');
+                } else {
+                    addTestResult('database-tests', '❌ Write test failed', 'error');
+                }
+                
+            } catch (error) {
+                addTestResult('database-tests', `❌ Database test failed: ${error.message}`, 'error');
+            }
+        };
+        
+        // Character Tests
+        window.runCharacterTests = async function() {
+            clearTestResults('database-tests');
+            
+            if (!characterManager) {
+                addTestResult('database-tests', '❌ CharacterManager not initialized. Run connection tests first.', 'error');
+                return;
+            }
+            
+            try {
+                addTestResult('database-tests', '👤 Testing character operations...', 'info');
+                
+                // Create test character
+                const testCharacter = await characterManager.createNewCharacter('Firebase Test Character');
+                addTestResult('database-tests', `✅ Created test character: ${testCharacter.name}`, 'success');
+                
+                // Update character
+                await characterManager.updateCharacter(testCharacter.id, {
+                    tier: 3,
+                    notes: 'Updated via Firebase test'
+                });
+                addTestResult('database-tests', '✅ Character update test passed', 'success');
+                
+                // Test cloud sync status
+                const cloudStatus = characterManager.getCloudSyncStatus();
+                addTestResult('database-tests', `📊 Cloud sync queue: ${cloudStatus.queueLength || 0} operations`, 'info');
+                
+                // Clean up
+                await characterManager.deleteCharacter(testCharacter.id);
+                addTestResult('database-tests', '🧹 Test character cleaned up', 'info');
+                
+            } catch (error) {
+                addTestResult('database-tests', `❌ Character test failed: ${error.message}`, 'error');
+            }
+        };
+        
+        // Gallery Tests
+        window.runGalleryTests = async function() {
+            clearTestResults('database-tests');
+            
+            if (!firebaseSync) {
+                addTestResult('database-tests', '❌ FirebaseSync not initialized. Run connection tests first.', 'error');
+                return;
+            }
+            
+            try {
+                addTestResult('database-tests', '📖 Testing gallery operations...', 'info');
+                
+                // Test gallery data fetch
+                const allCharacters = await firebaseSync.getAllCharacters({ limitCount: 10 });
+                addTestResult('database-tests', `✅ Gallery fetch test: ${allCharacters.length} characters`, 'success');
+                
+                // Test metadata fetch
+                const metadata = await firebaseSync.getCharacterMetadata({ limitCount: 10 });
+                addTestResult('database-tests', `✅ Metadata fetch test: ${metadata.length} metadata entries`, 'success');
+                
+                // Test filtering
+                const tierFiltered = await firebaseSync.getAllCharacters({ 
+                    limitCount: 10, 
+                    filterTier: 4 
+                });
+                addTestResult('database-tests', `✅ Filter test (Tier 4): ${tierFiltered.length} characters`, 'success');
+                
+            } catch (error) {
+                addTestResult('database-tests', `❌ Gallery test failed: ${error.message}`, 'error');
+            }
+        };
+        
+        // Performance Tests
+        window.runPerformanceTests = async function() {
+            clearTestResults('performance-tests');
+            
+            if (!firebaseSync) {
+                addTestResult('performance-tests', '❌ FirebaseSync not initialized. Run connection tests first.', 'error');
+                return;
+            }
+            
+            try {
+                addTestResult('performance-tests', '⚡ Running performance tests...', 'info');
+                
+                // Test read performance
+                const startTime = performance.now();
+                await firebaseSync.getAllCharacters({ limitCount: 20 });
+                const readTime = performance.now() - startTime;
+                
+                addTestResult('performance-tests', `📊 Gallery read time: ${readTime.toFixed(2)}ms`, readTime < 2000 ? 'success' : 'warning');
+                
+                // Test batch operations
+                const batchStart = performance.now();
+                const promises = [];
+                for (let i = 0; i < 5; i++) {
+                    promises.push(firebaseSync.getAllCharacters({ limitCount: 1 }));
+                }
+                await Promise.all(promises);
+                const batchTime = performance.now() - batchStart;
+                
+                addTestResult('performance-tests', `📊 Batch operation time: ${batchTime.toFixed(2)}ms`, batchTime < 3000 ? 'success' : 'warning');
+                
+                // Memory usage
+                if (performance.memory) {
+                    const memory = performance.memory;
+                    addTestResult('performance-tests', `💾 Used JS heap: ${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB`, 'info');
+                    addTestResult('performance-tests', `💾 Total JS heap: ${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB`, 'info');
+                }
+                
+            } catch (error) {
+                addTestResult('performance-tests', `❌ Performance test failed: ${error.message}`, 'error');
+            }
+        };
+        
+        // Debug Info
+        window.showDebugInfo = function() {
+            const container = document.getElementById('debug-info');
+            
+            const debugData = {
+                firebaseConfig: getFirebaseStatus(),
+                firebaseSync: firebaseSync ? firebaseSync.getStatus() : null,
+                characterManager: characterManager ? characterManager.getCharacterStats() : null,
+                localStorage: {
+                    items: localStorage.length,
+                    keys: Object.keys(localStorage).filter(key => key.startsWith('vitality_'))
+                },
+                network: {
+                    online: navigator.onLine,
+                    connection: navigator.connection ? {
+                        effectiveType: navigator.connection.effectiveType,
+                        downlink: navigator.connection.downlink
+                    } : 'Not available'
+                },
+                browser: {
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    cookieEnabled: navigator.cookieEnabled
+                }
+            };
+            
+            container.innerHTML = `<pre>${JSON.stringify(debugData, null, 2)}</pre>`;
+        };
+        
+        // Run initial tests
+        document.addEventListener('DOMContentLoaded', async () => {
+            await runConfigTests();
+            await runConnectionTests();
+        });
+    </script>
+</body>
+</html>

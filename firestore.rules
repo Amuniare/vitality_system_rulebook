@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Characters collection - public gallery with controlled writes
+    match /characters/{characterId} {
+      // Anyone can read characters for the gallery
+      allow read: true;
+      
+      // Allow writes for now (will add authentication later)
+      // In production, you'd want to restrict this to authenticated users
+      allow create: if isValidCharacter() && characterSizeLimit();
+      allow update: if isValidCharacter() && characterSizeLimit();
+      allow delete: true; // For now - in production, restrict to owner or admin
+    }
+    
+    // Character metadata for gallery (lightweight character info)
+    match /character_metadata/{characterId} {
+      allow read: true;
+      allow write: if isValidMetadata() && metadataSizeLimit();
+    }
+    
+    // System data (read-only reference data)
+    match /system_data/{document} {
+      allow read: true;
+      allow write: false; // Only admins should write system data
+    }
+    
+    // User profiles (for future authentication)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Analytics and usage data (write-only for clients)
+    match /analytics/{document} {
+      allow read: false;
+      allow write: if request.auth != null;
+    }
+  }
+  
+  // Validation functions
+  function isValidCharacter() {
+    let data = request.resource.data;
+    return data.keys().hasAll(['id', 'name', 'tier']) &&
+           data.name is string &&
+           data.name.size() > 0 &&
+           data.name.size() <= 100 &&
+           data.tier is number &&
+           data.tier >= 1 &&
+           data.tier <= 10 &&
+           data.id is string &&
+           data.id.size() > 0;
+  }
+  
+  function isValidMetadata() {
+    let data = request.resource.data;
+    return data.keys().hasAll(['id', 'name', 'tier']) &&
+           data.name is string &&
+           data.name.size() <= 100 &&
+           data.tier is number &&
+           data.tier >= 1 &&
+           data.tier <= 10;
+  }
+  
+  function characterSizeLimit() {
+    // Limit character document size to prevent abuse
+    return request.resource.size < 1048576; // 1MB limit
+  }
+  
+  function metadataSizeLimit() {
+    // Smaller limit for metadata
+    return request.resource.size < 10240; // 10KB limit
+  }
+}
