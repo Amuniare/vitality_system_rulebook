@@ -3,7 +3,7 @@ Build generation and validation for the Vitality System.
 """
 
 import itertools
-from typing import List
+from typing import List, Generator
 from models import AttackBuild
 from game_data import UPGRADES, LIMITS, RuleValidator, MUTUAL_EXCLUSIONS
 
@@ -16,9 +16,12 @@ class BuildGenerator:
 
     def generate_all_valid_builds(self, attack_types: List[str] = None) -> List[AttackBuild]:
         """Generate all valid build combinations within point budget"""
-        valid_builds = []
+        return list(self.generate_builds_chunked(attack_types))
+
+    def generate_builds_chunked(self, attack_types: List[str] = None, chunk_size: int = None) -> Generator[AttackBuild, None, None]:
+        """Generate valid builds as a chunked generator to reduce memory usage"""
         if attack_types is None:
-            attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+            attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
         # Generate builds for each attack type
         for attack_type in attack_types:
@@ -35,9 +38,7 @@ class BuildGenerator:
                     for limits in limit_combinations:
                         build = AttackBuild(attack_type, upgrades, limits)
                         if build.is_valid(self.max_points):
-                            valid_builds.append(build)
-
-        return valid_builds
+                            yield build
 
     def _generate_upgrade_combinations(self, attack_type: str, max_count: int) -> List[List[str]]:
         """Generate all valid upgrade combinations for given attack type"""
@@ -103,11 +104,17 @@ def generate_valid_builds(max_points: int = 60, attack_types: List[str] = None) 
     return generator.generate_all_valid_builds(attack_types)
 
 
+def generate_valid_builds_chunked(max_points: int = 60, attack_types: List[str] = None, chunk_size: int = 1000) -> Generator[AttackBuild, None, None]:
+    """Generate all valid build combinations as a chunked generator for memory efficiency"""
+    generator = BuildGenerator(max_points)
+    return generator.generate_builds_chunked(attack_types, chunk_size)
+
+
 def generate_single_upgrade_builds(max_points: int = 60, attack_types: List[str] = None) -> List[AttackBuild]:
     """Generate builds with exactly one upgrade for testing individual upgrade effectiveness"""
     valid_builds = []
     if attack_types is None:
-        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
     for attack_type in attack_types:
         for upgrade_name in UPGRADES.keys():
@@ -125,7 +132,7 @@ def generate_slayer_builds(max_points: int = 60, attack_types: List[str] = None)
     """Generate builds focused on slayer upgrades for analysis"""
     valid_builds = []
     if attack_types is None:
-        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
     slayer_upgrades = [u for u in UPGRADES.keys() if 'slayer' in u]
 
@@ -145,7 +152,7 @@ def generate_limit_builds(max_points: int = 60, attack_types: List[str] = None) 
     """Generate builds with different limit combinations for analysis"""
     valid_builds = []
     if attack_types is None:
-        attack_types = ['melee', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+        attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
     for attack_type in attack_types:
         for limit_name in LIMITS.keys():

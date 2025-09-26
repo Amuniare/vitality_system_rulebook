@@ -20,8 +20,9 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
     if enemy_hp is None:
         enemy_hp = target_hp
 
-    # Initialize multiple enemies
-    enemies = [{'hp': enemy_hp, 'max_hp': enemy_hp, 'bleed_stacks': []} for _ in range(num_enemies)]
+    # Initialize multiple enemies with pre-allocated structure
+    enemy_template = {'hp': enemy_hp, 'max_hp': enemy_hp, 'bleed_stacks': []}
+    enemies = [enemy_template.copy() for _ in range(num_enemies)]
 
     if log_file:
         log_file.write(f"\n{'='*80}\n")
@@ -34,10 +35,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         log_file.write(f"  Avoidance: {defender.avoidance} | Durability: {defender.durability} | Max HP: {defender.max_hp}\n")
         log_file.write(f"BUILD CONFIGURATION:\n")
         log_file.write(f"  Attack Type: {build.attack_type}")
-        if build.attack_type == 'melee':
-            # In original, melee_choice was hardcoded to 'damage'
-            log_file.write(f" (choosing +{attacker.tier} damage)")
-        elif build.attack_type == 'melee_ac':
+        if build.attack_type == 'melee_ac':
             log_file.write(f" (choosing +{attacker.tier} accuracy)")
         elif build.attack_type == 'melee_dg':
             log_file.write(f" (choosing +{attacker.tier} damage)")
@@ -81,17 +79,25 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             if enemy['hp'] <= 0:
                 continue
 
-            total_bleed_damage = 0
-            new_bleed_stacks = []
+            bleed_stacks = enemy['bleed_stacks']
+            if not bleed_stacks:
+                continue
 
-            for bleed_damage, turns_left in enemy['bleed_stacks']:
+            total_bleed_damage = 0
+            # Process bleed in-place to avoid creating new lists
+            active_bleeds = 0
+
+            for j in range(len(bleed_stacks)):
+                bleed_damage, turns_left = bleed_stacks[j]
                 if turns_left > 0:
                     total_bleed_damage += bleed_damage
-                    new_bleed_stacks.append((bleed_damage, turns_left - 1))
+                    bleed_stacks[active_bleeds] = (bleed_damage, turns_left - 1)
+                    active_bleeds += 1
                     if log_file:
                         log_file.write(f"  Enemy {i+1} bleed: {bleed_damage} damage ({turns_left} -> {turns_left-1} turns remaining)\n")
 
-            enemy['bleed_stacks'] = new_bleed_stacks
+            # Trim the list to active bleeds only
+            bleed_stacks[:] = bleed_stacks[:active_bleeds]
             enemy['hp'] -= total_bleed_damage
 
             if log_file and total_bleed_damage > 0:
@@ -102,7 +108,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
         if enemies_killed_by_bleed:
             if log_file:
-                log_file.write(f"\n💀 ENEMIES {', '.join(map(str, enemies_killed_by_bleed))} DIE FROM BLEED DAMAGE!\n")
+                log_file.write(f"\n ENEMIES {', '.join(map(str, enemies_killed_by_bleed))} DIE FROM BLEED DAMAGE!\n")
 
         # Check if all enemies are dead
         if not any(enemy['hp'] > 0 for enemy in enemies):
@@ -115,6 +121,10 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         # Determine if this is an AOE attack
         is_aoe = build.attack_type in ['area', 'direct_area_damage']
 
+        # Initialize turn tracking variables
+        charged_this_turn = False
+        total_damage_dealt = 0
+
         if is_aoe:
             # AOE attacks hit all alive enemies
             alive_enemies = [(i, enemy) for i, enemy in enumerate(enemies) if enemy['hp'] > 0]
@@ -125,38 +135,46 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 turn_number=turns, charge_history=charge_history
             )
 
-            enemies_hit = []
+            # Check if we got a charge condition instead of attack results
+            if attack_results and attack_results[0][1] == 0 and 'charge' in attack_results[0][2]:
+                charged_this_turn = True
+                total_damage_dealt = 0
+                if log_file:
+                    log_file.write(f"  CHARGING UP instead of attacking!\n")
+            else:
+                enemies_hit = []
 
-            # Apply results to each target
-            for target_idx, damage, conditions in attack_results:
-                enemy = enemies[target_idx]
-                enemy['hp'] -= damage
+                # Apply results to each target
+                for target_idx, damage, conditions in attack_results:
+                    enemy = enemies[target_idx]
+                    enemy['hp'] -= damage
 
-                if damage > 0:
-                    enemies_hit.append(target_idx+1)
+                    if damage > 0:
+                        enemies_hit.append(target_idx+1)
 
-                # Check for finishing blow after damage is applied
-                finishing_conditions = [c for c in conditions if c.startswith('finishing_')]
-                if finishing_conditions and enemy['hp'] > 0:  # Only check if enemy still alive
-                    threshold = int(finishing_conditions[0].split('_')[1])
-                    if enemy['hp'] <= threshold:
+                    # Check for finishing blow after damage is applied
+                    finishing_conditions = [c for c in conditions if c.startswith('finishing_')]
+                    if finishing_conditions and enemy['hp'] > 0:  # Only check if enemy still alive
+                        threshold = int(finishing_conditions[0].split('_')[1])
+                        if enemy['hp'] <= threshold:
+                            if log_file:
+                                log_file.write(f"     FINISHING BLOW! Enemy {target_idx+1} at {enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
+                            enemy['hp'] = 0  # Enemy is defeated
+
+                    # Apply conditions to this enemy
+                    if 'bleed' in conditions:
+                        old_bleed_count = len(enemy['bleed_stacks'])
+                        bleed_damage = max(0, damage - attacker.tier)  # Reduce by tier
+                        enemy['bleed_stacks'] = [(bleed_damage, 2)]  # Same damage for 2 more turns
                         if log_file:
-                            log_file.write(f"    ⚡ FINISHING BLOW! Enemy {target_idx+1} at {enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
-                        enemy['hp'] = 0  # Enemy is defeated
+                            log_file.write(f"     BLEED APPLIED to Enemy {target_idx+1}: {bleed_damage} damage for 2 turns (reduced from {damage} by tier {attacker.tier})\n")
+                            if old_bleed_count > 0:
+                                log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
 
-                # Apply conditions to this enemy
-                if 'bleed' in conditions:
-                    old_bleed_count = len(enemy['bleed_stacks'])
-                    enemy['bleed_stacks'] = [(damage, 2)]  # Same damage for 2 more turns
-                    if log_file:
-                        log_file.write(f"    🩸 BLEED APPLIED to Enemy {target_idx+1}: {damage} damage for 2 turns\n")
-                        if old_bleed_count > 0:
-                            log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
-
-            if log_file:
-                log_file.write(f"\n  AOE ATTACK SUMMARY:\n")
-                log_file.write(f"    Enemies hit: {enemies_hit if enemies_hit else 'None'}\n")
-                log_file.write(f"    Total damage dealt: {total_damage_dealt}\n")
+                if log_file:
+                    log_file.write(f"\n  AOE ATTACK SUMMARY:\n")
+                    log_file.write(f"    Enemies hit: {enemies_hit if enemies_hit else 'None'}\n")
+                    log_file.write(f"    Total damage dealt: {total_damage_dealt}\n")
 
         else:
             # Single target attack - target first alive enemy
@@ -175,35 +193,52 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 damage, conditions = make_attack(attacker, defender, build, log_file=log_file,
                                                 turn_number=turns, charge_history=charge_history)
 
-                target_enemy['hp'] -= damage
-
-                if log_file:
-                    log_file.write(f"\n  ATTACK RESULT:\n")
-                    log_file.write(f"    Damage dealt to Enemy {target_idx+1}: {damage}\n")
-                    log_file.write(f"    Enemy {target_idx+1} HP: {target_enemy['hp'] + damage} -> {target_enemy['hp']}\n")
-
-                # Check for finishing blow after damage is applied
-                finishing_conditions = [c for c in conditions if c.startswith('finishing_')]
-                if finishing_conditions and target_enemy['hp'] > 0:  # Only check if enemy still alive
-                    threshold = int(finishing_conditions[0].split('_')[1])
-                    if target_enemy['hp'] <= threshold:
-                        if log_file:
-                            log_file.write(f"    ⚡ FINISHING BLOW! Enemy {target_idx+1} at {target_enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
-                        target_enemy['hp'] = 0  # Enemy is defeated
-
-                # Apply conditions to target
-                if 'bleed' in conditions:
-                    old_bleed_count = len(target_enemy['bleed_stacks'])
-                    target_enemy['bleed_stacks'] = [(damage, 2)]  # Same damage for 2 more turns
+                # Check if we got a charge condition instead of doing damage
+                if damage == 0 and 'charge' in conditions:
+                    charged_this_turn = True
+                    total_damage_dealt = 0
                     if log_file:
-                        log_file.write(f"    🩸 BLEED APPLIED to Enemy {target_idx+1}: {damage} damage for 2 turns\n")
-                        if old_bleed_count > 0:
-                            log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
+                        log_file.write(f"  CHARGING UP instead of attacking!\n")
+                else:
+                    target_enemy['hp'] -= damage
+                    total_damage_dealt = damage
+
+                    if log_file:
+                        log_file.write(f"\n  ATTACK RESULT:\n")
+                        log_file.write(f"    Damage dealt to Enemy {target_idx+1}: {damage}\n")
+                        log_file.write(f"    Enemy {target_idx+1} HP: {target_enemy['hp'] + damage} -> {target_enemy['hp']}\n")
+
+                    # Check for finishing blow after damage is applied
+                    finishing_conditions = [c for c in conditions if c.startswith('finishing_')]
+                    if finishing_conditions and target_enemy['hp'] > 0:  # Only check if enemy still alive
+                        threshold = int(finishing_conditions[0].split('_')[1])
+                        if target_enemy['hp'] <= threshold:
+                            if log_file:
+                                log_file.write(f"     FINISHING BLOW! Enemy {target_idx+1} at {target_enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
+                            target_enemy['hp'] = 0  # Enemy is defeated
+
+                    # Apply conditions to target
+                    if 'bleed' in conditions:
+                        old_bleed_count = len(target_enemy['bleed_stacks'])
+                        bleed_damage = max(0, damage - attacker.tier)  # Reduce by tier
+                        target_enemy['bleed_stacks'] = [(bleed_damage, 2)]  # Same damage for 2 more turns
+                        if log_file:
+                            log_file.write(f"     BLEED APPLIED to Enemy {target_idx+1}: {bleed_damage} damage for 2 turns (reduced from {damage} by tier {attacker.tier})\n")
+                            if old_bleed_count > 0:
+                                log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
+
+        # Update charge history: True if charged this turn, False if attacked
+        charge_history.append(charged_this_turn)
+        # Keep only last 2 entries for charge_up_2 tracking
+        if len(charge_history) > 2:
+            charge_history.pop(0)
 
         if log_file:
             log_file.write(f"\nTURN {turns} SUMMARY:\n")
             total_bleed_damage = sum(sum(bleed_dmg for bleed_dmg, _ in enemy['bleed_stacks']) for enemy in enemies)
-            total_attack_damage = total_damage_dealt if is_aoe else (damage if 'damage' in locals() else 0)
+            total_attack_damage = total_damage_dealt
+            if charged_this_turn:
+                log_file.write(f"  Action taken: CHARGED UP\n")
             log_file.write(f"  Total bleed damage: {total_bleed_damage}\n")
             log_file.write(f"  Total attack damage: {total_attack_damage}\n")
             log_file.write(f"  Total damage this turn: {total_bleed_damage + total_attack_damage}\n")
@@ -213,7 +248,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
             for i, enemy in enumerate(enemies):
                 if enemy['hp'] <= 0 and enemy['max_hp'] > 0:  # Recently killed
-                    log_file.write(f"  💀 Enemy {i+1} DEFEATED!\n")
+                    log_file.write(f"   Enemy {i+1} DEFEATED!\n")
                     enemy['max_hp'] = 0  # Mark as logged
 
     if log_file:
@@ -232,15 +267,18 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
     Returns:
         Tuple of (individual_results, average_turns, damage_per_turn)
     """
-    results = []
+    # Pre-allocate results list for better memory efficiency
+    results = [0] * num_runs
 
-    for _ in range(num_runs):
+    # Calculate total HP pool once
+    total_hp_pool = (enemy_hp if enemy_hp else target_hp) * num_enemies
+
+    for i in range(num_runs):
         turns = simulate_combat_verbose(attacker, build, target_hp, defender=defender,
                                       num_enemies=num_enemies, enemy_hp=enemy_hp)
-        results.append(turns)
+        results[i] = turns
 
-    avg_turns = sum(results) / len(results)
-    total_hp_pool = (enemy_hp if enemy_hp else target_hp) * num_enemies
+    avg_turns = sum(results) / num_runs
     dpt = total_hp_pool / avg_turns if avg_turns > 0 else 0
 
     return results, avg_turns, dpt

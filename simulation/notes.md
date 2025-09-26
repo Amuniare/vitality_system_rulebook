@@ -1,25 +1,27 @@
 
 
-does diagnostic include different senarios
-does diagnostic include limits
-will likely need to break diagnostic into a subfolder, with each file being 1 upgrade with 
+new report, which looks at the 100 top builds of each upgrade
 
 
 
 
+# FINAL IMPLEMENTED VALUES (as of current version)
+Steady: 40p and turn 4 or later
+Critical Effect: 20p and -2
+Quick Strikes: 60p
+Brutal: 40p 
+Charge_up 2 costs 10p but gives 2 x tier to damage and accuracy
+Unreliable 3 but costs 20p gives 3 x tier to damage and accuracy
+Bleed: 80p, includes -tier to damage
+Armor piercing has no -1/2 tier
+Finishing blow rank 1 costs 20p, rank 2 costs 30p and rank 3 costs 40p
+Reliable accuracy to -3 and costs 20p
+Quickdraw works on turn 1 and 2
 
-this doesn't make sense, it's likely still going by HP, not by max hP:
-14   minion_slayer_dmg          10002.8      47.8% 2215   19 20888
-15   minion_slayer_acc          10004.0      47.9% 2215   14 20881
-16   captain_slayer_dmg         10015.6      47.9% 2215   20 20898
-17   captain_slayer_acc         10018.2      47.9% 2215   15 20893
-18   elite_slayer_dmg           10019.4      47.9% 2215   16 20904
-19   elite_slayer_acc           10020.5      47.9% 2215   18 20901
+Remove barrage, quick strikes are melee and ranged only
 
 
+# Itteration
+multiple runs to test varience in pricing
 
 
-
-
-
-charge up not appearing in diagnostic limit report

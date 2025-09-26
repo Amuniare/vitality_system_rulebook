@@ -64,6 +64,7 @@ class SimulationConfig:
     test_three_upgrade_combinations: bool = True
     test_slayers: bool = True
     test_limits: bool = True
+    use_threading: bool = True
 
     # Attacker/Defender configurations
     attacker_configs: List[Tuple[int, int, int, int, int]] = None

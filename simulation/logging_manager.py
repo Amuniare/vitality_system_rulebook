@@ -11,8 +11,9 @@ from typing import Dict, List, TextIO, Optional, Any
 class LoggingManager:
     """Manages multiple log files and selective logging based on configuration"""
 
-    def __init__(self, config: Any):
+    def __init__(self, config: Any, reports_dir: str = "reports"):
         self.config = config
+        self.reports_dir = reports_dir
         # Handle both dict and SimulationConfig object
         if hasattr(config, '__dict__'):
             config_dict = config.__dict__
@@ -24,9 +25,9 @@ class LoggingManager:
         self.top_builds_data = []  # Store top builds for later detailed logging
 
         # Create reports directory if it doesn't exist
-        os.makedirs('reports', exist_ok=True)
+        os.makedirs(self.reports_dir, exist_ok=True)
         if self.logging_config.get('generate_individual_build_logs', False):
-            os.makedirs('reports/individual_builds', exist_ok=True)
+            os.makedirs(f'{self.reports_dir}/individual_builds', exist_ok=True)
 
     def __enter__(self):
         self._open_log_files()
@@ -39,20 +40,20 @@ class LoggingManager:
         """Open all required log files based on configuration"""
         if self.logging_config.get('separate_files', True):
             # Summary log - always generated
-            self.log_files['summary'] = open('reports/summary_combat_log.txt', 'w', encoding='utf-8')
+            self.log_files['summary'] = open(f'{self.reports_dir}/summary_combat_log.txt', 'w', encoding='utf-8')
             self._write_header(self.log_files['summary'], "SUMMARY COMBAT LOG")
 
             # Top builds detailed log
             if self.logging_config.get('log_top_builds_only', True):
-                self.log_files['top_builds'] = open('reports/top_builds_combat_log.txt', 'w', encoding='utf-8')
+                self.log_files['top_builds'] = open(f'{self.reports_dir}/top_builds_combat_log.txt', 'w', encoding='utf-8')
                 self._write_header(self.log_files['top_builds'], "TOP BUILDS DETAILED COMBAT LOG")
 
             # Diagnostic log for mechanics verification
-            self.log_files['diagnostic'] = open('reports/diagnostic_combat_log.txt', 'w', encoding='utf-8')
+            self.log_files['diagnostic'] = open(f'{self.reports_dir}/diagnostic_combat_log.txt', 'w', encoding='utf-8')
             self._write_header(self.log_files['diagnostic'], "DIAGNOSTIC COMBAT LOG")
         else:
             # Single file mode (legacy)
-            self.log_files['main'] = open('reports/combat_log.txt', 'w', encoding='utf-8')
+            self.log_files['main'] = open(f'{self.reports_dir}/combat_log.txt', 'w', encoding='utf-8')
             self._write_header(self.log_files['main'], "VITALITY SYSTEM - COMBAT SIMULATION LOG")
 
     def _close_log_files(self):
@@ -234,7 +235,7 @@ class LoggingManager:
         if not self.logging_config.get('generate_individual_build_logs', False):
             return
 
-        filename = f"reports/individual_builds/build_{build_index:04d}.txt"
+        filename = f"{self.reports_dir}/individual_builds/build_{build_index:04d}.txt"
         with open(filename, 'w', encoding='utf-8') as log_file:
             log_file.write(f"INDIVIDUAL BUILD ANALYSIS\n")
             log_file.write(f"{'='*50}\n\n")

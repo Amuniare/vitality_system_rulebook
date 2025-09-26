@@ -1,0 +1,58 @@
+SUMMARY COMBAT LOG
+================================================================================
+
+
+
+================================================================================
+TOP 50 PERFORMING BUILDS
+================================================================================
+ 1. area | Upgrades: high_impact, boss_slayer_acc, accurate_attack | Cost: 50 | DPT: 32.8
+ 2. area | Upgrades: high_impact, boss_slayer_acc, overhit | Cost: 70 | DPT: 30.4
+ 3. area | Upgrades: high_impact, boss_slayer_acc, reliable_accuracy | Cost: 60 | DPT: 30.1
+ 4. area | Upgrades: high_impact, armor_piercing, boss_slayer_acc | Cost: 60 | DPT: 29.5
+ 5. area | Upgrades: boss_slayer_acc, accurate_attack, overhit | Cost: 60 | DPT: 29.1
+ 6. area | Upgrades: high_impact, brutal, boss_slayer_acc | Cost: 80 | DPT: 29.0
+ 7. area | Upgrades: armor_piercing, boss_slayer_acc, accurate_attack | Cost: 50 | DPT: 28.4
+ 8. area | Upgrades: high_impact, captain_slayer_dmg, boss_slayer_acc | Cost: 60 | DPT: 28.2
+ 9. area | Upgrades: high_impact, minion_slayer_dmg, boss_slayer_acc | Cost: 60 | DPT: 28.1
+10. area | Upgrades: high_impact, minion_slayer_acc, boss_slayer_acc | Cost: 60 | DPT: 28.0
+11. area | Upgrades: high_impact, captain_slayer_acc, boss_slayer_acc | Cost: 60 | DPT: 27.8
+12. area | Upgrades: high_impact, boss_slayer_acc | Cost: 40 | DPT: 27.8
+13. area | Upgrades: high_impact, elite_slayer_dmg, boss_slayer_acc | Cost: 60 | DPT: 27.7
+14. area | Upgrades: high_impact, double_tap, boss_slayer_acc | Cost: 70 | DPT: 27.6
+15. area | Upgrades: boss_slayer_acc, reliable_accuracy, overhit | Cost: 70 | DPT: 27.4
+16. area | Upgrades: high_impact, elite_slayer_acc, boss_slayer_acc | Cost: 60 | DPT: 27.3
+17. area | Upgrades: high_impact, boss_slayer_dmg, accurate_attack | Cost: 50 | DPT: 27.3
+18. area | Upgrades: armor_piercing, brutal, boss_slayer_acc | Cost: 80 | DPT: 27.3
+19. area | Upgrades: high_impact, boss_slayer_acc | Cost: 40 | DPT: 27.2
+20. area | Upgrades: armor_piercing, boss_slayer_acc, reliable_accuracy | Cost: 60 | DPT: 26.7
+21. area | Upgrades: high_impact, armor_piercing, accurate_attack | Cost: 50 | DPT: 26.3
+22. area | Upgrades: armor_piercing, boss_slayer_acc, overhit | Cost: 70 | DPT: 26.1
+23. area | Upgrades: armor_piercing, minion_slayer_dmg, boss_slayer_acc | Cost: 60 | DPT: 26.1
+24. area | Upgrades: high_impact, boss_slayer_acc, accurate_attack | Limits: quickdraw | Cost: 60 | DPT: 25.9
+25. area | Upgrades: armor_piercing, elite_slayer_dmg, boss_slayer_acc | Cost: 60 | DPT: 25.7
+26. area | Upgrades: armor_piercing, double_tap, boss_slayer_acc | Cost: 70 | DPT: 25.5
+27. area | Upgrades: armor_piercing, boss_slayer_dmg, accurate_attack | Cost: 50 | DPT: 25.5
+28. area | Upgrades: armor_piercing, captain_slayer_dmg, boss_slayer_acc | Cost: 60 | DPT: 25.5
+29. area | Upgrades: armor_piercing, boss_slayer_acc | Cost: 40 | DPT: 25.4
+30. area | Upgrades: armor_piercing, minion_slayer_acc, boss_slayer_acc | Cost: 60 | DPT: 25.0
+31. area | Upgrades: elite_slayer_acc, boss_slayer_acc, overhit | Cost: 70 | DPT: 25.0
+32. area | Upgrades: armor_piercing, elite_slayer_acc, boss_slayer_acc | Cost: 60 | DPT: 24.9
+33. area | Upgrades: critical_effect, boss_slayer_acc, overhit | Cost: 70 | DPT: 24.8
+34. area | Upgrades: critical_effect, armor_piercing, boss_slayer_acc | Cost: 60 | DPT: 24.8
+35. area | Upgrades: elite_slayer_acc, boss_slayer_acc, reliable_accuracy | Cost: 60 | DPT: 24.8
+36. area | Upgrades: boss_slayer_dmg, accurate_attack, overhit | Cost: 60 | DPT: 24.7
+37. area | Upgrades: captain_slayer_dmg, boss_slayer_acc, overhit | Cost: 70 | DPT: 24.6
+38. area | Upgrades: boss_slayer_dmg, accurate_attack, reliable_accuracy | Cost: 50 | DPT: 24.6
+39. area | Upgrades: minion_slayer_acc, boss_slayer_acc, overhit | Cost: 70 | DPT: 24.6
+40. area | Upgrades: armor_piercing, boss_slayer_acc | Cost: 40 | DPT: 24.5
+41. area | Upgrades: high_impact, critical_effect, boss_slayer_acc | Cost: 60 | DPT: 24.5
+42. area | Upgrades: critical_effect, boss_slayer_acc, accurate_attack | Cost: 50 | DPT: 24.5
+43. area | Upgrades: armor_piercing, captain_slayer_acc, boss_slayer_acc | Cost: 60 | DPT: 24.4
+44. area | Upgrades: brutal, boss_slayer_acc, reliable_accuracy | Cost: 80 | DPT: 24.4
+45. area | Upgrades: high_impact, accurate_attack, reliable_accuracy | Cost: 50 | DPT: 24.3
+46. area | Upgrades: boss_slayer_acc, overhit | Cost: 50 | DPT: 24.3
+47. area | Upgrades: elite_slayer_dmg, boss_slayer_acc, overhit | Cost: 70 | DPT: 24.2
+48. area | Upgrades: minion_slayer_dmg, boss_slayer_acc, overhit | Cost: 70 | DPT: 24.0
+49. area | Upgrades: high_impact, accurate_attack, overhit | Cost: 60 | DPT: 23.9
+50. area | Upgrades: high_impact, boss_slayer_acc, accurate_attack | Limits: unreliable_1 | Cost: 80 | DPT: 23.8

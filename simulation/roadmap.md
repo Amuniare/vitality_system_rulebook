@@ -302,7 +302,7 @@ touch simulation/{models,combat,analysis,config,utils}/__init__.py
 - **Goal**: Improve diagnostic report organization and coverage
 - **Problem**: Current diagnostic reports need better organization and coverage of scenarios/limits
 - **Implementation**:
-  - **Phase 7.3a**: Verify diagnostic reports include all three enemy scenarios (1×100, 2×50, 4×25)
+  - **Phase 7.3a**: Verify diagnostic reports include all four enemy scenarios (1×100, 2×50, 4×25, 10x10)
   - **Phase 7.3b**: Verify diagnostic reports include all limit types (unreliable and turn-based)
   - **Phase 7.3c**: Create diagnostic subfolder structure:
     ```

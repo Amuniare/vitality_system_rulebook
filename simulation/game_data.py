@@ -8,7 +8,6 @@ from typing import List, Tuple
 
 # Attack Types
 ATTACK_TYPES = {
-    'melee': AttackType('melee', 0),  # Choose +Tier accuracy OR +Tier damage when attacking (hardcoded to damage for simulation)
     'melee_ac': AttackType('melee_ac', 0),  # Melee with +Tier accuracy bonus
     'melee_dg': AttackType('melee_dg', 0),  # Melee with +Tier damage bonus
     'ranged': AttackType('ranged', 0),
@@ -21,19 +20,18 @@ ATTACK_TYPES = {
 UPGRADES = {
     'power_attack': Upgrade('power_attack', 10, damage_mod=1, accuracy_penalty=1),
     'high_impact': Upgrade('high_impact', 20, special_effect="flat_15"),
-    'critical_effect': Upgrade('critical_effect', 20, damage_penalty=3, special_effect="explode_5_6"),
-    'armor_piercing': Upgrade('armor_piercing', 20, special_effect="ignore_endurance", accuracy_penalty=1),
+    'critical_effect': Upgrade('critical_effect', 20, damage_penalty=2, special_effect="explode_5_6"),
+    'armor_piercing': Upgrade('armor_piercing', 20, special_effect="ignore_endurance"),
     'brutal': Upgrade('brutal', 40, special_effect="brutal_10"),
-    'quick_strikes': Upgrade('quick_strikes', 40, special_effect="triple_attack", damage_penalty=1, accuracy_penalty=1),
-    'barrage': Upgrade('barrage', 60, special_effect="triple_attack", damage_penalty=1, accuracy_penalty=1),
-    'bleed': Upgrade('bleed', 60, special_effect="bleed_2_turns"),
+    'quick_strikes': Upgrade('quick_strikes', 60, special_effect="triple_attack", damage_penalty=1, accuracy_penalty=1),
+    'bleed': Upgrade('bleed', 80, special_effect="bleed_2_turns", damage_penalty=1),
     'critical_accuracy': Upgrade('critical_accuracy', 30, special_effect="crit_15_20"),
-    'powerful_condition_critical': Upgrade('powerful_condition_critical', 20, special_effect="powerful_crit"),
+    'powerful_critical': Upgrade('powerful_critical', 20, special_effect="powerful_crit"),
     'double_tap': Upgrade('double_tap', 30, special_effect="double_tap"),
     'finishing_blow_1': Upgrade('finishing_blow_1', 20, special_effect="finishing_5"),
-    'finishing_blow_2': Upgrade('finishing_blow_2', 40, special_effect="finishing_10"),
-    'finishing_blow_3': Upgrade('finishing_blow_3', 60, special_effect="finishing_15"),
-    'extra_attack': Upgrade('extra_attack', 50, special_effect="extra_attack"),
+    'finishing_blow_2': Upgrade('finishing_blow_2', 30, special_effect="finishing_10"),
+    'finishing_blow_3': Upgrade('finishing_blow_3', 40, special_effect="finishing_15"),
+    'extra_attack': Upgrade('extra_attack', 70, special_effect="extra_attack"),
     'minion_slayer_acc': Upgrade('minion_slayer_acc', 20, special_effect="slayer_minion_acc"),
     'minion_slayer_dmg': Upgrade('minion_slayer_dmg', 20, special_effect="slayer_minion_dmg"),
     'captain_slayer_acc': Upgrade('captain_slayer_acc', 20, special_effect="slayer_captain_acc"),
@@ -43,16 +41,16 @@ UPGRADES = {
     'boss_slayer_acc': Upgrade('boss_slayer_acc', 20, special_effect="slayer_boss_acc"),
     'boss_slayer_dmg': Upgrade('boss_slayer_dmg', 20, special_effect="slayer_boss_dmg"),
     'accurate_attack': Upgrade('accurate_attack', 10, accuracy_mod=1, damage_penalty=1),
-    'reliable_accuracy': Upgrade('reliable_accuracy', 20, accuracy_penalty=4, special_effect="advantage"),
+    'reliable_accuracy': Upgrade('reliable_accuracy', 20, accuracy_penalty=3, special_effect="advantage"),
     'overhit': Upgrade('overhit', 30, special_effect="overhit"),
 }
 
 LIMITS = {
     'unreliable_1': Limit('unreliable_1', 30, 1, 5),   # Cost 30p, +Tier bonus, DC 5
     'unreliable_2': Limit('unreliable_2', 20, 2, 10),  # Cost 20p, +2×Tier bonus, DC 10
-    'unreliable_3': Limit('unreliable_3', 10, 3, 15),  # Cost 10p, +3×Tier bonus, DC 15+
+    'unreliable_3': Limit('unreliable_3', 20, 3, 15),  # Cost 20p, +3×Tier to Accuracy and Damage, DC 15+
     'quickdraw': Limit('quickdraw', 10, 1, 0),          # Cost 10p, +Tier bonus, first round only
-    'steady': Limit('steady', 30, 1, 0),                # Cost 30p, +Tier bonus, turn 3 or later
+    'steady': Limit('steady', 40, 1, 0),                # Cost 40p, +Tier bonus, turn 4 or later
     'patient': Limit('patient', 20, 1, 0),              # Cost 20p, +Tier bonus, turn 5 or later
     'finale': Limit('finale', 10, 1, 0),                # Cost 10p, +Tier bonus, turn 8 or later
     'charge_up': Limit('charge_up', 10, 1, 0),          # Cost 10p, +Tier bonus, spend action on previous turn
@@ -61,7 +59,7 @@ LIMITS = {
 
 # Rule Validation System
 PREREQUISITES = {
-    'powerful_condition_critical': ['critical_accuracy'],
+    'powerful_critical': ['critical_accuracy'],
 }
 
 MUTUAL_EXCLUSIONS = [
@@ -77,8 +75,7 @@ MUTUAL_EXCLUSIONS = [
 ]
 
 ATTACK_TYPE_RESTRICTIONS = {
-    'quick_strikes': ['melee', 'melee_ac', 'melee_dg'],
-    'barrage': ['ranged'],
+    'quick_strikes': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],
 }
 
 AOE_RESTRICTIONS = [
