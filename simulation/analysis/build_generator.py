@@ -4,10 +4,10 @@ Build generation and validation for the Vitality System.
 
 import itertools
 from typing import List, Generator
-from ..core.models import AttackBuild
-from ..data.upgrades import UPGRADES
-from ..data.limits import LIMITS
-from ..core.game_rules import RULE_VALIDATION
+from core.models import AttackBuild
+from data.upgrades import UPGRADES
+from data.limits import LIMITS
+from core.game_rules import RULE_VALIDATION, RuleValidation
 
 
 class BuildGenerator:
@@ -53,7 +53,7 @@ class BuildGenerator:
                 upgrades = list(combo)
 
                 # Check if this combination is valid according to rules
-                is_valid, errors = RuleValidator.validate_combination(attack_type, upgrades)
+                is_valid, errors = RuleValidation.validate_combination(attack_type, upgrades)
                 if is_valid:
                     # Quick cost check to avoid expensive builds early
                     total_cost = sum(UPGRADES[u].cost for u in upgrades)
@@ -94,7 +94,7 @@ class BuildGenerator:
     def _are_limits_mutually_exclusive(self, limit1: str, limit2: str) -> bool:
         """Check if two limits are mutually exclusive"""
         # Check if they're in the same mutual exclusion group
-        for exclusion_group in MUTUAL_EXCLUSIONS:
+        for exclusion_group in RuleValidation.MUTUAL_EXCLUSIONS:
             if limit1 in exclusion_group and limit2 in exclusion_group:
                 return True
         return False
@@ -121,7 +121,7 @@ def generate_single_upgrade_builds(max_points: int = 60, attack_types: List[str]
     for attack_type in attack_types:
         for upgrade_name in UPGRADES.keys():
             # Check if upgrade is compatible with attack type
-            is_valid, _ = RuleValidator.validate_combination(attack_type, [upgrade_name])
+            is_valid, _ = RuleValidation.validate_combination(attack_type, [upgrade_name])
             if is_valid:
                 build = AttackBuild(attack_type, [upgrade_name], [])
                 if build.is_valid(max_points):
@@ -141,7 +141,7 @@ def generate_slayer_builds(max_points: int = 60, attack_types: List[str] = None)
     for attack_type in attack_types:
         for slayer_upgrade in slayer_upgrades:
             # Check if slayer upgrade is compatible with attack type
-            is_valid, _ = RuleValidator.validate_combination(attack_type, [slayer_upgrade])
+            is_valid, _ = RuleValidation.validate_combination(attack_type, [slayer_upgrade])
             if is_valid:
                 build = AttackBuild(attack_type, [slayer_upgrade], [])
                 if build.is_valid(max_points):

@@ -27,7 +27,7 @@ def main():
     # Load configuration
     try:
         config = load_config("config/simulation.json")
-        print("✓ Loaded configuration from config/simulation.json")
+        print("[OK] Loaded configuration from config/simulation.json")
     except Exception as e:
         print(f"! Could not load config: {e}")
         print("! Using default configuration")
@@ -35,16 +35,16 @@ def main():
 
     # Create reports directory
     reports_dir = create_timestamped_reports_directory()
-    print(f"✓ Created reports directory: {reports_dir}")
+    print(f"[OK] Created reports directory: {reports_dir}")
 
     # Run the optimizer
-    print("\n🚀 Starting simulation...")
+    print("\n[START] Starting simulation...")
     try:
         run_optimizer()
-        print("✓ Simulation completed successfully!")
-        print(f"✓ Reports saved to: {reports_dir}")
+        print("[OK] Simulation completed successfully!")
+        print(f"[OK] Reports saved to: {reports_dir}")
     except Exception as e:
-        print(f"✗ Simulation failed: {e}")
+        print(f"[ERROR] Simulation failed: {e}")
         return 1
 
     return 0

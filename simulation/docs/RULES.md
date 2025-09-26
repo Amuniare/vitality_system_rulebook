@@ -106,7 +106,8 @@ Each slayer upgrade has two variants:
 ## Rule Validation System
 
 ### Prerequisites
-- **Powerful Condition Critical** requires **Critical Accuracy**
+- **Powerful Critical** requires **Critical Accuracy**
+- **Double Tap** requires **Critical Accuracy**
 
 ### Mutual Exclusions
 - **Double Tap**, **Ricochet**, **Explosive Critical** (mutually exclusive)

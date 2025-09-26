@@ -94,7 +94,7 @@ ATTACK_TYPES = {
 #### Condition & Effect Upgrades
 - **Bleed** (80p): Target takes same damage for next 2 turns (replaces existing bleed)
 - **Critical Accuracy** (30p): Critical hit on 15-20 instead of just 20
-- **Powerful Condition Critical** (20p): +Tier bonus to Damage and Condition rolls on critical hits (requires Critical Accuracy)
+- **Powerful Critical** (20p): +Tier bonus to Damage and Condition rolls on critical hits (requires Critical Accuracy)
 - **Reliable Accuracy** (20p): Roll with advantage, -3 penalty to all Accuracy rolls
 - **Overhit** (30p): +1 damage per 2 points exceeding avoidance by 5+
 

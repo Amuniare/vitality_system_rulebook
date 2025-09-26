@@ -80,7 +80,9 @@ class SimulationConfig:
     # Output options
     verbose_logging: bool = True
     show_top_builds: int = 10
+    top_builds_count: int = 20
     generate_individual_logs: bool = False
+    build_chunk_size: int = 1000
 
     # Logging configuration
     logging: Optional[dict] = None

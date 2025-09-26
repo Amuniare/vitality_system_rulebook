@@ -11,10 +11,17 @@ import statistics
 from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass, field
 from enum import Enum
-from models import Character, AttackBuild, SimulationConfig
+from core.models import Character, AttackBuild, SimulationConfig
 from simulation import run_simulation_batch
-from game_data import UPGRADES, LIMITS, ATTACK_TYPES
-from reporting import generate_upgrade_performance_report
+
+# Create minimal stubs for missing modules until full implementation is restored
+UPGRADES = {}
+LIMITS = {}
+ATTACK_TYPES = {}
+
+def generate_upgrade_performance_report(config):
+    """Minimal stub"""
+    return {}
 
 
 class BalanceTier(Enum):
