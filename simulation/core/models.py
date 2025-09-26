@@ -3,7 +3,8 @@ Core data models for the Vitality System combat simulator.
 """
 
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Tuple, Optional
+from .game_rules import CHARACTER_STATS
 
 
 @dataclass
@@ -17,11 +18,11 @@ class Character:
 
     @property
     def avoidance(self):
-        return 5 + self.tier + self.mobility
+        return CHARACTER_STATS.calculate_avoidance(self.tier, self.mobility)
 
     @property
     def durability(self):
-        return self.tier + self.endurance
+        return CHARACTER_STATS.calculate_durability(self.tier, self.endurance)
 
 
 @dataclass
@@ -67,13 +68,13 @@ class SimulationConfig:
     use_threading: bool = True
 
     # Attacker/Defender configurations
-    attacker_configs: List[Tuple[int, int, int, int, int]] = None
-    defender_configs: List[Tuple[int, int, int, int, int]] = None
+    attacker_configs: Optional[List[Tuple[int, int, int, int, int]]] = None
+    defender_configs: Optional[List[Tuple[int, int, int, int, int]]] = None
 
     # Filter options
-    attack_types_filter: List[str] = None
-    upgrades_filter: List[str] = None
-    limits_filter: List[str] = None
+    attack_types_filter: Optional[List[str]] = None
+    upgrades_filter: Optional[List[str]] = None
+    limits_filter: Optional[List[str]] = None
     min_dpt_threshold: float = 0.0
 
     # Output options
@@ -82,7 +83,7 @@ class SimulationConfig:
     generate_individual_logs: bool = False
 
     # Logging configuration
-    logging: dict = None
+    logging: Optional[dict] = None
 
     def __post_init__(self):
         """Set default configurations if not provided"""
@@ -115,7 +116,7 @@ class SimulationConfig:
 class AttackBuild:
     """Represents a complete attack build with type, upgrades, and limits"""
 
-    def __init__(self, attack_type: str, upgrades: List[str] = None, limits: List[str] = None):
+    def __init__(self, attack_type: str, upgrades: Optional[List[str]] = None, limits: Optional[List[str]] = None):
         self.attack_type = attack_type
         self.upgrades = upgrades or []
         self.limits = limits or []
@@ -123,7 +124,13 @@ class AttackBuild:
 
     def calculate_total_cost(self) -> int:
         """Calculate the total point cost of this build"""
-        from game_data import ATTACK_TYPES, UPGRADES, LIMITS
+        # Import here to avoid circular imports
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+        from data.attacks import ATTACK_TYPES
+        from data.upgrades import UPGRADES
+        from data.limits import LIMITS
 
         cost = ATTACK_TYPES[self.attack_type].cost
 
@@ -139,8 +146,8 @@ class AttackBuild:
 
     def is_valid_combination(self) -> Tuple[bool, List[str]]:
         """Check if upgrade combination follows all rules"""
-        from game_data import RuleValidator
-        return RuleValidator.validate_combination(self.attack_type, self.upgrades)
+        from .game_rules import RULE_VALIDATION
+        return RULE_VALIDATION.validate_combination(self.attack_type, self.upgrades)
 
     def is_valid(self, max_points: int) -> bool:
         """Check if build is valid (within budget and follows rules)"""

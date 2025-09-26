@@ -4,8 +4,10 @@ Build generation and validation for the Vitality System.
 
 import itertools
 from typing import List, Generator
-from models import AttackBuild
-from game_data import UPGRADES, LIMITS, RuleValidator, MUTUAL_EXCLUSIONS
+from ..core.models import AttackBuild
+from ..data.upgrades import UPGRADES
+from ..data.limits import LIMITS
+from ..core.game_rules import RULE_VALIDATION
 
 
 class BuildGenerator:

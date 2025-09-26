@@ -7,8 +7,8 @@ import time
 import multiprocessing
 import gc
 from concurrent.futures import ProcessPoolExecutor
-from models import Character, AttackBuild, SimulationConfig
-from build_generator import generate_valid_builds, generate_valid_builds_chunked
+from ..core.models import Character, AttackBuild, SimulationConfig
+from .build_generator import generate_valid_builds, generate_valid_builds_chunked
 from simulation import simulate_combat_verbose, run_simulation_batch
 from reporting import (load_config, save_config, print_configuration_report,
                       generate_upgrade_performance_report, write_upgrade_performance_report,
