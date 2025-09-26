@@ -16,46 +16,14 @@ from data.config import load_config, save_config
 
 from simulation import simulate_combat_verbose, run_simulation_batch
 
-# Import minimal stubs for reporting functions that may not exist yet
-def print_configuration_report(config):
-    """Minimal stub - prints basic config info"""
-    print(f"Configuration: {config.num_runs} runs, {config.target_hp} HP target")
-
-def generate_upgrade_performance_report(config):
-    """Minimal stub - returns empty results"""
-    return {}
-
-def write_upgrade_performance_report(results, config, reports_dir):
-    """Minimal stub - writes placeholder report"""
-    pass
-
-def generate_combo_performance_report(config):
-    """Minimal stub - returns empty results"""
-    return {}
-
-def write_combo_performance_report(results, config, reports_dir):
-    """Minimal stub - writes placeholder report"""
-    pass
-
-def write_build_summary(builds, config, reports_dir):
-    """Minimal stub - writes placeholder summary"""
-    pass
-
-def generate_upgrade_ranking_report(results, config, reports_dir):
-    """Minimal stub - writes placeholder ranking report"""
-    pass
-
-def generate_upgrade_pairing_report(results, config, reports_dir):
-    """Minimal stub - writes placeholder pairing report"""
-    pass
-
-def generate_diagnostic_report(config, reports_dir):
-    """Minimal stub - writes placeholder diagnostic report"""
-    pass
-
-def write_attack_type_enhancement_ranking_report(build_results, enhancement_results, config, reports_dir):
-    """Minimal stub - writes placeholder enhancement ranking report"""
-    pass
+# Import fully functional reporting system
+from reporting.legacy_reporting import (
+    print_configuration_report,
+    generate_upgrade_performance_report, write_upgrade_performance_report,
+    generate_combo_performance_report, write_combo_performance_report,
+    write_build_summary, generate_upgrade_ranking_report, generate_upgrade_pairing_report,
+    generate_diagnostic_report, write_attack_type_enhancement_ranking_report
+)
 
 def test_single_build(args):
     """Test a single build across all test cases and scenarios"""
@@ -129,10 +97,9 @@ def main():
     # Use chunked generator for memory efficiency
     builds_generator = generate_valid_builds_chunked(config.max_points, attack_types, chunk_size)
 
-    # Count total builds for progress tracking without loading all into memory
-    print("Counting total builds for progress tracking...")
-    total_builds = sum(1 for _ in generate_valid_builds_chunked(config.max_points, attack_types, chunk_size))
-    print(f"Testing {total_builds} builds in chunks of {chunk_size}...")
+    # Count total builds efficiently - we'll track progress during execution
+    print("Generating builds for testing...")
+    print(f"Testing builds in chunks of {chunk_size}...")
 
     # Determine number of threads to use - use all available cores
     max_workers = multiprocessing.cpu_count()
@@ -157,8 +124,8 @@ def main():
         global progress_counter
         progress_counter = 0
 
-        # Add total_builds to config for progress tracking
-        config.total_builds = total_builds
+        # We'll track progress dynamically during execution
+        config.total_builds = 0  # Will be updated during processing
 
         # Time tracking
         start_time = time.time()

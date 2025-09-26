@@ -15,7 +15,7 @@ from reporting import (load_config, save_config, print_configuration_report,
                       generate_combo_performance_report, write_combo_performance_report,
                       write_build_summary, generate_upgrade_ranking_report, generate_upgrade_pairing_report,
                       generate_diagnostic_report, write_attack_type_enhancement_ranking_report,
-                      create_timestamped_reports_directory)
+                      create_timestamped_reports_directory, generate_reports_by_mode)
 from balance_analysis import BalanceAnalyzer, ScenarioWeights
 from logging_manager import LoggingManager
 
@@ -81,6 +81,42 @@ def main():
 
     # Print configuration report
     print_configuration_report(config)
+
+    # Check execution mode and run appropriate testing
+    print(f"\nExecution Mode: {config.execution_mode}")
+
+    if config.execution_mode == "individual":
+        print("Running individual testing only...")
+        generate_reports_by_mode(config, reports_dir)
+        print("\nIndividual testing complete!")
+        return
+
+    elif config.execution_mode == "build":
+        print("Running build testing only...")
+        build_results = run_build_testing(config, reports_dir)
+        generate_reports_by_mode(config, reports_dir, build_results)
+        print("\nBuild testing complete!")
+        return
+
+    elif config.execution_mode == "both":
+        print("Running both individual and build testing...")
+        # Run individual testing first
+        generate_reports_by_mode(config, reports_dir)
+        # Then run build testing
+        build_results = run_build_testing(config, reports_dir)
+        generate_reports_by_mode(config, reports_dir, build_results)
+        print("\nBoth testing modes complete!")
+        return
+
+    else:
+        print(f"Unknown execution mode: {config.execution_mode}")
+        print("Valid modes: 'individual', 'build', 'both'")
+        return
+
+
+def run_build_testing(config: SimulationConfig, reports_dir: str):
+    """Run the build testing portion of the simulator"""
+    print("Starting build testing...")
 
     # Generate builds to test using chunked approach
     attack_types = config.attack_types_filter or ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
@@ -171,82 +207,14 @@ def main():
                             if avg_dpt >= config.min_dpt_threshold:
                                 build_results.append((build, avg_dpt))
 
-                            # Progress update every 100 builds
+                            # Progress reporting every 100 builds
                             if completed_count % 100 == 0:
-                                print(f"Progress: {completed_count}/{total_builds} builds tested")
-
-                            # Time estimation every 1000 builds
-                            if completed_count > 0 and completed_count % 1000 == 0:
                                 current_time = time.time()
-                                time_for_last_1000 = current_time - last_checkpoint_time
-                                total_elapsed = current_time - start_time
-                                avg_time_per_build = total_elapsed / completed_count
+                                elapsed = current_time - start_time
+                                avg_time_per_build = elapsed / completed_count
                                 remaining_builds = total_builds - completed_count
-                                estimated_remaining_seconds = remaining_builds * avg_time_per_build
-
-                                print(f"Time Analysis - Build {completed_count}/{total_builds}:")
-                                print(f"  Last 1000 builds: {format_time(time_for_last_1000)}")
-                                print(f"  Average per build: {avg_time_per_build:.3f}s")
-                                print(f"  Estimated time remaining: {format_time(estimated_remaining_seconds)}")
-                                print(f"  Total elapsed: {format_time(total_elapsed)}")
-                                last_checkpoint_time = current_time
-
-                    # Clear chunk and force garbage collection
-                    current_chunk.clear()
-                    gc.collect()
-
-            # Process any remaining builds in the final chunk
-            if current_chunk:
-                chunk_count += 1
-                print(f"Processing final chunk {chunk_count} ({len(current_chunk)} builds)...")
-
-                with ProcessPoolExecutor(max_workers=max_workers) as executor:
-                    futures = [executor.submit(test_single_build, args) for args in current_chunk]
-
-                    for future in futures:
-                        build, avg_dpt = future.result()
-                        completed_count += 1
-
-                        if avg_dpt >= config.min_dpt_threshold:
-                            build_results.append((build, avg_dpt))
-
-                        if completed_count % 100 == 0:
-                            print(f"Progress: {completed_count}/{total_builds} builds tested")
-
-                current_chunk.clear()
-                gc.collect()
-        else:
-            print("Starting sequential build testing...")
-
-            # Process builds sequentially in chunks for memory efficiency
-            current_chunk = []
-            chunk_count = 0
-
-            for build_idx, build in enumerate(builds_generator):
-                current_chunk.append((build_idx, build, test_cases, config, None, True))
-
-                # When chunk is full, process it
-                if len(current_chunk) >= chunk_size:
-                    chunk_count += 1
-                    print(f"Processing chunk {chunk_count} ({len(current_chunk)} builds) sequentially...")
-
-                    for args in current_chunk:
-                        build, avg_dpt = test_single_build(args)
-                        completed_count += 1
-
-                        # Filter by minimum DPT threshold
-                        if avg_dpt >= config.min_dpt_threshold:
-                            build_results.append((build, avg_dpt))
-
-                        # Progress update every 100 builds
-                        if completed_count % 100 == 0:
-                            current_time = time.time()
-                            elapsed = current_time - start_time
-                            avg_time_per_build = elapsed / completed_count
-                            remaining_builds = total_builds - completed_count
-                            estimated_remaining = remaining_builds * avg_time_per_build
-
-                            print(f"Progress: {completed_count}/{total_builds} builds tested - Est. remaining: {format_time(estimated_remaining)}")
+                                estimated_remaining = remaining_builds * avg_time_per_build
+                                print(f"Progress: {completed_count}/{total_builds} builds tested - Est. remaining: {format_time(estimated_remaining)}")
 
                     # Clear chunk and force garbage collection
                     current_chunk.clear()
@@ -275,6 +243,26 @@ def main():
                 current_chunk.clear()
                 gc.collect()
 
+        else:
+            print("Starting sequential build testing...")
+            # Process builds sequentially
+            for build_idx, build in enumerate(builds_generator):
+                args = (build_idx, build, test_cases, config, None, False)
+                build, avg_dpt = test_single_build(args)
+                completed_count += 1
+
+                if avg_dpt >= config.min_dpt_threshold:
+                    build_results.append((build, avg_dpt))
+
+                # Progress reporting
+                if completed_count % 100 == 0:
+                    current_time = time.time()
+                    elapsed = current_time - start_time
+                    avg_time_per_build = elapsed / completed_count
+                    remaining_builds = total_builds - completed_count
+                    estimated_remaining = remaining_builds * avg_time_per_build
+                    print(f"Progress: {completed_count}/{total_builds} builds tested - Est. remaining: {format_time(estimated_remaining)}")
+
         # Final time summary
         total_simulation_time = time.time() - start_time
 
@@ -299,69 +287,8 @@ def main():
         # Log final summary
         logger.log_final_summary(build_results, config.__dict__)
 
-    # Generate reports
-    print("\nGenerating reports...")
-
-    # Generate diagnostic mechanics report first
-    generate_diagnostic_report(config, reports_dir)
-
-    # Write build summary
-    top_builds = [build for build, _ in build_results[:config.show_top_builds]]
-    write_build_summary(top_builds, config, reports_dir)
-
-    # Generate upgrade ranking report
-    generate_upgrade_ranking_report(build_results, config, reports_dir)
-
-    # Generate upgrade pairing analysis report
-    generate_upgrade_pairing_report(build_results, config, reports_dir)
-
-    # Generate enhancement performance report if requested
-    if config.test_single_upgrades:
-        enhancement_results = generate_upgrade_performance_report(config)
-        write_upgrade_performance_report(enhancement_results, config, reports_dir)
-
-        # Generate attack-type-specific ranking reports
-        write_attack_type_enhancement_ranking_report(build_results, enhancement_results, config, reports_dir)
-
-    # Generate combo performance report
-    combo_results = generate_combo_performance_report(config)
-    write_combo_performance_report(combo_results, config, reports_dir)
-
-    # Generate comprehensive balance analysis report
-    print("Generating comprehensive balance analysis...")
-    balance_analyzer = BalanceAnalyzer(config, None, reports_dir)
-    balance_analyses = balance_analyzer.analyze_all_components(build_results)
-    balance_analyzer.generate_balance_health_report(balance_analyses)
-
-    print(f"\nSimulation complete!")
-    print(f"- Tested {len(build_results)} builds")
-    print(f"- Diagnostic reports saved to {reports_dir}/diagnostic_*_report.txt")
-    print(f"- Balance Health Report saved to {reports_dir}/balance_health_report.txt")
-
-    # Report on generated log files based on configuration
-    if config.logging.get('separate_files', True):
-        print(f"- Summary results saved to {reports_dir}/summary_combat_log.txt")
-        if config.logging.get('log_top_builds_only', True):
-            print(f"- Top {config.logging.get('top_builds_for_detailed_log', 50)} builds detailed log saved to {reports_dir}/top_builds_combat_log.txt")
-        print(f"- Diagnostic mechanics log saved to {reports_dir}/diagnostic_combat_log.txt")
-        if config.logging.get('generate_individual_build_logs', False):
-            print(f"- Individual build logs saved to {reports_dir}/individual_builds/")
-    else:
-        print(f"- Results saved to {reports_dir}/combat_log.txt")
-
-    print(f"- Summary saved to {reports_dir}/build_summary.txt")
-    print(f"- Upgrade ranking analysis saved to {reports_dir}/upgrade_ranking_report.txt")
-    print(f"- Upgrade pairing analysis saved to {reports_dir}/upgrade_pairing_analysis.txt")
-    print(f"- Combo performance analysis saved to {reports_dir}/combo_performance_summary.txt")
-    if config.test_single_upgrades:
-        print(f"- Upgrade & Limit analysis saved to {reports_dir}/upgrade_performance_summary.txt")
-        print(f"- Attack-type-specific upgrade rankings saved to {reports_dir}/upgrade_ranking_by_attack_type.txt")
-        print(f"- Attack-type-specific limit rankings saved to {reports_dir}/limit_ranking_by_attack_type.txt")
-
-    # Show top results
-    print(f"\nTop {min(20, len(build_results))} builds by average DPT:")
-    for i, (build, avg_dpt) in enumerate(build_results[:20], 1):
-        print(f"{i:2d}. {build} | DPT: {avg_dpt:.1f}")
+    print(f"Build testing completed! Tested {len(build_results)} builds.")
+    return build_results
 
 
 if __name__ == "__main__":

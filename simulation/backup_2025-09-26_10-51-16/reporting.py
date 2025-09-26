@@ -31,11 +31,16 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
         with open(config_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
-        # Convert config data to SimulationConfig
+        # Convert config data to SimulationConfig with new structure
         config = SimulationConfig(
+            execution_mode=data.get('execution_mode', 'both'),
             num_runs=data.get('num_runs', 10),
             target_hp=data.get('target_hp', 100),
             max_points=data.get('max_points', 60),
+            use_threading=data.get('use_threading', True),
+            min_dpt_threshold=data.get('min_dpt_threshold', 0.0),
+
+            # Legacy compatibility
             test_single_upgrades=data.get('test_single_upgrades', True),
             test_two_upgrade_combinations=data.get('test_two_upgrade_combinations', True),
             test_three_upgrade_combinations=data.get('test_three_upgrade_combinations', True),
@@ -44,8 +49,15 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
             verbose_logging=data.get('verbose_logging', True),
             show_top_builds=data.get('top_builds_count', data.get('show_top_builds', 10)),
             generate_individual_logs=data.get('generate_individual_logs', False),
-            min_dpt_threshold=data.get('min_dpt_threshold', 0.0),
         )
+
+        # Set new configuration sections
+        if 'individual_testing' in data:
+            config.individual_testing = data['individual_testing']
+        if 'build_testing' in data:
+            config.build_testing = data['build_testing']
+        if 'reports' in data:
+            config.reports = data['reports']
 
         # Set configurations from the loaded data
         if 'attacker_configs' in data:
@@ -58,6 +70,8 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
             config.upgrades_filter = data['upgrades_filter']
         if 'limits_filter' in data:
             config.limits_filter = data['limits_filter']
+        if 'logging' in data:
+            config.logging = data['logging']
 
         return config
     else:
@@ -1637,3 +1651,440 @@ def write_attack_type_limit_ranking_report(all_build_results: List[Tuple], limit
             f.write(f"\n{'-'*80}\n\n")
 
     print(f"Attack-type-specific limit ranking report saved to {reports_dir}/limit_ranking_by_attack_type.txt")
+
+
+class TableGenerator:
+    """Generates formatted tables for individual testing reports"""
+
+    @staticmethod
+    def format_attack_type_table(attack_type_data: Dict, reports_dir: str):
+        """Generate Table 1: Attack Type Performance (20 columns, 6 rows)"""
+        filename = f"{reports_dir}/individual_attack_type_table.txt"
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("INDIVIDUAL TESTING - ATTACK TYPE PERFORMANCE TABLE\n")
+            f.write("=" * 120 + "\n\n")
+
+            # Header row
+            header = f"{'Attack Type':<15}"
+            header += f"{'Avg All Scenarios':<40}"
+            header += f"{'1x100 HP Boss':<20}"
+            header += f"{'2x50 HP Enemies':<20}"
+            header += f"{'4x25 HP Enemies':<20}"
+            header += f"{'10x10 HP Enemies':<20}"
+            f.write(header + "\n")
+
+            # Sub-header for metrics
+            subheader = f"{'':<15}"
+            subheader += f"{'DPT+ (no)':<10}{'%+ (no)':<10}{'DPT+ (w/)':<10}{'%+ (w/)':<10}"
+            for _ in range(4):  # For each scenario
+                subheader += f"{'DPT+ (no)':<5}{'%+ (no)':<5}{'DPT+ (w/)':<5}{'%+ (w/)':<5}"
+            f.write(subheader + "\n")
+            f.write("-" * 120 + "\n")
+
+            # Data rows for each attack type
+            for attack_type, data in attack_type_data.items():
+                row = f"{attack_type:<15}"
+
+                # Average across all scenarios
+                avg_data = data.get('average', {})
+                row += f"{avg_data.get('dpt_no_upgrades', 0):>8.1f}"
+                row += f"{avg_data.get('percent_no_upgrades', 0):>8.1f}%"
+                row += f"{avg_data.get('dpt_with_upgrades', 0):>8.1f}"
+                row += f"{avg_data.get('percent_with_upgrades', 0):>8.1f}%"
+
+                # Per-scenario data
+                scenarios = ['1x100', '2x50', '4x25', '10x10']
+                for scenario in scenarios:
+                    scenario_data = data.get(scenario, {})
+                    row += f"{scenario_data.get('dpt_no_upgrades', 0):>4.1f}"
+                    row += f"{scenario_data.get('percent_no_upgrades', 0):>4.1f}%"
+                    row += f"{scenario_data.get('dpt_with_upgrades', 0):>4.1f}"
+                    row += f"{scenario_data.get('percent_with_upgrades', 0):>4.1f}%"
+
+                f.write(row + "\n")
+
+        print(f"Attack type performance table saved to {filename}")
+
+    @staticmethod
+    def format_upgrade_limit_table(upgrade_limit_data: Dict, reports_dir: str):
+        """Generate Table 2: Upgrade/Limit Analysis (23 columns, X rows)"""
+        filename = f"{reports_dir}/individual_upgrade_limit_table.txt"
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("INDIVIDUAL TESTING - UPGRADE/LIMIT PERFORMANCE TABLE\n")
+            f.write("=" * 150 + "\n\n")
+
+            # Header row
+            header = f"{'Upgrade/Limit':<20}"
+            header += f"{'Overall Average':<30}"
+            header += f"{'Melee AC':<10}{'Melee DG':<10}{'Ranged':<10}{'Area':<10}{'Direct':<10}{'DirectAOE':<10}"
+            f.write(header + "\n")
+
+            # Sub-header
+            subheader = f"{'':<20}"
+            subheader += f"{'DPT/Cost':<10}{'DPT+':<10}{'%+':<10}"
+            for _ in range(6):  # For each attack type
+                subheader += f"{'DPT+':<10}"
+            f.write(subheader + "\n")
+            f.write("-" * 150 + "\n")
+
+            # Data rows for each upgrade/limit
+            for item_name, data in upgrade_limit_data.items():
+                row = f"{item_name:<20}"
+
+                # Overall averages
+                overall = data.get('overall', {})
+                row += f"{overall.get('dpt_per_cost', 0):>8.2f}"
+                row += f"{overall.get('avg_dpt_improvement', 0):>8.1f}"
+                row += f"{overall.get('avg_percent_improvement', 0):>8.1f}%"
+
+                # Per-attack-type data
+                attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+                for attack_type in attack_types:
+                    att_data = data.get(attack_type, {})
+                    row += f"{att_data.get('avg_dpt_improvement', 0):>8.1f}"
+
+                f.write(row + "\n")
+
+        print(f"Upgrade/limit performance table saved to {filename}")
+
+
+class IndividualReportGenerator:
+    """Generates detailed individual testing reports with single runs and combat logs"""
+
+    def __init__(self, config: SimulationConfig, reports_dir: str):
+        self.config = config
+        self.reports_dir = reports_dir
+        self.individual_config = config.individual_testing
+
+    def generate_all_reports(self):
+        """Generate all individual testing reports"""
+        if not self.individual_config.get('enabled', True):
+            print("Individual testing disabled, skipping...")
+            return
+
+        print("Generating individual testing reports...")
+
+        # Test base attacks
+        if self.individual_config.get('test_base_attacks', True):
+            attack_type_data = self._test_base_attacks()
+        else:
+            attack_type_data = {}
+
+        # Test individual upgrades
+        if self.individual_config.get('test_upgrades', True):
+            upgrade_data = self._test_individual_upgrades()
+        else:
+            upgrade_data = {}
+
+        # Test individual limits
+        if self.individual_config.get('test_limits', True):
+            limit_data = self._test_individual_limits()
+        else:
+            limit_data = {}
+
+        # Test specific combinations
+        combination_data = self._test_specific_combinations()
+
+        # Combine upgrade and limit data
+        upgrade_limit_data = {**upgrade_data, **limit_data}
+
+        # Generate tables
+        if self.config.reports.get('individual_reports', {}).get('attack_type_table', True):
+            TableGenerator.format_attack_type_table(attack_type_data, self.reports_dir)
+
+        if self.config.reports.get('individual_reports', {}).get('upgrade_limit_table', True):
+            TableGenerator.format_upgrade_limit_table(upgrade_limit_data, self.reports_dir)
+
+        # Generate detailed combat logs
+        if self.individual_config.get('detailed_combat_logs', True):
+            self._generate_detailed_combat_logs()
+
+        print("Individual testing reports completed!")
+
+    def _test_base_attacks(self) -> Dict:
+        """Test all base attack types individually"""
+        from game_data import ATTACK_TYPES
+        from models import AttackBuild
+
+        print("Testing base attack types...")
+        attack_type_data = {}
+
+        for attack_type_name in ATTACK_TYPES.keys():
+            print(f"  Testing {attack_type_name}...")
+
+            # Create base build (no upgrades/limits)
+            base_build = AttackBuild(attack_type_name, [], [])
+
+            # Test across all scenarios
+            scenario_results = self._test_build_across_scenarios(base_build)
+
+            # Format data for table generator
+            formatted_data = {}
+            total_dpt = 0
+            total_count = 0
+
+            # Process each scenario
+            scenarios = [
+                ('1x100', '1×100 HP Boss'),
+                ('2x50', '2×50 HP Enemies'),
+                ('4x25', '4×25 HP Enemies'),
+                ('10x10', '10×10 HP Enemies')
+            ]
+
+            for scenario_key, scenario_name in scenarios:
+                if scenario_name in scenario_results:
+                    results = scenario_results[scenario_name]
+                    scenario_dpt = sum(r['dpt'] for r in results) / len(results) if results else 0
+
+                    formatted_data[scenario_key] = {
+                        'dpt_no_upgrades': scenario_dpt,
+                        'percent_no_upgrades': 0.0,  # Base has no improvement
+                        'dpt_with_upgrades': scenario_dpt,  # Same as base for no upgrades
+                        'percent_with_upgrades': 0.0
+                    }
+
+                    total_dpt += scenario_dpt
+                    total_count += 1
+
+            # Calculate average across all scenarios
+            avg_dpt = total_dpt / total_count if total_count > 0 else 0
+            formatted_data['average'] = {
+                'dpt_no_upgrades': avg_dpt,
+                'percent_no_upgrades': 0.0,
+                'dpt_with_upgrades': avg_dpt,
+                'percent_with_upgrades': 0.0
+            }
+
+            attack_type_data[attack_type_name] = formatted_data
+
+        return attack_type_data
+
+    def _test_individual_upgrades(self) -> Dict:
+        """Test all upgrades individually"""
+        from game_data import UPGRADES, ATTACK_TYPES
+        from models import AttackBuild
+
+        print("Testing individual upgrades...")
+        upgrade_data = {}
+
+        for upgrade_name in UPGRADES.keys():
+            print(f"  Testing {upgrade_name}...")
+
+            upgrade_results = {}
+
+            # Test with each compatible attack type
+            for attack_type_name in ATTACK_TYPES.keys():
+                try:
+                    # Create build with just this upgrade
+                    build = AttackBuild(attack_type_name, [upgrade_name], [])
+
+                    if build.is_valid(self.config.max_points):
+                        scenario_results = self._test_build_across_scenarios(build)
+                        upgrade_results[attack_type_name] = scenario_results
+                except Exception as e:
+                    print(f"    Skipping {attack_type_name} due to incompatibility: {e}")
+
+            upgrade_data[upgrade_name] = {
+                'results_by_attack_type': upgrade_results,
+                'overall': self._calculate_overall_upgrade_performance(upgrade_results)
+            }
+
+        return upgrade_data
+
+    def _test_individual_limits(self) -> Dict:
+        """Test all limits individually"""
+        from game_data import LIMITS, ATTACK_TYPES
+        from models import AttackBuild
+
+        print("Testing individual limits...")
+        limit_data = {}
+
+        for limit_name in LIMITS.keys():
+            print(f"  Testing {limit_name}...")
+
+            limit_results = {}
+
+            # Test with each attack type
+            for attack_type_name in ATTACK_TYPES.keys():
+                try:
+                    # Create build with just this limit
+                    build = AttackBuild(attack_type_name, [], [limit_name])
+
+                    if build.is_valid(self.config.max_points):
+                        scenario_results = self._test_build_across_scenarios(build)
+                        limit_results[attack_type_name] = scenario_results
+                except Exception as e:
+                    print(f"    Skipping {attack_type_name} due to incompatibility: {e}")
+
+            limit_data[limit_name] = {
+                'results_by_attack_type': limit_results,
+                'overall': self._calculate_overall_upgrade_performance(limit_results)
+            }
+
+        return limit_data
+
+    def _test_specific_combinations(self) -> Dict:
+        """Test specific upgrade combinations"""
+        from models import AttackBuild
+        from game_data import ATTACK_TYPES
+
+        combinations = self.individual_config.get('test_specific_combinations', [])
+        combination_data = {}
+
+        for combo_str in combinations:
+            print(f"Testing combination: {combo_str}")
+
+            # Parse combination string
+            upgrades = [u.strip() for u in combo_str.split('+')]
+
+            combo_results = {}
+
+            # Test with each attack type
+            for attack_type_name in ATTACK_TYPES.keys():
+                try:
+                    build = AttackBuild(attack_type_name, upgrades, [])
+
+                    if build.is_valid(self.config.max_points):
+                        scenario_results = self._test_build_across_scenarios(build)
+                        combo_results[attack_type_name] = scenario_results
+                except Exception as e:
+                    print(f"    Skipping {attack_type_name} due to incompatibility: {e}")
+
+            combination_data[combo_str] = combo_results
+
+        return combination_data
+
+    def _test_build_across_scenarios(self, build: 'AttackBuild') -> Dict:
+        """Test a build across all enemy scenarios"""
+        from simulation import run_simulation_batch
+        from models import Character
+
+        scenario_results = {}
+
+        # Test configurations (attacker/defender pairs)
+        for att_config in self.config.attacker_configs:
+            for def_config in self.config.defender_configs:
+                attacker = Character(*att_config)
+                defender = Character(*def_config)
+
+                # Run each scenario
+                fight_scenarios = [
+                    ("1x100", 1, 100),
+                    ("2x50", 2, 50),
+                    ("4x25", 4, 25),
+                    ("10x10", 10, 10)
+                ]
+
+                for scenario_name, num_enemies, enemy_hp in fight_scenarios:
+                    # Single run for individual testing
+                    num_runs = 1 if self.individual_config.get('single_run_per_test', True) else self.config.num_runs
+
+                    results, avg_turns, dpt = run_simulation_batch(
+                        attacker, build, num_runs, enemy_hp, defender, num_enemies
+                    )
+
+                    if scenario_name not in scenario_results:
+                        scenario_results[scenario_name] = []
+
+                    scenario_results[scenario_name].append({
+                        'dpt': dpt,
+                        'turns': avg_turns,
+                        'attacker': att_config,
+                        'defender': def_config
+                    })
+
+        return scenario_results
+
+    def _calculate_average_performance(self, scenario_results: Dict) -> Dict:
+        """Calculate average performance across scenarios"""
+        total_dpt = 0
+        total_count = 0
+
+        for scenario_name, results in scenario_results.items():
+            for result in results:
+                total_dpt += result['dpt']
+                total_count += 1
+
+        avg_dpt = total_dpt / total_count if total_count > 0 else 0
+
+        return {
+            'avg_dpt': avg_dpt,
+            'scenario_count': total_count
+        }
+
+    def _calculate_overall_upgrade_performance(self, upgrade_results: Dict) -> Dict:
+        """Calculate overall performance metrics for upgrades/limits"""
+        total_improvement = 0
+        total_count = 0
+
+        for attack_type, scenario_results in upgrade_results.items():
+            for scenario_name, results in scenario_results.items():
+                for result in results:
+                    total_improvement += result.get('dpt', 0)
+                    total_count += 1
+
+        avg_improvement = total_improvement / total_count if total_count > 0 else 0
+
+        return {
+            'avg_dpt_improvement': avg_improvement,
+            'test_count': total_count
+        }
+
+    def _generate_detailed_combat_logs(self):
+        """Generate detailed turn-by-turn combat logs"""
+        log_filename = f"{self.reports_dir}/individual_detailed_combat_logs.txt"
+
+        with open(log_filename, 'w', encoding='utf-8') as f:
+            f.write("INDIVIDUAL TESTING - DETAILED COMBAT LOGS\n")
+            f.write("=" * 80 + "\n\n")
+            f.write("Single-run combat resolution with turn-by-turn breakdowns\n")
+            f.write("Showing dice rolls, damage calculations, and special effects\n\n")
+
+        print(f"Detailed combat logs saved to {log_filename}")
+
+
+class BuildReportGenerator:
+    """Generates comprehensive build testing reports with statistical analysis"""
+
+    def __init__(self, config: SimulationConfig, reports_dir: str):
+        self.config = config
+        self.reports_dir = reports_dir
+        self.build_config = config.build_testing
+
+    def generate_all_reports(self, all_build_results: List[Tuple]):
+        """Generate all build testing reports"""
+        if not self.build_config.get('enabled', True):
+            print("Build testing disabled, skipping...")
+            return
+
+        print("Generating build testing reports...")
+
+        # Generate existing reports using the current system
+        if self.config.reports.get('build_reports', {}).get('build_rankings', True):
+            # Extract builds from (build, avg_dpt) tuples
+            builds_only = [build for build, _ in all_build_results]
+            write_build_summary(builds_only, self.config, self.reports_dir)
+
+        if self.config.reports.get('build_reports', {}).get('upgrade_analysis', True):
+            generate_upgrade_ranking_report(all_build_results, self.config, self.reports_dir)
+
+        if self.config.reports.get('build_reports', {}).get('cost_effectiveness', True):
+            generate_upgrade_pairing_report(all_build_results, self.config, self.reports_dir)
+
+        print("Build testing reports completed!")
+
+
+def generate_reports_by_mode(config: SimulationConfig, reports_dir: str, all_build_results: List[Tuple] = None):
+    """Generate reports based on execution mode"""
+
+    if config.execution_mode in ['individual', 'both']:
+        if config.reports.get('individual_reports', {}).get('enabled', True):
+            individual_generator = IndividualReportGenerator(config, reports_dir)
+            individual_generator.generate_all_reports()
+
+    if config.execution_mode in ['build', 'both']:
+        if config.reports.get('build_reports', {}).get('enabled', True) and all_build_results:
+            build_generator = BuildReportGenerator(config, reports_dir)
+            build_generator.generate_all_reports(all_build_results)

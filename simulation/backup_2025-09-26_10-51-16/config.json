@@ -1,16 +1,12 @@
 {
-  "num_runs": 25,
-  "max_points": 80,
-  "test_single_upgrades": true,
-  "test_two_upgrade_combinations": true,
-  "test_three_upgrade_combinations": true,
-  "test_slayers": true,
-  "test_limits": true,
+  "execution_mode": "individual",
+  "num_runs": 5,
+  "max_points": 30,
   "use_threading": true,
   "verbose_logging": false,
   "top_builds_count": 20,
   "min_dpt_threshold": 0.0,
-  "build_chunk_size": 1000,
+  "build_chunk_size": 2000,
   "attacker_configs": [
     [
       4,
@@ -18,7 +14,8 @@
       0,
       0,
       4
-    ],  [
+    ],
+    [
       0,
       4,
       0,
@@ -27,13 +24,14 @@
     ]
   ],
   "defender_configs": [
-        [
+    [
       0,
       0,
       4,
       0,
       4
-    ],    [
+    ],
+    [
       0,
       0,
       0,
@@ -41,6 +39,43 @@
       4
     ]
   ],
+  "individual_testing": {
+    "enabled": true,
+    "test_base_attacks": true,
+    "test_upgrades": true,
+    "test_limits": true,
+    "test_specific_combinations": [
+      "critical_accuracy + powerful_critical",
+      "critical_accuracy + double_tap"
+    ],
+    "single_run_per_test": true,
+    "detailed_combat_logs": true
+  },
+  "build_testing": {
+    "enabled": true,
+    "test_single_upgrades": true,
+    "test_two_upgrade_combinations": true,
+    "test_three_upgrade_combinations": true,
+    "test_slayers": true,
+    "test_limits": true,
+    "statistical_analysis": true
+  },
+  "reports": {
+    "individual_reports": {
+      "enabled": true,
+      "attack_type_table": true,
+      "upgrade_limit_table": true,
+      "mechanics_verification": true,
+      "scenario_breakdown": true
+    },
+    "build_reports": {
+      "enabled": true,
+      "build_rankings": true,
+      "upgrade_analysis": true,
+      "cost_effectiveness": true,
+      "percentile_analysis": true
+    }
+  },
   "logging": {
     "separate_files": true,
     "log_top_builds_only": true,

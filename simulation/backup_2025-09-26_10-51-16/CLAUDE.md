@@ -92,7 +92,7 @@ ATTACK_TYPES = {
 - **Double Tap** (30p): Make identical attack on critical hit (15-20 with Critical Accuracy)
 
 #### Condition & Effect Upgrades
-- **Bleed** (80p): Target takes same damage for next 2 turns (replaces existing bleed)
+- **Bleed** (40p): Target takes same damage for next 2 turns (replaces existing bleed)
 - **Critical Accuracy** (30p): Critical hit on 15-20 instead of just 20
 - **Powerful Condition Critical** (20p): +Tier bonus to Damage and Condition rolls on critical hits (requires Critical Accuracy)
 - **Reliable Accuracy** (20p): Roll with advantage, -3 penalty to all Accuracy rolls
@@ -111,18 +111,18 @@ ATTACK_TYPES = {
 - **Boss Slayer** (20p): +Tier to chosen roll type vs targets ≤100 HP (choose Accuracy, Damage, or Conditions when purchasing)
 
 ### Limits (Unreliable Upgrades)
-- **Unreliable 1** (30p): +Tier to chosen roll type, DC 5 activation (choose Accuracy, Damage, or Conditions when purchasing)
-- **Unreliable 2** (20p): +2×Tier to chosen roll type, DC 10 activation (choose Accuracy, Damage, or Conditions when purchasing)
-- **Unreliable 3** (20p): +3×Tier to Accuracy and Damage, DC 15 activation - attack fails entirely on missed rolls
+- **Unreliable 1** (30p): +Tier to Accuracy and Damage, DC 5 activation
+- **Unreliable 2** (20p): +2×Tier to Accuracy and Damage, DC 10 activation
+- **Unreliable 3** (20p): +4×Tier to Accuracy and Damage, DC 15 activation - attack fails entirely on missed rolls
 
 
 #### Turn-Based Limit Upgrades
-- **Quickdraw** (10p): +Tier to chosen roll type (Accuracy, Damage, or Conditions), turns 1-2 only
-- **Steady** (40p): +Tier to chosen roll type (Accuracy, Damage, or Conditions), turn 4 or later
-- **Patient** (20p): +Tier to chosen roll type (Accuracy, Damage, or Conditions), turn 5 or later  
-- **Finale** (10p): +Tier to chosen roll type (Accuracy, Damage, or Conditions), turn 8 or later
-- **Charge Up** (10p): +Tier to chosen roll type (Accuracy, Damage, or Conditions), spend action on previous turn
-- **Charge Up 2** (10p): +2×Tier to Accuracy and Damage, spend actions on previous two turns
+- **Quickdraw** (10p): +2×Tier to Accuracy and Damage, turns 1-2 only
+- **Steady** (40p): +Tier to Accuracy and Damage, turn 4 or later
+- **Patient** (20p): +Tier to Accuracy and Damage, turn 5 or later
+- **Finale** (10p): +2×Tier to Accuracy and Damage, turn 8 or later
+- **Charge Up** (10p): +2×Tier to Accuracy and Damage, spend action on previous turn
+- **Charge Up 2** (10p): +3×Tier to Accuracy and Damage, spend actions on previous two turns
 
 
 ## Current Implementation Status

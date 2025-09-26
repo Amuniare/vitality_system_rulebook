@@ -56,15 +56,24 @@ class Limit:
 @dataclass
 class SimulationConfig:
     """Configuration settings for simulation runs"""
+    # Execution mode control
+    execution_mode: str = "both"  # "individual", "build", or "both"
+
+    # Core simulation settings
     num_runs: int = 10
     target_hp: int = 100
     max_points: int = 60
-    test_single_upgrades: bool = True
-    test_two_upgrade_combinations: bool = True
-    test_three_upgrade_combinations: bool = True
-    test_slayers: bool = True
-    test_limits: bool = True
     use_threading: bool = True
+    min_dpt_threshold: float = 0.0
+
+    # Individual testing configuration
+    individual_testing: dict = None
+
+    # Build testing configuration
+    build_testing: dict = None
+
+    # Reports configuration
+    reports: dict = None
 
     # Attacker/Defender configurations
     attacker_configs: List[Tuple[int, int, int, int, int]] = None
@@ -74,12 +83,16 @@ class SimulationConfig:
     attack_types_filter: List[str] = None
     upgrades_filter: List[str] = None
     limits_filter: List[str] = None
-    min_dpt_threshold: float = 0.0
 
-    # Output options
+    # Legacy options (for backward compatibility)
     verbose_logging: bool = True
     show_top_builds: int = 10
     generate_individual_logs: bool = False
+    test_single_upgrades: bool = True
+    test_two_upgrade_combinations: bool = True
+    test_three_upgrade_combinations: bool = True
+    test_slayers: bool = True
+    test_limits: bool = True
 
     # Logging configuration
     logging: dict = None
@@ -98,6 +111,49 @@ class SimulationConfig:
             self.defender_configs = [
                 (3, 3, 3, 3, 3),  # Balanced Tier 3 defender
             ]
+
+        if self.individual_testing is None:
+            self.individual_testing = {
+                "enabled": True,
+                "test_base_attacks": True,
+                "test_upgrades": True,
+                "test_limits": True,
+                "test_specific_combinations": [
+                    "critical_accuracy + powerful_critical",
+                    "critical_accuracy + double_tap"
+                ],
+                "single_run_per_test": True,
+                "detailed_combat_logs": True
+            }
+
+        if self.build_testing is None:
+            self.build_testing = {
+                "enabled": True,
+                "test_single_upgrades": True,
+                "test_two_upgrade_combinations": True,
+                "test_three_upgrade_combinations": True,
+                "test_slayers": True,
+                "test_limits": True,
+                "statistical_analysis": True
+            }
+
+        if self.reports is None:
+            self.reports = {
+                "individual_reports": {
+                    "enabled": True,
+                    "attack_type_table": True,
+                    "upgrade_limit_table": True,
+                    "mechanics_verification": True,
+                    "scenario_breakdown": True
+                },
+                "build_reports": {
+                    "enabled": True,
+                    "build_rankings": True,
+                    "upgrade_analysis": True,
+                    "cost_effectiveness": True,
+                    "percentile_analysis": True
+                }
+            }
 
         if self.logging is None:
             self.logging = {

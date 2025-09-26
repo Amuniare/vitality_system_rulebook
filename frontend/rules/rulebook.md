@@ -1067,7 +1067,7 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 
 **Charges 2** 
 Cost: 30p
-Limit: Activate for 3 turns, recharges after 1 minute rest
+Limit: 2 uses, recharges after 1 minute rest
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 
 

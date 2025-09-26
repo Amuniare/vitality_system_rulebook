@@ -24,7 +24,7 @@ UPGRADES = {
     'armor_piercing': Upgrade('armor_piercing', 20, special_effect="ignore_endurance"),
     'brutal': Upgrade('brutal', 40, special_effect="brutal_10"),
     'quick_strikes': Upgrade('quick_strikes', 60, special_effect="triple_attack", damage_penalty=1, accuracy_penalty=1),
-    'bleed': Upgrade('bleed', 80, special_effect="bleed_2_turns", damage_penalty=1),
+    'bleed': Upgrade('bleed', 40, special_effect="bleed_2_turns", damage_penalty=1),
     'critical_accuracy': Upgrade('critical_accuracy', 30, special_effect="crit_15_20"),
     'powerful_critical': Upgrade('powerful_critical', 20, special_effect="powerful_crit"),
     'double_tap': Upgrade('double_tap', 30, special_effect="double_tap"),
@@ -46,15 +46,15 @@ UPGRADES = {
 }
 
 LIMITS = {
-    'unreliable_1': Limit('unreliable_1', 30, 1, 5),   # Cost 30p, +Tier bonus, DC 5
-    'unreliable_2': Limit('unreliable_2', 20, 2, 10),  # Cost 20p, +2×Tier bonus, DC 10
-    'unreliable_3': Limit('unreliable_3', 20, 3, 15),  # Cost 20p, +3×Tier to Accuracy and Damage, DC 15+
-    'quickdraw': Limit('quickdraw', 10, 1, 0),          # Cost 10p, +Tier bonus, first round only
-    'steady': Limit('steady', 40, 1, 0),                # Cost 40p, +Tier bonus, turn 4 or later
-    'patient': Limit('patient', 20, 1, 0),              # Cost 20p, +Tier bonus, turn 5 or later
-    'finale': Limit('finale', 10, 1, 0),                # Cost 10p, +Tier bonus, turn 8 or later
-    'charge_up': Limit('charge_up', 10, 1, 0),          # Cost 10p, +Tier bonus, spend action on previous turn
-    'charge_up_2': Limit('charge_up_2', 10, 2, 0),     # Cost 10p, +2×Tier bonus, spend actions on previous two turns
+    'unreliable_1': Limit('unreliable_1', 30, 1, 5),   # Cost 30p, +Tier to Accuracy and Damage, DC 5
+    'unreliable_2': Limit('unreliable_2', 20, 2, 10),  # Cost 20p, +2×Tier to Accuracy and Damage, DC 10
+    'unreliable_3': Limit('unreliable_3', 20, 4, 15),  # Cost 20p, +4×Tier to Accuracy and Damage, DC 15+
+    'quickdraw': Limit('quickdraw', 10, 2, 0),          # Cost 10p, +2×Tier to Accuracy and Damage, turns 1-2
+    'steady': Limit('steady', 40, 1, 0),                # Cost 40p, +Tier to Accuracy and Damage, turn 4 or later
+    'patient': Limit('patient', 20, 1, 0),              # Cost 20p, +Tier to Accuracy and Damage, turn 5 or later
+    'finale': Limit('finale', 10, 2, 0),                # Cost 10p, +2×Tier to Accuracy and Damage, turn 8 or later
+    'charge_up': Limit('charge_up', 10, 2, 0),          # Cost 10p, +2×Tier to Accuracy and Damage, spend action on previous turn
+    'charge_up_2': Limit('charge_up_2', 10, 3, 0),     # Cost 10p, +3×Tier to Accuracy and Damage, spend actions on previous two turns
 }
 
 # Rule Validation System

@@ -6,9 +6,11 @@ import json
 import os
 from datetime import datetime
 from typing import Dict, List, Tuple
-from models import Character, AttackBuild, SimulationConfig
+from core.models import Character, AttackBuild, SimulationConfig
 from simulation import run_simulation_batch
-from game_data import UPGRADES, LIMITS, RuleValidator
+from data.upgrades import UPGRADES
+from data.limits import LIMITS
+from core.game_rules import RuleValidation as RuleValidation
 
 
 def create_timestamped_reports_directory() -> str:
@@ -190,7 +192,7 @@ def generate_combo_performance_report(config: SimulationConfig) -> Dict:
         # Test combo with each attack type it's compatible with
         for attack_type in attack_types:
             # Check compatibility
-            is_valid, errors = RuleValidator.validate_combination(attack_type, combo_upgrades)
+            is_valid, errors = RuleValidation.validate_combination(attack_type, combo_upgrades)
             if not is_valid:
                 continue
 
@@ -320,7 +322,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
         # Test upgrade with each attack type it's compatible with
         for attack_type in attack_types:
             # Check compatibility
-            is_valid, errors = RuleValidator.validate_combination(attack_type, [upgrade_name])
+            is_valid, errors = RuleValidation.validate_combination(attack_type, [upgrade_name])
             if not is_valid:
                 continue
 
@@ -793,7 +795,7 @@ def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: Simu
     upgrade_data = {}  # upgrade_name -> {'top_builds': [(build, rank, dpt)], 'pairings': {other_upgrade: count}}
 
     # Initialize upgrade data structure
-    from game_data import UPGRADES
+    from data.upgrades import UPGRADES
     for upgrade_name in UPGRADES.keys():
         upgrade_data[upgrade_name] = {
             'top_builds': [],
@@ -891,7 +893,7 @@ def generate_diagnostic_base_attacks_report(config: SimulationConfig, reports_di
     """Generate diagnostic report for base attack types across all scenarios"""
     print("Generating base attacks diagnostic report...")
 
-    from game_data import ATTACK_TYPES
+    from data.attack_types import ATTACK_TYPES
     from simulation import simulate_combat_verbose
 
     with open(f'{reports_dir}/diagnostic_base_attacks_report.txt', 'w', encoding='utf-8') as f:
@@ -949,7 +951,7 @@ def generate_diagnostic_upgrades_report(config: SimulationConfig, reports_dir: s
     """Generate diagnostic report for individual upgrades across all scenarios"""
     print("Generating upgrades diagnostic report...")
 
-    from game_data import UPGRADES, RuleValidator
+    from data.upgrades import UPGRADES, RuleValidation
     from simulation import simulate_combat_verbose
 
     with open(f'{reports_dir}/diagnostic_upgrades_report.txt', 'w', encoding='utf-8') as f:
@@ -973,18 +975,13 @@ def generate_diagnostic_upgrades_report(config: SimulationConfig, reports_dir: s
             f.write(f"{upgrade_name.upper()} ({upgrade_data.cost} points)\n")
             f.write("-" * 50 + "\n")
 
-            # Build upgrade list including prerequisites
-            from game_data import PREREQUISITES
+            # Build upgrade list - prerequisites handled differently in new structure
             upgrade_list = [upgrade_name]
-            if upgrade_name in PREREQUISITES:
-                prerequisite_upgrades = PREREQUISITES[upgrade_name]
-                upgrade_list = prerequisite_upgrades + [upgrade_name]
-                f.write(f"Note: Testing with prerequisites: {', '.join(prerequisite_upgrades)}\n")
 
             # Test with compatible attack types
             compatible_attacks = []
             for attack_type in attack_types:
-                is_valid, errors = RuleValidator.validate_combination(attack_type, upgrade_list)
+                is_valid, errors = RuleValidation.validate_combination(attack_type, upgrade_list)
                 if is_valid:
                     compatible_attacks.append(attack_type)
 
@@ -1027,7 +1024,7 @@ def generate_diagnostic_limits_report(config: SimulationConfig, reports_dir: str
     """Generate diagnostic report for individual limits across all scenarios"""
     print("Generating limits diagnostic report...")
 
-    from game_data import LIMITS
+    from data.limits import LIMITS
     from simulation import simulate_combat_verbose
 
     with open(f'{reports_dir}/diagnostic_limits_report.txt', 'w', encoding='utf-8') as f:
@@ -1086,7 +1083,7 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
     """Generate comprehensive upgrade and limit performance analysis broken down by scenario and attack type"""
     print("Generating scenario breakdown reports...")
 
-    from game_data import UPGRADES, LIMITS, RuleValidator
+    from data.upgrades import UPGRADES, LIMITS, RuleValidation
 
     # Create test cases from config
     test_cases = []
@@ -1128,7 +1125,7 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
             # Test with each compatible attack type
             for attack_type in attack_types:
                 # Check compatibility
-                is_valid, errors = RuleValidator.validate_combination(attack_type, [upgrade_name])
+                is_valid, errors = RuleValidation.validate_combination(attack_type, [upgrade_name])
                 if not is_valid:
                     continue
 

@@ -215,14 +215,11 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     if build.attack_type == 'melee_ac':
         melee_accuracy_bonus = attacker.tier
 
-    # Apply limit bonuses to accuracy
+    # Apply limit bonuses to accuracy (ALL limits now apply to both accuracy and damage)
     limit_accuracy_bonus = 0
     for limit_name in build.limits:
         limit = LIMITS[limit_name]
-        if limit_name == 'charge_up_2':
-            limit_accuracy_bonus += limit.damage_bonus * attacker.tier
-        elif limit_name == 'unreliable_3':
-            limit_accuracy_bonus += limit.damage_bonus * attacker.tier
+        limit_accuracy_bonus += limit.damage_bonus * attacker.tier
 
     total_accuracy = base_accuracy + accuracy_mod + slayer_accuracy_bonus + melee_accuracy_bonus + limit_accuracy_bonus
 
@@ -277,16 +274,12 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if melee_accuracy_bonus > 0:
                 accuracy_parts.append(f"+{melee_accuracy_bonus} [Melee]")
 
-            # Add limit accuracy bonus
+            # Add limit accuracy bonus (ALL limits now apply to accuracy)
             if limit_accuracy_bonus > 0:
                 for limit_name in build.limits:
                     limit = LIMITS[limit_name]
-                    if limit_name == 'charge_up_2':
-                        bonus_value = limit.damage_bonus * attacker.tier
-                        accuracy_parts.append(f"+{bonus_value} [{limit_name}]")
-                    elif limit_name == 'unreliable_3':
-                        bonus_value = limit.damage_bonus * attacker.tier
-                        accuracy_parts.append(f"+{bonus_value} [{limit_name}]")
+                    bonus_value = limit.damage_bonus * attacker.tier
+                    accuracy_parts.append(f"+{bonus_value} [{limit_name}]")
 
             accuracy_breakdown = " + ".join(accuracy_parts).replace(" + -", " - ")
             log_file.write(f"      Accuracy: {accuracy_breakdown} = {accuracy_roll + total_accuracy} vs {defender.avoidance}\n")
