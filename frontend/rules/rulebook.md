@@ -679,11 +679,11 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 
 **Control**
 - **Cost:** 30p
-- **Effect:** Gain control of the target until the start of your next turn. You can force them to take any actions available to them including attacking or stunning themseleves until the control ends. Targets add 1/10th of their remaining HP to the Resistance Score against this attack. 
+- **Effect:** Gain control of the target until the start of your next turn. You can force them to take any actions available to them including attacking or stunning themseleves until the control ends. Targets add 1/5th of their remaining HP to the Resistance Score against this attack. 
 
 **Stun**
 - **Cost:** 20p
-- **Effect:** The target cannot act on their turn, their Avoidance is considered 0, all attacks that hit them are automatic critical attack rolls. Targets add 1/10th of their remaining HP to the Resistance Score against this attack. 
+- **Effect:** The target cannot act on their turn, their Avoidance is considered 0, all attacks that hit them are automatic critical attack rolls. Targets add 1/5th of their remaining HP to the Resistance Score against this attack. 
 
 **Weaken**
 - **Cost:** 20p

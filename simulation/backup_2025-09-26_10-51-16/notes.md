@@ -71,6 +71,10 @@ new metric, turns per fight (max 20 turns)
     reports/2025-09-26_15-56-32/individual_attack_type_table.txt
     reports/2025-09-26_15-56-32/individual_upgrade_limit_table.txt
 
+### 
+melee direct and ranged get tier x 10 extra points
+direct aoe damage back to 14 - 2xtier
+flkaw for specialty limit
 
 
 need to bring in cooldown, explosive crit, splinter

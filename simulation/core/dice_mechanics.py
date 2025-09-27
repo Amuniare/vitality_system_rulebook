@@ -4,8 +4,10 @@ Combat mechanics and attack resolution for the Vitality System.
 
 import random
 from typing import List, Tuple, Optional
-from models import Character, AttackBuild
-from game_data import ATTACK_TYPES, UPGRADES, LIMITS
+from .models import Character, AttackBuild
+from ..data.attacks import ATTACK_TYPES
+from ..data.upgrades import UPGRADES
+from ..data.limits import LIMITS
 
 
 def roll_d20() -> int:
@@ -317,156 +319,160 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 if log_file:
                     log_file.write(f"      Overhit! Exceeded avoidance by {total_attack_roll - defender.avoidance}, adding {overhit_bonus} to damage\n")
 
-        # Calculate damage
+        # Calculate base damage (dice roll OR flat direct damage)
         if attack_type.is_direct:
+            # Direct damage: flat base value minus tier penalty
             if build.attack_type == 'direct_area_damage':
-                damage = attack_type.direct_damage_base - (attacker.tier * 2)
+                base_damage = attack_type.direct_damage_base - (attacker.tier * 3)  # 14 - 3*tier for area
             else:
-                damage = attack_type.direct_damage_base - attacker.tier
+                base_damage = attack_type.direct_damage_base - attacker.tier  # 14 - tier for single target
             dice_detail = []
         else:
-            # Roll damage dice (use shared roll for AOE)
+            # Regular damage: roll dice
             use_high_impact = 'high_impact' in build.upgrades
             use_critical_effect = 'critical_effect' in build.upgrades
 
             if is_aoe and aoe_damage_roll is not None:
                 # Use shared AOE damage roll
-                dice_damage, dice_detail = aoe_damage_roll
+                base_damage, dice_detail = aoe_damage_roll
             else:
                 # Roll new damage dice
                 if use_high_impact:
-                    dice_damage = 15  # Flat 15
+                    base_damage = 15  # Flat 15
                     dice_detail = ["15 (flat)"]
                 elif use_critical_effect:
-                    dice_damage, dice_detail = roll_3d6_exploding_5_6()
+                    base_damage, dice_detail = roll_3d6_exploding_5_6()
                 else:
-                    dice_damage, dice_detail = roll_3d6_exploding()
+                    base_damage, dice_detail = roll_3d6_exploding()
 
-            # Add flat bonuses
-            flat_bonus = attacker.tier + attacker.power
-            flat_bonus += attack_type.damage_mod * attacker.tier
+        # Apply flat bonuses (both direct and non-direct attacks)
+        flat_bonus = attacker.tier + attacker.power
+        flat_bonus += attack_type.damage_mod * attacker.tier
 
-            # Melee damage bonus for melee_dg variant
+        # Melee damage bonus for melee_dg variant
+        if build.attack_type in ['melee_dg']:
+            flat_bonus += attacker.tier
+
+        # Apply upgrade bonuses/penalties (both direct and non-direct attacks)
+        for upgrade_name in build.upgrades:
+            upgrade = UPGRADES[upgrade_name]
+            flat_bonus += upgrade.damage_mod * attacker.tier
+            # Critical Effect has flat damage penalty, not tier-scaled
+            if upgrade_name == 'critical_effect':
+                flat_bonus -= upgrade.damage_penalty
+            else:
+                flat_bonus -= upgrade.damage_penalty * attacker.tier
+
+        # Apply limit bonuses (both direct and non-direct attacks)
+        for limit_name in build.limits:
+            limit = LIMITS[limit_name]
+            flat_bonus += limit.damage_bonus * attacker.tier
+
+        # Apply slayer damage bonuses (both direct and non-direct attacks)
+        slayer_damage_bonus = 0
+        if any(upgrade in build.upgrades for upgrade in ['minion_slayer_dmg', 'captain_slayer_dmg', 'elite_slayer_dmg', 'boss_slayer_dmg']):
+            if 'minion_slayer_dmg' in build.upgrades and defender.max_hp == 10:
+                slayer_damage_bonus += attacker.tier
+            elif 'captain_slayer_dmg' in build.upgrades and defender.max_hp == 25:
+                slayer_damage_bonus += attacker.tier
+            elif 'elite_slayer_dmg' in build.upgrades and defender.max_hp == 50:
+                slayer_damage_bonus += attacker.tier
+            elif 'boss_slayer_dmg' in build.upgrades and defender.max_hp == 100:
+                slayer_damage_bonus += attacker.tier
+
+        # Apply critical hit damage bonus (both direct and non-direct attacks)
+        critical_damage_bonus = 0
+        if is_critical:
+            # Base critical hit bonus
+            critical_damage_bonus = attacker.tier
+            # Additional bonus if they have powerful condition critical
+            if 'powerful_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
+                critical_damage_bonus += attacker.tier
+
+        # Calculate total damage before durability
+        damage = base_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus
+
+        if log_file:
+            # Log base damage (dice or direct)
+            if attack_type.is_direct:
+                log_file.write(f"      Direct damage base: {base_damage} [{attack_type.direct_damage_base} - {attacker.tier}]\n")
+            else:
+                log_file.write(f"      Damage dice: {dice_detail} = {base_damage}\n")
+
+            # Enhanced flat bonus breakdown
+            flat_parts = [f"{attacker.tier} [Tier]", f"{attacker.power} [Power]"]
+            if attack_type.damage_mod != 0:
+                mod_value = attack_type.damage_mod * attacker.tier
+                flat_parts.append(f"{mod_value:+d} [{build.attack_type.title()}]")
+
+            # Melee damage bonus
             if build.attack_type in ['melee_dg']:
-                flat_bonus += attacker.tier
+                flat_parts.append(f"+{attacker.tier} [Melee]")
 
-            # Apply upgrade bonuses/penalties
+            # Upgrade damage modifiers
             for upgrade_name in build.upgrades:
                 upgrade = UPGRADES[upgrade_name]
-                flat_bonus += upgrade.damage_mod * attacker.tier
-                # Critical Effect has flat damage penalty, not tier-scaled
-                if upgrade_name == 'critical_effect':
-                    flat_bonus -= upgrade.damage_penalty
-                else:
-                    flat_bonus -= upgrade.damage_penalty * attacker.tier
+                if upgrade.damage_mod != 0:
+                    mod_value = upgrade.damage_mod * attacker.tier
+                    flat_parts.append(f"{mod_value:+d} [{upgrade_name}]")
+                if upgrade.damage_penalty != 0:
+                    # Critical Effect has flat penalty, others are tier-scaled
+                    if upgrade_name == 'critical_effect':
+                        penalty_value = -upgrade.damage_penalty
+                    else:
+                        penalty_value = -(upgrade.damage_penalty * attacker.tier)
+                    flat_parts.append(f"{penalty_value:+d} [{upgrade_name}]")
 
-            # Apply limit bonuses
+            # Limit damage bonuses
             for limit_name in build.limits:
                 limit = LIMITS[limit_name]
-                flat_bonus += limit.damage_bonus * attacker.tier
+                if limit.damage_bonus > 0:
+                    bonus_value = limit.damage_bonus * attacker.tier
+                    flat_parts.append(f"+{bonus_value} [{limit_name}]")
 
-            # Apply slayer damage bonuses
-            slayer_damage_bonus = 0
-            if any(upgrade in build.upgrades for upgrade in ['minion_slayer_dmg', 'captain_slayer_dmg', 'elite_slayer_dmg', 'boss_slayer_dmg']):
-                if 'minion_slayer_dmg' in build.upgrades and defender.max_hp == 10:
-                    slayer_damage_bonus += attacker.tier
-                elif 'captain_slayer_dmg' in build.upgrades and defender.max_hp == 25:
-                    slayer_damage_bonus += attacker.tier
-                elif 'elite_slayer_dmg' in build.upgrades and defender.max_hp == 50:
-                    slayer_damage_bonus += attacker.tier
-                elif 'boss_slayer_dmg' in build.upgrades and defender.max_hp == 100:
-                    slayer_damage_bonus += attacker.tier
+            flat_breakdown = " + ".join(flat_parts).replace(" + -", " - ")
+            log_file.write(f"      Flat bonus: {flat_breakdown} = {flat_bonus}\n")
 
-            # Apply critical hit damage bonus
-            critical_damage_bonus = 0
-            if is_critical:
-                # Base critical hit bonus
-                critical_damage_bonus = attacker.tier
-                # Additional bonus if they have powerful condition critical
-                if 'powerful_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
-                    critical_damage_bonus += attacker.tier
-
-            damage = dice_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus
-
-            if log_file:
-                log_file.write(f"      Damage dice: {dice_detail} = {dice_damage}\n")
-
-                # Enhanced flat bonus breakdown
-                flat_parts = [f"{attacker.tier} [Tier]", f"{attacker.power} [Power]"]
-                if attack_type.damage_mod != 0:
-                    mod_value = attack_type.damage_mod * attacker.tier
-                    flat_parts.append(f"{mod_value:+d} [{build.attack_type.title()}]")
-
-                # Melee damage bonus
-                if build.attack_type in ['melee_dg']:
-                    flat_parts.append(f"+{attacker.tier} [Melee]")
-
-                # Upgrade damage modifiers
+            if slayer_damage_bonus > 0:
+                slayer_type = ""
                 for upgrade_name in build.upgrades:
-                    upgrade = UPGRADES[upgrade_name]
-                    if upgrade.damage_mod != 0:
-                        mod_value = upgrade.damage_mod * attacker.tier
-                        flat_parts.append(f"{mod_value:+d} [{upgrade_name}]")
-                    if upgrade.damage_penalty != 0:
-                        # Critical Effect has flat penalty, others are tier-scaled
-                        if upgrade_name == 'critical_effect':
-                            penalty_value = -upgrade.damage_penalty
-                        else:
-                            penalty_value = -(upgrade.damage_penalty * attacker.tier)
-                        flat_parts.append(f"{penalty_value:+d} [{upgrade_name}]")
+                    if 'slayer' in upgrade_name and 'dmg' in upgrade_name:
+                        slayer_type = upgrade_name.replace('_slayer_dmg', '').title()
+                        break
+                log_file.write(f"      Slayer bonus: +{slayer_damage_bonus} [{slayer_type} vs {defender.max_hp}HP]\n")
 
-                # Limit damage bonuses
-                for limit_name in build.limits:
-                    limit = LIMITS[limit_name]
-                    if limit.damage_bonus > 0:
-                        bonus_value = limit.damage_bonus * attacker.tier
-                        flat_parts.append(f"+{bonus_value} [{limit_name}]")
+            if critical_damage_bonus > 0:
+                if 'powerful_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
+                    log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit +{attacker.tier} + Powerful Critical +{attacker.tier}]\n")
+                else:
+                    log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit]\n")
 
-                flat_breakdown = " + ".join(flat_parts).replace(" + -", " - ")
-                log_file.write(f"      Flat bonus: {flat_breakdown} = {flat_bonus}\n")
+            if overhit_bonus > 0:
+                log_file.write(f"      Overhit bonus: +{overhit_bonus} [Exceeded avoidance by {accuracy_roll + total_accuracy - defender.avoidance}]\n")
 
-                if slayer_damage_bonus > 0:
-                    slayer_type = ""
-                    for upgrade_name in build.upgrades:
-                        if 'slayer' in upgrade_name and 'dmg' in upgrade_name:
-                            slayer_type = upgrade_name.replace('_slayer_dmg', '').title()
-                            break
-                    log_file.write(f"      Slayer bonus: +{slayer_damage_bonus} [{slayer_type} vs {defender.max_hp}HP]\n")
+            log_file.write(f"      Total damage: {damage}\n")
 
-                if critical_damage_bonus > 0:
-                    if 'powerful_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
-                        log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit +{attacker.tier} + Powerful Critical +{attacker.tier}]\n")
-                    else:
-                        log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit]\n")
-
-                if overhit_bonus > 0:
-                    log_file.write(f"      Overhit bonus: +{overhit_bonus} [Exceeded avoidance by {accuracy_roll + total_accuracy - defender.avoidance}]\n")
-
-                log_file.write(f"      Total damage: {damage}\n")
-
-        # Apply durability (direct attacks bypass durability completely)
-        if attack_type.is_direct:
-            damage_dealt = damage
+        # Apply durability (ALL attacks subtract durability)
+        effective_durability = defender.durability
+        if 'armor_piercing' in build.upgrades:
+            effective_durability = defender.tier  # Ignore endurance bonus
             if log_file:
-                log_file.write(f"      Direct attack: ignores durability, final damage: {damage_dealt}\n")
-        else:
-            effective_durability = defender.durability
-            if 'armor_piercing' in build.upgrades:
-                effective_durability = defender.tier  # Ignore endurance bonus
-                if log_file:
-                    log_file.write(f"      Armor piercing: reducing durability from {defender.durability} to {effective_durability}\n")
+                log_file.write(f"      Armor piercing: reducing durability from {defender.durability} to {effective_durability}\n")
 
-            damage_dealt = max(0, damage - effective_durability)
+        damage_dealt = max(0, damage - effective_durability)
 
-            if log_file:
+        if log_file:
+            if attack_type.is_direct:
+                log_file.write(f"      Direct attack: {damage} - durability {effective_durability} = {damage_dealt} damage\n")
+            else:
                 log_file.write(f"      After durability ({effective_durability}): {damage_dealt} damage\n")
 
-            # Handle brutal (only for non-direct attacks)
-            if 'brutal' in build.upgrades and damage > effective_durability + 10:
-                brutal_bonus = int((damage - effective_durability - 10) * 0.5)
-                damage_dealt += brutal_bonus
-                if log_file:
-                    log_file.write(f"      Brutal bonus: +{brutal_bonus} damage\n")
+        # Handle brutal (only for non-direct attacks)
+        if not attack_type.is_direct and 'brutal' in build.upgrades and damage > effective_durability + 10:
+            brutal_bonus = int((damage - effective_durability - 10) * 0.5)
+            damage_dealt += brutal_bonus
+            if log_file:
+                log_file.write(f"      Brutal bonus: +{brutal_bonus} damage\n")
 
         # Handle conditions for successful attacks
         if 'bleed' in build.upgrades:

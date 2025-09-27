@@ -313,9 +313,11 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         # Calculate damage
         if attack_type.is_direct:
             if build.attack_type == 'direct_area_damage':
-                damage = attack_type.direct_damage_base - (attacker.tier * 3)
+                damage = attack_type.direct_damage_base - (attacker.tier * 2)
             else:
                 damage = attack_type.direct_damage_base - attacker.tier
+                # Add 10×tier bonus for direct_damage attacks
+                damage += attacker.tier * 10
             dice_detail = []
         else:
             # Roll damage dice (use shared roll for AOE)
@@ -342,6 +344,10 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             # Melee damage bonus for melee_dg variant
             if build.attack_type in ['melee_dg']:
                 flat_bonus += attacker.tier
+
+            # Add 10×tier bonus for melee and ranged attacks
+            if build.attack_type in ['melee_ac', 'melee_dg', 'ranged']:
+                flat_bonus += attacker.tier * 10
 
             # Apply upgrade bonuses/penalties
             for upgrade_name in build.upgrades:
@@ -394,6 +400,10 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 if build.attack_type in ['melee_dg']:
                     flat_parts.append(f"+{attacker.tier} [Melee]")
 
+                # 10×tier bonus for melee and ranged attacks
+                if build.attack_type in ['melee_ac', 'melee_dg', 'ranged']:
+                    flat_parts.append(f"+{attacker.tier * 10} [10×Tier Bonus]")
+
                 # Upgrade damage modifiers
                 for upgrade_name in build.upgrades:
                     upgrade = UPGRADES[upgrade_name]
@@ -437,29 +447,28 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
 
                 log_file.write(f"      Total damage: {damage}\n")
 
-        # Apply durability (direct attacks bypass durability completely)
-        if attack_type.is_direct:
-            damage_dealt = damage
+        # Apply durability (ALL attacks subtract durability)
+        effective_durability = defender.durability
+        if 'armor_piercing' in build.upgrades:
+            effective_durability = defender.tier  # Ignore endurance bonus
             if log_file:
-                log_file.write(f"      Direct attack: ignores durability, final damage: {damage_dealt}\n")
-        else:
-            effective_durability = defender.durability
-            if 'armor_piercing' in build.upgrades:
-                effective_durability = defender.tier  # Ignore endurance bonus
-                if log_file:
-                    log_file.write(f"      Armor piercing: reducing durability from {defender.durability} to {effective_durability}\n")
+                log_file.write(f"      Armor piercing: reducing durability from {defender.durability} to {effective_durability}\n")
 
-            damage_dealt = max(0, damage - effective_durability)
+        damage_dealt = max(0, damage - effective_durability)
 
-            if log_file:
+        if log_file:
+            if attack_type.is_direct:
+                log_file.write(f"      Direct attack: {damage} - durability {effective_durability} = {damage_dealt} damage\n")
+            else:
                 log_file.write(f"      After durability ({effective_durability}): {damage_dealt} damage\n")
 
-            # Handle brutal (only for non-direct attacks)
-            if 'brutal' in build.upgrades and damage > effective_durability + 10:
-                brutal_bonus = int((damage - effective_durability - 10) * 0.5)
-                damage_dealt += brutal_bonus
-                if log_file:
-                    log_file.write(f"      Brutal bonus: +{brutal_bonus} damage\n")
+        # Handle brutal (only for non-direct attacks)
+        if not attack_type.is_direct and 'brutal' in build.upgrades and damage > effective_durability + 10:
+            brutal_bonus = int((damage - effective_durability - 10) * 0.5)
+            damage_dealt += brutal_bonus
+            if log_file:
+                log_file.write(f"      Brutal bonus: +{brutal_bonus} damage\n")
+
 
         # Handle conditions for successful attacks
         if 'bleed' in build.upgrades:

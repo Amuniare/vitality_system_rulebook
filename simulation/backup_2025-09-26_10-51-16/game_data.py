@@ -78,6 +78,7 @@ MUTUAL_EXCLUSIONS = [
 ATTACK_TYPE_RESTRICTIONS = {
     'quick_strikes': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],
     'barrage': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],
+    'extra_attack': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],
 }
 
 AOE_RESTRICTIONS = [

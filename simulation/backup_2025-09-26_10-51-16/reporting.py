@@ -4,6 +4,7 @@ Analysis and reporting for the Vitality System combat simulator.
 
 import json
 import os
+import statistics
 from datetime import datetime
 from typing import Dict, List, Tuple
 from models import Character, AttackBuild, SimulationConfig
@@ -718,10 +719,12 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
     enhancement_stats = []
     for enhancement_name, positions in enhancement_rankings.items():
         avg_position = sum(positions) / len(positions)
-        percentile = (avg_position / total_builds) * 100
+        median_position = statistics.median(positions)
+        percentile = (median_position / total_builds) * 100
         enhancement_stats.append({
             'name': enhancement_name,
             'avg_rank': avg_position,
+            'median_rank': median_position,
             'percentile': percentile,
             'appearances': len(positions),
             'best_rank': min(positions),
@@ -732,10 +735,12 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
     attack_type_stats = []
     for attack_type, positions in attack_type_rankings.items():
         avg_position = sum(positions) / len(positions)
-        percentile = (avg_position / total_builds) * 100
+        median_position = statistics.median(positions)
+        percentile = (median_position / total_builds) * 100
         attack_type_stats.append({
             'name': attack_type,
             'avg_rank': avg_position,
+            'median_rank': median_position,
             'percentile': percentile,
             'appearances': len(positions),
             'best_rank': min(positions),
@@ -746,61 +751,63 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
     combo_stats = []
     for combo_name, positions in combo_rankings.items():
         avg_position = sum(positions) / len(positions)
-        percentile = (avg_position / total_builds) * 100
+        median_position = statistics.median(positions)
+        percentile = (median_position / total_builds) * 100
         combo_stats.append({
             'name': combo_name,
             'avg_rank': avg_position,
+            'median_rank': median_position,
             'percentile': percentile,
             'appearances': len(positions),
             'best_rank': min(positions),
             'worst_rank': max(positions)
         })
 
-    # Sort by average rank (lower is better)
-    enhancement_stats.sort(key=lambda x: x['avg_rank'])
-    attack_type_stats.sort(key=lambda x: x['avg_rank'])
-    combo_stats.sort(key=lambda x: x['avg_rank'])
+    # Sort by median rank (lower is better)
+    enhancement_stats.sort(key=lambda x: x['median_rank'])
+    attack_type_stats.sort(key=lambda x: x['median_rank'])
+    combo_stats.sort(key=lambda x: x['median_rank'])
 
     # Write the report
     with open(f'{reports_dir}/enhancement_ranking_report.txt', 'w', encoding='utf-8') as f:
         f.write("VITALITY SYSTEM - ENHANCEMENT & ATTACK TYPE RANKING REPORT\n")
         f.write("="*80 + "\n\n")
-        f.write("This report shows enhancement (upgrade & limit) and attack type performance based on average ranking\n")
+        f.write("This report shows enhancement (upgrade & limit) and attack type performance based on median ranking\n")
         f.write("positions across all tested builds. Lower percentiles indicate better performance.\n")
         f.write(f"Total builds tested: {total_builds}\n\n")
 
         # Enhancement Rankings Section
-        f.write("ENHANCEMENT RANKINGS BY AVERAGE POSITION\n")
-        f.write("-" * 80 + "\n")
-        f.write(f"{'Rank':<4} {'Enhancement':<25} {'Avg Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
-        f.write("-" * 80 + "\n")
+        f.write("ENHANCEMENT RANKINGS BY MEDIAN POSITION\n")
+        f.write("-" * 95 + "\n")
+        f.write(f"{'Rank':<4} {'Enhancement':<25} {'Avg Rank':<10} {'Med Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
+        f.write("-" * 95 + "\n")
 
         for i, stats in enumerate(enhancement_stats, 1):
             f.write(f"{i:<4} {stats['name']:<25} {stats['avg_rank']:>8.1f} "
-                   f"{stats['percentile']:>9.1f}% {stats['appearances']:>4} "
+                   f"{stats['median_rank']:>8.1f} {stats['percentile']:>9.1f}% {stats['appearances']:>4} "
                    f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
 
         # Attack Type Rankings Section
-        f.write(f"\n\nATTACK TYPE RANKINGS BY AVERAGE POSITION\n")
-        f.write("-" * 80 + "\n")
-        f.write(f"{'Rank':<4} {'Attack Type':<25} {'Avg Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
-        f.write("-" * 80 + "\n")
+        f.write(f"\n\nATTACK TYPE RANKINGS BY MEDIAN POSITION\n")
+        f.write("-" * 95 + "\n")
+        f.write(f"{'Rank':<4} {'Attack Type':<25} {'Avg Rank':<10} {'Med Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
+        f.write("-" * 95 + "\n")
 
         for i, stats in enumerate(attack_type_stats, 1):
             f.write(f"{i:<4} {stats['name']:<25} {stats['avg_rank']:>8.1f} "
-                   f"{stats['percentile']:>9.1f}% {stats['appearances']:>4} "
+                   f"{stats['median_rank']:>8.1f} {stats['percentile']:>9.1f}% {stats['appearances']:>4} "
                    f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
 
         # Combo Rankings Section (if any combos found)
         if combo_stats:
-            f.write(f"\n\nSPECIFIC UPGRADE COMBO RANKINGS BY AVERAGE POSITION\n")
-            f.write("-" * 90 + "\n")
-            f.write(f"{'Rank':<4} {'Upgrade Combo':<35} {'Avg Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
-            f.write("-" * 90 + "\n")
+            f.write(f"\n\nSPECIFIC UPGRADE COMBO RANKINGS BY MEDIAN POSITION\n")
+            f.write("-" * 105 + "\n")
+            f.write(f"{'Rank':<4} {'Upgrade Combo':<35} {'Avg Rank':<10} {'Med Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
+            f.write("-" * 105 + "\n")
 
             for i, stats in enumerate(combo_stats, 1):
                 f.write(f"{i:<4} {stats['name']:<35} {stats['avg_rank']:>8.1f} "
-                       f"{stats['percentile']:>9.1f}% {stats['appearances']:>4} "
+                       f"{stats['median_rank']:>8.1f} {stats['percentile']:>9.1f}% {stats['appearances']:>4} "
                        f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
 
         # Percentile Explanation
@@ -1358,6 +1365,90 @@ def generate_individual_report(build: AttackBuild, config: SimulationConfig, rep
     print(f"Individual build report saved to {reports_dir}/{filename}")
 
 
+def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig, reports_dir: str = "reports"):
+    """Write a builds table with average turns until defeat as the main metric"""
+    if not builds:
+        print("No builds to analyze for turns table.")
+        return
+
+    # Calculate turns until defeat for each build
+    build_results = []
+    for build in builds[:100]:  # Show top 100 builds
+        total_turns = 0
+        total_dpt = 0
+        total_configs = 0
+
+        for att_config in config.attacker_configs:
+            for def_config in config.defender_configs:
+                attacker = Character(*att_config)
+                defender = Character(*def_config)
+
+                _, avg_turns, dpt = run_simulation_batch(
+                    attacker, build, config.build_testing_runs, config.target_hp, defender)
+
+                total_turns += avg_turns
+                total_dpt += dpt
+                total_configs += 1
+
+        avg_turns = total_turns / total_configs if total_configs > 0 else 0
+        avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
+        build_results.append((build, avg_turns, avg_dpt))
+
+    # Sort by average turns (lower is better)
+    build_results.sort(key=lambda x: x[1])
+
+    # Write the results
+    with open(f'{reports_dir}/builds_turns_table.txt', 'w', encoding='utf-8') as f:
+        f.write("VITALITY SYSTEM - BUILDS PERFORMANCE TABLE\n")
+        f.write("="*80 + "\n\n")
+        f.write("Builds ranked by average turns until defeat (lower = faster kills)\n")
+        f.write(f"Total builds analyzed: {len(build_results)}\n\n")
+
+        # Header
+        f.write(f"{'Rank':<5} {'Avg Turns':<10} {'DPT':<8} {'Attack Type':<15} {'Upgrades & Limits':<40}\n")
+        f.write("-" * 80 + "\n")
+
+        # Build entries
+        for i, (build, avg_turns, avg_dpt) in enumerate(build_results, 1):
+            # Format enhancements (upgrades + limits)
+            enhancements = []
+            if build.upgrades:
+                enhancements.extend(build.upgrades)
+            if build.limits:
+                enhancements.extend(build.limits)
+
+            enhancements_str = ", ".join(enhancements) if enhancements else "Base"
+            if len(enhancements_str) > 40:
+                enhancements_str = enhancements_str[:37] + "..."
+
+            f.write(f"{i:<5} {avg_turns:<10.2f} {avg_dpt:<8.1f} {build.attack_type:<15} {enhancements_str:<40}\n")
+
+        # Summary statistics
+        f.write(f"\n\nSUMMARY STATISTICS\n")
+        f.write("-" * 40 + "\n")
+        all_turns = [x[1] for x in build_results]
+        f.write(f"Fastest kill time: {min(all_turns):.2f} turns\n")
+        f.write(f"Slowest kill time: {max(all_turns):.2f} turns\n")
+        f.write(f"Average kill time: {sum(all_turns)/len(all_turns):.2f} turns\n")
+        f.write(f"Median kill time: {statistics.median(all_turns):.2f} turns\n")
+
+        # Top 10 fastest builds
+        f.write(f"\n\nTOP 10 FASTEST BUILDS\n")
+        f.write("-" * 40 + "\n")
+        for i, (build, avg_turns, avg_dpt) in enumerate(build_results[:10], 1):
+            enhancements = []
+            if build.upgrades:
+                enhancements.extend(build.upgrades)
+            if build.limits:
+                enhancements.extend(build.limits)
+            enhancements_str = ", ".join(enhancements) if enhancements else "Base"
+
+            f.write(f"{i}. {build.attack_type} ({avg_turns:.2f} turns, {avg_dpt:.1f} DPT)\n")
+            f.write(f"   Enhancements: {enhancements_str}\n\n")
+
+    print(f"Builds turns table saved to {reports_dir}/builds_turns_table.txt")
+
+
 def write_build_summary(builds: List[AttackBuild], config: SimulationConfig, reports_dir: str = "reports"):
     """Write a summary of the top builds to file"""
     if not builds:
@@ -1480,27 +1571,29 @@ def write_attack_type_enhancement_ranking_report(all_build_results: List[Tuple],
             total_attack_type_builds = len(attack_type_builds)
             for enhancement_name, positions in enhancement_rankings.items():
                 avg_position = sum(positions) / len(positions)
-                percentile = (avg_position / total_attack_type_builds) * 100
+                median_position = statistics.median(positions)
+                percentile = (median_position / total_attack_type_builds) * 100
                 enhancement_stats.append({
                     'name': enhancement_name,
                     'avg_rank': avg_position,
+                    'median_rank': median_position,
                     'percentile': percentile,
                     'appearances': len(positions),
                     'best_rank': min(positions),
                     'worst_rank': max(positions)
                 })
 
-            enhancement_stats.sort(key=lambda x: x['avg_rank'])
+            enhancement_stats.sort(key=lambda x: x['median_rank'])
 
-            # 1. RANKINGS BY AVERAGE POSITION
-            f.write(f"ENHANCEMENT RANKINGS BY AVERAGE POSITION - {attack_type.upper()}\n")
-            f.write("-" * 80 + "\n")
-            f.write(f"{'Rank':<4} {'Enhancement':<25} {'Avg Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
-            f.write("-" * 80 + "\n")
+            # 1. RANKINGS BY MEDIAN POSITION
+            f.write(f"ENHANCEMENT RANKINGS BY MEDIAN POSITION - {attack_type.upper()}\n")
+            f.write("-" * 95 + "\n")
+            f.write(f"{'Rank':<4} {'Enhancement':<25} {'Avg Rank':<10} {'Med Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
+            f.write("-" * 95 + "\n")
 
             for i, stats in enumerate(enhancement_stats, 1):
                 f.write(f"{i:<4} {stats['name']:<25} {stats['avg_rank']:>8.1f} "
-                       f"{stats['percentile']:>9.1f}% {stats['appearances']:>4} "
+                       f"{stats['median_rank']:>8.1f} {stats['percentile']:>9.1f}% {stats['appearances']:>4} "
                        f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
 
             # 2. COST-EFFECTIVENESS RANKINGS
@@ -1596,27 +1689,29 @@ def write_attack_type_limit_ranking_report(all_build_results: List[Tuple], limit
             total_attack_type_builds = len(attack_type_builds)
             for limit_name, positions in limit_rankings.items():
                 avg_position = sum(positions) / len(positions)
-                percentile = (avg_position / total_attack_type_builds) * 100
+                median_position = statistics.median(positions)
+                percentile = (median_position / total_attack_type_builds) * 100
                 limit_stats.append({
                     'name': limit_name,
                     'avg_rank': avg_position,
+                    'median_rank': median_position,
                     'percentile': percentile,
                     'appearances': len(positions),
                     'best_rank': min(positions),
                     'worst_rank': max(positions)
                 })
 
-            limit_stats.sort(key=lambda x: x['avg_rank'])
+            limit_stats.sort(key=lambda x: x['median_rank'])
 
-            # 1. RANKINGS BY AVERAGE POSITION
-            f.write(f"LIMIT RANKINGS BY AVERAGE POSITION - {attack_type.upper()}\n")
-            f.write("-" * 80 + "\n")
-            f.write(f"{'Rank':<4} {'Limit':<25} {'Avg Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
-            f.write("-" * 80 + "\n")
+            # 1. RANKINGS BY MEDIAN POSITION
+            f.write(f"LIMIT RANKINGS BY MEDIAN POSITION - {attack_type.upper()}\n")
+            f.write("-" * 95 + "\n")
+            f.write(f"{'Rank':<4} {'Limit':<25} {'Avg Rank':<10} {'Med Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
+            f.write("-" * 95 + "\n")
 
             for i, stats in enumerate(limit_stats, 1):
                 f.write(f"{i:<4} {stats['name']:<25} {stats['avg_rank']:>8.1f} "
-                       f"{stats['percentile']:>9.1f}% {stats['appearances']:>4} "
+                       f"{stats['median_rank']:>8.1f} {stats['percentile']:>9.1f}% {stats['appearances']:>4} "
                        f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
 
             # 2. COST-EFFECTIVENESS RANKINGS
@@ -2146,9 +2241,9 @@ class IndividualReportGenerator:
             # Generate attack-type-specific upgrade/limit tables
             TableGenerator.format_attack_type_specific_upgrade_tables(upgrade_limit_data, self.reports_dir)
 
-        # Generate detailed combat logs
-        if self.individual_config.get('detailed_combat_logs', True):
-            self._generate_detailed_combat_logs()
+        # Generate detailed combat logs - DISABLED
+        # if self.individual_config.get('detailed_combat_logs', True):
+        #     self._generate_detailed_combat_logs()
 
         # Generate enhanced individual reports
         if self.config.reports.get('individual_reports', {}).get('enhanced_analysis', True):
@@ -2160,8 +2255,8 @@ class IndividualReportGenerator:
         """Generate enhanced individual analysis reports"""
         print("Generating enhanced individual analysis reports...")
 
-        self.generate_build_recommendation_engine()
-        self.generate_build_comparison_tool()
+        # DISABLED: self.generate_build_recommendation_engine()
+        # DISABLED: self.generate_build_comparison_tool()
 
     def generate_build_recommendation_engine(self):
         """Generate build recommendations based on player preferences"""
@@ -2986,6 +3081,7 @@ class BuildReportGenerator:
             # Extract builds from (build, avg_dpt) tuples
             builds_only = [build for build, _ in all_build_results]
             write_build_summary(builds_only, self.config, self.reports_dir)
+            write_builds_turns_table(builds_only, self.config, self.reports_dir)
 
         if self.config.reports.get('build_reports', {}).get('upgrade_analysis', True):
             generate_upgrade_ranking_report(all_build_results, self.config, self.reports_dir)
@@ -2993,9 +3089,9 @@ class BuildReportGenerator:
         if self.config.reports.get('build_reports', {}).get('cost_effectiveness', True):
             generate_upgrade_pairing_report(all_build_results, self.config, self.reports_dir)
 
-        # Generate new archetype analysis reports
-        if self.config.reports.get('build_reports', {}).get('archetype_analysis', True):
-            self.generate_archetype_analysis_reports(all_build_results)
+        # Generate new archetype analysis reports - DISABLED
+        # if self.config.reports.get('build_reports', {}).get('archetype_analysis', True):
+        #     self.generate_archetype_analysis_reports(all_build_results)
 
         # Generate tactical analysis reports
         if self.config.reports.get('build_reports', {}).get('tactical_analysis', True):
@@ -3262,7 +3358,7 @@ class BuildReportGenerator:
                 # Category stats
                 if builds:
                     avg_dpt_cat = sum(b[1] for b in builds[:10]) / min(10, len(builds))
-                    avg_cost_cat = sum(b.total_cost for b in builds[:10]) / min(10, len(builds))
+                    avg_cost_cat = sum(b[0].total_cost for b in builds[:10]) / min(10, len(builds))
                     f.write(f"Average DPT (top 10): {avg_dpt_cat:.2f}\n")
                     f.write(f"Average Cost (top 10): {avg_cost_cat:.1f} points\n")
 
