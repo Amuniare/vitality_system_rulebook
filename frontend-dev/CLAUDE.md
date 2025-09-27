@@ -10,7 +10,7 @@ This is the `frontend-dev` development environment for the Vitality System - a c
 
 ### Local Development
 ```bash
-# Serve the application locally from project root
+# Serve the application locally from frontend-dev directory
 python -m http.server 8080
 # Access at: http://localhost:8080/character-builder/character-builder.html
 ```

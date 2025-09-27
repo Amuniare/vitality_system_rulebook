@@ -17,17 +17,17 @@
 
 **Explosive Critical**  
 Cost: 40p
-Effect: Hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them  
-Restriction: Must take **Critical Accuracy**
+Effect: Critical hit on 15-20 instead of just 20, Hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them  
 Exclusion: Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical  
-
-**Culling Strike**  
-Cost: 20p
-Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead  
 Restriction: Cannot apply to AOE attacks  
 
+**Culling Strike**  
+Cost: 10p
+Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead  
+
+
 **Splinter**  
-Cost: 40p
+Cost: 20p
 Effect: Defeating enemy triggers another attack against new target before turn ends  
 Chain Limit: Maximum Tier/2 additional attacks (rounded up)  
 Restriction: Cannot apply to AOE attacks  
@@ -36,7 +36,7 @@ Restriction: Cannot apply to AOE attacks
 **Cooldown** 
 Cost: 20p
 Limit: Cannot use again for 3 turns after use
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy and Damage
 
 
 

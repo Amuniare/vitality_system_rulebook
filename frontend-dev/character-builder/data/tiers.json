@@ -1,48 +1,40 @@
 {
-  "tiers": {
+  "levels": {
     "0": {
       "name": "Untrained",
-      "description": "A civilian with no special training or powers. The baseline for an ordinary person."
+      "description": "A civilian with no special training or powers. Basic capabilities with +2 tier bonus.",
+      "tierBonus": 2,
+      "boons": 0
     },
     "1": {
       "name": "Beginner",
-      "description": "Just starting out on their journey. Has potential but lacks significant experience."
+      "description": "Just starting out on their journey. Standard starting level for player characters.",
+      "tierBonus": 3,
+      "boons": 1
     },
     "2": {
       "name": "Novice",
-      "description": "Has learned the basics and can handle minor threats."
+      "description": "Has learned the basics and can handle minor threats.",
+      "tierBonus": 3,
+      "boons": 2
     },
     "3": {
       "name": "Developing",
-      "description": "Actively gaining experience and developing their core abilities."
+      "description": "Actively gaining experience and developing their core abilities.",
+      "tierBonus": 4,
+      "boons": 3
     },
     "4": {
       "name": "Competent",
-      "description": "A reliable and capable individual. This is the standard starting tier for player characters."
+      "description": "A reliable and capable individual with solid expertise.",
+      "tierBonus": 4,
+      "boons": 4
     },
     "5": {
       "name": "Professional",
-      "description": "A seasoned individual with a solid reputation and a professional level of skill."
-    },
-    "6": {
-      "name": "Expert",
-      "description": "Highly skilled and recognized as an authority in their field."
-    },
-    "7": {
-      "name": "Veteran",
-      "description": "Has seen extensive action and has a wealth of practical experience."
-    },
-    "8": {
-      "name": "Elite",
-      "description": "Among the best in the world, operating at the highest levels of performance."
-    },
-    "9": {
-      "name": "Master",
-      "description": "Has achieved a state of mastery that pushes the boundaries of their abilities."
-    },
-    "10": {
-      "name": "Legendary",
-      "description": "A figure of legend whose deeds and power are known far and wide."
+      "description": "A seasoned individual with advanced skills and professional expertise.",
+      "tierBonus": 5,
+      "boons": 5
     }
   }
 }

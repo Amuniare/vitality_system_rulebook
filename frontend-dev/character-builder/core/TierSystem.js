@@ -10,23 +10,22 @@ export class TierSystem {
     // Get tier description
     static getTierDescription(tier) {
         const descriptions = {
-            1: "Novice - Learning the basics",
-            2: "Developing - Gaining experience", 
-            3: "Competent - Reliable performer",
-            4: "Professional - Starting expertise",
-            5: "Veteran - Seasoned professional",
-            6: "Expert - Highly skilled",
-            7: "Elite - Top tier performer",
-            8: "Master - Peak human ability",
-            9: "Legendary - Beyond normal limits",
-            10: "World-class Expert - Absolute pinnacle"
+            0: "Untrained - Basic civilian capabilities",
+            1: "Beginner - Just starting out",
+            2: "Novice - Learning the basics",
+            3: "Developing - Gaining experience",
+            4: "Competent - Reliable performer",
+            5: "Professional - Advanced expertise"
         };
         return descriptions[tier] || "Unknown";
     }
     
-    // Calculate tier bonus to all actions
+    // Calculate tier bonus to all actions using tier-to-tier bonus mapping
     static getTierBonus(tier) {
-        return this.isValidTier(tier) ? tier : 0;
+        if (!this.isValidTier(tier)) {
+            return 0;
+        }
+        return GameConstants.TIER_BONUS_LOOKUP[tier] || 0;
     }
     
     // Calculate attribute maximums based on tier
@@ -151,15 +150,16 @@ export class TierSystem {
     
     // Get tier progression effects
     static getTierEffects(tier) {
+        const tierBonus = this.getTierBonus(tier);
         return {
-            bonusToAllActions: tier,
+            bonusToAllActions: tierBonus,
             maxAttributeRank: tier,
             combatAttributePoints: tier * 2,
             utilityAttributePoints: tier,
-            mainPoolPoints: Math.max(0, (tier - 2) * 15),
+            mainPoolPoints: tier,
             utilityPoolPoints: Math.max(0, 5 * (tier - 1)),
             baseHP: this.calculateBaseHP(tier),
-            initiativeBonus: tier
+            initiativeBonus: tierBonus
         };
     }
 }

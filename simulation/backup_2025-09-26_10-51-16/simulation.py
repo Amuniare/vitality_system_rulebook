@@ -51,6 +51,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
     turns = 0
     charge_history = []  # Track charging actions: True = charged, False = attacked
+    cooldown_history = {}  # Track when limits with cooldowns were last used
 
     while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
         turns += 1
@@ -132,7 +133,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             # Use the AOE attack function for proper shared damage rolls
             attack_results, total_damage_dealt = make_aoe_attack(
                 attacker, defender, build, alive_enemies, log_file=log_file,
-                turn_number=turns, charge_history=charge_history
+                turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history
             )
 
             # Check if we got a charge condition instead of attack results
@@ -161,6 +162,14 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                                 log_file.write(f"     FINISHING BLOW! Enemy {target_idx+1} at {enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
                             enemy['hp'] = 0  # Enemy is defeated
 
+                    # Check for culling strike after damage is applied
+                    if 'culling_strike' in conditions and enemy['hp'] > 0:  # Only check if enemy still alive
+                        culling_threshold = enemy['max_hp'] // 5  # 1/5 of maximum HP
+                        if enemy['hp'] <= culling_threshold:
+                            if log_file:
+                                log_file.write(f"     CULLING STRIKE! Enemy {target_idx+1} at {enemy['hp']} HP (≤{culling_threshold}, 1/5 of {enemy['max_hp']}) - DEFEATED!\n")
+                            enemy['hp'] = 0  # Enemy is defeated
+
                     # Apply conditions to this enemy
                     if 'bleed' in conditions:
                         old_bleed_count = len(enemy['bleed_stacks'])
@@ -171,9 +180,45 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             if old_bleed_count > 0:
                                 log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
 
+                # Check for splinter effects after all damage processing
+                splinter_attacks = 0
+                max_splinter_attacks = attacker.tier // 2 if attacker.tier % 2 == 0 else (attacker.tier + 1) // 2  # Tier/2 rounded up
+                enemies_defeated_this_attack = [i for i, enemy in enumerate(enemies) if enemy['hp'] <= 0 and enemy['max_hp'] > 0]
+
+                for target_idx, damage, conditions in attack_results:
+                    if 'splinter' in conditions and target_idx in enemies_defeated_this_attack and splinter_attacks < max_splinter_attacks:
+                        # Find next alive enemy for splinter attack
+                        next_target = None
+                        next_target_idx = None
+                        for i, enemy in enumerate(enemies):
+                            if enemy['hp'] > 0 and i != target_idx:
+                                next_target = enemy
+                                next_target_idx = i
+                                break
+
+                        if next_target:
+                            splinter_attacks += 1
+                            if log_file:
+                                log_file.write(f"     SPLINTER! Enemy {target_idx+1} defeated, attacking Enemy {next_target_idx+1} (attack {splinter_attacks}/{max_splinter_attacks})\n")
+
+                            # Make splinter attack (single target, not AOE)
+                            splinter_damage, splinter_conditions = make_attack(attacker, defender, build, log_file=log_file,
+                                                                              turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history)
+                            next_target['hp'] -= splinter_damage
+                            total_damage_dealt += splinter_damage
+
+                            # Apply splinter attack conditions
+                            if 'bleed' in splinter_conditions:
+                                old_bleed_count = len(next_target['bleed_stacks'])
+                                bleed_damage = max(0, splinter_damage - attacker.tier)
+                                next_target['bleed_stacks'] = [(bleed_damage, 2)]
+                                if log_file:
+                                    log_file.write(f"     BLEED APPLIED to Enemy {next_target_idx+1}: {bleed_damage} damage for 2 turns\n")
+
                 if log_file:
                     log_file.write(f"\n  AOE ATTACK SUMMARY:\n")
                     log_file.write(f"    Enemies hit: {enemies_hit if enemies_hit else 'None'}\n")
+                    log_file.write(f"    Splinter attacks: {splinter_attacks}\n")
                     log_file.write(f"    Total damage dealt: {total_damage_dealt}\n")
 
         else:
@@ -191,7 +236,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     log_file.write(f"  Single target attack on Enemy {target_idx+1}\n")
 
                 damage, conditions = make_attack(attacker, defender, build, log_file=log_file,
-                                                turn_number=turns, charge_history=charge_history)
+                                                turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history)
 
                 # Check if we got a charge condition instead of doing damage
                 if damage == 0 and 'charge' in conditions:
@@ -217,6 +262,14 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                                 log_file.write(f"     FINISHING BLOW! Enemy {target_idx+1} at {target_enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
                             target_enemy['hp'] = 0  # Enemy is defeated
 
+                    # Check for culling strike after damage is applied
+                    if 'culling_strike' in conditions and target_enemy['hp'] > 0:  # Only check if enemy still alive
+                        culling_threshold = target_enemy['max_hp'] // 5  # 1/5 of maximum HP
+                        if target_enemy['hp'] <= culling_threshold:
+                            if log_file:
+                                log_file.write(f"     CULLING STRIKE! Enemy {target_idx+1} at {target_enemy['hp']} HP (≤{culling_threshold}, 1/5 of {target_enemy['max_hp']}) - DEFEATED!\n")
+                            target_enemy['hp'] = 0  # Enemy is defeated
+
                     # Apply conditions to target
                     if 'bleed' in conditions:
                         old_bleed_count = len(target_enemy['bleed_stacks'])
@@ -226,6 +279,50 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             log_file.write(f"     BLEED APPLIED to Enemy {target_idx+1}: {bleed_damage} damage for 2 turns (reduced from {damage} by tier {attacker.tier})\n")
                             if old_bleed_count > 0:
                                 log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
+
+                    # Check for splinter effects if target was defeated
+                    if 'splinter' in conditions and target_enemy['hp'] <= 0:
+                        splinter_attacks = 0
+                        max_splinter_attacks = attacker.tier // 2 if attacker.tier % 2 == 0 else (attacker.tier + 1) // 2  # Tier/2 rounded up
+
+                        while splinter_attacks < max_splinter_attacks:
+                            # Find next alive enemy for splinter attack
+                            next_target = None
+                            next_target_idx = None
+                            for i, enemy in enumerate(enemies):
+                                if enemy['hp'] > 0:
+                                    next_target = enemy
+                                    next_target_idx = i
+                                    break
+
+                            if not next_target:
+                                break  # No more alive enemies
+
+                            splinter_attacks += 1
+                            if log_file:
+                                log_file.write(f"     SPLINTER! Enemy {target_idx+1} defeated, attacking Enemy {next_target_idx+1} (attack {splinter_attacks}/{max_splinter_attacks})\n")
+
+                            # Make splinter attack
+                            splinter_damage, splinter_conditions = make_attack(attacker, defender, build, log_file=log_file,
+                                                                              turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history)
+                            next_target['hp'] -= splinter_damage
+                            total_damage_dealt += splinter_damage
+
+                            # Apply splinter attack conditions
+                            if 'bleed' in splinter_conditions:
+                                old_bleed_count = len(next_target['bleed_stacks'])
+                                bleed_damage = max(0, splinter_damage - attacker.tier)
+                                next_target['bleed_stacks'] = [(bleed_damage, 2)]
+                                if log_file:
+                                    log_file.write(f"     BLEED APPLIED to Enemy {next_target_idx+1}: {bleed_damage} damage for 2 turns\n")
+
+                            # Check if this splinter attack also defeated an enemy (recursive splinter)
+                            if next_target['hp'] <= 0:
+                                if log_file:
+                                    log_file.write(f"     Splinter attack defeated Enemy {next_target_idx+1}!\n")
+                                # Continue the loop to potentially trigger more splinter attacks
+                            else:
+                                break  # Splinter chain ends if enemy not defeated
 
         # Update charge history: True if charged this turn, False if attacked
         charge_history.append(charged_this_turn)

@@ -15,6 +15,7 @@
 
 | Level | Tier Bonus | Number of Boons |
 |-------|------------|------------------|
+| Level 0 | +2 Tier Bonus | 0 Boon |
 | Level 1 | +3 Tier Bonus | 1 Boon |
 | Level 2 | +3 Tier Bonus | 2 Boons |
 | Level 3 | +4 Tier Bonus | 3 Boons |

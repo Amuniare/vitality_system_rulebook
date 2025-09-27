@@ -39,7 +39,7 @@
     ]
   ],
   "simulation_runs": {
-    "build_testing_runs": 10,
+    "build_testing_runs": 2,
     "individual_testing_runs": 20
   },
   "combat": {

@@ -170,7 +170,7 @@ class LoggingManager:
                 defender = Character(*def_config)
                 test_cases.append((f"Att{i+1}_Def{j+1}", attacker, defender))
 
-        for build_idx, (build, avg_dpt) in enumerate(top_builds):
+        for build_idx, (build, avg_dpt, avg_turns) in enumerate(top_builds):
             self.log_build_start(build_idx, build, 'top_builds')
 
             for case_name, attacker, defender in test_cases:
@@ -228,8 +228,8 @@ class LoggingManager:
             log_file.write(f"TOP {summary_count} PERFORMING BUILDS\n")
             log_file.write(f"{'='*80}\n")
 
-            for i, (build, avg_dpt) in enumerate(build_results[:summary_count], 1):
-                log_file.write(f"{i:2d}. {build} | DPT: {avg_dpt:.1f}\n")
+            for i, (build, avg_dpt, avg_turns) in enumerate(build_results[:summary_count], 1):
+                log_file.write(f"{i:2d}. {build} | DPT: {avg_dpt:.1f} | TTK: {avg_turns:.1f}\n")
 
     def generate_individual_build_log(self, build: Any, build_index: int,
                                     build_results: Dict[str, Any]):

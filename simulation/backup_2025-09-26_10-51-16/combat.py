@@ -49,7 +49,7 @@ def roll_3d6_exploding_5_6() -> Tuple[int, List[str]]:
 
 def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild,
                    targets: List[Tuple[int, dict]], log_file=None, turn_number: int = 1,
-                   charge_history: List[bool] = None) -> Tuple[List[Tuple[int, int, List[str]]], int]:
+                   charge_history: List[bool] = None, cooldown_history: dict = None) -> Tuple[List[Tuple[int, int, List[str]]], int]:
     """Make an AOE attack against multiple targets with shared damage roll
 
     Returns:
@@ -68,7 +68,7 @@ def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild
     # Do a test attack to see if we need to charge instead
     test_damage, test_conditions = make_attack(attacker, defender, build, log_file=None,
                                              turn_number=turn_number, charge_history=charge_history,
-                                             is_aoe=False, aoe_damage_roll=None)
+                                             is_aoe=False, aoe_damage_roll=None, cooldown_history=cooldown_history)
 
     # If we got a charge condition, return it for all targets
     if test_damage == 0 and 'charge' in test_conditions:
@@ -100,7 +100,7 @@ def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild
         # All targets use the shared dice roll
         damage, conditions = make_attack(attacker, defender, build, log_file=log_file,
                                        turn_number=turn_number, charge_history=charge_history,
-                                       is_aoe=True, aoe_damage_roll=shared_dice_roll)
+                                       is_aoe=True, aoe_damage_roll=shared_dice_roll, cooldown_history=cooldown_history)
 
         results.append((target_idx, damage, conditions))
         total_damage += damage
@@ -109,18 +109,18 @@ def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild
 
 
 def make_single_attack_damage(attacker: Character, defender: Character, build: AttackBuild,
-                             log_file, turn_number: int = 1, charge_history: List[bool] = None) -> int:
+                             log_file, turn_number: int = 1, charge_history: List[bool] = None, cooldown_history: dict = None) -> int:
     """Make a single attack and return only damage (for multi-attacks)"""
     damage, _ = make_attack(attacker, defender, build, allow_multi=False,
                            log_file=log_file, turn_number=turn_number, charge_history=charge_history,
-                           is_aoe=False, aoe_damage_roll=None)
+                           is_aoe=False, aoe_damage_roll=None, cooldown_history=cooldown_history)
     return damage
 
 
 def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                allow_multi: bool = True, log_file=None, turn_number: int = 1,
                charge_history: List[bool] = None, is_aoe: bool = False,
-               aoe_damage_roll: Tuple[int, List[str]] = None) -> Tuple[int, List[str]]:
+               aoe_damage_roll: Tuple[int, List[str]] = None, cooldown_history: dict = None) -> Tuple[int, List[str]]:
     """Make one attack and return damage dealt and conditions applied
 
     For AOE attacks:
@@ -144,7 +144,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             return 0, []  # Attack fails - not first round
         elif limit_name == 'steady' and turn_number < 3:
             if log_file:
-                log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 4+)\n")
+                log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 3+)\n")
             return 0, []  # Attack fails - too early
         elif limit_name == 'patient' and turn_number < 5:
             if log_file:
@@ -154,6 +154,21 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if log_file:
                 log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 8+)\n")
             return 0, []  # Attack fails - too early
+        elif limit_name == 'cooldown':
+            # Check if cooldown is still active
+            if cooldown_history is None:
+                cooldown_history = {}
+            last_used = cooldown_history.get('cooldown', -999)
+            turns_since_use = turn_number - last_used
+            if turns_since_use <= 3:
+                if log_file:
+                    log_file.write(f"      {limit_name} failed: still on cooldown (used on turn {last_used}, need 3 turns, currently turn {turn_number})\n")
+                return 0, []  # Attack fails - still on cooldown
+            else:
+                # Mark that cooldown was used this turn
+                cooldown_history['cooldown'] = turn_number
+                if log_file:
+                    log_file.write(f"      {limit_name} activated (last used on turn {last_used}, now used on turn {turn_number})\n")
 
         # Check charge up limits
         elif limit_name == 'charge_up':
@@ -236,7 +251,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             accuracy_roll = roll_d20()
 
         # Check for critical hit
-        if 'critical_accuracy' in build.upgrades and accuracy_roll >= 15:
+        has_crit_accuracy = 'critical_accuracy' in build.upgrades or 'double_tap' in build.upgrades or 'powerful_critical' in build.upgrades or 'explosive_critical' in build.upgrades
+        if has_crit_accuracy and accuracy_roll >= 15:
             is_critical = True
         elif accuracy_roll == 20:  # Natural 20 is always critical
             is_critical = True
@@ -375,8 +391,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if is_critical:
                 # Base critical hit bonus
                 critical_damage_bonus = attacker.tier
-                # Additional bonus if they have powerful condition critical
-                if 'powerful_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
+                # Additional bonus if they have powerful critical (which includes critical_accuracy)
+                if 'powerful_critical' in build.upgrades:
                     critical_damage_bonus += attacker.tier
 
             damage = dice_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus
@@ -429,7 +445,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                     log_file.write(f"      Slayer bonus: +{slayer_damage_bonus} [{slayer_type} vs {defender.max_hp}HP]\n")
 
                 if critical_damage_bonus > 0:
-                    if 'powerful_critical' in build.upgrades and 'critical_accuracy' in build.upgrades:
+                    if 'powerful_critical' in build.upgrades:
                         log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit +{attacker.tier} + Powerful Critical +{attacker.tier}]\n")
                     else:
                         log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit]\n")
@@ -480,6 +496,14 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if finishing_threshold > 0:
             conditions_applied.append(f'finishing_{finishing_threshold}')
 
+        # Handle culling strike (defeat if below 1/5 max HP)
+        if 'culling_strike' in build.upgrades:
+            conditions_applied.append('culling_strike')
+
+        # Handle splinter (triggers another attack if enemy is defeated)
+        if 'splinter' in build.upgrades:
+            conditions_applied.append('splinter')
+
     # Handle multiple attacks - Quick Strikes makes all attacks regardless of hit/miss
     # Handle Quick Strikes (make 2 attacks total regardless of success)
     if allow_multi and ('quick_strikes' in build.upgrades):
@@ -490,18 +514,25 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         extra_damage = 0
         if log_file:
             log_file.write(f"        Additional attack 1:\n")
-        extra = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
+        extra = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history)
         extra_damage += extra
         damage_dealt += extra_damage
         if log_file:
             log_file.write(f"      Total with quick strikes: {damage_dealt} damage\n")
 
 
-    # Handle double-tap (15-20 triggers same attack again)
-    if allow_multi and 'double_tap' in build.upgrades and 'critical_accuracy' in build.upgrades and accuracy_roll >= 15:
+    # Handle explosive critical (15-20 triggers attack against all enemies in range)
+    if allow_multi and 'explosive_critical' in build.upgrades and accuracy_roll >= 15:
+        if log_file:
+            log_file.write(f"      Explosive Critical triggered! (explosive attacks not implemented in single-target context)\n")
+        # Note: Explosive Critical mechanics would need multi-enemy context to fully implement
+        # For now, we mark that it triggered but don't apply area damage in single-target simulation
+
+    # Handle double-tap (15-20 triggers same attack again) - double_tap includes critical_accuracy
+    if allow_multi and 'double_tap' in build.upgrades and accuracy_roll >= 15:
         if log_file:
             log_file.write(f"      Double-Tap triggered! Making identical attack:\n")
-        extra_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
+        extra_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history)
         damage_dealt += extra_damage
         if log_file:
             log_file.write(f"      Total with double-tap: {damage_dealt} damage\n")
@@ -510,7 +541,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     if allow_multi and 'extra_attack' in build.upgrades and damage_dealt > 0 and len(conditions_applied) > 0:
         if log_file:
             log_file.write(f"      Extra Attack triggered! (hit + effect success)\n")
-        extra_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
+        extra_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history)
         damage_dealt += extra_damage
         if log_file:
             log_file.write(f"      Total with extra attack: {damage_dealt} damage\n")
@@ -520,14 +551,14 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if log_file:
             log_file.write(f"      Barrage - first attack succeeded, attempting second attack:\n")
         # Second attack
-        second_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
+        second_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history)
         damage_dealt += second_damage
 
         # If second attack also hit and caused an effect, attempt third attack
         if second_damage > 0:  # Simplified: if damage was dealt, assume hit + effect
             if log_file:
                 log_file.write(f"      Barrage - second attack succeeded, attempting third attack:\n")
-            third_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
+            third_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history)
             damage_dealt += third_damage
             if log_file:
                 log_file.write(f"      Total with barrage (3 attacks): {damage_dealt} damage\n")

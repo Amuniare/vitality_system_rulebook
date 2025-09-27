@@ -32,6 +32,7 @@ class AttackType:
     damage_mod: int = 0
     is_direct: bool = False
     direct_damage_base: int = 0
+    is_area: bool = False
 
 
 @dataclass
@@ -216,17 +217,17 @@ class AttackBuild:
 
         cost = ATTACK_TYPES[self.attack_type].cost
 
+        # AOE builds pay double for upgrades and limits
+        is_aoe_build = self.attack_type in ['area', 'direct_area_damage']
+        aoe_multiplier = 2 if is_aoe_build else 1
+
         for upgrade in self.upgrades:
             if upgrade in UPGRADES:
-                cost += UPGRADES[upgrade].cost
-
-        # AOE builds pay double for limits
-        is_aoe_build = self.attack_type in ['area', 'direct_area_damage']
-        limit_multiplier = 2 if is_aoe_build else 1
+                cost += UPGRADES[upgrade].cost * aoe_multiplier
 
         for limit in self.limits:
             if limit in LIMITS:
-                cost += LIMITS[limit].cost * limit_multiplier
+                cost += LIMITS[limit].cost * aoe_multiplier
 
         return cost
 

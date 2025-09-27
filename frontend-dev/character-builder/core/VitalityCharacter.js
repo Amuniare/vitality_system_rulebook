@@ -10,7 +10,7 @@ export class VitalityCharacter {
         this.playerName = "";
         this.characterType = "player_character";
         this.characterSubType = null; // For "other" category characters
-        this.tier = 4; // Starting tier
+        this.tier = 1; // Starting level (Level 1 = default starting point)
         this.folderId = folderId;
         this.version = "2.2-action-rework"; // Version bump for new system
         this.created = new Date().toISOString();

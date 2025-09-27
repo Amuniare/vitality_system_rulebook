@@ -1,10 +1,20 @@
 
 // GameConstants.js - All game constants and formulas
 export const GameConstants = {
-    // Tier System
-    TIER_MIN: 1,
-    TIER_MAX: 10,
-    STARTING_TIER: 4,
+    // Level System (was Tier System)
+    TIER_MIN: 0,
+    TIER_MAX: 5,
+    STARTING_TIER: 1,
+
+    // Level-to-Tier Bonus Mapping
+    TIER_BONUS_LOOKUP: {
+        0: 2,  // Level 0: +2 Tier Bonus, 0 Boons
+        1: 3,  // Level 1: +3 Tier Bonus, 1 Boon
+        2: 3,  // Level 2: +3 Tier Bonus, 2 Boons
+        3: 4,  // Level 3: +4 Tier Bonus, 3 Boons
+        4: 4,  // Level 4: +4 Tier Bonus, 4 Boons
+        5: 5   // Level 5: +5 Tier Bonus, 5 Boons
+    },
     
     // Point Pool Formulas
     COMBAT_ATTRIBUTES_MULTIPLIER: 2,
