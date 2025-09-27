@@ -106,19 +106,6 @@ Core build analysis and ranking reports.
   - Cost-effectiveness rankings
   - Absolute DPT improvement rankings
 
-#### `limit_ranking_by_attack_type.txt`
-**Purpose**: Limit-specific rankings broken down by attack types
-**Content**:
-- Risk/reward analysis for unreliable limits
-- Turn-based limit effectiveness analysis
-- Performance across different combat length scenarios
-
-#### `combo_performance_summary.txt`
-**Purpose**: Analysis of specific upgrade combinations
-**Generated when**: Combo testing enabled
-**Content**:
-- Performance of predefined upgrade combinations
-- Synergy identification and analysis
 
 ### 3. Diagnostic & Verification Reports (5 reports)
 Technical verification and mechanics testing reports.
@@ -158,64 +145,7 @@ Technical verification and mechanics testing reports.
 - Turn-based limit effectiveness in various combat lengths
 - Comprehensive tactical analysis
 
-### 4. Advanced Tactical Reports (8 reports)
-Strategic analysis and tactical guidance reports.
 
-#### `archetype_multi_target_specialists.txt`
-**Purpose**: Builds optimized for group combat scenarios
-**Content**:
-- Builds excelling against 2×50, 4×25, 10×10 HP enemies
-- Multi-target performance scoring
-- AOE archetype analysis and insights
-
-#### `archetype_single_target_specialists.txt`
-**Purpose**: Builds optimized for boss fights and high-HP enemies
-**Content**:
-- Builds excelling against 1×100 HP scenarios
-- Single-target performance analysis
-- Boss encounter optimization strategies
-
-#### `archetype_balanced_builds.txt`
-**Purpose**: Builds performing consistently across all scenarios
-**Content**:
-- Balance scoring based on low variance and high overall performance
-- Common characteristics of versatile builds
-- Upgrade frequency analysis for balanced performance
-
-#### `archetype_risk_reward_analysis.txt`
-**Purpose**: Build reliability and risk analysis
-**Content**:
-- Risk category distribution (No Risk, Low Risk, Medium Risk, High Risk)
-- Performance comparison across risk levels
-- Risk premium analysis and recommendations
-
-#### `tactical_upgrade_synergy_matrix.txt`
-**Purpose**: Upgrade combination synergy analysis
-**Content**:
-- Expected vs actual performance for upgrade pairs
-- Positive and negative synergy identification
-- Common synergy patterns and insights
-
-#### `tactical_scenario_deep_dive.txt`
-**Purpose**: Scenario-specific tactical analysis
-**Content**:
-- What makes builds effective in specific scenarios
-- Top builds per scenario with success factor analysis
-- Tactical recommendations and common mistakes
-
-#### `tactical_attack_type_viability.txt`
-**Purpose**: Attack type selection guide
-**Content**:
-- Comprehensive viability assessment for each attack type
-- Detailed strengths, weaknesses, and use cases
-- Situational recommendations for attack type selection
-
-#### `tactical_point_efficiency_analysis.txt`
-**Purpose**: Point spending optimization guide
-**Content**:
-- Optimal upgrade spending patterns for different budgets
-- Efficiency analysis by cost brackets (Budget, Standard, Premium, Luxury)
-- Diminishing returns analysis and optimization strategies
 
 ### 5. Individual & Comparative Reports (4+ reports)
 
@@ -247,16 +177,7 @@ Strategic analysis and tactical guidance reports.
 - Top 5 recommendations per attack type
 - Only shows compatible upgrades/limits
 
-#### `build_recommendation_engine.txt`
-**Purpose**: Build recommendations by playstyle
-**Generated when**: `enhanced_analysis` enabled
-**Content**:
-- Beginner-friendly builds (reliable, consistent performance)
-- Competitive builds (high-performance for experienced players)
-- Swarm hunter builds (multi-enemy specialists)
-- Boss killer builds (single-target specialists)
-- High-risk high-reward builds (unreliable but powerful)
-- Point-efficient builds (maximum performance per point)
+
 
 #### `build_comparison_tool.txt`
 **Purpose**: Side-by-side build analysis

@@ -1,0 +1,65 @@
+[
+    {
+        "id": "slow",
+        "name": "Slow",
+        "cost": 1,
+        "description": "No Movement Archetype",
+        "restriction": "Cannot select any movement archetype."
+    },
+    {
+        "id": "frail",
+        "name": "Frail",
+        "cost": 1,
+        "description": "No Defensive Archetype",
+        "restriction": "Cannot select any defensive archetype."
+    },
+    {
+        "id": "combatFocused",
+        "name": "Combat Focused",
+        "cost": 1,
+        "description": "No Utility abilities",
+        "restriction": "Cannot purchase utility abilities."
+    },
+    {
+        "id": "sickly",
+        "name": "Sickly",
+        "cost": 1,
+        "description": "Maximum Health Pool reduced by 30",
+        "restriction": "Permanent -30 HP reduction."
+    },
+    {
+        "id": "peaked",
+        "name": "Peaked",
+        "cost": 1,
+        "description": "Cannot use Efforts",
+        "restriction": "No effort system access."
+    },
+    {
+        "id": "powerLoss",
+        "name": "Power Loss",
+        "cost": 1,
+        "description": "Lose powers under specific circumstances (discuss with GM)",
+        "restriction": "Conditional power loss."
+    },
+    {
+        "id": "cursed",
+        "name": "Cursed",
+        "cost": 1,
+        "description": "Roll a d20 at the start of each turn, on a 1-3, you are stunned.",
+        "restriction": "Random stun chance each turn."
+    },
+    {
+        "id": "glassCannon",
+        "name": "Glass Cannon",
+        "cost": 1,
+        "description": "Subtract your Tier to DR or AV (chosen when purchased), cannot purchase AV or DR with this Passive Bonus",
+        "restriction": "Reduced defense, cannot stack defensive purchases."
+    },
+    {
+        "id": "straightforward",
+        "name": "Straightforward",
+        "cost": 1,
+        "description": "Choose one Limit, you must put that limit on all your attacks, you cannot be a Focused Attacker archetype.",
+        "restriction": "Mandatory limit on all attacks, archetype restriction."
+    }
+]

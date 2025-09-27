@@ -1,9 +1,9 @@
 {
   "execution_mode": "both",
-  "max_points": 80,
+  "max_points": 70,
   "use_threading": true,
-  "verbose_logging": false,
-  "top_builds_count": 20,
+  "verbose_logging": true,
+  "top_builds_count": 100,
   "min_dpt_threshold": 0.0,
   "build_chunk_size": 2000,
   "attacker_configs": [
@@ -39,11 +39,11 @@
     ]
   ],
   "simulation_runs": {
-    "build_testing_runs": 15,
-    "individual_testing_runs": 25
+    "build_testing_runs": 10,
+    "individual_testing_runs": 20
   },
   "combat": {
-    "max_turns": 50,
+    "max_turns": 25,
     "safety_limit": 100
   },
   "individual_testing": {
@@ -83,13 +83,13 @@
       "cost_effectiveness": true,
       "percentile_analysis": true,
       "archetype_analysis": true,
-      "tactical_analysis": false
+      "tactical_analysis": true
     }
   },
   "logging": {
     "separate_files": true,
     "log_top_builds_only": true,
-    "top_builds_for_detailed_log": 5,
-    "generate_individual_build_logs": false
+    "top_builds_for_detailed_log": 100,
+    "generate_individual_build_logs": true
   }
 }

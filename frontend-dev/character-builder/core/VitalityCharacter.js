@@ -50,8 +50,8 @@ export class VitalityCharacter {
         // Main Pool Purchases (after attributes)
         this.mainPoolPurchases = {
             boons: [], // Various costs from main pool
-            traits: [], // 30p each, conditional bonuses
-            flaws: [] // Give 30p each, restrictions
+            conditionalBonuses: [], // New: 1p each, simple 1 condition + 2 stats
+            flaws: [] // Passive bonuses: cost 1p each, provide stat bonuses
         };
 
         
@@ -147,7 +147,7 @@ export class VitalityCharacter {
         
         // Check main pool completion (any purchases made OR explicitly marked complete)
         const hasMainPoolPurchases = this.mainPoolPurchases.boons.length > 0 ||
-                                    this.mainPoolPurchases.traits.length > 0 ||
+                                    (this.mainPoolPurchases.conditionalBonuses && this.mainPoolPurchases.conditionalBonuses.length > 0) ||
                                     this.mainPoolPurchases.flaws.length > 0;
         // For now, allow special attacks if any main pool purchases exist OR if attributes are complete
         this.buildState.mainPoolComplete = hasMainPoolPurchases || this.buildState.attributesComplete;

@@ -10,12 +10,12 @@ export class TierSystem {
     // Get tier description
     static getTierDescription(tier) {
         const descriptions = {
-            0: "Untrained - Basic civilian capabilities",
-            1: "Beginner - Just starting out",
-            2: "Novice - Learning the basics",
-            3: "Developing - Gaining experience",
-            4: "Competent - Reliable performer",
-            5: "Professional - Advanced expertise"
+            0: "Basic civilian capabilities",
+            1: "Just starting out",
+            2: "Learning the basics",
+            3: "Gaining experience",
+            4: "Reliable performer",
+            5: "Advanced expertise"
         };
         return descriptions[tier] || "Unknown";
     }
@@ -52,7 +52,7 @@ export class TierSystem {
     static calculateBaseMovement(tier, mobility) {
         return Math.max(
             mobility + GameConstants.BASE_MOVEMENT_BONUS,
-            mobility + tier
+            mobility + tier + tier
         );
     }
     

@@ -36,8 +36,8 @@ ATTACK_TYPES = {
     'melee_dg': melee with +Tier damage bonus, adjacent only
     'ranged': no bonuses
     'area': -Tier accuracy and damage penalty
-    'direct_damage': flat (14-Tier) damage, no roll
-    'direct_area_damage': flat (14-2×Tier) damage, no roll
+    'direct_damage': flat (15-Tier) damage, no roll
+    'direct_area_damage': flat (15-2×Tier) damage, no roll
 }
 ```
 
@@ -47,24 +47,26 @@ ATTACK_TYPES = {
 - **Power Attack** (5p): +Tier damage, -Tier accuracy
 - **High Impact** (10p): Flat 15 damage instead of 3d6 roll
 - **Critical Effect** (10p): Dice explode on 5-6 instead of just 6, -2 damage penalty
-- **Armor Piercing** (10p): Ignore endurance portion of durability
-- **Brutal** (10p): Extra damage when exceeding DR by 10+ (50% of excess)
+- **Armor Piercing** (30p): Ignore endurance portion of durability
+- **Brutal** (20p): Extra damage when exceeding DR by 10+ (50% of excess)
 - **Accurate Attack** (5p): +Tier accuracy, -Tier damage
 
 #### Multi-Attack Upgrades
 - **Quick Strikes** (20p): Attack 2 times (non-AOE attacks only), -Tier accuracy and damage per attack
-- **Extra Attack** (20p): Make identical attack when hit + effect succeeds
+- **Extra Attack** (30p): Make identical attack when hit + effect succeeds
 - **Barrage** (30p): Chain attacks - hit + effect on each attack enables the next attack, up to 3 attacks total, -Tier accuracy and damage per attack (non-AOE attacks only)
 - **Double Tap** (30p): Make identical attack on critical hit (15-20 with Critical Accuracy)
 
 #### Condition & Effect Upgrades
-- **Bleed** (10p): Target takes same damage for next 2 turns (replaces existing bleed)
+- **Bleed** (30p): Target takes same damage for next 2 turns (replaces existing bleed)
 - **Critical Accuracy** (10p): Critical hit on 15-20 instead of just 20
 - **Powerful Critical** (20p): Critical hit on 15-20 instead of just 20; +Tier bonus to Damage and Condition rolls on critical hits
 - **Double Tap** (20p): Critical hit on 15-20 instead of just 20; if crit, attack again, effect only occurs once.
-
+- **Explosive Critical** (60p): Critical hit on 15-20 instead of just 20; on critical hit, attack triggers against all enemies in range, 2sp (AOE effect)
 - **Reliable Accuracy** (10p): Roll with advantage, -3 penalty to all Accuracy rolls
 - **Overhit** (20p): +1 damage per 2 points exceeding avoidance by 5+
+- **Culling Strike** (10p): If target is at or below 1/5 of their maximum HP after attack, they are immediately defeated
+- **Splinter** (40p): If this attack defeats an enemy, immediately make an identical attack against another target in range
 
 #### Finishing Blow Upgrades
 - **Finishing Blow**: If attack reduces enemy to (5 × rank) HP or below, enemy is defeated instead. Cannot apply to AOE attacks.
@@ -88,6 +90,11 @@ ATTACK_TYPES = {
 - **Quickdraw** (30p): +2×Tier to Accuracy and Damage, turns 1-2 only
 - **Steady** (20p): +1×Tier to Accuracy and Damage, turn 3 or later
 - **Patient** (20p): +1×Tier to Accuracy and Damage, turn 5 or later
-- **Finale** (10p): +3×Tier to Accuracy and Damage, turn 8 or later
+- **Finale** (10p): +2×Tier to Accuracy and Damage, turn 7 or later
 - **Charge Up** (20p): +2×Tier to Accuracy and Damage, spend action on previous turn
 - **Charge Up 2** (20p): +3×Tier to Accuracy and Damage, spend actions on previous two turns
+- **Cooldown** (20p): +1×Tier to Accuracy and Damage, cannot be used again for 3 turns after activation
+
+
+
+

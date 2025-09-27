@@ -37,7 +37,7 @@ export class PointPoolCalculator {
             // Special attack pools (calculated per attack)
             specialAttackPools: this.calculateSpecialAttackPools(character),
             
-            // Flaw bonuses - UPDATED FOR NEW ECONOMICS
+            // Passive bonus bonuses - UPDATED FOR NEW ECONOMICS
             flawBonuses: this.calculateFlawBonuses(character),
             
             // Total available
@@ -86,17 +86,19 @@ export class PointPoolCalculator {
     // UNIFIED: Main pool spending calculation (replaces duplicates)
     static calculateMainPoolSpent(character) {
         let spent = 0;
-        
+
         // Boons cost points
         spent += character.mainPoolPurchases.boons.reduce((sum, boon) => sum + (boon.cost || 0), 0);
-        
-        // Traits cost points
-        spent += character.mainPoolPurchases.traits.reduce((sum, trait) => sum + (trait.cost || 0), 0);
-        
-        // NEW ECONOMICS: Flaws now COST points (major change)
-        spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 30), 0);
-        
-        
+
+        // Conditional bonuses cost points
+        if (character.mainPoolPurchases.conditionalBonuses) {
+            spent += character.mainPoolPurchases.conditionalBonuses.reduce((sum, bonus) => sum + (bonus.cost || 1), 0);
+        }
+
+        // NEW ECONOMICS: Passive bonuses now COST points (major change)
+        spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 1), 0);
+
+
         return spent;
     }
     
@@ -241,9 +243,9 @@ export class PointPoolCalculator {
         return methods[archetype] || 'Unknown method';
     }
     
-    // NEW ECONOMICS: Flaw bonuses calculation (flaws now cost points but give stat bonuses)
+    // NEW ECONOMICS: Passive bonus bonuses calculation (passive bonuses now cost points but give stat bonuses)
     static calculateFlawBonuses(character) {
-        // In new economics, flaws don't give point bonuses - they give stat bonuses instead
+        // In new economics, passive bonuses don't give point bonuses - they give stat bonuses instead
         // This method now returns 0 but we keep it for backwards compatibility
         return 0;
     }

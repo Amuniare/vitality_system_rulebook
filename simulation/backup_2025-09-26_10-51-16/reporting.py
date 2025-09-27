@@ -2351,9 +2351,8 @@ class IndividualReportGenerator:
             # Generate attack-type-specific upgrade/limit tables
             TableGenerator.format_attack_type_specific_upgrade_tables(upgrade_limit_data, self.reports_dir)
 
-        # Generate detailed combat logs - DISABLED
-        # if self.individual_config.get('detailed_combat_logs', True):
-        #     self._generate_detailed_combat_logs()
+        if self.individual_config.get('detailed_combat_logs', True):
+            self._generate_detailed_combat_logs()
 
         # Generate enhanced individual reports
         if self.config.reports.get('individual_reports', {}).get('enhanced_analysis', True):
@@ -2365,8 +2364,8 @@ class IndividualReportGenerator:
         """Generate enhanced individual analysis reports"""
         print("Generating enhanced individual analysis reports...")
 
-        # DISABLED: self.generate_build_recommendation_engine()
-        # DISABLED: self.generate_build_comparison_tool()
+        self.generate_build_recommendation_engine()
+        self.generate_build_comparison_tool()
 
     def generate_build_recommendation_engine(self):
         """Generate build recommendations based on player preferences"""
@@ -3199,9 +3198,8 @@ class BuildReportGenerator:
         if self.config.reports.get('build_reports', {}).get('cost_effectiveness', True):
             generate_upgrade_pairing_report(all_build_results, self.config, self.reports_dir)
 
-        # Generate new archetype analysis reports - DISABLED
-        # if self.config.reports.get('build_reports', {}).get('archetype_analysis', True):
-        #     self.generate_archetype_analysis_reports(all_build_results)
+        if self.config.reports.get('build_reports', {}).get('archetype_analysis', True):
+            self.generate_archetype_analysis_reports(all_build_results)
 
         # Generate tactical analysis reports
         if self.config.reports.get('build_reports', {}).get('tactical_analysis', True):
@@ -3968,8 +3966,8 @@ class BuildReportGenerator:
         elif "10×10" in scenario_name:
             return [(build, dpt * 1.5) for build, dpt, avg_turns in all_build_results[:10] if 'area' in build.attack_type]
         else:
-            return all_build_results[:10]
-
+            return [(build, dpt) for build, dpt, avg_turns in all_build_results[:10]]
+        
     def _analyze_scenario_success_factors(self, successful_builds, scenario_name):
         """Analyze what makes builds successful in a scenario"""
         factors = {

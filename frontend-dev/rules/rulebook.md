@@ -576,7 +576,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Upgrades:**
   - **Re-Summon:** It takes a Free Action to summon your Companion, you may do this twice per rest
   - **Special:** Companion(s), gain a boon, which you may spend on them, but all Companions must take the same boon
-  - **Horde:** Add an additional set of Companion(s)
+  - **Horde(2 boons):** Add an additional set of Companion(s)
 
 ### **INVISIBILITY**
 *Advanced concealment ability*

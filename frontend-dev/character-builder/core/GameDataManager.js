@@ -17,10 +17,11 @@ class GameDataManager {
             basicConditions: 'data/conditions_basic.json',
             advancedConditions: 'data/conditions_advanced.json',
 
-            // Traits & Flaws
-            availableFlaws: 'data/flaws.json',
-            genericStatOptions: 'data/stat_options_generic.json', // Used by both flaws and traits
+            // Traits & Passive Bonuses
+            availablePassiveBonuses: 'data/passive_bonuses.json',
+            genericStatOptions: 'data/stat_options_generic.json', // Used by both passive bonuses and traits
             traitConditionTiers: 'data/trait_conditions.json',
+            conditionalBonuses: 'data/conditional_bonuses.json',
 
             // Utility System
             expertiseCategories: 'data/expertise.json',
@@ -120,9 +121,12 @@ class GameDataManager {
     getBasicConditions() { return this._getData('basicConditions', []); }
     getAdvancedConditions() { return this._getData('advancedConditions', []); }
 
-    getAvailableFlaws() { return this._getData('availableFlaws', []); }
-    getGenericStatOptions() { return this._getData('genericStatOptions', []); } // For flaws and traits
+    getAvailablePassiveBonuses() { return this._getData('availablePassiveBonuses', []); }
+    // Backward compatibility method for existing code
+    getAvailableFlaws() { return this.getAvailablePassiveBonuses(); }
+    getGenericStatOptions() { return this._getData('genericStatOptions', []); } // For passive bonuses and traits
     getTraitConditionTiers() { return this._getData('traitConditionTiers', {}); }
+    getConditionalBonuses() { return this._getData('conditionalBonuses', []); }
 
     getExpertiseCategories() { return this._getData('expertiseCategories', {}); }
     getAvailableFeatures() { return this._getData('availableFeatures', {}); }

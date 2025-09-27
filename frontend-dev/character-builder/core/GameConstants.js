@@ -106,8 +106,9 @@ export const GameConstants = {
     },
     
     // Ability Costs
-    TRAIT_COST: 30,
-    FLAW_BONUS: 30,
+    TRAIT_COST: 1,
+    PASSIVE_BONUS_COST: 1,
+    FLAW_BONUS: 1, // Backward compatibility
     
     // Utility Costs
     EXPERTISE_ACTIVITY_BASIC: 2,

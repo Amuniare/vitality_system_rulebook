@@ -1,0 +1,194 @@
+[
+    {
+        "id": "rooted",
+        "name": "Rooted",
+        "description": "Cannot move this turn",
+        "cost": 1
+    },
+    {
+        "id": "longDistanceFighter",
+        "name": "Long Distance Fighter",
+        "description": "No enemies within 5 spaces",
+        "cost": 1
+    },
+    {
+        "id": "unhealthy1",
+        "name": "Unhealthy 1",
+        "description": "25+ points below max HP",
+        "cost": 1
+    },
+    {
+        "id": "irregular1",
+        "name": "Irregular 1",
+        "description": "Roll d20, DC 5 to activate each turn",
+        "cost": 1
+    },
+    {
+        "id": "vengeful",
+        "name": "Vengeful",
+        "description": "Been hit since last turn",
+        "cost": 1
+    },
+    {
+        "id": "careful",
+        "name": "Careful",
+        "description": "Not damaged since last turn",
+        "cost": 1
+    },
+    {
+        "id": "passive",
+        "name": "Passive",
+        "description": "Not attacked since last turn",
+        "cost": 1
+    },
+    {
+        "id": "steady",
+        "name": "Steady",
+        "description": "Turn 3 or later",
+        "cost": 1
+    },
+    {
+        "id": "relentless",
+        "name": "Relentless",
+        "description": "Dealt damage to enemy last turn",
+        "cost": 1
+    },
+    {
+        "id": "overwhelm",
+        "name": "Overwhelm",
+        "description": "Dealt damage to enemy this turn",
+        "cost": 1
+    },
+    {
+        "id": "infection",
+        "name": "Infection",
+        "description": "Applied Condition this turn",
+        "cost": 1
+    },
+    {
+        "id": "infected",
+        "name": "Infected",
+        "description": "Applied Condition last turn",
+        "cost": 1
+    },
+    {
+        "id": "temporary3",
+        "name": "Temporary 3",
+        "description": "Activate for 3 turns, recharges after 1 minute rest",
+        "cost": 1
+    },
+    {
+        "id": "timid",
+        "name": "Timid",
+        "description": "At max HP with no conditions",
+        "cost": 1
+    },
+    {
+        "id": "revenge",
+        "name": "Revenge",
+        "description": "Been damaged since last turn",
+        "cost": 1
+    },
+    {
+        "id": "unbreakable",
+        "name": "Unbreakable",
+        "description": "Been hit but took no damage since last turn",
+        "cost": 1
+    },
+    {
+        "id": "unhealthy2",
+        "name": "Unhealthy 2",
+        "description": "75+ points below max HP",
+        "cost": 1
+    },
+    {
+        "id": "untouchable",
+        "name": "Untouchable",
+        "description": "All attacks missed since last turn",
+        "cost": 1
+    },
+    {
+        "id": "slaughter",
+        "name": "Slaughter",
+        "description": "Defeated enemy last turn",
+        "cost": 1
+    },
+    {
+        "id": "onslaught",
+        "name": "Onslaught",
+        "description": "Defeated enemy this turn",
+        "cost": 1
+    },
+    {
+        "id": "patient",
+        "name": "Patient",
+        "description": "Turn 5 or later",
+        "cost": 1
+    },
+    {
+        "id": "temporary2",
+        "name": "Temporary 2",
+        "description": "Activate for 2 turns, recharges after 1 minute rest",
+        "cost": 1
+    },
+    {
+        "id": "quickdraw",
+        "name": "Quickdraw",
+        "description": "First 2 rounds of combat",
+        "cost": 1
+    },
+    {
+        "id": "temporary1",
+        "name": "Temporary 1",
+        "description": "Activate for 1 turn, recharges after 1 minute rest",
+        "cost": 1
+    },
+    {
+        "id": "irregular2",
+        "name": "Irregular 2",
+        "description": "Roll d20, DC 10 to activate each turn",
+        "cost": 1
+    },
+    {
+        "id": "nearDeath",
+        "name": "Near Death",
+        "description": "At 0 Hit Points",
+        "cost": 1
+    },
+    {
+        "id": "dangerous",
+        "name": "Dangerous",
+        "description": "No allies within 15 spaces, no civilians within 30 spaces",
+        "cost": 1
+    },
+    {
+        "id": "avenger",
+        "name": "Avenger",
+        "description": "Ally unconscious or great peril occurred",
+        "cost": 1
+    },
+    {
+        "id": "environment",
+        "name": "Environment",
+        "description": "Specific locations (electricity, water, urban, forest)",
+        "cost": 1
+    },
+    {
+        "id": "time",
+        "name": "Time",
+        "description": "Specific times (night, full moon, day)",
+        "cost": 1
+    },
+    {
+        "id": "weather",
+        "name": "Weather",
+        "description": "Specific weather (stormy, sunny, cloudy)",
+        "cost": 1
+    },
+    {
+        "id": "descriptor",
+        "name": "Descriptor",
+        "description": "Specific damage types (hit with energy)",
+        "cost": 1
+    }
+]
