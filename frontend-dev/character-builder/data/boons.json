@@ -1,0 +1,59 @@
+[
+    {
+        "id": "psychic",
+        "name": "Psychic",
+        "cost": 0,
+        "description": "All conditions you inflict target Resolve resistance",
+        "effect": "condition_targeting_resolve",
+        "category": "supernatural"
+    },
+    {
+        "id": "robot",
+        "name": "Robot",
+        "cost": 30,
+        "description": "Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity",
+        "effect": "condition_immunity_tech_vulnerability",
+        "category": "construct"
+    },
+    {
+        "id": "telekinetic",
+        "name": "Telekinetic",
+        "cost": 0,
+        "description": "All conditions you inflict target Stability resistance",
+        "effect": "condition_targeting_stability",
+        "category": "supernatural"
+    },
+    {
+        "id": "biohacker",
+        "name": "Biohacker",
+        "cost": 0,
+        "description": "All conditions you inflict target Vitality resistance",
+        "effect": "condition_targeting_vitality",
+        "category": "supernatural"
+    },
+    {
+        "id": "utilitarian",
+        "name": "Utilitarian",
+        "cost": 15,
+        "description": "Gain 5 extra points for Expertise, Features, Senses, and Descriptors",
+        "effect": "utility_point_bonus",
+        "category": "enhancement",
+        "bonus": { "utilityPoints": 5 }
+    },
+    {
+        "id": "perfectionist",
+        "name": "Perfectionist",
+        "cost": 15,
+        "description": "Reroll any natural 1s on d20 rolls",
+        "effect": "reroll_ones",
+        "category": "enhancement"
+    },
+    {
+        "id": "combatReflexes",
+        "name": "Combat Reflexes",
+        "cost": 15,
+        "description": "Gain additional Reaction per turn",
+        "effect": "extra_reaction",
+        "category": "enhancement"
+    }
+]

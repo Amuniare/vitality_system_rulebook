@@ -1,0 +1,90 @@
+{
+  "combat": [
+    {
+      "id": "focus",
+      "name": "Focus",
+      "category": "combat",
+      "flavor": "Aim true, act fast.",
+      "description": "Represents your character's precision, fighting skill, and mental fortitude.",
+      "mechanics": [
+        "Improves `Accuracy` for all attacks.",
+        "Increases `Initiative`, helping you act sooner in combat.",
+        "Boosts `Resolve` score against mental and psychic effects."
+      ]
+    },
+    {
+      "id": "mobility",
+      "name": "Mobility",
+      "category": "combat",
+      "flavor": "Can't hit what isn't there.",
+      "description": "Governs physical agility, speed, and evasiveness. It determines how well you move and position yourself in combat.",
+      "mechanics": [
+        "Increases your base `Movement` speed.",
+        "Boosts `Avoidance` score, making you harder to hit with attacks.",
+        "Improves `Initiative`, contributing to your reaction time."
+      ]
+    },
+    {
+      "id": "power",
+      "name": "Power",
+      "category": "combat",
+      "flavor": "Hit hard, leave a mark.",
+      "description": "The raw force of your abilities, whether physical, psychic, or supernatural. It is the primary stat for inflicting harm and control.",
+      "mechanics": [
+        "Directly increases your base `Damage` (multiplied by 1.5).",
+        "Boosts your `Conditions` check for applying status effects.",
+        "Increases `Stability` score against physical effects like shoves and grabs."
+      ]
+    },
+    {
+      "id": "endurance",
+      "name": "Endurance",
+      "category": "combat",
+      "flavor": "Outlast them all.",
+      "description": "Represents physical resilience, stamina, and the ability to withstand punishment and shrug off debilitating effects.",
+      "mechanics": [
+        "Significantly boosts `Durability`, reducing all incoming damage.",
+        "Increases `Vitality` score against biological or draining effects.",
+        "Contributes to your maximum Health Pool through the Survival Check."
+      ]
+    }
+  ],
+  "utility": [
+    {
+      "id": "awareness",
+      "name": "Awareness",
+      "category": "utility",
+      "flavor": "Nothing escapes your notice.",
+      "description": "Represents your perception, intuition, and ability to notice subtle details and react to hidden dangers. Awareness players will have an easier time picking up on things already set in the narrative, such as finding hidden information.",
+      "mechanics": [
+        "Improves `Initiative`, representing your alertness at the start of combat.",
+        "The core stat for all `Perception`, `Tracking`, and `Sense Motive` skill checks.",
+        "Used to detect hidden enemies, find clues, and avoid ambushes."
+      ]
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "category": "utility",
+      "flavor": "Words are your sharpest weapon.",
+      "description": "The ability to effectively influence, deceive, inspire, or intimidate others through social interaction and force of personality. Communication players are able to better shape the narrative to their goals, such as persuading a truce between two warring factions.",
+      "mechanics": [
+        "Governs all social skill checks like `Persuasion`, `Deception`, and `Intimidation`.",
+        "Can be used to de-escalate conflicts, gather information without force, or lead a team.",
+        "Determines the effectiveness of social-based conditions like `Taunt` or `Enthrall`."
+      ]
+    },
+    {
+      "id": "intelligence",
+      "name": "Intelligence",
+      "category": "utility",
+      "flavor": "Knowledge is power.",
+      "description": "Represents logic, reasoning, memory, and the ability to analyze information and solve complex problems. Intelligence players are able to unlock paths previously inaccessible, such as hacking into a database to add the party to the guest list.",
+      "mechanics": [
+        "Governs all `Knowledge`, `Crafting`, `Research`, and `Strategy` checks.",
+        "Used to identify enemy weaknesses, create or disable technology, and decipher codes.",
+        "Crucial for using complex `Features` like `Inventor` or `Ritualist`."
+      ]
+    }
+  ]
+}

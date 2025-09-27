@@ -1,0 +1,114 @@
+{
+  "tier5": {
+    "cost": 5,
+    "descriptors": [
+      {
+        "id": "fire",
+        "name": "Fire",
+        "description": " Utility Applications: Make Intelligence checks to forge materials without tools, melt locks, create emergency lighting, or purify contaminated substances through controlled burning \\n Environmental Control: Make Intelligence checks to regulate temperature in buildings, melt ice barriers, or create smoke signals visible for miles \\n Detection: Make Awareness checks to sense heat sources through walls, track warmblooded creatures, or identify recent fires \\n Crafting: Make Intelligence checks to work glass, ceramics, or metals with precision using controlled flame \\n Resistance: Immune to heatbased damage and environmental effects from extreme temperatures",
+        "category": "Elemental"
+      },
+      {
+        "id": "water",
+        "name": "Water",
+        "description": " Utility Applications: Make Intelligence checks to purify contaminated water sources, create ice tools/weapons, or navigate underwater environments \\n Environmental Control: Make Intelligence checks to create fog banks for concealment, redirect waterways, or cause/stop precipitation \\n Detection: Make Awareness checks to locate water sources underground, sense moisture levels, or track creatures through wet environments \\n Life Support: Make Intelligence checks to extract moisture from air in deserts or create breathable air pockets underwater \\n Resistance: Immune to drowning and pressure effects underwater",
+        "category": "Elemental"
+      },
+      {
+        "id": "earth",
+        "name": "Earth",
+        "description": " Utility Applications: Make Intelligence checks to locate mineral deposits, create stone tools/barriers, or navigate underground \\n Environmental Control: Make Intelligence checks to create earthquakes, shape landscape, or reinforce structures \\n Detection: Make Awareness checks to sense vibrations through the ground, locate underground spaces, or identify geological instabilities \\n Construction: Make Intelligence checks to shape stone into precise architectural forms or create permanent fortifications \\n Resistance: Immune to crushing damage and effects from unstable terrain",
+        "category": "Elemental"
+      },
+      {
+        "id": "air",
+        "name": "Air",
+        "description": " Utility Applications: Make Intelligence checks to create updrafts for assisted flight, carry messages via wind, or clear toxic gases \\n Environmental Control: Make Intelligence checks to create localized weather patterns, disperse crowds with wind, or amplify/muffle sounds \\n Detection: Make Awareness checks to track scents across great distances, overhear distant conversations, or sense air pressure changes \\n Navigation: Make Awareness checks to determine wind patterns for sailing/flying or predict weather changes \\n Resistance: Immune to suffocation and airborne toxins",
+        "category": "Elemental"
+      },
+      {
+        "id": "lightning",
+        "name": "Lightning",
+        "description": " Utility Applications: Make Intelligence checks to power electronic devices, create precise electrical discharges, or generate electromagnetic fields \\n Environmental Control: Make Intelligence checks to disrupt electronics, create localized storms, or generate light displays \\n Detection: Make Awareness checks to sense electrical activity, track electronic devices, or identify electrical malfunctions \\n Communication: Make Intelligence checks to transmit messages through electrical networks or interfere with communications \\n Resistance: Immune to electrical damage and electromagnetic interference",
+        "category": "Elemental"
+      },
+      {
+        "id": "ice",
+        "name": "Ice",
+        "description": " Utility Applications: Make Intelligence checks to preserve materials indefinitely, create precise ice constructs, or generate subzero environments \\n Environmental Control: Make Intelligence checks to freeze liquids instantly, create slippery surfaces, or generate protective barriers \\n Detection: Make Awareness checks to sense temperature variations, track warm creatures in cold environments, or identify frozen substances \\n Construction: Make Intelligence checks to create temporary ice structures or reinforce existing materials with ice \\n Resistance: Immune to cold damage and hypothermia effects",
+        "category": "Elemental"
+      },
+      {
+        "id": "kinetic",
+        "name": "Kinetic",
+        "description": " Combat Enhancement: Enhance the force of moving objects, turning a pebble into a deadly projectile or a thrown spear into a devastating missile \\n Movement: Ignore impediments like mud, snow, or rubble, maintaining momentum without slowing \\n Defense: Absorb kinetic energy from impacts and transfer it elsewhere, such as reversing the force back to an attacker \\n Mobility: Defy gravity temporarily, running on walls or maintaining footing on impossibly narrow surfaces \\n Resistance: Immune to falling damage and impactbased effects",
+        "category": "Energy"
+      },
+      {
+        "id": "plasma",
+        "name": "Plasma",
+        "description": " Environmental Control: Surround yourself with glowing plasma, providing light and damaging nearby enemies with searing heat \\n Detection: Detect the presence of plasma generators, power sources, or active weapons within a wide radius \\n Utility Applications: Manipulate plasmalike materials to weld, seal, or fuse objects permanently \\n Energy Mastery: Make Intelligence checks to generate controlled plasma discharges or manipulate existing plasma fields \\n Resistance: Withstand highenergy environments, including intense radiation or plasma discharges",
+        "category": "Energy"
+      },
+      {
+        "id": "biological",
+        "name": "Biological",
+        "description": " Regeneration: Heal from significant injuries and lost limbs or organs relatively quickly \\n Toxin Mastery: Identify, neutralize, or create potent toxins and antidotes instinctively. Highly resistant to toxins, diseases, and biological effects \\n Animal Connection: Form deep connections with animals, influencing their actions and understanding their emotions \\n Plant Revival: Revive withered plants by touch, causing them to grow rapidly, even in barren environments \\n Resistance: Immune to diseases, toxins, and biological manipulation",
+        "category": "Specialized"
+      },
+      {
+        "id": "technology",
+        "name": "Technology",
+        "description": " Machine Communication: Communicate with machines as though they were sentient, intuitively diagnosing malfunctions or errors \\n Decryption: Make Intelligence checks to decode encrypted data or bypass advanced security systems \\n Remote Control: Remotely interact with and control electronic systems, such as locking or unlocking doors, or rerouting power \\n System Override: Temporarily interface with and influence complex systems like vehicles or automated devices \\n Resistance: Immune to technological surveillance and electronic interference",
+        "category": "Specialized"
+      },
+      {
+        "id": "mental",
+        "name": "Mental",
+        "description": " Memory Sharing: Share vivid memories, ideas, or concepts directly into another's mind, bypassing verbal communication entirely \\n Emotion Amplification: Amplify the emotions of those around you to overwhelming levels, inducing fear, joy, or rage \\n Psychic Defense: Shield yourself from psychic intrusion, emotional manipulation, or mindaltering effects \\n Memory Recovery: Instantly retrieve forgotten memories or suppressed knowledge, including sensory details from years past \\n Resistance: Immune to mental manipulation and psychic attacks",
+        "category": "Specialized"
+      },
+      {
+        "id": "arcane",
+        "name": "Arcane",
+        "description": " Magic Detection: Detect and analyze magical effects within a wide radius, understanding their source and purpose \\n Glyph Mastery: Decipher, replicate, or counter magical glyphs and sigils, even if highly advanced \\n Magical Marking: Leave subtle magical traces on objects or locations, readable only by those with arcane knowledge \\n Artifact Sense: Sense and locate magical artifacts or enchanted items, regardless of concealment \\n Resistance: Immune to magical effects and supernatural manipulation",
+        "category": "Specialized"
+      }
+    ]
+  },
+  "tier10": {
+    "cost": 10,
+    "descriptors": [
+      {
+        "id": "time",
+        "name": "Time",
+        "description": " Temporal Perception: Make Awareness checks to see the past/future states of objects and locations \\n Chronological Analysis: Make Intelligence checks to determine exact timing of past events or predict future schedules \\n Temporal Crafting: Make Intelligence checks to age or restore objects to different time periods \\n Historical Investigation: Make Intelligence checks to witness past events as they occurred \\n Advanced Applications: Accelerate or reverse time in an area, or move yourself through time. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign",
+        "category": "Reality"
+      },
+      {
+        "id": "space",
+        "name": "Space",
+        "description": " Dimensional Analysis: Make Intelligence checks to measure exact distances/volumes without tools or understand spatial relationships \\n Spatial Navigation: Make Awareness checks to navigate through complex 3D environments or folded space \\n Geometric Construction: Make Intelligence checks to create perfect geometric forms or impossible architectural spaces \\n Distance Manipulation: Make Intelligence checks to compress or expand the apparent distance between locations \\n Advanced Applications: Open rifts to teleport vast distances. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign",
+        "category": "Reality"
+      },
+      {
+        "id": "probability",
+        "name": "Probability",
+        "description": " Outcome Analysis: Make Intelligence checks to calculate precise odds of complex events or identify statistical anomalies \\n Pattern Recognition: Make Awareness checks to spot improbable coincidences or detect manipulated probability \\n Luck Adjustment: Make Intelligence checks to subtly influence random events in your favor \\n Chaos Detection: Make Awareness checks to sense when probability is being externally manipulated \\n Advanced Applications: Significantly alter probability outcomes. Work with GM to establish specific limitations and consequences",
+        "category": "Reality"
+      },
+      {
+        "id": "atomic",
+        "name": "Atomic",
+        "description": " Atomic Perception: Perceive the atomic structure of objects, identifying weaknesses or flaws for precise interaction \\n Density Alteration: Alter the density or composition of objects with a focused effort, such as hardening glass into steel \\n Atomic Manipulation: Ability to alter the distance between atoms for objects you can touch \\n Environmental Immunity: Immune to any extreme temperature or radiation effects \\n Advanced Applications: Ability to start atomic chain reactions. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign",
+        "category": "Reality"
+      },
+      {
+        "id": "cosmic",
+        "name": "Cosmic",
+        "description": " Universal Knowledge: Intuitively know information about the state of the universe, the cosmos, and other cosmic beings \\n Cosmic Presence: Inspire awe or reverence in those around you, projecting a cosmic aura of authority \\n Environmental Immunity: Operate unharmed in any environment, immune to any environmental effect \\n Energy Mastery: Make Intelligence checks to manipulate cosmic forces and stellar energies \\n Advanced Applications: You can infuse other beings with Cosmic energy and power. Work with GM to establish specific capabilities, limitations, and narrative impact appropriate to your campaign",
+        "category": "Reality"
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+:root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --text-light: #eee;
+    --text-muted: #bbb;
+    --accent-primary: #00ffff;
+    --accent-secondary: #007a7a;
+    --accent-highlight: #80ffff;
+    --success-color: #00ff00;
+    --warning-color: #ffaa00;
+    --error-color: #ff4444;
+    --border-radius-small: 2px;
+    --border-radius-medium: 4px;
+    --border-radius-large: 8px;
+    --padding-small: 0.5rem;
+    --padding-medium: 1rem;
+    --padding-large: 1.5rem;
+    --gap-small: 0.5rem;
+    --gap-medium: 1rem;
+    --gap-large: 1.5rem;
+}

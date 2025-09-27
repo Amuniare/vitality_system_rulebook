@@ -1,0 +1,42 @@
+{
+    "tier5": {
+        "cost": 5,
+        "movement": [
+            {
+                "id": "wallWalking",
+                "name": "Wall Walking",
+                "description": "Move on walls and ceilings at normal speed, defying gravity on solid surfaces. You can change orientation as part of your movement without spending additional actions."
+            },
+            {
+                "id": "burrowing",
+                "name": "Burrowing",
+                "description": "Move through earth, sand, or loose rock at half speed. You create temporary tunnels that collapse after you pass unless you spend a Primary Action to make them permanent."
+            }
+        ]
+    },
+    "tier10": {
+        "cost": 10,
+        "movement": [
+            {
+                "id": "flight",
+                "name": "Flight",
+                "description": "Move in any direction at full speed with perfect maneuverability. You can hover in place and are unaffected by ground-based obstacles or terrain penalties."
+            },
+            {
+                "id": "phasing",
+                "name": "Phasing",
+                "description": "Selectively phase parts of your body or your entire body through solid barriers at normal speed. You must end your movement in an unoccupied space."
+            },
+            {
+                "id": "shortRangeTeleportation",
+                "name": "Short-Range Teleportation",
+                "description": "Instantly teleport to any visible location within your movement range. This movement ignores obstacles and opportunity attacks. You cannot teleport to occupied spaces or locations you cannot clearly see."
+            },
+            {
+                "id": "portalCreation",
+                "name": "Portal Creation",
+                "description": "Create two linked portals as part of your movement action. Each portal occupies one space and can be placed anywhere within your movement range. Your movement is consumed equal to the total distance between both portal locations. Any creature or object can move through either portal to instantly emerge from the other. Portals persist until the start of your next turn or until you create new ones. Only one pair of portals can exist at a time."
+            }
+        ]
+    }
+}

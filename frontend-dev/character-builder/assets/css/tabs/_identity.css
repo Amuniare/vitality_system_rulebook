@@ -1,0 +1,68 @@
+/* Identity Tab Styles */
+
+.identity-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.identity-section h2 {
+    color: var(--accent-primary);
+    margin-bottom: 0.5rem;
+}
+
+.identity-section .section-description {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.questionnaire-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* GM Only Questions */
+.form-group.gm-only {
+    /* Box styling removed - no border, padding, or background */
+}
+
+.form-group.gm-only::before {
+    /* GM ONLY label removed */
+    content: none;
+}
+
+.form-group.gm-only .form-label {
+    color: var(--accent-secondary);
+}
+
+/* Biography textarea styling */
+.bio-textarea {
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* Other input for dropdown questions */
+.other-input {
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .identity-section {
+        padding: 0.5rem;
+    }
+    
+    .questionnaire-form {
+        gap: 1.5rem;
+    }
+    
+    .form-group.gm-only {
+        padding: 1rem;
+    }
+}

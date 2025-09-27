@@ -1,0 +1,172 @@
+[
+    {
+        "id": "base_attack_quick",
+        "name": "Quick Base Attack",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Base Attack action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "base_attack",
+        "baseActionName": "Base Attack Action",
+        "baseActionDescription": "Your default combat action, available to everyone. It can be used to apply Damage or a Basic Condition."
+    },
+    {
+        "id": "dodge_quick",
+        "name": "Quick Dodge",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Dodge action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "dodge",
+        "baseActionName": "Dodge Action",
+        "baseActionDescription": "Add your Tier to your Avoidance score until the start of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "brace_quick",
+        "name": "Quick Brace",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Brace action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "brace",
+        "baseActionName": "Brace Action",
+        "baseActionDescription": "Add your Tier to your Durability score until the start of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "fortify_quick",
+        "name": "Quick Fortify",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Fortify action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "fortify",
+        "baseActionName": "Fortify Action",
+        "baseActionDescription": "Add your Tier to all of your Resistances (Resolve, Stability, Vitality) until the start of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "aim_quick",
+        "name": "Quick Aim",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Aim action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "aim",
+        "baseActionName": "Aim Action",
+        "baseActionDescription": "Add your Tier to your next Accuracy Check before the end of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "empower_quick",
+        "name": "Quick Empower",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Empower action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "empower",
+        "baseActionName": "Empower Action",
+        "baseActionDescription": "Add your Tier to your next Damage Roll before the end of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "refine_quick",
+        "name": "Quick Refine",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Refine action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "refine",
+        "baseActionName": "Refine Action",
+        "baseActionDescription": "Add your Tier to your next Condition Check before the end of your next turn. This action does not stack with itself."
+    },
+    {
+        "id": "assist_quick",
+        "name": "Quick Assist",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Assist action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "assist",
+        "baseActionName": "Assist Action",
+        "baseActionDescription": "An adjacent ally can add your Tier bonus to their next Accuracy Check, Damage Roll, or Condition Check before the end of their next turn."
+    },
+    {
+        "id": "assist_enhanced",
+        "name": "Enhanced Assist",
+        "cost": 30,
+        "isQuickActionUpgrade": false,
+        "description": "Range increased to 15 spaces and you can target multiple allies up to your Communication or Intelligence score.",
+        "baseActionId": "assist",
+        "baseActionName": "Assist Action",
+        "baseActionDescription": "An adjacent ally can add your Tier bonus to their next Accuracy Check, Damage Roll, or Condition Check before the end of their next turn."
+    },
+    {
+        "id": "carry_quick",
+        "name": "Quick Carry",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Carry action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "carry",
+        "baseActionName": "Carry Action",
+        "baseActionDescription": "Pick up and move willing characters or objects with you during your movement. If the target's total weight is greater than your Capacity score, you must succeed a Power check and can only move at half speed."
+    },
+    {
+        "id": "carry_enhanced",
+        "name": "Effortless Carry",
+        "cost": 15,
+        "isQuickActionUpgrade": false,
+        "description": "No movement speed penalty. Once you've taken this action once on a turn, you can continue to reuse it for free until the end of this turn.",
+        "baseActionId": "carry",
+        "baseActionName": "Carry Action",
+        "baseActionDescription": "Pick up and move willing characters or objects with you during your movement. If the target's total weight is greater than your Capacity score, you must succeed a Power check and can only move at half speed."
+    },
+    {
+        "id": "protect_quick",
+        "name": "Quick Protect",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Protect action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "protect",
+        "baseActionName": "Protect Action",
+        "baseActionDescription": "As a reaction, you can make the next non-direct attack that would hit an adjacent ally hit you instead."
+    },
+    {
+        "id": "protect_enhanced",
+        "name": "Guardian",
+        "cost": 30,
+        "isQuickActionUpgrade": false,
+        "description": "You can protect all adjacent allies simultaneously and gain extra reactions equal to half your Tier (rounded up) to use only for the Protect Action.",
+        "baseActionId": "protect",
+        "baseActionName": "Protect Action",
+        "baseActionDescription": "As a reaction, you can make the next non-direct attack that would hit an adjacent ally hit you instead."
+    },
+    {
+        "id": "use_quick",
+        "name": "Quick Use",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Use action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "use",
+        "baseActionName": "Use Action",
+        "baseActionDescription": "Interact with complex environmental objects like cars, computers, or heavy machinery."
+    },
+    {
+        "id": "hasten_quick",
+        "name": "Quick Hasten",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Hasten action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "hasten",
+        "baseActionName": "Hasten Action",
+        "baseActionDescription": "You can move up to your full Movement Speed again."
+    },
+    {
+        "id": "hide_quick",
+        "name": "Quick Hide",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Hide action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "hide",
+        "baseActionName": "Hide Action",
+        "baseActionDescription": "Conceal your presence with a Stealth Check vs. a searcher's Perception while outside their direct perception. Attacking while hidden grants bonuses."
+    },
+    {
+        "id": "prepare_quick",
+        "name": "Quick Prepare",
+        "cost": 30,
+        "isQuickActionUpgrade": true,
+        "description": "Allows the Prepare action to be used as a Quick Action instead of a Primary Action.",
+        "baseActionId": "prepare",
+        "baseActionName": "Prepare Action",
+        "baseActionDescription": "Delay your action until a specified trigger occurs. The GM determines if the specified scenario is specific enough."
+    }
+]

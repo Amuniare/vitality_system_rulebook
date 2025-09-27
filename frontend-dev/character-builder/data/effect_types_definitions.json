@@ -1,0 +1,31 @@
+{
+    "damage": {
+        "id": "damage",
+        "name": "Damage Only",
+        "description": "Pure damage dealing",
+        "benefit": "Maximum damage potential",
+        "cost": 0,
+        "restrictions": [],
+        "bonuses": { "maxDamage": true }
+    },
+    "condition": {
+        "id": "condition",
+        "name": "Condition Only",
+        "description": "Status effect application",
+        "benefit": "Apply conditions without damage",
+        "cost": 0,
+        "restrictions": [],
+        "bonuses": { "conditionFocus": true }
+    },
+    "hybrid": {
+        "id": "hybrid",
+        "name": "Hybrid (Damage + Condition)",
+        "description": "Both damage and condition in single attack",
+        "benefit": "Versatile attack combining effects",
+        "penalty": "-Tier to ALL Damage and Condition rolls",
+        "costKey": "hybrid", 
+        "freeForArchetype": "hybridSpecialist",
+        "restrictions": ["hybrid_penalty"],
+        "bonuses": { "bothEffects": true }
+    }
+}

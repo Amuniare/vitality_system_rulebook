@@ -1,0 +1,99 @@
+/* Tooltip Component */
+.tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-left: var(--gap-small);
+    vertical-align: middle;
+}
+
+.info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-tertiary);
+    color: var(--text-light);
+    border-radius: 50%;
+    cursor: help;
+    font-weight: bold;
+    font-style: normal;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.info-icon--small {
+    width: 1.2rem;
+    height: 1.2rem;
+    font-size: 0.7rem;
+}
+
+.info-icon--medium {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.8rem;
+}
+
+.info-icon:hover {
+    background: var(--accent-primary);
+    transform: scale(1.1);
+}
+
+.tooltip-content {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--accent-secondary);
+    border-radius: var(--border-radius-medium);
+    padding: var(--padding-medium);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    width: 250px;
+    max-width: 90vw;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+/* Tooltip arrow */
+.tooltip-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--accent-secondary);
+}
+
+.tooltip-content::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--bg-primary);
+    z-index: 1;
+}
+
+/* Show tooltip on hover */
+.tooltip-wrapper:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tooltip-content {
+        width: 200px;
+        font-size: 0.8rem;
+        padding: var(--padding-small);
+    }
+}

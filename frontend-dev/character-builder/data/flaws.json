@@ -1,0 +1,72 @@
+[
+    {
+        "id": "balanced",
+        "name": "Balanced",
+        "cost": 30,
+        "description": "Must have at least half your Tier rounded down in each Combat Attribute, and can only add your Tier bonus once to each stat across Flaws, Traits, and Primary Actions.",
+        "restriction": "Must maintain minimum combat attribute requirements."
+    },
+    {
+        "id": "slow",
+        "name": "Slow",
+        "cost": 30,
+        "description": "You cannot select a Movement Archetype.",
+        "restriction": "Cannot select any movement archetype."
+    },
+    {
+        "id": "combatFocused",
+        "name": "Combat Focused",
+        "cost": 30,
+        "description": "You cannot purchase any Utility abilities.",
+        "restriction": "Cannot purchase utility abilities."
+    },
+    {
+        "id": "sickly",
+        "name": "Sickly",
+        "cost": 30,
+        "description": "Your maximum Health Pool is reduced by 30.",
+        "restriction": "Permanent -30 HP reduction."
+    },
+    {
+        "id": "unresponsive",
+        "name": "Unresponsive",
+        "cost": 30,
+        "description": "You cannot take Reactions, you do not add your Tier to Initiative, and you cannot benefit from Surprise rounds.",
+        "restriction": "No reactions or initiative bonus."
+    },
+    {
+        "id": "peaked",
+        "name": "Peaked",
+        "cost": 30,
+        "description": "You cannot use Efforts.",
+        "restriction": "No effort system access."
+    },
+    {
+        "id": "weak",
+        "name": "Weak",
+        "cost": 30,
+        "description": "You get 1 fewer Combat Attribute Point per Tier.",
+        "restriction": "Reduced combat attribute pool."
+    },
+    {
+        "id": "powerLoss",
+        "name": "Power Loss",
+        "cost": 30,
+        "description": "You lose your powers under specific circumstances, determined in discussion with the GM.",
+        "restriction": "Conditional power loss."
+    },
+    {
+        "id": "singleTargetSpecialist",
+        "name": "Single Target Specialist",
+        "cost": 30,
+        "description": "You can only choose Melee OR Ranged attacks, not both.",
+        "restriction": "Limited to one attack type."
+    },
+    {
+        "id": "equipmentDependent",
+        "name": "Equipment Dependent",
+        "cost": 30,
+        "description": "Choose a specific item; you lose access to one Archetype benefit without it. The item is noticeable and you can be disarmed of it.",
+        "restriction": "Archetype benefit tied to equipment."
+    }
+]
