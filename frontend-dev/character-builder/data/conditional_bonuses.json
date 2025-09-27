@@ -1,194 +1,182 @@
 [
     {
-        "id": "rooted",
-        "name": "Rooted",
-        "description": "Cannot move this turn",
-        "cost": 1
-    },
-    {
-        "id": "longDistanceFighter",
-        "name": "Long Distance Fighter",
-        "description": "No enemies within 5 spaces",
-        "cost": 1
-    },
-    {
-        "id": "unhealthy1",
-        "name": "Unhealthy 1",
-        "description": "25+ points below max HP",
-        "cost": 1
-    },
-    {
-        "id": "irregular1",
-        "name": "Irregular 1",
-        "description": "Roll d20, DC 5 to activate each turn",
-        "cost": 1
-    },
-    {
-        "id": "vengeful",
-        "name": "Vengeful",
-        "description": "Been hit since last turn",
-        "cost": 1
-    },
-    {
-        "id": "careful",
-        "name": "Careful",
-        "description": "Not damaged since last turn",
-        "cost": 1
-    },
-    {
-        "id": "passive",
-        "name": "Passive",
-        "description": "Not attacked since last turn",
-        "cost": 1
-    },
-    {
-        "id": "steady",
-        "name": "Steady",
-        "description": "Turn 3 or later",
-        "cost": 1
-    },
-    {
-        "id": "relentless",
-        "name": "Relentless",
-        "description": "Dealt damage to enemy last turn",
-        "cost": 1
-    },
-    {
-        "id": "overwhelm",
-        "name": "Overwhelm",
-        "description": "Dealt damage to enemy this turn",
-        "cost": 1
-    },
-    {
-        "id": "infection",
-        "name": "Infection",
-        "description": "Applied Condition this turn",
-        "cost": 1
-    },
-    {
-        "id": "infected",
-        "name": "Infected",
-        "description": "Applied Condition last turn",
-        "cost": 1
-    },
-    {
-        "id": "temporary3",
-        "name": "Temporary 3",
-        "description": "Activate for 3 turns, recharges after 1 minute rest",
-        "cost": 1
-    },
-    {
-        "id": "timid",
-        "name": "Timid",
-        "description": "At max HP with no conditions",
-        "cost": 1
-    },
-    {
-        "id": "revenge",
-        "name": "Revenge",
-        "description": "Been damaged since last turn",
-        "cost": 1
-    },
-    {
-        "id": "unbreakable",
-        "name": "Unbreakable",
-        "description": "Been hit but took no damage since last turn",
-        "cost": 1
-    },
-    {
-        "id": "unhealthy2",
-        "name": "Unhealthy 2",
-        "description": "75+ points below max HP",
-        "cost": 1
-    },
-    {
-        "id": "untouchable",
-        "name": "Untouchable",
-        "description": "All attacks missed since last turn",
-        "cost": 1
-    },
-    {
-        "id": "slaughter",
-        "name": "Slaughter",
-        "description": "Defeated enemy last turn",
-        "cost": 1
-    },
-    {
-        "id": "onslaught",
-        "name": "Onslaught",
-        "description": "Defeated enemy this turn",
-        "cost": 1
-    },
-    {
-        "id": "patient",
-        "name": "Patient",
-        "description": "Turn 5 or later",
-        "cost": 1
-    },
-    {
-        "id": "temporary2",
-        "name": "Temporary 2",
-        "description": "Activate for 2 turns, recharges after 1 minute rest",
-        "cost": 1
-    },
-    {
-        "id": "quickdraw",
-        "name": "Quickdraw",
-        "description": "First 2 rounds of combat",
-        "cost": 1
-    },
-    {
-        "id": "temporary1",
-        "name": "Temporary 1",
-        "description": "Activate for 1 turn, recharges after 1 minute rest",
-        "cost": 1
-    },
-    {
-        "id": "irregular2",
-        "name": "Irregular 2",
-        "description": "Roll d20, DC 10 to activate each turn",
-        "cost": 1
-    },
-    {
-        "id": "nearDeath",
-        "name": "Near Death",
-        "description": "At 0 Hit Points",
-        "cost": 1
-    },
-    {
-        "id": "dangerous",
-        "name": "Dangerous",
-        "description": "No allies within 15 spaces, no civilians within 30 spaces",
+        "id": "flowState",
+        "name": "Flow State",
+        "description": "When you haven't taken damage since last turn, cannot move this turn, and no enemies are within 5 spaces.",
         "cost": 1
     },
     {
         "id": "avenger",
         "name": "Avenger",
-        "description": "Ally unconscious or great peril occurred",
+        "description": "When an ally is unconscious or great peril occurred.",
         "cost": 1
     },
     {
-        "id": "environment",
-        "name": "Environment",
-        "description": "Specific locations (electricity, water, urban, forest)",
+        "id": "berserk",
+        "name": "Berserk",
+        "description": "When you're at 50 Hit Points or less and dealt damage this turn.",
         "cost": 1
     },
     {
-        "id": "time",
-        "name": "Time",
-        "description": "Specific times (night, full moon, day)",
+        "id": "firstStrike",
+        "name": "First Strike",
+        "description": "During the first 3 rounds of combat.",
         "cost": 1
     },
     {
-        "id": "weather",
-        "name": "Weather",
-        "description": "Specific weather (stormy, sunny, cloudy)",
+        "id": "perfectForm",
+        "name": "Perfect Form",
+        "description": "When you're at max HP with no conditions and cannot move this turn.",
         "cost": 1
     },
     {
-        "id": "descriptor",
-        "name": "Descriptor",
-        "description": "Specific damage types (hit with energy)",
+        "id": "bulwark",
+        "name": "Bulwark",
+        "description": "When you've been hit but took no damage since last turn and cannot move this turn.",
+        "cost": 1
+    },
+    {
+        "id": "patientPredator",
+        "name": "Patient Predator",
+        "description": "When it's turn 5 or later and you haven't attacked since last turn.",
+        "cost": 1
+    },
+    {
+        "id": "aggression",
+        "name": "Aggression",
+        "description": "When you're 25+ points below max HP, dealt damage last turn, and dealt damage this turn.",
+        "cost": 1
+    },
+    {
+        "id": "deathsDoor",
+        "name": "Death's Door",
+        "description": "When you are at 25 Hit Points or less.",
+        "cost": 1
+    },
+    {
+        "id": "dangerous",
+        "name": "Dangerous",
+        "description": "When no allies are within 15 spaces and no civilians within 30 spaces.",
+        "cost": 1
+    },
+    {
+        "id": "grandFinale",
+        "name": "Grand Finale",
+        "description": "When it's turn 8 or later.",
+        "cost": 1
+    },
+    {
+        "id": "temporalBurst",
+        "name": "Temporal Burst",
+        "description": "Activate for 2 turns, recharges after 1 minute rest. While active.",
+        "cost": 1
+    },
+    {
+        "id": "luckyStreak",
+        "name": "Lucky Streak",
+        "description": "Roll d20 each turn, DC 10. When you succeed.",
+        "cost": 1
+    },
+    {
+        "id": "executioner",
+        "name": "Executioner",
+        "description": "When you defeated an enemy last turn and it's turn 3 or later.",
+        "cost": 1
+    },
+    {
+        "id": "revenge",
+        "name": "Revenge",
+        "description": "When you've been damaged since last turn and dealt damage to an enemy last turn.",
+        "cost": 1
+    },
+    {
+        "id": "unstoppable",
+        "name": "Unstoppable",
+        "description": "When you've been hit but took no damage since last turn and defeated an enemy last turn.",
+        "cost": 1
+    },
+    {
+        "id": "concentration",
+        "name": "Concentration",
+        "description": "When you cannot move this turn and you're at max HP with no conditions.",
+        "cost": 1
+    },
+    {
+        "id": "combatHigh",
+        "name": "Combat High",
+        "description": "Activate for 3 turns, recharges after 1 minute rest. When you're 25+ points below max HP.",
+        "cost": 1
+    },
+    {
+        "id": "unreliable",
+        "name": "Unreliable",
+        "description": "When you applied a condition this turn, it's turn 3 or later, and roll d20 each turn, DC 5.",
+        "cost": 1
+    },
+    {
+        "id": "hunter",
+        "name": "Hunter",
+        "description": "When no enemies are within 5 spaces, you dealt damage last turn, and haven't taken damage since last turn.",
+        "cost": 1
+    },
+    {
+        "id": "untouchable",
+        "name": "Untouchable",
+        "description": "When all attacks have missed you since last turn and dealt damage this turn.",
+        "cost": 1
+    },
+    {
+        "id": "highRisk",
+        "name": "High Risk",
+        "description": "When you haven't attacked since last turn, cannot move this turn, and roll d20 each turn, DC 5.",
+        "cost": 1
+    },
+    {
+        "id": "pacifist",
+        "name": "Pacifist",
+        "description": "When all attacks have missed you since last turn and you haven't attacked since last turn.",
+        "cost": 1
+    },
+    {
+        "id": "fortress",
+        "name": "Fortress",
+        "description": "When you cannot move this turn, haven't taken damage since last turn, and turn 3 or later.",
+        "cost": 1
+    },
+    {
+        "id": "disciplined",
+        "name": "Disciplined",
+        "description": "When it's turn 3 or later and you're at max HP with no conditions.",
+        "cost": 1
+    },
+    {
+        "id": "gambler",
+        "name": "Gambler",
+        "description": "Roll d20 each turn, DC 5. When you succeed and dealt damage this turn.",
+        "cost": 1
+    },
+    {
+        "id": "suppression",
+        "name": "Suppression",
+        "description": "When you cannot move this turn and no allies are within 10 spaces.",
+        "cost": 1
+    },
+    {
+        "id": "overwhelm",
+        "name": "Overwhelm",
+        "description": "When you have more adjacent allies than enemies.",
+        "cost": 1
+    },
+    {
+        "id": "cornered",
+        "name": "Cornered",
+        "description": "When you're at 50 Hit Points or less and 3+ enemies are within 5 spaces.",
+        "cost": 1
+    },
+    {
+        "id": "tacticalAdvantage",
+        "name": "Tactical Advantage",
+        "description": "When you're on higher ground than your target, you don't move and there are no enemies within 5 spaces.",
         "cost": 1
     }
 ]
