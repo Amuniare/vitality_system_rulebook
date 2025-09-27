@@ -220,9 +220,13 @@ class AttackBuild:
             if upgrade in UPGRADES:
                 cost += UPGRADES[upgrade].cost
 
+        # AOE builds pay double for limits
+        is_aoe_build = self.attack_type in ['area', 'direct_area_damage']
+        limit_multiplier = 2 if is_aoe_build else 1
+
         for limit in self.limits:
             if limit in LIMITS:
-                cost += LIMITS[limit].cost
+                cost += LIMITS[limit].cost * limit_multiplier
 
         return cost
 

@@ -39,18 +39,18 @@ class LoggingManager:
     def _open_log_files(self):
         """Open all required log files based on configuration"""
         if self.logging_config.get('separate_files', True):
-            # Summary log - always generated
-            self.log_files['summary'] = open(f'{self.reports_dir}/summary_combat_log.txt', 'w', encoding='utf-8')
-            self._write_header(self.log_files['summary'], "SUMMARY COMBAT LOG")
+            # Summary log - disabled
+            # self.log_files['summary'] = open(f'{self.reports_dir}/summary_combat_log.txt', 'w', encoding='utf-8')
+            # self._write_header(self.log_files['summary'], "SUMMARY COMBAT LOG")
 
             # Top builds detailed log
             if self.logging_config.get('log_top_builds_only', True):
                 self.log_files['top_builds'] = open(f'{self.reports_dir}/top_builds_combat_log.txt', 'w', encoding='utf-8')
                 self._write_header(self.log_files['top_builds'], "TOP BUILDS DETAILED COMBAT LOG")
 
-            # Diagnostic log for mechanics verification
-            self.log_files['diagnostic'] = open(f'{self.reports_dir}/diagnostic_combat_log.txt', 'w', encoding='utf-8')
-            self._write_header(self.log_files['diagnostic'], "DIAGNOSTIC COMBAT LOG")
+            # Diagnostic log for mechanics verification - disabled
+            # self.log_files['diagnostic'] = open(f'{self.reports_dir}/diagnostic_combat_log.txt', 'w', encoding='utf-8')
+            # self._write_header(self.log_files['diagnostic'], "DIAGNOSTIC COMBAT LOG")
         else:
             # Single file mode (legacy)
             self.log_files['main'] = open(f'{self.reports_dir}/combat_log.txt', 'w', encoding='utf-8')

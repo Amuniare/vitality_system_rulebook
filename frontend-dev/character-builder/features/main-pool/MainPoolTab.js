@@ -1,37 +1,16 @@
-
-// frontend/character-builder/features/main-pool/MainPoolTab.js
-import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
-import { FlawPurchaseSection } from './components/FlawPurchaseSection.js';
-import { TraitPurchaseSection } from './components/TraitPurchaseSection.js';
-import { BoonSection } from './components/BoonSection.js';
-import { UniqueAbilitySection } from './components/UniqueAbilitySection.js';
-import { ActionUpgradeSection } from './components/ActionUpgradeSection.js';
-import { UpdateManager } from '../../shared/utils/UpdateManager.js';
-import { EventManager } from '../../shared/utils/EventManager.js';
+// MainPoolTab.js - Simplified Boon Selection System (replaces complex point purchasing)
+import { gameDataManager } from '../../core/GameDataManager.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
-import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
-import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
-import { ActionSystem } from '../../systems/ActionSystem.js'; // Import ActionSystem
 
 export class MainPoolTab {
-    constructor(characterBuilder) {
-        this.builder = characterBuilder;
-        this.sections = {
-            flaws: new FlawPurchaseSection(characterBuilder),
-            traits: new TraitPurchaseSection(characterBuilder),
-            boons: new BoonSection(characterBuilder),
-            uniqueAbilities: new UniqueAbilitySection(characterBuilder),
-            actions: new ActionUpgradeSection(characterBuilder)
-        };
-        this.activeSection = 'flaws'; // Default section
+    constructor(builder) {
+        this.builder = builder;
         this.clickHandler = null;
-        this.changeHandler = null;
-        this.inputHandler = null;
         this.containerElement = null;
+        this.selectedCategory = 'all'; // Filter for boon categories
     }
 
     render() {
-        
         const tabContent = document.getElementById('tab-mainPool');
         if (!tabContent) return;
 
@@ -42,27 +21,44 @@ export class MainPoolTab {
         }
 
         tabContent.innerHTML = `
-            <div class="main-pool-tab-content">
-                <h2>Main Pool Purchases</h2>
+            <div class="boon-selection-content">
+                <h2>Choose Your Boons ${RenderUtils.renderInfoIcon('Select boons equal to your character level. Each boon provides unique abilities or stat bonuses.')}</h2>
                 <p class="section-description">
-                    Use your main pool points to purchase flaws, traits,  boons, unique abilities, and action upgrades.
+                    The <strong>simplified Vitality System</strong> uses boons instead of complex point purchasing.
+                    Select <strong>${character.maxBoons} boons</strong> for a Level ${character.level} character.
+                    All boons cost 1 point each - no complex calculations needed!
                 </p>
 
-                <!-- NEW: Main Pool Overview Box -->
-                ${this.renderMainPoolOverviewBox(character)}
+                <div class="boon-status">
+                    <div class="boon-progress">
+                        <span id="boon-count">${character.boons.length}/${character.maxBoons}</span> boons selected
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${(character.boons.length / character.maxBoons) * 100}%"></div>
+                        </div>
+                    </div>
+                    ${this.renderLevelInfo()}
+                </div>
 
-                <!-- Category sections for PURCHASING ONLY -->
-                ${this.renderSectionNavigation()}
-                <div class="section-content-area" id="main-pool-active-section">
-                    ${this.renderActiveSectionContent(character)}
+                <div class="boon-filters">
+                    ${this.renderCategoryFilters()}
+                </div>
+
+                <div class="selected-boons">
+                    ${this.renderSelectedBoons()}
+                </div>
+
+                <div class="available-boons">
+                    ${this.renderAvailableBoons()}
                 </div>
 
                 <div class="next-step">
-                    <p><strong>Next Step:</strong> Create your special attacks using limits and upgrades.</p>
+                    <p><strong>Next Step:</strong> Configure special attacks (if your archetype allows them).</p>
                     ${RenderUtils.renderButton({
                         text: 'Continue to Special Attacks →',
                         variant: 'primary',
-                        dataAttributes: { action: 'continue-to-special-attacks' }
+                        dataAttributes: { action: 'continue-to-special-attacks' },
+                        classes: ['continue-btn'],
+                        disabled: false
                     })}
                 </div>
             </div>
@@ -71,92 +67,82 @@ export class MainPoolTab {
         this.setupEventListeners();
     }
 
-    renderMainPoolOverviewBox(character) {
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const mainPoolInfo = {
-            spent: pools.totalSpent.mainPool || 0,
-            available: pools.totalAvailable.mainPool || 0,
-            remaining: pools.remaining.mainPool || 0
-        };
-        const breakdown = this.calculatePointBreakdown(character, pools);
+    renderLevelInfo() {
+        const character = this.builder.currentCharacter;
+        const levelInfo = gameDataManager.getLevelInfo(character.level);
 
         return `
-            <div class="main-pool-overview-box">
-                <div class="main-pool-overview-header">
-                    <h3>Main Pool Overview</h3>
-                    ${RenderUtils.renderPointDisplay(
-                        mainPoolInfo.spent,
-                        mainPoolInfo.available,
-                        'Main Pool',
-                        { showRemaining: true, variant: mainPoolInfo.remaining < 0 ? 'error' : mainPoolInfo.remaining === 0 && mainPoolInfo.spent > 0 ? 'warning' : 'default' }
-                    )}
+            <div class="level-info">
+                <div class="level-details">
+                    <strong>Level ${character.level}</strong>
+                    (Tier Bonus: +${levelInfo.tier})
                 </div>
-                <div class="pool-sources">
-                    <small>Base: ${Math.max(0, (character.tier - 2) * 15)}
-                    ${character.archetypes.uniqueAbility === 'extraordinary' ? ` (+${Math.max(0, (character.tier - 2) * 15)} from Extraordinary)` : ''}
-                    </small>
+                <div class="boon-allowance">
+                    ${levelInfo.boons} boon${levelInfo.boons !== 1 ? 's' : ''} allowed
                 </div>
-                
-                ${this.renderMainPoolCategoryBreakdown(breakdown)}
-                ${this.renderSelectedMainPoolItems(character)}
             </div>
         `;
     }
 
-    renderMainPoolCategoryBreakdown(breakdown) {
+    renderCategoryFilters() {
         const categories = [
-            { key: 'boons', label: 'Boons', value: breakdown.boons },
-            { key: 'uniqueAbilities', label: 'Unique Abilities', value: breakdown.uniqueAbilities },
-            { key: 'traits', label: 'Traits', value: breakdown.traits },
-            { key: 'flaws', label: 'Flaws', value: breakdown.flaws },
-            { key: 'actions', label: 'Action Upgrades', value: breakdown.actions }
+            { id: 'all', name: 'All Boons', count: gameDataManager.getBoons().length },
+            { id: 'passive_bonuses', name: 'Passive Bonuses', count: gameDataManager.getBoonsByCategory('passive_bonuses').length },
+            { id: 'conditional_bonuses', name: 'Conditional Bonuses', count: gameDataManager.getBoonsByCategory('conditional_bonuses').length },
+            { id: 'traits', name: 'Traits', count: gameDataManager.getBoonsByCategory('traits').length },
+            { id: 'special_abilities', name: 'Special Abilities', count: gameDataManager.getBoonsByCategory('special_abilities').length }
         ];
 
-        // Calculate counts for each category
+        return `
+            <div class="category-filters">
+                <h4>Filter by Category</h4>
+                <div class="filter-buttons">
+                    ${categories.map(cat => `
+                        <button class="filter-btn ${this.selectedCategory === cat.id ? 'active' : ''}"
+                                data-action="filter-category"
+                                data-category="${cat.id}">
+                            ${cat.name} (${cat.count})
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    renderSelectedBoons() {
         const character = this.builder.currentCharacter;
-        const categoryData = categories.map(category => {
-            let count = 0;
-            switch(category.key) {
-                case 'boons':
-                    count = character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).length;
-                    break;
-                case 'uniqueAbilities':
-                    count = character.mainPoolPurchases.boons.filter(b => b.type === 'unique').length;
-                    break;
-                case 'traits':
-                    count = character.mainPoolPurchases.traits.length;
-                    break;
-                case 'flaws':
-                    count = character.mainPoolPurchases.flaws.length;
-                    break;
-                case 'actions':
-                    // COMBINED COUNT: Paid + Free
-                    count = character.mainPoolPurchases.primaryActionUpgrades.length + (character.versatileMasterSelections || []).length;
-                    break;
-            }
-            return { ...category, count };
-        });
+        const allBoons = gameDataManager.getBoons();
 
-        const totalItems = categoryData.reduce((sum, cat) => sum + cat.count, 0);
-
-        if (totalItems === 0) {
+        if (character.boons.length === 0) {
             return `
-                <div class="main-pool-breakdown">
-                    <h4>Category Breakdown</h4>
-                    <div class="empty-state">No main pool purchases yet.</div>
+                <div class="selected-boons-section">
+                    <h3>Selected Boons (0/${character.maxBoons})</h3>
+                    <div class="no-boons">No boons selected yet. Choose from the options below.</div>
                 </div>
             `;
         }
 
+        const selectedBoonData = character.boons.map(boonId => {
+            const boon = allBoons.find(b => b.id === boonId);
+            return boon || { id: boonId, name: 'Unknown Boon', description: 'Boon not found' };
+        });
+
         return `
-            <div class="main-pool-breakdown">
-                <h4>Category Breakdown (${totalItems} items)</h4>
-                <div class="breakdown-grid">
-                    ${categoryData.map(cat => `
-                        <div class="breakdown-item ${cat.count === 0 ? 'empty' : ''}">
-                            <span class="breakdown-label">${cat.label}</span>
-                            <span class="breakdown-count">${cat.count}</span>
-                            <span class="breakdown-cost">${cat.value > 0 ? '-' : ''}${cat.value}p</span>
+            <div class="selected-boons-section">
+                <h3>Selected Boons (${character.boons.length}/${character.maxBoons})</h3>
+                <div class="selected-boon-list">
+                    ${selectedBoonData.map(boon => `
+                        <div class="selected-boon-item" data-boon-id="${boon.id}">
+                            <div class="boon-header">
+                                <strong>${boon.name}</strong>
+                                <button class="remove-boon-btn"
+                                        data-action="remove-boon"
+                                        data-boon-id="${boon.id}"
+                                        title="Remove this boon">✕</button>
+                            </div>
+                            <div class="boon-description">${boon.description}</div>
+                            ${this.renderBoonEffects(boon)}
+                            ${this.renderBoonDrawback(boon)}
                         </div>
                     `).join('')}
                 </div>
@@ -164,247 +150,290 @@ export class MainPoolTab {
         `;
     }
 
-    renderSelectedMainPoolItems(character) {
-        const allPurchases = [];
+    renderAvailableBoons() {
+        const character = this.builder.currentCharacter;
+        const allBoons = gameDataManager.getBoons();
 
-        // Paid Action Upgrades
-        allPurchases.push(...character.mainPoolPurchases.primaryActionUpgrades.map((item, index) => ({
-            ...item,
-            name: item.actionName || item.name,
-            category: 'actions',
-            typeLabel: 'Action Upgrade',
-            isFreeSelection: false,
-            dataAttributes: { 'upgrade-id': item.id }
-        })));
-        
-        // Free Versatile Master Selections
-        const versatileMasterSelections = character.versatileMasterSelections || [];
-        const allActionUpgrades = ActionSystem.getAvailableActionUpgrades();
-        versatileMasterSelections.forEach(baseActionId => {
-            const upgrade = allActionUpgrades.find(u => u.baseActionId === baseActionId && u.isQuickActionUpgrade);
-            if (upgrade) {
-                allPurchases.push({
-                    id: upgrade.id,
-                    name: upgrade.name,
-                    cost: 0,
-                    category: 'actions',
-                    typeLabel: 'Action Upgrade',
-                    isFreeSelection: true,
-                    dataAttributes: { 'upgrade-id': upgrade.id }
-                });
-            }
-        });
+        // Filter boons
+        let availableBoons = allBoons.filter(boon => !character.boons.includes(boon.id));
 
-        allPurchases.push(...character.mainPoolPurchases.flaws.map((item, index) => ({
-            ...item, category: 'flaws', typeLabel: 'Flaw', dataAttributes: { 'index': index }
-        })));
-        allPurchases.push(...character.mainPoolPurchases.traits.map((item, index) => ({
-            ...item, name: this.generateTraitDisplayName(item, character), category: 'traits', typeLabel: 'Trait', dataAttributes: { 'index': index }
-        })));
-        allPurchases.push(...character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).map(item => ({
-            ...item, category: 'boons', typeLabel: 'Simple Boon', dataAttributes: { 'boon-id': item.boonId }
-        })));
-        allPurchases.push(...character.mainPoolPurchases.boons.filter(b => b.type === 'unique').map(item => ({
-            ...item, category: 'uniqueAbilities', typeLabel: 'Unique Ability', originalItem: item, dataAttributes: { 'boon-id': item.boonId }
-        })));
-
-        return `
-            <div class="selected-main-pool-items">
-                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedMainPoolItem(item), { 
-                    title: 'Purchased Items', showCount: false, emptyMessage: 'No main pool purchases yet.'
-                })}
-            </div>
-        `;
-    }
-
-    renderSelectedMainPoolItem(item) {
-        let actionKey;
-        switch(item.category) {
-            case 'actions': actionKey = 'remove-action-upgrade'; break;
-            case 'boons': actionKey = 'remove-simple-boon'; break;
-            case 'uniqueAbilities': actionKey = 'remove-unique-ability'; break;
-            case 'traits': actionKey = 'remove-trait'; break;
-            case 'flaws': actionKey = 'remove-flaw'; break;
-            default: actionKey = `remove-${item.category.slice(0, -1)}`;
+        if (this.selectedCategory !== 'all') {
+            availableBoons = availableBoons.filter(boon => boon.category === this.selectedCategory);
         }
 
-        let costBoxes = '';
-        if (item.category === 'uniqueAbilities') {
-            // Complex rendering logic for unique abilities... (omitted for brevity, assume it's correct)
-            const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
-            costBoxes = `<span class="item-details">${item.typeLabel}</span>${costText ? `<span class="item-cost">${costText}</span>` : ''}`;
-        } else {
-            const costText = item.isFreeSelection ? 'Free (Archetype)' : (item.cost !== undefined ? `${Math.abs(item.cost)}p` : '');
-            costBoxes = `<span class="item-details">${item.typeLabel}</span>${costText ? `<span class="item-cost">${costText}</span>` : ''}`;
-        }
-
-        return `
-            <div class="purchased-item">
-                <div class="item-info">
-                    <span class="item-name">${item.name}</span>
-                    ${costBoxes}
+        if (availableBoons.length === 0) {
+            return `
+                <div class="available-boons-section">
+                    <h3>Available Boons</h3>
+                    <div class="no-available">No available boons in this category.</div>
                 </div>
-                ${RenderUtils.renderButton({ 
-                    text: 'Remove', variant: 'danger', size: 'small', dataAttributes: { action: actionKey, ...item.dataAttributes } 
-                })}
+            `;
+        }
+
+        return `
+            <div class="available-boons-section">
+                <h3>Available Boons${this.selectedCategory !== 'all' ? ` - ${this.getCategoryDisplayName(this.selectedCategory)}` : ''}</h3>
+                <div class="available-boon-grid">
+                    ${availableBoons.map(boon => this.renderBoonCard(boon)).join('')}
+                </div>
             </div>
         `;
     }
 
-    calculatePointBreakdown(character, pools) {
-        // This logic remains the same
-        return {
-            boons: character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).reduce((sum, b) => sum + (b.cost || 0), 0),
-            uniqueAbilities: character.mainPoolPurchases.boons.filter(b => b.type === 'unique').reduce((sum, b) => sum + (b.cost || 0), 0),
-            traits: character.mainPoolPurchases.traits.reduce((sum, t) => sum + (t.cost || 0), 0),
-            flaws: character.mainPoolPurchases.flaws.reduce((sum, f) => sum + (f.cost || 0), 0),
-            actions: character.mainPoolPurchases.primaryActionUpgrades.reduce((sum, a) => sum + (a.cost || 0), 0),
-        };
+    renderBoonCard(boon) {
+        const character = this.builder.currentCharacter;
+        const canSelect = character.boons.length < character.maxBoons;
+
+        return RenderUtils.renderCard({
+            title: boon.name,
+            titleTag: 'h4',
+            description: boon.description,
+            additionalContent: `
+                ${this.renderBoonEffects(boon)}
+                ${this.renderBoonDrawback(boon)}
+                <div class="boon-category">${this.getCategoryDisplayName(boon.category)}</div>
+            `,
+            clickable: canSelect,
+            dataAttributes: {
+                action: canSelect ? 'select-boon' : '',
+                'boon-id': boon.id
+            }
+        }, {
+            cardClass: `boon-card ${!canSelect ? 'disabled' : ''}`,
+            showCost: false,
+            showStatus: false
+        });
     }
 
-    renderSectionNavigation() {
-        // This logic remains the same
-        const sectionTabsConfig = [
-            { id: 'flaws', label: 'Flaws' },
-            { id: 'traits', label: 'Traits' },
-            { id: 'boons', label: 'Boons' },
-            { id: 'uniqueAbilities', label: 'Unique Abilities' },
-            { id: 'actions', label: 'Action Upgrades' }
-        ];
-        return RenderUtils.renderTabs(sectionTabsConfig, this.activeSection, { navClass: 'section-tabs', tabButtonClass: 'section-tab' });
+    renderBoonEffects(boon) {
+        if (!boon.effects || boon.effects.length === 0) {
+            return '';
+        }
+
+        const effects = boon.effects.map(effect => {
+            switch(effect.type) {
+                case 'stat_bonus':
+                    return `+${effect.bonus} to ${effect.stat}`;
+                case 'immunity':
+                    const immunities = Array.isArray(effect.value) ? effect.value.join(', ') : effect.value;
+                    return `Immune to: ${immunities}`;
+                case 'special':
+                    return `Special: ${effect.value}${effect.count ? ` (${effect.count} uses)` : ''}`;
+                case 'aura':
+                    return `Aura: ${effect.damage || effect.bonus} (radius ${effect.radius})`;
+                case 'conditional_stat_bonus':
+                    return `+${effect.bonus} to chosen stats when ${effect.condition}`;
+                default:
+                    return `${effect.type}: ${effect.value || 'active'}`;
+            }
+        }).join(', ');
+
+        return `<div class="boon-effects">Effects: ${effects}</div>`;
     }
 
-    renderActiveSectionContent(character) {
-        // This logic remains the same
-        const sectionComponent = this.sections[this.activeSection];
-        if (!sectionComponent) return '<p class="error-text">Error: Selected section not found.</p>';
+    renderBoonDrawback(boon) {
+        if (!boon.drawback) {
+            return '';
+        }
 
-        const pools = PointPoolCalculator.calculateAllPools(character);
-        const mainPoolInfo = {
-            spent: pools.totalSpent.mainPool || 0,
-            available: pools.totalAvailable.mainPool || 0,
-            remaining: pools.remaining.mainPool || 0
-        };
-        return sectionComponent.render(character, mainPoolInfo);
+        return `<div class="boon-drawback">⚠️ Drawback: ${boon.drawback_description}</div>`;
     }
 
     setupEventListeners() {
-        // This logic remains the same
         this.removeEventListeners();
+
         const container = document.getElementById('tab-mainPool');
         if (!container) return;
-        this.containerElement = container;
-        this.clickHandler = (e) => {
-            if (e.target.classList.contains('stat-bonus-select')) {
-                this.handleStatBonusChange(e.target);
-                return;
-            }
-            const target = e.target.closest('[data-action], .section-tab');
+
+        this.clickHandler = (event) => {
+            const target = event.target.closest('[data-action]');
             if (!target) return;
-            if (target.classList.contains('section-tab')) {
-                this.handleSectionSwitch(target.dataset.tab);
-            } else if (target.dataset.action) {
-                this.handleAction(target);
+
+            const action = target.dataset.action;
+
+            switch(action) {
+                case 'select-boon':
+                    const boonId = target.dataset.boonId;
+                    if (boonId) {
+                        this.selectBoon(boonId);
+                    }
+                    break;
+
+                case 'remove-boon':
+                    const removeBoonId = target.dataset.boonId;
+                    if (removeBoonId) {
+                        this.removeBoon(removeBoonId);
+                    }
+                    break;
+
+                case 'filter-category':
+                    const category = target.dataset.category;
+                    if (category) {
+                        this.setCategory(category);
+                    }
+                    break;
+
+                case 'continue-to-special-attacks':
+                    this.builder.switchTab('special-attacks');
+                    break;
             }
         };
-        container.addEventListener('click', this.clickHandler);
-        container.addEventListener('change', this.clickHandler);
-        container.addEventListener('input', this.clickHandler);
-        console.log('✅ MainPoolTab event listeners attached ONCE.');
-    }
 
-    handleStatBonusChange(selectElement) {
-        const flawId = selectElement.dataset.flawId;
-        const purchaseBtn = document.querySelector(`[data-action="purchase-flaw"][data-flaw-id="${flawId}"]`);
-        
-        if (purchaseBtn) {
-            purchaseBtn.disabled = !selectElement.value;
-        }
-    }
-
-    handleAction(target) {
-        const { action, ...data } = target.dataset;
-        const handlers = {
-            'continue-to-special-attacks': () => this.builder.switchTab('specialAttacks'),
-            'purchase-flaw': () => this.sections.flaws.handleFlawPurchase(data.flawId),
-            'remove-flaw': () => this.sections.flaws.handleFlawRemoval(parseInt(data.index)),
-            'clear-trait-builder': () => this.sections.traits.handleClearBuilder(),
-            'purchase-trait': () => this.sections.traits.handleTraitPurchase(),
-            'remove-trait': () => this.sections.traits.handleTraitRemoval(parseInt(data.index)),
-            'trait-stat-toggle': () => this.sections.traits.handleStatToggle(target),
-            'trait-condition-toggle': () => this.sections.traits.handleConditionToggle(target),
-            'increase-variable-trait-cost': () => this.sections.traits.handleIncreaseVariableTraitCost(data.conditionId),
-            'decrease-variable-trait-cost': () => this.sections.traits.handleDecreaseVariableTraitCost(data.conditionId),
-            'purchase-simple-boon': () => this.sections.boons.purchaseBoon(data.boonId),
-            'remove-simple-boon': () => this.sections.boons.removeBoon(data.boonId),
-            'purchase-unique-ability': () => this.sections.uniqueAbilities.purchaseUniqueAbility(data.abilityId),
-            'remove-unique-ability': () => this.sections.uniqueAbilities.removeAbility(data.boonId),
-            'modify-unique-ability': () => this.sections.uniqueAbilities.modifyAbility(data.boonId),
-            'toggle-upgrade': () => this.sections.uniqueAbilities.handleUpgradeToggle(target),
-            'increase-upgrade-quantity': () => this.sections.uniqueAbilities.handleIncreaseUpgradeQuantity(target),
-            'decrease-upgrade-quantity': () => this.sections.uniqueAbilities.handleDecreaseUpgradeQuantity(target),
-            'set-upgrade-quantity': () => this.sections.uniqueAbilities.handleSetUpgradeQuantity(target),
-            'create-custom-unique-ability': () => this.sections.uniqueAbilities.handleCreateCustomUniqueAbility(),
-            'purchase-action-upgrade': () => this.sections.actions.purchaseActionUpgrade(data.upgradeId),
-            'remove-action-upgrade': () => this.sections.actions.removeUpgrade(data.upgradeId)
-        };
-        handlers[action]?.();
-    }
-    
-    handleSectionSwitch(newSection) {
-        // This logic remains the same
-        if (newSection && newSection !== this.activeSection) {
-            this.activeSection = newSection;
-            this.updateActiveSectionUI();
-        }
-    }
-
-    updateActiveSectionUI() {
-        // This logic remains the same
-        document.querySelectorAll('.main-pool-tab-content .section-tab').forEach(tab => {
-            tab.classList.toggle('active', tab.dataset.tab === this.activeSection);
-        });
-        const contentArea = document.getElementById('main-pool-active-section');
-        if (contentArea && this.builder.currentCharacter) {
-            contentArea.innerHTML = this.renderActiveSectionContent(this.builder.currentCharacter);
-        }
-    }
-
-    onCharacterUpdate() {
-        // This logic remains the same
-        this.render();
+        this.containerElement = container;
+        this.containerElement.addEventListener('click', this.clickHandler);
     }
 
     removeEventListeners() {
-        // This logic remains the same
         if (this.clickHandler && this.containerElement) {
             this.containerElement.removeEventListener('click', this.clickHandler);
-            this.containerElement.removeEventListener('change', this.clickHandler);
-            this.containerElement.removeEventListener('input', this.clickHandler);
             this.clickHandler = null;
-            this.changeHandler = null;
-            this.inputHandler = null;
             this.containerElement = null;
         }
     }
 
-    generateTraitDisplayName(trait, character) {
-        // This logic remains the same
-        const statNames = trait.statBonuses?.map(statId => {
-            const statOptions = TraitFlawSystem.getTraitStatOptions();
-            const stat = statOptions.find(s => s.id === statId);
-            return stat ? stat.name : statId;
-        }) || [];
-        const conditionNames = trait.conditions?.map(conditionId => {
-            const tiers = TraitFlawSystem.getTraitConditionTiers();
-            for (const tier of Object.values(tiers)) {
-                const condition = tier.conditions?.find(c => c.id === conditionId);
-                if (condition) return condition.name;
+    selectBoon(boonId) {
+        const character = this.builder.currentCharacter;
+
+        // Check if we can select more boons
+        if (character.boons.length >= character.maxBoons) {
+            console.warn(`Cannot select more boons. Maximum of ${character.maxBoons} allowed for level ${character.level}.`);
+            return;
+        }
+
+        // Check if boon exists
+        const boon = gameDataManager.getBoonById(boonId);
+        if (!boon) {
+            console.error(`Boon ${boonId} not found`);
+            return;
+        }
+
+        // Add boon to character
+        character.boons.push(boonId);
+        character.touch();
+
+        console.log(`✅ Selected boon: ${boon.name}`);
+
+        // Update UI
+        this.updateBoonDisplay();
+        this.builder.updateCharacter();
+    }
+
+    removeBoon(boonId) {
+        const character = this.builder.currentCharacter;
+
+        // Remove boon from character
+        const index = character.boons.indexOf(boonId);
+        if (index > -1) {
+            character.boons.splice(index, 1);
+            character.touch();
+
+            console.log(`✅ Removed boon: ${boonId}`);
+
+            // Update UI
+            this.updateBoonDisplay();
+            this.builder.updateCharacter();
+        }
+    }
+
+    setCategory(category) {
+        this.selectedCategory = category;
+        this.updateCategoryFilters();
+        this.updateAvailableBoons();
+    }
+
+    updateBoonDisplay() {
+        // Update selected boons section
+        const selectedSection = document.querySelector('.selected-boons-section');
+        if (selectedSection) {
+            selectedSection.outerHTML = this.renderSelectedBoons();
+        }
+
+        // Update available boons section
+        this.updateAvailableBoons();
+
+        // Update progress
+        this.updateProgress();
+    }
+
+    updateAvailableBoons() {
+        const availableSection = document.querySelector('.available-boons-section');
+        if (availableSection) {
+            availableSection.outerHTML = this.renderAvailableBoons();
+        }
+    }
+
+    updateCategoryFilters() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.category === this.selectedCategory) {
+                btn.classList.add('active');
             }
-            return conditionId;
-        }) || [];
-        const statsText = statNames.length > 0 ? statNames.join('/') : 'Unknown Stats';
-        const conditionsText = conditionNames.length > 0 ? conditionNames.slice(0, 2).join(' & ') : 'Unknown Conditions';
-        return `+${character.tier} ${statsText} when ${conditionsText}${conditionNames.length > 2 ? '...' : ''}`;
+        });
+    }
+
+    updateProgress() {
+        const character = this.builder.currentCharacter;
+
+        // Update count
+        const countElement = document.getElementById('boon-count');
+        if (countElement) {
+            countElement.textContent = `${character.boons.length}/${character.maxBoons}`;
+        }
+
+        // Update progress bar
+        const progressFill = document.querySelector('.progress-fill');
+        if (progressFill) {
+            const percentage = (character.boons.length / character.maxBoons) * 100;
+            progressFill.style.width = `${percentage}%`;
+        }
+
+        // Update continue button
+        const continueBtn = document.querySelector('.continue-btn');
+        if (continueBtn) {
+            const complete = character.boons.length === character.maxBoons;
+            if (complete) {
+                continueBtn.classList.add('pulse');
+                continueBtn.textContent = 'Continue to Special Attacks →';
+            } else {
+                continueBtn.classList.remove('pulse');
+                continueBtn.textContent = `Continue (${character.boons.length}/${character.maxBoons}) →`;
+            }
+        }
+
+        this.builder.updateTabStates();
+    }
+
+    // Helper methods
+    getCategoryDisplayName(category) {
+        const names = {
+            passive_bonuses: 'Passive Bonuses',
+            conditional_bonuses: 'Conditional Bonuses',
+            traits: 'Traits',
+            special_abilities: 'Special Abilities'
+        };
+        return names[category] || category;
+    }
+
+    // Tab interface methods
+    onCharacterUpdated() {
+        this.render();
+    }
+
+    isComplete() {
+        const character = this.builder.currentCharacter;
+        return character.boons.length === character.maxBoons;
+    }
+
+    getValidationErrors() {
+        const errors = [];
+        const character = this.builder.currentCharacter;
+
+        if (character.boons.length < character.maxBoons) {
+            const remaining = character.maxBoons - character.boons.length;
+            errors.push(`Please select ${remaining} more boon${remaining !== 1 ? 's' : ''} (${character.boons.length}/${character.maxBoons} selected)`);
+        }
+
+        return errors;
     }
 }

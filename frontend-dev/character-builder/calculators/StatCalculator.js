@@ -1,833 +1,514 @@
-// frontend/character-builder/calculators/StatCalculator.js - REFACTORED with incremental updates and caching
-import { GameConstants } from '../core/GameConstants.js';
-import { TierSystem } from '../core/TierSystem.js';
+// StatCalculator.js - Simplified formula calculations
+// Based on current rulebook (not archive) - Clean slate implementation
 
 export class StatCalculator {
-    static cache = new Map();
-    static lastCharacterHash = null;
-    
-    // Calculate all derived stats for a character with caching
-    static calculateAllStats(character) {
-        const characterHash = this.getCharacterHash(character);
-        
-        // Return cached result if character hasn't changed
-        if (this.lastCharacterHash === characterHash && this.cache.has('allStats')) {
-            return this.cache.get('allStats');
-        }
-        
-        console.log('🔄 Calculating character stats (cache miss)');
-        
-        const baseStats = this.calculateBaseStats(character);
-        const archetypeStats = this.applyArchetypeBonuses(character, baseStats);
-        const boonStats = this.applyBoonEffects(character, archetypeStats);
-        const traitFlawStats = this.applyTraitFlawBonuses(character, boonStats);
-        const finalStats = this.applyFinalModifications(character, traitFlawStats);
-        
-        const result = {
+
+    // Calculate all combat and utility stats for a character
+    static calculateAllStats(character, gameData = {}) {
+        const tier = character.tier;
+        const attributes = character.attributes;
+        const archetypes = character.archetypes;
+        const boons = character.boons || [];
+
+        // Base movement calculation (simplified from archive)
+        const baseMovement = Math.max(
+            attributes.mobility + 6,
+            attributes.mobility + tier
+        );
+
+        // Basic combat stats with NEW SIMPLIFIED formulas
+        const baseStats = {
+            // Attack formulas (SIMPLIFIED)
+            accuracy: tier + attributes.focus, // Was: tier + focus + Power × 1.5
+            damage: tier + attributes.power,   // Was: tier + (power × 1.5)
+            conditions: tier + attributes.power,
+
+            // Defense formulas (SIMPLIFIED)
+            avoidance: 5 + tier + attributes.mobility,  // Was: 10 + tier + mobility
+            durability: tier + attributes.endurance,    // Was: tier + (endurance × 1.5)
+
+            // Secondary resistances (unchanged)
+            resolve: 10 + tier + attributes.focus,
+            stability: 10 + tier + attributes.power,
+            vitality: 10 + tier + attributes.endurance,
+
+            // Other stats
+            initiative: tier + attributes.focus + attributes.mobility + attributes.awareness,
+            movement: baseMovement,
+            capacity: attributes.power, // Can be modified by boons
+            maxHP: 100, // Base health
+            maxEfforts: 2 // Default efforts
+        };
+
+        // Apply archetype bonuses
+        const archetypeStats = this.applyArchetypeBonuses(baseStats, archetypes, tier, attributes);
+
+        // Apply boon bonuses
+        const finalStats = this.applyBoonBonuses(archetypeStats, boons, tier, attributes, gameData);
+
+        return {
             base: baseStats,
             withArchetypes: archetypeStats,
-            withBoons: boonStats,
-            withTraitsFlaws: traitFlawStats,
             final: finalStats,
-            breakdown: this.generateStatBreakdown(character, baseStats, finalStats)
-        };
-        
-        // Cache results
-        this.cache.set('allStats', result);
-        this.lastCharacterHash = characterHash;
-        
-        return result;
-    }
-    
-    // OPTIMIZED: Calculate only specific stat category
-    static calculateSpecificStats(character, category) {
-        const cacheKey = `${category}_${this.getCharacterHash(character)}`;
-        
-        if (this.cache.has(cacheKey)) {
-            return this.cache.get(cacheKey);
-        }
-        
-        let result;
-        switch(category) {
-            case 'combat':
-                result = this.calculateCombatStats(character);
-                break;
-            case 'defense':
-                result = this.calculateDefenseStats(character);
-                break;
-            case 'utility':
-                result = this.calculateUtilityStats(character);
-                break;
-            default:
-                result = this.calculateAllStats(character);
-        }
-        
-        this.cache.set(cacheKey, result);
-        return result;
-    }
-    
-    // Calculate base stats from tier and attributes
-    static calculateBaseStats(character) {
-        const tier = character.tier;
-        const attrs = character.attributes;
-        
-        return {
-            // Combat Stats
-            accuracy: tier + attrs.focus,
-            damage: tier + (attrs.power * GameConstants.POWER_DAMAGE_MULTIPLIER),
-            conditions: tier + attrs.power,
-            initiative: tier + attrs.mobility + attrs.focus + attrs.awareness,
-            movement: TierSystem.calculateBaseMovement(tier, attrs.mobility),
-            hp: TierSystem.calculateBaseHP(tier),
-            
-            // Defense Stats
-            avoidance: GameConstants.AVOIDANCE_BASE + tier + attrs.mobility,
-            durability: tier + (attrs.endurance * GameConstants.ENDURANCE_DURABILITY_MULTIPLIER),
-            resolve: GameConstants.RESOLVE_BASE + tier + attrs.focus,
-            stability: GameConstants.STABILITY_BASE + tier + attrs.power,
-            vitality: GameConstants.VITALITY_BASE + tier + attrs.endurance,
-            
-            // Utility Stats
-            skillBonus: tier, // Base bonus to all skill checks
-            expertiseBonus: 0, // Modified by archetype
-            
-            // Resource Stats
-            reactions: 1, // Base reactions per turn
-            quickActions: 1, // Base quick actions per turn
-            primaryActions: 1 // Base primary actions per turn
+            breakdown: this.generateStatBreakdown(baseStats, archetypeStats, finalStats, character)
         };
     }
-    
-    // OPTIMIZED: Calculate only combat stats
-    static calculateCombatStats(character) {
-        const tier = character.tier;
-        const attrs = character.attributes;
-        
-        const base = {
-            accuracy: tier + attrs.focus,
-            damage: tier + (attrs.power * GameConstants.POWER_DAMAGE_MULTIPLIER),
-            conditions: tier + attrs.power,
-            initiative: tier + attrs.mobility + attrs.focus + attrs.awareness,
-            movement: TierSystem.calculateBaseMovement(tier, attrs.mobility),
-            hp: TierSystem.calculateBaseHP(tier)
-        };
-        
-        // Apply archetype bonuses to combat stats only
-        return this.applyCombatArchetypeBonuses(character, base);
-    }
-    
-    // OPTIMIZED: Calculate only defense stats
-    static calculateDefenseStats(character) {
-        const tier = character.tier;
-        const attrs = character.attributes;
-        
-        const base = {
-            avoidance: GameConstants.AVOIDANCE_BASE + tier + attrs.mobility,
-            durability: tier + (attrs.endurance * GameConstants.ENDURANCE_DURABILITY_MULTIPLIER),
-            resolve: GameConstants.RESOLVE_BASE + tier + attrs.focus,
-            stability: GameConstants.STABILITY_BASE + tier + attrs.power,
-            vitality: GameConstants.VITALITY_BASE + tier + attrs.endurance
-        };
-        
-        // Apply archetype bonuses to defense stats only
-        return this.applyDefenseArchetypeBonuses(character, base);
-    }
-    
-    // OPTIMIZED: Calculate only utility stats
-    static calculateUtilityStats(character) {
-        const tier = character.tier;
-        
-        return {
-            skillBonus: tier + this.getUtilityArchetypeBonus(character),
-            expertiseBonus: 0 // Old expertise system removed
-        };
-    }
-    
-    // Apply archetype bonuses to base stats
-    static applyArchetypeBonuses(character, baseStats) {
-        const stats = { ...baseStats };
-        const archetypes = character.archetypes;
-        const tier = character.tier;
-        const attrs = character.attributes;
-        
-        // Movement Archetype Bonuses
+
+    // Apply simplified archetype effects to stats
+    static applyArchetypeBonuses(stats, archetypes, tier, attributes) {
+        const bonusedStats = { ...stats };
+
+        // Movement archetype bonuses
         switch(archetypes.movement) {
             case 'swift':
-                stats.movement += Math.ceil(tier / 2);
+                bonusedStats.movement += Math.ceil(tier / 2);
                 break;
             case 'skirmisher':
-                stats.reach = 1;
-                stats.opportunityImmunity = true;
+                // Immunity to punish attacks + reach bonus handled elsewhere
+                bonusedStats.reach = 1;
+                bonusedStats.immunities = (bonusedStats.immunities || []).concat(['punish_attacks_movement']);
                 break;
             case 'behemoth':
-                stats.immunities = ['grabbed', 'moved', 'prone', 'stunned'];
-                break;
-            case 'bulwark':
-                stats.adjacentEnemyPenalty = 'half_movement';
+                bonusedStats.immunities = (bonusedStats.immunities || []).concat(['grabbed', 'moved', 'prone', 'stunned']);
                 break;
             case 'vanguard':
-                stats.movement += attrs.endurance;
-                break;
-            case 'flight':
-                stats.movementType = 'flight';
+                bonusedStats.doubleMovementTurn1 = true;
+                bonusedStats.enhancedPunishAttacks = true;
                 break;
             case 'teleportation':
-                stats.movementType = 'teleportation';
-                stats.movement -= 2;
+                bonusedStats.movement -= 2; // Penalty for teleportation
+                bonusedStats.movementType = 'teleportation';
+                break;
+            case 'flight':
+                bonusedStats.movementType = 'flight';
+                break;
+            case 'portal':
+                bonusedStats.movementType = 'portal';
                 break;
         }
-        
-        // Attack Type Archetype Bonuses
-        switch(archetypes.attackType) {
-            case 'singleTarget':
-                stats.freeAttackTypes = ['melee_ac', 'melee_dg_cn', 'ranged'];
-                break;
-            case 'aoeSpecialist':
-                stats.freeAttackTypes = ['area'];
-                break;
-            case 'directSpecialist':
-                stats.freeAttackTypes = ['direct'];
-                break;
-        }
-        
-        // Effect Type Archetype Bonuses
-        switch(archetypes.effectType) {
-            case 'crowdControl':
-                stats.damage -= tier;
-                stats.freeAdvancedConditions = 2;
-                break;
-            case 'hybridSpecialist':
-                stats.mandatoryHybrid = true;
-                break;
-        }
-        
-        // Unique Ability Archetype Bonuses
-        switch(archetypes.uniqueAbility) {
-            case 'versatileMaster':
-                stats.quickActions = tier >= 8 ? 3 : 2;
-                break;
-            case 'cutAbove':
-                const bonus = tier <= 4 ? 1 : tier <= 7 ? 2 : 3;
-                stats.accuracy += bonus;
-                stats.damage += bonus;
-                stats.conditions += bonus;
-                stats.avoidance += bonus;
-                stats.durability += bonus;
-                stats.resolve += bonus;
-                stats.stability += bonus;
-                stats.vitality += bonus;
-                stats.initiative += bonus;
-                stats.movement += bonus;
-                break;
-        }
-        
-        // Defensive Archetype Bonuses
-        switch(archetypes.defensive) {
-            case 'stalwart':
-                stats.avoidance -= tier;
-                stats.damageResistance = 'chosen_type_half';
-                break;
-            case 'fortress':
-                stats.durability += tier;
-                break;
-            case 'resilient':
-                stats.resolve += tier;
-                stats.stability += tier;
-                stats.vitality += tier;
-                break;
-            case 'immutable':
-                stats.immunity = 'chosen_resistance_category';
-                break;
-            case 'juggernaut':
-                stats.hp += tier * 5;
-                break;
-        }
-        
-        // Utility Archetype Bonuses are now GM adjudicated and do not affect calculated stats.
-        // The old logic has been removed.
-        
-        return stats;
-    }
-    
-    // OPTIMIZED: Apply only combat archetype bonuses
-    static applyCombatArchetypeBonuses(character, baseStats) {
-        const stats = { ...baseStats };
-        const archetypes = character.archetypes;
-        const tier = character.tier;
-        
-        // Only movement bonuses that affect combat stats
-        if (archetypes.movement === 'swift') {
-            stats.movement += Math.ceil(tier / 2);
-        } else if (archetypes.movement === 'vanguard') {
-            stats.movement += character.attributes.endurance;
-        } else if (archetypes.movement === 'teleportation') {
-            stats.movement -= 2;
-        }
-        
-        // Effect type bonuses that affect combat
-        if (archetypes.effectType === 'crowdControl') {
-            stats.damage -= tier;
-        }
-        
-        // Unique ability bonuses that affect combat
-        if (archetypes.uniqueAbility === 'versatileMaster') {
-            stats.quickActions = tier >= 8 ? 3 : 2;
-        } else if (archetypes.uniqueAbility === 'cutAbove') {
-            const bonus = tier <= 4 ? 1 : tier <= 7 ? 2 : 3;
-            stats.accuracy += bonus;
-            stats.damage += bonus;
-            stats.conditions += bonus;
-            stats.initiative += bonus;
-            stats.movement += bonus;
-        }
-        
-        return stats;
-    }
-    
-    // OPTIMIZED: Apply only defense archetype bonuses
-    static applyDefenseArchetypeBonuses(character, baseStats) {
-        const stats = { ...baseStats };
-        const archetypes = character.archetypes;
-        const tier = character.tier;
-        
+
         // Defensive archetype bonuses
         switch(archetypes.defensive) {
-            case 'stalwart':
-                stats.avoidance -= tier;
+            case 'iron_will':
+                bonusedStats.resolve += tier * 2;
                 break;
-            case 'fortress':
-                stats.durability += tier;
+            case 'immovable':
+                bonusedStats.stability += tier * 2;
                 break;
             case 'resilient':
-                stats.resolve += tier;
-                stats.stability += tier;
-                stats.vitality += tier;
-                break;
-            case 'juggernaut':
-                // HP bonus would be calculated separately
+                bonusedStats.vitality += tier * 2;
                 break;
         }
-        
-        // Cut Above affects all stats including defenses
-        if (archetypes.uniqueAbility === 'cutAbove') {
-            const bonus = tier <= 4 ? 1 : tier <= 7 ? 2 : 3;
-            stats.avoidance += bonus;
-            stats.durability += bonus;
-            stats.resolve += bonus;
-            stats.stability += bonus;
-            stats.vitality += bonus;
+
+        // Attack archetype bonuses (only certain ones get special attacks)
+        switch(archetypes.attack) {
+            case 'focused_attacker':
+                bonusedStats.specialAttackCount = 1;
+                bonusedStats.specialAttackPoints = tier * 20;
+                break;
+            case 'dual_natured':
+                bonusedStats.specialAttackCount = 2;
+                bonusedStats.specialAttackPoints = tier * 15;
+                break;
+            case 'versatile_master':
+                bonusedStats.specialAttackCount = 5;
+                bonusedStats.specialAttackPoints = tier * 10;
+                break;
+            case 'shared_charges':
+                bonusedStats.specialAttackCount = 3;
+                bonusedStats.specialAttackPoints = tier * 10;
+                bonusedStats.sharedCharges = 10;
+                break;
+            case 'specialist':
+                bonusedStats.extraBoons = Math.max(0, tier - 2);
+                bonusedStats.restrictions = (bonusedStats.restrictions || []).concat(['no_attack_upgrades']);
+                break;
         }
-        
-        return stats;
+
+        // Utility archetype bonuses (simplified skill system)
+        switch(archetypes.utility) {
+            case 'specialized':
+                bonusedStats.specializedAttribute = true; // Will need to store choice
+                bonusedStats.specializedBonus = tier * 3;
+                break;
+            case 'practical':
+                bonusedStats.practicalAttributes = true; // Will need to store choices
+                bonusedStats.practicalBonus = tier * 2;
+                break;
+            case 'jack_of_all_trades':
+                bonusedStats.jackOfAllTradesBonus = tier;
+                break;
+        }
+
+        return bonusedStats;
     }
-    
-    // Get utility archetype bonus
-    static getUtilityArchetypeBonus(character) {
-        // This is for the "Jack of All Trades" bonus.
-        // It's a general skill bonus, not tied to expertise.
-        if (character.archetypes.utility === 'jackOfAllTrades') {
-            return character.tier; // Additional tier bonus to all skill checks
+
+    // Apply boon effects to stats
+    static applyBoonBonuses(stats, boons, tier, attributes, gameData) {
+        const bonusedStats = { ...stats };
+
+        // Get boon data from gameData if available
+        const boonData = gameData.boons || [];
+
+        for (const boonId of boons) {
+            const boon = boonData.find(b => b.id === boonId);
+            if (!boon) continue;
+
+            if (boon.effects) {
+                for (const effect of boon.effects) {
+                    switch(effect.type) {
+                        case 'stat_bonus':
+                            const bonus = this.evaluateBonus(effect.bonus, tier, attributes);
+                            switch(effect.stat) {
+                                case 'accuracy':
+                                    bonusedStats.accuracy += bonus;
+                                    break;
+                                case 'damage':
+                                    bonusedStats.damage += bonus;
+                                    break;
+                                case 'conditions':
+                                    bonusedStats.conditions += bonus;
+                                    break;
+                                case 'avoidance':
+                                    bonusedStats.avoidance += bonus;
+                                    break;
+                                case 'durability':
+                                    bonusedStats.durability += bonus;
+                                    break;
+                                case 'movement':
+                                    bonusedStats.movement += bonus;
+                                    break;
+                                case 'all_resistances':
+                                    bonusedStats.resolve += bonus;
+                                    bonusedStats.stability += bonus;
+                                    bonusedStats.vitality += bonus;
+                                    break;
+                                case 'max_efforts':
+                                    bonusedStats.maxEfforts += bonus;
+                                    break;
+                            }
+                            break;
+
+                        case 'aura':
+                            if (effect.damage) {
+                                const auraDamage = this.evaluateBonus(effect.damage, tier, attributes);
+                                bonusedStats.auraDamage = auraDamage;
+                                bonusedStats.auraRadius = effect.radius;
+                            }
+                            break;
+
+                        case 'support_aura':
+                            bonusedStats.supportAuraBonus = this.evaluateBonus(effect.bonus, tier, attributes);
+                            bonusedStats.supportAuraRadius = effect.radius;
+                            break;
+
+                        case 'immunity':
+                            if (effect.value) {
+                                bonusedStats.immunities = (bonusedStats.immunities || []).concat(effect.value);
+                            }
+                            break;
+
+                        case 'vulnerability':
+                            if (effect.value) {
+                                bonusedStats.vulnerabilities = (bonusedStats.vulnerabilities || []).concat(effect.value);
+                            }
+                            break;
+
+                        case 'special':
+                            // Handle special abilities
+                            switch(effect.value) {
+                                case 'lucky_rerolls':
+                                    bonusedStats.luckyRerolls = effect.count || 3;
+                                    break;
+                                case 'perfectionist_reroll':
+                                    bonusedStats.perfectionistReroll = true;
+                                    break;
+                                case 'regeneration':
+                                    bonusedStats.regeneration = effect.healing || 20;
+                                    break;
+                                case 'heal':
+                                    bonusedStats.healAbility = {
+                                        healing: effect.healing || 25,
+                                        uses: effect.uses || 5,
+                                        range: effect.range || 'adjacent'
+                                    };
+                                    break;
+                                case 'create_wall':
+                                    bonusedStats.createWall = {
+                                        uses: effect.uses || 3
+                                    };
+                                    break;
+                                case 'invisibility':
+                                    bonusedStats.invisibility = true;
+                                    break;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            // Apply drawback effects for passive bonuses
+            if (boon.drawback) {
+                switch(boon.drawback) {
+                    case 'sickly':
+                        bonusedStats.maxHP -= 30;
+                        break;
+                    case 'peaked':
+                        bonusedStats.maxEfforts = 0;
+                        break;
+                    case 'slow':
+                        bonusedStats.restrictions = (bonusedStats.restrictions || []).concat(['no_movement_archetype']);
+                        break;
+                    case 'frail':
+                        bonusedStats.restrictions = (bonusedStats.restrictions || []).concat(['no_defensive_archetype']);
+                        break;
+                    case 'combat_focused':
+                        bonusedStats.restrictions = (bonusedStats.restrictions || []).concat(['no_utility_abilities']);
+                        break;
+                }
+            }
         }
+
+        return bonusedStats;
+    }
+
+    // Evaluate bonus expressions like "tier * 2" or "10 + tier + focus + power"
+    static evaluateBonus(bonusExpression, tier, attributes) {
+        if (typeof bonusExpression === 'number') {
+            return bonusExpression;
+        }
+
+        if (typeof bonusExpression === 'string') {
+            // Simple expression evaluation
+            const expression = bonusExpression
+                .replace(/tier/g, tier)
+                .replace(/focus/g, attributes.focus || 0)
+                .replace(/power/g, attributes.power || 0)
+                .replace(/mobility/g, attributes.mobility || 0)
+                .replace(/endurance/g, attributes.endurance || 0)
+                .replace(/awareness/g, attributes.awareness || 0)
+                .replace(/communication/g, attributes.communication || 0)
+                .replace(/intelligence/g, attributes.intelligence || 0)
+                .replace(/ceil\(/g, 'Math.ceil(')
+                .replace(/max\(/g, 'Math.max(');
+
+            try {
+                return eval(expression);
+            } catch (e) {
+                console.warn(`Failed to evaluate bonus expression: ${bonusExpression}`, e);
+                return 0;
+            }
+        }
+
         return 0;
     }
-    
-    // Apply boon effects to stats
-    static applyBoonEffects(character, baseStats) {
-        const stats = { ...baseStats };
-        
-        character.mainPoolPurchases.boons.forEach(boon => {
-            switch(boon.boonId) {
-                case 'speedOfThought':
-                    stats.initiative = stats.initiative - character.attributes.awareness + (character.attributes.intelligence * 2);
-                    break;
-                case 'combatReflexes':
-                    stats.reactions += 1;
-                    break;
-                case 'perfectionist':
-                    stats.rerollOnes = true;
-                    break;
-                case 'robot':
-                    stats.immunities = (stats.immunities || []).concat(['vitality_conditions', 'resolve_conditions']);
-                    stats.vulnerabilities = (stats.vulnerabilities || []).concat(['electricity', 'hacking']);
-                    stats.noPerMinuteHealing = true;
-                    break;
-                case 'psychic':
-                    stats.conditionTargeting = 'resolve';
-                    break;
-                case 'telekinetic':
-                    stats.conditionTargeting = 'stability';
-                    break;
-                case 'biohacker':
-                    stats.conditionTargeting = 'vitality';
-                    break;
+
+    // Calculate attribute allocation status
+    static calculateAttributeAllocation(character) {
+        const tier = character.tier;
+        const attributes = character.attributes;
+
+        const combatSpent = attributes.focus + attributes.power +
+                           attributes.mobility + attributes.endurance;
+        const utilitySpent = attributes.awareness + attributes.communication +
+                            attributes.intelligence;
+
+        return {
+            combat: {
+                spent: combatSpent,
+                available: tier * 2,
+                remaining: (tier * 2) - combatSpent
+            },
+            utility: {
+                spent: utilitySpent,
+                available: tier,
+                remaining: tier - utilitySpent
             }
-        });
-        
-        return stats;
+        };
     }
-    
-    // Apply trait and flaw bonuses with stacking reduction
-    static applyTraitFlawBonuses(character, baseStats) {
-        const stats = { ...baseStats };
-        
-        // Calculate stacking bonuses from traits and flaws
-        const stackingBonuses = this.calculateStackingBonuses(character);
-        
-        // Apply bonuses to stats
-        Object.entries(stackingBonuses).forEach(([stat, bonus]) => {
-            if (stats[stat] !== undefined) {
-                stats[stat] += bonus;
-            }
-        });
-        
-        return stats;
+
+    // Calculate boon allocation status
+    static calculateBoonAllocation(character) {
+        const maxBoons = character.level;
+        const currentBoons = character.boons.length;
+
+        return {
+            used: currentBoons,
+            available: maxBoons,
+            remaining: maxBoons - currentBoons
+        };
     }
-    
-    // OPTIMIZED: Calculate stacking bonuses with reduction (improved algorithm)
-    static calculateStackingBonuses(character) {
-        const bonuses = {};
-        
-        // Collect all stat bonuses by type
-        character.mainPoolPurchases.traits.forEach(trait => {
-            trait.statBonuses.forEach(stat => {
-                if (!bonuses[stat]) bonuses[stat] = [];
-                bonuses[stat].push({
-                    source: 'trait',
-                    name: trait.name || 'Trait',
-                    baseValue: character.tier
-                });
-            });
-        });
-        
-        // NEW ECONOMICS: Flaws give stat bonuses (not point bonuses)
-        character.mainPoolPurchases.flaws.forEach(flaw => {
-            if (flaw.statBonus) {
-                if (!bonuses[flaw.statBonus]) bonuses[flaw.statBonus] = [];
-                bonuses[flaw.statBonus].push({
-                    source: 'flaw',
-                    name: flaw.name,
-                    baseValue: character.tier
-                });
-            }
-        });
-        
-        // Apply stacking reduction (each additional bonus to same stat -1)
-        const finalBonuses = {};
-        Object.entries(bonuses).forEach(([stat, bonusArray]) => {
-            let total = 0;
-            bonusArray.forEach((bonus, index) => {
-                const stackingPenalty = index; // 0 for first, 1 for second, etc.
-                const actualValue = Math.max(1, bonus.baseValue - stackingPenalty); // Minimum 1
-                total += actualValue;
-            });
-            finalBonuses[stat] = total;
-        });
-        
-        return finalBonuses;
+
+    // Calculate level progression info
+    static calculateLevelProgression(level) {
+        const tierTable = {
+            1: { tier: 3, boons: 1 },
+            2: { tier: 3, boons: 2 },
+            3: { tier: 4, boons: 3 },
+            4: { tier: 4, boons: 4 },
+            5: { tier: 5, boons: 5 }
+        };
+
+        return tierTable[level] || { tier: 4, boons: 4 };
     }
-    
-    // Apply final modifications (flaw effects)
-    static applyFinalModifications(character, baseStats) {
-        const stats = { ...baseStats };
-        
-        // Apply flaw effects
-        character.mainPoolPurchases.flaws.forEach(flaw => {
-            switch(flaw.flawId) {
-                case 'sickly':
-                    stats.hp -= 30;
-                    break;
-                case 'unresponsive':
-                    stats.reactions = 0;
-                    stats.initiative -= character.tier;
-                    stats.noSurpriseRounds = true;
-                    break;
-                case 'weak':
-                    // This affects point pools, not final stats
-                    break;
-            }
-        });
-        
-        // Ensure minimums
-        stats.hp = Math.max(1, stats.hp);
-        stats.reactions = Math.max(0, stats.reactions);
-        stats.avoidance = Math.max(0, stats.avoidance);
-        
-        return stats;
-    }
-    
-    // Generate detailed stat breakdown for Summary Tab
-    static generateStatBreakdown(character, baseStats, finalStats) {
+
+    // Generate detailed stat breakdown for display
+    static generateStatBreakdown(baseStats, archetypeStats, finalStats, character) {
         const breakdown = {};
-        
-        // Focus on calculated stats that need detailed breakdowns
-        const calculatedStats = ['hp', 'avoidance', 'durability', 'resolve', 'stability', 'vitality', 
-                                'accuracy', 'damage', 'conditions', 'initiative', 'movement'];
-        
-        calculatedStats.forEach(stat => {
-            if (finalStats[stat] !== undefined) {
-                breakdown[stat] = this.generateDetailedStatBreakdown(character, stat, baseStats, finalStats);
-            }
-        });
-        
+        const mainStats = ['accuracy', 'damage', 'conditions', 'avoidance', 'durability',
+                          'resolve', 'stability', 'vitality', 'movement', 'maxHP'];
+
+        for (const stat of mainStats) {
+            breakdown[stat] = {
+                base: baseStats[stat] || 0,
+                archetype: (archetypeStats[stat] || 0) - (baseStats[stat] || 0),
+                boons: (finalStats[stat] || 0) - (archetypeStats[stat] || 0),
+                total: finalStats[stat] || 0
+            };
+        }
+
         return breakdown;
     }
-    
-    // Generate detailed breakdown for a single stat
-    static generateDetailedStatBreakdown(character, statName, baseStats, finalStats) {
-        const breakdown = [];
+
+    // Get detailed stat breakdown with source information
+    static getDetailedBreakdown(character, stat, gameData = {}) {
         const tier = character.tier;
-        const attrs = character.attributes;
-        
+        const attributes = character.attributes;
+        const sources = [];
+
         // Base calculation components
-        switch(statName) {
-            case 'hp':
-                breakdown.push({ source: 'Base', value: TierSystem.calculateBaseHP(tier) });
-                break;
-                
-            case 'avoidance':
-                breakdown.push({ source: 'Base', value: GameConstants.AVOIDANCE_BASE });
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Mobility', value: attrs.mobility });
-                break;
-                
-            case 'durability':
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Endurance', value: attrs.endurance * GameConstants.ENDURANCE_DURABILITY_MULTIPLIER });
-                break;
-                
-            case 'resolve':
-                breakdown.push({ source: 'Base', value: GameConstants.RESOLVE_BASE });
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Focus', value: attrs.focus });
-                break;
-                
-            case 'stability':
-                breakdown.push({ source: 'Base', value: GameConstants.STABILITY_BASE });
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Power', value: attrs.power });
-                break;
-                
-            case 'vitality':
-                breakdown.push({ source: 'Base', value: GameConstants.VITALITY_BASE });
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Endurance', value: attrs.endurance });
-                break;
-                
+        switch(stat) {
             case 'accuracy':
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Focus', value: attrs.focus });
+                sources.push({ source: 'Tier', value: tier });
+                sources.push({ source: 'Focus', value: attributes.focus });
                 break;
-                
             case 'damage':
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Power', value: attrs.power * GameConstants.POWER_DAMAGE_MULTIPLIER });
+                sources.push({ source: 'Tier', value: tier });
+                sources.push({ source: 'Power', value: attributes.power });
                 break;
-                
             case 'conditions':
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Power', value: attrs.power });
+                sources.push({ source: 'Tier', value: tier });
+                sources.push({ source: 'Power', value: attributes.power });
                 break;
-                
-            case 'initiative':
-                breakdown.push({ source: 'Tier', value: tier });
-                breakdown.push({ source: 'Mobility', value: attrs.mobility });
-                breakdown.push({ source: 'Focus', value: attrs.focus });
-                breakdown.push({ source: 'Awareness', value: attrs.awareness });
+            case 'avoidance':
+                sources.push({ source: 'Base', value: 5 });
+                sources.push({ source: 'Tier', value: tier });
+                sources.push({ source: 'Mobility', value: attributes.mobility });
                 break;
-                
+            case 'durability':
+                sources.push({ source: 'Tier', value: tier });
+                sources.push({ source: 'Endurance', value: attributes.endurance });
+                break;
+            case 'resolve':
+                sources.push({ source: 'Base', value: 10 });
+                sources.push({ source: 'Tier', value: tier });
+                sources.push({ source: 'Focus', value: attributes.focus });
+                break;
+            case 'stability':
+                sources.push({ source: 'Base', value: 10 });
+                sources.push({ source: 'Tier', value: tier });
+                sources.push({ source: 'Power', value: attributes.power });
+                break;
+            case 'vitality':
+                sources.push({ source: 'Base', value: 10 });
+                sources.push({ source: 'Tier', value: tier });
+                sources.push({ source: 'Endurance', value: attributes.endurance });
+                break;
             case 'movement':
-                breakdown.push({ source: 'Base', value: TierSystem.calculateBaseMovement(tier, attrs.mobility) });
+                const baseMovement = Math.max(attributes.mobility + 6, attributes.mobility + tier);
+                sources.push({ source: 'Base Movement', value: baseMovement });
+                break;
+            case 'maxHP':
+                sources.push({ source: 'Base HP', value: 100 });
                 break;
         }
-        
+
         // Add archetype bonuses
-        const archetypeBonuses = this.getArchetypeStatBonuses(character, statName);
-        breakdown.push(...archetypeBonuses);
-        
-        // Add boon bonuses
-        const boonBonuses = this.getBoonStatBonuses(character, statName);
-        breakdown.push(...boonBonuses);
-        
-        // Add trait/flaw bonuses
-        const traitFlawBonuses = this.getTraitFlawStatBonuses(character, statName);
-        breakdown.push(...traitFlawBonuses);
-        
-        // Add flaw penalties
-        const flawPenalties = this.getFlawPenalties(character, statName);
-        breakdown.push(...flawPenalties);
-        
-        // Filter out zero values and return
-        return breakdown.filter(item => item.value !== 0);
-    }
-    
-    // Get sources of stat modifications
-    static getStatSources(character, stat, totalDifference) {
-        const sources = [];
-        
-        // Check archetype bonuses
-        const archetypeBonuses = this.getArchetypeStatBonuses(character, stat);
+        const archetypeBonuses = this.getArchetypeStatBonus(character, stat);
         if (archetypeBonuses.length > 0) {
             sources.push(...archetypeBonuses);
         }
-        
-        // Check boon bonuses
-        const boonBonuses = this.getBoonStatBonuses(character, stat);
+
+        // Add boon bonuses
+        const boonBonuses = this.getBoonStatBonus(character, stat, gameData);
         if (boonBonuses.length > 0) {
             sources.push(...boonBonuses);
         }
-        
-        // Check trait/flaw bonuses
-        const traitFlawBonuses = this.getTraitFlawStatBonuses(character, stat);
-        if (traitFlawBonuses.length > 0) {
-            sources.push(...traitFlawBonuses);
-        }
-        
-        return sources;
+
+        return sources.filter(s => s.value !== 0);
     }
-    
-    // Get archetype contributions to a stat
-    static getArchetypeStatBonuses(character, stat) {
+
+    // Get archetype contributions to a specific stat
+    static getArchetypeStatBonus(character, stat) {
         const bonuses = [];
         const archetypes = character.archetypes;
         const tier = character.tier;
-        
-        // Movement archetype contributions
+
+        // Movement archetype bonuses
         if (stat === 'movement') {
             switch(archetypes.movement) {
                 case 'swift':
                     bonuses.push({ source: 'Swift Archetype', value: Math.ceil(tier / 2) });
-                    break;
-                case 'vanguard':
-                    bonuses.push({ source: 'Vanguard Archetype', value: character.attributes.endurance });
                     break;
                 case 'teleportation':
                     bonuses.push({ source: 'Teleportation Penalty', value: -2 });
                     break;
             }
         }
-        
-        // Defensive archetype contributions
-        if (archetypes.defensive) {
-            switch(archetypes.defensive) {
-                case 'stalwart':
-                    if (stat === 'avoidance') {
-                        bonuses.push({ source: 'Stalwart Penalty', value: -tier });
-                    }
-                    break;
-                case 'fortress':
-                    if (stat === 'durability') {
-                        bonuses.push({ source: 'Fortress Archetype', value: tier });
-                    }
-                    break;
-                case 'resilient':
-                    if (stat === 'resolve') {
-                        bonuses.push({ source: 'Resilient Archetype', value: tier });
-                    } else if (stat === 'stability') {
-                        bonuses.push({ source: 'Resilient Archetype', value: tier });
-                    } else if (stat === 'vitality') {
-                        bonuses.push({ source: 'Resilient Archetype', value: tier });
-                    }
-                    break;
-                case 'juggernaut':
-                    if (stat === 'hp') {
-                        bonuses.push({ source: 'Juggernaut Archetype', value: tier * 5 });
-                    }
-                    break;
-            }
-        }
-        
-        // Unique ability archetype contributions
-        if (archetypes.uniqueAbility === 'cutAbove') {
-            const cutAboveBonus = tier <= 3 ? 1 : tier <= 6 ? 2 : 3;
-            const cutAboveStats = ['accuracy', 'damage', 'conditions', 'avoidance', 'durability', 'resolve', 'stability', 'vitality', 'initiative', 'movement'];
-            if (cutAboveStats.includes(stat)) {
-                bonuses.push({ source: 'Cut Above Archetype', value: cutAboveBonus });
-            }
-        }
-        
-        // Effect type archetype contributions
-        if (archetypes.effectType === 'crowdControl' && stat === 'damage') {
-            bonuses.push({ source: 'Crowd Control Penalty', value: -tier });
-        }
-        
-        return bonuses;
-    }
-    
-    // Get boon contributions to a stat
-    static getBoonStatBonuses(character, stat) {
-        const bonuses = [];
-        
-        character.mainPoolPurchases.boons.forEach(boon => {
-            switch(boon.boonId) {
-                case 'combatReflexes':
-                    if (stat === 'reactions') {
-                        bonuses.push({ source: 'Combat Reflexes Boon', value: 1 });
-                    }
-                    break;
-                case 'speedOfThought':
-                    if (stat === 'initiative') {
-                        // Initiative change: -awareness + (intelligence * 2)
-                        const awarenessLoss = -character.attributes.awareness;
-                        const intelligenceGain = character.attributes.intelligence * 2;
-                        const netChange = awarenessLoss + intelligenceGain;
-                        if (netChange !== 0) {
-                            bonuses.push({ source: 'Speed of Thought Boon', value: netChange });
-                        }
-                    }
-                    break;
-            }
-        });
-        
-        return bonuses;
-    }
-    
-    // Get trait/flaw contributions to a stat
-    static getTraitFlawStatBonuses(character, stat) {
-        const bonuses = [];
-        const stackingBonuses = this.calculateStackingBonuses(character);
-        
-        if (stackingBonuses[stat]) {
-            // Get detailed breakdown of trait/flaw contributions
-            const traitCount = character.mainPoolPurchases.traits.filter(trait => 
-                trait.statBonuses && trait.statBonuses.includes(stat)
-            ).length;
-            
-            const flawCount = character.mainPoolPurchases.flaws.filter(flaw => 
-                flaw.statBonus === stat
-            ).length;
-            
-            if (traitCount > 0 || flawCount > 0) {
-                let sourceName = '';
-                if (traitCount > 0 && flawCount > 0) {
-                    sourceName = `Traits & Flaws (${traitCount + flawCount} total)`;
-                } else if (traitCount > 0) {
-                    sourceName = `Traits (${traitCount} total)`;
-                } else {
-                    sourceName = `Flaws (${flawCount} total)`;
+
+        // Defensive archetype bonuses
+        switch(archetypes.defensive) {
+            case 'iron_will':
+                if (stat === 'resolve') {
+                    bonuses.push({ source: 'Iron Will Archetype', value: tier * 2 });
                 }
-                
-                bonuses.push({ source: sourceName, value: stackingBonuses[stat] });
-            }
+                break;
+            case 'immovable':
+                if (stat === 'stability') {
+                    bonuses.push({ source: 'Immovable Archetype', value: tier * 2 });
+                }
+                break;
+            case 'resilient':
+                if (stat === 'vitality') {
+                    bonuses.push({ source: 'Resilient Archetype', value: tier * 2 });
+                }
+                break;
         }
-        
+
         return bonuses;
     }
-    
-    // Get flaw penalties to a stat
-    static getFlawPenalties(character, stat) {
-        const penalties = [];
-        
-        character.mainPoolPurchases.flaws.forEach(flaw => {
-            switch(flaw.flawId) {
-                case 'sickly':
-                    if (stat === 'hp') {
-                        penalties.push({ source: 'Sickly Flaw', value: -30 });
+
+    // Get boon contributions to a specific stat
+    static getBoonStatBonus(character, stat, gameData = {}) {
+        const bonuses = [];
+        const boonData = gameData.boons || [];
+
+        for (const boonId of character.boons) {
+            const boon = boonData.find(b => b.id === boonId);
+            if (!boon) continue;
+
+            // Check for stat bonuses in boon effects
+            if (boon.effects) {
+                for (const effect of boon.effects) {
+                    if (effect.type === 'stat_bonus' && effect.stat === stat) {
+                        const bonus = this.evaluateBonus(effect.bonus, character.tier, character.attributes);
+                        bonuses.push({ source: boon.name, value: bonus });
+                    } else if (effect.type === 'stat_bonus' && effect.stat === 'all_resistances' &&
+                              ['resolve', 'stability', 'vitality'].includes(stat)) {
+                        const bonus = this.evaluateBonus(effect.bonus, character.tier, character.attributes);
+                        bonuses.push({ source: `${boon.name} (All Resistances)`, value: bonus });
                     }
-                    break;
-                case 'unresponsive':
-                    if (stat === 'initiative') {
-                        penalties.push({ source: 'Unresponsive Flaw', value: -character.tier });
-                    }
-                    break;
-            }
-        });
-        
-        return penalties;
-    }
-    
-    // CACHING UTILITIES
-    
-    // Generate hash for character to detect changes
-    static getCharacterHash(character) {
-        const relevantData = {
-            tier: character.tier,
-            archetypes: character.archetypes,
-            attributes: character.attributes,
-            mainPoolPurchases: character.mainPoolPurchases,
-            utilityPurchases: character.utilityPurchases
-        };
-        
-        return JSON.stringify(relevantData);
-    }
-    
-    // Clear cache
-    static clearCache() {
-        this.cache.clear();
-        this.lastCharacterHash = null;
-        console.log('🗑️ Stat calculator cache cleared');
-    }
-    
-    // Calculate combat effectiveness metrics
-    static calculateCombatEffectiveness(character) {
-        const stats = this.calculateAllStats(character).final;
-        
-        return {
-            offensive: {
-                accuracy: stats.accuracy,
-                damage: stats.damage,
-                conditions: stats.conditions,
-                initiative: stats.initiative,
-                actions: stats.primaryActions + stats.quickActions
-            },
-            defensive: {
-                avoidance: stats.avoidance,
-                durability: stats.durability,
-                hp: stats.hp,
-                resistances: {
-                    resolve: stats.resolve,
-                    stability: stats.stability,
-                    vitality: stats.vitality
                 }
-            },
-            mobility: {
-                movement: stats.movement,
-                movementType: stats.movementType || 'standard',
-                reactions: stats.reactions
-            },
-            utility: {
-                skillBonus: stats.skillBonus,
-                expertiseBonus: stats.expertiseBonus
             }
-        };
-    }
-    
-    // Compare stats against tier benchmarks
-    static compareToBenchmarks(character) {
-        const stats = this.calculateAllStats(character).final;
-        const tier = character.tier;
-        
-        const benchmarks = {
-            accuracy: tier + (tier * 0.5),
-            damage: tier + (tier * 0.75),
-            conditions: tier + (tier * 0.5),
-            avoidance: 10 + tier + (tier * 0.5),
-            durability: tier + (tier * 0.75),
-            hp: 100 + (tier * 7),
-            movement: tier + 8
-        };
-        
-        const comparison = {};
-        Object.entries(benchmarks).forEach(([stat, benchmark]) => {
-            const actual = stats[stat] || 0;
-            const ratio = benchmark > 0 ? actual / benchmark : 0;
-            
-            comparison[stat] = {
-                actual,
-                benchmark,
-                ratio,
-                rating: this.getRating(ratio)
-            };
-        });
-        
-        return comparison;
-    }
-    
-    // Get performance rating
-    static getRating(ratio) {
-        if (ratio >= 1.2) return 'excellent';
-        if (ratio >= 1.0) return 'good';
-        if (ratio >= 0.8) return 'adequate';
-        if (ratio >= 0.6) return 'weak';
-        return 'poor';
+
+            // Check for drawback penalties
+            if (boon.drawback) {
+                if (boon.drawback === 'sickly' && stat === 'maxHP') {
+                    bonuses.push({ source: `${boon.name} (Drawback)`, value: -30 });
+                }
+            }
+        }
+
+        return bonuses;
     }
 }

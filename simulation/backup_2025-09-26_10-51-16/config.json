@@ -39,7 +39,7 @@
     ]
   ],
   "simulation_runs": {
-    "build_testing_runs": 20,
+    "build_testing_runs": 25,
     "individual_testing_runs": 50
   },
   "combat": {
@@ -83,7 +83,7 @@
       "cost_effectiveness": true,
       "percentile_analysis": true,
       "archetype_analysis": true,
-      "tactical_analysis": true
+      "tactical_analysis": false
     }
   },
   "logging": {

@@ -316,8 +316,6 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 damage = attack_type.direct_damage_base - (attacker.tier * 2)
             else:
                 damage = attack_type.direct_damage_base - attacker.tier
-                # Add 10×tier bonus for direct_damage attacks
-                damage += attacker.tier * 10
             dice_detail = []
         else:
             # Roll damage dice (use shared roll for AOE)
@@ -345,9 +343,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if build.attack_type in ['melee_dg']:
                 flat_bonus += attacker.tier
 
-            # Add 10×tier bonus for melee and ranged attacks
-            if build.attack_type in ['melee_ac', 'melee_dg', 'ranged']:
-                flat_bonus += attacker.tier * 10
+            # 10×tier bonus for melee and ranged attacks removed - replaced with AOE limit cost penalty
 
             # Apply upgrade bonuses/penalties
             for upgrade_name in build.upgrades:
@@ -400,9 +396,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 if build.attack_type in ['melee_dg']:
                     flat_parts.append(f"+{attacker.tier} [Melee]")
 
-                # 10×tier bonus for melee and ranged attacks
-                if build.attack_type in ['melee_ac', 'melee_dg', 'ranged']:
-                    flat_parts.append(f"+{attacker.tier * 10} [10×Tier Bonus]")
+                # 10×tier bonus for melee and ranged attacks removed
 
                 # Upgrade damage modifiers
                 for upgrade_name in build.upgrades:
