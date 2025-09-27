@@ -60,11 +60,10 @@ LIMITS = {
 
 # Rule Validation System
 PREREQUISITES = {
-    'powerful_critical': ['critical_accuracy'],
 }
 
 MUTUAL_EXCLUSIONS = [
-    ['double_tap', 'ricochet', 'explosive_critical'],
+    ['double_tap', 'ricochet', 'explosive_critical', 'critical_accuracy'],
     ['unreliable_1', 'unreliable_2', 'unreliable_3'],
     ['quickdraw', 'steady', 'patient', 'finale'],
     ['charge_up', 'charge_up_2'],

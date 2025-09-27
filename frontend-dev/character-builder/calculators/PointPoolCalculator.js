@@ -24,7 +24,7 @@ export class PointPoolCalculator {
             // Base pools
             combatAttributes: this.calculateCombatAttributePool(tier),
             utilityAttributes: this.calculateUtilityAttributePool(tier),
-            mainPool: this.calculateMainPool(tier, archetypes.uniqueAbility),
+            mainPool: this.calculateMainPool(tier, null), // uniqueAbility archetype removed
             utilityPool: this.calculateUtilityPool(tier, archetypes.utility),
             
             // Special attack pools (calculated per attack)
@@ -70,10 +70,7 @@ export class PointPoolCalculator {
         const tier = character.tier;
         let available = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
         
-        // Extraordinary archetype doubles main pool
-        if (character.archetypes.uniqueAbility === 'extraordinary') {
-            available += Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        }
+        // No archetype bonuses to main pool in new system
         
         return available;
     }
@@ -111,10 +108,7 @@ export class PointPoolCalculator {
     static calculateMainPool(tier, uniqueAbilityArchetype) {
         let basePool = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
         
-        // Extraordinary archetype doubles main pool
-        if (uniqueAbilityArchetype === 'extraordinary') {
-            basePool += Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        }
+        // No archetype bonuses in new system
         
         return basePool;
     }
@@ -130,7 +124,7 @@ export class PointPoolCalculator {
     // Calculate special attack pools for all attacks
     static calculateSpecialAttackPools(character) {
         const tier = character.tier;
-        const archetype = character.archetypes.specialAttack;
+        const archetype = character.archetypes.attack;
         
         let totalAvailable = 0;
         const attackPools = [];
@@ -152,7 +146,7 @@ export class PointPoolCalculator {
     // Calculate pool for a single special attack
     static calculateSingleAttackPool(character, attack, attackIndex) {
         const tier = character.tier;
-        const archetype = character.archetypes.specialAttack;
+        const archetype = character.archetypes.attack;
         
         let available = 0;
         let fromLimits = 0;

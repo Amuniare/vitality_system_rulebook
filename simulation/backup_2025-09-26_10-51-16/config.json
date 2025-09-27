@@ -39,8 +39,8 @@
     ]
   ],
   "simulation_runs": {
-    "build_testing_runs": 3,
-    "individual_testing_runs": 3
+    "build_testing_runs": 10,
+    "individual_testing_runs": 20
   },
   "combat": {
     "max_turns": 50,

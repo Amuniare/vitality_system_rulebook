@@ -28,33 +28,26 @@
         {
             "id": "vanguard",
             "name": "Vanguard",
-            "description": "Enemies that start their turn next to you have their movement speed halved until the start of their next turn. As part of a reaction Punish attack, you may move up to your full movement speed towards the target until the end of their turn. Enhanced zone control and battlefield presence.",
+            "description": "Double your movement speed on turn 1. Punish Attacks do not consume your reaction and reduce targets movement to 0 on hit. Enhanced zone control and battlefield presence.",
             "special": [
-                "Enemies starting adjacent have their movement speed halved.",
-                "Can move up to full movement speed as part of a reaction Punish attack."
+                "Double movement speed on turn 1.",
+                "Punish Attacks don't consume reaction and reduce target movement to 0 on hit."
             ]
         },
         {
             "id": "mole",
             "name": "Mole",
-            "description": "Move your full speed through soft materials (dirt, clay, loose rock) and half your speed through hard materials (concrete, granite, packed rock). Choose whether you create permanent tunnels or temporary paths. Cannot end turn underground without tunnel creation.",
+            "description": "Move your full speed through soft materials (dirt, clay, loose rock) and half your speed through hard materials (concrete, granite, packed rock). Choose: Create permanent tunnels OR temporary paths. Cannot end turn underground without tunnel creation.",
             "special": [
                 "Move full speed through soft terrain (dirt, clay).",
                 "Move half speed through hard terrain (rock, concrete).",
                 "Cannot end turn underground without creating a tunnel."
-            ],
-            "options": [
-                {
-                    "id": "tunnel_type",
-                    "label": "Tunnel Creation",
-                    "choices": ["permanent", "temporary"]
-                }
             ]
         },
         {
             "id": "flight",
             "name": "Flight (Alternative)",
-            "description": "Move in any direction, ignore ground obstacles, and suffer no terrain penalties.",
+            "description": "Move in any direction, ignore ground obstacles, no terrain penalties.",
             "effects": [
                 { "type": "movement_mode", "value": "flight" }
             ]
@@ -62,7 +55,7 @@
         {
             "id": "teleportation",
             "name": "Teleportation (Alternative)",
-            "description": "Instant movement to visible locations. Incurs a -2 sp movement penalty.",
+            "description": "Instant movement to visible locations, -2 sp movement penalty when teleporting.",
             "effects": [
                 { "type": "movement_mode", "value": "teleportation" },
                 { "type": "stat_bonus", "stat": "movement", "bonus": -2 }
@@ -71,239 +64,103 @@
         {
             "id": "portal",
             "name": "Portal (Alternative)",
-            "description": "Create a pair of linked portals within your movement range. Anyone can move and act through them, and they persist until the start of your next turn.",
+            "description": "Create a pair of linked portals within your movement range, anyone can move and act through them, they persist until the start of your next turn.",
             "special": [
                 "Create linked portals within movement range, lasting 1 turn."
             ]
-        },
-        {
-            "id": "swinging",
-            "name": "Swinging (Alternative)",
-            "description": "Move to any point that has a stable surface you can connect to and move your full speed on any solid surface. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+.",
-            "effects": [
-                { "type": "movement_mode", "value": "swinging" },
-                { "type": "stat_bonus", "stat": "movement", "bonus": { "tier_1-6": 1, "tier_7+": 2 } }
-            ]
-        },
-        {
-            "id": "superJump",
-            "name": "Super Jump (Alternative)",
-            "description": "You can jump up to your full movement speed in one leap. +1 sp at Tiers 1-6 then +2 sp at Tiers 7+.",
-            "effects": [
-                { "type": "movement_mode", "value": "super_jump" },
-                { "type": "stat_bonus", "stat": "movement", "bonus": { "tier_1-6": 1, "tier_7+": 2 } }
-            ]
         }
     ],
-    "attackType": [
+    "attack": [
         {
-            "id": "singleTarget",
-            "name": "Single Target",
-            "description": "Gain Melee AND Ranged attack types for 0p. Specializes in single-target elimination. The most versatile combat approach.",
-            "effects": [
-                { "type": "grant", "item_type": "attack_type", "value": "melee", "cost": 0 },
-                { "type": "grant", "item_type": "attack_type", "value": "ranged", "cost": 0 }
-            ]
-        },
-        {
-            "id": "aoeSpecialist",
-            "name": "AOE Specialist",
-            "description": "Gain AOE attack type for 0p. Excels at crowd control and managing multiple targets. Weaker than single target but hits many.",
-            "effects": [
-                { "type": "grant", "item_type": "attack_type", "value": "area", "cost": 0 }
-            ]
-        },
-        {
-            "id": "directSpecialist",
-            "name": "Direct Specialist",
-            "description": "Gain Direct attack type for 0p. Provides reliable effect delivery that cannot be dodged. Perfect for consistent results.",
-            "effects": [
-                { "type": "grant", "item_type": "attack_type", "value": "direct", "cost": 0 }
-            ]
-        }
-    ],
-    "effectType": [
-        {
-            "id": "damageSpecialist",
-            "name": "Damage Specialist",
-            "description": "Focus purely on dealing damage for maximum potential. Can still use Basic Conditions as separate attacks."
-        },
-        {
-            "id": "hybridSpecialist",
-            "name": "Hybrid Specialist",
-            "description": "All attacks MUST combine damage and conditions. A versatile but less powerful approach in each aspect.",
-            "restrictions": ["attacks_must_be_hybrid"]
-        },
-        {
-            "id": "crowdControl",
-            "name": "Crowd Control",
-            "description": "Free access to 2 Advanced condition effects (chosen at selection), but suffer -Tier to all Damage rolls. Specializes in enemy control and debilitation, a strong team support role.",
-            "effects": [
-                { "type": "stat_bonus", "stat": "damage", "bonus": "-tier" },
-                { "type": "grant", "item_type": "advanced_condition", "count": 2 }
-            ]
-        }
-    ],
-    "uniqueAbility": [
-        {
-            "id": "versatileMaster",
-            "name": "Versatile Master",
-            "description": "Gain 2 Quick Actions per turn. When you select this archetype or advance Tiers, select a number of Primary Actions equal to half your Tier rounded up. You can use each of those Primary Actions as Quick Actions. At Tier 8, gain a third Quick Action.",
-            "effects": [
-                { "type": "stat_bonus", "stat": "quickActions", "bonus": { "default": 2, "tier_8+": 3 } }
-            ],
-            "special": [
-                "Can use (Tier/2, rounded up) selected Primary Actions as Quick Actions."
-            ]
-        },
-        {
-            "id": "extraordinary",
-            "name": "Extraordinary",
-            "description": "Gain an additional (Tier - 2) × 15 points added to your main pool. You can only spend up to (Tier - 2) × 15 points on Flaws or Traits. Ideal for characters specializing in Unique Abilities.",
-            "effects": [
-                { "type": "pool_mod", "pool": "mainPool", "bonus": "(tier - 2) * 15" }
-            ],
-            "restrictions": [
-                "flaw_trait_spending_limit"
-            ]
-        },
-        {
-            "id": "cutAbove",
-            "name": "Cut Above",
-            "description": "Gain universal stat bonuses to all core stats: Accuracy, Damage, Conditions, Avoidance, Durability, Resistances, Initiative, and Movement. Tiers 1-4: +1 | Tiers 5-7: +2 | Tiers 8+: +3.",
-            "effects": [
-                { "type": "stat_bonus", "stat": "all_stats", "bonus": { "tier_1-4": 1, "tier_5-7": 2, "tier_8+": 3 } }
-            ]
-        }
-    ],
-    "defensive": [
-        {
-            "id": "stalwart",
-            "name": "Stalwart",
-            "description": "Subtract your Tier from your Avoidance Score. Choose Physical OR Non-Physical damage: you take half damage from that type. Provides specialized damage resistance.",
-            "effects": [
-                { "type": "stat_bonus", "stat": "avoidance", "bonus": "-tier" },
-                { "type": "resistance", "damage_type": "chosen_physical_or_non_physical", "value": "half" }
-            ]
-        },
-        {
-            "id": "fortress",
-            "name": "Fortress",
-            "description": "Add your Tier again to Durability. Provides consistent protection against all damage.",
-            "effects": [
-                { "type": "stat_bonus", "stat": "durability", "bonus": "tier" }
-            ]
-        },
-        {
-            "id": "resilient",
-            "name": "Resilient",
-            "description": "Add your Tier to all three Secondary Resistances (Resolve, Stability, Vitality). Makes you exceptionally good at resisting condition effects.",
-            "effects": [
-                { "type": "stat_bonus", "stat": "resolve", "bonus": "tier" },
-                { "type": "stat_bonus", "stat": "stability", "bonus": "tier" },
-                { "type": "stat_bonus", "stat": "vitality", "bonus": "tier" }
-            ]
-        },
-        {
-            "id": "immutable",
-            "name": "Immutable",
-            "description": "Choose one Secondary Resistance type to gain complete immunity to it. An unshakeable defense against specific attacks.",
-            "effects": [
-                { "type": "immunity", "value": "chosen_resistance_category" }
-            ]
-        },
-        {
-            "id": "juggernaut",
-            "name": "Juggernaut",
-            "description": "Increase your maximum Health Pool by 5 × Tier. Provides extra health reserves for attrition warfare.",
-            "effects": [
-                { "type": "stat_bonus", "stat": "hp_max", "bonus": "tier * 5" }
-            ]
-        }
-    ],
-    "specialAttack": [
-        {
-            "id": "normal",
-            "name": "Normal",
-            "description": "Select 3 Specialty Upgrades at half cost. Limits provide Points × (Tier ÷ 6). Allows maximum customization flexibility.",
-            "pointSystem": { "method": "limits", "multiplier": "tier/6" },
-            "special": ["3 selected upgrades at half cost."]
-        },
-        {
-            "id": "specialist",
-            "name": "Specialist",
-            "description": "All limits selected must be applied to all attacks. Limits provide Points × (Tier ÷ 3). A higher return for a restricted playstyle.",
-            "pointSystem": { "method": "limits", "multiplier": "tier/3" },
-            "restrictions": ["must_use_3_specific_limits"]
-        },
-        {
-            "id": "paragon",
-            "name": "Paragon",
-            "description": "Each special attack receives 10 × Tier points. Cannot take Limits. Provides consistent performance without drawbacks.",
-            "pointSystem": { "method": "fixed", "per_attack_bonus": "tier * 10" },
-            "restrictions": ["cannot_use_limits"]
-        },
-        {
-            "id": "oneTrick",
-            "name": "One Trick",
-            "description": "You can only create a single attack, but it gets Tier × 20 points. Cannot take Limits. High-risk, high-reward specialization.",
-            "pointSystem": { "method": "fixed", "total_bonus": "tier * 20" },
-            "restrictions": ["cannot_use_limits", "max_one_special_attack"]
-        },
-        {
-            "id": "straightforward",
-            "name": "Straightforward",
-            "description": "Choose a single Limit to apply to all attacks. That Limit returns Points × (Tier ÷ 2). A simple but effective approach.",
-            "pointSystem": { "method": "limits", "multiplier": "tier/2" },
-            "restrictions": ["max_one_limit_per_attack"]
-        },
-        {
-            "id": "sharedUses",
-            "name": "Shared Uses",
-            "description": "You have 10 shared uses among abilities, and each attack costs 1-3 uses. Regenerate 1 Use per turn. Gain a Tier × 5 point discount per use cost. Cannot take Limits.",
-            "pointSystem": { "method": "shared_resource", "uses": 10 },
-            "special": ["Tier × 5 point discount per use cost."],
+            "id": "focusedAttacker",
+            "name": "Focused Attacker",
+            "description": "Single Special Attack with Tier × 20 points. High-risk, high-reward specialization.",
+            "pointSystem": { "method": "fixed", "attacks": 1, "points_per_attack": "tier * 20" },
             "restrictions": ["cannot_use_limits"]
         },
         {
             "id": "dualNatured",
             "name": "Dual-Natured",
-            "description": "You can create two distinct Special Attacks, and each gets 15 × Tier points. Cannot take Limits. A balanced and versatile option.",
-            "pointSystem": { "method": "fixed", "per_attack_bonus": "tier * 15" },
-            "restrictions": ["cannot_use_limits", "max_two_special_attacks"]
+            "description": "Two distinct Special Attacks, each gets 15 × Tier points. Balanced versatility.",
+            "pointSystem": { "method": "fixed", "attacks": 2, "points_per_attack": "tier * 15" },
+            "restrictions": ["cannot_use_limits"]
         },
         {
-            "id": "basic",
-            "name": "Basic",
-            "description": "Gain Tier × 10 points for base attack improvements only. No special attacks can be created. Good for builds that rely on their base attack.",
-            "pointSystem": { "method": "fixed", "total_bonus": "tier * 10" },
-            "restrictions": ["no_special_attacks", "base_attack_only"]
+            "id": "versatileMaster",
+            "name": "Versatile Master",
+            "description": "5 Special Attacks, each receives 10 × Tier points. Consistent performance without drawbacks.",
+            "pointSystem": { "method": "fixed", "attacks": 5, "points_per_attack": "tier * 10" },
+            "restrictions": ["cannot_use_limits"]
+        },
+        {
+            "id": "sharedCharges",
+            "name": "Shared Charges",
+            "description": "Build 3 attacks: One consumes 1 charge, one consumes 2 charges, one consumes 3 charges. 10 shared charges among attacks. Action to regain 5 charges. Tier × 10 points per use.",
+            "pointSystem": { "method": "shared_resource", "attacks": 3, "charges": 10, "points_per_use": "tier * 10" },
+            "special": [
+                "Action to regain 5 charges.",
+                "Attack costs: 1, 2, and 3 charges respectively."
+            ],
+            "restrictions": ["cannot_use_limits"]
+        },
+        {
+            "id": "specialist",
+            "name": "Specialist",
+            "description": "You cannot purchase Attack Upgrades. You instead receive Tier - 2 extra boons. If you attack simply use the base formulas plus the bonus from any Boons you have purchased.",
+            "pointSystem": { "method": "boons", "extra_boons": "tier - 2" },
+            "restrictions": ["no_attack_upgrades", "no_special_attacks"]
+        }
+    ],
+    "defensive": [
+        {
+            "id": "ironWill",
+            "name": "Iron Will",
+            "description": "Add your 2 × Tier to Resolve.",
+            "effects": [
+                { "type": "stat_bonus", "stat": "resolve", "bonus": "tier * 2" }
+            ]
+        },
+        {
+            "id": "immovable",
+            "name": "Immovable",
+            "description": "Add your 2 × Tier to Stability.",
+            "effects": [
+                { "type": "stat_bonus", "stat": "stability", "bonus": "tier * 2" }
+            ]
+        },
+        {
+            "id": "resilient",
+            "name": "Resilient",
+            "description": "Add your 2 × Tier to Vitality.",
+            "effects": [
+                { "type": "stat_bonus", "stat": "vitality", "bonus": "tier * 2" }
+            ]
         }
     ],
     "utility": [
         {
             "id": "specialized",
             "name": "Specialized",
-            "description": "Gain double Tier bonus for one chosen core stat. Cannot purchase additional Expertise. ",
+            "description": "Choose an Attribute, you add your Tier three times to any skill checks made using that Attribute.",
             "effects": [
-                { "type": "stat_bonus", "stat": "chosen_core", "bonus": "tier*2" }
-            ],
-            "restrictions": ["no_expertise_purchase"]
+                { "type": "stat_bonus", "stat": "chosen_attribute_skill_checks", "bonus": "tier * 3" }
+            ]
         },
         {
             "id": "practical",
             "name": "Practical",
-            "description": "Select 3 skills to gain procifientcy in, each granting a 2 x Tier bonus to checks. ",
-            "effects": []
+            "description": "Choose 2 Attributes, you add your Tier twice to all skill checks using those Attributes.",
+            "effects": [
+                { "type": "stat_bonus", "stat": "chosen_two_attributes_skill_checks", "bonus": "tier * 2" }
+            ]
         },
         {
             "id": "jackOfAllTrades",
             "name": "Jack of All Trades",
-            "description": "Adds Tier bonus to ALL skill checks. Cannot purchase specialized Expertise. ",
+            "description": "You add your Tier once to all skill checks.",
             "effects": [
                 { "type": "stat_bonus", "stat": "all_skill_checks", "bonus": "tier" }
-            ],
-            "restrictions": ["no_specialized_expertise_purchase"]
+            ]
         }
     ]
 }

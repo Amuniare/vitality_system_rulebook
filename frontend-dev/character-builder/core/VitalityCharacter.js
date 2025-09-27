@@ -22,11 +22,8 @@ export class VitalityCharacter {
         // Core character choices - MUST be selected first
         this.archetypes = {
             movement: null,
-            attackType: null,
-            effectType: null,
-            uniqueAbility: null,
+            attack: null,
             defensive: null,
-            specialAttack: null,
             utility: null
         };
 

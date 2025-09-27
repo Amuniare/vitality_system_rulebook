@@ -5,14 +5,11 @@ import { gameDataManager } from '../core/GameDataManager.js'; // ADDED
 export class ArchetypeSystem {
     // Get all archetype categories
     static getArchetypeCategories() {
-        // Could also get this from Object.keys(gameDataManager.getArchetypes()) if that's more dynamic
+        // Updated to match new 4-category structure
         return [
             'movement',
-            'attackType', 
-            'effectType',
-            'uniqueAbility',
+            'attack',
             'defensive',
-            'specialAttack',
             'utility'
         ];
     }
@@ -74,24 +71,24 @@ export class ArchetypeSystem {
             }
         }
         
-        // One Trick conflicts with multiple special attacks
-        if (category === 'specialAttack' && archetypeId === 'oneTrick') {
+        // Focused Attacker conflicts with multiple special attacks
+        if (category === 'attack' && archetypeId === 'focusedAttacker') {
             if (character.specialAttacks.length > 1) {
-                errors.push('One Trick archetype allows only one special attack');
+                errors.push('Focused Attacker archetype allows only one special attack');
             }
         }
-        
+
         // Dual-Natured conflicts with more than two attacks
-        if (category === 'specialAttack' && archetypeId === 'dualNatured') {
+        if (category === 'attack' && archetypeId === 'dualNatured') {
             if (character.specialAttacks.length > 2) {
                 errors.push('Dual-Natured archetype allows only two special attacks');
             }
         }
-        
-        // Basic conflicts with any special attacks
-        if (category === 'specialAttack' && archetypeId === 'basic') {
+
+        // Specialist conflicts with any special attacks
+        if (category === 'attack' && archetypeId === 'specialist') {
             if (character.specialAttacks.length > 0) {
-                warnings.push('Basic archetype enhances base attacks only - special attacks will be removed if this archetype is selected');
+                warnings.push('Specialist archetype enhances base attacks only - special attacks will be removed if this archetype is selected');
             }
         }
         
@@ -139,10 +136,7 @@ export class ArchetypeSystem {
             special: []
         };
         
-        // Unique Ability bonuses
-        if (character.archetypes.uniqueAbility === 'extraordinary') {
-            bonuses.pointPools.mainPoolBonus = Math.max(0, (character.tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        }
+        // No longer relevant - uniqueAbility category removed
         
         // Utility archetype bonuses
         if (character.archetypes.utility === 'specialized' || 
@@ -156,64 +150,58 @@ export class ArchetypeSystem {
         return bonuses;
     }
     
-    // Get free attack/effect types from archetypes
+    // Get free attack/effect types from archetypes - no longer relevant with new system
     static getFreeAttackTypes(character) {
-        const free = [];
-        
-        switch(character.archetypes.attackType) {
-            case 'aoeSpecialist':
-                free.push('area');
-                break;
-            case 'directSpecialist':
-                free.push('direct');
-                break;
-            case 'singleTarget':
-                free.push('melee_ac', 'melee_dg_cn', 'ranged');
-                break;
-        }
-        
-        return free;
+        // Attack archetype no longer grants free attack types
+        // Instead, it determines the number of attacks and points per attack
+        return [];
     }
     
     // Get special attack point calculation method
     static getSpecialAttackPointMethod(character) {
-        const archetype = character.archetypes.specialAttack;
-        // GameConstants.ARCHETYPE_MULTIPLIERS holds the numeric values.
-        // This method could return a more descriptive object if needed.
-        
+        const archetype = character.archetypes.attack;
+
         const pointMethodConfig = {
-            normal: { method: 'limits', multiplierKey: 'normal' },
-            specialist: { method: 'limits', multiplierKey: 'specialist' },
-            straightforward: { method: 'limits', multiplierKey: 'straightforward' },
-            paragon: { method: 'fixed', pointsPerTierKey: 'paragon' },
-            oneTrick: { method: 'fixed', pointsPerTierKey: 'oneTrick' },
-            dualNatured: { method: 'fixed', pointsPerTierKey: 'dualNatured', perAttack: true },
-            basic: { method: 'fixed', pointsPerTierKey: 'basic', baseOnly: true },
-            sharedUses: { method: 'shared', uses: 10 } // 'sharedUses' usually gets limits applied 1:1
+            focusedAttacker: { method: 'fixed', attacks: 1, pointsPerAttack: 20 },
+            dualNatured: { method: 'fixed', attacks: 2, pointsPerAttack: 15 },
+            versatileMaster: { method: 'fixed', attacks: 5, pointsPerAttack: 10 },
+            sharedCharges: { method: 'shared_resource', attacks: 3, charges: 10, pointsPerUse: 10 },
+            specialist: { method: 'boons', extraBoons: character.tier - 2 }
         };
 
         const config = pointMethodConfig[archetype];
-        if (!config) return { method: 'limits', multiplier: 0 }; // Default or error
+        if (!config) return { method: 'fixed', attacks: 1, pointsPerAttack: 0 };
 
-        if (config.method === 'limits') {
-            return { method: 'limits', multiplier: GameConstants.ARCHETYPE_MULTIPLIERS[config.multiplierKey] || 0 };
-        }
         if (config.method === 'fixed') {
-            return { 
-                method: 'fixed', 
-                points: character.tier * (GameConstants.ARCHETYPE_MULTIPLIERS[config.pointsPerTierKey] || 0),
-                perAttack: config.perAttack || false,
-                baseOnly: config.baseOnly || false
+            return {
+                method: 'fixed',
+                attacks: config.attacks,
+                pointsPerAttack: character.tier * config.pointsPerAttack
             };
         }
-        return config; // For 'sharedUses' or other types
+
+        if (config.method === 'shared_resource') {
+            return {
+                method: 'shared_resource',
+                attacks: config.attacks,
+                charges: config.charges,
+                pointsPerUse: character.tier * config.pointsPerUse
+            };
+        }
+
+        if (config.method === 'boons') {
+            return {
+                method: 'boons',
+                extraBoons: Math.max(0, config.extraBoons)
+            };
+        }
+
+        return config;
     }
     
-    // Get free advanced conditions from archetype
+    // Get free advanced conditions from archetype - no longer relevant
     static getFreeAdvancedConditions(character) {
-        if (character.archetypes.effectType === 'crowdControl') {
-            return 2; // Crowd Control grants 2 free advanced conditions
-        }
+        // effectType category removed, no archetype grants free advanced conditions
         return 0;
     }
     

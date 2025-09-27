@@ -21,11 +21,8 @@ export class ArchetypeTab {
     
         const categories = [
             { id: 'movement', name: 'Movement Archetype', description: 'How your character moves around the battlefield' },
-            { id: 'attackType', name: 'Attack Type Archetype', description: 'What types of attacks your character specializes in' },
-            { id: 'effectType', name: 'Effect Type Archetype', description: 'Whether you focus on damage, conditions, or both' },
-            { id: 'uniqueAbility', name: 'Unique Ability Archetype', description: 'Special capabilities beyond standard actions' },
-            { id: 'defensive', name: 'Defensive Archetype', description: 'How your character protects themselves' },
-            { id: 'specialAttack', name: 'Special Attack Archetype', description: 'How you develop unique combat abilities' },
+            { id: 'attack', name: 'Attack Archetype', description: 'How you develop special combat abilities and attacks' },
+            { id: 'defensive', name: 'Defensive Archetype', description: 'How your character resists conditions and effects' },
             { id: 'utility', name: 'Utility Archetype', description: 'Your non-combat capabilities and skills' }
         ];
     
@@ -43,13 +40,13 @@ export class ArchetypeTab {
             <div class="archetypes-section">
                 <h2>Choose Archetypes ${RenderUtils.renderInfoIcon(RenderUtils.getTooltipText('archetypes'))}</h2>
                 <p class="section-description">
-                    Select one archetype from each of the 7 categories. These choices define your character's
+                    Select one archetype from each of the 4 categories. These choices define your character's
                     fundamental approach and provide point modifiers and restrictions.
                     <strong>All archetypes must be selected before proceeding.</strong>
                 </p>
-    
+
                 <div class="archetype-progress">
-                    <span id="archetype-count">0/7 Archetypes Selected</span>
+                    <span id="archetype-count">0/4 Archetypes Selected</span>
                 </div>
     
                 ${categories.map(cat => this.renderArchetypeCategory(cat.id, cat.name, cat.description, character)).join('')}
