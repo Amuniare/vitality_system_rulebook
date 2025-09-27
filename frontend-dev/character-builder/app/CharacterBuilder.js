@@ -66,6 +66,7 @@ export class CharacterBuilder {
             console.log('Character library initialized');
             console.log('Library after init:', this.library);
             console.log('Library methods after init:', Object.getOwnPropertyNames(Object.getPrototypeOf(this.library)));
+            console.log('IMMEDIATE TEST: this.library.renderLibrary exists?', typeof this.library.renderLibrary === 'function');
 
             console.log('Initializing simplified tabs...');
             this.initializeTabs();

@@ -237,6 +237,7 @@ export class CharacterLibrary {
     
     // Render the character library UI
     renderLibrary() {
+        console.log('🚀 CharacterLibrary.renderLibrary() called!');
         const container = document.getElementById('character-list');
         if (!container) {
             console.warn('Character list container not found');
