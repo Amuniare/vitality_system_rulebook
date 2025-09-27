@@ -1,6 +1,7 @@
 // frontend/character-builder/calculators/PointPoolCalculator.js - REFACTORED with caching and unified calculations
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
+import { gameDataManager } from '../core/GameDataManager.js';
 
 export class PointPoolCalculator {
     static cache = new Map();
@@ -16,16 +17,22 @@ export class PointPoolCalculator {
         }
         
         console.log('🔄 Calculating point pools (cache miss)');
-        
+
         const tier = character.tier;
+        const level = character.level;
         const archetypes = character.archetypes;
-        
+
+        // Get the correct tier value from level data for attribute calculations
+        const levels = gameDataManager.getTiers();
+        const levelData = levels.levels?.[tier];
+        const effectiveTier = levelData?.tierBonus || tier;
+
         const pools = {
             // Base pools
-            combatAttributes: this.calculateCombatAttributePool(tier),
-            utilityAttributes: this.calculateUtilityAttributePool(tier),
-            mainPool: this.calculateMainPool(tier, null), // uniqueAbility archetype removed
-            utilityPool: this.calculateUtilityPool(tier, archetypes.utility),
+            combatAttributes: this.calculateCombatAttributePool(effectiveTier),
+            utilityAttributes: this.calculateUtilityAttributePool(effectiveTier),
+            mainPool: this.calculateMainPool(level, null), // uniqueAbility archetype removed
+            utilityPool: this.calculateUtilityPool(effectiveTier, archetypes.utility),
             
             // Special attack pools (calculated per attack)
             specialAttackPools: this.calculateSpecialAttackPools(character),
@@ -67,11 +74,12 @@ export class PointPoolCalculator {
     
     // UNIFIED: Main pool calculation (replaces duplicates in other systems)
     static calculateMainPoolAvailable(character) {
-        const tier = character.tier;
-        let available = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        
+        const level = character.level;
+        // Main pool points equal level directly (no formula)
+        let available = level;
+
         // No archetype bonuses to main pool in new system
-        
+
         return available;
     }
     
@@ -88,8 +96,6 @@ export class PointPoolCalculator {
         // NEW ECONOMICS: Flaws now COST points (major change)
         spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 30), 0);
         
-        // Primary action upgrades cost points
-        spent += character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
         
         return spent;
     }
@@ -105,11 +111,12 @@ export class PointPoolCalculator {
     }
     
     // Main pool calculation with archetype bonuses
-    static calculateMainPool(tier, uniqueAbilityArchetype) {
-        let basePool = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        
+    static calculateMainPool(level, uniqueAbilityArchetype) {
+        // Main pool points equal level directly (no formula)
+        let basePool = level;
+
         // No archetype bonuses in new system
-        
+
         return basePool;
     }
     

@@ -1,13 +1,18 @@
 
 // GameConstants.js - All game constants and formulas
 export const GameConstants = {
-    // Level System (was Tier System)
-    TIER_MIN: 0,
+    // Tier System (for combat, attributes, special attacks)
+    TIER_MIN: 2,
     TIER_MAX: 5,
-    STARTING_TIER: 1,
+    STARTING_TIER: 2,
+
+    // Level System (for main pool calculations only)
+    LEVEL_MIN: 0,
+    LEVEL_MAX: 5,
+    STARTING_LEVEL: 1,
 
     // Level-to-Tier Bonus Mapping
-    TIER_BONUS_LOOKUP: {
+    LEVEL_BONUS_LOOKUP: {
         0: 2,  // Level 0: +2 Tier Bonus, 0 Boons
         1: 3,  // Level 1: +3 Tier Bonus, 1 Boon
         2: 3,  // Level 2: +3 Tier Bonus, 2 Boons
@@ -30,7 +35,7 @@ export const GameConstants = {
     BASE_MOVEMENT_BONUS: 6,
     
     // Defense Formulas
-    AVOIDANCE_BASE: 10,
+    AVOIDANCE_BASE: 5,
     RESOLVE_BASE: 10,
     STABILITY_BASE: 10,
     VITALITY_BASE: 10,
@@ -43,9 +48,9 @@ export const GameConstants = {
     DIRECT_RANGE: 30,
     
     // Area Attack Sizes
-    AOE_RADIUS: 3,
-    AOE_CONE: 6,
-    AOE_LINE: 12,
+    AOE_RADIUS: 2,
+    AOE_CONE: 4,
+    AOE_LINE: 8,
     
     // Dice
     ACCURACY_DICE: 'd20',
@@ -103,7 +108,6 @@ export const GameConstants = {
     // Ability Costs
     TRAIT_COST: 30,
     FLAW_BONUS: 30,
-    PRIMARY_TO_QUICK_COST: 30,
     
     // Utility Costs
     EXPERTISE_ACTIVITY_BASIC: 2,

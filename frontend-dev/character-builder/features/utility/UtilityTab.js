@@ -38,10 +38,8 @@ export class UtilityTab {
 
         tabContent.innerHTML = `
             <div class="utility-tab-content">
-                <h2>Utility & Talents</h2>
-                <p class="section-description">Define your character's innate talents, specialized skills, and purchase unique non-combat abilities.</p>
-                
-                ${this.renderTalentsSection(character)}
+                <h2>Utility</h2>
+                <p class="section-description">Define your character's specialized skills and purchase unique non-combat abilities.</p>
                 ${this.renderUtilityArchetypeSection(character)}
                 
                 ${this.utilityOverviewSection.render(character)}
@@ -65,24 +63,6 @@ export class UtilityTab {
         this.setupEventListeners();
     }
 
-    renderTalentsSection(character) {
-        return `
-            <div class="utility-section card">
-                <h3>Talents</h3>
-                <p class="section-description">Each character has 2 Talents, representing specific tasks they excel at (e.g., 'Military History', 'Cooking'). These provide a +Tier x 2 bonus to relevant skill checks, adjudicated by the GM.</p>
-                <div class="talent-inputs">
-                    ${RenderUtils.renderFormGroup({
-                        label: 'Talent 1',
-                        inputHtml: `<input type="text" class="talent-input" data-action="update-talent" data-index="0" value="${character.talents[0] || ''}" placeholder="Enter first talent...">`
-                    })}
-                    ${RenderUtils.renderFormGroup({
-                        label: 'Talent 2',
-                        inputHtml: `<input type="text" class="talent-input" data-action="update-talent" data-index="1" value="${character.talents[1] || ''}" placeholder="Enter second talent...">`
-                    })}
-                </div>
-            </div>
-        `;
-    }
 
     renderUtilityArchetypeSection(character) {
         const archetypeId = character.archetypes.utility;
@@ -210,9 +190,6 @@ export class UtilityTab {
             if (!action) return;
 
             switch (action) {
-                case 'update-talent':
-                    this.handleTalentUpdate(target);
-                    break;
                 case 'toggle-practical-skill':
                     this.handlePracticalSkillToggle(target.closest('.card').dataset.skillId);
                     break;
@@ -248,11 +225,6 @@ export class UtilityTab {
         }
     }
     
-    handleTalentUpdate(input) {
-        const index = parseInt(input.dataset.index);
-        UtilitySystem.setTalent(this.builder.currentCharacter, index, input.value);
-        this.builder.currentCharacter.touch();
-    }
 
     handlePracticalSkillToggle(skillId) {
         try {

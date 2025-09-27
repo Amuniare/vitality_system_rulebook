@@ -166,7 +166,7 @@ export class ArchetypeSystem {
             dualNatured: { method: 'fixed', attacks: 2, pointsPerAttack: 15 },
             versatileMaster: { method: 'fixed', attacks: 5, pointsPerAttack: 10 },
             sharedCharges: { method: 'shared_resource', attacks: 3, charges: 10, pointsPerUse: 10 },
-            specialist: { method: 'boons', extraBoons: character.tier - 2 }
+            specialist: { method: 'boons', extraBoons: character.level - 2 }
         };
 
         const config = pointMethodConfig[archetype];

@@ -59,7 +59,7 @@ export class BasicInfoTab {
                     inputId: 'level-select',
                     inputHtml: RenderUtils.renderSelect({
                         id: 'level-select',
-                        value: character.tier || 1,
+                        value: character.level || 1,
                         options: Array.from({length: 6}, (_, i) => ({ value: i, label: `${i} - ${this.getLevelDescription(i)}`})),
                         dataAttributes: { action: 'update-tier', testid: 'character-level' }
                     }),
@@ -87,7 +87,7 @@ export class BasicInfoTab {
         `;
 
         this.setupEventListeners(); // For direct event listeners if any, or rely on CharacterBuilder
-        this.updateLevelDisplay(character.tier); // Initial display
+        this.updateLevelDisplay(character.level); // Initial display
     }
 
 
@@ -263,9 +263,9 @@ export class BasicInfoTab {
 
             effectsList.innerHTML = `
                 <li><strong>Bonus to all actions:</strong> +${tierBonus}</li>
-                <li><strong>Maximum attribute rank:</strong> ${tier}</li>
-                <li><strong>Combat attribute points:</strong> ${tier * 2}</li>
-                <li><strong>Utility attribute points:</strong> ${tier}</li>
+                <li><strong>Maximum attribute rank:</strong> ${tierBonus}</li>
+                <li><strong>Combat attribute points:</strong> ${tierBonus * 2}</li>
+                <li><strong>Utility attribute points:</strong> ${tierBonus}</li>
                 <li><strong>Main pool points (Boons):</strong> ${tier}</li>
                 <li><strong>Utility pool points:</strong> ${Math.max(0, 5 * (tier - 1))}</li>
                 <li><strong>HP (Base):</strong> ${baseHP}</li>

@@ -10,7 +10,8 @@ export class VitalityCharacter {
         this.playerName = "";
         this.characterType = "player_character";
         this.characterSubType = null; // For "other" category characters
-        this.tier = 1; // Starting level (Level 1 = default starting point)
+        this.tier = 1; // Starting tier (for combat, attributes, special attacks, display)
+        this.level = 1; // Starting level (for main pool calculations only)
         this.folderId = folderId;
         this.version = "2.2-action-rework"; // Version bump for new system
         this.created = new Date().toISOString();
@@ -27,8 +28,7 @@ export class VitalityCharacter {
             utility: null
         };
 
-        // Talents and Utility Archetype Selections
-        this.talents = ["", ""]; // Each character gets 2 talents
+        // Utility Archetype Selections
         this.utilityArchetypeSelections = {
             practicalSkills: [],       // For 'Practical' archetype
             specializedAttribute: null // For 'Specialized' archetype
@@ -51,13 +51,9 @@ export class VitalityCharacter {
         this.mainPoolPurchases = {
             boons: [], // Various costs from main pool
             traits: [], // 30p each, conditional bonuses
-            flaws: [], // Give 30p each, restrictions
-            // Stores action upgrades that were paid for with points
-            primaryActionUpgrades: [] 
+            flaws: [] // Give 30p each, restrictions
         };
 
-        // NEW: Stores the baseActionId of free Quick Action selections from Versatile Master
-        this.versatileMasterSelections = [];
         
         // Special Attacks - each has own limits and points
         this.specialAttacks = [];
@@ -150,10 +146,9 @@ export class VitalityCharacter {
         this.buildState.attributesComplete = totalAttributePoints > 0;
         
         // Check main pool completion (any purchases made OR explicitly marked complete)
-        const hasMainPoolPurchases = this.mainPoolPurchases.boons.length > 0 || 
+        const hasMainPoolPurchases = this.mainPoolPurchases.boons.length > 0 ||
                                     this.mainPoolPurchases.traits.length > 0 ||
-                                    this.mainPoolPurchases.flaws.length > 0 ||
-                                    this.mainPoolPurchases.primaryActionUpgrades.length > 0;
+                                    this.mainPoolPurchases.flaws.length > 0;
         // For now, allow special attacks if any main pool purchases exist OR if attributes are complete
         this.buildState.mainPoolComplete = hasMainPoolPurchases || this.buildState.attributesComplete;
         
@@ -189,6 +184,7 @@ export class VitalityCharacter {
         return {
             name: this.name,
             tier: this.tier,
+            level: this.level,
             attributes: this.attributes,
             calculatedStats: this.calculatedStats,
             specialAttacks: this.specialAttacks.map(attack => ({

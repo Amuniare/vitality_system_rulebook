@@ -1499,7 +1499,7 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
 
         avg_turns = total_turns / total_configs if total_configs > 0 else 0
         avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
-        build_results.append((build, avg_turns, avg_dpt))
+        build_results.append((build, avg_dpt, avg_turns))
 
     # Sort by average turns (lower is better)
     build_results.sort(key=lambda x: x[1])
@@ -1566,6 +1566,7 @@ def write_build_summary(builds: List[AttackBuild], config: SimulationConfig, rep
     build_results = []
     for build in builds[:50]:  # Show top 50 builds
         total_dpt = 0
+        total_turns = 0
         total_configs = 0
 
         for att_config in config.attacker_configs:
@@ -1577,17 +1578,19 @@ def write_build_summary(builds: List[AttackBuild], config: SimulationConfig, rep
                     attacker, build, config.build_testing_runs, config.target_hp, defender)
 
                 total_dpt += dpt
+                total_turns += avg_turns
                 total_configs += 1
 
         avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
-        build_results.append((build, avg_dpt))
+        avg_turns = total_turns / total_configs if total_configs > 0 else 0
+        build_results.append((build, avg_dpt, avg_turns))
 
     # Sort by average DPT
     build_results.sort(key=lambda x: x[1], reverse=True)
 
     # Calculate attack type statistics
     attack_type_results = {}
-    for build, avg_dpt, _ in build_results:
+    for build, avg_dpt, avg_turns in build_results:
         attack_type = build.attack_type
         if attack_type not in attack_type_results:
             attack_type_results[attack_type] = []
@@ -1614,7 +1617,7 @@ def write_build_summary(builds: List[AttackBuild], config: SimulationConfig, rep
         f.write("="*80 + "\n\n")
         f.write(f"Top {len(build_results)} builds ranked by average DPT across all test configurations:\n\n")
 
-        for i, (build, avg_dpt, _) in enumerate(build_results, 1):
+        for i, (build, avg_dpt, avg_turns) in enumerate(build_results, 1):
             f.write(f"{i:2d}. {build} | Avg DPT: {avg_dpt:.1f}\n")
 
         # Attack Type Performance Summary
@@ -1653,7 +1656,7 @@ def write_attack_type_enhancement_ranking_report(all_build_results: List[Tuple],
             f.write(f"{'='*80}\n\n")
 
             # Filter builds for this attack type and track enhancement positions
-            attack_type_builds = [(build, dpt, rank) for rank, (build, dpt, _) in enumerate(all_build_results, 1)
+            attack_type_builds = [(build, dpt, rank) for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1)
                                  if build.attack_type == attack_type]
 
             if not attack_type_builds:
@@ -1776,7 +1779,7 @@ def write_attack_type_limit_ranking_report(all_build_results: List[Tuple], limit
             f.write(f"{'='*80}\n\n")
 
             # Filter builds for this attack type and track limit positions
-            attack_type_builds = [(build, dpt, rank) for rank, (build, dpt, _) in enumerate(all_build_results, 1)
+            attack_type_builds = [(build, dpt, rank) for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1)
                                  if build.attack_type == attack_type]
 
             if not attack_type_builds:
@@ -3186,7 +3189,7 @@ class BuildReportGenerator:
         # Generate existing reports using the current system
         if self.config.reports.get('build_reports', {}).get('build_rankings', True):
             # Extract builds from (build, avg_dpt, avg_turns) tuples
-            builds_only = [build for build, _, _ in all_build_results]
+            builds_only = [build for build, avg_dpt, avg_turns in all_build_results]
             write_build_summary(builds_only, self.config, self.reports_dir)
             write_builds_turns_table(builds_only, self.config, self.reports_dir)
 
@@ -3221,7 +3224,7 @@ class BuildReportGenerator:
 
         # Calculate multi-target performance scores
         multi_target_builds = []
-        for build, avg_dpt, _ in all_build_results:
+        for build, avg_dpt, avg_turns in all_build_results:
             # Get scenario-specific performance (you'll need to modify this based on actual data structure)
             # For now, calculate a multi-target score based on AOE potential
             multi_target_score = self._calculate_multi_target_score(build, avg_dpt)
@@ -3278,7 +3281,7 @@ class BuildReportGenerator:
 
         # Calculate single-target performance scores
         single_target_builds = []
-        for build, avg_dpt, _ in all_build_results:
+        for build, avg_dpt, avg_turns in all_build_results:
             single_target_score = self._calculate_single_target_score(build, avg_dpt)
             single_target_builds.append((build, avg_dpt, single_target_score))
 
@@ -3336,7 +3339,7 @@ class BuildReportGenerator:
 
         # Calculate balance scores (low variance across scenarios)
         balanced_builds = []
-        for build, avg_dpt, _ in all_build_results:
+        for build, avg_dpt, avg_turns in all_build_results:
             balance_score = self._calculate_balance_score(build, avg_dpt)
             balanced_builds.append((build, avg_dpt, balance_score))
 
@@ -3397,7 +3400,7 @@ class BuildReportGenerator:
         medium_risk_builds = []
         high_risk_builds = []
 
-        for build, avg_dpt, _ in all_build_results:
+        for build, avg_dpt, avg_turns in all_build_results:
             risk_level = self._calculate_risk_level(build)
             if risk_level == "none":
                 reliable_builds.append((build, avg_dpt))
@@ -3607,7 +3610,7 @@ class BuildReportGenerator:
         upgrade_pairs = {}
         single_upgrades = {}
 
-        for build, avg_dpt, _ in all_build_results:
+        for build, avg_dpt, avg_turns in all_build_results:
             # Track single upgrades
             if len(build.upgrades) == 1:
                 upgrade = build.upgrades[0]
@@ -3735,7 +3738,7 @@ class BuildReportGenerator:
 
         # Analyze attack type performance
         attack_type_data = {}
-        for build, avg_dpt, _ in all_build_results:
+        for build, avg_dpt, avg_turns in all_build_results:
             attack_type = build.attack_type
             if attack_type not in attack_type_data:
                 attack_type_data[attack_type] = []
@@ -3833,7 +3836,7 @@ class BuildReportGenerator:
 
         bracket_data = {bracket: [] for bracket in cost_brackets}
 
-        for build, avg_dpt, _ in all_build_results:
+        for build, avg_dpt, avg_turns in all_build_results:
             for bracket, (min_cost, max_cost) in cost_brackets.items():
                 if min_cost <= build.total_cost <= max_cost:
                     bracket_data[bracket].append((build, avg_dpt, build.total_cost))
@@ -3961,9 +3964,9 @@ class BuildReportGenerator:
         # In real implementation, would filter by actual scenario performance
         # For now, return mock data based on scenario type
         if "1×100" in scenario_name:
-            return [(build, dpt * 1.2) for build, dpt, _ in all_build_results[:10] if 'area' not in build.attack_type]
+            return [(build, dpt * 1.2) for build, dpt, avg_turns in all_build_results[:10] if 'area' not in build.attack_type]
         elif "10×10" in scenario_name:
-            return [(build, dpt * 1.5) for build, dpt, _ in all_build_results[:10] if 'area' in build.attack_type]
+            return [(build, dpt * 1.5) for build, dpt, avg_turns in all_build_results[:10] if 'area' in build.attack_type]
         else:
             return all_build_results[:10]
 

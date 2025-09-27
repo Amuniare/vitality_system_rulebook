@@ -25,7 +25,7 @@ export class TierSystem {
         if (!this.isValidTier(tier)) {
             return 0;
         }
-        return GameConstants.TIER_BONUS_LOOKUP[tier] || 0;
+        return GameConstants.LEVEL_BONUS_LOOKUP[tier] || 0;
     }
     
     // Calculate attribute maximums based on tier

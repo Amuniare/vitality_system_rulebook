@@ -10,7 +10,7 @@ export class UtilityAbilitiesSummary {
         if (!character) {
             return `
                 <div class="card">
-                    <h3>Utility & Talents</h3>
+                    <h3>Utility</h3>
                     <div class="card-content">
                         <p>No character data available</p>
                     </div>
@@ -23,9 +23,9 @@ export class UtilityAbilitiesSummary {
         if (!hasAnyPurchases) {
             return `
                 <div class="card">
-                    <h3>Utility & Talents</h3>
+                    <h3>Utility</h3>
                     <div class="card-content">
-                        <p>No utility abilities or talents defined yet.</p>
+                        <p>No utility abilities defined yet.</p>
                         <p class="help-text">Abilities will appear here once defined in the Utility tab.</p>
                     </div>
                 </div>
@@ -34,9 +34,8 @@ export class UtilityAbilitiesSummary {
 
         return `
             <div class="card">
-                <h3>Utility & Talents</h3>
+                <h3>Utility</h3>
                 <div class="card-content">
-                    ${this.renderTalents(character.talents)}
                     ${this.renderUtilityArchetype(character)}
                     ${this.renderUtilityPurchases(character.utilityPurchases)}
                 </div>
@@ -47,31 +46,12 @@ export class UtilityAbilitiesSummary {
     hasUtilityPurchases(character) {
         if (!character) return false;
 
-        const hasTalents = character.talents?.some(t => t && t.trim() !== '');
         const hasArchetype = !!character.archetypes?.utility;
         const hasPurchases = character.utilityPurchases && Object.values(character.utilityPurchases).some(category => Array.isArray(category) && category.length > 0);
 
-        return hasTalents || hasArchetype || hasPurchases;
+        return hasArchetype || hasPurchases;
     }
 
-    renderTalents(talents) {
-        if (!talents || talents.length === 0 || talents.every(t => !t || t.trim() === '')) {
-            return '';
-        }
-
-        return `
-            <div class="utility-category">
-                <h5 class="utility-category-header">Talents</h5>
-                <div class="utility-items">
-                    ${talents.map((talent, index) => `
-                        <div class="utility-summary-item">
-                            <h5 class="utility-item-name">Talent ${index + 1}: ${talent || '<em>Not Set</em>'}</h5>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
     
     renderUtilityArchetype(character) {
         const archetypeId = character.archetypes?.utility;
