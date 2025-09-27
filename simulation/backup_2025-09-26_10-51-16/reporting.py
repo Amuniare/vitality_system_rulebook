@@ -1485,16 +1485,39 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
         total_dpt = 0
         total_configs = 0
 
+        # Define the same fight scenarios as main simulation
+        fight_scenarios = [
+            ("Fight 1: 1x100 HP Boss", 1, 100),
+            ("Fight 2: 2x50 HP Enemies", 2, 50),
+            ("Fight 3: 4x25 HP Enemies", 4, 25),
+            ("Fight 4: 10x10 HP Enemies", 10, 10)
+        ]
+
         for att_config in config.attacker_configs:
             for def_config in config.defender_configs:
                 attacker = Character(*att_config)
                 defender = Character(*def_config)
 
-                _, avg_turns, dpt = run_simulation_batch(
-                    attacker, build, config.build_testing_runs, config.target_hp, defender)
+                # Average across all fight scenarios for this config
+                case_total_dpt = 0
+                case_total_turns = 0
+                scenario_count = 0
 
-                total_turns += avg_turns
-                total_dpt += dpt
+                for scenario_name, num_enemies, enemy_hp in fight_scenarios:
+                    _, avg_turns, dpt = run_simulation_batch(
+                        attacker, build, config.build_testing_runs, config.target_hp, defender,
+                        num_enemies=num_enemies, enemy_hp=enemy_hp)
+
+                    case_total_dpt += dpt
+                    case_total_turns += avg_turns
+                    scenario_count += 1
+
+                # Average DPT and turns across the 4 scenarios for this case
+                case_avg_dpt = case_total_dpt / scenario_count if scenario_count > 0 else 0
+                case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
+
+                total_turns += case_avg_turns
+                total_dpt += case_avg_dpt
                 total_configs += 1
 
         avg_turns = total_turns / total_configs if total_configs > 0 else 0
@@ -1502,7 +1525,7 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
         build_results.append((build, avg_dpt, avg_turns))
 
     # Sort by average turns (lower is better)
-    build_results.sort(key=lambda x: x[1])
+    build_results.sort(key=lambda x: x[2])
 
     # Write the results
     with open(f'{reports_dir}/builds_turns_table.txt', 'w', encoding='utf-8') as f:
@@ -1516,7 +1539,7 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
         f.write("-" * 80 + "\n")
 
         # Build entries
-        for i, (build, avg_turns, avg_dpt) in enumerate(build_results, 1):
+        for i, (build, avg_dpt, avg_turns) in enumerate(build_results, 1):
             # Format enhancements (upgrades + limits)
             enhancements = []
             if build.upgrades:

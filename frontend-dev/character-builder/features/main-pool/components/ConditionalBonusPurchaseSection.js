@@ -3,6 +3,7 @@ import { TraitFlawSystem } from '../../../systems/TraitFlawSystem.js';
 import { PointPoolCalculator } from '../../../calculators/PointPoolCalculator.js';
 import { EventManager } from '../../../shared/utils/EventManager.js';
 import { RenderUtils } from '../../../shared/utils/RenderUtils.js';
+import { GameConstants } from '../../../core/GameConstants.js';
 
 export class ConditionalBonusPurchaseSection {
     constructor(characterBuilder) {
@@ -38,10 +39,10 @@ export class ConditionalBonusPurchaseSection {
     renderSectionHeader(pointInfo) {
         return `
             <div class="section-header">
-                <h4>Conditional Bonuses (Cost ${TraitFlawSystem.getTraitCost()}p Each)</h4>
+                <h4>Conditional Bonuses (Cost ${GameConstants.CONDITIONAL_BONUS_COST}p Each)</h4>
                 <div class="points-remaining">
                    Main Pool: ${pointInfo.remaining}p
-                   ${pointInfo.remaining < TraitFlawSystem.getTraitCost() && pointInfo.remaining >= 0 ? '<span class="warning">(Low)</span>' : ''}
+                   ${pointInfo.remaining < GameConstants.CONDITIONAL_BONUS_COST && pointInfo.remaining >= 0 ? '<span class="warning">(Low)</span>' : ''}
                    ${pointInfo.remaining < 0 ? '<span class="error">(Over Budget!)</span>' : ''}
                 </div>
             </div>
@@ -51,7 +52,7 @@ export class ConditionalBonusPurchaseSection {
     renderSectionDescription() {
         return `
             <p class="category-description">
-                Conditional Bonuses cost ${TraitFlawSystem.getTraitCost()} point and provide +Tier bonus to TWO stats when the condition is met.
+                Conditional Bonuses cost ${GameConstants.CONDITIONAL_BONUS_COST} point and provide +Tier bonus to TWO stats when the condition is met.
                 Choose 1 conditional bonus and 2 stats to benefit. Same stacking penalties apply.
             </p>
         `;
@@ -100,7 +101,7 @@ export class ConditionalBonusPurchaseSection {
     }
 
     renderConditionalBonusBuilderContent(conditionalBonuses, statOptionsData, pointInfo) {
-        const conditionalBonusCost = TraitFlawSystem.getTraitCost();
+        const conditionalBonusCost = GameConstants.CONDITIONAL_BONUS_COST;
 
         const canPurchase = this.currentConditionalBonusData.conditionalBonusId &&
                            this.currentConditionalBonusData.statBonuses.length === 2;
@@ -289,7 +290,7 @@ export class ConditionalBonusPurchaseSection {
         const character = this.builder.currentCharacter;
         const pools = PointPoolCalculator.calculateAllPools(character);
         const remainingPoints = pools.remaining.mainPool;
-        const itemCost = TraitFlawSystem.getTraitCost();
+        const itemCost = GameConstants.CONDITIONAL_BONUS_COST;
 
         // Budget validation with detailed warnings
         if (itemCost > remainingPoints) {

@@ -115,8 +115,8 @@ export class UpgradeSelection {
         return `
             <div class="available-upgrades-section">
                 <h4>Available Upgrades</h4>
-                <div class="upgrade-categories">
-                    ${Object.entries(upgradesByCategory).map(([category, upgrades]) => 
+                <div class="upgrade-categories grid-layout grid-columns-2fr">
+                    ${Object.entries(upgradesByCategory).map(([category, upgrades]) =>
                         this.renderUpgradeCategory(category, upgrades, attack, character)
                     ).join('')}
                 </div>
@@ -209,6 +209,11 @@ export class UpgradeSelection {
             dataAttributes: !isEnhancedScale ? { action: 'purchase-upgrade', 'upgrade-id': upgrade.id } : {},
             additionalContent: `
                 ${upgrade.restriction ? `<small class="upgrade-restriction">Restriction: ${upgrade.restriction}</small>` : ''}
+                ${upgrade.limit ? `<small class="upgrade-limit">Limit: ${upgrade.limit}</small>` : ''}
+                ${upgrade.penalty ? `<small class="upgrade-penalty">Penalty: ${upgrade.penalty}</small>` : ''}
+                ${upgrade.chainPenalty ? `<small class="upgrade-chainpenalty">Chain Penalty: ${upgrade.chainPenalty}</small>` : ''}
+                ${upgrade.usage ? `<small class="upgrade-usage">Usage: ${upgrade.usage}</small>` : ''}
+                ${upgrade.frequency ? `<small class="upgrade-frequency">Frequency: ${upgrade.frequency}</small>` : ''}
                 ${hasConflicts && !alreadyPurchased ? `<small class="error-text">${validation.errors.find(e => !e.startsWith('Insufficient points'))}</small>` : ''}
                 ${quantityControls}
             `

@@ -1,6 +1,6 @@
 {
   "execution_mode": "both",
-  "max_points": 70,
+  "max_points": 80,
   "use_threading": true,
   "verbose_logging": true,
   "top_builds_count": 100,

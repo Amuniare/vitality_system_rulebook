@@ -171,25 +171,31 @@ export class PointPoolCalculator {
                 available = limitCalcResult.finalPoints;
                 method = 'limits_scaled';
                 break;
-                
-            case 'paragon':
+
+            case 'versatileMaster':
                 fromArchetype = tier * 10;
                 available = fromArchetype;
                 method = 'fixed_archetype';
                 break;
-                
-            case 'oneTrick':
+
+            case 'focusedAttacker':
                 fromArchetype = tier * 20;
                 available = fromArchetype;
                 method = 'fixed_archetype';
                 break;
-                
+
             case 'dualNatured':
                 fromArchetype = tier * 15;
                 available = fromArchetype;
                 method = 'fixed_archetype';
                 break;
-                
+
+            case 'sharedCharges':
+                fromArchetype = tier * 10;
+                available = fromArchetype;
+                method = 'shared_resource';
+                break;
+
             case 'basic':
                 fromArchetype = tier * 10;
                 available = fromArchetype;

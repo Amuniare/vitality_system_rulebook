@@ -324,12 +324,12 @@ All characters can take these actions at base, no special training or abilities 
 
 **Shared Charges**
 - Build 3 attacks
-  - One attack consumes 1 charge
-  - One attack consumes 2 charges
-  - One attack consumes 3 charges
+  - One attack consumes 1 charge, and gets Tier × 10 points
+  - One attack consumes 2 charges, and gets Tier × 15 points
+  - One attack consumes 3 charges, and gets Tier × 20 points
 - 10 shared charges among attacks
 - Action to regain 5 charges
-- Tier × 10 points per use
+
 
 **Specialist**
 - You cannot purchase Attack Upgrades
@@ -644,8 +644,9 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 
 **AREA ATTACK** 
 - **Range:** Originates from your position
-- **Area Options:** 3sp Radius Burst, 6sp Cone, 12sp Line (choose one at purchase)
+- **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Penalty:** -Tier to all Accuracy checks
+- **Cost:** All upgrades cost 2x as much
 
 **DIRECT CONDITION ATTACK** 
 - **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
@@ -657,18 +658,19 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction:** Must be a Condition Effect
 - **Penalty:** -Tier x2 Condition Roll
+- **Cost:** All upgrades cost 2x as much
 
 **DIRECT DAMAGE ATTACK** 
 - **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
 - **Restriction:** Must be Damage Effect
-- **Penalty:** Flat 13 - Tier
+- **Penalty:** Flat 15 - Tier
 
 **DIRECT AREA DAMAGE ATTACK** 
 - **Range:** Originates from your position, auto-hit (no Accuracy roll needed)
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction:** Must be Damage Effect
-- **Penalty:** Flat 13 - Tier x2
-
+- **Penalty:** Flat 15 - Tier x2
+- **Cost:** All upgrades cost 2x as much
 
 ## **DAMAGE & CONDITIONS **
 1. You can build an attack that does damage for free or purchase a Condition for it's listed price
@@ -718,22 +720,22 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 
 ### Generic Attack Upgrades
 **Extended Range**
-Cost: (20p)
+Cost: 10p
 Effect: Attacks reach 30 spaces instead of 15 Sp
 Restriction: Ranged and Direct Attacks only
 
 **Long Range**
-Cost: (30p)
+Cost: 20p
 Effect: Attacks reach 100 spaces instead of 30 Sp
 Restriction: Ranged Attacks only
 
 **Perception Range**
-Cost: (20p)
+Cost: 10p
 Effect: Attacks can target anyone you can see instead of 15 Sp
 Restriction: Direct Attacks only
 
 **Enhanced Scale**
-Cost: (20p)
+Cost: 10p
 Effect: Increase the size of Area attacks:
   - Burst: +2sp
   - Cone: +4sp
@@ -741,12 +743,12 @@ Effect: Increase the size of Area attacks:
 Restriction: AOE Attacks only
 
 **Precise**
-Cost: (30p)
+Cost: 20p
 Effect: Choose which targets are affected by Area attacks
 Restriction: Area and Area Direct Attacks only
 
 **Ranged Area**
-Cost: (20p)
+Cost: 10p
 Effect: Instead of the point of orin being yourself, you can target a point up to 15 Sp away from you
 Restriction: Area Burst and Area Direct Attacks only
 Limit: You can be damage by your own attack.
@@ -759,24 +761,22 @@ Limit: You can be damage by your own attack.
 ### Accuracy
 
 **Accurate Attack**  
-Cost: 10p
+Cost: 5p
 Effect: +Tier to Accuracy rolls, 
-Limit: -Tier to Damage and Condition rolls  
+Penalty: -Tier to Damage and Condition rolls  
 Restriction: Melee, Ranged, Area attacks only
 
 
 **Reliable Accuracy**  
-Cost: 20p
-Limit: -4 penalty to all Accuracy rolls  
+Cost: 10p
+Penalty: -3 penalty to all Accuracy rolls  
 Effect: Advantage (roll 2d20, take higher roll) on Accuracy rolls
 
 **Overhit**  
-Cost: 30p
+Cost: 20p
 Effect: When Accuracy exceeds target Avoidance by 5+, add half the difference to Effect roll  
 
-**Blitz**  
-Cost: 10p
-Effect: +1 Accuracy per 6 spaces moved toward target this turn  
+
 
 
 
@@ -784,34 +784,33 @@ Effect: +1 Accuracy per 6 spaces moved toward target this turn
 ### Damage
 
 **Power Attack**  
-Cost: 10p
+Cost: 5p
 Effect: +Tier to Damage rolls, 
-Limit: -Tier to Accuracy rolls  
+Penalty: -Tier to Accuracy rolls  
 Restriction: Melee, Ranged, Area attacks only
 
 
 **High Impact**  
-Cost: 20p
+Cost: 10p
 Effect: Replace 3d6 damage roll with flat 15 damage  
 Restriction: Damage effects only
 
 **Critical Effect** 
-Cost: 20p
-Limit: -3 penalty to all Damage rolls  
+Cost: 10p
+Penalty: -2 penalty to all Damage rolls  
 Effect: All dice explode on a 5-6, cumulatively
 Restriction: Damage effects only
 
 
 **Armor Piercing**  
-Cost: 20p
-Limit: -1/2 Tier (round up) penalty to all Accuracy rolls
+Cost: 30p
 Effect: Ignore target's Durability Endurance bonus 
 Restriction: Cannot take with Direct or Direct Area Attacks
 Restriction: Damage effects only
 
 **Brutal**  
-Cost: 40p
-Limit: When Damage roll exceeds target Durability by 10+
+Cost: 20p
+Penalty: When Damage roll exceeds target Durability by 10+
 Effect: deal extra damage equal to half the difference  
 Restriction: Damage effects only
 
@@ -822,80 +821,81 @@ Restriction: Damage effects only
 
 
 **Lasting Condition**  
-Cost: 30p
+Cost: 20p
 Effect: If Condition roll exceeds their Resistance by target's Tier, condition duration extends by 1 turn  
 Restriction: Condition effects only
 
 **Contagious**  
-Cost: 40p
+Cost: 30p
 Effect: Successful condition triggers a repeat attack against a target within Tier Sp of the target.
 Restriction: Cannot apply to AOE attacks, triggers only once per attack  
 Restriction: Condition effects only
 
 **Cursed**  
-Cost: 30p
+Cost: 20p
 Effect: If 2 × (Condition roll - Resistance) ≥ target's remaining HP, condition becomes permanent  
 Restriction: Condition effects only
 Permanent: The condition lasts 8 hours, or until another condition is met (discuss with GM)
 
 
 **Overwhelming Affliction**  
-Cost: 40p
+Cost: 20p
 Effect: If Condition roll exceeds Resistance by 3 × Tier, condition becomes permanent regardless of target HP  
 Restriction: Condition effects only
 Permanent: The condition lasts 8 hours, or until another condition is met (discuss with GM)
 
 **Concentration**
-Cost: 40p
+Cost: 20p
 Effect: As a free action, if this effect succeeds, on subsequent turns, you can make this attack again at the same target.
-Limit: If you use your free action to make this attack, you cannot use your action to make any attack.
+Penalty: If you use your free action to make this attack, you cannot use your action to make any attack.
 Restriction: Condition effects only
 
 **Critical Condition**  
-Cost: 30p
+Cost: 10p
 Effect: Condition rolls critical hit on 15-20 range  
 Restriction: Cannot apply to AOE attacks  
 Restriction: Condition effects only
 
 **Powerful Condition Critical**  
 Cost: 20p
-Effect: Add Tier bonus again to Condition rolls on a Critical Condition roll
-Restriction: Must take **Critical Condition**
+Effect: Condition rolls critical hit on 15-20 range, Add Tier bonus again to Condition rolls on a Critical Condition roll
+Restriction: Cannot apply to AOE attacks  
+Restriction: Condition effects only
 
 ### Critical Bonuses
 
 **Critical Accuracy**  
-Cost: 30p
-Effect: Critical hit range expanded to 15-20 on d20  
+Cost: 10p
+Effect: 
 Restriction: Cannot apply to AOE attacks  
 
-**Powerful Condition Critical**  
+**Powerful Critical**  
 Cost: 20p
-Effect: Add Tier bonus again to Damage and Conditions rolls on a Critical Accuracy roll
-Restriction: Must take **Critical Accuracy**
+Effect: Critical hit range expanded to 15-20 on d20, add Tier bonus again to Damage and Conditions rolls on a Critical Accuracy roll
+Restriction: Cannot apply to AOE attacks  
 
 **Ricochet**  
 Cost: 20p
-Effect: Hit rolls of 15-20 trigger an additional attack against a different target within range  
-Restriction: Must take **Critical Accuracy**
+Effect: Critical hit range expanded to 15-20 on d20, trigger an additional attack against a different target within range  
+Restriction: Cannot apply to AOE attacks  
 Exclusion: Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet  
 
 **Double-Tap**  
 Cost: 30p
-Effect: Hit rolls of 15-20 trigger same attack again against same target  
-Restriction: Must take **Critical Accuracy**
+Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger same attack again against same target  
+Restriction: Cannot apply to AOE attacks  
 Exclusion: Cannot trigger from Ricochet, Explosive Critical, or other Double-Tap  
 
 **Explosive Critical**  
-Cost: 40p
-Effect: Hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them  
-Restriction: Must take **Critical Accuracy**
+Cost: 60p
+Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them 
+Restriction: Cannot apply to AOE attacks  
 Exclusion: Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical  
 
 **Martial Artist**  
 Cost: 20p
-Effect: Hit rolls of 15-20 choice of Grab, 3-space forced movement, or Prone condition  
-Restriction: Must take **Critical Accuracy**
+Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 choice of Grab, 3-space forced movement, or Prone condition  
+Restriction: Cannot apply to AOE attacks  
 
 
 
@@ -903,13 +903,14 @@ Restriction: Must take **Critical Accuracy**
 ### Damage Over Time
 
 **Bleed**  
-Cost: 60p
+Cost: 30p
 Effect: Target takes identical damage again at end of your next 2 turns  
+Penalty: - Tier to Damage
 Duration: 2 additional damage instances  
-Restriction: Target can only be affected by one instance of bleed at a time
+Restriction: Target can only be affected by one instance of bleed at a time, Damage only
 
 **Environmental**  
-Cost: 40p per rank
+Cost: 20p per rank
 Effect: All hexes hit by attack become hazardous terrain, until the start of your next turn, each rank after the first is an extra turn.  
 Hazard Effect: Deal attack's Damage and Condition to any character entering or ending turn in affected spaces  
 Restriction: Cannot have precise.
@@ -917,27 +918,36 @@ Restriction: Cannot have precise.
 ### Other
 
 **Shatter**  
-Cost: 20p
+Cost: 10p
 Effect: Deal double damage to structures and vehicles  
 Restriction: Cannot have precise.
 
 **Leech**  
-Cost: 80p
+Cost: 60p
 Effect: Regain HP equal to half damage dealt  
-Restriction: Cannot apply to AOE attacks  
+
 
 ### Instant Defeat Mechanics
 
-**Finishing Blow**  
-Cost: 20p per rank
-Effect: If attack reduces enemy to (5 × rank) HP or below, enemy is defeated instead  
-Maximum: 3 ranks purchasable
+**Finishing Blow 1**  
+Cost: 10p
+Effect: If attack reduces enemy to 5 HP or below, enemy is defeated instead  
 Restriction: Cannot apply to AOE attacks  
 
-**Culling Strike**  
+**Finishing Blow 2**  
 Cost: 20p
-Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead  
+Effect: If attack reduces enemy to 10 HP or below, enemy is defeated instead  
 Restriction: Cannot apply to AOE attacks  
+
+**Finishing Blow 3**  
+Cost: 40p
+Effect: If attack reduces enemy to 15 HP or below, enemy is defeated instead  
+Restriction: Cannot apply to AOE attacks  
+
+
+**Culling Strike**  
+Cost: 10p
+Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead  
 
 
 
@@ -946,51 +956,52 @@ Restriction: Cannot apply to AOE attacks
 
 
 **Quick Strikes**  
-Cost: 40p
-Effect: Make same attack three times against single target  
-Effect Modifier: -Tier to Accuracy, Damage, and Condition rolls  
-Restriction: Must be a melee attack
+Cost: 20p
+Effect: Make same attack two times against single target  
+Penalty: -Tier to Accuracy, Damage, and Condition rolls  
+Restriction: Cannot be put on an AOE attack
 
 **Barrage**  
-Cost: 60p
-Effect: Make same attack three times against single target  
-Effect Modifier: -Tier to Accuracy, Damage, and Condition rolls  
-Restriction: Must be a ranged attack
-
-
-
-
-**Pounce**  
-Cost: 20p
-Effect: Move up to 6 spaces in straight line toward target as part of attack  
-Usage: Movement occurs during attack resolution  
-
-**Splinter**  
-Cost: 40p
-Effect: Defeating enemy triggers another attack against new target before turn ends  
-Chain Limit: Maximum Tier/2 additional attacks (rounded up)  
-Restriction: Cannot apply to AOE attacks  
-
-
-**Menacing**  
-Cost: 50p
-Effect: Reducing enemy to 0 HP allows Intimidation attempt against all enemies within 3 spaces of the target  
-Surrender Threshold: Enemies with HP ≤ (Intimidation check - 10) surrender  
-
-**Disengage**  
 Cost: 30p
-Effect: Successful hit prevents opportunity attacks from all hit targets until end of turn  
+Effect: Make same attack three times against single target  
+Limit: First attack must hit and effect, in order to make second attack, and same for the second and third attacks
+Penalty: -Tier to Accuracy, Damage, and Condition rolls  
+Restriction: Cannot be put on an AOE attack
 
 **Extra Attack**  
-Cost: 50p
+Cost: 30p
 Effect: Successful hit with successful effect allows identical attack against same target  
 Usage: Must hit and succeed on both Accuracy and Effect
 Frequency: Once per turn maximum   
 
 
 
-**Priority Target**  
+**Pounce**  
+Cost: 10p
+Effect: Move up to 6 spaces in straight line toward target as part of attack  
+Usage: Movement occurs during attack resolution  
+
+**Splinter**  
 Cost: 40p
+Effect: Defeating enemy triggers another attack against new target before turn ends  
+Chain Penalty: Maximum Tier/2 additional attacks (rounded up)  
+Restriction: Cannot apply to AOE attacks  
+
+
+**Menacing**  
+Cost: 40p
+Effect: Reducing enemy to 0 HP allows Intimidation attempt against all enemies within 3 spaces of the target  
+Surrender Threshold: Enemies with HP ≤ (Intimidation check - 10) surrender  
+
+**Disengage**  
+Cost: 10p
+Effect: Successful hit prevents opportunity attacks from all hit targets until end of turn  
+
+
+
+
+**Priority Target**  
+Cost: 20p
 Effect: After hitting target, mark them as Priority Target until start of next turn  
 Ally Bonus: Other characters gain Tier Accuracy bonus against marked target 
 Frequency: Once per turn  
@@ -1000,12 +1011,12 @@ Cost: 10p
 Effect: Damaging target with lower Power score allows forced movement equal to the difference between your Power scores
 
 **Intimidating Presence**
-Cost: 30p  
+Cost: 20p  
 Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Taunt condition and uses your normal Condition Check roll.  
 Usage: Triggers on enemy defeat, activation is optional
 
 **Terrifying Display**  
-Cost: 30p  
+Cost: 20p  
 Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Frighten condition and uses your normal Condition Check roll.  
 Usage: Triggers on enemy defeat, activation is optional
 
@@ -1018,22 +1029,22 @@ Usage: Triggers on enemy defeat, activation is optional
 ### Enemy Type Bonuses
 
 **Minion Slayer**
-Cost: 20p
+Cost: 10p
 Limit: Bonus applies against 10 maximum HP enemies  
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 
 **Captain Slayer**
-Cost: 20p
+Cost: 10p
 Limit: Bonus applies against 25 maximum HP enemies  
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 
 **Elite Slayer**
-Cost: 20p
+Cost: 10p
 Limit: Bonus applies against 50 maximum HP enemies  
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 
 **Boss Slayer**
-Cost: 20p
+Cost: 10p
 Limit: Bonus applies against 100 maximum HP enemies  
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 
@@ -1051,7 +1062,7 @@ Scaling: +Tier to chosen roll for each consecutive turn channeling (maximum 5 tu
 Selection: Choose Accuracy, Damage, or Conditions when purchasing  
 
 **Focused**  
-Cost: 20p
+Cost: 30p
 Requirement: Melee attack type  
 Effect: Spend Primary Action + Movement on subsequent turns to repeat attack  
 Scaling: +Tier to chosen roll for each consecutive turn focusing (maximum 5 turns)  
@@ -1065,12 +1076,12 @@ Selection: Choose Accuracy, Damage, or Conditions when purchasing
 **Charges 1** 
 Cost: 20p
 Limit: Single use, recharges after 1 minute rest
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Charges 2** 
 Cost: 30p
 Limit: 2 uses, recharges after 1 minute rest
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 
 
@@ -1079,22 +1090,22 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 **Timid** 
 Cost: 20p
 Limit: At max HP with no conditions
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Near Death** 
 Cost: 10p
 Limit: At 25 Hit Points or less
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +2xTier to Accuracy, Damage, and Conditions
 
 **Bloodied** 
-Cost: 20p
+Cost: 10p
 Limit: At 50 Hit Points or less
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Unhealthy** 
 Cost: 30p
 Limit: 50 points below max HP
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 
 ### Conditional
@@ -1102,62 +1113,62 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 **Vengeful** 
 Cost: 30p
 Limit: Been hit since last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Revenge** 
 Cost: 20p
 Limit: Been damaged since last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Unbreakable** 
 Cost: 20p
 Limit: Been hit but took no damage since last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Untouchable** 
 Cost: 20p
 Limit: All attacks missed since last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Avenger** 
 Cost: 10p
 Limit: Ally unconscious or great peril occurred
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +2xTier to Accuracy, Damage, and Conditions
 
 **Passive** 
 Cost: 30p
 Limit: Not attacked since last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Careful** 
 Cost: 30p
 Limit: Not damaged since last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 
 
 
-### Squential
+### Sequential
 
 **Combo Move** 
 Cost: 30p
 Limit: Hit same enemy last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Infected** 
 Cost: 30p
 Limit: Applied Condition last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Relentless** 
 Cost: 30p
 Limit: Dealt damage to enemy last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Slaughter** 
 Cost: 20p
 Limit: Defeated enemy last turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 
 
@@ -1168,17 +1179,22 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 **Rooted** 
 Cost: 30p
 Limit: Cannot move this turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
+
+**Blitz**  
+Cost: 30p
+Limit: Must have moved more than half your movement in a straight line towards your target.
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Long Distance Fighter** 
 Cost: 30p
 Limit: No enemies within 5 spaces
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Dangerous** 
 Cost: 10p
 Limit: No allies within 15 spaces, no civilians within 30 spaces
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 
 
@@ -1190,39 +1206,39 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 **Unreliable 1** 
 Cost: 30p
 Limit: Roll d20, DC 5 to activate each turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Unreliable 2** 
 Cost: 20p
 Limit: Roll d20, DC 10 to activate each turn
-Effect: +2xTier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +3xTier to Accuracy, Damage, and Conditions
 
 **Unreliable 3** 
 Cost: 10p
 Limit: Must roll 15+ or attack fails
-Effect: +3xTier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +5xTier to Accuracy, Damage, and Conditions
 
 ### Time based
 
 **Quickdraw** 
 Cost: 10p
 Limit: First round of combat
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +2xTier to Accuracy, Damage, and Conditions
 
 **Steady** 
 Cost: 30p
 Limit: Turn 3 or later
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Patient** 
 Cost: 20p
 Limit: Turn 5 or later
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Finale** 
 Cost: 10p
-Limit: Turn 8 or later
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Limit: Turn 7 or later
+Effect: +2xTier to Accuracy, Damage, and Conditions
 
 
 
@@ -1230,24 +1246,24 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 ### Other
 
 **Charge Up** 
-Cost: 10p
+Cost: 20p
 Limit: Spend an action on your previous turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +2xTier to Accuracy, Damage, and Conditions
 
 **Charge Up 2** 
-Cost: 10p
+Cost: 20p
 Limit: Spend an two actions on your previous two turns
-Effect: +(2 x Tier) to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +(4 x Tier) to Accuracy, Damage, and Conditions
 
 **Exhausting** 
-Cost: 10p
+Cost: 20p
 Limit: Costs an effort to make attack
-Effect: +(2 x Tier) to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +(2 x Tier) to Accuracy, Damage, and Conditions
 
 **Cooldown** 
 Cost: 20p
 Limit: Cannot use again for 3 turns after use
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 
 
@@ -1255,65 +1271,62 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 Cost: 30p
 Limit: Each use costs 20 HP
 Restriction: Can't have regeneration, leech, healing or any other ability that restores HP
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
-**Sacrifice** 
-Cost: 20p
-Limit: Sacrifice a minion adjacent to you or your target (chosen when purchasing this upgrade)
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
 
 
 
 **Drain Reserves** 
 Cost: 20p
 Limit: You must have a healing ability, you lose a healing charge
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Tower Defense**  
 Cost: 30p
 Limit: You must have an Active Wall ability, targets must be adjacent to the wall.
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Compressed Release** 
 Cost: 20p
 Limit: You must have an Active Aura ability, Disable Aura until start of next turn
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Domain** 
 Cost: 30p
 Limit: Attacking targets within your Barrier
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Grappler** 
 Cost: 30p
 Limit: Must have Grab condition active on target
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
 **Exploit** 
 Cost: 30p
 Limit: Against targets currently afflicted by any Condition
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
-### Sacrafice
-**Sacrafice Minion** 
+### Sacrifice
+**Sacrifice Minion** 
 Cost: 30p
 Limit: One of your 10 HP minions summons is killed, this attack originates from that minion.
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
-**Sacrafice Captain** 
+**Sacrifice Captain** 
 Cost: 10p
 Limit: One of your 25 HP minions summons is killed, this attack originates from that minion.
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Conditions
 
-**Sacrafice Vanguard** 
+**Sacrifice Vanguard** 
 Cost: 30p
 Limit: One of your 50 HP minions summons is killed, this attack originates from that minion.
-Effect: +2xTier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +2xTier to Accuracy, Damage, and Conditions
 
-**Sacrafice Boss** 
+**Sacrifice Boss** 
 Cost: 10p
 Limit: One of your 100 HP minions summons is killed, this attack originates from that minion.
-Effect: +2xTier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +2xTier to Accuracy, Damage, and Conditions
 
 
 

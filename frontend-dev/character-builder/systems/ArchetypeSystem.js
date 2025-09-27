@@ -85,6 +85,20 @@ export class ArchetypeSystem {
             }
         }
 
+        // Versatile Master conflicts with more than five attacks
+        if (category === 'attack' && archetypeId === 'versatileMaster') {
+            if (character.specialAttacks.length > 5) {
+                errors.push('Versatile Master archetype allows only five special attacks');
+            }
+        }
+
+        // Shared Charges conflicts with more than three attacks
+        if (category === 'attack' && archetypeId === 'sharedCharges') {
+            if (character.specialAttacks.length > 3) {
+                errors.push('Shared Charges archetype allows only three special attacks');
+            }
+        }
+
         // Specialist conflicts with any special attacks
         if (category === 'attack' && archetypeId === 'specialist') {
             if (character.specialAttacks.length > 0) {
@@ -166,7 +180,7 @@ export class ArchetypeSystem {
             dualNatured: { method: 'fixed', attacks: 2, pointsPerAttack: 15 },
             versatileMaster: { method: 'fixed', attacks: 5, pointsPerAttack: 10 },
             sharedCharges: { method: 'shared_resource', attacks: 3, charges: 10, pointsPerUse: 10 },
-            specialist: { method: 'boons', extraBoons: character.level - 2 }
+            specialist: { method: 'boons', extraBoons: character.level }
         };
 
         const config = pointMethodConfig[archetype];

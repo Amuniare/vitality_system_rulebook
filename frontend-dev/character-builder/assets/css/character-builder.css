@@ -1064,8 +1064,9 @@ input:focus, select:focus, textarea:focus {
 .attack-type-dropdown:hover, .attack-type-dropdown:focus { border-color: var(--accent-primary); outline: none; }
 .attack-type-dropdown option { background: var(--bg-secondary); color: var(--text-light); padding: var(--padding-small); }
 .attack-type-dropdown option:disabled { color: var(--text-muted); background: var(--bg-primary); }
-.attack-builder-columns { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-large); margin: var(--gap-large) 0; }
+.attack-builder-columns { display: grid; grid-template-columns: 1fr; gap: var(--gap-large); margin: var(--gap-large) 0; }
 .limits-column, .upgrades-column { min-height: 400px; }
+.upgrades-column.full-width { width: 100%; }
 .limit-categories-hierarchy { margin-top: var(--gap-medium); }
 .limit-category { margin-bottom: var(--gap-medium); border: 1px solid var(--accent-secondary); border-radius: var(--border-radius-medium); background: var(--bg-secondary); overflow: hidden; }
 .limit-category-header { display: flex; align-items: center; padding: var(--padding-medium); cursor: pointer; background: var(--bg-secondary); transition: background-color 0.2s ease; user-select: none; }

@@ -75,22 +75,19 @@
             "id": "focusedAttacker",
             "name": "Focused Attacker",
             "description": "Single Special Attack with Tier × 20 points. High-risk, high-reward specialization.",
-            "pointSystem": { "method": "fixed", "attacks": 1, "points_per_attack": "tier * 20" },
-            "restrictions": ["cannot_use_limits"]
+            "pointSystem": { "method": "fixed", "attacks": 1, "points_per_attack": "tier * 20" }
         },
         {
             "id": "dualNatured",
             "name": "Dual-Natured",
             "description": "Two distinct Special Attacks, each gets 15 × Tier points. Balanced versatility.",
-            "pointSystem": { "method": "fixed", "attacks": 2, "points_per_attack": "tier * 15" },
-            "restrictions": ["cannot_use_limits"]
+            "pointSystem": { "method": "fixed", "attacks": 2, "points_per_attack": "tier * 15" }
         },
         {
             "id": "versatileMaster",
             "name": "Versatile Master",
             "description": "5 Special Attacks, each receives 10 × Tier points. Consistent performance without drawbacks.",
-            "pointSystem": { "method": "fixed", "attacks": 5, "points_per_attack": "tier * 10" },
-            "restrictions": ["cannot_use_limits"]
+            "pointSystem": { "method": "fixed", "attacks": 5, "points_per_attack": "tier * 10" }
         },
         {
             "id": "sharedCharges",
@@ -100,8 +97,7 @@
             "special": [
                 "Action to regain 5 charges.",
                 "Attack costs: 1, 2, and 3 charges respectively."
-            ],
-            "restrictions": ["cannot_use_limits"]
+            ]
         },
         {
             "id": "specialist",
