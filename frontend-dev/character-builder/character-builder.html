@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitality System - Character Builder (Simplified)</title>
+    <title>Vitality System - Character Builder</title>
     <link rel="stylesheet" href="assets/css/character-builder.css">
 </head>
 <body>
     <div class="container">
-
+        
         <!-- Main Content Area -->
         <main class="content" id="content">
             <!-- Welcome Screen -->
@@ -16,8 +16,8 @@
                 <div style="text-align: left; margin-bottom: 2rem;">
                     <a href="../index.html" style="color: var(--accent-secondary); text-decoration: none;">← Back to Hub</a>
                 </div>
-                <h1>Vitality System Character Builder v3.0</h1>
-                <p><strong>Simplified System</strong> - Streamlined rules with 4 archetype categories and simple boon selection.</p>
+                <h1>Vitality System Character Builder v2.0</h1>
+                <p>Complete implementation with all archetypes, limits, upgrades, and validation.</p>
 
                 <!-- Character Management Controls -->
                 <div class="character-management" style="margin: 2rem 0;">
@@ -26,7 +26,7 @@
                         <button id="import-character" class="btn btn-secondary">Import Character</button>
                         <input type="file" id="import-file" accept=".json" style="display: none;">
                     </div>
-
+                    
                     <!-- Character Library -->
                     <div id="character-library-section" class="character-library-section">
                         <h3>Saved Characters</h3>
@@ -38,51 +38,45 @@
 
                 <div class="feature-highlights">
                     <div class="feature">
-                        <h3>4 Archetype Categories</h3>
-                        <p>Simplified archetype system: Movement, Attack, Defensive, Utility</p>
+                        <h3>7 Archetype Categories</h3>
+                        <p>Full archetype system with validation</p>
                     </div>
                     <div class="feature">
-                        <h3>Simple Boon System</h3>
-                        <p>No complex point calculations - select boons equal to your level</p>
+                        <h3>Complex Point Pools</h3>
+                        <p>Accurate point calculations and limits</p>
                     </div>
                     <div class="feature">
-                        <h3>Streamlined Formulas</h3>
-                        <p>Simplified damage and stat calculations for faster play</p>
+                        <h3>Real-time Validation</h3>
+                        <p>Build order enforcement and error checking</p>
                     </div>
                     <div class="feature">
-                        <h3>Level-Based Progression</h3>
-                        <p>Clear 1-5 level system with tier bonuses (3/3/4/4/5)</p>
+                        <h3>Export Ready</h3>
+                        <p>JSON export for Roll20 and other systems</p>
                     </div>
                 </div>
-                <p><strong>New Simplified System:</strong> Create a character in minutes, not hours!</p>
+                <p>Create a new character or select an existing one to begin building.</p>
             </div>
-
+            
             <!-- Character Builder Interface -->
             <div id="character-builder" class="character-builder hidden">
                 <!-- Character Header -->
                 <div class="character-header">
                     <div class="basic-info">
-                        <h1 id="character-main-heading">
-                            <span id="character-name-display">Character Name</span> -
-                            <span id="character-level-display">Level 4 (Tier +4)</span>
-                        </h1>
+                        <h1 id="character-main-heading">Character Name - Tier 4</h1>
                         <span id="character-player-display">Player: </span>
-                    </div>
-                    <div class="header-actions">
-                        <button class="btn btn-outline" onclick="characterBuilder.exportCharacter()">Export Character</button>
-                        <button class="btn btn-secondary" onclick="characterBuilder.showWelcomeScreen()">← Back to Library</button>
                     </div>
                 </div>
 
-                <!-- Tab Navigation - Simplified 7-tab system -->
+                <!-- Tab Navigation -->
                 <div class="tab-navigation">
                     <button class="tab-btn active" data-tab="basicInfo">1. Basic Info</button>
                     <button class="tab-btn" data-tab="identity">2. Identity</button>
                     <button class="tab-btn" data-tab="archetypes">3. Archetypes</button>
                     <button class="tab-btn" data-tab="attributes">4. Attributes</button>
-                    <button class="tab-btn" data-tab="mainPool">5. Boons</button>
-                    <button class="tab-btn" data-tab="utility">6. Utility</button>
-                    <button class="tab-btn" data-tab="summary">7. Summary</button>
+                    <button class="tab-btn" data-tab="mainPool">5. Main Pool</button>
+                    <button class="tab-btn" data-tab="specialAttacks">6. Special Attacks</button>
+                    <button class="tab-btn" data-tab="utility">7. Utility</button>
+                    <button class="tab-btn" data-tab="summary">8. Summary</button>
                 </div>
 
                 <!-- Tab Content Areas -->
@@ -103,7 +97,11 @@
                 </div>
 
                 <div id="tab-mainPool" class="tab-content">
-                    <!-- Populated by MainPoolTab (now boon selection) -->
+                    <!-- Populated by MainPoolTab -->
+                </div>
+
+                <div id="tab-specialAttacks" class="tab-content">
+                    <!-- Populated by SpecialAttackTab -->
                 </div>
 
                 <div id="tab-utility" class="tab-content">
@@ -112,11 +110,6 @@
 
                 <div id="tab-summary" class="tab-content">
                     <!-- Populated by SummaryTab -->
-                </div>
-
-                <!-- Special Attack Tab (conditional - only shown for certain archetypes) -->
-                <div id="tab-specialAttacks" class="tab-content hidden">
-                    <!-- Populated by SpecialAttackTab when needed -->
                 </div>
             </div>
         </main>

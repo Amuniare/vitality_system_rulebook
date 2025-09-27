@@ -1,267 +1,59 @@
 [
     {
-        "id": "passive_accuracy",
-        "category": "passive_bonuses",
-        "name": "Accuracy Mastery",
-        "cost": 1,
-        "description": "+Tier bonus to Accuracy checks",
-        "effects": [
-            { "type": "stat_bonus", "stat": "accuracy", "bonus": "tier" }
-        ],
-        "drawback": "slow",
-        "drawback_description": "No Movement Archetype"
+        "id": "psychic",
+        "name": "Psychic",
+        "cost": 0,
+        "description": "All conditions you inflict target Resolve resistance",
+        "effect": "condition_targeting_resolve",
+        "category": "supernatural"
     },
     {
-        "id": "passive_damage",
-        "category": "passive_bonuses",
-        "name": "Damage Mastery",
-        "cost": 1,
-        "description": "+Tier bonus to Damage rolls",
-        "effects": [
-            { "type": "stat_bonus", "stat": "damage", "bonus": "tier" }
-        ],
-        "drawback": "frail",
-        "drawback_description": "No Defensive Archetype"
-    },
-    {
-        "id": "passive_conditions",
-        "category": "passive_bonuses",
-        "name": "Condition Mastery",
-        "cost": 1,
-        "description": "+Tier bonus to Condition checks",
-        "effects": [
-            { "type": "stat_bonus", "stat": "conditions", "bonus": "tier" }
-        ],
-        "drawback": "combat_focused",
-        "drawback_description": "No Utility abilities"
-    },
-    {
-        "id": "passive_avoidance",
-        "category": "passive_bonuses",
-        "name": "Avoidance Mastery",
-        "cost": 1,
-        "description": "+Tier bonus to Avoidance",
-        "effects": [
-            { "type": "stat_bonus", "stat": "avoidance", "bonus": "tier" }
-        ],
-        "drawback": "sickly",
-        "drawback_description": "Maximum Health Pool reduced by 30"
-    },
-    {
-        "id": "passive_durability",
-        "category": "passive_bonuses",
-        "name": "Durability Mastery",
-        "cost": 1,
-        "description": "+Tier bonus to Durability",
-        "effects": [
-            { "type": "stat_bonus", "stat": "durability", "bonus": "tier" }
-        ],
-        "drawback": "peaked",
-        "drawback_description": "Cannot use Efforts"
-    },
-    {
-        "id": "passive_speed",
-        "category": "passive_bonuses",
-        "name": "Speed Mastery",
-        "cost": 1,
-        "description": "+Tier×2 bonus to Movement Speed",
-        "effects": [
-            { "type": "stat_bonus", "stat": "movement", "bonus": "tier * 2" }
-        ],
-        "drawback": "power_loss",
-        "drawback_description": "Lose powers under specific circumstances (discuss with GM)"
-    },
-    {
-        "id": "passive_resistances",
-        "category": "passive_bonuses",
-        "name": "Resistance Mastery",
-        "cost": 1,
-        "description": "+Tier bonus to All Resistances",
-        "effects": [
-            { "type": "stat_bonus", "stat": "all_resistances", "bonus": "tier" }
-        ],
-        "drawback": "cursed",
-        "drawback_description": "Roll a d20 at the start of each turn, on a 1-3, you are stunned"
-    },
-    {
-        "id": "conditional_flow_state",
-        "category": "conditional_bonuses",
-        "name": "Flow State",
-        "cost": 1,
-        "description": "+Tier bonus to TWO chosen stats when you haven't taken damage since last turn, cannot move this turn, and no enemies are within 5 spaces.",
-        "effects": [
-            { "type": "conditional_stat_bonus", "bonus": "tier", "condition": "flow_state" }
-        ],
-        "options": [
-            {
-                "id": "flow_state_stats",
-                "label": "Choose 2 Stats",
-                "choices": ["accuracy", "damage", "conditions", "avoidance", "durability", "all_resistances"],
-                "count": 2
-            }
-        ]
-    },
-    {
-        "id": "conditional_avenger",
-        "category": "conditional_bonuses",
-        "name": "Avenger",
-        "cost": 1,
-        "description": "+Tier bonus to TWO chosen stats when an ally is unconscious or great peril occurred.",
-        "effects": [
-            { "type": "conditional_stat_bonus", "bonus": "tier", "condition": "avenger" }
-        ],
-        "options": [
-            {
-                "id": "avenger_stats",
-                "label": "Choose 2 Stats",
-                "choices": ["accuracy", "damage", "conditions", "avoidance", "durability", "all_resistances"],
-                "count": 2
-            }
-        ]
-    },
-    {
-        "id": "conditional_berserk",
-        "category": "conditional_bonuses",
-        "name": "Berserk",
-        "cost": 1,
-        "description": "+Tier bonus to TWO chosen stats when you're at 50 Hit Points or less and dealt damage this turn.",
-        "effects": [
-            { "type": "conditional_stat_bonus", "bonus": "tier", "condition": "berserk" }
-        ],
-        "options": [
-            {
-                "id": "berserk_stats",
-                "label": "Choose 2 Stats",
-                "choices": ["accuracy", "damage", "conditions", "avoidance", "durability", "all_resistances"],
-                "count": 2
-            }
-        ]
-    },
-    {
-        "id": "trait_immutable",
-        "category": "traits",
-        "name": "Immutable",
-        "cost": 1,
-        "description": "Choose one Secondary Resistance, you gain complete immunity in that resistance type.",
-        "effects": [
-            { "type": "immunity", "stat": "chosen_resistance" }
-        ],
-        "options": [
-            {
-                "id": "immutable_resistance",
-                "label": "Choose Resistance",
-                "choices": ["resolve", "stability", "vitality"]
-            }
-        ]
-    },
-    {
-        "id": "trait_try_hard",
-        "category": "traits",
-        "name": "Try-Hard",
-        "cost": 1,
-        "description": "You have an extra effort.",
-        "effects": [
-            { "type": "stat_bonus", "stat": "max_efforts", "bonus": 1 }
-        ]
-    },
-    {
-        "id": "trait_lucky",
-        "category": "traits",
-        "name": "Lucky",
-        "cost": 1,
-        "description": "3 rerolls per day, keep the higher roll.",
-        "effects": [
-            { "type": "special", "value": "lucky_rerolls", "count": 3 }
-        ]
-    },
-    {
-        "id": "trait_perfectionist",
-        "category": "traits",
-        "name": "Perfectionist",
-        "cost": 1,
-        "description": "You can reroll once, any roll that is equal to or below your Tier.",
-        "effects": [
-            { "type": "special", "value": "perfectionist_reroll" }
-        ]
-    },
-    {
-        "id": "trait_robot",
-        "category": "traits",
+        "id": "robot",
         "name": "Robot",
-        "cost": 1,
-        "description": "Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather than natural healing, you count as object for healing purposes.",
-        "effects": [
-            { "type": "immunity", "value": ["vitality_conditions", "resolve_conditions"] },
-            { "type": "vulnerability", "value": ["hacking", "electricity"] },
-            { "type": "special", "value": "robot_healing" }
-        ]
+        "cost": 30,
+        "description": "Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity",
+        "effect": "condition_immunity_tech_vulnerability",
+        "category": "construct"
     },
     {
-        "id": "special_ability_attack_aura",
-        "category": "special_abilities",
-        "name": "Attack Aura",
-        "cost": 1,
-        "description": "Passive field around you damaging those around you. Base Radius: 1 space. Effect: Anything other than you within your Aura takes 10 + Tier + Focus + Power.",
-        "effects": [
-            { "type": "aura", "damage": "10 + tier + focus + power", "radius": 1 }
-        ]
+        "id": "telekinetic",
+        "name": "Telekinetic",
+        "cost": 0,
+        "description": "All conditions you inflict target Stability resistance",
+        "effect": "condition_targeting_stability",
+        "category": "supernatural"
     },
     {
-        "id": "special_ability_support_aura",
-        "category": "special_abilities",
-        "name": "Support Aura",
-        "cost": 1,
-        "description": "Passive field around you affecting allies. Base Radius: 1 space. Allied characters other than you, within your aura, add your Tier to their chosen stat.",
-        "effects": [
-            { "type": "support_aura", "bonus": "tier", "radius": 1 }
-        ],
-        "options": [
-            {
-                "id": "support_aura_stat",
-                "label": "Choose Stat to Boost",
-                "choices": ["accuracy", "damage", "avoidance", "durability", "all_resistances"]
-            }
-        ]
+        "id": "biohacker",
+        "name": "Biohacker",
+        "cost": 0,
+        "description": "All conditions you inflict target Vitality resistance",
+        "effect": "condition_targeting_vitality",
+        "category": "supernatural"
     },
     {
-        "id": "special_ability_create_wall",
-        "category": "special_abilities",
-        "name": "Create Wall",
-        "cost": 1,
-        "description": "Temporary battlefield structure creation. Size: 2 × Tier Sp long, and Tier Sp high. Statistics: 50 HP, full Condition immunity, AV = 0, DR = 10 + Tier. Uses: 3 per Rest.",
-        "effects": [
-            { "type": "special", "value": "create_wall", "uses": 3 }
-        ]
+        "id": "utilitarian",
+        "name": "Utilitarian",
+        "cost": 15,
+        "description": "Gain 5 extra points for Expertise, Features, Senses, and Descriptors",
+        "effect": "utility_point_bonus",
+        "category": "enhancement",
+        "bonus": { "utilityPoints": 5 }
     },
     {
-        "id": "special_ability_invisibility",
-        "category": "special_abilities",
-        "name": "Invisibility",
-        "cost": 1,
-        "description": "Advanced concealment ability. Action to activate, ends if you are incapacitated. You are invisible and can take the Hide action while in line of sight of enemies.",
-        "effects": [
-            { "type": "special", "value": "invisibility" }
-        ]
+        "id": "perfectionist",
+        "name": "Perfectionist",
+        "cost": 15,
+        "description": "Reroll any natural 1s on d20 rolls",
+        "effect": "reroll_ones",
+        "category": "enhancement"
     },
     {
-        "id": "special_ability_regeneration",
-        "category": "special_abilities",
-        "name": "Regeneration",
-        "cost": 1,
-        "description": "Rapid healing ability. Regain 20 HP at the start of each turn. Wake up once healed to full HP if unconscious. Restriction: You cannot boost your Avoidance or Durability outside of Fighting Actions or external sources.",
-        "effects": [
-            { "type": "special", "value": "regeneration", "healing": 20 },
-            { "type": "restriction", "value": "no_av_dr_boost" }
-        ]
-    },
-    {
-        "id": "special_ability_heal",
-        "category": "special_abilities",
-        "name": "Heal",
-        "cost": 1,
-        "description": "Restore health to characters. Target: Self or Adjacent Target. Effect: Restore 25 HP. Uses: 5 per Rest.",
-        "effects": [
-            { "type": "special", "value": "heal", "healing": 25, "uses": 5, "range": "adjacent" }
-        ]
+        "id": "combatReflexes",
+        "name": "Combat Reflexes",
+        "cost": 15,
+        "description": "Gain additional Reaction per turn",
+        "effect": "extra_reaction",
+        "category": "enhancement"
     }
 ]

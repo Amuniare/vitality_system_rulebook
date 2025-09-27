@@ -1,51 +1,59 @@
-// ArchetypeTab.js - Simplified 4-category archetype selection for new streamlined system
-import { gameDataManager } from '../../core/GameDataManager.js';
+// frontend/character-builder/features/archetypes/ArchetypeTab.js
+import { ArchetypeSystem } from '../../systems/ArchetypeSystem.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
+import { EventManager } from '../../shared/utils/EventManager.js';
 
 export class ArchetypeTab {
-    constructor(builder) {
-        this.builder = builder;
-        this.clickHandler = null;
-        this.containerElement = null;
+    constructor(characterBuilder) {
+        this.builder = characterBuilder;
+        this.listenersAttached = false;
     }
 
     render() {
         const tabContent = document.getElementById('tab-archetypes');
         if (!tabContent) return;
-
+    
         const character = this.builder.currentCharacter;
         if (!character) {
             tabContent.innerHTML = "<p>No character selected.</p>";
             return;
         }
-
-        // Simplified 4-category system (not 7)
+    
         const categories = [
-            { id: 'movement', name: 'Movement', description: 'How your character moves and navigates the battlefield' },
-            { id: 'attack', name: 'Attack', description: 'Your approach to combat and special abilities' },
-            { id: 'defensive', name: 'Defensive', description: 'How your character survives and resists effects' },
-            { id: 'utility', name: 'Utility', description: 'Non-combat skills and expertise' }
+            { id: 'movement', name: 'Movement Archetype', description: 'How your character moves around the battlefield' },
+            { id: 'attackType', name: 'Attack Type Archetype', description: 'What types of attacks your character specializes in' },
+            { id: 'effectType', name: 'Effect Type Archetype', description: 'Whether you focus on damage, conditions, or both' },
+            { id: 'uniqueAbility', name: 'Unique Ability Archetype', description: 'Special capabilities beyond standard actions' },
+            { id: 'defensive', name: 'Defensive Archetype', description: 'How your character protects themselves' },
+            { id: 'specialAttack', name: 'Special Attack Archetype', description: 'How you develop unique combat abilities' },
+            { id: 'utility', name: 'Utility Archetype', description: 'Your non-combat capabilities and skills' }
         ];
-
+    
+        // DEBUG: Let's see what archetype data we're getting
+        console.log('🔍 Debug: Testing archetype data loading...');
+        categories.forEach(cat => {
+            const archetypes = ArchetypeSystem.getArchetypesForCategory(cat.id);
+            console.log(`🔍 Category ${cat.id}:`, archetypes);
+            if (archetypes.length > 0) {
+                console.log(`🔍 First archetype in ${cat.id}:`, archetypes[0]);
+            }
+        });
+    
         tabContent.innerHTML = `
             <div class="archetypes-section">
-                <h2>Choose Your Archetypes ${RenderUtils.renderInfoIcon('Select one archetype from each of the 4 categories. These define your character\'s core capabilities.')}</h2>
+                <h2>Choose Archetypes ${RenderUtils.renderInfoIcon(RenderUtils.getTooltipText('archetypes'))}</h2>
                 <p class="section-description">
-                    The Vitality System uses a <strong>simplified 4-archetype system</strong>.
-                    Each category shapes different aspects of your character's abilities.
-                    <strong>All archetypes should be selected to build an effective character.</strong>
+                    Select one archetype from each of the 7 categories. These choices define your character's
+                    fundamental approach and provide point modifiers and restrictions.
+                    <strong>All archetypes must be selected before proceeding.</strong>
                 </p>
-
+    
                 <div class="archetype-progress">
-                    <span id="archetype-count">0/4 Archetypes Selected</span>
+                    <span id="archetype-count">0/7 Archetypes Selected</span>
                 </div>
-
+    
                 ${categories.map(cat => this.renderArchetypeCategory(cat.id, cat.name, cat.description, character)).join('')}
-
-                <div class="archetype-summary">
-                    ${this.renderArchetypeSummary()}
-                </div>
-
+    
                 <div class="next-step">
                     <p><strong>Next Step:</strong> Assign your attribute points across combat and utility stats.</p>
                     ${RenderUtils.renderButton({
@@ -53,39 +61,61 @@ export class ArchetypeTab {
                         variant: 'primary',
                         dataAttributes: { action: 'continue-to-attributes' },
                         classes: ['continue-to-attributes-btn'],
-                        disabled: false
+                        disabled: true
                     })}
                 </div>
             </div>
         `;
-
+    
+        // DEBUG: Let's see what HTML was actually generated
+        setTimeout(() => {
+            const archetypeCards = document.querySelectorAll('.archetype-card');
+            console.log(`🔍 Generated ${archetypeCards.length} archetype cards`);
+            archetypeCards.forEach((card, index) => {
+                console.log(`🔍 Card ${index} dataset:`, card.dataset);
+                console.log(`🔍 Card ${index} HTML:`, card.outerHTML.substring(0, 200) + '...');
+            });
+        }, 100);
+    
         this.setupEventListeners();
         this.updateProgress();
     }
 
+
     renderArchetypeCategory(categoryId, categoryName, description, character) {
-        const archetypes = gameDataManager.getArchetypesForCategory(categoryId);
+        const archetypes = ArchetypeSystem.getArchetypesForCategory(categoryId);
         const selectedId = character.archetypes[categoryId];
-
-        if (!archetypes || archetypes.length === 0) {
-            return `
-                <div class="archetype-category" data-category="${categoryId}">
-                    <h3>${categoryName}</h3>
-                    <p class="category-description">${description}</p>
-                    <div class="no-archetypes">No archetypes available for this category.</div>
-                </div>
-            `;
-        }
-
+    
+        console.log(`🔍 Rendering category ${categoryId}:`, { archetypes, selectedId });
+    
+        // DEBUG: Let's see what each archetype card will generate
+        const cardHtml = archetypes.map((archetype, index) => {
+            console.log(`🔍 Generating card for ${categoryId}[${index}]:`, archetype);
+            const cardData = {
+                title: archetype.name,
+                titleTag: 'h4',
+                description: archetype.description,
+                additionalContent: this.renderArchetypeDetails(archetype),
+                clickable: true,
+                selected: selectedId === archetype.id,
+                dataAttributes: { category: categoryId, archetype: archetype.id, action: 'select-archetype' }
+            };
+            console.log(`🔍 Card data for ${categoryId}[${index}]:`, cardData);
+            
+            const html = RenderUtils.renderCard(cardData, { 
+                cardClass: `archetype-card ${selectedId === archetype.id ? 'selected' : ''}`, 
+                showCost: false, 
+                showStatus: false 
+            });
+            console.log(`🔍 Generated HTML for ${categoryId}[${index}]:`, html.substring(0, 200) + '...');
+            return html;
+        });
+    
         return `
             <div class="archetype-category" data-category="${categoryId}">
                 <h3>${categoryName}</h3>
                 <p class="category-description">${description}</p>
-
-                <div class="selection-indicator">
-                    ${selectedId ? `Selected: <strong>${this.getArchetypeName(categoryId, selectedId)}</strong>` : 'No selection'}
-                </div>
-
+    
                 ${RenderUtils.renderGrid(
                     archetypes,
                     (archetype) => RenderUtils.renderCard({
@@ -95,264 +125,129 @@ export class ArchetypeTab {
                         additionalContent: this.renderArchetypeDetails(archetype),
                         clickable: true,
                         selected: selectedId === archetype.id,
-                        dataAttributes: {
-                            category: categoryId,
-                            archetype: archetype.id,
-                            action: 'select-archetype'
-                        }
-                    }, {
-                        cardClass: `archetype-card ${selectedId === archetype.id ? 'selected' : ''}`,
-                        showCost: false,
-                        showStatus: false
-                    }),
-                    {
-                        gridContainerClass: 'grid-layout archetype-grid',
-                        gridSpecificClass: 'grid-columns-auto-fit-280'
-                    }
+                        dataAttributes: { category: categoryId, archetype: archetype.id, action: 'select-archetype' }
+                    }, { cardClass: `archetype-card ${selectedId === archetype.id ? 'selected' : ''}`, showCost: false, showStatus: false }),
+                    { gridContainerClass: 'grid-layout archetype-grid', gridSpecificClass: 'grid-columns-auto-fit-280' }
                 )}
             </div>
         `;
     }
 
+
     renderArchetypeDetails(archetype) {
         let details = '';
-
-        if (archetype.effects && archetype.effects.length > 0) {
-            details += '<div class="archetype-effects">';
-            archetype.effects.forEach(effect => {
-                switch(effect.type) {
-                    case 'stat_bonus':
-                        details += `<div class="effect">+${effect.bonus} to ${effect.stat}</div>`;
-                        break;
-                    case 'special_attack':
-                        details += `<div class="effect">${effect.count} special attack(s), ${effect.points} points each</div>`;
-                        break;
-                    case 'extra_boons':
-                        details += `<div class="effect">+${effect.count} extra boons</div>`;
-                        break;
-                    case 'immunity':
-                        const immunities = Array.isArray(effect.value) ? effect.value.join(', ') : effect.value;
-                        details += `<div class="effect">Immune: ${immunities}</div>`;
-                        break;
-                    case 'skill_bonus':
-                        details += `<div class="effect">+${effect.bonus} to ${effect.stat} skills</div>`;
-                        break;
-                    case 'movement_mode':
-                        details += `<div class="effect">Movement: ${effect.value}</div>`;
-                        break;
-                    case 'restriction':
-                        details += `<div class="effect restriction">Restriction: ${effect.value}</div>`;
-                        break;
-                    default:
-                        details += `<div class="effect">${effect.type}: ${effect.value || 'active'}</div>`;
-                }
-            });
-            details += '</div>';
+        if (archetype.pointModifier) {
+            details += `<div class="archetype-points"><strong>Points:</strong> ${archetype.pointModifier}</div>`;
         }
-
-        if (archetype.options && archetype.options.length > 0) {
-            details += '<div class="archetype-options-notice">⚙️ Has customization options</div>';
-        }
-
         return details;
     }
 
-    renderArchetypeSummary() {
-        const character = this.builder.currentCharacter;
-        const selectedCount = this.getSelectedCount();
-
-        if (selectedCount === 0) {
-            return `
-                <h3>Archetype Selection</h3>
-                <p>Select archetypes from each category to see your character's capabilities.</p>
-            `;
-        }
-
-        const summaries = [];
-        Object.entries(character.archetypes).forEach(([category, archetypeId]) => {
-            if (archetypeId) {
-                const archetype = this.getArchetypeData(category, archetypeId);
-                if (archetype) {
-                    summaries.push(`
-                        <div class="archetype-summary-item">
-                            <strong>${this.getCategoryDisplayName(category)}:</strong> ${archetype.name}
-                        </div>
-                    `);
-                }
-            }
-        });
-
-        return `
-            <h3>Selected Archetypes (${selectedCount}/4)</h3>
-            ${summaries.join('')}
-            ${selectedCount === 4 ? '<div class="completion-notice">✅ All archetypes selected!</div>' : ''}
-        `;
-    }
-
     setupEventListeners() {
-        this.removeEventListeners();
-
+        if (this.listenersAttached) {
+            return;
+        }
+        
         const container = document.getElementById('tab-archetypes');
         if (!container) return;
-
-        this.clickHandler = (event) => {
-            const target = event.target.closest('[data-action]');
-            if (!target) return;
-
-            const action = target.dataset.action;
-
-            switch(action) {
-                case 'select-archetype':
-                    const category = target.dataset.category;
-                    const archetypeId = target.dataset.archetype;
+        
+        EventManager.delegateEvents(container, {
+            click: {
+                '[data-action="select-archetype"]': (e, element) => {
+                    const category = element.dataset.category;
+                    const archetypeId = element.dataset.archetype;
                     if (category && archetypeId) {
                         this.selectArchetype(category, archetypeId);
                     }
-                    break;
-
-                case 'continue-to-attributes':
-                    this.builder.switchTab('attributes');
-                    break;
+                },
+                '[data-action="continue-to-attributes"]': () => this.builder.switchTab('attributes')
             }
-        };
-
-        this.containerElement = container;
-        this.containerElement.addEventListener('click', this.clickHandler);
+        }, this);
+        
+        this.listenersAttached = true;
+        console.log('✅ ArchetypeTab event listeners attached ONCE.');
     }
 
-    removeEventListeners() {
-        if (this.clickHandler && this.containerElement) {
-            this.containerElement.removeEventListener('click', this.clickHandler);
-            this.clickHandler = null;
-            this.containerElement = null;
-        }
+
+
+    updateArchetypeSelectionUI(category, archetypeId) {
+        console.log(`🔍 Updating UI for ${category} = ${archetypeId}`);
+        
+        const categoryElement = document.querySelector(`.archetype-category[data-category="${category}"]`);
+        console.log(`🔍 Found category element for ${category}:`, !!categoryElement);
+        
+        if (!categoryElement) return;
+    
+        const cards = categoryElement.querySelectorAll('.card.archetype-card');
+        console.log(`🔍 Found ${cards.length} cards in category ${category}`);
+        
+        cards.forEach((card, index) => {
+            const wasSelected = card.classList.contains('selected');
+            card.classList.remove('selected');
+            
+            // Update card selection
+            if (card.dataset.archetype === archetypeId) {
+                card.classList.add('selected');
+                console.log(`🔍 Selected card ${index} (${card.dataset.archetype}) in ${category}`);
+            }
+            
+            
+            console.log(`🔍 Card ${index}: ${card.dataset.archetype}, selected: ${wasSelected} -> ${card.classList.contains('selected')}`);
+        });
     }
 
     selectArchetype(category, archetypeId) {
         const character = this.builder.currentCharacter;
         if (!character) return;
-
-        // Allow clearing by clicking the same archetype
+    
+        // NEW: Allow clearing by clicking the same archetype
         if (character.archetypes[category] === archetypeId) {
-            character.archetypes[category] = null;
+            this.builder.setArchetype(category, null);
             console.log(`✅ Cleared archetype: ${category}`);
         } else {
-            // Validate archetype exists
-            const archetypes = gameDataManager.getArchetypesForCategory(category);
+            // Existing validation logic (simplified)
+            const archetypes = ArchetypeSystem.getArchetypesForCategory(category);
             const archetypeExists = archetypes.find(arch => arch.id === archetypeId);
             if (!archetypeExists) {
                 console.error(`❌ Archetype ${archetypeId} not found in category ${category}`);
                 return;
             }
-
-            character.archetypes[category] = archetypeId;
-            character.touch();
-            console.log(`✅ Selected archetype: ${category} = ${archetypeId}`);
+            
+            this.builder.setArchetype(category, archetypeId);
+            console.log(`✅ Set archetype: ${category} = ${archetypeId}`);
         }
-
-        // Update UI and notify builder
-        this.updateArchetypeSelectionUI(category, character.archetypes[category]);
+        
+        // Update the UI to reflect the change
+        this.updateArchetypeSelectionUI(category, this.builder.currentCharacter.archetypes[category]);
         this.updateProgress();
-        this.builder.updateCharacter();
     }
-
-    updateArchetypeSelectionUI(category, archetypeId) {
-        const categoryElement = document.querySelector(`.archetype-category[data-category="${category}"]`);
-        if (!categoryElement) return;
-
-        // Update all cards in this category
-        const cards = categoryElement.querySelectorAll('.card.archetype-card');
-        cards.forEach(card => {
-            card.classList.remove('selected');
-            if (card.dataset.archetype === archetypeId) {
-                card.classList.add('selected');
-            }
-        });
-
-        // Update selection indicator
-        const indicator = categoryElement.querySelector('.selection-indicator');
-        if (indicator) {
-            if (archetypeId) {
-                indicator.innerHTML = `Selected: <strong>${this.getArchetypeName(category, archetypeId)}</strong>`;
-            } else {
-                indicator.innerHTML = 'No selection';
-            }
-        }
-
-        // Update summary
-        const summaryElement = document.querySelector('.archetype-summary');
-        if (summaryElement) {
-            summaryElement.innerHTML = this.renderArchetypeSummary();
-        }
-    }
-
+    
     updateProgress() {
-        const selectedCount = this.getSelectedCount();
-
+        const character = this.builder.currentCharacter;
+        if (!character) return;
+    
+        const totalCategories = ArchetypeSystem.getArchetypeCategories().length;
+        const selectedCount = Object.values(character.archetypes).filter(val => val !== null).length;
+    
         const progressElement = document.getElementById('archetype-count');
         if (progressElement) {
-            progressElement.textContent = `${selectedCount}/4 Archetypes Selected`;
+            progressElement.textContent = `${selectedCount}/${totalCategories} Archetypes Selected`;
         }
-
+    
         const continueBtn = document.querySelector('.continue-to-attributes-btn');
         if (continueBtn) {
-            const allSelected = selectedCount === 4;
-
+            // CHANGED: Always enable continue button, just show warning if incomplete
+            continueBtn.disabled = false;
+            const allSelected = selectedCount === totalCategories;
+            
             if (allSelected) {
                 continueBtn.classList.add('pulse');
                 continueBtn.textContent = 'Continue to Attributes →';
             } else {
                 continueBtn.classList.remove('pulse');
-                continueBtn.textContent = `Continue (${selectedCount}/4) →`;
+                continueBtn.textContent = `Continue Anyway (${selectedCount}/${totalCategories}) →`;
             }
         }
-
         this.builder.updateTabStates();
     }
 
-    // Helper methods
-    getSelectedCount() {
-        const character = this.builder.currentCharacter;
-        return Object.values(character.archetypes).filter(id => id !== null).length;
-    }
-
-    getArchetypeName(category, archetypeId) {
-        const archetype = this.getArchetypeData(category, archetypeId);
-        return archetype ? archetype.name : 'Unknown';
-    }
-
-    getArchetypeData(category, archetypeId) {
-        const archetypes = gameDataManager.getArchetypesForCategory(category);
-        return archetypes.find(a => a.id === archetypeId);
-    }
-
-    getCategoryDisplayName(category) {
-        const names = {
-            movement: 'Movement',
-            attack: 'Attack',
-            defensive: 'Defensive',
-            utility: 'Utility'
-        };
-        return names[category] || category;
-    }
-
-    // Tab interface methods
-    onCharacterUpdated() {
-        this.render();
-    }
-
-    isComplete() {
-        return this.getSelectedCount() === 4;
-    }
-
-    getValidationErrors() {
-        const errors = [];
-        const selectedCount = this.getSelectedCount();
-
-        if (selectedCount < 4) {
-            errors.push(`Please select all 4 archetypes (${selectedCount}/4 selected)`);
-        }
-
-        return errors;
-    }
 }

@@ -16,7 +16,6 @@ from reporting import (load_config, save_config, print_configuration_report,
                       write_build_summary, generate_upgrade_ranking_report, generate_upgrade_pairing_report,
                       generate_diagnostic_report, write_attack_type_enhancement_ranking_report,
                       create_timestamped_reports_directory, generate_reports_by_mode)
-from balance_analysis import BalanceAnalyzer, ScenarioWeights
 from logging_manager import LoggingManager
 
 def test_single_build(args):
@@ -28,6 +27,7 @@ def test_single_build(args):
     should_log = False
 
     total_dpt = 0
+    total_turns = 0
     total_configs = 0
 
     # Skip logging in worker processes for multiprocessing compatibility
@@ -43,6 +43,7 @@ def test_single_build(args):
         ]
 
         case_total_dpt = 0
+        case_total_turns = 0
         scenario_count = 0
 
         for scenario_name, num_enemies, enemy_hp in fight_scenarios:
@@ -54,20 +55,24 @@ def test_single_build(args):
             # Skip scenario logging in worker processes
 
             case_total_dpt += dpt
+            case_total_turns += avg_turns
             scenario_count += 1
 
-        # Average DPT across the 4 scenarios for this case
+        # Average DPT and turns across the 4 scenarios for this case
         case_avg_dpt = case_total_dpt / scenario_count if scenario_count > 0 else 0
+        case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
 
         # Skip case logging in worker processes
 
         total_dpt += case_avg_dpt
+        total_turns += case_avg_turns
         total_configs += 1
 
     avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
+    avg_turns = total_turns / total_configs if total_configs > 0 else 0
 
-    # Return build and average DPT
-    return (build, avg_dpt)
+    # Return build, average DPT, and average turns
+    return (build, avg_dpt, avg_turns)
 
 
 def main():
@@ -200,12 +205,12 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
 
                         # Process completed futures with progress tracking
                         for future in futures:
-                            build, avg_dpt = future.result()
+                            build, avg_dpt, avg_turns = future.result()
                             completed_count += 1
 
                             # Filter by minimum DPT threshold
                             if avg_dpt >= config.min_dpt_threshold:
-                                build_results.append((build, avg_dpt))
+                                build_results.append((build, avg_dpt, avg_turns))
 
                             # Progress reporting every 100 builds
                             if completed_count % 100 == 0:
@@ -226,11 +231,11 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
                 print(f"Processing final chunk {chunk_count} ({len(current_chunk)} builds) sequentially...")
 
                 for args in current_chunk:
-                    build, avg_dpt = test_single_build(args)
+                    build, avg_dpt, avg_turns = test_single_build(args)
                     completed_count += 1
 
                     if avg_dpt >= config.min_dpt_threshold:
-                        build_results.append((build, avg_dpt))
+                        build_results.append((build, avg_dpt, avg_turns))
 
                     if completed_count % 100 == 0:
                         current_time = time.time()
@@ -248,11 +253,11 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
             # Process builds sequentially
             for build_idx, build in enumerate(builds_generator):
                 args = (build_idx, build, test_cases, config, None, False)
-                build, avg_dpt = test_single_build(args)
+                build, avg_dpt, avg_turns = test_single_build(args)
                 completed_count += 1
 
                 if avg_dpt >= config.min_dpt_threshold:
-                    build_results.append((build, avg_dpt))
+                    build_results.append((build, avg_dpt, avg_turns))
 
                 # Progress reporting
                 if completed_count % 100 == 0:

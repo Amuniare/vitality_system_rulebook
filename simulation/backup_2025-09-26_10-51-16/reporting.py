@@ -684,11 +684,13 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
 
     # Track enhancement appearances and their ranking positions
     enhancement_rankings = {}  # enhancement_name -> list of ranking positions
+    enhancement_turns = {}     # enhancement_name -> list of avg_turns values
+    enhancement_attack_types = {}  # enhancement_name -> {attack_type: [avg_turns]}
     attack_type_rankings = {}  # attack_type -> list of ranking positions
     combo_rankings = {}    # combo_name -> list of ranking positions
 
     # Process each build result to track enhancement positions
-    for rank, (build, dpt) in enumerate(all_build_results, 1):
+    for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1):
         # Track attack type rankings
         if build.attack_type not in attack_type_rankings:
             attack_type_rankings[build.attack_type] = []
@@ -698,13 +700,29 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
         for upgrade in build.upgrades:
             if upgrade not in enhancement_rankings:
                 enhancement_rankings[upgrade] = []
+                enhancement_turns[upgrade] = []
+                enhancement_attack_types[upgrade] = {}
             enhancement_rankings[upgrade].append(rank)
+            enhancement_turns[upgrade].append(avg_turns)
+
+            # Track turns by attack type for this enhancement
+            if build.attack_type not in enhancement_attack_types[upgrade]:
+                enhancement_attack_types[upgrade][build.attack_type] = []
+            enhancement_attack_types[upgrade][build.attack_type].append(avg_turns)
 
         # Track limit rankings (limits are enhancements)
         for limit in build.limits:
             if limit not in enhancement_rankings:
                 enhancement_rankings[limit] = []
+                enhancement_turns[limit] = []
+                enhancement_attack_types[limit] = {}
             enhancement_rankings[limit].append(rank)
+            enhancement_turns[limit].append(avg_turns)
+
+            # Track turns by attack type for this enhancement
+            if build.attack_type not in enhancement_attack_types[limit]:
+                enhancement_attack_types[limit][build.attack_type] = []
+            enhancement_attack_types[limit][build.attack_type].append(avg_turns)
 
         # Track combo rankings - check if build contains any of our specific combos
         for combo_name, combo_upgrades in combo_definitions:
@@ -721,6 +739,31 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
         avg_position = sum(positions) / len(positions)
         median_position = statistics.median(positions)
         percentile = (median_position / total_builds) * 100
+
+        # Calculate avg_turns statistics
+        turns_data = enhancement_turns[enhancement_name]
+        avg_turns = sum(turns_data) / len(turns_data)
+
+        # Calculate top 10% and top 50% medians (based on rank positions)
+        sorted_data = sorted(zip(positions, turns_data))  # Sort by rank
+        top_10_count = max(1, len(sorted_data) // 10)
+        top_50_count = max(1, len(sorted_data) // 2)
+
+        top_10_turns = [turns for rank, turns in sorted_data[:top_10_count]]
+        top_50_turns = [turns for rank, turns in sorted_data[:top_50_count]]
+
+        median_top_10 = statistics.median(top_10_turns) if top_10_turns else 0
+        median_top_50 = statistics.median(top_50_turns) if top_50_turns else 0
+
+        # Calculate avg turns per attack type
+        attack_type_turns = {}
+        for attack_type in ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage']:
+            if attack_type in enhancement_attack_types[enhancement_name]:
+                attack_type_data = enhancement_attack_types[enhancement_name][attack_type]
+                attack_type_turns[attack_type] = sum(attack_type_data) / len(attack_type_data)
+            else:
+                attack_type_turns[attack_type] = 0
+
         enhancement_stats.append({
             'name': enhancement_name,
             'avg_rank': avg_position,
@@ -728,7 +771,15 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
             'percentile': percentile,
             'appearances': len(positions),
             'best_rank': min(positions),
-            'worst_rank': max(positions)
+            'worst_rank': max(positions),
+            'avg_turns': avg_turns,
+            'median_top_10': median_top_10,
+            'median_top_50': median_top_50,
+            'melee_ac_turns': attack_type_turns['melee_ac'],
+            'melee_dg_turns': attack_type_turns['melee_dg'],
+            'ranged_turns': attack_type_turns['ranged'],
+            'area_turns': attack_type_turns['area'],
+            'direct_damage_turns': attack_type_turns['direct_damage']
         })
 
     # Calculate statistics for attack types
@@ -763,8 +814,8 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
             'worst_rank': max(positions)
         })
 
-    # Sort by median rank (lower is better)
-    enhancement_stats.sort(key=lambda x: x['median_rank'])
+    # Sort by avg_turns (lower is better), then by median rank
+    enhancement_stats.sort(key=lambda x: x['avg_turns'])
     attack_type_stats.sort(key=lambda x: x['median_rank'])
     combo_stats.sort(key=lambda x: x['median_rank'])
 
@@ -772,20 +823,23 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
     with open(f'{reports_dir}/enhancement_ranking_report.txt', 'w', encoding='utf-8') as f:
         f.write("VITALITY SYSTEM - ENHANCEMENT & ATTACK TYPE RANKING REPORT\n")
         f.write("="*80 + "\n\n")
-        f.write("This report shows enhancement (upgrade & limit) and attack type performance based on median ranking\n")
-        f.write("positions across all tested builds. Lower percentiles indicate better performance.\n")
+        f.write("This report shows enhancement (upgrade & limit) and attack type performance ranked by average turns.\n")
+        f.write("Lower avg turns indicate better performance. Includes top 10%/50% medians and per-attack-type data.\n")
         f.write(f"Total builds tested: {total_builds}\n\n")
 
         # Enhancement Rankings Section
-        f.write("ENHANCEMENT RANKINGS BY MEDIAN POSITION\n")
-        f.write("-" * 95 + "\n")
-        f.write(f"{'Rank':<4} {'Enhancement':<25} {'Avg Rank':<10} {'Med Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
-        f.write("-" * 95 + "\n")
+        f.write("ENHANCEMENT RANKINGS BY AVERAGE TURNS\n")
+        f.write("-" * 180 + "\n")
+        f.write(f"{'Rank':<4} {'Enhancement':<20} {'Avg Turns':<10} {'Top10%':<8} {'Top50%':<8} {'Melee_AC':<9} {'Melee_DG':<9} {'Ranged':<8} {'Area':<8} {'Direct':<8} {'Uses':<6} {'Med Rank':<9}\n")
+        f.write("-" * 180 + "\n")
 
         for i, stats in enumerate(enhancement_stats, 1):
-            f.write(f"{i:<4} {stats['name']:<25} {stats['avg_rank']:>8.1f} "
-                   f"{stats['median_rank']:>8.1f} {stats['percentile']:>9.1f}% {stats['appearances']:>4} "
-                   f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
+            f.write(f"{i:<4} {stats['name']:<20} {stats['avg_turns']:>8.1f} "
+                   f"{stats['median_top_10']:>6.1f} {stats['median_top_50']:>6.1f} "
+                   f"{stats['melee_ac_turns']:>7.1f} {stats['melee_dg_turns']:>7.1f} "
+                   f"{stats['ranged_turns']:>6.1f} {stats['area_turns']:>6.1f} "
+                   f"{stats['direct_damage_turns']:>6.1f} {stats['appearances']:>4} "
+                   f"{stats['median_rank']:>7.1f}\n")
 
         # Attack Type Rankings Section
         f.write(f"\n\nATTACK TYPE RANKINGS BY MEDIAN POSITION\n")
@@ -823,6 +877,59 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
     return enhancement_stats, attack_type_stats
 
 
+def build_turns_table(all_build_results: List[Tuple], config: SimulationConfig, reports_dir: str = "reports"):
+    """Generate table of builds sorted by average turns (ascending)"""
+    print("Generating build turns table report...")
+
+    # Extract build data with turns - all_build_results now contains (build, dpt, avg_turns)
+    build_data = []
+    for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1):
+        build_data.append({
+            'original_rank': rank,
+            'build': build,
+            'dpt': dpt,
+            'avg_turns': avg_turns
+        })
+
+    # Sort by average turns (ascending - lower turns is better)
+    build_data.sort(key=lambda x: x['avg_turns'])
+
+    # Write the report
+    with open(f'{reports_dir}/build_turns_table.txt', 'w', encoding='utf-8') as f:
+        f.write("VITALITY SYSTEM - BUILD RANKING BY AVERAGE TURNS\n")
+        f.write("="*80 + "\n\n")
+        f.write("Builds ranked by average turns to complete combat (lower is better).\n")
+        f.write(f"Total builds: {len(build_data)}\n\n")
+
+        # Table header
+        f.write(f"{'Rank':<6} {'Avg Turns':<10} {'DPT':<8} {'Orig Rank':<10} {'Build Description':<50}\n")
+        f.write("-" * 100 + "\n")
+
+        # Write top 50 builds by turns
+        for i, data in enumerate(build_data[:50], 1):
+            build = data['build']
+            build_desc = f"{build.attack_type}"
+            if build.upgrades:
+                build_desc += f" + {', '.join(build.upgrades)}"
+            if build.limits:
+                build_desc += f" + {', '.join(build.limits)}"
+
+            f.write(f"{i:<6} {data['avg_turns']:<10.1f} {data['dpt']:<8.1f} "
+                   f"{data['original_rank']:<10} {build_desc:<50}\n")
+
+        # Summary statistics
+        f.write(f"\n\nSUMMARY STATISTICS\n")
+        f.write("-" * 40 + "\n")
+        all_turns = [data['avg_turns'] for data in build_data]
+        f.write(f"Best (lowest) turns: {min(all_turns):.1f}\n")
+        f.write(f"Worst (highest) turns: {max(all_turns):.1f}\n")
+        f.write(f"Average turns: {sum(all_turns)/len(all_turns):.1f}\n")
+        f.write(f"Median turns: {sorted(all_turns)[len(all_turns)//2]:.1f}\n")
+
+    print(f"Build turns table saved to {reports_dir}/build_turns_table.txt")
+    return build_data
+
+
 def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: SimulationConfig, reports_dir: str = "reports"):
     """Generate upgrade pairing analysis showing top 3 builds for each upgrade and common pairings"""
     print("Generating upgrade pairing analysis report...")
@@ -840,7 +947,7 @@ def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: Simu
         }
 
     # Process each build result to collect upgrade appearance data
-    for rank, (build, dpt) in enumerate(all_build_results, 1):
+    for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1):
         # For each upgrade in this build
         for upgrade in build.upgrades:
             if upgrade in upgrade_data:
@@ -3960,6 +4067,136 @@ class BuildReportGenerator:
             return "Fair"
         else:
             return "Poor"
+
+
+def enhancement_comparison(all_build_results: List[Tuple], enhancement_results: Dict, config: SimulationConfig, reports_dir: str = "reports"):
+    """Generate enhancement comparison table showing build vs individual performance differences"""
+    print("Generating enhancement comparison report...")
+
+    # Build comparison data structure
+    comparison_data = {}
+
+    # Get all enhancement names from both upgrades and limits
+    from game_data import UPGRADES, LIMITS
+    all_enhancements = list(UPGRADES.keys()) + list(LIMITS.keys())
+
+    # Initialize comparison data
+    for enhancement in all_enhancements:
+        comparison_data[enhancement] = {
+            'all_attack_types': [],  # For overall average
+            'melee_ac': [],
+            'melee_dg': [],
+            'ranged': [],
+            'area': [],
+            'direct_damage': []
+        }
+
+    # Process build results to get enhancement performance in builds
+    for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1):
+        # For each enhancement in this build
+        for enhancement in build.upgrades + build.limits:
+            if enhancement in comparison_data:
+                # Store avg_turns for this enhancement in this attack type
+                attack_type = build.attack_type
+                if attack_type in comparison_data[enhancement]:
+                    comparison_data[enhancement][attack_type].append(avg_turns)
+                comparison_data[enhancement]['all_attack_types'].append(avg_turns)
+
+    # Calculate averages for builds
+    build_averages = {}
+    for enhancement, data in comparison_data.items():
+        build_averages[enhancement] = {}
+        for attack_type, turns_list in data.items():
+            if turns_list:
+                build_averages[enhancement][attack_type] = sum(turns_list) / len(turns_list)
+            else:
+                build_averages[enhancement][attack_type] = 0
+
+    # Get individual enhancement performance data
+    individual_averages = {}
+    for enhancement, enhancement_data in enhancement_results.items():
+        individual_averages[enhancement] = {}
+
+        # Calculate overall average from attack type results
+        all_attack_turns = []
+        for attack_type in ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage']:
+            if attack_type in enhancement_data.get('attack_type_results', {}):
+                attack_results = enhancement_data['attack_type_results'][attack_type]
+                # Calculate avg_turns from DPT (assuming total HP = 100 for individual tests)
+                dpt = attack_results.get('enhanced_dpt', 0)
+                if dpt > 0:
+                    avg_turns = 100 / dpt  # Assuming 100 HP total for individual tests
+                    individual_averages[enhancement][attack_type] = avg_turns
+                    all_attack_turns.append(avg_turns)
+                else:
+                    individual_averages[enhancement][attack_type] = 0
+            else:
+                individual_averages[enhancement][attack_type] = 0
+
+        # Overall average
+        if all_attack_turns:
+            individual_averages[enhancement]['all_attack_types'] = sum(all_attack_turns) / len(all_attack_turns)
+        else:
+            individual_averages[enhancement]['all_attack_types'] = 0
+
+    # Calculate differences (build - individual)
+    differences = {}
+    for enhancement in all_enhancements:
+        if enhancement in build_averages and enhancement in individual_averages:
+            differences[enhancement] = {}
+            for attack_type in ['all_attack_types', 'melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage']:
+                build_avg = build_averages[enhancement].get(attack_type, 0)
+                individual_avg = individual_averages[enhancement].get(attack_type, 0)
+                if build_avg > 0 and individual_avg > 0:
+                    differences[enhancement][attack_type] = build_avg - individual_avg
+                else:
+                    differences[enhancement][attack_type] = 0
+
+    # Write the report
+    with open(f'{reports_dir}/enhancement_comparison.txt', 'w', encoding='utf-8') as f:
+        f.write("VITALITY SYSTEM - ENHANCEMENT COMPARISON: BUILD vs INDIVIDUAL PERFORMANCE\n")
+        f.write("="*90 + "\n\n")
+        f.write("This table compares average turns for enhancements in builds vs individual testing.\n")
+        f.write("Values = avg_turns_in_builds - avg_turns_individual\n")
+        f.write("Negative values = enhancement performs better in builds than individually\n")
+        f.write("Positive values = enhancement performs worse in builds than individually\n\n")
+
+        # Table header
+        f.write(f"{'Enhancement':<25} {'All Types':<10} {'Melee_AC':<10} {'Melee_DG':<10} {'Ranged':<10} {'Area':<10} {'Direct':<10}\n")
+        f.write("-" * 95 + "\n")
+
+        # Sort by overall difference (all attack types)
+        sorted_enhancements = sorted(differences.items(), key=lambda x: x[1].get('all_attack_types', 0))
+
+        for enhancement, diff_data in sorted_enhancements:
+            if any(abs(v) > 0.1 for v in diff_data.values()):  # Only show meaningful differences
+                f.write(f"{enhancement:<25} "
+                       f"{diff_data.get('all_attack_types', 0):>8.1f} "
+                       f"{diff_data.get('melee_ac', 0):>8.1f} "
+                       f"{diff_data.get('melee_dg', 0):>8.1f} "
+                       f"{diff_data.get('ranged', 0):>8.1f} "
+                       f"{diff_data.get('area', 0):>8.1f} "
+                       f"{diff_data.get('direct_damage', 0):>8.1f}\n")
+
+        # Summary analysis
+        f.write(f"\n\nSUMMARY ANALYSIS\n")
+        f.write("-" * 40 + "\n")
+
+        better_in_builds = [enh for enh, data in differences.items()
+                           if data.get('all_attack_types', 0) < -0.5]
+        worse_in_builds = [enh for enh, data in differences.items()
+                          if data.get('all_attack_types', 0) > 0.5]
+
+        f.write(f"Enhancements performing better in builds ({len(better_in_builds)}):\n")
+        for enh in better_in_builds[:10]:  # Top 10
+            f.write(f"  - {enh}\n")
+
+        f.write(f"\nEnhancements performing worse in builds ({len(worse_in_builds)}):\n")
+        for enh in worse_in_builds[:10]:  # Top 10
+            f.write(f"  - {enh}\n")
+
+    print(f"Enhancement comparison report saved to {reports_dir}/enhancement_comparison.txt")
+    return differences
 
 
 def generate_reports_by_mode(config: SimulationConfig, reports_dir: str, all_build_results: List[Tuple] = None):

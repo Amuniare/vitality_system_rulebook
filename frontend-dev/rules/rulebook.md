@@ -390,7 +390,8 @@ Roll a d20 at the start of each turn, on a 1-3, you are stunned.
 **Glass Cannon** 
 Subtract your Tier to DR or AV (chosen when purchased), cannot purchase AV or DR with this Passive Bonus
 
-
+**Straightfoward**
+Choose one Limit, you must put that limit on all your attacks, you cannot be a Focused Attacker archetype.
 
 ### **CONDITIONAL BONUSES**
 *Bonuses only granted under specific circumstances*

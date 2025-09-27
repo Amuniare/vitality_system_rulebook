@@ -184,9 +184,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     base_accuracy = attacker.tier + attacker.focus
     accuracy_mod = attack_type.accuracy_mod * attacker.tier
 
-    # Ranged attacks have -Tier penalty when adjacent (assume always adjacent for simulation)
-    if build.attack_type == 'ranged':
-        accuracy_mod -= attacker.tier
+
 
     # Apply upgrade modifiers
     for upgrade_name in build.upgrades:
