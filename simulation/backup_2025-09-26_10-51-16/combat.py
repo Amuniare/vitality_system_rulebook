@@ -142,7 +142,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if log_file:
                 log_file.write(f"      {limit_name} failed: not first round (turn {turn_number})\n")
             return 0, []  # Attack fails - not first round
-        elif limit_name == 'steady' and turn_number < 4:
+        elif limit_name == 'steady' and turn_number < 3:
             if log_file:
                 log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 4+)\n")
             return 0, []  # Attack fails - too early
@@ -313,7 +313,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         # Calculate damage
         if attack_type.is_direct:
             if build.attack_type == 'direct_area_damage':
-                damage = attack_type.direct_damage_base - (attacker.tier * 2)
+                damage = attack_type.direct_damage_base - (attacker.tier * 3)
             else:
                 damage = attack_type.direct_damage_base - attacker.tier
             dice_detail = []
@@ -480,18 +480,17 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             conditions_applied.append(f'finishing_{finishing_threshold}')
 
     # Handle multiple attacks - Quick Strikes makes all attacks regardless of hit/miss
-    # Handle Quick Strikes (make all 3 attacks regardless of success)
+    # Handle Quick Strikes (make 2 attacks total regardless of success)
     if allow_multi and ('quick_strikes' in build.upgrades):
-        # Make 2 more attacks (already made 1) - these happen regardless of first attack result
+        # Make 1 more attack (already made 1) - happens regardless of first attack result
         upgrade_name = 'quick_strikes'
         if log_file:
-            log_file.write(f"      Quick Strikes - making 2 additional attacks (regardless of first attack result):\n")
+            log_file.write(f"      Quick Strikes - making 1 additional attack (regardless of first attack result):\n")
         extra_damage = 0
-        for i in range(2):
-            if log_file:
-                log_file.write(f"        Additional attack {i+1}:\n")
-            extra = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
-            extra_damage += extra
+        if log_file:
+            log_file.write(f"        Additional attack 1:\n")
+        extra = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
+        extra_damage += extra
         damage_dealt += extra_damage
         if log_file:
             log_file.write(f"      Total with quick strikes: {damage_dealt} damage\n")
@@ -514,5 +513,25 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         damage_dealt += extra_damage
         if log_file:
             log_file.write(f"      Total with extra attack: {damage_dealt} damage\n")
+
+    # Handle barrage (chained attacks - hit + effect on each attack enables the next)
+    if allow_multi and 'barrage' in build.upgrades and damage_dealt > 0 and len(conditions_applied) > 0:
+        if log_file:
+            log_file.write(f"      Barrage - first attack succeeded, attempting second attack:\n")
+        # Second attack
+        second_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
+        damage_dealt += second_damage
+
+        # If second attack also hit and caused an effect, attempt third attack
+        if second_damage > 0:  # Simplified: if damage was dealt, assume hit + effect
+            if log_file:
+                log_file.write(f"      Barrage - second attack succeeded, attempting third attack:\n")
+            third_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history)
+            damage_dealt += third_damage
+            if log_file:
+                log_file.write(f"      Total with barrage (3 attacks): {damage_dealt} damage\n")
+        else:
+            if log_file:
+                log_file.write(f"      Total with barrage (2 attacks): {damage_dealt} damage\n")
 
     return damage_dealt, conditions_applied

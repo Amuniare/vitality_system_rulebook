@@ -6,33 +6,101 @@ new report, which looks at the 100 top builds of each upgrade
 
 
 # FINAL IMPLEMENTED VALUES (as of current version)
-Steady: 40p and turn 4 or later
+
+direct_damage, move to 14-tier instead of 13-tier
+direct_area_damage 14-3x Tier, instead of 13-2xTier
+aoe penalty to - tier to accuracy AND Damage and 
+
+
 Critical Effect: 20p and -2
-Quick Strikes: 60p
-Brutal: 40p 
-Charge_up 2 costs 10p but gives 2 x tier to damage and accuracy
-Unreliable 3 but costs 20p gives 3 x tier to damage and accuracy
-Bleed: 80p, includes -tier to damage
+Brutal: 20p 
+
 Armor piercing has no -1/2 tier
-Finishing blow rank 1 costs 20p, rank 2 costs 30p and rank 3 costs 40p
 Reliable accuracy to -3 and costs 20p
-Quickdraw works on turn 1 and 2
 
-Remove barrage, quick strikes are melee and ranged only
+charge up 1 to 2x tier to accuracy and damage and 
+charge up 2 to 20p and 3x tier to accuracy and damage and 
+
+Quickdraw 20p works on turn 1 and 2, 2x tier to accuracy and damage and 
+steady to 40p and 1x tier to accuracy and damage and 
+patient and 20p and 1x tier to accuracy and damage and 
+finale to 20p and 3x tier to accuracy and damage and 
+Critical Accuracy 20p
 
 
-## Changes v2
-bleed to 40p
-unreliable 1 to 1x tier to accuracy and damage
-unreliable 2 to 2x tier to accuracy and damage
-unreliable 3 to 4x tier to accuracy and damage
 
-charge up 1 to 2x tier to accuracy and damage
-charge up 2 to 3x tier to accuracy and damage
+Bleed: 20p and -tier to damage and 
 
-steady, patient to 1x tier to accuracy and damage
-finale to 2x tier to accuracy and damage
-Quickdraw works on turn 1 and 2 and 2x tier to accuracy and damage
+unreliable 1 to 20p and 1x tier to accuracy and damage and 
+unreliable 2 to 20p and 3x tier to accuracy and damage and 
+unreliable 3 to 20p but 5x tier to accuracy and damage and 
+
+
+
+
+### Future
+quick strikes
+- 40p
+- 2 attack, not 3 attacks
+- -tier to accuracy and damage rolls
+- no aoe
+extra attack, 
+- need to hit and effect in order to make a second attack
+- 40p
+- no aoe
+
+barrage
+- -tier to accuracy and damage rolls
+- need to hit and effect in order to make a second attack
+- 60p
+- need to hit and effect on second attack in order to make a third attack
+- no aoe
+
+all 3 above, must alway attack the same target, if that target dies, then no more attacks.
+
+
+
+
+powerful critical and double tap, neither is extra attack aren't occuring in combat log, why?
+
+
+### Futre
+
+new metric, turns per fight (max 20 turns)
+- new table with that guiding us
+    reports/2025-09-26_15-56-32/individual_attack_type_table.txt
+    reports/2025-09-26_15-56-32/individual_upgrade_limit_table.txt
+
+
+
+need to bring in cooldown, explosive crit, splinter
+
+
+
+**Explosive Critical**  
+Cost: 40p
+Effect: Hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them  
+Restriction: Must take **Critical Accuracy**
+Exclusion: Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical  
+
+**Culling Strike**  
+Cost: 20p
+Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead  
+Restriction: Cannot apply to AOE attacks  
+
+**Splinter**  
+Cost: 40p
+Effect: Defeating enemy triggers another attack against new target before turn ends  
+Chain Limit: Maximum Tier/2 additional attacks (rounded up)  
+Restriction: Cannot apply to AOE attacks  
+
+
+**Cooldown** 
+Cost: 20p
+Limit: Cannot use again for 3 turns after use
+Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+
+
 
 # Itteration
 multiple runs to test varience in pricing

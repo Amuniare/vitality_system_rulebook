@@ -66,6 +66,9 @@ class SimulationConfig:
     use_threading: bool = True
     min_dpt_threshold: float = 0.0
 
+    # Simulation run counts
+    simulation_runs: dict = None
+
     # Individual testing configuration
     individual_testing: dict = None
 
@@ -96,6 +99,9 @@ class SimulationConfig:
 
     # Logging configuration
     logging: dict = None
+
+    # Combat configuration
+    combat: dict = None
 
     def __post_init__(self):
         """Set default configurations if not provided"""
@@ -155,6 +161,12 @@ class SimulationConfig:
                 }
             }
 
+        if self.simulation_runs is None:
+            self.simulation_runs = {
+                "build_testing_runs": 10,
+                "individual_testing_runs": 5
+            }
+
         if self.logging is None:
             self.logging = {
                 "level": "summary",
@@ -166,6 +178,27 @@ class SimulationConfig:
                 "generate_individual_build_logs": False,
                 "verbose_logging": False
             }
+
+        if self.combat is None:
+            self.combat = {
+                "max_turns": 20,
+                "safety_limit": 100
+            }
+
+    @property
+    def max_combat_turns(self) -> int:
+        """Get maximum combat turns before timeout"""
+        return self.combat.get('max_turns', 20) if self.combat else 20
+
+    @property
+    def build_testing_runs(self) -> int:
+        """Get number of simulation runs for build testing"""
+        return self.simulation_runs.get('build_testing_runs', 10)
+
+    @property
+    def individual_testing_runs(self) -> int:
+        """Get number of simulation runs for individual testing"""
+        return self.simulation_runs.get('individual_testing_runs', 5)
 
 
 class AttackBuild:

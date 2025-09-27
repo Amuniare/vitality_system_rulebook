@@ -679,11 +679,11 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 
 **Control**
 - **Cost:** 30p
-- **Effect:** Gain control of the target until the start of your next turn. You can force them to take any actions available to them including attacking or stunning themseleves until the control ends. Targets add 1/5th of their remaining HP to the Resistance Score against this attack. 
+- **Effect:** Gain control of the target until the start of your next turn. You can force them to take any actions available to them including attacking or stunning themseleves until the control ends. Targets add 1/10th of their remaining HP to the Resistance Score against this attack. 
 
 **Stun**
 - **Cost:** 20p
-- **Effect:** The target cannot act on their turn, their Avoidance is considered 0, all attacks that hit them are automatic critical attack rolls. Targets add 1/5th of their remaining HP to the Resistance Score against this attack. 
+- **Effect:** The target cannot act on their turn, their Avoidance is considered 0, all attacks that hit them are automatic critical attack rolls. Targets add 1/10th of their remaining HP to the Resistance Score against this attack. 
 
 **Weaken**
 - **Cost:** 20p
@@ -886,7 +886,7 @@ Exclusion: Cannot trigger from Ricochet, Explosive Critical, or other Double-Tap
 
 **Explosive Critical**  
 Cost: 40p
-Effect: Hit rolls of 15-20 trigger attack against all enemies within 3 spaces of target if it would also hit them  
+Effect: Hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them  
 Restriction: Must take **Critical Accuracy**
 Exclusion: Cannot trigger from Double-Tap, Ricochet, or other Explosive Critical  
 
@@ -999,12 +999,12 @@ Effect: Damaging target with lower Power score allows forced movement equal to t
 
 **Intimidating Presence**
 Cost: 30p  
-Effect: When you defeat an enemy, you may immediately make a 3-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Taunt condition and uses your normal Condition Check roll.  
+Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Taunt condition and uses your normal Condition Check roll.  
 Usage: Triggers on enemy defeat, activation is optional
 
 **Terrifying Display**  
 Cost: 30p  
-Effect: When you defeat an enemy, you may immediately make a 3-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Frighten condition and uses your normal Condition Check roll.  
+Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Frighten condition and uses your normal Condition Check roll.  
 Usage: Triggers on enemy defeat, activation is optional
 
 

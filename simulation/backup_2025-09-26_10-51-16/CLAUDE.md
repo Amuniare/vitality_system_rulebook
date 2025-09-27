@@ -70,9 +70,9 @@ ATTACK_TYPES = {
     'melee_ac': melee with +Tier accuracy bonus, adjacent only
     'melee_dg': melee with +Tier damage bonus, adjacent only
     'ranged': no bonuses, -Tier if adjacent
-    'area': -Tier accuracy penalty
-    'direct_damage': flat (13-Tier) damage, no roll
-    'direct_area_damage': flat (13-2�Tier) damage, no roll
+    'area': -Tier accuracy and damage penalty
+    'direct_damage': flat (14-Tier) damage, no roll
+    'direct_area_damage': flat (14-3×Tier) damage, no roll
 }
 ```
 
@@ -83,26 +83,27 @@ ATTACK_TYPES = {
 - **High Impact** (20p): Flat 15 damage instead of 3d6 roll
 - **Critical Effect** (20p): Dice explode on 5-6 instead of just 6, -2 damage penalty
 - **Armor Piercing** (20p): Ignore endurance portion of durability
-- **Brutal** (40p): Extra damage when exceeding DR by 10+ (50% of excess)
+- **Brutal** (20p): Extra damage when exceeding DR by 10+ (50% of excess)
 - **Accurate Attack** (10p): +Tier accuracy, -Tier damage
 
 #### Multi-Attack Upgrades
-- **Quick Strikes** (60p): Attack 3 times (non-AOE attacks only), -Tier accuracy and damage per attack
-- **Extra Attack** (50p): Make identical attack when hit + effect succeeds
+- **Quick Strikes** (40p): Attack 2 times (non-AOE attacks only), -Tier accuracy and damage per attack
+- **Extra Attack** (40p): Make identical attack when hit + effect succeeds
+- **Barrage** (60p): Chain attacks - hit + effect on each attack enables the next attack, up to 3 attacks total, -Tier accuracy and damage per attack (non-AOE attacks only)
 - **Double Tap** (30p): Make identical attack on critical hit (15-20 with Critical Accuracy)
 
 #### Condition & Effect Upgrades
-- **Bleed** (40p): Target takes same damage for next 2 turns (replaces existing bleed)
-- **Critical Accuracy** (30p): Critical hit on 15-20 instead of just 20
-- **Powerful Condition Critical** (20p): +Tier bonus to Damage and Condition rolls on critical hits (requires Critical Accuracy)
+- **Bleed** (20p): Target takes same damage for next 2 turns (replaces existing bleed)
+- **Critical Accuracy** (20p): Critical hit on 15-20 instead of just 20
+- **Powerful Critical** (20p): +Tier bonus to Damage and Condition rolls on critical hits (requires Critical Accuracy)
 - **Reliable Accuracy** (20p): Roll with advantage, -3 penalty to all Accuracy rolls
 - **Overhit** (30p): +1 damage per 2 points exceeding avoidance by 5+
 
 #### Finishing Blow Upgrades
 - **Finishing Blow**: If attack reduces enemy to (5 × rank) HP or below, enemy is defeated instead. Cannot apply to AOE attacks.
   - **Rank 1** (20p): ≤5 HP threshold
-  - **Rank 2** (30p): ≤10 HP threshold
-  - **Rank 3** (40p): ≤15 HP threshold
+  - **Rank 2** (40p): ≤10 HP threshold
+  - **Rank 3** (60p): ≤15 HP threshold
 
 #### Slayer Upgrades
 - **Minion Slayer** (20p): +Tier to chosen roll type vs targets ≤10 HP (choose Accuracy, Damage, or Conditions when purchasing)
@@ -111,16 +112,16 @@ ATTACK_TYPES = {
 - **Boss Slayer** (20p): +Tier to chosen roll type vs targets ≤100 HP (choose Accuracy, Damage, or Conditions when purchasing)
 
 ### Limits (Unreliable Upgrades)
-- **Unreliable 1** (30p): +Tier to Accuracy and Damage, DC 5 activation
-- **Unreliable 2** (20p): +2×Tier to Accuracy and Damage, DC 10 activation
-- **Unreliable 3** (20p): +4×Tier to Accuracy and Damage, DC 15 activation - attack fails entirely on missed rolls
+- **Unreliable 1** (20p): +1×Tier to Accuracy and Damage, DC 5 activation
+- **Unreliable 2** (20p): +3×Tier to Accuracy and Damage, DC 10 activation
+- **Unreliable 3** (20p): +5×Tier to Accuracy and Damage, DC 15 activation - attack fails entirely on missed rolls
 
 
 #### Turn-Based Limit Upgrades
-- **Quickdraw** (10p): +2×Tier to Accuracy and Damage, turns 1-2 only
-- **Steady** (40p): +Tier to Accuracy and Damage, turn 4 or later
-- **Patient** (20p): +Tier to Accuracy and Damage, turn 5 or later
-- **Finale** (10p): +2×Tier to Accuracy and Damage, turn 8 or later
+- **Quickdraw** (20p): +2×Tier to Accuracy and Damage, turns 1-2 only
+- **Steady** (20p): +1×Tier to Accuracy and Damage, turn 3 or later
+- **Patient** (20p): +1×Tier to Accuracy and Damage, turn 5 or later
+- **Finale** (10p): +3×Tier to Accuracy and Damage, turn 8 or later
 - **Charge Up** (10p): +2×Tier to Accuracy and Damage, spend action on previous turn
 - **Charge Up 2** (10p): +3×Tier to Accuracy and Damage, spend actions on previous two turns
 
@@ -164,6 +165,7 @@ ATTACK_TYPES = {
 - `diagnostic_base_attacks_report.txt`: Base attack type mechanics across all scenarios
 - `diagnostic_upgrades_report.txt`: Individual upgrade mechanics across all scenarios
 - `diagnostic_limits_report.txt`: Individual limit mechanics across all scenarios
+- `individual_upgrade_limit_turns_[attack_type]_table.txt`: Attack-type-specific upgrade/limit performance tables (5 files)
 
 **Configuration:**
 - `config.json`: Simulation parameters and test case configurations
@@ -285,7 +287,107 @@ The simulator produces comprehensive analytical reports to help understand build
   - Turn-based limit effectiveness in different combat length scenarios
   - Comprehensive tactical analysis showing when each limit provides maximum benefit
 
-### 7. Individual Build Reports
+### 7. Attack-Type-Specific Upgrade Tables (NEW)
+**Purpose**: Detailed upgrade/limit performance analysis for each attack type
+**Generated when**: `upgrade_limit_table` is enabled in individual_reports config
+**Content**:
+
+#### Individual Attack Type Performance Tables (5 files)
+- **Melee Accuracy Table** (`individual_upgrade_limit_turns_melee_ac_table.txt`): Upgrade performance specifically for melee accuracy attacks
+- **Melee Damage Table** (`individual_upgrade_limit_turns_melee_dg_table.txt`): Upgrade performance specifically for melee damage attacks
+- **Ranged Table** (`individual_upgrade_limit_turns_ranged_table.txt`): Upgrade performance specifically for ranged attacks
+- **Area Table** (`individual_upgrade_limit_turns_area_table.txt`): Upgrade performance specifically for area attacks
+- **Direct Damage Table** (`individual_upgrade_limit_turns_direct_damage_table.txt`): Upgrade performance specifically for direct damage attacks
+
+**Each table includes**:
+- Turn reduction efficiency per point cost for that specific attack type
+- Base vs upgraded performance comparisons
+- DPT improvements for the attack type
+- Performance across all 4 scenarios (1×100, 2×50, 4×25, 10×10 HP)
+- Top 5 recommendations for that attack type
+- Summary statistics and average performance metrics
+- Only shows upgrades/limits compatible with that attack type
+
+### 8. Enhanced Individual Analysis Reports (NEW)
+**Purpose**: Advanced build guidance and recommendations
+**Generated when**: `enhanced_analysis` is enabled in individual_reports config
+**Content**:
+
+#### Build Recommendation Engine (`build_recommendation_engine.txt`)
+- **Beginner-Friendly Builds**: Reliable, straightforward builds with consistent performance
+- **Competitive Builds**: High-performance builds for experienced players
+- **Swarm Hunter Builds**: Optimized for fighting multiple weak enemies
+- **Boss Killer Builds**: Single-target focused builds for tough enemies
+- **High-Risk High-Reward Builds**: Unreliable but potentially powerful builds
+- **Point-Efficient Builds**: Maximum performance per point spent
+- Includes play tips and tactical advice for each category
+
+#### Build Comparison Tool (`build_comparison_tool.txt`)
+- Side-by-side analysis of key build comparisons
+- AOE vs Single-Target specialist effectiveness
+- Reliable vs Unreliable power trade-offs
+- Point efficiency comparisons across cost ranges
+- Detailed recommendations for build selection
+
+### 9. Build Archetype Analysis Reports (NEW)
+**Purpose**: Strategic build categorization and analysis
+**Generated when**: `archetype_analysis` is enabled in build_reports config
+**Content**:
+
+#### Multi-Target Specialist Report (`archetype_multi_target_specialists.txt`)
+- Builds optimized for swarm and group combat scenarios (2×50, 4×25, 10×10 HP)
+- Multi-target performance scoring
+- AOE archetype analysis
+- Key insights for group combat effectiveness
+
+#### Single-Target Specialist Report (`archetype_single_target_specialists.txt`)
+- Builds optimized for boss fights and high-HP single enemies (1×100 HP)
+- Single-target performance analysis
+- Attack type effectiveness breakdown
+- Boss encounter optimization strategies
+
+#### Balanced Build Report (`archetype_balanced_builds.txt`)
+- Builds that perform consistently across all combat scenarios
+- Balance scoring based on low variance and high overall performance
+- Common characteristics of versatile builds
+- Upgrade frequency analysis for balanced performance
+
+#### Risk/Reward Analysis Report (`archetype_risk_reward_analysis.txt`)
+- Comprehensive analysis of build reliability and risk/reward ratios
+- Risk category distribution (No Risk, Low Risk, Medium Risk, High Risk)
+- Performance comparison across risk levels
+- Risk premium analysis and recommendations
+
+### 10. Tactical Analysis Reports (NEW)
+**Purpose**: Advanced tactical guidance and strategic insights
+**Generated when**: `tactical_analysis` is enabled in build_reports config
+**Content**:
+
+#### Upgrade Synergy Matrix (`tactical_upgrade_synergy_matrix.txt`)
+- Analysis of upgrade combinations and their synergistic effects
+- Expected vs actual performance for upgrade pairs
+- Positive and negative synergy identification
+- Common synergy patterns and insights
+
+#### Scenario Deep Dive Analysis (`tactical_scenario_deep_dive.txt`)
+- Detailed analysis of what makes builds effective in specific scenarios
+- Top performing builds per scenario with success factor analysis
+- Tactical recommendations for each combat scenario
+- Common mistakes to avoid per scenario type
+
+#### Attack Type Viability Chart (`tactical_attack_type_viability.txt`)
+- Comprehensive guide for choosing the right attack type
+- Attack type performance summary and viability assessment
+- Detailed strengths, weaknesses, and use cases for each attack type
+- Situational recommendations for attack type selection
+
+#### Point Efficiency Analysis (`tactical_point_efficiency_analysis.txt`)
+- Optimal upgrade spending patterns for different point budgets
+- Efficiency analysis by cost brackets (Budget, Standard, Premium, Luxury)
+- Spending recommendations and diminishing returns analysis
+- Point efficiency thresholds and optimization strategies
+
+### 11. Individual Build Reports
 **Purpose**: Deep-dive analysis of specific builds
 **Generated when**: `generate_individual_logs` is enabled in config
 **Content**:
@@ -297,18 +399,29 @@ The simulator produces comprehensive analytical reports to help understand build
 
 **For Build Optimization**:
 1. Start with `build_summary.txt` to see top-performing builds
-2. Use `upgrade_ranking_report.txt` to understand which upgrades consistently perform well
-3. Check `upgrade_performance_summary.txt` for cost-effectiveness analysis
+2. Use `build_recommendation_engine.txt` to find builds matching your playstyle
+3. Check `archetype_multi_target_specialists.txt` or `archetype_single_target_specialists.txt` based on expected encounters
+4. Review attack-type-specific tables (`individual_upgrade_limit_turns_[attack_type]_table.txt`) for detailed upgrade recommendations per attack type
+5. Use `upgrade_ranking_report.txt` to understand which upgrades consistently perform well
+6. Review `tactical_point_efficiency_analysis.txt` for optimal spending at your point budget
 
 **For Game Balance**:
-1. Review attack type performance in both summary reports
+1. Review attack type performance in `tactical_attack_type_viability.txt`
 2. Analyze upgrade percentile rankings to identify over/under-powered options
-3. Use combat logs to understand mechanical interactions
+3. Use `archetype_risk_reward_analysis.txt` to understand risk/reward balance
+4. Check `tactical_upgrade_synergy_matrix.txt` for problematic combinations
 
 **For Tactical Analysis**:
-1. Compare multi-enemy scenario performance in combat logs
-2. Identify AOE vs single-target build effectiveness
-3. Analyze upgrade synergies through detailed performance reports
+1. Use `tactical_scenario_deep_dive.txt` for scenario-specific strategies
+2. Check `build_comparison_tool.txt` for head-to-head build analysis
+3. Review `archetype_balanced_builds.txt` for versatile options
+4. Analyze upgrade synergies through `tactical_upgrade_synergy_matrix.txt`
+
+**For Player Guidance**:
+1. Start with `build_recommendation_engine.txt` for playstyle-specific recommendations
+2. Use `build_comparison_tool.txt` to understand trade-offs between builds
+3. Check `tactical_attack_type_viability.txt` for situational attack type selection
+4. Review play tips and common mistakes in scenario deep dive reports
 
 ## Multi-Enemy Combat Implementation
 
@@ -358,7 +471,7 @@ When making rule changes (costs, mechanics, turn timing, etc.), ensure ALL locat
 
 ### 2. Documentation Files (REQUIRED)
 - **CHANGELOG.md**: Add version entry with rationale for changes
-- **notes.md**: Update or clean up conflicting change records
+- **notes.md**: DO NOT TOUCH THIS FILE
 
 ### 3. Files That May Contain References (CHECK)
 - **build_generator.py**: Cost calculations, build validation
@@ -372,7 +485,6 @@ When making rule changes (costs, mechanics, turn timing, etc.), ensure ALL locat
 2. **Update game_data.py** (implementation)
 3. **Update combat.py** (mechanics logic)
 4. **Update CHANGELOG.md** (document changes)
-5. **Clean notes.md** (remove conflicting records)
 6. **Search-verify remaining files** using grep patterns
 7. **Test changes** with quick diagnostic runs
 

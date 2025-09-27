@@ -9,7 +9,7 @@ from combat import make_attack, make_aoe_attack
 
 def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: int = 100,
                           log_file=None, defender: Character = None, num_enemies: int = 1,
-                          enemy_hp: int = None) -> int:
+                          enemy_hp: int = None, max_turns: int = 100) -> int:
     """Simulate combat until all targets die, return number of turns"""
 
     # Use provided defender or create dummy defender for the test case
@@ -52,7 +52,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
     turns = 0
     charge_history = []  # Track charging actions: True = charged, False = attacked
 
-    while any(enemy['hp'] > 0 for enemy in enemies) and turns < 100:  # Safety limit
+    while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
         turns += 1
         if log_file:
             log_file.write(f"\n{'='*60}\n")
@@ -261,7 +261,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
 def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int = 10,
                         target_hp: int = 100, defender: Character = None,
-                        num_enemies: int = 1, enemy_hp: int = None) -> Tuple[List[int], float, float]:
+                        num_enemies: int = 1, enemy_hp: int = None, max_turns: int = 100) -> Tuple[List[int], float, float]:
     """Run multiple combat simulations and return results
 
     Returns:
@@ -275,7 +275,7 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
 
     for i in range(num_runs):
         turns = simulate_combat_verbose(attacker, build, target_hp, defender=defender,
-                                      num_enemies=num_enemies, enemy_hp=enemy_hp)
+                                      num_enemies=num_enemies, enemy_hp=enemy_hp, max_turns=max_turns)
         results[i] = turns
 
     avg_turns = sum(results) / num_runs

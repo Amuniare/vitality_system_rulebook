@@ -48,7 +48,7 @@ def test_single_build(args):
         for scenario_name, num_enemies, enemy_hp in fight_scenarios:
             # Run batch simulation
             results, avg_turns, dpt = run_simulation_batch(
-                attacker, build, config.num_runs, config.target_hp, defender,
+                attacker, build, config.build_testing_runs, config.target_hp, defender,
                 num_enemies=num_enemies, enemy_hp=enemy_hp)
 
             # Skip scenario logging in worker processes

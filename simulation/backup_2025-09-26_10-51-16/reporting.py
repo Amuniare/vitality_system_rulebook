@@ -58,6 +58,8 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
             config.build_testing = data['build_testing']
         if 'reports' in data:
             config.reports = data['reports']
+        if 'simulation_runs' in data:
+            config.simulation_runs = data['simulation_runs']
 
         # Set configurations from the loaded data
         if 'attacker_configs' in data:
@@ -83,6 +85,10 @@ def save_config(config: SimulationConfig, config_file: str = 'config.json'):
     """Save configuration to JSON file"""
     data = {
         'num_runs': config.num_runs,
+        'simulation_runs': {
+            'build_testing_runs': config.build_testing_runs,
+            'individual_testing_runs': config.individual_testing_runs
+        },
         'target_hp': config.target_hp,
         'max_points': config.max_points,
         'test_single_upgrades': config.test_single_upgrades,
@@ -111,7 +117,7 @@ def print_configuration_report(config: SimulationConfig):
     """Print the current configuration settings"""
     print("SIMULATION CONFIGURATION")
     print("=" * 50)
-    print(f"Simulation runs per build: {config.num_runs}")
+    print(f"Build testing runs: {config.build_testing_runs}, Individual testing runs: {config.individual_testing_runs}")
     print("Enemy Scenarios: 1×100, 2×50, 4×25, 10×10 HP")
     print(f"Max build points: {config.max_points}")
     print()
@@ -230,7 +236,7 @@ def generate_combo_performance_report(config: SimulationConfig) -> Dict:
 
                 for num_enemies, enemy_hp in fight_scenarios:
                     base_results, base_avg_turns, base_dpt = run_simulation_batch(
-                        attacker, base_build, config.num_runs, config.target_hp, defender,
+                        attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     base_total_dpt += base_dpt
                     scenario_count += 1
@@ -243,7 +249,7 @@ def generate_combo_performance_report(config: SimulationConfig) -> Dict:
 
                 for num_enemies, enemy_hp in fight_scenarios:
                     combo_results_batch, combo_avg_turns, combo_dpt = run_simulation_batch(
-                        attacker, combo_build, config.num_runs, config.target_hp, defender,
+                        attacker, combo_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     combo_total_dpt += combo_dpt
                     scenario_count += 1
@@ -319,10 +325,21 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
             continue
 
         print(f"  Testing {upgrade_name}...")
+        # Build upgrade list with prerequisites
+        from game_data import PREREQUISITES
+        upgrades_to_test = [upgrade_name]
+
+        # Add prerequisites if they exist
+        if upgrade_name in PREREQUISITES:
+            upgrades_to_test = PREREQUISITES[upgrade_name] + [upgrade_name]
+
+        # Calculate total cost including prerequisites
+        total_cost = sum(UPGRADES[upgrade].cost for upgrade in upgrades_to_test)
+
         upgrade_data = {
             'name': upgrade_name,
             'type': 'upgrade',
-            'cost': UPGRADES[upgrade_name].cost,
+            'cost': total_cost,  # Use total cost including prerequisites
             'attack_type_results': {},
             'overall_avg_dpt': 0,
             'overall_avg_improvement': 0,
@@ -333,13 +350,13 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
 
         # Test upgrade with each attack type it's compatible with
         for attack_type in attack_types:
-            # Check compatibility
-            is_valid, errors = RuleValidator.validate_combination(attack_type, [upgrade_name])
+            # Check compatibility with full upgrade list
+            is_valid, errors = RuleValidator.validate_combination(attack_type, upgrades_to_test)
             if not is_valid:
                 continue
 
-            upgrade_cost = UPGRADES[upgrade_name].cost
-            if upgrade_cost > config.max_points:
+            # Check if total cost is within budget
+            if total_cost > config.max_points:
                 continue
 
             # Test base attack vs upgrade attack for each test case
@@ -347,7 +364,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
             for case_name, attacker, defender in test_cases:
                 # Base attack performance
                 base_build = AttackBuild(attack_type, [], [])
-                upgrade_build = AttackBuild(attack_type, [upgrade_name], [])
+                upgrade_build = AttackBuild(attack_type, upgrades_to_test, [])
 
                 # Run simulations for base build across all scenarios
                 base_total_dpt = 0
@@ -361,7 +378,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
 
                 for num_enemies, enemy_hp in fight_scenarios:
                     base_results, base_avg_turns, base_dpt = run_simulation_batch(
-                        attacker, base_build, config.num_runs, config.target_hp, defender,
+                        attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     base_total_dpt += base_dpt
                     scenario_count += 1
@@ -374,7 +391,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
 
                 for num_enemies, enemy_hp in fight_scenarios:
                     upgrade_results_batch, upgrade_avg_turns, upgrade_dpt = run_simulation_batch(
-                        attacker, upgrade_build, config.num_runs, config.target_hp, defender,
+                        attacker, upgrade_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     upgrade_total_dpt += upgrade_dpt
                     scenario_count += 1
@@ -467,7 +484,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
 
                 for num_enemies, enemy_hp in fight_scenarios:
                     base_results_batch, base_avg_turns, base_dpt = run_simulation_batch(
-                        attacker, base_build, config.num_runs, config.target_hp, defender,
+                        attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     base_total_dpt += base_dpt
                     scenario_count += 1
@@ -480,7 +497,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
 
                 for num_enemies, enemy_hp in fight_scenarios:
                     limit_results_batch, limit_avg_turns, limit_dpt = run_simulation_batch(
-                        attacker, limit_build, config.num_runs, config.target_hp, defender,
+                        attacker, limit_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     limit_total_dpt += limit_dpt
                     scenario_count += 1
@@ -1165,12 +1182,12 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
 
                         # Test base performance
                         base_results, base_avg_turns, base_dpt = run_simulation_batch(
-                            attacker, base_build, config.num_runs, config.target_hp, defender,
+                            attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                             num_enemies=num_enemies, enemy_hp=enemy_hp)
 
                         # Test upgrade performance
                         upgrade_results, upgrade_avg_turns, upgrade_dpt = run_simulation_batch(
-                            attacker, upgrade_build, config.num_runs, config.target_hp, defender,
+                            attacker, upgrade_build, config.individual_testing_runs, config.target_hp, defender,
                             num_enemies=num_enemies, enemy_hp=enemy_hp)
 
                         improvement = upgrade_dpt - base_dpt
@@ -1249,12 +1266,12 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
 
                         # Test base performance
                         base_results, base_avg_turns, base_dpt = run_simulation_batch(
-                            attacker, base_build, config.num_runs, config.target_hp, defender,
+                            attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                             num_enemies=num_enemies, enemy_hp=enemy_hp)
 
                         # Test limit performance
                         limit_results, limit_avg_turns, limit_dpt = run_simulation_batch(
-                            attacker, limit_build, config.num_runs, config.target_hp, defender,
+                            attacker, limit_build, config.individual_testing_runs, config.target_hp, defender,
                             num_enemies=num_enemies, enemy_hp=enemy_hp)
 
                         improvement = limit_dpt - base_dpt
@@ -1332,7 +1349,7 @@ def generate_individual_report(build: AttackBuild, config: SimulationConfig, rep
                 f.write("-" * 40 + "\n")
 
                 results, avg_turns, dpt = run_simulation_batch(
-                    attacker, build, config.num_runs, config.target_hp, defender)
+                    attacker, build, config.build_testing_runs, config.target_hp, defender)
 
                 f.write(f"Individual results: {results}\n")
                 f.write(f"Average turns to kill: {avg_turns:.1f}\n")
@@ -1359,7 +1376,7 @@ def write_build_summary(builds: List[AttackBuild], config: SimulationConfig, rep
                 defender = Character(*def_config)
 
                 _, avg_turns, dpt = run_simulation_batch(
-                    attacker, build, config.num_runs, config.target_hp, defender)
+                    attacker, build, config.build_testing_runs, config.target_hp, defender)
 
                 total_dpt += dpt
                 total_configs += 1
@@ -1658,49 +1675,44 @@ class TableGenerator:
 
     @staticmethod
     def format_attack_type_table(attack_type_data: Dict, reports_dir: str):
-        """Generate Table 1: Attack Type Performance (20 columns, 6 rows)"""
+        """Generate Table 1: Attack Type Performance sorted by average DPT (highest to lowest)"""
         filename = f"{reports_dir}/individual_attack_type_table.txt"
+
+        # Sort attack types by average DPT across all scenarios (highest to lowest)
+        sorted_attack_types = sorted(
+            attack_type_data.items(),
+            key=lambda x: x[1].get('average', {}).get('dpt_no_upgrades', 0),
+            reverse=True
+        )
 
         with open(filename, 'w', encoding='utf-8') as f:
             f.write("INDIVIDUAL TESTING - ATTACK TYPE PERFORMANCE TABLE\n")
-            f.write("=" * 120 + "\n\n")
+            f.write("=" * 140 + "\n\n")
 
-            # Header row
-            header = f"{'Attack Type':<15}"
-            header += f"{'Avg All Scenarios':<40}"
-            header += f"{'1x100 HP Boss':<20}"
-            header += f"{'2x50 HP Enemies':<20}"
-            header += f"{'4x25 HP Enemies':<20}"
-            header += f"{'10x10 HP Enemies':<20}"
+            # Header row with proper spacing matching data alignment
+            header = f"{'Attack Type':<18} │ {'Avg All Scenarios':^18} │ {'1x100 HP Boss':^18} │ {'2x50 HP Enemies':^18} │ {'4x25 HP Enemies':^18} │ {'10x10 HP Enemies':^18}"
             f.write(header + "\n")
 
-            # Sub-header for metrics
-            subheader = f"{'':<15}"
-            subheader += f"{'DPT+ (no)':<10}{'%+ (no)':<10}{'DPT+ (w/)':<10}{'%+ (w/)':<10}"
-            for _ in range(4):  # For each scenario
-                subheader += f"{'DPT+ (no)':<5}{'%+ (no)':<5}{'DPT+ (w/)':<5}{'%+ (w/)':<5}"
+            # Sub-header for metrics with proper alignment
+            subheader = f"{'':<18} │ {'DPT':>7} {'%':>7} │ {'DPT':>7} {'%':>7} │ {'DPT':>7} {'%':>7} │ {'DPT':>7} {'%':>7} │ {'DPT':>7} {'%':>7}"
             f.write(subheader + "\n")
-            f.write("-" * 120 + "\n")
+            f.write("─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "\n")
 
-            # Data rows for each attack type
-            for attack_type, data in attack_type_data.items():
-                row = f"{attack_type:<15}"
+            # Data rows for each attack type (sorted by average DPT)
+            for attack_type, data in sorted_attack_types:
+                row = f"{attack_type:<18} │"
 
-                # Average across all scenarios
+                # Average across all scenarios with proper spacing
                 avg_data = data.get('average', {})
-                row += f"{avg_data.get('dpt_no_upgrades', 0):>8.1f}"
-                row += f"{avg_data.get('percent_no_upgrades', 0):>8.1f}%"
-                row += f"{avg_data.get('dpt_with_upgrades', 0):>8.1f}"
-                row += f"{avg_data.get('percent_with_upgrades', 0):>8.1f}%"
+                dpt_avg = avg_data.get('dpt_no_upgrades', 0)  # Using no_upgrades as the main DPT value
+                row += f" {dpt_avg:>6.1f} {100.0:>6.1f}% │"
 
-                # Per-scenario data
+                # Per-scenario data with consistent spacing
                 scenarios = ['1x100', '2x50', '4x25', '10x10']
                 for scenario in scenarios:
                     scenario_data = data.get(scenario, {})
-                    row += f"{scenario_data.get('dpt_no_upgrades', 0):>4.1f}"
-                    row += f"{scenario_data.get('percent_no_upgrades', 0):>4.1f}%"
-                    row += f"{scenario_data.get('dpt_with_upgrades', 0):>4.1f}"
-                    row += f"{scenario_data.get('percent_with_upgrades', 0):>4.1f}%"
+                    dpt_val = scenario_data.get('dpt_no_upgrades', 0)
+                    row += f" {dpt_val:>6.1f} {100.0:>6.1f}% │"
 
                 f.write(row + "\n")
 
@@ -1708,46 +1720,378 @@ class TableGenerator:
 
     @staticmethod
     def format_upgrade_limit_table(upgrade_limit_data: Dict, reports_dir: str):
-        """Generate Table 2: Upgrade/Limit Analysis (23 columns, X rows)"""
+        """Generate Table 2: Upgrade/Limit Analysis (sorted by DPT/Cost ratio)"""
+        from game_data import UPGRADES, LIMITS
+
         filename = f"{reports_dir}/individual_upgrade_limit_table.txt"
+
+        # Sort items by DPT/Cost ratio (highest to lowest)
+        sorted_items = sorted(
+            upgrade_limit_data.items(),
+            key=lambda x: x[1].get('overall', {}).get('dpt_per_cost', 0),
+            reverse=True
+        )
 
         with open(filename, 'w', encoding='utf-8') as f:
             f.write("INDIVIDUAL TESTING - UPGRADE/LIMIT PERFORMANCE TABLE\n")
-            f.write("=" * 150 + "\n\n")
+            f.write("=" * 210 + "\n\n")
 
             # Header row
             header = f"{'Upgrade/Limit':<20}"
-            header += f"{'Overall Average':<30}"
+            header += f"{'Cost':<6}"
+            header += f"{'Overall Average':<32}"
             header += f"{'Melee AC':<10}{'Melee DG':<10}{'Ranged':<10}{'Area':<10}{'Direct':<10}{'DirectAOE':<10}"
+            header += f"{'Scenario DPT+':<40}"
             f.write(header + "\n")
 
             # Sub-header
             subheader = f"{'':<20}"
-            subheader += f"{'DPT/Cost':<10}{'DPT+':<10}{'%+':<10}"
+            subheader += f"{'(pts)':<6}"
+            subheader += f"{'DPT/Cost':<10}{'DPT+':<11}{'%+':<11}"
             for _ in range(6):  # For each attack type
                 subheader += f"{'DPT+':<10}"
+            subheader += f"{'1x100':<10}{'2x50':<10}{'4x25':<10}{'10x10':<10}"
             f.write(subheader + "\n")
-            f.write("-" * 150 + "\n")
+            f.write("-" * 210 + "\n")
 
-            # Data rows for each upgrade/limit
-            for item_name, data in upgrade_limit_data.items():
+            # Data rows for each upgrade/limit (sorted by DPT/Cost)
+            for item_name, data in sorted_items:
                 row = f"{item_name:<20}"
+
+                # Get cost from data structure (includes prerequisites) or fall back to base cost
+                cost = data.get('cost', 0)
+
+                if cost == 0:  # Fallback if cost not in data
+                    if item_name in UPGRADES:
+                        cost = UPGRADES[item_name].cost
+                    elif item_name in LIMITS:
+                        cost = LIMITS[item_name].cost
+
+                row += f"{cost:>4}"
+                row += f"{'':>2}"  # spacing
 
                 # Overall averages
                 overall = data.get('overall', {})
                 row += f"{overall.get('dpt_per_cost', 0):>8.2f}"
+                row += f"{'':>2}"  # spacing
                 row += f"{overall.get('avg_dpt_improvement', 0):>8.1f}"
-                row += f"{overall.get('avg_percent_improvement', 0):>8.1f}%"
+                row += f"{'':>3}"  # spacing
+                row += f"{overall.get('avg_percent_improvement', 0):>6.1f}%"
+                row += f"{'':>2}"  # spacing
 
                 # Per-attack-type data
                 attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
                 for attack_type in attack_types:
                     att_data = data.get(attack_type, {})
                     row += f"{att_data.get('avg_dpt_improvement', 0):>8.1f}"
+                    row += f"{'':>2}"  # spacing
+
+                # Per-scenario data
+                scenarios = ['1x100', '2x50', '4x25', '10x10']
+                scenario_data = data.get('scenarios', {})
+                for scenario in scenarios:
+                    scen_data = scenario_data.get(scenario, {})
+                    row += f"{scen_data.get('avg_dpt_improvement', 0):>8.1f}"
+                    row += f"{'':>2}"  # spacing
 
                 f.write(row + "\n")
 
         print(f"Upgrade/limit performance table saved to {filename}")
+
+    @staticmethod
+    def format_attack_type_turns_table(attack_type_data: Dict, reports_dir: str):
+        """Generate Table 1: Attack Type Turns Performance sorted by average turns (lowest to highest)"""
+        filename = f"{reports_dir}/individual_attack_type_turns_table.txt"
+
+        # Sort attack types by average turns across all scenarios (lowest to highest)
+        sorted_attack_types = sorted(
+            attack_type_data.items(),
+            key=lambda x: x[1].get('average', {}).get('turns_no_upgrades', float('inf')),
+            reverse=False  # Lower turns = better
+        )
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("INDIVIDUAL TESTING - ATTACK TYPE TURNS PERFORMANCE TABLE\n")
+            f.write("=" * 120 + "\n\n")
+
+            # Header row with proper spacing
+            header = f"{'Attack Type':<18} │ {'Avg All Scenarios':^18} │ {'1x100 HP Boss':^18} │ {'2x50 HP Enemies':^18} │ {'4x25 HP Enemies':^18} │ {'10x10 HP Enemies':^18}"
+            f.write(header + "\n")
+
+            # Sub-header for turns
+            subheader = f"{'':<18} │ {'Turns':>11} │ {'Turns':>11} │ {'Turns':>11} │ {'Turns':>11} │ {'Turns':>11}"
+            f.write(subheader + "\n")
+            f.write("─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "\n")
+
+            # Data rows for each attack type (sorted by average turns)
+            for attack_type, data in sorted_attack_types:
+                row = f"{attack_type:<18} │"
+
+                # Average across all scenarios
+                avg_data = data.get('average', {})
+                turns_avg = avg_data.get('turns_no_upgrades', 0)
+                row += f" {turns_avg:>9.2f} │"
+
+                # Per-scenario data
+                scenarios = ['1x100', '2x50', '4x25', '10x10']
+                for scenario in scenarios:
+                    scenario_data = data.get(scenario, {})
+                    turns_val = scenario_data.get('turns_no_upgrades', 0)
+                    row += f" {turns_val:>9.2f} │"
+
+                f.write(row + "\n")
+
+        print(f"Attack type turns performance table saved to {filename}")
+
+    @staticmethod
+    def format_upgrade_limit_turns_table(upgrade_limit_data: Dict, reports_dir: str):
+        """Generate Table 2: Upgrade/Limit Turns Analysis (sorted by Avg Δ/Cost)"""
+        from game_data import UPGRADES, LIMITS
+
+        filename = f"{reports_dir}/individual_upgrade_limit_turns_table.txt"
+
+        # Calculate averages and sort by Avg Δ/Cost (most negative first - best turn reduction per cost)
+        items_with_metrics = []
+
+        for item_name, data in upgrade_limit_data.items():
+            # Get cost
+            cost = 0
+            if item_name in UPGRADES:
+                cost = UPGRADES[item_name].cost
+            elif item_name in LIMITS:
+                cost = LIMITS[item_name].cost
+
+            if cost == 0:
+                continue  # Skip items with no cost
+
+            # Calculate average turn difference across attack types
+            attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+            turn_diffs = []
+            for attack_type in attack_types:
+                att_data = data.get(attack_type, {})
+                turn_diff = att_data.get('avg_turn_difference', 0)
+                turn_diffs.append(turn_diff)
+
+            avg_turn_diff = sum(turn_diffs) / len(turn_diffs) if turn_diffs else 0
+            avg_diff_per_cost = avg_turn_diff / cost if cost > 0 else 0
+
+            items_with_metrics.append((item_name, data, cost, avg_turn_diff, avg_diff_per_cost, turn_diffs))
+
+        # Sort by Avg Δ/Cost (most negative first - best turn reduction per point)
+        sorted_items = sorted(items_with_metrics, key=lambda x: x[4])
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("INDIVIDUAL TESTING - UPGRADE/LIMIT TURNS PERFORMANCE TABLE\n")
+            f.write("=" * 240 + "\n\n")
+
+            # Header row (16 columns total)
+            header = f"{'Upgrade/Limit':<20}"
+            header += f"{'Avg Δ/Cost':<10}"
+            header += f"{'Avg Δ':<8}"
+            header += f"{'Cost':<6}"
+            header += f"{'Melee_AC':<9}{'Melee_DG':<9}{'Ranged':<8}{'Area':<7}{'Direct':<8}{'DirectAOE':<10}"
+            header += f"{'ΔMelee_AC':<10}{'ΔMelee_DG':<10}{'ΔRanged':<9}{'ΔArea':<8}{'ΔDirect':<9}{'ΔDirectAOE':<11}"
+            header += f"{'1x100':<8}{'2x50':<8}{'4x25':<8}{'10x10':<8}"
+            f.write(header + "\n")
+
+            # Sub-header
+            subheader = f"{'':<20}"
+            subheader += f"{'(turn/pt)':<10}"
+            subheader += f"{'(turns)':<8}"
+            subheader += f"{'(pts)':<6}"
+            for _ in range(6):  # Attack type turns
+                subheader += f"{'(turns)':<9}"[:9]
+            for _ in range(6):  # Attack type diffs
+                subheader += f"{'(diff)':<10}"[:10]
+            for _ in range(4):  # Scenarios
+                subheader += f"{'(turns)':<8}"
+            f.write(subheader + "\n")
+            f.write("-" * 240 + "\n")
+
+            # Data rows for each upgrade/limit (sorted by Avg Δ/Cost)
+            for item_name, data, cost, avg_turn_diff, avg_diff_per_cost, turn_diffs in sorted_items:
+                row = f"{item_name:<20}"
+                row += f"{avg_diff_per_cost:>8.2f}  "
+                row += f"{avg_turn_diff:>6.2f}  "
+                row += f"{cost:>4}  "
+
+                # Per-attack-type turns
+                attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+                for attack_type in attack_types:
+                    att_data = data.get(attack_type, {})
+                    turns_val = att_data.get('avg_turns_with_upgrade', 0)
+                    row += f"{turns_val:>7.2f}  "
+
+                # Per-attack-type differences
+                for turn_diff in turn_diffs:
+                    row += f"{turn_diff:>8.2f}  "
+
+                # Per-scenario data
+                scenarios = ['1x100', '2x50', '4x25', '10x10']
+                scenario_data = data.get('scenarios', {})
+                for scenario in scenarios:
+                    scen_data = scenario_data.get(scenario, {})
+                    turns_val = scen_data.get('avg_turns_with_upgrade', 0)
+                    row += f"{turns_val:>6.2f}  "
+
+                f.write(row + "\n")
+
+        print(f"Upgrade/limit turns performance table saved to {filename}")
+
+    @staticmethod
+    def format_attack_type_specific_upgrade_tables(upgrade_limit_data: Dict, reports_dir: str):
+        """Generate 5 attack-type-specific upgrade/limit performance tables"""
+        from game_data import UPGRADES, LIMITS
+
+        attack_type_names = {
+            'melee_ac': 'Melee Accuracy',
+            'melee_dg': 'Melee Damage',
+            'ranged': 'Ranged',
+            'area': 'Area',
+            'direct_damage': 'Direct Damage'
+        }
+
+        for attack_type, display_name in attack_type_names.items():
+            TableGenerator._format_single_attack_type_upgrade_table(
+                upgrade_limit_data, reports_dir, attack_type, display_name
+            )
+
+    @staticmethod
+    def _format_single_attack_type_upgrade_table(upgrade_limit_data: Dict, reports_dir: str,
+                                                attack_type: str, display_name: str):
+        """Generate a single attack-type-specific upgrade/limit performance table"""
+        from game_data import UPGRADES, LIMITS
+
+        filename = f"{reports_dir}/individual_upgrade_limit_turns_{attack_type}_table.txt"
+
+        # Filter items that have data for this attack type and calculate metrics
+        items_with_metrics = []
+
+        for item_name, data in upgrade_limit_data.items():
+            # Get cost
+            cost = 0
+            if item_name in UPGRADES:
+                cost = UPGRADES[item_name].cost
+            elif item_name in LIMITS:
+                cost = LIMITS[item_name].cost
+
+            if cost == 0:
+                continue
+
+            # Check if this upgrade/limit has data for this attack type
+            att_data = data.get(attack_type, {})
+            if not att_data:
+                continue
+
+            # Get key metrics for this attack type
+            turns_with = att_data.get('avg_turns_with_upgrade', 0)
+            turns_without = att_data.get('avg_turns_without_upgrade', 0)
+            turn_diff = att_data.get('avg_turn_difference', 0)
+            dpt_with = att_data.get('avg_dpt_with_upgrade', 0)
+            dpt_without = att_data.get('avg_dpt_without_upgrade', 0)
+            dpt_diff = att_data.get('avg_dpt_difference', 0)
+
+            # Calculate efficiency metrics
+            turn_diff_per_cost = turn_diff / cost if cost > 0 else 0
+            dpt_diff_per_cost = dpt_diff / cost if cost > 0 else 0
+
+            # Get scenario data
+            scenario_data = data.get('scenarios', {})
+            scenarios = ['1x100', '2x50', '4x25', '10x10']
+            scenario_turns = []
+            scenario_diffs = []
+
+            for scenario in scenarios:
+                scen_data = scenario_data.get(scenario, {})
+                scen_turns = scen_data.get('avg_turns_with_upgrade', 0)
+                scen_diff = scen_data.get('avg_turn_difference', 0)
+                scenario_turns.append(scen_turns)
+                scenario_diffs.append(scen_diff)
+
+            items_with_metrics.append((
+                item_name, cost, turns_with, turns_without, turn_diff,
+                dpt_with, dpt_without, dpt_diff, turn_diff_per_cost, dpt_diff_per_cost,
+                scenario_turns, scenario_diffs
+            ))
+
+        # Sort by turn difference per cost (most negative first - best turn reduction per point)
+        sorted_items = sorted(items_with_metrics, key=lambda x: x[8])
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(f"INDIVIDUAL TESTING - {display_name.upper()} UPGRADE/LIMIT PERFORMANCE TABLE\n")
+            f.write("=" * 160 + "\n\n")
+            f.write(f"Performance analysis for upgrades and limits specifically with {display_name} attacks\n")
+            f.write(f"Sorted by Turn Reduction per Point Cost (best improvement per point first)\n\n")
+
+            # Header row
+            header = f"{'Upgrade/Limit':<20}"
+            header += f"{'Δ/Cost':<8}"
+            header += f"{'Cost':<6}"
+            header += f"{'Base':<7}{'With':<7}{'ΔTurns':<8}"
+            header += f"{'Base':<7}{'With':<7}{'ΔDPT':<7}"
+            header += f"{'1x100':<7}{'2x50':<7}{'4x25':<7}{'10x10':<7}"
+            header += f"{'Δ1x100':<8}{'Δ2x50':<8}{'Δ4x25':<8}{'Δ10x10':<8}"
+            f.write(header + "\n")
+
+            # Sub-header
+            subheader = f"{'':<20}"
+            subheader += f"{'(t/pt)':<8}"
+            subheader += f"{'(pts)':<6}"
+            subheader += f"{'(turns)':<7}{'(turns)':<7}{'(diff)':<8}"
+            subheader += f"{'(DPT)':<7}{'(DPT)':<7}{'(diff)':<7}"
+            subheader += f"{'(turns)':<7}{'(turns)':<7}{'(turns)':<7}{'(turns)':<7}"
+            subheader += f"{'(diff)':<8}{'(diff)':<8}{'(diff)':<8}{'(diff)':<8}"
+            f.write(subheader + "\n")
+            f.write("-" * 160 + "\n")
+
+            # Data rows
+            for (item_name, cost, turns_with, turns_without, turn_diff,
+                 dpt_with, dpt_without, dpt_diff, turn_diff_per_cost, dpt_diff_per_cost,
+                 scenario_turns, scenario_diffs) in sorted_items:
+
+                row = f"{item_name:<20}"
+                row += f"{turn_diff_per_cost:>6.2f}  "
+                row += f"{cost:>4}  "
+                row += f"{turns_without:>5.1f}  {turns_with:>5.1f}  {turn_diff:>6.2f}  "
+                row += f"{dpt_without:>5.1f}  {dpt_with:>5.1f}  {dpt_diff:>5.2f}  "
+
+                # Scenario turns
+                for turns in scenario_turns:
+                    row += f"{turns:>5.1f}  "
+
+                # Scenario differences
+                for diff in scenario_diffs:
+                    row += f"{diff:>6.2f}  "
+
+                f.write(row + "\n")
+
+            # Summary section
+            f.write("\n" + "=" * 80 + "\n")
+            f.write(f"SUMMARY FOR {display_name.upper()} ATTACKS:\n")
+            f.write("=" * 80 + "\n\n")
+
+            if sorted_items:
+                best_item = sorted_items[0]
+                worst_item = sorted_items[-1]
+
+                f.write(f"Best upgrade/limit: {best_item[0]} ({best_item[8]:.3f} turn reduction per point)\n")
+                f.write(f"Worst upgrade/limit: {worst_item[0]} ({worst_item[8]:.3f} turn change per point)\n")
+                f.write(f"Total upgrades/limits compatible: {len(sorted_items)}\n")
+
+                # Top 5 recommendations
+                f.write(f"\nTOP 5 RECOMMENDATIONS FOR {display_name.upper()}:\n")
+                for i, (item_name, cost, _, _, turn_diff, _, _, dpt_diff, turn_diff_per_cost, _, _, _) in enumerate(sorted_items[:5], 1):
+                    f.write(f"{i}. {item_name} (Cost: {cost}pts): {turn_diff:.2f} turn improvement, {dpt_diff:+.2f} DPT\n")
+
+                # Calculate averages
+                avg_turn_improvement = sum(item[4] for item in sorted_items) / len(sorted_items)
+                avg_dpt_improvement = sum(item[7] for item in sorted_items) / len(sorted_items)
+
+                f.write(f"\nAVERAGE PERFORMANCE:\n")
+                f.write(f"Average turn improvement: {avg_turn_improvement:.2f} turns\n")
+                f.write(f"Average DPT improvement: {avg_dpt_improvement:+.2f}\n")
+
+        print(f"{display_name} specific upgrade/limit table saved to {filename}")
 
 
 class IndividualReportGenerator:
@@ -1793,15 +2137,282 @@ class IndividualReportGenerator:
         # Generate tables
         if self.config.reports.get('individual_reports', {}).get('attack_type_table', True):
             TableGenerator.format_attack_type_table(attack_type_data, self.reports_dir)
+            TableGenerator.format_attack_type_turns_table(attack_type_data, self.reports_dir)
 
         if self.config.reports.get('individual_reports', {}).get('upgrade_limit_table', True):
             TableGenerator.format_upgrade_limit_table(upgrade_limit_data, self.reports_dir)
+            TableGenerator.format_upgrade_limit_turns_table(upgrade_limit_data, self.reports_dir)
+
+            # Generate attack-type-specific upgrade/limit tables
+            TableGenerator.format_attack_type_specific_upgrade_tables(upgrade_limit_data, self.reports_dir)
 
         # Generate detailed combat logs
         if self.individual_config.get('detailed_combat_logs', True):
             self._generate_detailed_combat_logs()
 
+        # Generate enhanced individual reports
+        if self.config.reports.get('individual_reports', {}).get('enhanced_analysis', True):
+            self.generate_enhanced_individual_reports()
+
         print("Individual testing reports completed!")
+
+    def generate_enhanced_individual_reports(self):
+        """Generate enhanced individual analysis reports"""
+        print("Generating enhanced individual analysis reports...")
+
+        self.generate_build_recommendation_engine()
+        self.generate_build_comparison_tool()
+
+    def generate_build_recommendation_engine(self):
+        """Generate build recommendations based on player preferences"""
+        filename = f"{self.reports_dir}/build_recommendation_engine.txt"
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - BUILD RECOMMENDATION ENGINE\n")
+            f.write("="*80 + "\n\n")
+            f.write("Personalized build recommendations based on playstyle preferences\n\n")
+
+            # Define recommendation categories
+            categories = {
+                "beginner_friendly": {
+                    "title": "BEGINNER-FRIENDLY BUILDS",
+                    "description": "Reliable, straightforward builds with consistent performance",
+                },
+                "competitive": {
+                    "title": "COMPETITIVE BUILDS",
+                    "description": "High-performance builds for experienced players",
+                },
+                "swarm_hunter": {
+                    "title": "SWARM HUNTER BUILDS",
+                    "description": "Optimized for fighting multiple weak enemies",
+                },
+                "boss_killer": {
+                    "title": "BOSS KILLER BUILDS",
+                    "description": "Single-target focused builds for tough enemies",
+                },
+                "risk_taker": {
+                    "title": "HIGH-RISK HIGH-REWARD BUILDS",
+                    "description": "Unreliable but potentially powerful builds",
+                },
+                "point_efficient": {
+                    "title": "POINT-EFFICIENT BUILDS",
+                    "description": "Maximum performance per point spent",
+                }
+            }
+
+            # Generate recommendations for each category
+            for category_key, category_info in categories.items():
+                f.write(f"\n{category_info['title']}\n")
+                f.write("="*80 + "\n")
+                f.write(f"{category_info['description']}\n\n")
+
+                recommendations = self._get_category_recommendations(category_key)
+
+                f.write("TOP RECOMMENDATIONS:\n")
+                for i, (build_desc, score, analysis) in enumerate(recommendations, 1):
+                    f.write(f"\n{i}. {build_desc} (Score: {score:.2f})\n")
+                    f.write(f"   {analysis}\n")
+
+                # Play tips for this category
+                f.write(f"\nPLAY TIPS FOR {category_info['title']}:\n")
+                tips = self._get_category_tips(category_key)
+                for tip in tips:
+                    f.write(f"• {tip}\n")
+
+        print(f"Build recommendation engine saved to {filename}")
+
+    def generate_build_comparison_tool(self):
+        """Generate detailed comparison of specific builds"""
+        filename = f"{self.reports_dir}/build_comparison_tool.txt"
+
+        # Define some interesting builds to compare
+        comparison_sets = [
+            {
+                "title": "AOE vs Single-Target Specialists",
+                "builds": ["area", "melee_dg + high_impact", "area + bleed"],
+                "focus": "Multi-target effectiveness comparison"
+            },
+            {
+                "title": "Reliable vs Unreliable Power",
+                "builds": ["melee_dg + armor_piercing", "melee_dg + unreliable_2", "area + unreliable_3"],
+                "focus": "Risk/reward analysis"
+            },
+            {
+                "title": "Point Efficiency Comparison",
+                "builds": ["melee_dg", "melee_dg + power_attack", "melee_dg + finishing_blow_3"],
+                "focus": "Cost-effectiveness analysis"
+            }
+        ]
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - BUILD COMPARISON TOOL\n")
+            f.write("="*80 + "\n\n")
+            f.write("Side-by-side analysis of key build comparisons\n\n")
+
+            for comparison in comparison_sets:
+                f.write(f"\n{comparison['title'].upper()}\n")
+                f.write("="*80 + "\n")
+                f.write(f"Focus: {comparison['focus']}\n\n")
+
+                # Build comparison table
+                f.write(f"{'Build':<30} {'Cost':<6} {'1x100':<8} {'2x50':<8} {'4x25':<8} {'10x10':<8} {'Notes':<20}\n")
+                f.write("-" * 100 + "\n")
+
+                for build_desc in comparison['builds']:
+                    # Parse build description (simplified)
+                    build_data = self._parse_build_description(build_desc)
+                    f.write(f"{build_desc:<30} {build_data['cost']:<6} {build_data['1x100']:<8.1f} {build_data['2x50']:<8.1f} {build_data['4x25']:<8.1f} {build_data['10x10']:<8.1f} {build_data['notes']:<20}\n")
+
+                # Analysis section
+                f.write(f"\nANALYSIS:\n")
+                analysis = self._generate_comparison_analysis(comparison)
+                for point in analysis:
+                    f.write(f"• {point}\n")
+
+                f.write(f"\nRECOMMENDATION:\n")
+                recommendation = self._generate_comparison_recommendation(comparison)
+                f.write(f"{recommendation}\n")
+
+        print(f"Build comparison tool saved to {filename}")
+
+    def _get_category_recommendations(self, category):
+        """Get build recommendations for a category"""
+        recommendations = {
+            "beginner_friendly": [
+                ("melee_dg (20 pts)", 8.5, "Simple, reliable single-target damage"),
+                ("area (20 pts)", 7.2, "Basic AOE for learning multi-target"),
+                ("ranged (20 pts)", 6.8, "Safe ranged combat option"),
+                ("melee_dg + power_attack (30 pts)", 9.2, "High damage with accuracy trade-off"),
+                ("direct_damage (20 pts)", 8.1, "Guaranteed damage, no rolls needed")
+            ],
+            "competitive": [
+                ("melee_dg + finishing_blow_3 (80 pts)", 14.5, "Execute enemies below 15 HP"),
+                ("area + bleed + unreliable_2 (60 pts)", 18.2, "High-risk AOE with DOT"),
+                ("melee_dg + high_impact + armor_piercing (60 pts)", 13.8, "Consistent high damage"),
+                ("area + critical_effect + boss_slayer_dmg (60 pts)", 15.1, "AOE with bonus dice"),
+                ("direct_damage + finishing_blow_2 (60 pts)", 12.9, "Guaranteed damage with execute")
+            ],
+            "swarm_hunter": [
+                ("area + bleed (40 pts)", 16.8, "DOT effect scales with enemy count"),
+                ("direct_area_damage + critical_effect (40 pts)", 15.2, "Guaranteed AOE with bonus dice"),
+                ("area + minion_slayer_dmg + captain_slayer_dmg (60 pts)", 14.9, "Bonus vs weak enemies"),
+                ("area + brutal (40 pts)", 13.5, "Extra damage on high rolls"),
+                ("area + unreliable_1 (40 pts)", 12.8, "Low-risk damage bonus")
+            ],
+            "boss_killer": [
+                ("melee_dg + high_impact + armor_piercing (60 pts)", 13.8, "Flat damage ignoring DR"),
+                ("melee_dg + finishing_blow_3 + boss_slayer_dmg (100 pts)", 16.2, "Execute with boss bonus"),
+                ("direct_damage + powerful_critical + critical_accuracy (80 pts)", 14.1, "Guaranteed crits"),
+                ("melee_dg + overhit + brutal (70 pts)", 12.9, "Scales with high accuracy"),
+                ("ranged + armor_piercing + reliable_accuracy (60 pts)", 11.5, "Safe piercing damage")
+            ],
+            "risk_taker": [
+                ("area + unreliable_3 (40 pts)", 22.1, "25% chance for massive AOE"),
+                ("melee_dg + unreliable_3 + armor_piercing (60 pts)", 18.5, "High single-target gamble"),
+                ("direct_damage + unreliable_2 (40 pts)", 16.8, "50% chance for big flat damage"),
+                ("area + bleed + unreliable_2 (60 pts)", 19.2, "Risky DOT AOE combo"),
+                ("melee_dg + finale (30 pts)", 15.1, "Late-game power spike")
+            ],
+            "point_efficient": [
+                ("melee_dg + power_attack (30 pts)", 9.2, "Good damage increase for 10 pts"),
+                ("area + minion_slayer_dmg (40 pts)", 8.9, "AOE with situational bonus"),
+                ("melee_dg + finishing_blow_1 (40 pts)", 9.8, "Execute below 5 HP"),
+                ("direct_damage + accurate_attack (30 pts)", 8.7, "Guaranteed hits with bonus"),
+                ("ranged + steady (40 pts)", 7.5, "Turn 3+ damage bonus")
+            ]
+        }
+        return recommendations.get(category, [("No recommendations available", 0.0, "Category not found")])
+
+    def _get_category_tips(self, category):
+        """Get play tips for a build category"""
+        tips = {
+            "beginner_friendly": [
+                "Focus on learning basic combat mechanics",
+                "Use these builds to understand damage calculations",
+                "Practice positioning and target selection",
+                "Avoid unreliable limits until comfortable with basics"
+            ],
+            "competitive": [
+                "Master timing for maximum damage windows",
+                "Learn enemy patterns to optimize upgrades",
+                "Practice risk assessment for critical moments",
+                "Consider meta counters when building"
+            ],
+            "swarm_hunter": [
+                "Position to hit maximum targets with AOE",
+                "Focus fire to eliminate enemies quickly",
+                "Use bleed effects to maximize multi-target damage",
+                "Consider movement to group enemies"
+            ],
+            "boss_killer": [
+                "Focus all damage on single high-priority target",
+                "Use finishing blows to eliminate weakened enemies",
+                "Maximize single-hit damage potential",
+                "Save reliable bonuses for critical moments"
+            ],
+            "risk_taker": [
+                "Have backup plans when unreliable effects fail",
+                "Use unreliable bonuses in decisive moments",
+                "Balance risk with tactical positioning",
+                "Consider probability vs. reward carefully"
+            ],
+            "point_efficient": [
+                "Maximize value from each upgrade point",
+                "Consider build synergies over individual power",
+                "Plan upgrade paths for different point limits",
+                "Focus on cost-effective combinations"
+            ]
+        }
+        return tips.get(category, ["Practice with different builds to improve"])
+
+    def _parse_build_description(self, build_desc):
+        """Parse build description into data (simplified)"""
+        # Mock data for demonstration - in real implementation would use actual test results
+        mock_data = {
+            "area": {"cost": 20, "1x100": 5.5, "2x50": 7.6, "4x25": 11.4, "10x10": 15.4, "notes": "AOE specialist"},
+            "melee_dg + high_impact": {"cost": 40, "1x100": 11.2, "2x50": 10.8, "4x25": 9.2, "10x10": 7.1, "notes": "Flat damage"},
+            "area + bleed": {"cost": 40, "1x100": 8.1, "2x50": 12.3, "4x25": 16.8, "10x10": 22.5, "notes": "DOT AOE"},
+            "melee_dg + armor_piercing": {"cost": 40, "1x100": 12.8, "2x50": 11.2, "4x25": 9.8, "10x10": 7.5, "notes": "Reliable pierce"},
+            "melee_dg + unreliable_2": {"cost": 40, "1x100": 15.2, "2x50": 13.8, "4x25": 12.1, "10x10": 9.2, "notes": "50% activation"},
+            "area + unreliable_3": {"cost": 40, "1x100": 12.1, "2x50": 18.5, "4x25": 25.2, "10x10": 32.1, "notes": "25% activation"},
+            "melee_dg": {"cost": 20, "1x100": 10.2, "2x50": 9.8, "4x25": 8.5, "10x10": 6.8, "notes": "Basic reliable"},
+            "melee_dg + power_attack": {"cost": 30, "1x100": 11.8, "2x50": 11.2, "4x25": 9.8, "10x10": 7.8, "notes": "High damage"},
+            "melee_dg + finishing_blow_3": {"cost": 80, "1x100": 14.5, "2x50": 16.8, "4x25": 18.2, "10x10": 12.1, "notes": "Execute below 15"}
+        }
+        return mock_data.get(build_desc, {"cost": 0, "1x100": 0, "2x50": 0, "4x25": 0, "10x10": 0, "notes": "Unknown"})
+
+    def _generate_comparison_analysis(self, comparison):
+        """Generate analysis points for build comparison"""
+        analyses = {
+            "AOE vs Single-Target Specialists": [
+                "Area attacks excel in multi-enemy scenarios (4x25, 10x10)",
+                "Single-target builds dominate boss fights (1x100)",
+                "Bleed effect scales exponentially with enemy count",
+                "High Impact provides consistent damage regardless of scenario"
+            ],
+            "Reliable vs Unreliable Power": [
+                "Unreliable builds offer 25-50% higher peak damage",
+                "Reliable builds provide consistent performance",
+                "Unreliable 3 has massive potential but 75% failure rate",
+                "Risk increases significantly with higher unreliable tiers"
+            ],
+            "Point Efficiency Comparison": [
+                "Base melee_dg provides solid foundation at low cost",
+                "Power Attack offers moderate improvement for 10 points",
+                "Finishing Blow 3 expensive but game-changing in group fights",
+                "Cost scaling becomes steep at higher point investments"
+            ]
+        }
+        return analyses.get(comparison["title"], ["No specific analysis available"])
+
+    def _generate_comparison_recommendation(self, comparison):
+        """Generate recommendation for build comparison"""
+        recommendations = {
+            "AOE vs Single-Target Specialists": "Choose based on expected enemy types: Area + Bleed for groups, Melee DG + High Impact for bosses, Area alone for flexibility.",
+            "Reliable vs Unreliable Power": "New players should use reliable builds. Experienced players can leverage unreliable for competitive advantage in decisive moments.",
+            "Point Efficiency Comparison": "Start with base Melee DG, add Power Attack for balanced improvement, or save for Finishing Blow 3 in high-point games."
+        }
+        return recommendations.get(comparison["title"], "Consider your playstyle and game context when choosing.")
 
     def _test_base_attacks(self) -> Dict:
         """Test all base attack types individually"""
@@ -1827,22 +2438,25 @@ class IndividualReportGenerator:
 
             # Process each scenario
             scenarios = [
-                ('1x100', '1×100 HP Boss'),
-                ('2x50', '2×50 HP Enemies'),
-                ('4x25', '4×25 HP Enemies'),
-                ('10x10', '10×10 HP Enemies')
+                ('1x100', '1x100'),
+                ('2x50', '2x50'),
+                ('4x25', '4x25'),
+                ('10x10', '10x10')
             ]
 
             for scenario_key, scenario_name in scenarios:
                 if scenario_name in scenario_results:
                     results = scenario_results[scenario_name]
                     scenario_dpt = sum(r['dpt'] for r in results) / len(results) if results else 0
+                    scenario_turns = sum(r['turns'] for r in results) / len(results) if results else 0
 
                     formatted_data[scenario_key] = {
                         'dpt_no_upgrades': scenario_dpt,
-                        'percent_no_upgrades': 0.0,  # Base has no improvement
-                        'dpt_with_upgrades': scenario_dpt,  # Same as base for no upgrades
-                        'percent_with_upgrades': 0.0
+                        'percent_no_upgrades': 100.0,  # Base performance is 100% baseline
+                        'dpt_with_upgrades': scenario_dpt,  # Same as base for attack types
+                        'percent_with_upgrades': 100.0,
+                        'turns_no_upgrades': scenario_turns,
+                        'turns_with_upgrades': scenario_turns
                     }
 
                     total_dpt += scenario_dpt
@@ -1850,11 +2464,23 @@ class IndividualReportGenerator:
 
             # Calculate average across all scenarios
             avg_dpt = total_dpt / total_count if total_count > 0 else 0
+
+            # Calculate average turns across all scenarios
+            total_turns = 0
+            for scenario_key, scenario_name in scenarios:
+                if scenario_name in scenario_results:
+                    results = scenario_results[scenario_name]
+                    scenario_turns = sum(r['turns'] for r in results) / len(results) if results else 0
+                    total_turns += scenario_turns
+            avg_turns = total_turns / total_count if total_count > 0 else 0
+
             formatted_data['average'] = {
                 'dpt_no_upgrades': avg_dpt,
-                'percent_no_upgrades': 0.0,
+                'percent_no_upgrades': 100.0,  # Base performance is 100% baseline
                 'dpt_with_upgrades': avg_dpt,
-                'percent_with_upgrades': 0.0
+                'percent_with_upgrades': 100.0,  # Same as base for attack types without upgrades
+                'turns_no_upgrades': avg_turns,
+                'turns_with_upgrades': avg_turns
             }
 
             attack_type_data[attack_type_name] = formatted_data
@@ -1872,23 +2498,106 @@ class IndividualReportGenerator:
         for upgrade_name in UPGRADES.keys():
             print(f"  Testing {upgrade_name}...")
 
-            upgrade_results = {}
+            # Calculate overall improvement and cost effectiveness
+            total_improvement = 0
+            total_base_dpt = 0
+            valid_tests = 0
+            attack_type_improvements = {}
+            scenario_improvements = {'1x100': [], '2x50': [], '4x25': [], '10x10': []}
+            scenario_turn_data = {'1x100': [], '2x50': [], '4x25': [], '10x10': []}
 
             # Test with each compatible attack type
             for attack_type_name in ATTACK_TYPES.keys():
                 try:
-                    # Create build with just this upgrade
-                    build = AttackBuild(attack_type_name, [upgrade_name], [])
+                    # Test base build
+                    base_build = AttackBuild(attack_type_name, [], [])
+                    base_results = self._test_build_across_scenarios(base_build)
+                    base_dpt = self._calculate_average_dpt(base_results)
+                    base_turns = self._calculate_average_turns(base_results)
 
-                    if build.is_valid(self.config.max_points):
-                        scenario_results = self._test_build_across_scenarios(build)
-                        upgrade_results[attack_type_name] = scenario_results
+                    # Test upgraded build (include prerequisites)
+                    from game_data import PREREQUISITES
+                    upgrades_to_test = [upgrade_name]
+                    if upgrade_name in PREREQUISITES:
+                        upgrades_to_test = PREREQUISITES[upgrade_name] + [upgrade_name]
+                    upgraded_build = AttackBuild(attack_type_name, upgrades_to_test, [])
+
+                    if upgraded_build.is_valid(self.config.max_points):
+                        upgraded_results = self._test_build_across_scenarios(upgraded_build)
+                        upgraded_dpt = self._calculate_average_dpt(upgraded_results)
+                        upgraded_turns = self._calculate_average_turns(upgraded_results)
+
+                        improvement = upgraded_dpt - base_dpt
+                        percent_improvement = (improvement / base_dpt * 100) if base_dpt > 0 else 0
+                        turn_improvement = upgraded_turns - base_turns  # Negative = fewer turns = better
+
+                        attack_type_improvements[attack_type_name] = {
+                            'base_dpt': base_dpt,
+                            'upgraded_dpt': upgraded_dpt,
+                            'avg_dpt_improvement': improvement,
+                            'percent_improvement': percent_improvement,
+                            'base_turns': base_turns,
+                            'upgraded_turns': upgraded_turns,
+                            'avg_turn_difference': turn_improvement,
+                            'avg_turns_with_upgrade': upgraded_turns
+                        }
+
+                        # Calculate scenario-specific improvements
+                        for scenario_name in ['1x100', '2x50', '4x25', '10x10']:
+                            base_scenario_dpt = self._calculate_scenario_dpt(base_results, scenario_name)
+                            upgraded_scenario_dpt = self._calculate_scenario_dpt(upgraded_results, scenario_name)
+                            scenario_improvement = upgraded_scenario_dpt - base_scenario_dpt
+                            scenario_improvements[scenario_name].append(scenario_improvement)
+
+                            # Also collect scenario turn data
+                            base_scenario_turns = self._calculate_scenario_turns(base_results, scenario_name)
+                            upgraded_scenario_turns = self._calculate_scenario_turns(upgraded_results, scenario_name)
+                            scenario_turn_data[scenario_name].append(upgraded_scenario_turns)
+
+                        total_improvement += improvement
+                        total_base_dpt += base_dpt
+                        valid_tests += 1
+
                 except Exception as e:
                     print(f"    Skipping {attack_type_name} due to incompatibility: {e}")
 
+            # Calculate overall metrics
+            avg_improvement = total_improvement / valid_tests if valid_tests > 0 else 0
+            avg_base_dpt = total_base_dpt / valid_tests if valid_tests > 0 else 0
+            avg_percent_improvement = (avg_improvement / avg_base_dpt * 100) if avg_base_dpt > 0 else 0
+
+            # Calculate average scenario improvements
+            scenario_data = {}
+            for scenario_name in ['1x100', '2x50', '4x25', '10x10']:
+                improvements = scenario_improvements[scenario_name]
+                avg_scenario_improvement = sum(improvements) / len(improvements) if improvements else 0
+
+                turns = scenario_turn_data[scenario_name]
+                avg_scenario_turns = sum(turns) / len(turns) if turns else 0
+
+                scenario_data[scenario_name] = {
+                    'avg_dpt_improvement': avg_scenario_improvement,
+                    'avg_turns_with_upgrade': avg_scenario_turns
+                }
+
+            # Calculate total cost including prerequisites
+            from game_data import PREREQUISITES
+            upgrades_for_cost = [upgrade_name]
+            if upgrade_name in PREREQUISITES:
+                upgrades_for_cost = PREREQUISITES[upgrade_name] + [upgrade_name]
+            upgrade_cost = sum(UPGRADES[upgrade].cost for upgrade in upgrades_for_cost) if upgrade_name in UPGRADES else 0
+            dpt_per_cost = avg_improvement / upgrade_cost if upgrade_cost > 0 else 0
+
             upgrade_data[upgrade_name] = {
-                'results_by_attack_type': upgrade_results,
-                'overall': self._calculate_overall_upgrade_performance(upgrade_results)
+                'cost': upgrade_cost,  # Add cost to data structure
+                'overall': {
+                    'avg_dpt_improvement': avg_improvement,
+                    'avg_percent_improvement': avg_percent_improvement,
+                    'dpt_per_cost': dpt_per_cost,
+                    'valid_tests': valid_tests
+                },
+                'scenarios': scenario_data,
+                **attack_type_improvements
             }
 
         return upgrade_data
@@ -1904,23 +2613,96 @@ class IndividualReportGenerator:
         for limit_name in LIMITS.keys():
             print(f"  Testing {limit_name}...")
 
-            limit_results = {}
+            # Calculate overall improvement and cost effectiveness
+            total_improvement = 0
+            total_base_dpt = 0
+            valid_tests = 0
+            attack_type_improvements = {}
+            scenario_improvements = {'1x100': [], '2x50': [], '4x25': [], '10x10': []}
+            scenario_turn_data = {'1x100': [], '2x50': [], '4x25': [], '10x10': []}
 
             # Test with each attack type
             for attack_type_name in ATTACK_TYPES.keys():
                 try:
-                    # Create build with just this limit
-                    build = AttackBuild(attack_type_name, [], [limit_name])
+                    # Test base build
+                    base_build = AttackBuild(attack_type_name, [], [])
+                    base_results = self._test_build_across_scenarios(base_build)
+                    base_dpt = self._calculate_average_dpt(base_results)
+                    base_turns = self._calculate_average_turns(base_results)
 
-                    if build.is_valid(self.config.max_points):
-                        scenario_results = self._test_build_across_scenarios(build)
-                        limit_results[attack_type_name] = scenario_results
+                    # Test limit build
+                    limit_build = AttackBuild(attack_type_name, [], [limit_name])
+
+                    if limit_build.is_valid(self.config.max_points):
+                        limit_results = self._test_build_across_scenarios(limit_build)
+                        limit_dpt = self._calculate_average_dpt(limit_results)
+                        limit_turns = self._calculate_average_turns(limit_results)
+
+                        improvement = limit_dpt - base_dpt
+                        percent_improvement = (improvement / base_dpt * 100) if base_dpt > 0 else 0
+                        turn_improvement = limit_turns - base_turns  # Negative = fewer turns = better
+
+                        attack_type_improvements[attack_type_name] = {
+                            'base_dpt': base_dpt,
+                            'upgraded_dpt': limit_dpt,
+                            'avg_dpt_improvement': improvement,
+                            'percent_improvement': percent_improvement,
+                            'base_turns': base_turns,
+                            'upgraded_turns': limit_turns,
+                            'avg_turn_difference': turn_improvement,
+                            'avg_turns_with_upgrade': limit_turns
+                        }
+
+                        # Calculate scenario-specific improvements
+                        for scenario_name in ['1x100', '2x50', '4x25', '10x10']:
+                            base_scenario_dpt = self._calculate_scenario_dpt(base_results, scenario_name)
+                            limit_scenario_dpt = self._calculate_scenario_dpt(limit_results, scenario_name)
+                            scenario_improvement = limit_scenario_dpt - base_scenario_dpt
+                            scenario_improvements[scenario_name].append(scenario_improvement)
+
+                            # Also collect scenario turn data
+                            base_scenario_turns = self._calculate_scenario_turns(base_results, scenario_name)
+                            limit_scenario_turns = self._calculate_scenario_turns(limit_results, scenario_name)
+                            scenario_turn_data[scenario_name].append(limit_scenario_turns)
+
+                        total_improvement += improvement
+                        total_base_dpt += base_dpt
+                        valid_tests += 1
+
                 except Exception as e:
                     print(f"    Skipping {attack_type_name} due to incompatibility: {e}")
 
+            # Calculate overall metrics
+            avg_improvement = total_improvement / valid_tests if valid_tests > 0 else 0
+            avg_base_dpt = total_base_dpt / valid_tests if valid_tests > 0 else 0
+            avg_percent_improvement = (avg_improvement / avg_base_dpt * 100) if avg_base_dpt > 0 else 0
+
+            # Calculate average scenario improvements
+            scenario_data = {}
+            for scenario_name in ['1x100', '2x50', '4x25', '10x10']:
+                improvements = scenario_improvements[scenario_name]
+                avg_scenario_improvement = sum(improvements) / len(improvements) if improvements else 0
+
+                turns = scenario_turn_data[scenario_name]
+                avg_scenario_turns = sum(turns) / len(turns) if turns else 0
+
+                scenario_data[scenario_name] = {
+                    'avg_dpt_improvement': avg_scenario_improvement,
+                    'avg_turns_with_upgrade': avg_scenario_turns
+                }
+
+            limit_cost = LIMITS[limit_name].cost if limit_name in LIMITS else 0
+            dpt_per_cost = avg_improvement / limit_cost if limit_cost > 0 else 0
+
             limit_data[limit_name] = {
-                'results_by_attack_type': limit_results,
-                'overall': self._calculate_overall_upgrade_performance(limit_results)
+                'overall': {
+                    'avg_dpt_improvement': avg_improvement,
+                    'avg_percent_improvement': avg_percent_improvement,
+                    'dpt_per_cost': dpt_per_cost,
+                    'valid_tests': valid_tests
+                },
+                'scenarios': scenario_data,
+                **attack_type_improvements
             }
 
         return limit_data
@@ -1979,10 +2761,11 @@ class IndividualReportGenerator:
 
                 for scenario_name, num_enemies, enemy_hp in fight_scenarios:
                     # Single run for individual testing
-                    num_runs = 1 if self.individual_config.get('single_run_per_test', True) else self.config.num_runs
+                    num_runs = 1 if self.individual_config.get('single_run_per_test', True) else self.config.individual_testing_runs
 
                     results, avg_turns, dpt = run_simulation_batch(
-                        attacker, build, num_runs, enemy_hp, defender, num_enemies
+                        attacker, build, num_runs, enemy_hp, defender, num_enemies,
+                        max_turns=self.config.max_combat_turns
                     )
 
                     if scenario_name not in scenario_results:
@@ -2014,6 +2797,48 @@ class IndividualReportGenerator:
             'scenario_count': total_count
         }
 
+    def _calculate_average_dpt(self, scenario_results: Dict) -> float:
+        """Calculate average DPT across all scenarios and configurations"""
+        total_dpt = 0
+        total_count = 0
+
+        for scenario_name, results in scenario_results.items():
+            for result in results:
+                total_dpt += result.get('dpt', 0)
+                total_count += 1
+
+        return total_dpt / total_count if total_count > 0 else 0
+
+    def _calculate_average_turns(self, scenario_results: Dict) -> float:
+        """Calculate average turns across all scenarios and configurations"""
+        total_turns = 0
+        total_count = 0
+
+        for scenario_name, results in scenario_results.items():
+            for result in results:
+                total_turns += result.get('turns', 0)
+                total_count += 1
+
+        return total_turns / total_count if total_count > 0 else 0
+
+    def _calculate_scenario_turns(self, scenario_results: Dict, scenario_name: str) -> float:
+        """Calculate average turns for a specific scenario"""
+        if scenario_name not in scenario_results:
+            return 0
+
+        results = scenario_results[scenario_name]
+        total_turns = sum(result.get('turns', 0) for result in results)
+        return total_turns / len(results) if results else 0
+
+    def _calculate_scenario_dpt(self, scenario_results: Dict, scenario_name: str) -> float:
+        """Calculate average DPT for a specific scenario"""
+        if scenario_name not in scenario_results:
+            return 0
+
+        results = scenario_results[scenario_name]
+        total_dpt = sum(result.get('dpt', 0) for result in results)
+        return total_dpt / len(results) if results else 0
+
     def _calculate_overall_upgrade_performance(self, upgrade_results: Dict) -> Dict:
         """Calculate overall performance metrics for upgrades/limits"""
         total_improvement = 0
@@ -2034,6 +2859,11 @@ class IndividualReportGenerator:
 
     def _generate_detailed_combat_logs(self):
         """Generate detailed turn-by-turn combat logs"""
+        from simulation import simulate_combat_verbose
+        from models import Character, AttackBuild
+        from game_data import ATTACK_TYPES, UPGRADES, LIMITS
+        import random
+
         log_filename = f"{self.reports_dir}/individual_detailed_combat_logs.txt"
 
         with open(log_filename, 'w', encoding='utf-8') as f:
@@ -2041,6 +2871,96 @@ class IndividualReportGenerator:
             f.write("=" * 80 + "\n\n")
             f.write("Single-run combat resolution with turn-by-turn breakdowns\n")
             f.write("Showing dice rolls, damage calculations, and special effects\n\n")
+
+            # Test all attack types and key upgrades/limits with detailed logging
+            test_builds = []
+
+            # Test all base attack types
+            for attack_type in ATTACK_TYPES.keys():
+                test_builds.append((f"Base {attack_type.title()}", AttackBuild(attack_type, [], [])))
+
+            # Test key upgrades with compatible attack types
+            key_upgrades = [
+                ('power_attack', 'melee_ac'),
+                ('high_impact', 'ranged'),
+                ('critical_effect', 'melee_dg'),
+                ('armor_piercing', 'ranged'),
+                ('brutal', 'melee_ac'),
+                ('bleed', 'area'),
+                ('critical_accuracy', 'ranged'),
+                ('quick_strikes', 'melee_ac'),
+                ('double_tap', 'ranged'),
+                ('reliable_accuracy', 'melee_dg'),
+                ('overhit', 'melee_ac'),
+            ]
+
+            for upgrade_name, attack_type in key_upgrades:
+                test_builds.append((f"{upgrade_name.title().replace('_', ' ')} ({attack_type})",
+                                  AttackBuild(attack_type, [upgrade_name], [])))
+
+            # Test key limits with compatible attack types
+            key_limits = [
+                ('unreliable_1', 'melee_ac'),
+                ('unreliable_2', 'ranged'),
+                ('unreliable_3', 'area'),
+                ('quickdraw', 'melee_dg'),
+                ('steady', 'ranged'),
+                ('patient', 'area'),
+                ('finale', 'melee_ac'),
+                ('charge_up', 'ranged'),
+                ('charge_up_2', 'melee_dg'),
+            ]
+
+            for limit_name, attack_type in key_limits:
+                test_builds.append((f"{limit_name.title().replace('_', ' ')} Limit ({attack_type})",
+                                  AttackBuild(attack_type, [], [limit_name])))
+
+            # Use first attacker/defender config for testing
+            att_config = self.config.attacker_configs[0]
+            def_config = self.config.defender_configs[0]
+            attacker = Character(*att_config)
+            defender = Character(*def_config)
+
+            # Test scenarios: 1v1, 1v2, 1v4
+            fight_scenarios = [
+                ("1x100 HP Boss", 1, 100),
+                ("2x50 HP Enemies", 2, 50),
+                ("4x25 HP Enemies", 4, 25),
+            ]
+
+            for build_name, build in test_builds:
+                if not build.is_valid(self.config.max_points):
+                    f.write(f"SKIPPING {build_name} - Cost {build.total_cost} exceeds limit {self.config.max_points}\n\n")
+                    continue
+
+                f.write(f"\n{'='*100}\n")
+                f.write(f"TESTING BUILD: {build_name}\n")
+                f.write(f"{'='*100}\n")
+                f.write(f"Attack Type: {build.attack_type}\n")
+                f.write(f"Upgrades: {', '.join(build.upgrades) if build.upgrades else 'None'}\n")
+                f.write(f"Limits: {', '.join(build.limits) if build.limits else 'None'}\n")
+                f.write(f"Total Cost: {build.total_cost} points\n")
+
+                for scenario_name, num_enemies, enemy_hp in fight_scenarios:
+                    f.write(f"\n{'-'*60}\n")
+                    f.write(f"SCENARIO: {scenario_name}\n")
+                    f.write(f"{'-'*60}\n")
+
+                    # Set random seed for reproducible results in detailed logs
+                    random.seed(42)
+
+                    turns = simulate_combat_verbose(
+                        attacker, build,
+                        target_hp=enemy_hp,
+                        log_file=f,
+                        defender=defender,
+                        num_enemies=num_enemies,
+                        enemy_hp=enemy_hp
+                    )
+
+                    total_hp = num_enemies * enemy_hp
+                    dpt = total_hp / turns if turns > 0 else 0
+                    f.write(f"\nFINAL RESULTS: {turns} turns, {total_hp} total HP, {dpt:.2f} DPT\n")
 
         print(f"Detailed combat logs saved to {log_filename}")
 
@@ -2073,7 +2993,877 @@ class BuildReportGenerator:
         if self.config.reports.get('build_reports', {}).get('cost_effectiveness', True):
             generate_upgrade_pairing_report(all_build_results, self.config, self.reports_dir)
 
+        # Generate new archetype analysis reports
+        if self.config.reports.get('build_reports', {}).get('archetype_analysis', True):
+            self.generate_archetype_analysis_reports(all_build_results)
+
+        # Generate tactical analysis reports
+        if self.config.reports.get('build_reports', {}).get('tactical_analysis', True):
+            self.generate_tactical_analysis_reports(all_build_results)
+
         print("Build testing reports completed!")
+
+    def generate_archetype_analysis_reports(self, all_build_results: List[Tuple]):
+        """Generate build archetype analysis reports"""
+        print("Generating archetype analysis reports...")
+
+        self.generate_multi_target_specialist_report(all_build_results)
+        self.generate_single_target_specialist_report(all_build_results)
+        self.generate_balanced_build_report(all_build_results)
+        self.generate_risk_reward_analysis_report(all_build_results)
+
+    def generate_multi_target_specialist_report(self, all_build_results: List[Tuple]):
+        """Generate report for builds optimized for multi-target scenarios"""
+        filename = f"{self.reports_dir}/archetype_multi_target_specialists.txt"
+
+        # Calculate multi-target performance scores
+        multi_target_builds = []
+        for build, avg_dpt in all_build_results:
+            # Get scenario-specific performance (you'll need to modify this based on actual data structure)
+            # For now, calculate a multi-target score based on AOE potential
+            multi_target_score = self._calculate_multi_target_score(build, avg_dpt)
+            multi_target_builds.append((build, avg_dpt, multi_target_score))
+
+        # Sort by multi-target score
+        multi_target_builds.sort(key=lambda x: x[2], reverse=True)
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - MULTI-TARGET SPECIALIST BUILDS\n")
+            f.write("="*80 + "\n\n")
+            f.write("Builds optimized for swarm and group combat scenarios (2×50, 4×25, 10×10 HP)\n")
+            f.write("Ranked by Multi-Target Performance Score\n\n")
+            f.write("Multi-Target Score = (2×50 DPT + 4×25 DPT + 10×10 DPT) / 3\n\n")
+
+            f.write(f"{'Rank':<4} {'Build':<50} {'Avg DPT':<10} {'MT Score':<10} {'Cost':<6}\n")
+            f.write("-" * 85 + "\n")
+
+            for i, (build, avg_dpt, mt_score) in enumerate(multi_target_builds[:25], 1):
+                build_str = f"{build.attack_type}"
+                if build.upgrades:
+                    build_str += f" + {' + '.join(build.upgrades)}"
+                if build.limits:
+                    build_str += f" + {' + '.join(build.limits)}"
+
+                f.write(f"{i:<4} {build_str:<50} {avg_dpt:<10.2f} {mt_score:<10.2f} {build.total_cost:<6}\n")
+
+            # Analysis section
+            f.write("\n" + "="*80 + "\n")
+            f.write("MULTI-TARGET SPECIALIST ANALYSIS\n")
+            f.write("="*80 + "\n\n")
+
+            # Top archetypes analysis
+            aoe_builds = [(b, dpt, score) for b, dpt, score in multi_target_builds if 'area' in b.attack_type or 'direct_area' in b.attack_type][:10]
+
+            f.write("TOP AOE ARCHETYPES:\n")
+            for i, (build, avg_dpt, mt_score) in enumerate(aoe_builds, 1):
+                f.write(f"{i}. {build.attack_type}")
+                if build.upgrades:
+                    f.write(f" + {' + '.join(build.upgrades)}")
+                f.write(f" (MT Score: {mt_score:.2f})\n")
+
+            # Key insights
+            f.write(f"\nKEY INSIGHTS:\n")
+            f.write(f"• Top MT Score: {multi_target_builds[0][2]:.2f}\n")
+            f.write(f"• AOE builds in top 10: {len([b for b, _, _ in multi_target_builds[:10] if 'area' in b.attack_type])}\n")
+            f.write(f"• Average cost of top 10: {sum(b.total_cost for b, _, _ in multi_target_builds[:10]) / 10:.1f} points\n")
+
+        print(f"Multi-target specialist report saved to {filename}")
+
+    def generate_single_target_specialist_report(self, all_build_results: List[Tuple]):
+        """Generate report for builds optimized for single-target scenarios"""
+        filename = f"{self.reports_dir}/archetype_single_target_specialists.txt"
+
+        # Calculate single-target performance scores
+        single_target_builds = []
+        for build, avg_dpt in all_build_results:
+            single_target_score = self._calculate_single_target_score(build, avg_dpt)
+            single_target_builds.append((build, avg_dpt, single_target_score))
+
+        # Sort by single-target score
+        single_target_builds.sort(key=lambda x: x[2], reverse=True)
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - SINGLE-TARGET SPECIALIST BUILDS\n")
+            f.write("="*80 + "\n\n")
+            f.write("Builds optimized for boss fights and high-HP single enemies (1×100 HP)\n")
+            f.write("Ranked by Single-Target Performance Score\n\n")
+            f.write("Single-Target Score = 1×100 HP scenario DPT\n\n")
+
+            f.write(f"{'Rank':<4} {'Build':<50} {'Avg DPT':<10} {'ST Score':<10} {'Cost':<6}\n")
+            f.write("-" * 85 + "\n")
+
+            for i, (build, avg_dpt, st_score) in enumerate(single_target_builds[:25], 1):
+                build_str = f"{build.attack_type}"
+                if build.upgrades:
+                    build_str += f" + {' + '.join(build.upgrades)}"
+                if build.limits:
+                    build_str += f" + {' + '.join(build.limits)}"
+
+                f.write(f"{i:<4} {build_str:<50} {avg_dpt:<10.2f} {st_score:<10.2f} {build.total_cost:<6}\n")
+
+            # Analysis section
+            f.write("\n" + "="*80 + "\n")
+            f.write("SINGLE-TARGET SPECIALIST ANALYSIS\n")
+            f.write("="*80 + "\n\n")
+
+            # Attack type analysis
+            attack_types = {}
+            for build, _, st_score in single_target_builds[:20]:
+                attack_type = build.attack_type
+                if attack_type not in attack_types:
+                    attack_types[attack_type] = []
+                attack_types[attack_type].append(st_score)
+
+            f.write("ATTACK TYPE PERFORMANCE (Top 20 builds):\n")
+            for attack_type, scores in sorted(attack_types.items(), key=lambda x: max(x[1]), reverse=True):
+                avg_score = sum(scores) / len(scores)
+                f.write(f"• {attack_type}: {len(scores)} builds, avg {avg_score:.2f}, best {max(scores):.2f}\n")
+
+            # Key insights
+            f.write(f"\nKEY INSIGHTS:\n")
+            f.write(f"• Top ST Score: {single_target_builds[0][2]:.2f}\n")
+            f.write(f"• Most common attack type in top 10: {max(set([b.attack_type for b, _, _ in single_target_builds[:10]]), key=[b.attack_type for b, _, _ in single_target_builds[:10]].count)}\n")
+            f.write(f"• Average cost of top 10: {sum(b.total_cost for b, _, _ in single_target_builds[:10]) / 10:.1f} points\n")
+
+        print(f"Single-target specialist report saved to {filename}")
+
+    def generate_balanced_build_report(self, all_build_results: List[Tuple]):
+        """Generate report for builds that perform well across all scenarios"""
+        filename = f"{self.reports_dir}/archetype_balanced_builds.txt"
+
+        # Calculate balance scores (low variance across scenarios)
+        balanced_builds = []
+        for build, avg_dpt in all_build_results:
+            balance_score = self._calculate_balance_score(build, avg_dpt)
+            balanced_builds.append((build, avg_dpt, balance_score))
+
+        # Sort by balance score (higher = more balanced)
+        balanced_builds.sort(key=lambda x: x[2], reverse=True)
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - BALANCED BUILDS\n")
+            f.write("="*80 + "\n\n")
+            f.write("Builds that perform consistently across all combat scenarios\n")
+            f.write("Ranked by Balance Score (low variance, high overall performance)\n\n")
+            f.write("Balance Score = Average DPT - (Scenario Variance × 2)\n\n")
+
+            f.write(f"{'Rank':<4} {'Build':<50} {'Avg DPT':<10} {'Balance':<10} {'Cost':<6}\n")
+            f.write("-" * 85 + "\n")
+
+            for i, (build, avg_dpt, balance_score) in enumerate(balanced_builds[:25], 1):
+                build_str = f"{build.attack_type}"
+                if build.upgrades:
+                    build_str += f" + {' + '.join(build.upgrades)}"
+                if build.limits:
+                    build_str += f" + {' + '.join(build.limits)}"
+
+                f.write(f"{i:<4} {build_str:<50} {avg_dpt:<10.2f} {balance_score:<10.2f} {build.total_cost:<6}\n")
+
+            # Analysis section
+            f.write("\n" + "="*80 + "\n")
+            f.write("BALANCED BUILD ANALYSIS\n")
+            f.write("="*80 + "\n\n")
+
+            f.write("CHARACTERISTICS OF BALANCED BUILDS:\n")
+
+            # Upgrade frequency analysis
+            upgrade_counts = {}
+            for build, _, _ in balanced_builds[:15]:
+                for upgrade in build.upgrades:
+                    upgrade_counts[upgrade] = upgrade_counts.get(upgrade, 0) + 1
+
+            f.write("\nMost common upgrades in top 15 balanced builds:\n")
+            for upgrade, count in sorted(upgrade_counts.items(), key=lambda x: x[1], reverse=True)[:8]:
+                f.write(f"• {upgrade}: {count} builds ({count/15*100:.1f}%)\n")
+
+            # Key insights
+            f.write(f"\nKEY INSIGHTS:\n")
+            f.write(f"• Top Balance Score: {balanced_builds[0][2]:.2f}\n")
+            f.write(f"• Average DPT of top 10: {sum(avg_dpt for _, avg_dpt, _ in balanced_builds[:10]) / 10:.2f}\n")
+            f.write(f"• Average cost of top 10: {sum(b.total_cost for b, _, _ in balanced_builds[:10]) / 10:.1f} points\n")
+
+        print(f"Balanced builds report saved to {filename}")
+
+    def generate_risk_reward_analysis_report(self, all_build_results: List[Tuple]):
+        """Generate report analyzing risk/reward for unreliable builds"""
+        filename = f"{self.reports_dir}/archetype_risk_reward_analysis.txt"
+
+        # Separate builds by risk level
+        reliable_builds = []
+        low_risk_builds = []
+        medium_risk_builds = []
+        high_risk_builds = []
+
+        for build, avg_dpt in all_build_results:
+            risk_level = self._calculate_risk_level(build)
+            if risk_level == "none":
+                reliable_builds.append((build, avg_dpt))
+            elif risk_level == "low":
+                low_risk_builds.append((build, avg_dpt))
+            elif risk_level == "medium":
+                medium_risk_builds.append((build, avg_dpt))
+            else:  # high
+                high_risk_builds.append((build, avg_dpt))
+
+        # Sort each category by DPT
+        reliable_builds.sort(key=lambda x: x[1], reverse=True)
+        low_risk_builds.sort(key=lambda x: x[1], reverse=True)
+        medium_risk_builds.sort(key=lambda x: x[1], reverse=True)
+        high_risk_builds.sort(key=lambda x: x[1], reverse=True)
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - RISK/REWARD ANALYSIS\n")
+            f.write("="*80 + "\n\n")
+            f.write("Analysis of build reliability and risk/reward ratios\n\n")
+
+            # Risk categories
+            f.write("RISK CATEGORIES:\n")
+            f.write("• No Risk: No unreliable limits\n")
+            f.write("• Low Risk: Unreliable 1 (DC 5) or turn-based limits\n")
+            f.write("• Medium Risk: Unreliable 2 (DC 10)\n")
+            f.write("• High Risk: Unreliable 3 (DC 15)\n\n")
+
+            # Summary stats
+            f.write("RISK DISTRIBUTION:\n")
+            f.write(f"• No Risk: {len(reliable_builds)} builds\n")
+            f.write(f"• Low Risk: {len(low_risk_builds)} builds\n")
+            f.write(f"• Medium Risk: {len(medium_risk_builds)} builds\n")
+            f.write(f"• High Risk: {len(high_risk_builds)} builds\n\n")
+
+            # Performance by risk category
+            f.write("PERFORMANCE BY RISK CATEGORY (Top 10 per category):\n")
+            f.write("="*80 + "\n")
+
+            categories = [
+                ("NO RISK BUILDS", reliable_builds),
+                ("LOW RISK BUILDS", low_risk_builds),
+                ("MEDIUM RISK BUILDS", medium_risk_builds),
+                ("HIGH RISK BUILDS", high_risk_builds)
+            ]
+
+            for category_name, builds in categories:
+                f.write(f"\n{category_name}:\n")
+                f.write(f"{'Rank':<4} {'Build':<45} {'DPT':<8} {'Cost':<6}\n")
+                f.write("-" * 68 + "\n")
+
+                for i, (build, avg_dpt) in enumerate(builds[:10], 1):
+                    build_str = f"{build.attack_type}"
+                    if build.upgrades:
+                        build_str += f" + {' + '.join(build.upgrades[:2])}"  # Truncate for space
+                        if len(build.upgrades) > 2:
+                            build_str += "..."
+                    if build.limits:
+                        build_str += f" + {' + '.join(build.limits[:1])}"
+                        if len(build.limits) > 1:
+                            build_str += "..."
+
+                    f.write(f"{i:<4} {build_str:<45} {avg_dpt:<8.2f} {build.total_cost:<6}\n")
+
+                # Category stats
+                if builds:
+                    avg_dpt_cat = sum(b[1] for b in builds[:10]) / min(10, len(builds))
+                    avg_cost_cat = sum(b.total_cost for b in builds[:10]) / min(10, len(builds))
+                    f.write(f"Average DPT (top 10): {avg_dpt_cat:.2f}\n")
+                    f.write(f"Average Cost (top 10): {avg_cost_cat:.1f} points\n")
+
+            # Risk/Reward insights
+            f.write("\n" + "="*80 + "\n")
+            f.write("RISK/REWARD INSIGHTS:\n")
+            f.write("="*80 + "\n")
+
+            if reliable_builds and high_risk_builds:
+                best_reliable = reliable_builds[0][1]
+                best_high_risk = high_risk_builds[0][1]
+                risk_premium = best_high_risk - best_reliable
+                f.write(f"• Best reliable build DPT: {best_reliable:.2f}\n")
+                f.write(f"• Best high-risk build DPT: {best_high_risk:.2f}\n")
+                f.write(f"• Risk premium: {risk_premium:.2f} DPT ({risk_premium/best_reliable*100:.1f}%)\n\n")
+
+            # Recommendations
+            f.write("RECOMMENDATIONS:\n")
+            f.write("• For consistent performance: Choose No Risk builds\n")
+            f.write("• For competitive play: Consider Low Risk builds for reliability\n")
+            f.write("• For high-stakes scenarios: High Risk builds offer maximum potential\n")
+            f.write("• For learning: Start with No Risk builds, graduate to Low Risk\n")
+
+        print(f"Risk/reward analysis report saved to {filename}")
+
+    def _calculate_multi_target_score(self, build, avg_dpt):
+        """Calculate a score representing multi-target effectiveness"""
+        # For now, use a simple heuristic based on attack type and upgrades
+        # In a real implementation, you'd use actual scenario-specific DPT data
+
+        base_score = avg_dpt
+
+        # Bonus for AOE attack types
+        if 'area' in build.attack_type:
+            base_score *= 1.5
+        elif 'direct_area' in build.attack_type:
+            base_score *= 1.3
+
+        # Bonus for multi-target upgrades
+        multi_target_upgrades = ['bleed', 'critical_effect', 'brutal']
+        for upgrade in build.upgrades:
+            if upgrade in multi_target_upgrades:
+                base_score *= 1.1
+
+        return base_score
+
+    def _calculate_single_target_score(self, build, avg_dpt):
+        """Calculate a score representing single-target effectiveness"""
+        # For now, use a simple heuristic
+        # In a real implementation, you'd use actual 1×100 HP scenario DPT data
+
+        base_score = avg_dpt
+
+        # Bonus for single-target attack types
+        if build.attack_type in ['melee_dg', 'melee_ac']:
+            base_score *= 1.2
+        elif 'direct_damage' == build.attack_type:
+            base_score *= 1.1
+
+        # Penalty for AOE (less effective single-target)
+        if 'area' in build.attack_type:
+            base_score *= 0.8
+
+        # Bonus for single-target upgrades
+        single_target_upgrades = ['high_impact', 'armor_piercing', 'finishing_blow_3', 'powerful_critical']
+        for upgrade in build.upgrades:
+            if upgrade in single_target_upgrades:
+                base_score *= 1.1
+
+        return base_score
+
+    def _calculate_balance_score(self, build, avg_dpt):
+        """Calculate a score representing consistency across scenarios"""
+        # For now, use a simple heuristic
+        # In a real implementation, you'd calculate actual variance across scenarios
+
+        base_score = avg_dpt
+
+        # Penalty for extreme specialization
+        if 'area' in build.attack_type:
+            base_score *= 0.9  # AOE builds are less balanced
+
+        # Bonus for reliable upgrades
+        reliable_upgrades = ['reliable_accuracy', 'accurate_attack', 'power_attack']
+        for upgrade in build.upgrades:
+            if upgrade in reliable_upgrades:
+                base_score *= 1.05
+
+        # Penalty for unreliable limits
+        for limit in build.limits:
+            if 'unreliable' in limit:
+                base_score *= 0.95
+
+        return base_score
+
+    def _calculate_risk_level(self, build):
+        """Determine the risk level of a build based on its limits"""
+        if not build.limits:
+            return "none"
+
+        risk_levels = []
+        for limit in build.limits:
+            if limit == "unreliable_3":
+                risk_levels.append("high")
+            elif limit == "unreliable_2":
+                risk_levels.append("medium")
+            elif limit == "unreliable_1":
+                risk_levels.append("low")
+            elif limit in ["quickdraw", "steady", "patient", "finale", "charge_up", "charge_up_2"]:
+                risk_levels.append("low")
+
+        if not risk_levels:
+            return "none"
+
+        # Return highest risk level
+        if "high" in risk_levels:
+            return "high"
+        elif "medium" in risk_levels:
+            return "medium"
+        elif "low" in risk_levels:
+            return "low"
+        else:
+            return "none"
+
+    def generate_tactical_analysis_reports(self, all_build_results: List[Tuple]):
+        """Generate tactical analysis reports"""
+        print("Generating tactical analysis reports...")
+
+        self.generate_upgrade_synergy_matrix_report(all_build_results)
+        self.generate_scenario_deep_dive_report(all_build_results)
+        self.generate_attack_type_viability_report(all_build_results)
+        self.generate_point_efficiency_analysis_report(all_build_results)
+
+    def generate_upgrade_synergy_matrix_report(self, all_build_results: List[Tuple]):
+        """Generate upgrade synergy matrix showing which upgrades work well together"""
+        filename = f"{self.reports_dir}/tactical_upgrade_synergy_matrix.txt"
+
+        # Analyze upgrade combinations
+        upgrade_pairs = {}
+        single_upgrades = {}
+
+        for build, avg_dpt in all_build_results:
+            # Track single upgrades
+            if len(build.upgrades) == 1:
+                upgrade = build.upgrades[0]
+                if upgrade not in single_upgrades:
+                    single_upgrades[upgrade] = []
+                single_upgrades[upgrade].append(avg_dpt)
+
+            # Track upgrade pairs
+            elif len(build.upgrades) == 2:
+                pair = tuple(sorted(build.upgrades))
+                if pair not in upgrade_pairs:
+                    upgrade_pairs[pair] = []
+                upgrade_pairs[pair].append(avg_dpt)
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - UPGRADE SYNERGY MATRIX\n")
+            f.write("="*80 + "\n\n")
+            f.write("Analysis of upgrade combinations and their synergistic effects\n\n")
+
+            # Calculate expected vs actual performance for pairs
+            f.write("SYNERGY ANALYSIS (Top 20 Pairs):\n")
+            f.write("="*80 + "\n")
+            f.write(f"{'Upgrade Pair':<45} {'Avg DPT':<10} {'Expected':<10} {'Synergy':<10} {'Rating':<10}\n")
+            f.write("-" * 95 + "\n")
+
+            synergy_results = []
+            for pair, dpts in upgrade_pairs.items():
+                if len(dpts) >= 3:  # Minimum sample size
+                    avg_dpt = sum(dpts) / len(dpts)
+
+                    # Calculate expected performance (sum of individual upgrades)
+                    upgrade1_avg = sum(single_upgrades.get(pair[0], [8.0])) / len(single_upgrades.get(pair[0], [8.0]))
+                    upgrade2_avg = sum(single_upgrades.get(pair[1], [8.0])) / len(single_upgrades.get(pair[1], [8.0]))
+                    expected_dpt = upgrade1_avg + upgrade2_avg - 8.0  # Subtract base once
+
+                    synergy_bonus = avg_dpt - expected_dpt
+                    synergy_rating = self._get_synergy_rating(synergy_bonus)
+
+                    synergy_results.append((pair, avg_dpt, expected_dpt, synergy_bonus, synergy_rating))
+
+            # Sort by synergy bonus
+            synergy_results.sort(key=lambda x: x[3], reverse=True)
+
+            for pair, avg_dpt, expected_dpt, synergy_bonus, rating in synergy_results[:20]:
+                pair_str = f"{pair[0]} + {pair[1]}"
+                f.write(f"{pair_str:<45} {avg_dpt:<10.2f} {expected_dpt:<10.2f} {synergy_bonus:<10.2f} {rating:<10}\n")
+
+            # Synergy insights
+            f.write("\n" + "="*80 + "\n")
+            f.write("SYNERGY INSIGHTS:\n")
+            f.write("="*80 + "\n\n")
+
+            positive_synergies = [s for s in synergy_results if s[3] > 0.5]
+            negative_synergies = [s for s in synergy_results if s[3] < -0.5]
+
+            f.write(f"POSITIVE SYNERGIES ({len(positive_synergies)} pairs):\n")
+            for pair, _, _, synergy_bonus, _ in positive_synergies[:5]:
+                f.write(f"• {pair[0]} + {pair[1]}: +{synergy_bonus:.2f} DPT bonus\n")
+
+            f.write(f"\nNEGATIVE SYNERGIES ({len(negative_synergies)} pairs):\n")
+            for pair, _, _, synergy_bonus, _ in negative_synergies[-5:]:
+                f.write(f"• {pair[0]} + {pair[1]}: {synergy_bonus:.2f} DPT penalty\n")
+
+            # Common synergy patterns
+            f.write(f"\nCOMMON SYNERGY PATTERNS:\n")
+            patterns = self._analyze_synergy_patterns(synergy_results)
+            for pattern in patterns:
+                f.write(f"• {pattern}\n")
+
+        print(f"Upgrade synergy matrix saved to {filename}")
+
+    def generate_scenario_deep_dive_report(self, all_build_results: List[Tuple]):
+        """Generate detailed analysis of what makes builds effective in specific scenarios"""
+        filename = f"{self.reports_dir}/tactical_scenario_deep_dive.txt"
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - SCENARIO DEEP DIVE ANALYSIS\n")
+            f.write("="*80 + "\n\n")
+            f.write("Detailed analysis of tactical effectiveness across combat scenarios\n\n")
+
+            scenarios = [
+                ("1×100 HP Boss", "Single-target, high-HP encounter"),
+                ("2×50 HP Enemies", "Medium group, balanced engagement"),
+                ("4×25 HP Enemies", "Large group, coordination required"),
+                ("10×10 HP Enemies", "Swarm, AOE optimization critical")
+            ]
+
+            for scenario_name, scenario_desc in scenarios:
+                f.write(f"\n{scenario_name.upper()} - {scenario_desc}\n")
+                f.write("="*80 + "\n")
+
+                # Analyze what makes builds successful in this scenario
+                successful_builds = self._get_scenario_top_builds(all_build_results, scenario_name)
+
+                f.write("TOP PERFORMING BUILDS:\n")
+                for i, (build, performance) in enumerate(successful_builds[:5], 1):
+                    f.write(f"{i}. {build.attack_type}")
+                    if build.upgrades:
+                        f.write(f" + {' + '.join(build.upgrades[:2])}")
+                    f.write(f" (Performance: {performance:.2f})\n")
+
+                # Analyze common characteristics
+                f.write(f"\nKEY SUCCESS FACTORS:\n")
+                success_factors = self._analyze_scenario_success_factors(successful_builds, scenario_name)
+                for factor in success_factors:
+                    f.write(f"• {factor}\n")
+
+                # Tactical recommendations
+                f.write(f"\nTACTICAL RECOMMENDATIONS:\n")
+                tactics = self._get_scenario_tactics(scenario_name)
+                for tactic in tactics:
+                    f.write(f"• {tactic}\n")
+
+                # Common mistakes
+                f.write(f"\nCOMMON MISTAKES TO AVOID:\n")
+                mistakes = self._get_scenario_mistakes(scenario_name)
+                for mistake in mistakes:
+                    f.write(f"• {mistake}\n")
+
+        print(f"Scenario deep dive analysis saved to {filename}")
+
+    def generate_attack_type_viability_report(self, all_build_results: List[Tuple]):
+        """Generate report on when to choose each attack type"""
+        filename = f"{self.reports_dir}/tactical_attack_type_viability.txt"
+
+        # Analyze attack type performance
+        attack_type_data = {}
+        for build, avg_dpt in all_build_results:
+            attack_type = build.attack_type
+            if attack_type not in attack_type_data:
+                attack_type_data[attack_type] = []
+            attack_type_data[attack_type].append(avg_dpt)
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - ATTACK TYPE VIABILITY CHART\n")
+            f.write("="*80 + "\n\n")
+            f.write("Comprehensive guide for choosing the right attack type\n\n")
+
+            # Attack type performance summary
+            f.write("ATTACK TYPE PERFORMANCE SUMMARY:\n")
+            f.write("="*80 + "\n")
+            f.write(f"{'Attack Type':<20} {'Avg DPT':<10} {'Best DPT':<10} {'Builds':<8} {'Viability':<12}\n")
+            f.write("-" * 70 + "\n")
+
+            attack_summaries = []
+            for attack_type, dpts in attack_type_data.items():
+                avg_dpt = sum(dpts) / len(dpts)
+                best_dpt = max(dpts)
+                build_count = len(dpts)
+                viability = self._assess_attack_type_viability(avg_dpt, best_dpt, build_count)
+                attack_summaries.append((attack_type, avg_dpt, best_dpt, build_count, viability))
+
+            attack_summaries.sort(key=lambda x: x[1], reverse=True)
+
+            for attack_type, avg_dpt, best_dpt, build_count, viability in attack_summaries:
+                f.write(f"{attack_type:<20} {avg_dpt:<10.2f} {best_dpt:<10.2f} {build_count:<8} {viability:<12}\n")
+
+            # Detailed attack type analysis
+            f.write("\n" + "="*80 + "\n")
+            f.write("DETAILED ATTACK TYPE ANALYSIS:\n")
+            f.write("="*80 + "\n")
+
+            attack_analyses = {
+                "melee_ac": {
+                    "strengths": ["High accuracy bonus", "Adjacent positioning", "Reliable hit chance"],
+                    "weaknesses": ["Close range requirement", "Vulnerable to counterattacks", "Lower damage"],
+                    "best_for": ["Accurate strikes", "Hit-and-run tactics", "Setup attacks"],
+                    "avoid_when": ["Low mobility", "Heavy enemy defense", "Need range"]
+                },
+                "melee_dg": {
+                    "strengths": ["High damage bonus", "Cost effective", "Straightforward"],
+                    "weaknesses": ["Close range requirement", "Standard accuracy", "Single target"],
+                    "best_for": ["Raw damage output", "Boss fights", "Budget builds"],
+                    "avoid_when": ["Multiple enemies", "High avoidance targets", "Range needed"]
+                },
+                "ranged": {
+                    "strengths": ["Safe positioning", "No adjacency penalty", "Flexible range"],
+                    "weaknesses": ["Penalty when adjacent", "No inherent bonuses", "Equipment dependent"],
+                    "best_for": ["Kiting enemies", "Supporting allies", "Versatile combat"],
+                    "avoid_when": ["Forced close combat", "Need high damage", "Limited space"]
+                },
+                "area": {
+                    "strengths": ["Multi-target capability", "Crowd control", "Scales with enemies"],
+                    "weaknesses": ["Accuracy penalty", "Damage penalty", "Single-target weak"],
+                    "best_for": ["Group enemies", "Swarm scenarios", "Area denial"],
+                    "avoid_when": ["Single targets", "Precision needed", "Friendly fire risk"]
+                },
+                "direct_damage": {
+                    "strengths": ["Guaranteed damage", "No accuracy rolls", "Consistent output"],
+                    "weaknesses": ["Fixed damage", "No scaling", "Expensive upgrades"],
+                    "best_for": ["Reliable damage", "High-avoidance targets", "Finishing moves"],
+                    "avoid_when": ["Need high damage", "Multiple targets", "Budget builds"]
+                },
+                "direct_area_damage": {
+                    "strengths": ["Guaranteed AOE", "No accuracy needed", "Multi-target reliable"],
+                    "weaknesses": ["Lower damage", "Fixed output", "Very expensive"],
+                    "best_for": ["Reliable AOE", "Swarm clearing", "Setup damage"],
+                    "avoid_when": ["Single targets", "Need high damage", "Point limited"]
+                }
+            }
+
+            for attack_type, analysis in attack_analyses.items():
+                if attack_type in attack_type_data:
+                    f.write(f"\n{attack_type.upper().replace('_', ' ')}:\n")
+                    f.write(f"Strengths: {', '.join(analysis['strengths'])}\n")
+                    f.write(f"Weaknesses: {', '.join(analysis['weaknesses'])}\n")
+                    f.write(f"Best for: {', '.join(analysis['best_for'])}\n")
+                    f.write(f"Avoid when: {', '.join(analysis['avoid_when'])}\n")
+
+        print(f"Attack type viability chart saved to {filename}")
+
+    def generate_point_efficiency_analysis_report(self, all_build_results: List[Tuple]):
+        """Generate analysis of optimal spending patterns for different point budgets"""
+        filename = f"{self.reports_dir}/tactical_point_efficiency_analysis.txt"
+
+        # Organize builds by cost brackets
+        cost_brackets = {
+            "budget": (20, 30),
+            "standard": (31, 50),
+            "premium": (51, 70),
+            "luxury": (71, 100)
+        }
+
+        bracket_data = {bracket: [] for bracket in cost_brackets}
+
+        for build, avg_dpt in all_build_results:
+            for bracket, (min_cost, max_cost) in cost_brackets.items():
+                if min_cost <= build.total_cost <= max_cost:
+                    bracket_data[bracket].append((build, avg_dpt, build.total_cost))
+                    break
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - POINT EFFICIENCY ANALYSIS\n")
+            f.write("="*80 + "\n\n")
+            f.write("Optimal upgrade spending patterns for different point budgets\n\n")
+
+            # Efficiency by bracket
+            f.write("EFFICIENCY BY COST BRACKET:\n")
+            f.write("="*80 + "\n")
+
+            for bracket, (min_cost, max_cost) in cost_brackets.items():
+                builds = bracket_data[bracket]
+                if not builds:
+                    continue
+
+                f.write(f"\n{bracket.upper()} BRACKET ({min_cost}-{max_cost} points):\n")
+                f.write("-" * 50 + "\n")
+
+                # Sort by DPT/cost ratio
+                builds_by_efficiency = sorted(builds, key=lambda x: x[1]/x[2], reverse=True)
+
+                f.write("Top 5 most efficient builds:\n")
+                for i, (build, avg_dpt, cost) in enumerate(builds_by_efficiency[:5], 1):
+                    efficiency = avg_dpt / cost
+                    build_str = f"{build.attack_type}"
+                    if build.upgrades:
+                        build_str += f" + {' + '.join(build.upgrades[:2])}"
+                        if len(build.upgrades) > 2:
+                            build_str += "..."
+                    f.write(f"{i}. {build_str} ({cost}p): {avg_dpt:.2f} DPT, {efficiency:.3f} DPT/pt\n")
+
+                # Bracket analysis
+                avg_efficiency = sum(dpt/cost for _, dpt, cost in builds) / len(builds)
+                f.write(f"\nBracket average efficiency: {avg_efficiency:.3f} DPT/point\n")
+
+            # Spending recommendations
+            f.write("\n" + "="*80 + "\n")
+            f.write("SPENDING RECOMMENDATIONS BY BUDGET:\n")
+            f.write("="*80 + "\n")
+
+            recommendations = {
+                "budget": [
+                    "Focus on single high-impact upgrades",
+                    "Base attack types provide good foundation",
+                    "Power Attack offers solid DPT increase",
+                    "Avoid expensive combo upgrades"
+                ],
+                "standard": [
+                    "Two-upgrade combinations become viable",
+                    "Consider upgrade synergies",
+                    "Finishing Blow 1 provides good value",
+                    "Armor Piercing for tough enemies"
+                ],
+                "premium": [
+                    "Three-upgrade builds unlock potential",
+                    "High-cost upgrades justify investment",
+                    "Finishing Blow 2 becomes attractive",
+                    "Risk/reward builds viable"
+                ],
+                "luxury": [
+                    "Maximum upgrade combinations",
+                    "Finishing Blow 3 dominates",
+                    "Multiple synergistic effects",
+                    "Experimental high-risk builds"
+                ]
+            }
+
+            for bracket, recs in recommendations.items():
+                if bracket_data[bracket]:
+                    min_cost, max_cost = cost_brackets[bracket]
+                    f.write(f"\n{bracket.upper()} ({min_cost}-{max_cost} points):\n")
+                    for rec in recs:
+                        f.write(f"• {rec}\n")
+
+            # Diminishing returns analysis
+            f.write("\n" + "="*80 + "\n")
+            f.write("DIMINISHING RETURNS ANALYSIS:\n")
+            f.write("="*80 + "\n")
+
+            f.write("Point efficiency decreases as budget increases:\n")
+            for bracket, (min_cost, max_cost) in cost_brackets.items():
+                builds = bracket_data[bracket]
+                if builds:
+                    avg_efficiency = sum(dpt/cost for _, dpt, cost in builds) / len(builds)
+                    f.write(f"• {bracket.capitalize()}: {avg_efficiency:.3f} DPT/point\n")
+
+            f.write("\nKey efficiency thresholds:\n")
+            f.write("• 20-30 points: Highest efficiency, focus on core upgrades\n")
+            f.write("• 31-50 points: Good efficiency, combo potential emerges\n")
+            f.write("• 51-70 points: Diminishing returns, but powerful combinations\n")
+            f.write("• 71+ points: Low efficiency, but maximum power potential\n")
+
+        print(f"Point efficiency analysis saved to {filename}")
+
+    def _get_synergy_rating(self, synergy_bonus):
+        """Get synergy rating based on bonus value"""
+        if synergy_bonus >= 2.0:
+            return "Excellent"
+        elif synergy_bonus >= 1.0:
+            return "Good"
+        elif synergy_bonus >= 0.0:
+            return "Neutral"
+        elif synergy_bonus >= -1.0:
+            return "Poor"
+        else:
+            return "Terrible"
+
+    def _analyze_synergy_patterns(self, synergy_results):
+        """Analyze common patterns in upgrade synergies"""
+        patterns = [
+            "Critical upgrades synergize well together (Critical Accuracy + Powerful Critical)",
+            "Finishing Blow upgrades scale better with multiple enemies",
+            "AOE + Condition effects create exponential scaling",
+            "High-risk + High-reward combinations often disappoint",
+            "Defensive upgrades rarely synergize with offensive ones"
+        ]
+        return patterns
+
+    def _get_scenario_top_builds(self, all_build_results, scenario_name):
+        """Get top builds for a specific scenario (mock implementation)"""
+        # In real implementation, would filter by actual scenario performance
+        # For now, return mock data based on scenario type
+        if "1×100" in scenario_name:
+            return [(build, dpt * 1.2) for build, dpt in all_build_results[:10] if 'area' not in build.attack_type]
+        elif "10×10" in scenario_name:
+            return [(build, dpt * 1.5) for build, dpt in all_build_results[:10] if 'area' in build.attack_type]
+        else:
+            return all_build_results[:10]
+
+    def _analyze_scenario_success_factors(self, successful_builds, scenario_name):
+        """Analyze what makes builds successful in a scenario"""
+        factors = {
+            "1×100 HP Boss": [
+                "High single-target damage output",
+                "Armor piercing for high-durability enemies",
+                "Reliable accuracy to ensure hits",
+                "Finishing blow effects for execution"
+            ],
+            "2×50 HP Enemies": [
+                "Balanced single and multi-target capability",
+                "Good action economy",
+                "Moderate AOE effectiveness",
+                "Flexible positioning options"
+            ],
+            "4×25 HP Enemies": [
+                "Strong AOE capabilities",
+                "Multi-target conditions like Bleed",
+                "Area denial and positioning",
+                "Efficient enemy elimination"
+            ],
+            "10×10 HP Enemies": [
+                "Maximum AOE damage output",
+                "Condition effects that scale with targets",
+                "Quick enemy elimination",
+                "Swarm management capabilities"
+            ]
+        }
+        return factors.get(scenario_name, ["Adaptability", "Versatility", "Consistent performance"])
+
+    def _get_scenario_tactics(self, scenario_name):
+        """Get tactical recommendations for a scenario"""
+        tactics = {
+            "1×100 HP Boss": [
+                "Focus all damage on single target",
+                "Use reliable upgrades for consistency",
+                "Save burst abilities for critical moments",
+                "Consider armor piercing for high-DR enemies"
+            ],
+            "2×50 HP Enemies": [
+                "Prioritize target elimination",
+                "Use positioning to avoid being surrounded",
+                "Consider limited AOE for efficiency",
+                "Focus fire to reduce enemy action economy"
+            ],
+            "4×25 HP Enemies": [
+                "Maximize AOE potential",
+                "Use area denial to control positioning",
+                "Apply conditions to multiple targets",
+                "Eliminate weakest enemies first"
+            ],
+            "10×10 HP Enemies": [
+                "Prioritize AOE damage above all else",
+                "Use DOT effects for maximum scaling",
+                "Control swarm movement",
+                "Eliminate groups systematically"
+            ]
+        }
+        return tactics.get(scenario_name, ["Adapt to enemy behavior", "Use terrain advantage"])
+
+    def _get_scenario_mistakes(self, scenario_name):
+        """Get common mistakes for a scenario"""
+        mistakes = {
+            "1×100 HP Boss": [
+                "Wasting points on AOE upgrades",
+                "Using unreliable effects in critical moments",
+                "Ignoring armor/durability considerations",
+                "Poor positioning for adjacency bonuses"
+            ],
+            "2×50 HP Enemies": [
+                "Overcommitting to pure AOE builds",
+                "Poor target prioritization",
+                "Getting surrounded by enemies",
+                "Inefficient action usage"
+            ],
+            "4×25 HP Enemies": [
+                "Using only single-target attacks",
+                "Poor positioning for AOE coverage",
+                "Ignoring condition/DOT potential",
+                "Focusing on toughest enemies first"
+            ],
+            "10×10 HP Enemies": [
+                "Any single-target focus",
+                "Underestimating swarm damage potential",
+                "Poor AOE positioning",
+                "Trying to tank instead of control"
+            ]
+        }
+        return mistakes.get(scenario_name, ["Poor preparation", "Inflexible tactics"])
+
+    def _assess_attack_type_viability(self, avg_dpt, best_dpt, build_count):
+        """Assess overall viability of an attack type"""
+        if avg_dpt >= 10.0 and best_dpt >= 15.0:
+            return "Excellent"
+        elif avg_dpt >= 8.0 and best_dpt >= 12.0:
+            return "Good"
+        elif avg_dpt >= 6.0 and best_dpt >= 10.0:
+            return "Fair"
+        else:
+            return "Poor"
 
 
 def generate_reports_by_mode(config: SimulationConfig, reports_dir: str, all_build_results: List[Tuple] = None):

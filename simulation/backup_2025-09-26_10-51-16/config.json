@@ -1,7 +1,6 @@
 {
-  "execution_mode": "individual",
-  "num_runs": 5,
-  "max_points": 30,
+  "execution_mode": "both",
+  "max_points": 80,
   "use_threading": true,
   "verbose_logging": false,
   "top_builds_count": 20,
@@ -39,6 +38,14 @@
       4
     ]
   ],
+  "simulation_runs": {
+    "build_testing_runs": 20,
+    "individual_testing_runs": 50
+  },
+  "combat": {
+    "max_turns": 50,
+    "safety_limit": 100
+  },
   "individual_testing": {
     "enabled": true,
     "test_base_attacks": true,
@@ -48,7 +55,7 @@
       "critical_accuracy + powerful_critical",
       "critical_accuracy + double_tap"
     ],
-    "single_run_per_test": true,
+    "single_run_per_test": false,
     "detailed_combat_logs": true
   },
   "build_testing": {
@@ -66,14 +73,17 @@
       "attack_type_table": true,
       "upgrade_limit_table": true,
       "mechanics_verification": true,
-      "scenario_breakdown": true
+      "scenario_breakdown": true,
+      "enhanced_analysis": true
     },
     "build_reports": {
       "enabled": true,
       "build_rankings": true,
       "upgrade_analysis": true,
       "cost_effectiveness": true,
-      "percentile_analysis": true
+      "percentile_analysis": true,
+      "archetype_analysis": true,
+      "tactical_analysis": true
     }
   },
   "logging": {
