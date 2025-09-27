@@ -409,21 +409,30 @@ export class CharacterBuilder {
     renderCharacterLibrary() {
         console.log('renderCharacterLibrary called');
         console.log('this.library:', this.library);
+        console.log('this.library type:', typeof this.library);
+        console.log('this.library constructor:', this.library?.constructor?.name);
+        console.log('this.library prototype methods:', this.library ? Object.getOwnPropertyNames(Object.getPrototypeOf(this.library)) : 'N/A');
         console.log('this.library.renderLibrary:', this.library?.renderLibrary);
+        console.log('this.library.renderLibrary type:', typeof this.library?.renderLibrary);
 
         if (this.library && typeof this.library.renderLibrary === 'function') {
-            this.library.renderLibrary();
+            try {
+                this.library.renderLibrary();
+            } catch (error) {
+                console.error('Error calling renderLibrary:', error);
+            }
         } else {
             console.error('Library renderLibrary method not available:', {
                 library: this.library,
                 hasRenderLibrary: this.library?.renderLibrary,
-                libraryType: typeof this.library
+                libraryType: typeof this.library,
+                constructorName: this.library?.constructor?.name
             });
 
             // Fallback: render empty library message
             const container = document.getElementById('character-list');
             if (container) {
-                container.innerHTML = '<p class="empty-library">Character library temporarily unavailable.</p>';
+                container.innerHTML = '<p class="empty-library">Character library temporarily unavailable. Please refresh the page.</p>';
             }
         }
     }
