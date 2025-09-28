@@ -55,23 +55,23 @@ export class BasicInfoTab {
                 })}
 
                 ${RenderUtils.renderFormGroup({
-                    label: 'Character Tier *',
-                    inputId: 'tier-select',
+                    label: 'Character Level *',
+                    inputId: 'level-select',
                     inputHtml: RenderUtils.renderSelect({
-                        id: 'tier-select',
-                        value: character.tier || 4,
-                        options: Array.from({length: 10}, (_, i) => ({ value: i + 1, label: `${i + 1} - ${this.getTierDescription(i + 1)}`})),
-                        dataAttributes: { action: 'update-tier', testid: 'character-tier' }
+                        id: 'level-select',
+                        value: character.level || 1,
+                        options: Array.from({length: 6}, (_, i) => ({ value: i, label: `${i} - ${this.getLevelDescription(i)}`})),
+                        dataAttributes: { action: 'update-tier', testid: 'character-level' }
                     }),
-                    description: "Tier represents your character's overall power level and experience"
+                    description: "Level represents your character's overall power level and experience"
                 })}
 
-                <div class="tier-info">
-                    <h3>Tier Information</h3>
-                    <div id="tier-description-display"></div>
-                    <div class="tier-effects">
-                        <h4>Tier Effects:</h4>
-                        <ul id="tier-effects-list"></ul>
+                <div class="level-info">
+                    <h3>Level Information</h3>
+                    <div id="level-description-display"></div>
+                    <div class="level-effects">
+                        <h4>Level Effects:</h4>
+                        <ul id="level-effects-list"></ul>
                     </div>
                 </div>
 
@@ -87,7 +87,7 @@ export class BasicInfoTab {
         `;
 
         this.setupEventListeners(); // For direct event listeners if any, or rely on CharacterBuilder
-        this.updateTierDisplay(character.tier); // Initial display
+        this.updateLevelDisplay(character.level); // Initial display
     }
 
 
@@ -160,14 +160,14 @@ export class BasicInfoTab {
         return '';
     }
 
-    getTierDescription(tier) {
-        const tiers = gameDataManager.getTiers();
-        return tiers.tiers?.[tier]?.name || "Unknown";
+    getLevelDescription(tier) {
+        const levels = gameDataManager.getTiers();
+        return levels.levels?.[tier]?.name || "Unknown";
     }
-    
-    getTierFlavorText(tier) {
-        const tiers = gameDataManager.getTiers();
-        return tiers.tiers?.[tier]?.description || "A hero of unknown caliber.";
+
+    getLevelFlavorText(tier) {
+        const levels = gameDataManager.getTiers();
+        return levels.levels?.[tier]?.description || "A hero of unknown caliber.";
     }
 
 
@@ -231,33 +231,42 @@ export class BasicInfoTab {
     
     updateCharacterSubType(newSubType) { // Called by CharacterBuilder
         this.builder.setCharacterSubType(newSubType);
-        this.updateTierDisplay(this.builder.currentCharacter.tier);
-    }
-    
-    updateTier(newTier) { // Called by CharacterBuilder
-        this.builder.setCharacterTier(newTier);
-        this.updateTierDisplay(parseInt(newTier));
+        this.updateLevelDisplay(this.builder.currentCharacter.tier);
     }
 
-    updateTierDisplay(tier) {
-        const descElement = document.getElementById('tier-description-display');
+    updateTier(newLevel) { // Called by CharacterBuilder (keeping method name for compatibility)
+        this.builder.setCharacterTier(newLevel);
+        this.updateLevelDisplay(parseInt(newLevel));
+    }
+
+    updateLevelDisplay(tier) {
+        const descElement = document.getElementById('level-description-display');
         if (descElement) {
+            const levels = gameDataManager.getTiers();
+            const levelData = levels.levels?.[tier];
+            const tierBonus = levelData?.tierBonus || 0;
+            const boons = levelData?.boons || 0;
+
             descElement.innerHTML = `
-                <p><strong>Tier ${tier}:</strong> ${this.getTierDescription(tier)}</p>
-                <p>${this.getTierFlavorText(tier)}</p>
+                <p><strong>Level ${tier}:</strong> ${this.getLevelDescription(tier)}</p>
+                <p>${this.getLevelFlavorText(tier)}</p>
+                <p><strong>Tier Bonus:</strong> +${tierBonus} | <strong>Boons:</strong> ${boons}</p>
             `;
         }
 
-        const effectsList = document.getElementById('tier-effects-list');
+        const effectsList = document.getElementById('level-effects-list');
         if (effectsList) {
-             // These values should ideally come from TierSystem.js or GameConstants.js
+            const levels = gameDataManager.getTiers();
+            const levelData = levels.levels?.[tier];
+            const tierBonus = levelData?.tierBonus || 0;
             const baseHP = this.getCharacterTypeHP();
+
             effectsList.innerHTML = `
-                <li><strong>Bonus to all actions:</strong> +${tier}</li>
-                <li><strong>Maximum attribute rank:</strong> ${tier}</li>
-                <li><strong>Combat attribute points:</strong> ${tier * 2}</li>
-                <li><strong>Utility attribute points:</strong> ${tier}</li>
-                <li><strong>Main pool points:</strong> ${Math.max(0, (tier - 2) * 15)}</li>
+                <li><strong>Bonus to all actions:</strong> +${tierBonus}</li>
+                <li><strong>Maximum attribute rank:</strong> ${tierBonus}</li>
+                <li><strong>Combat attribute points:</strong> ${tierBonus * 2}</li>
+                <li><strong>Utility attribute points:</strong> ${tierBonus}</li>
+                <li><strong>Main pool points (Boons):</strong> ${tier}</li>
                 <li><strong>Utility pool points:</strong> ${Math.max(0, 5 * (tier - 1))}</li>
                 <li><strong>HP (Base):</strong> ${baseHP}</li>
             `;
@@ -265,11 +274,11 @@ export class BasicInfoTab {
     }
      // onCharacterUpdate can re-call render if needed, or more granular updates.
     onCharacterUpdate() {
-        // If only tier could change that affects this tab's specific display (beyond header)
-        const tierSelect = document.getElementById('tier-select');
-        if (tierSelect && this.builder.currentCharacter && tierSelect.value != this.builder.currentCharacter.tier) {
-             tierSelect.value = this.builder.currentCharacter.tier;
-             this.updateTierDisplay(this.builder.currentCharacter.tier);
+        // If only level could change that affects this tab's specific display (beyond header)
+        const levelSelect = document.getElementById('level-select');
+        if (levelSelect && this.builder.currentCharacter && levelSelect.value != this.builder.currentCharacter.tier) {
+             levelSelect.value = this.builder.currentCharacter.tier;
+             this.updateLevelDisplay(this.builder.currentCharacter.tier);
         }
          const playerNameInput = document.getElementById('player-name');
          if(playerNameInput && this.builder.currentCharacter && playerNameInput.value !== this.builder.currentCharacter.playerName) {

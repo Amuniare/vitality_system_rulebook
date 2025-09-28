@@ -2,6 +2,7 @@
 import { AttributeSystem } from '../../systems/AttributeSystem.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 import { EventManager } from '../../shared/utils/EventManager.js';
+import { gameDataManager } from '../../core/GameDataManager.js';
 
 export class AttributeTab {
     constructor(characterBuilder) {
@@ -27,12 +28,18 @@ export class AttributeTab {
 
         const pools = this.builder.calculatePointPools();
         this.setupDebugFallbacks();
+
+        // Get the correct tier value from level data (same as BasicInfoTab)
+        const levels = gameDataManager.getTiers();
+        const levelData = levels.levels?.[character.tier];
+        const tierBonus = levelData?.tierBonus || character.tier;
+
         tabContent.innerHTML = `
             <div class="attributes-section">
                 <h2>Assign Attributes ${RenderUtils.renderInfoIcon(RenderUtils.getTooltipText('attributes'))}</h2>
                 <p class="section-description">
                     Allocate your attribute points across combat and utility attributes.
-                    Each attribute cannot exceed your tier (${character.tier}).
+                    Each attribute cannot exceed your tier (${tierBonus}).
                 </p>
 
                 ${this.renderAttributePoolSection('Combat', 'combatAttributes', ['focus', 'mobility', 'power', 'endurance'], character, pools)}
@@ -97,7 +104,12 @@ export class AttributeTab {
     // Render attribute control with enhanced descriptions from attributes.json
     renderAttributeControl(attrId, attributeData, character) {
         const value = character.attributes[attrId] || 0;
-        const max = character.tier;
+
+        // Get the correct tier value from level data (same as BasicInfoTab)
+        const levels = gameDataManager.getTiers();
+        const levelData = levels.levels?.[character.tier];
+        const tierBonus = levelData?.tierBonus || character.tier;
+        const max = tierBonus;
 
         // Map current attribute names to test-expected names for backwards compatibility
         const testAttributeMap = {
@@ -265,20 +277,25 @@ export class AttributeTab {
 
     updateSingleAttributeDisplay(attrId, newValue) {
         const character = this.builder.currentCharacter;
-        
+
+        // Get the correct tier value from level data (same as BasicInfoTab)
+        const levels = gameDataManager.getTiers();
+        const levelData = levels.levels?.[character.tier];
+        const tierBonus = levelData?.tierBonus || character.tier;
+
         // Update the displayed value
         const valueDisplay = document.querySelector(`.attribute-item[data-attr="${attrId}"] .attribute-value`);
         if (valueDisplay) {
             valueDisplay.textContent = newValue;
         }
-        
+
         // Slider removed - using button-only interface
-        
+
         // Update button states
         const minusBtn = document.querySelector(`[data-attr="${attrId}"][data-change="-1"]`);
         const plusBtn = document.querySelector(`[data-attr="${attrId}"][data-change="1"]`);
         if (minusBtn) minusBtn.disabled = newValue <= 0;
-        if (plusBtn) plusBtn.disabled = newValue >= character.tier;
+        if (plusBtn) plusBtn.disabled = newValue >= tierBonus;
         
         console.log(`🎨 Updated display for ${attrId} = ${newValue}`);
     }

@@ -2,28 +2,25 @@
 // frontend/character-builder/features/main-pool/MainPoolTab.js
 import { PointPoolCalculator } from '../../calculators/PointPoolCalculator.js';
 import { FlawPurchaseSection } from './components/FlawPurchaseSection.js';
-import { TraitPurchaseSection } from './components/TraitPurchaseSection.js';
+import { ConditionalBonusPurchaseSection } from './components/ConditionalBonusPurchaseSection.js';
 import { BoonSection } from './components/BoonSection.js';
 import { UniqueAbilitySection } from './components/UniqueAbilitySection.js';
-import { ActionUpgradeSection } from './components/ActionUpgradeSection.js';
 import { UpdateManager } from '../../shared/utils/UpdateManager.js';
 import { EventManager } from '../../shared/utils/EventManager.js';
 import { RenderUtils } from '../../shared/utils/RenderUtils.js';
 import { TraitFlawSystem } from '../../systems/TraitFlawSystem.js';
 import { UniqueAbilitySystem } from '../../systems/UniqueAbilitySystem.js';
-import { ActionSystem } from '../../systems/ActionSystem.js'; // Import ActionSystem
 
 export class MainPoolTab {
     constructor(characterBuilder) {
         this.builder = characterBuilder;
         this.sections = {
             flaws: new FlawPurchaseSection(characterBuilder),
-            traits: new TraitPurchaseSection(characterBuilder),
+            conditionalBonuses: new ConditionalBonusPurchaseSection(characterBuilder),
             boons: new BoonSection(characterBuilder),
-            uniqueAbilities: new UniqueAbilitySection(characterBuilder),
-            actions: new ActionUpgradeSection(characterBuilder)
+            uniqueAbilities: new UniqueAbilitySection(characterBuilder)
         };
-        this.activeSection = 'flaws'; // Default section
+        this.activeSection = 'conditionalBonuses'; // Default section
         this.clickHandler = null;
         this.changeHandler = null;
         this.inputHandler = null;
@@ -45,7 +42,7 @@ export class MainPoolTab {
             <div class="main-pool-tab-content">
                 <h2>Main Pool Purchases</h2>
                 <p class="section-description">
-                    Use your main pool points to purchase flaws, traits,  boons, unique abilities, and action upgrades.
+                    Use your main pool points to purchase passive bonuses, conditional bonuses, traits, boons, and unique abilities.
                 </p>
 
                 <!-- NEW: Main Pool Overview Box -->
@@ -92,8 +89,8 @@ export class MainPoolTab {
                     )}
                 </div>
                 <div class="pool-sources">
-                    <small>Base: ${Math.max(0, (character.tier - 2) * 15)}
-                    ${character.archetypes.uniqueAbility === 'extraordinary' ? ` (+${Math.max(0, (character.tier - 2) * 15)} from Extraordinary)` : ''}
+                    <small>Base: ${character.level}
+                    ${character.archetypes.uniqueAbility === 'extraordinary' ? ` (+${character.level} from Extraordinary)` : ''}
                     </small>
                 </div>
                 
@@ -107,9 +104,8 @@ export class MainPoolTab {
         const categories = [
             { key: 'boons', label: 'Boons', value: breakdown.boons },
             { key: 'uniqueAbilities', label: 'Unique Abilities', value: breakdown.uniqueAbilities },
-            { key: 'traits', label: 'Traits', value: breakdown.traits },
-            { key: 'flaws', label: 'Flaws', value: breakdown.flaws },
-            { key: 'actions', label: 'Action Upgrades', value: breakdown.actions }
+            { key: 'conditionalBonuses', label: 'Conditional Bonuses', value: breakdown.conditionalBonuses },
+            { key: 'flaws', label: 'Passive Bonuses', value: breakdown.flaws }
         ];
 
         // Calculate counts for each category
@@ -123,15 +119,11 @@ export class MainPoolTab {
                 case 'uniqueAbilities':
                     count = character.mainPoolPurchases.boons.filter(b => b.type === 'unique').length;
                     break;
-                case 'traits':
-                    count = character.mainPoolPurchases.traits.length;
+                case 'conditionalBonuses':
+                    count = character.mainPoolPurchases.conditionalBonuses ? character.mainPoolPurchases.conditionalBonuses.length : 0;
                     break;
                 case 'flaws':
                     count = character.mainPoolPurchases.flaws.length;
-                    break;
-                case 'actions':
-                    // COMBINED COUNT: Paid + Free
-                    count = character.mainPoolPurchases.primaryActionUpgrades.length + (character.versatileMasterSelections || []).length;
                     break;
             }
             return { ...category, count };
@@ -167,40 +159,14 @@ export class MainPoolTab {
     renderSelectedMainPoolItems(character) {
         const allPurchases = [];
 
-        // Paid Action Upgrades
-        allPurchases.push(...character.mainPoolPurchases.primaryActionUpgrades.map((item, index) => ({
-            ...item,
-            name: item.actionName || item.name,
-            category: 'actions',
-            typeLabel: 'Action Upgrade',
-            isFreeSelection: false,
-            dataAttributes: { 'upgrade-id': item.id }
-        })));
-        
-        // Free Versatile Master Selections
-        const versatileMasterSelections = character.versatileMasterSelections || [];
-        const allActionUpgrades = ActionSystem.getAvailableActionUpgrades();
-        versatileMasterSelections.forEach(baseActionId => {
-            const upgrade = allActionUpgrades.find(u => u.baseActionId === baseActionId && u.isQuickActionUpgrade);
-            if (upgrade) {
-                allPurchases.push({
-                    id: upgrade.id,
-                    name: upgrade.name,
-                    cost: 0,
-                    category: 'actions',
-                    typeLabel: 'Action Upgrade',
-                    isFreeSelection: true,
-                    dataAttributes: { 'upgrade-id': upgrade.id }
-                });
-            }
-        });
-
         allPurchases.push(...character.mainPoolPurchases.flaws.map((item, index) => ({
             ...item, category: 'flaws', typeLabel: 'Flaw', dataAttributes: { 'index': index }
         })));
-        allPurchases.push(...character.mainPoolPurchases.traits.map((item, index) => ({
-            ...item, name: this.generateTraitDisplayName(item, character), category: 'traits', typeLabel: 'Trait', dataAttributes: { 'index': index }
-        })));
+        if (character.mainPoolPurchases.conditionalBonuses) {
+            allPurchases.push(...character.mainPoolPurchases.conditionalBonuses.map((item, index) => ({
+                ...item, name: this.generateConditionalBonusDisplayName(item, character), category: 'conditionalBonuses', typeLabel: 'Conditional Bonus', dataAttributes: { 'index': index }
+            })));
+        }
         allPurchases.push(...character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).map(item => ({
             ...item, category: 'boons', typeLabel: 'Simple Boon', dataAttributes: { 'boon-id': item.boonId }
         })));
@@ -210,7 +176,7 @@ export class MainPoolTab {
 
         return `
             <div class="selected-main-pool-items">
-                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedMainPoolItem(item), { 
+                ${RenderUtils.renderPurchasedList(allPurchases, (item) => this.renderSelectedMainPoolItem(item), {
                     title: 'Purchased Items', showCount: false, emptyMessage: 'No main pool purchases yet.'
                 })}
             </div>
@@ -220,10 +186,9 @@ export class MainPoolTab {
     renderSelectedMainPoolItem(item) {
         let actionKey;
         switch(item.category) {
-            case 'actions': actionKey = 'remove-action-upgrade'; break;
             case 'boons': actionKey = 'remove-simple-boon'; break;
             case 'uniqueAbilities': actionKey = 'remove-unique-ability'; break;
-            case 'traits': actionKey = 'remove-trait'; break;
+            case 'conditionalBonuses': actionKey = 'remove-conditional-bonus'; break;
             case 'flaws': actionKey = 'remove-flaw'; break;
             default: actionKey = `remove-${item.category.slice(0, -1)}`;
         }
@@ -234,7 +199,7 @@ export class MainPoolTab {
             const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
             costBoxes = `<span class="item-details">${item.typeLabel}</span>${costText ? `<span class="item-cost">${costText}</span>` : ''}`;
         } else {
-            const costText = item.isFreeSelection ? 'Free (Archetype)' : (item.cost !== undefined ? `${Math.abs(item.cost)}p` : '');
+            const costText = item.cost !== undefined ? `${Math.abs(item.cost)}p` : '';
             costBoxes = `<span class="item-details">${item.typeLabel}</span>${costText ? `<span class="item-cost">${costText}</span>` : ''}`;
         }
 
@@ -252,24 +217,21 @@ export class MainPoolTab {
     }
 
     calculatePointBreakdown(character, pools) {
-        // This logic remains the same
         return {
             boons: character.mainPoolPurchases.boons.filter(b => b.type === 'simple' || !b.type).reduce((sum, b) => sum + (b.cost || 0), 0),
             uniqueAbilities: character.mainPoolPurchases.boons.filter(b => b.type === 'unique').reduce((sum, b) => sum + (b.cost || 0), 0),
-            traits: character.mainPoolPurchases.traits.reduce((sum, t) => sum + (t.cost || 0), 0),
-            flaws: character.mainPoolPurchases.flaws.reduce((sum, f) => sum + (f.cost || 0), 0),
-            actions: character.mainPoolPurchases.primaryActionUpgrades.reduce((sum, a) => sum + (a.cost || 0), 0),
+            conditionalBonuses: character.mainPoolPurchases.conditionalBonuses ? character.mainPoolPurchases.conditionalBonuses.reduce((sum, cb) => sum + (cb.cost || 0), 0) : 0,
+            flaws: character.mainPoolPurchases.flaws.reduce((sum, f) => sum + (f.cost || 0), 0)
         };
     }
 
     renderSectionNavigation() {
         // This logic remains the same
         const sectionTabsConfig = [
-            { id: 'flaws', label: 'Flaws' },
-            { id: 'traits', label: 'Traits' },
+            { id: 'flaws', label: 'Passive Bonuses' },
+            { id: 'conditionalBonuses', label: 'Conditional Bonuses' },
             { id: 'boons', label: 'Boons' },
-            { id: 'uniqueAbilities', label: 'Unique Abilities' },
-            { id: 'actions', label: 'Action Upgrades' }
+            { id: 'uniqueAbilities', label: 'Unique Abilities' }
         ];
         return RenderUtils.renderTabs(sectionTabsConfig, this.activeSection, { navClass: 'section-tabs', tabButtonClass: 'section-tab' });
     }
@@ -328,13 +290,11 @@ export class MainPoolTab {
             'continue-to-special-attacks': () => this.builder.switchTab('specialAttacks'),
             'purchase-flaw': () => this.sections.flaws.handleFlawPurchase(data.flawId),
             'remove-flaw': () => this.sections.flaws.handleFlawRemoval(parseInt(data.index)),
-            'clear-trait-builder': () => this.sections.traits.handleClearBuilder(),
-            'purchase-trait': () => this.sections.traits.handleTraitPurchase(),
-            'remove-trait': () => this.sections.traits.handleTraitRemoval(parseInt(data.index)),
-            'trait-stat-toggle': () => this.sections.traits.handleStatToggle(target),
-            'trait-condition-toggle': () => this.sections.traits.handleConditionToggle(target),
-            'increase-variable-trait-cost': () => this.sections.traits.handleIncreaseVariableTraitCost(data.conditionId),
-            'decrease-variable-trait-cost': () => this.sections.traits.handleDecreaseVariableTraitCost(data.conditionId),
+            'clear-conditional-bonus-builder': () => this.sections.conditionalBonuses.handleClearBuilder(),
+            'purchase-conditional-bonus': () => this.sections.conditionalBonuses.handleConditionalBonusPurchase(),
+            'remove-conditional-bonus': () => this.sections.conditionalBonuses.handleConditionalBonusRemoval(parseInt(data.index)),
+            'conditional-bonus-toggle': () => this.sections.conditionalBonuses.handleConditionalBonusToggle(target),
+            'conditional-bonus-stat-toggle': () => this.sections.conditionalBonuses.handleStatToggle(target),
             'purchase-simple-boon': () => this.sections.boons.purchaseBoon(data.boonId),
             'remove-simple-boon': () => this.sections.boons.removeBoon(data.boonId),
             'purchase-unique-ability': () => this.sections.uniqueAbilities.purchaseUniqueAbility(data.abilityId),
@@ -344,9 +304,7 @@ export class MainPoolTab {
             'increase-upgrade-quantity': () => this.sections.uniqueAbilities.handleIncreaseUpgradeQuantity(target),
             'decrease-upgrade-quantity': () => this.sections.uniqueAbilities.handleDecreaseUpgradeQuantity(target),
             'set-upgrade-quantity': () => this.sections.uniqueAbilities.handleSetUpgradeQuantity(target),
-            'create-custom-unique-ability': () => this.sections.uniqueAbilities.handleCreateCustomUniqueAbility(),
-            'purchase-action-upgrade': () => this.sections.actions.purchaseActionUpgrade(data.upgradeId),
-            'remove-action-upgrade': () => this.sections.actions.removeUpgrade(data.upgradeId)
+            'create-custom-unique-ability': () => this.sections.uniqueAbilities.handleCreateCustomUniqueAbility()
         };
         handlers[action]?.();
     }
@@ -388,23 +346,14 @@ export class MainPoolTab {
         }
     }
 
-    generateTraitDisplayName(trait, character) {
-        // This logic remains the same
-        const statNames = trait.statBonuses?.map(statId => {
-            const statOptions = TraitFlawSystem.getTraitStatOptions();
+
+    generateConditionalBonusDisplayName(conditionalBonus, character) {
+        const statNames = conditionalBonus.statBonuses?.map(statId => {
+            const statOptions = TraitFlawSystem.getConditionalBonusStatOptions();
             const stat = statOptions.find(s => s.id === statId);
             return stat ? stat.name : statId;
         }) || [];
-        const conditionNames = trait.conditions?.map(conditionId => {
-            const tiers = TraitFlawSystem.getTraitConditionTiers();
-            for (const tier of Object.values(tiers)) {
-                const condition = tier.conditions?.find(c => c.id === conditionId);
-                if (condition) return condition.name;
-            }
-            return conditionId;
-        }) || [];
         const statsText = statNames.length > 0 ? statNames.join('/') : 'Unknown Stats';
-        const conditionsText = conditionNames.length > 0 ? conditionNames.slice(0, 2).join(' & ') : 'Unknown Conditions';
-        return `+${character.tier} ${statsText} when ${conditionsText}${conditionNames.length > 2 ? '...' : ''}`;
+        return `+${character.tier} ${statsText} when ${conditionalBonus.name}`;
     }
 }

@@ -42,15 +42,7 @@ export class UtilitySystem {
         return [...attrs.combat, ...attrs.utility];
     }
     
-    // --- NEW: Talent and Archetype Configuration Logic ---
-
-    static setTalent(character, index, value) {
-        if (index !== 0 && index !== 1) {
-            throw new Error('Invalid talent index. Must be 0 or 1.');
-        }
-        character.talents[index] = value;
-        return character;
-    }
+    // --- Archetype Configuration Logic ---
 
     static togglePracticalSkill(character, skillId) {
         if (character.archetypes.utility !== 'practical') {

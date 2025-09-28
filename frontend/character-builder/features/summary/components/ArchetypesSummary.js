@@ -15,14 +15,11 @@ export class ArchetypesSummary {
             `;
         }
 
-        const archetypeOrder = ['movement', 'attackType', 'effectType', 'uniqueAbility', 'defensive', 'specialAttack', 'utility'];
+        const archetypeOrder = ['movement', 'attack', 'defensive', 'utility'];
         const categoryNames = {
             movement: 'Movement',
-            attackType: 'Attack Type',
-            effectType: 'Effect Type',
-            uniqueAbility: 'Unique Ability',
+            attack: 'Attack',
             defensive: 'Defensive',
-            specialAttack: 'Special Attack',
             utility: 'Utility'
         };
         

@@ -14,16 +14,16 @@ export class FlawPurchaseSection {
         const statOptions = TraitFlawSystem.getFlawStatOptions();
 
         const containerHtml = `
-            <div class="flaw-purchase-section-content">
+            <div class="passive-bonus-purchase-section-content">
                 ${this.renderSectionHeader(pointInfo)}
                 ${this.renderEconomicsNotice()}
 
-                <div class="available-flaws">
-                    <h5>Available Flaws</h5>
+                <div class="available-passive-bonuses">
+                    <h5>Available Passive Bonuses</h5>
                     ${RenderUtils.renderGrid(
                         flaws,
                         (flaw) => this.renderFlawCard(flaw, character, statOptions, pointInfo),
-                        { gridContainerClass: 'grid-layout flaw-grid', gridSpecificClass: 'grid-columns-auto-fit-320' }
+                        { gridContainerClass: 'grid-layout passive-bonus-grid', gridSpecificClass: 'grid-columns-auto-fit-320' }
                     )}
                 </div>
             </div>
@@ -36,10 +36,10 @@ export class FlawPurchaseSection {
         // This header can be simpler or removed if redundant.
         return `
             <div class="section-header">
-                <h4>Flaws (Cost ${TraitFlawSystem.getAvailableFlaws()[0]?.cost || 30}p Each)</h4>
+                <h4>Passive Bonuses (Cost ${TraitFlawSystem.getAvailableFlaws()[0]?.cost || 1}p Each)</h4>
                 <div class="points-remaining">
                    Main Pool: ${pointInfo.remaining}p
-                   ${pointInfo.remaining < (TraitFlawSystem.getAvailableFlaws()[0]?.cost || 30) && pointInfo.remaining >=0 ? '<span class="warning">(Low)</span>' : ''}
+                   ${pointInfo.remaining < (TraitFlawSystem.getAvailableFlaws()[0]?.cost || 1) && pointInfo.remaining >=0 ? '<span class="warning">(Low)</span>' : ''}
                    ${pointInfo.remaining < 0 ? '<span class="error">(Over Budget!)</span>' : ''}
                 </div>
             </div>
@@ -49,7 +49,7 @@ export class FlawPurchaseSection {
     renderEconomicsNotice() {
         return `
             <div class="economics-notice">
-                Flaws cost ${TraitFlawSystem.getAvailableFlaws()[0]?.cost || 30} points each but provide +Tier bonus to one chosen stat.
+                Passive Bonuses cost ${TraitFlawSystem.getAvailableFlaws()[0]?.cost || 1} point each and provide +Tier bonus to one chosen stat.
             </div>
         `;
     }
@@ -104,11 +104,11 @@ export class FlawPurchaseSection {
                         })}
                     </div>
                     ${RenderUtils.renderButton({
-                        text: `Purchase Flaw (-${flaw.cost}p)`,
+                        text: `Purchase Passive Bonus (-${flaw.cost}p)`,
                         variant: 'primary',
                         disabled: true, // Enabled by JS when stat is selected
                         dataAttributes: { action: 'purchase-flaw', 'flaw-id': flaw.id },
-                        classes: ['purchase-flaw-btn']
+                        classes: ['purchase-passive-bonus-btn']
                     })}
                 </div>
             `;
@@ -123,7 +123,7 @@ export class FlawPurchaseSection {
             disabled: isAlreadyPurchased,
             dataAttributes: { 'flaw-id': flaw.id }, // For main card div
             additionalContent: additionalContent
-        }, { cardClass: 'flaw-card', showCost: true, showStatus: !(status === 'available') });
+        }, { cardClass: 'passive-bonus-card', showCost: true, showStatus: !(status === 'available') });
     }
 
 
@@ -133,7 +133,7 @@ export class FlawPurchaseSection {
         const statBonus = statSelect ? statSelect.value : null;
 
         if (!statBonus) {
-            this.builder.showNotification('Please select a stat bonus for the flaw.', 'error');
+            this.builder.showNotification('Please select a stat bonus for the passive bonus.', 'error');
             return;
         }
 
@@ -156,7 +156,7 @@ export class FlawPurchaseSection {
             const character = this.builder.currentCharacter;
             TraitFlawSystem.purchaseFlaw(character, flawId, statBonus);
             this.builder.updateCharacter(); // Triggers re-render of MainPoolTab
-            this.builder.showNotification('Flaw purchased successfully!', 'success');
+            this.builder.showNotification('Passive Bonus purchased successfully!', 'success');
         } catch (error) {
             // This will now only catch hard rule validation errors.
             this.builder.showNotification(`Purchase failed: ${error.message}`, 'error');
@@ -167,13 +167,13 @@ export class FlawPurchaseSection {
         const character = this.builder.currentCharacter;
         const flaw = character.mainPoolPurchases.flaws[index];
 
-        if (confirm(`Remove flaw "${flaw.name}"? This will adjust your points.`)) {
+        if (confirm(`Remove passive bonus "${flaw.name}"? This will adjust your points.`)) {
             try {
                 TraitFlawSystem.removeFlaw(character, index);
                 this.builder.updateCharacter();
-                this.builder.showNotification('Flaw removed successfully.', 'success');
+                this.builder.showNotification('Passive Bonus removed successfully.', 'success');
             } catch (error) {
-                this.builder.showNotification(`Failed to remove flaw: ${error.message}`, 'error');
+                this.builder.showNotification(`Failed to remove passive bonus: ${error.message}`, 'error');
             }
         }
     }

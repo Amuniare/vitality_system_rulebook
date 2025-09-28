@@ -81,12 +81,24 @@ export class SpecialAttackSystem {
         // Check archetype restrictions
 
         
-        if (archetype === 'oneTrick' && character.specialAttacks.length >= 1) {
-            errors.push('One Trick archetype allows only one special attack');
+        if (archetype === 'focusedAttacker' && character.specialAttacks.length >= 1) {
+            errors.push('Focused Attacker archetype allows only one special attack');
         }
         
         if (archetype === 'dualNatured' && character.specialAttacks.length >= 2) {
             errors.push('Dual-Natured archetype allows only two special attacks');
+        }
+
+        if (archetype === 'versatileMaster' && character.specialAttacks.length >= 5) {
+            errors.push('Versatile Master archetype allows only five special attacks');
+        }
+
+        if (archetype === 'sharedCharges' && character.specialAttacks.length >= 3) {
+            errors.push('Shared Charges archetype allows only three special attacks');
+        }
+
+        if (archetype === 'specialist') {
+            errors.push('Specialist archetype cannot create special attacks - uses enhanced base attacks instead');
         }
         
         // Check build order
@@ -144,33 +156,32 @@ export class SpecialAttackSystem {
         
         attack.limitPointsTotal = attack.limits.reduce((total, limit) => total + (Number(limit.points) || 0), 0);
         
-        // Handle SharedUses archetype with resource-cost model
-        if (archetype === 'sharedUses') {
-            attack.upgradePointsFromLimits = 0; // SharedUses doesn't use limits
+        // All attack archetypes now use upgrades-only system
+        attack.upgradePointsFromLimits = 0; // No longer used - all archetypes use fixed points
+
+        if (archetype === 'sharedCharges') {
+            // SharedCharges uses resource-cost model with use cost selection
             attack.upgradePointsFromArchetype = 0; // Reset archetype points
-            
-            // Calculate points based on use cost: tier * 5 * useCost
+
+            // Calculate points based on use cost: tier * 10 * useCost (updated to match archetype definition)
             if (attack.useCost && attack.useCost > 0) {
-                attack.upgradePointsAvailable = character.tier * 5 * attack.useCost;
+                attack.upgradePointsAvailable = character.tier * 10 * attack.useCost;
             } else {
                 attack.upgradePointsAvailable = 0; // No points until use cost is selected
             }
         } else {
-            // Original logic for all other archetypes
-            if (pointMethod.method === 'limits') {
-                const calculationResult = TierSystem.calculateLimitScaling(attack.limitPointsTotal, character.tier, archetype);
-                attack.upgradePointsFromLimits = calculationResult.finalPoints;
-            } else {
-                attack.upgradePointsFromLimits = 0;
-            }
-            
+            // All other attack archetypes use fixed point allocation
             if (pointMethod.method === 'fixed') {
-                attack.upgradePointsFromArchetype = pointMethod.points;
+                attack.upgradePointsFromArchetype = pointMethod.points || pointMethod.pointsPerAttack || 0;
+                attack.upgradePointsAvailable = attack.upgradePointsFromArchetype;
+            } else if (pointMethod.method === 'boons') {
+                // Specialist archetype - no special attacks, enhanced boons instead
+                attack.upgradePointsFromArchetype = 0;
+                attack.upgradePointsAvailable = 0;
             } else {
                 attack.upgradePointsFromArchetype = 0;
+                attack.upgradePointsAvailable = 0;
             }
-            
-            attack.upgradePointsAvailable = attack.upgradePointsFromLimits + attack.upgradePointsFromArchetype;
         }
         
         // Recalculate upgrade points spent based on actual upgrades and their specialty status
@@ -506,10 +517,9 @@ export class SpecialAttackSystem {
     }
     
     static canArchetypeUseLimits(character) {
-        if (!character || !character.archetypes) return false;
-        const archetype = character.archetypes.specialAttack;
-        const noLimitsArchetypes = ['paragon', 'oneTrick', 'dualNatured', 'basic'];
-        return !noLimitsArchetypes.includes(archetype);
+        // With the new upgrades-only system, no attack archetypes use limits
+        // All special attacks now use upgrade points only
+        return false;
     }
 
     static toggleUpgradeSpecialty(character, attackIndex, upgradeId) {

@@ -99,8 +99,8 @@ export class SpecialAttackTab {
             <div class="attack-builder card">
                 ${this.attackBasicsForm.render(attack, character)}
                 <div class="attack-builder-columns">
-                    ${archetype === 'sharedUses' ? 
-                        this._renderSharedUsesAttackUI(attack, character) : 
+                    ${archetype === 'sharedCharges' ?
+                        this._renderSharedChargesAttackUI(attack, character) :
                         this._renderDefaultAttackUI(attack, character)
                     }
                 </div>
@@ -110,16 +110,13 @@ export class SpecialAttackTab {
     
     _renderDefaultAttackUI(attack, character) {
         return `
-            <div class="limits-column">
-                ${this.limitSelection.render(attack, character)}
-            </div>
-            <div class="upgrades-column">
+            <div class="upgrades-column full-width">
                 ${this.upgradeSelection.render(attack, character)}
             </div>
         `;
     }
     
-    _renderSharedUsesAttackUI(attack, character) {
+    _renderSharedChargesAttackUI(attack, character) {
         const useCostSelected = attack.useCost && attack.useCost > 0;
         const upgradesDisabled = !useCostSelected;
         

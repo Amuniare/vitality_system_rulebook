@@ -1,9 +1,0 @@
-[
-    { "id": "accuracy", "name": "Accuracy", "description": "Bonus to all attack rolls" },
-    { "id": "damage", "name": "Damage", "description": "Bonus to all damage rolls" },
-    { "id": "conditions", "name": "Conditions", "description": "Bonus to all condition rolls" },
-    { "id": "avoidance", "name": "Avoidance", "description": "Bonus to defense against attacks" },
-    { "id": "durability", "name": "Durability", "description": "Bonus to damage resistance" },
-    { "id": "speed", "name": "Speed", "description": "Bonus to movement and initiative" },
-    { "id": "allResistances", "name": "All Resistances", "description": "Bonus to Resolve, Stability, and Vitality" }
-]

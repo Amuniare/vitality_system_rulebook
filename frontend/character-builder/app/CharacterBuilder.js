@@ -366,10 +366,6 @@ export class CharacterBuilder {
             }
             
             // Ensure critical properties are never undefined before saving
-            if (!this.currentCharacter.talents || !Array.isArray(this.currentCharacter.talents)) {
-                console.warn('Fixing missing talents property before save');
-                this.currentCharacter.talents = ["", ""];
-            }
             
             if (!this.currentCharacter.archetypes || typeof this.currentCharacter.archetypes !== 'object') {
                 console.warn('Fixing missing archetypes property before save');
@@ -403,7 +399,6 @@ export class CharacterBuilder {
             }
             
             console.log('Before saving - character properties:', {
-                talents: this.currentCharacter.talents,
                 archetypes: this.currentCharacter.archetypes,
                 utilityPurchases: this.currentCharacter.utilityPurchases
             });
@@ -601,7 +596,9 @@ export class CharacterBuilder {
     
     setCharacterTier(tier) {
         if (!this.currentCharacter) return;
-        this.currentCharacter.tier = parseInt(tier);
+        const parsedTier = parseInt(tier);
+        this.currentCharacter.tier = parsedTier;
+        this.currentCharacter.level = parsedTier; // Keep level synchronized with tier
         this.updateCharacter();
     }
     
@@ -928,9 +925,10 @@ export class CharacterBuilder {
         });
         
         // Ensure critical properties exist with proper defaults (for old character data)
-        if (!character.talents || !Array.isArray(character.talents)) {
-            character.talents = ["", ""];
+        if (character.level === undefined) {
+            character.level = character.tier || 1; // Initialize level from tier for old character data
         }
+
         
         if (!character.utilityPurchases || typeof character.utilityPurchases !== 'object') {
             character.utilityPurchases = {

@@ -1,6 +1,7 @@
 // frontend/character-builder/calculators/PointPoolCalculator.js - REFACTORED with caching and unified calculations
 import { GameConstants } from '../core/GameConstants.js';
 import { TierSystem } from '../core/TierSystem.js';
+import { gameDataManager } from '../core/GameDataManager.js';
 
 export class PointPoolCalculator {
     static cache = new Map();
@@ -16,21 +17,27 @@ export class PointPoolCalculator {
         }
         
         console.log('🔄 Calculating point pools (cache miss)');
-        
+
         const tier = character.tier;
+        const level = character.level;
         const archetypes = character.archetypes;
-        
+
+        // Get the correct tier value from level data for attribute calculations
+        const levels = gameDataManager.getTiers();
+        const levelData = levels.levels?.[tier];
+        const effectiveTier = levelData?.tierBonus || tier;
+
         const pools = {
             // Base pools
-            combatAttributes: this.calculateCombatAttributePool(tier),
-            utilityAttributes: this.calculateUtilityAttributePool(tier),
-            mainPool: this.calculateMainPool(tier, archetypes.uniqueAbility),
-            utilityPool: this.calculateUtilityPool(tier, archetypes.utility),
+            combatAttributes: this.calculateCombatAttributePool(effectiveTier),
+            utilityAttributes: this.calculateUtilityAttributePool(effectiveTier),
+            mainPool: this.calculateMainPool(level, null), // uniqueAbility archetype removed
+            utilityPool: this.calculateUtilityPool(effectiveTier, archetypes.utility),
             
             // Special attack pools (calculated per attack)
             specialAttackPools: this.calculateSpecialAttackPools(character),
             
-            // Flaw bonuses - UPDATED FOR NEW ECONOMICS
+            // Passive bonus bonuses - UPDATED FOR NEW ECONOMICS
             flawBonuses: this.calculateFlawBonuses(character),
             
             // Total available
@@ -67,33 +74,31 @@ export class PointPoolCalculator {
     
     // UNIFIED: Main pool calculation (replaces duplicates in other systems)
     static calculateMainPoolAvailable(character) {
-        const tier = character.tier;
-        let available = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        
-        // Extraordinary archetype doubles main pool
-        if (character.archetypes.uniqueAbility === 'extraordinary') {
-            available += Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        }
-        
+        const level = character.level;
+        // Main pool points equal level directly (no formula)
+        let available = level;
+
+        // No archetype bonuses to main pool in new system
+
         return available;
     }
     
     // UNIFIED: Main pool spending calculation (replaces duplicates)
     static calculateMainPoolSpent(character) {
         let spent = 0;
-        
+
         // Boons cost points
         spent += character.mainPoolPurchases.boons.reduce((sum, boon) => sum + (boon.cost || 0), 0);
-        
-        // Traits cost points
-        spent += character.mainPoolPurchases.traits.reduce((sum, trait) => sum + (trait.cost || 0), 0);
-        
-        // NEW ECONOMICS: Flaws now COST points (major change)
-        spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 30), 0);
-        
-        // Primary action upgrades cost points
-        spent += character.mainPoolPurchases.primaryActionUpgrades.length * GameConstants.PRIMARY_TO_QUICK_COST;
-        
+
+        // Conditional bonuses cost points
+        if (character.mainPoolPurchases.conditionalBonuses) {
+            spent += character.mainPoolPurchases.conditionalBonuses.reduce((sum, bonus) => sum + (bonus.cost || 1), 0);
+        }
+
+        // NEW ECONOMICS: Passive bonuses now COST points (major change)
+        spent += character.mainPoolPurchases.flaws.reduce((sum, flaw) => sum + (flaw.cost || 1), 0);
+
+
         return spent;
     }
     
@@ -108,14 +113,12 @@ export class PointPoolCalculator {
     }
     
     // Main pool calculation with archetype bonuses
-    static calculateMainPool(tier, uniqueAbilityArchetype) {
-        let basePool = Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        
-        // Extraordinary archetype doubles main pool
-        if (uniqueAbilityArchetype === 'extraordinary') {
-            basePool += Math.max(0, (tier - GameConstants.MAIN_POOL_BASE_TIER) * GameConstants.MAIN_POOL_MULTIPLIER);
-        }
-        
+    static calculateMainPool(level, uniqueAbilityArchetype) {
+        // Main pool points equal level directly (no formula)
+        let basePool = level;
+
+        // No archetype bonuses in new system
+
         return basePool;
     }
     
@@ -130,7 +133,7 @@ export class PointPoolCalculator {
     // Calculate special attack pools for all attacks
     static calculateSpecialAttackPools(character) {
         const tier = character.tier;
-        const archetype = character.archetypes.specialAttack;
+        const archetype = character.archetypes.attack;
         
         let totalAvailable = 0;
         const attackPools = [];
@@ -152,7 +155,7 @@ export class PointPoolCalculator {
     // Calculate pool for a single special attack
     static calculateSingleAttackPool(character, attack, attackIndex) {
         const tier = character.tier;
-        const archetype = character.archetypes.specialAttack;
+        const archetype = character.archetypes.attack;
         
         let available = 0;
         let fromLimits = 0;
@@ -168,25 +171,31 @@ export class PointPoolCalculator {
                 available = limitCalcResult.finalPoints;
                 method = 'limits_scaled';
                 break;
-                
-            case 'paragon':
+
+            case 'versatileMaster':
                 fromArchetype = tier * 10;
                 available = fromArchetype;
                 method = 'fixed_archetype';
                 break;
-                
-            case 'oneTrick':
+
+            case 'focusedAttacker':
                 fromArchetype = tier * 20;
                 available = fromArchetype;
                 method = 'fixed_archetype';
                 break;
-                
+
             case 'dualNatured':
                 fromArchetype = tier * 15;
                 available = fromArchetype;
                 method = 'fixed_archetype';
                 break;
-                
+
+            case 'sharedCharges':
+                fromArchetype = tier * 10;
+                available = fromArchetype;
+                method = 'shared_resource';
+                break;
+
             case 'basic':
                 fromArchetype = tier * 10;
                 available = fromArchetype;
@@ -240,9 +249,9 @@ export class PointPoolCalculator {
         return methods[archetype] || 'Unknown method';
     }
     
-    // NEW ECONOMICS: Flaw bonuses calculation (flaws now cost points but give stat bonuses)
+    // NEW ECONOMICS: Passive bonus bonuses calculation (passive bonuses now cost points but give stat bonuses)
     static calculateFlawBonuses(character) {
-        // In new economics, flaws don't give point bonuses - they give stat bonuses instead
+        // In new economics, passive bonuses don't give point bonuses - they give stat bonuses instead
         // This method now returns 0 but we keep it for backwards compatibility
         return 0;
     }

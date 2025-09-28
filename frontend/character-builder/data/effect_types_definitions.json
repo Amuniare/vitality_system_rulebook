@@ -1,31 +1,74 @@
 {
     "damage": {
         "id": "damage",
-        "name": "Damage Only",
+        "name": "Damage",
         "description": "Pure damage dealing",
         "benefit": "Maximum damage potential",
         "cost": 0,
         "restrictions": [],
         "bonuses": { "maxDamage": true }
     },
-    "condition": {
-        "id": "condition",
-        "name": "Condition Only",
-        "description": "Status effect application",
-        "benefit": "Apply conditions without damage",
-        "cost": 0,
+    "control": {
+        "id": "control",
+        "name": "Control",
+        "description": "Gain control of the target until the start of your next turn",
+        "effect": "You can force them to take any actions available to them including attacking or stunning themselves until the control ends. Targets add 1/5th of their remaining HP to the Resistance Score against this attack.",
+        "cost": 30,
         "restrictions": [],
         "bonuses": { "conditionFocus": true }
     },
-    "hybrid": {
-        "id": "hybrid",
-        "name": "Hybrid (Damage + Condition)",
-        "description": "Both damage and condition in single attack",
-        "benefit": "Versatile attack combining effects",
-        "penalty": "-Tier to ALL Damage and Condition rolls",
-        "costKey": "hybrid", 
-        "freeForArchetype": "hybridSpecialist",
-        "restrictions": ["hybrid_penalty"],
-        "bonuses": { "bothEffects": true }
+    "stun": {
+        "id": "stun",
+        "name": "Stun",
+        "description": "The target cannot act on their turn",
+        "effect": "Their Avoidance is considered 0, all attacks that hit them are automatic critical attack rolls. Targets add 1/5th of their remaining HP to the Resistance Score against this attack.",
+        "cost": 20,
+        "restrictions": [],
+        "bonuses": { "conditionFocus": true }
+    },
+    "weaken": {
+        "id": "weaken",
+        "name": "Weaken",
+        "description": "Reduce one of the targets stats by 2 times your Tier",
+        "effect": "Reduce one of the targets stats, chosen when you build this attack, by 2 times your Tier until the end of your next turn.",
+        "cost": 20,
+        "restrictions": [],
+        "bonuses": { "conditionFocus": true }
+    },
+    "brawl": {
+        "id": "brawl",
+        "name": "Brawl",
+        "description": "Push, knockdown, or grab the target",
+        "effect": "Push your target up to 3 times your Tier spaces (collision damage), knock them Prone (melee gets extra Tier), or Grab them (prevents movement).",
+        "cost": 10,
+        "restrictions": [],
+        "bonuses": { "conditionFocus": true }
+    },
+    "frighten": {
+        "id": "frighten",
+        "name": "Frighten",
+        "description": "The target moves away from you as quickly as it can",
+        "effect": "The target spends its turn moving away from you as quickly as it can until the end of your next turn.",
+        "cost": 10,
+        "restrictions": [],
+        "bonuses": { "conditionFocus": true }
+    },
+    "taunt": {
+        "id": "taunt",
+        "name": "Taunt",
+        "description": "The target must include you in any attacks it makes",
+        "effect": "The target must include you in any attacks it makes until the end of your next turn.",
+        "cost": 10,
+        "restrictions": [],
+        "bonuses": { "conditionFocus": true }
+    },
+    "charm": {
+        "id": "charm",
+        "name": "Charm",
+        "description": "The target cannot attack you",
+        "effect": "The target cannot attack you until the end of your next turn.",
+        "cost": 10,
+        "restrictions": [],
+        "bonuses": { "conditionFocus": true }
     }
 }
