@@ -321,16 +321,6 @@ All characters can take these actions at base, no special training or abilities 
 - Each receives 10 × Tier points
 - Consistent performance without drawbacks
 
-
-**Shared Charges**
-- Build 3 attacks
-  - One attack consumes 1 charge
-  - One attack consumes 2 charges
-  - One attack consumes 3 charges
-- 10 shared charges among attacks
-- Action to regain 5 charges
-- Tier × 10 points per use
-
 **Specialist**
 - You cannot purchase Attack Upgrades
 - You instead receive Tier - 2 extra boons
