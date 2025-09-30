@@ -15,7 +15,8 @@ from reporting import (load_config, save_config, print_configuration_report,
                       generate_combo_performance_report, write_combo_performance_report,
                       write_build_summary, generate_upgrade_ranking_report, generate_upgrade_pairing_report,
                       generate_diagnostic_report, write_attack_type_enhancement_ranking_report,
-                      create_timestamped_reports_directory, generate_reports_by_mode)
+                      create_timestamped_reports_directory, generate_reports_by_mode,
+                      print_simulation_stats_receipt)
 from logging_manager import LoggingManager
 
 def test_single_build(args):
@@ -34,23 +35,40 @@ def test_single_build(args):
 
     for case_name, attacker, defender in test_cases:
 
-        # Run 4 different fight scenarios per case
-        fight_scenarios = [
-            ("Fight 1: 1x100 HP Boss", 1, 100),
-            ("Fight 2: 2x50 HP Enemies", 2, 50),
-            ("Fight 3: 4x25 HP Enemies", 4, 25),
-            ("Fight 4: 10x10 HP Enemies", 10, 10)
-        ]
+        # Load fight scenarios from config (with fallback to defaults)
+        if hasattr(config, 'fight_scenarios') and config.fight_scenarios.get('enabled', True):
+            # Read from config
+            config_scenarios = config.fight_scenarios.get('scenarios', [])
+            fight_scenarios = [
+                (s['name'], s.get('enemy_hp_list'), s.get('num_enemies'), s.get('enemy_hp'))
+                for s in config_scenarios
+            ]
+        else:
+            # Fallback to defaults (8 scenarios: 4 homogeneous + 4 mixed)
+            fight_scenarios = [
+                ("Fight 1: 1x100 HP Boss", None, 1, 100),
+                ("Fight 2: 2x50 HP Enemies", None, 2, 50),
+                ("Fight 3: 4x25 HP Enemies", None, 4, 25),
+                ("Fight 4: 10x10 HP Enemies", None, 10, 10),
+                ("Fight 5: 1x100 + 2x50 HP (Boss+Elites)", [100, 50, 50], None, None),
+                ("Fight 6: 1x25 + 6x10 HP (Captain+Swarm)", [25, 10, 10, 10, 10, 10, 10], None, None),
+                ("Fight 7: 1x50 + 6x10 HP (Elite+Swarm)", [50, 10, 10, 10, 10, 10, 10], None, None),
+                ("Fight 8: 1x100 + 4x25 HP (Boss+Captains)", [100, 25, 25, 25, 25], None, None)
+            ]
 
         case_total_dpt = 0
         case_total_turns = 0
         scenario_count = 0
 
-        for scenario_name, num_enemies, enemy_hp in fight_scenarios:
+        for scenario_data in fight_scenarios:
+            # Handle scenario data format
+            scenario_name, enemy_hp_list, num_enemies, enemy_hp = scenario_data
+
             # Run batch simulation
             results, avg_turns, dpt = run_simulation_batch(
                 attacker, build, config.build_testing_runs, config.target_hp, defender,
-                num_enemies=num_enemies, enemy_hp=enemy_hp)
+                num_enemies=num_enemies if num_enemies else 0, enemy_hp=enemy_hp,
+                enemy_hp_list=enemy_hp_list)
 
             # Skip scenario logging in worker processes
 
@@ -58,7 +76,7 @@ def test_single_build(args):
             case_total_turns += avg_turns
             scenario_count += 1
 
-        # Average DPT and turns across the 4 scenarios for this case
+        # Average DPT and turns across all scenarios for this case
         case_avg_dpt = case_total_dpt / scenario_count if scenario_count > 0 else 0
         case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
 
@@ -136,6 +154,9 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
     print("Counting total builds for progress tracking...")
     total_builds = sum(1 for _ in generate_valid_builds_chunked(config.max_points, attack_types, chunk_size))
     print(f"Testing {total_builds} builds in chunks of {chunk_size}...")
+
+    # Print simulation statistics receipt
+    print_simulation_stats_receipt(config, total_builds)
 
     # Determine number of threads to use - use all available cores
     max_workers = multiprocessing.cpu_count()

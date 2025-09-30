@@ -104,6 +104,9 @@ class SimulationConfig:
     # Combat configuration
     combat: dict = None
 
+    # Fight scenarios configuration
+    fight_scenarios: dict = None
+
     def __post_init__(self):
         """Set default configurations if not provided"""
         if self.attacker_configs is None:
@@ -184,6 +187,21 @@ class SimulationConfig:
             self.combat = {
                 "max_turns": 20,
                 "safety_limit": 100
+            }
+
+        if self.fight_scenarios is None:
+            self.fight_scenarios = {
+                "enabled": True,
+                "scenarios": [
+                    {"name": "Fight 1: 1x100 HP Boss", "enemy_hp_list": None, "num_enemies": 1, "enemy_hp": 100},
+                    {"name": "Fight 2: 2x50 HP Enemies", "enemy_hp_list": None, "num_enemies": 2, "enemy_hp": 50},
+                    {"name": "Fight 3: 4x25 HP Enemies", "enemy_hp_list": None, "num_enemies": 4, "enemy_hp": 25},
+                    {"name": "Fight 4: 10x10 HP Enemies", "enemy_hp_list": None, "num_enemies": 10, "enemy_hp": 10},
+                    {"name": "Fight 5: 1x100 + 2x50 HP (Boss+Elites)", "enemy_hp_list": [100, 50, 50], "num_enemies": None, "enemy_hp": None},
+                    {"name": "Fight 6: 1x25 + 6x10 HP (Captain+Swarm)", "enemy_hp_list": [25, 10, 10, 10, 10, 10, 10], "num_enemies": None, "enemy_hp": None},
+                    {"name": "Fight 7: 1x50 + 6x10 HP (Elite+Swarm)", "enemy_hp_list": [50, 10, 10, 10, 10, 10, 10], "num_enemies": None, "enemy_hp": None},
+                    {"name": "Fight 8: 1x100 + 4x25 HP (Boss+Captains)", "enemy_hp_list": [100, 25, 25, 25, 25], "num_enemies": None, "enemy_hp": None}
+                ]
             }
 
     @property

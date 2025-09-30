@@ -162,6 +162,63 @@ def print_configuration_report(config: SimulationConfig):
     print("\n" + "="*80 + "\n")
 
 
+def print_simulation_stats_receipt(config: SimulationConfig, total_builds: int = None):
+    """Print simulation statistics in a clean receipt-like format"""
+
+    # Calculate key stats
+    num_attacker_configs = len(config.attacker_configs)
+    num_defender_configs = len(config.defender_configs)
+    total_configs = num_attacker_configs * num_defender_configs
+
+    # Get number of scenarios from config
+    if hasattr(config, 'fight_scenarios') and config.fight_scenarios.get('enabled', True):
+        num_scenarios = len(config.fight_scenarios.get('scenarios', []))
+    else:
+        num_scenarios = 8  # Default fallback
+
+    # Calculate test cases and simulations
+    test_cases_per_build = total_configs * num_scenarios
+    runs_per_test = config.build_testing_runs
+    simulations_per_build = test_cases_per_build * runs_per_test
+
+    # Calculate total simulations if build count is provided
+    if total_builds:
+        total_simulations = total_builds * simulations_per_build
+    else:
+        total_simulations = None
+
+    # Print receipt
+    print("\n")
+    print("=" * 60)
+    print("SIMULATION STATISTICS SUMMARY")
+    print("=" * 60)
+    print()
+    print(f"Points Budget:                     {config.max_points}")
+    print()
+    if total_builds:
+        print(f"Total Builds Tested:               {total_builds:,}")
+    else:
+        print(f"Total Builds:                      (calculating...)")
+    print()
+    print(f"Attacker Configurations:           {num_attacker_configs}")
+    print(f"Defender Configurations:           {num_defender_configs}")
+    print(f"Total A/D Configurations:          {num_attacker_configs} × {num_defender_configs} = {total_configs}")
+    print()
+    print(f"Fight Scenarios per Config:        {num_scenarios}")
+    print(f"Test Cases per Build:              {total_configs} × {num_scenarios} = {test_cases_per_build}")
+    print()
+    print(f"Runs per Test Case:                {runs_per_test}")
+    print(f"Simulations per Build:             {test_cases_per_build} × {runs_per_test} = {simulations_per_build:,}")
+    print()
+    if total_simulations:
+        print(f"TOTAL SIMULATIONS:                 {total_builds:,} × {simulations_per_build:,} = {total_simulations:,}")
+    else:
+        print(f"TOTAL SIMULATIONS:                 (pending build count)")
+    print()
+    print("=" * 60)
+    print()
+
+
 def generate_combo_performance_report(config: SimulationConfig) -> Dict:
     """Generate performance analysis for specific two-upgrade combinations"""
     print(f"\nGenerating combo performance analysis...")

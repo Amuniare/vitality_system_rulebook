@@ -9,20 +9,29 @@ from combat import make_attack, make_aoe_attack
 
 def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: int = 100,
                           log_file=None, defender: Character = None, num_enemies: int = 1,
-                          enemy_hp: int = None, max_turns: int = 100) -> int:
-    """Simulate combat until all targets die, return number of turns"""
+                          enemy_hp: int = None, max_turns: int = 100, enemy_hp_list: List[int] = None) -> int:
+    """Simulate combat until all targets die, return number of turns
+
+    Args:
+        enemy_hp_list: Optional list of HP values for mixed enemy groups.
+                       If provided, overrides num_enemies and enemy_hp.
+    """
 
     # Use provided defender or create dummy defender for the test case
     if defender is None:
         defender = Character(focus=0, power=0, mobility=3, endurance=0, tier=attacker.tier)
 
-    # Set enemy HP - use target_hp if enemy_hp not specified
-    if enemy_hp is None:
-        enemy_hp = target_hp
-
-    # Initialize multiple enemies with pre-allocated structure
-    enemy_template = {'hp': enemy_hp, 'max_hp': enemy_hp, 'bleed_stacks': []}
-    enemies = [enemy_template.copy() for _ in range(num_enemies)]
+    # Initialize enemies - support both homogeneous and mixed HP groups
+    if enemy_hp_list is not None:
+        # Mixed enemy groups - each enemy can have different HP
+        enemies = [{'hp': hp, 'max_hp': hp, 'bleed_stacks': []} for hp in enemy_hp_list]
+        num_enemies = len(enemy_hp_list)
+    else:
+        # Homogeneous enemy groups - all enemies have same HP (backward compatible)
+        if enemy_hp is None:
+            enemy_hp = target_hp
+        enemy_template = {'hp': enemy_hp, 'max_hp': enemy_hp, 'bleed_stacks': []}
+        enemies = [enemy_template.copy() for _ in range(num_enemies)]
 
     if log_file:
         log_file.write(f"\n{'='*80}\n")
@@ -44,8 +53,12 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         log_file.write(f"  Total Cost: {build.total_cost} points\n")
         log_file.write(f"COMBAT PARAMETERS:\n")
         log_file.write(f"  Number of Enemies: {num_enemies}\n")
-        log_file.write(f"  Enemy HP: {enemy_hp} each\n")
-        log_file.write(f"  Total HP Pool: {num_enemies * enemy_hp}\n")
+        if enemy_hp_list:
+            log_file.write(f"  Enemy HP: {enemy_hp_list} (mixed)\n")
+            log_file.write(f"  Total HP Pool: {sum(enemy_hp_list)}\n")
+        else:
+            log_file.write(f"  Enemy HP: {enemy_hp} each\n")
+            log_file.write(f"  Total HP Pool: {num_enemies * enemy_hp}\n")
         log_file.write(f"  Combat Length Limit: 100 turns\n")
         log_file.write(f"{'='*80}\n\n")
 
@@ -358,8 +371,13 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
 def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int = 10,
                         target_hp: int = 100, defender: Character = None,
-                        num_enemies: int = 1, enemy_hp: int = None, max_turns: int = 100) -> Tuple[List[int], float, float]:
+                        num_enemies: int = 1, enemy_hp: int = None, max_turns: int = 100,
+                        enemy_hp_list: List[int] = None) -> Tuple[List[int], float, float]:
     """Run multiple combat simulations and return results
+
+    Args:
+        enemy_hp_list: Optional list of HP values for mixed enemy groups.
+                       If provided, overrides num_enemies and enemy_hp.
 
     Returns:
         Tuple of (individual_results, average_turns, damage_per_turn)
@@ -367,12 +385,16 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
     # Pre-allocate results list for better memory efficiency
     results = [0] * num_runs
 
-    # Calculate total HP pool once
-    total_hp_pool = (enemy_hp if enemy_hp else target_hp) * num_enemies
+    # Calculate total HP pool once - support both homogeneous and mixed groups
+    if enemy_hp_list:
+        total_hp_pool = sum(enemy_hp_list)
+    else:
+        total_hp_pool = (enemy_hp if enemy_hp else target_hp) * num_enemies
 
     for i in range(num_runs):
         turns = simulate_combat_verbose(attacker, build, target_hp, defender=defender,
-                                      num_enemies=num_enemies, enemy_hp=enemy_hp, max_turns=max_turns)
+                                      num_enemies=num_enemies, enemy_hp=enemy_hp, max_turns=max_turns,
+                                      enemy_hp_list=enemy_hp_list)
         results[i] = turns
 
     avg_turns = sum(results) / num_runs
