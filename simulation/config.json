@@ -1,10 +1,10 @@
 {
   "execution_mode": "both",
-  "max_points": 120,
+  "archetype": "focused",
+  "tier": 4,
   "use_threading": true,
   "verbose_logging": true,
   "top_builds_count": 100,
-  "min_dpt_threshold": 0.0,
   "build_chunk_size": 2000,
   "attacker_configs": [
     [

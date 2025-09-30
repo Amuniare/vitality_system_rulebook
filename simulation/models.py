@@ -63,9 +63,9 @@ class SimulationConfig:
     # Core simulation settings
     num_runs: int = 10
     target_hp: int = 100
-    max_points: int = 60
+    archetype: str = "focused"  # "focused", "dual_natured", or "versatile_master"
+    tier: int = 3
     use_threading: bool = True
-    min_dpt_threshold: float = 0.0
 
     # Simulation run counts
     simulation_runs: dict = None
@@ -219,6 +219,27 @@ class SimulationConfig:
         """Get number of simulation runs for individual testing"""
         return self.simulation_runs.get('individual_testing_runs', 5)
 
+    @property
+    def max_points_per_attack(self) -> int:
+        """Calculate max points per attack based on archetype and tier"""
+        archetype_multipliers = {
+            "focused": 30,
+            "dual_natured": 25,
+            "versatile_master": 20
+        }
+        multiplier = archetype_multipliers.get(self.archetype, 30)
+        return self.tier * multiplier
+
+    @property
+    def num_attacks(self) -> int:
+        """Get number of attacks based on archetype"""
+        archetype_attacks = {
+            "focused": 1,
+            "dual_natured": 2,
+            "versatile_master": 5
+        }
+        return archetype_attacks.get(self.archetype, 1)
+
 
 class AttackBuild:
     """Represents a complete attack build with type, upgrades, and limits"""
@@ -291,3 +312,75 @@ class AttackBuild:
         return hash((self.attack_type,
                     tuple(sorted(self.upgrades)),
                     tuple(sorted(self.limits))))
+
+
+class MultiAttackBuild:
+    """Represents a collection of attack builds for versatile archetypes"""
+
+    def __init__(self, builds: List[AttackBuild], archetype: str):
+        """
+        Initialize a multi-attack build collection
+
+        Args:
+            builds: List of AttackBuild objects
+            archetype: Type of archetype ("focused", "dual_natured", "versatile_master")
+        """
+        self.builds = builds
+        self.archetype = archetype
+        self.scenario_results = {}  # Maps scenario_name -> {build_idx: avg_turns}
+        self.optimal_selections = {}  # Maps scenario_name -> build_idx
+
+    def record_scenario_result(self, scenario_name: str, build_idx: int, avg_turns: float):
+        """Record the average turns for a specific build in a specific scenario"""
+        if scenario_name not in self.scenario_results:
+            self.scenario_results[scenario_name] = {}
+        self.scenario_results[scenario_name][build_idx] = avg_turns
+
+    def calculate_optimal_selections(self):
+        """Calculate which build performs best (lowest turns) in each scenario"""
+        for scenario_name, results in self.scenario_results.items():
+            if results:
+                # Find build with minimum average turns
+                best_build_idx = min(results.keys(), key=lambda idx: results[idx])
+                self.optimal_selections[scenario_name] = best_build_idx
+
+    def get_overall_avg_turns(self) -> float:
+        """Calculate overall average turns using optimal build selection per scenario"""
+        if not self.optimal_selections:
+            self.calculate_optimal_selections()
+
+        if not self.optimal_selections:
+            return float('inf')
+
+        total_turns = 0
+        for scenario_name, best_build_idx in self.optimal_selections.items():
+            total_turns += self.scenario_results[scenario_name][best_build_idx]
+
+        return total_turns / len(self.optimal_selections)
+
+    def get_total_cost(self) -> int:
+        """Get total cost across all builds"""
+        return sum(build.total_cost for build in self.builds)
+
+    def __str__(self) -> str:
+        """String representation of the multi-attack build"""
+        parts = [f"{self.archetype.replace('_', ' ').title()} Build ({len(self.builds)} attacks)"]
+        for i, build in enumerate(self.builds):
+            parts.append(f"  Attack {i+1}: {build}")
+        if self.optimal_selections:
+            parts.append(f"  Overall Avg Turns: {self.get_overall_avg_turns():.2f}")
+        return "\n".join(parts)
+
+    def __repr__(self) -> str:
+        return f"MultiAttackBuild({len(self.builds)} builds, {self.archetype})"
+
+    def __eq__(self, other) -> bool:
+        """Check if two multi-attack builds are equivalent"""
+        if not isinstance(other, MultiAttackBuild):
+            return False
+        return (self.archetype == other.archetype and
+                set(self.builds) == set(other.builds))
+
+    def __hash__(self) -> int:
+        """Make multi-attack builds hashable for use in sets/dicts"""
+        return hash((self.archetype, tuple(sorted(self.builds, key=lambda b: hash(b)))))

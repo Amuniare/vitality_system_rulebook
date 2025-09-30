@@ -161,3 +161,77 @@ def generate_limit_builds(max_points: int = 60, attack_types: List[str] = None) 
                 valid_builds.append(build)
 
     return valid_builds
+
+
+def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: List[str] = None, chunk_size: int = 1000) -> Generator:
+    """
+    Generate builds for a specific archetype as a chunked generator
+
+    Args:
+        archetype: "focused", "dual_natured", or "versatile_master"
+        tier: Character tier (determines points per attack)
+        attack_types: List of attack types to consider
+        chunk_size: Size of chunks for memory efficiency
+
+    Yields:
+        For focused: AttackBuild objects
+        For dual_natured/versatile_master: MultiAttackBuild objects
+    """
+    from models import MultiAttackBuild
+
+    # Calculate points per attack based on archetype
+    archetype_multipliers = {
+        "focused": 30,
+        "dual_natured": 25,
+        "versatile_master": 20
+    }
+    multiplier = archetype_multipliers.get(archetype, 30)
+    max_points_per_attack = tier * multiplier
+
+    if archetype == "focused":
+        # For focused archetype, just generate single builds
+        yield from generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size)
+
+    elif archetype == "dual_natured":
+        # Generate all pairs of builds
+        yield from _generate_dual_natured_builds(max_points_per_attack, attack_types)
+
+    elif archetype == "versatile_master":
+        # Generate all sets of 5 builds
+        yield from _generate_versatile_master_builds(max_points_per_attack, attack_types)
+
+
+def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
+    """Generate all valid pairs of builds for dual-natured archetype"""
+    from models import MultiAttackBuild
+
+    if attack_types is None:
+        attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+
+    # Generate all valid single builds first
+    all_builds = list(generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000))
+
+    # Generate all unique pairs
+    for i, build1 in enumerate(all_builds):
+        for build2 in all_builds[i:]:  # Start from i to avoid duplicate pairs
+            # Create multi-attack build with both
+            multi_build = MultiAttackBuild([build1, build2], "dual_natured")
+            yield multi_build
+
+
+def _generate_versatile_master_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
+    """Generate all valid sets of 5 builds for versatile master archetype"""
+    from models import MultiAttackBuild
+
+    if attack_types is None:
+        attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+
+    # Generate all valid single builds first
+    all_builds = list(generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000))
+
+    # Generate all unique combinations of 5 builds
+    # Use itertools.combinations_with_replacement to allow duplicates
+    import itertools
+    for build_combo in itertools.combinations_with_replacement(all_builds, 5):
+        multi_build = MultiAttackBuild(list(build_combo), "versatile_master")
+        yield multi_build

@@ -622,7 +622,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Range:** Originates from your position
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Penalty:** -Tier to all Accuracy checks
-- **Cost:** All upgrades cost 2x as much
+- **Cost Modifier:** All upgrades / limits cost 2x as much
 
 **DIRECT CONDITION ATTACK** 
 - **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
@@ -634,7 +634,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction:** Must be a Condition Effect
 - **Penalty:** -Tier x2 Condition Roll
-- **Cost:** All upgrades cost 2x as much
+- **Cost Modifier:** All upgrades / limits cost 2x as much
 
 **DIRECT DAMAGE ATTACK** 
 - **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
@@ -646,7 +646,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction:** Must be Damage Effect
 - **Penalty:** Flat 15 - Tier x2
-- **Cost:** All upgrades cost 2x as much
+- **Cost Modifier:** All upgrades / limits cost 2x as much
 
 ## **DAMAGE & CONDITIONS **
 1. You can build an attack that does damage for free or purchase a Condition for it's listed price

@@ -7,8 +7,8 @@ import time
 import multiprocessing
 import gc
 from concurrent.futures import ProcessPoolExecutor
-from models import Character, AttackBuild, SimulationConfig
-from build_generator import generate_valid_builds, generate_valid_builds_chunked
+from models import Character, AttackBuild, MultiAttackBuild, SimulationConfig
+from build_generator import generate_valid_builds, generate_valid_builds_chunked, generate_archetype_builds_chunked
 from simulation import simulate_combat_verbose, run_simulation_batch
 from reporting import (load_config, save_config, print_configuration_report,
                       generate_upgrade_performance_report, write_upgrade_performance_report,
@@ -27,7 +27,6 @@ def test_single_build(args):
     # Instead, we'll disable detailed logging in worker processes
     should_log = False
 
-    total_dpt = 0
     total_turns = 0
     total_configs = 0
 
@@ -56,7 +55,6 @@ def test_single_build(args):
                 ("Fight 8: 1x100 + 4x25 HP (Boss+Captains)", [100, 25, 25, 25, 25], None, None)
             ]
 
-        case_total_dpt = 0
         case_total_turns = 0
         scenario_count = 0
 
@@ -72,25 +70,80 @@ def test_single_build(args):
 
             # Skip scenario logging in worker processes
 
-            case_total_dpt += dpt
             case_total_turns += avg_turns
             scenario_count += 1
 
-        # Average DPT and turns across all scenarios for this case
-        case_avg_dpt = case_total_dpt / scenario_count if scenario_count > 0 else 0
+        # Average turns across all scenarios for this case
         case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
 
         # Skip case logging in worker processes
 
-        total_dpt += case_avg_dpt
         total_turns += case_avg_turns
         total_configs += 1
 
-    avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
     avg_turns = total_turns / total_configs if total_configs > 0 else 0
 
-    # Return build, average DPT, and average turns
-    return (build, avg_dpt, avg_turns)
+    # Return build and average turns
+    return (build, avg_turns)
+
+
+def test_multi_attack_build(args):
+    """Test a multi-attack build by testing each attack separately and tracking optimal selections"""
+    build_idx, multi_build, test_cases, config, logger, print_progress = args
+
+    # For each attack in the multi-build, test it across all scenarios
+    for attack_idx, attack_build in enumerate(multi_build.builds):
+        total_turns = 0
+        total_configs = 0
+
+        for case_name, attacker, defender in test_cases:
+            # Load fight scenarios from config
+            if hasattr(config, 'fight_scenarios') and config.fight_scenarios.get('enabled', True):
+                config_scenarios = config.fight_scenarios.get('scenarios', [])
+                fight_scenarios = [
+                    (s['name'], s.get('enemy_hp_list'), s.get('num_enemies'), s.get('enemy_hp'))
+                    for s in config_scenarios
+                ]
+            else:
+                fight_scenarios = [
+                    ("Fight 1: 1x100 HP Boss", None, 1, 100),
+                    ("Fight 2: 2x50 HP Enemies", None, 2, 50),
+                    ("Fight 3: 4x25 HP Enemies", None, 4, 25),
+                    ("Fight 4: 10x10 HP Enemies", None, 10, 10),
+                    ("Fight 5: 1x100 + 2x50 HP (Boss+Elites)", [100, 50, 50], None, None),
+                    ("Fight 6: 1x25 + 6x10 HP (Captain+Swarm)", [25, 10, 10, 10, 10, 10, 10], None, None),
+                    ("Fight 7: 1x50 + 6x10 HP (Elite+Swarm)", [50, 10, 10, 10, 10, 10, 10], None, None),
+                    ("Fight 8: 1x100 + 4x25 HP (Boss+Captains)", [100, 25, 25, 25, 25], None, None)
+                ]
+
+            case_total_turns = 0
+            scenario_count = 0
+
+            for scenario_data in fight_scenarios:
+                scenario_name, enemy_hp_list, num_enemies, enemy_hp = scenario_data
+
+                # Run batch simulation for this specific attack
+                results, avg_turns, dpt = run_simulation_batch(
+                    attacker, attack_build, config.build_testing_runs, config.target_hp, defender,
+                    num_enemies=num_enemies if num_enemies else 0, enemy_hp=enemy_hp,
+                    enemy_hp_list=enemy_hp_list)
+
+                # Record result for this attack in this scenario
+                multi_build.record_scenario_result(f"{case_name}_{scenario_name}", attack_idx, avg_turns)
+
+                case_total_turns += avg_turns
+                scenario_count += 1
+
+            case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
+            total_turns += case_avg_turns
+            total_configs += 1
+
+    # Calculate optimal selections across all scenarios
+    multi_build.calculate_optimal_selections()
+
+    # Return the multi-build with its overall average turns
+    avg_turns = multi_build.get_overall_avg_turns()
+    return (multi_build, avg_turns)
 
 
 def main():
@@ -147,13 +200,17 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
     # Get chunk size from config, default to 1000
     chunk_size = getattr(config, 'build_chunk_size', 1000)
 
-    # Use chunked generator for memory efficiency
-    builds_generator = generate_valid_builds_chunked(config.max_points, attack_types, chunk_size)
+    # Determine which test function to use based on archetype
+    is_multi_attack = config.archetype in ['dual_natured', 'versatile_master']
+    test_func = test_multi_attack_build if is_multi_attack else test_single_build
+
+    # Use archetype-based generator
+    builds_generator = generate_archetype_builds_chunked(config.archetype, config.tier, attack_types, chunk_size)
 
     # Count total builds for progress tracking without loading all into memory
     print("Counting total builds for progress tracking...")
-    total_builds = sum(1 for _ in generate_valid_builds_chunked(config.max_points, attack_types, chunk_size))
-    print(f"Testing {total_builds} builds in chunks of {chunk_size}...")
+    total_builds = sum(1 for _ in generate_archetype_builds_chunked(config.archetype, config.tier, attack_types, chunk_size))
+    print(f"Testing {total_builds} {config.archetype} builds (Tier {config.tier}, {config.max_points_per_attack} points per attack)...")
 
     # Print simulation statistics receipt
     print_simulation_stats_receipt(config, total_builds)
@@ -188,7 +245,7 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
         start_time = time.time()
 
         # Process builds in chunks for memory efficiency
-        builds_generator = generate_valid_builds_chunked(config.max_points, attack_types, chunk_size)
+        builds_generator = generate_archetype_builds_chunked(config.archetype, config.tier, attack_types, chunk_size)
 
         # Execute builds using multiprocessing or sequential processing based on config
         completed_count = 0
@@ -222,16 +279,15 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
 
                     with ProcessPoolExecutor(max_workers=max_workers) as executor:
                         # Submit chunk tasks to executor
-                        futures = [executor.submit(test_single_build, args) for args in current_chunk]
+                        futures = [executor.submit(test_func, args) for args in current_chunk]
 
                         # Process completed futures with progress tracking
                         for future in futures:
-                            build, avg_dpt, avg_turns = future.result()
+                            build, avg_turns = future.result()
                             completed_count += 1
 
-                            # Filter by minimum DPT threshold
-                            if avg_dpt >= config.min_dpt_threshold:
-                                build_results.append((build, avg_dpt, avg_turns))
+                            # Store result
+                            build_results.append((build, avg_turns))
 
                             # Progress reporting every 100 builds
                             if completed_count % 100 == 0:
@@ -252,11 +308,10 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
                 print(f"Processing final chunk {chunk_count} ({len(current_chunk)} builds) sequentially...")
 
                 for args in current_chunk:
-                    build, avg_dpt, avg_turns = test_single_build(args)
+                    build, avg_turns = test_func(args)
                     completed_count += 1
 
-                    if avg_dpt >= config.min_dpt_threshold:
-                        build_results.append((build, avg_dpt, avg_turns))
+                    build_results.append((build, avg_turns))
 
                     if completed_count % 100 == 0:
                         current_time = time.time()
@@ -274,11 +329,10 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
             # Process builds sequentially
             for build_idx, build in enumerate(builds_generator):
                 args = (build_idx, build, test_cases, config, None, False)
-                build, avg_dpt, avg_turns = test_single_build(args)
+                build, avg_turns = test_func(args)
                 completed_count += 1
 
-                if avg_dpt >= config.min_dpt_threshold:
-                    build_results.append((build, avg_dpt, avg_turns))
+                build_results.append((build, avg_turns))
 
                 # Progress reporting
                 if completed_count % 100 == 0:
@@ -304,8 +358,8 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
         else:
             print(f"  Execution mode: Sequential (single-threaded)")
 
-        # Sort by DPT
-        build_results.sort(key=lambda x: x[1], reverse=True)
+        # Sort by average turns (lower is better)
+        build_results.sort(key=lambda x: x[1])
 
         # Process top builds for detailed logging
         logger.process_top_builds(build_results, config.__dict__)

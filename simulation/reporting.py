@@ -37,9 +37,9 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
             execution_mode=data.get('execution_mode', 'both'),
             num_runs=data.get('num_runs', 10),
             target_hp=data.get('target_hp', 100),
-            max_points=data.get('max_points', 60),
+            archetype=data.get('archetype', 'focused'),
+            tier=data.get('tier', 3),
             use_threading=data.get('use_threading', True),
-            min_dpt_threshold=data.get('min_dpt_threshold', 0.0),
 
             # Legacy compatibility
             test_single_upgrades=data.get('test_single_upgrades', True),
@@ -91,7 +91,8 @@ def save_config(config: SimulationConfig, config_file: str = 'config.json'):
             'individual_testing_runs': config.individual_testing_runs
         },
         'target_hp': config.target_hp,
-        'max_points': config.max_points,
+        'archetype': config.archetype,
+        'tier': config.tier,
         'test_single_upgrades': config.test_single_upgrades,
         'test_two_upgrade_combinations': config.test_two_upgrade_combinations,
         'test_three_upgrade_combinations': config.test_three_upgrade_combinations,
@@ -102,7 +103,6 @@ def save_config(config: SimulationConfig, config_file: str = 'config.json'):
         'attack_types_filter': config.attack_types_filter,
         'upgrades_filter': config.upgrades_filter,
         'limits_filter': config.limits_filter,
-        'min_dpt_threshold': config.min_dpt_threshold,
         'verbose_logging': config.verbose_logging,
         'show_top_builds': config.show_top_builds,
         'generate_individual_logs': config.generate_individual_logs,
@@ -120,7 +120,7 @@ def print_configuration_report(config: SimulationConfig):
     print("=" * 50)
     print(f"Build testing runs: {config.build_testing_runs}, Individual testing runs: {config.individual_testing_runs}")
     print("Enemy Scenarios: 1×100, 2×50, 4×25, 10×10 HP")
-    print(f"Max build points: {config.max_points}")
+    print(f"Archetype: {config.archetype} | Tier: {config.tier} | Points per attack: {config.max_points_per_attack} | Num attacks: {config.num_attacks}")
     print()
 
     print("Test Categories:")
@@ -138,8 +138,6 @@ def print_configuration_report(config: SimulationConfig):
         print(f"  - Upgrades: {', '.join(config.upgrades_filter)}")
     if config.limits_filter:
         print(f"  - Limits: {', '.join(config.limits_filter)}")
-    if config.min_dpt_threshold > 0:
-        print(f"  - Minimum DPT threshold: {config.min_dpt_threshold}")
     print()
 
     print("Output Settings:")
@@ -747,7 +745,7 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
     combo_rankings = {}    # combo_name -> list of ranking positions
 
     # Process each build result to track enhancement positions
-    for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1):
+    for rank, (build, avg_turns) in enumerate(all_build_results, 1):
         # Track attack type rankings
         if build.attack_type not in attack_type_rankings:
             attack_type_rankings[build.attack_type] = []
@@ -938,13 +936,12 @@ def build_turns_table(all_build_results: List[Tuple], config: SimulationConfig, 
     """Generate table of builds sorted by average turns (ascending)"""
     print("Generating build turns table report...")
 
-    # Extract build data with turns - all_build_results now contains (build, dpt, avg_turns)
+    # Extract build data with turns - all_build_results now contains (build, avg_turns)
     build_data = []
-    for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1):
+    for rank, (build, avg_turns) in enumerate(all_build_results, 1):
         build_data.append({
             'original_rank': rank,
             'build': build,
-            'dpt': dpt,
             'avg_turns': avg_turns
         })
 
@@ -959,8 +956,8 @@ def build_turns_table(all_build_results: List[Tuple], config: SimulationConfig, 
         f.write(f"Total builds: {len(build_data)}\n\n")
 
         # Table header
-        f.write(f"{'Rank':<6} {'Avg Turns':<10} {'DPT':<8} {'Orig Rank':<10} {'Build Description':<50}\n")
-        f.write("-" * 100 + "\n")
+        f.write(f"{'Rank':<6} {'Avg Turns':<10} {'Orig Rank':<10} {'Build Description':<50}\n")
+        f.write("-" * 90 + "\n")
 
         # Write top 50 builds by turns
         for i, data in enumerate(build_data[:50], 1):
@@ -971,7 +968,7 @@ def build_turns_table(all_build_results: List[Tuple], config: SimulationConfig, 
             if build.limits:
                 build_desc += f" + {', '.join(build.limits)}"
 
-            f.write(f"{i:<6} {data['avg_turns']:<10.1f} {data['dpt']:<8.1f} "
+            f.write(f"{i:<6} {data['avg_turns']:<10.1f} "
                    f"{data['original_rank']:<10} {build_desc:<50}\n")
 
         # Summary statistics
@@ -1004,12 +1001,12 @@ def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: Simu
         }
 
     # Process each build result to collect upgrade appearance data
-    for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1):
+    for rank, (build, avg_turns) in enumerate(all_build_results, 1):
         # For each upgrade in this build
         for upgrade in build.upgrades:
             if upgrade in upgrade_data:
                 # Track this build appearance
-                upgrade_data[upgrade]['all_appearances'].append((build, rank, dpt))
+                upgrade_data[upgrade]['all_appearances'].append((build, rank, avg_turns))
 
                 # Track pairings with other upgrades in this build
                 for other_upgrade in build.upgrades:
@@ -1071,8 +1068,8 @@ def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: Simu
             # Top 3 builds section
             f.write("Top 3 Builds:\n")
             f.write("-" * 40 + "\n")
-            for i, (build, rank, dpt) in enumerate(data['top_builds'], 1):
-                f.write(f"{i}. Rank #{rank}: {build} (DPT: {dpt:.1f})\n")
+            for i, (build, rank, avg_turns) in enumerate(data['top_builds'], 1):
+                f.write(f"{i}. Rank #{rank}: {build} (Avg Turns: {avg_turns:.1f})\n")
 
             # Common pairings section
             f.write(f"\nMost Common Pairings (within top 10 builds):\n")
@@ -1592,11 +1589,11 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
         f.write(f"Total builds analyzed: {len(build_results)}\n\n")
 
         # Header
-        f.write(f"{'Rank':<5} {'Avg Turns':<10} {'DPT':<8} {'Attack Type':<15} {'Upgrades & Limits':<40}\n")
-        f.write("-" * 80 + "\n")
+        f.write(f"{'Rank':<5} {'Avg Turns':<10} {'Attack Type':<15} {'Upgrades & Limits':<40}\n")
+        f.write("-" * 70 + "\n")
 
         # Build entries
-        for i, (build, avg_dpt, avg_turns) in enumerate(build_results, 1):
+        for i, (build, avg_turns) in enumerate(build_results, 1):
             # Format enhancements (upgrades + limits)
             enhancements = []
             if build.upgrades:
@@ -1608,7 +1605,7 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
             if len(enhancements_str) > 40:
                 enhancements_str = enhancements_str[:37] + "..."
 
-            f.write(f"{i:<5} {avg_turns:<10.2f} {avg_dpt:<8.1f} {build.attack_type:<15} {enhancements_str:<40}\n")
+            f.write(f"{i:<5} {avg_turns:<10.2f} {build.attack_type:<15} {enhancements_str:<40}\n")
 
         # Summary statistics
         f.write(f"\n\nSUMMARY STATISTICS\n")
