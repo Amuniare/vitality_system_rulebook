@@ -624,9 +624,13 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 ## **ATTACK TYPES**
 *Determines how attacks are delivered and their targeting methods*
 
-**MELEE ATTACK** 
+**MELEE ATTACK (Accuracy)** 
 - **Range:** Adjacent targets only
-- **Benefit:** Add Tier to either ALL Melee Accuracy rolls OR ALL Melee Damage/Condition rolls, chosen when attacking.
+- **Benefit:** Add Tier to Melee Damage/Condition rolls
+
+**MELEE ATTACK (Damage & Conditions)** 
+- **Range:** Adjacent targets only
+- **Benefit:** Add Tier to Melee Accuracy rolls
 
 **RANGED ATTACK** 
 - **Range:** 15 spaces base
