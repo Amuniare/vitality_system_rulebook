@@ -37,7 +37,7 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
             execution_mode=data.get('execution_mode', 'both'),
             num_runs=data.get('num_runs', 10),
             target_hp=data.get('target_hp', 100),
-            archetype=data.get('archetype', 'focused'),
+            archetypes=data.get('archetypes', data.get('archetype', ['focused']) if isinstance(data.get('archetype'), str) else data.get('archetype', ['focused'])),
             tier=data.get('tier', 3),
             use_threading=data.get('use_threading', True),
 
@@ -91,7 +91,7 @@ def save_config(config: SimulationConfig, config_file: str = 'config.json'):
             'individual_testing_runs': config.individual_testing_runs
         },
         'target_hp': config.target_hp,
-        'archetype': config.archetype,
+        'archetypes': config.archetypes,
         'tier': config.tier,
         'test_single_upgrades': config.test_single_upgrades,
         'test_two_upgrade_combinations': config.test_two_upgrade_combinations,
@@ -120,7 +120,11 @@ def print_configuration_report(config: SimulationConfig):
     print("=" * 50)
     print(f"Build testing runs: {config.build_testing_runs}, Individual testing runs: {config.individual_testing_runs}")
     print("Enemy Scenarios: 1×100, 2×50, 4×25, 10×10 HP")
-    print(f"Archetype: {config.archetype} | Tier: {config.tier} | Points per attack: {config.max_points_per_attack} | Num attacks: {config.num_attacks}")
+    print(f"Archetypes: {', '.join(config.archetypes)} | Tier: {config.tier}")
+    for archetype in config.archetypes:
+        points = config.max_points_per_attack(archetype)
+        num = config.num_attacks(archetype)
+        print(f"  - {archetype}: {num} attack(s) × {points} points each")
     print()
 
     print("Test Categories:")
@@ -160,7 +164,7 @@ def print_configuration_report(config: SimulationConfig):
     print("\n" + "="*80 + "\n")
 
 
-def print_simulation_stats_receipt(config: SimulationConfig, total_builds: int = None):
+def print_simulation_stats_receipt(config: SimulationConfig, total_builds: int = None, archetype: str = "focused"):
     """Print simulation statistics in a clean receipt-like format"""
 
     # Calculate key stats
@@ -191,7 +195,7 @@ def print_simulation_stats_receipt(config: SimulationConfig, total_builds: int =
     print("SIMULATION STATISTICS SUMMARY")
     print("=" * 60)
     print()
-    print(f"Points Budget:                     {config.max_points}")
+    print(f"Points Budget:                     {config.max_points_per_attack(archetype)}")
     print()
     if total_builds:
         print(f"Total Builds Tested:               {total_builds:,}")
@@ -248,7 +252,7 @@ def generate_combo_performance_report(config: SimulationConfig) -> Dict:
 
         # Check total cost
         combo_cost = sum(UPGRADES[upgrade].cost for upgrade in combo_upgrades)
-        if combo_cost > config.max_points:
+        if combo_cost > config.max_points_per_attack("focused"):
             continue
 
         combo_data = {
@@ -270,7 +274,7 @@ def generate_combo_performance_report(config: SimulationConfig) -> Dict:
             if not is_valid:
                 continue
 
-            if combo_cost > config.max_points:
+            if combo_cost > config.max_points_per_attack("focused"):
                 continue
 
             # Test base attack vs combo attack for each test case
@@ -412,7 +416,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
                 continue
 
             # Check if total cost is within budget
-            if total_cost > config.max_points:
+            if total_cost > config.max_points_per_attack("focused"):
                 continue
 
             # Test base attack vs upgrade attack for each test case
@@ -518,7 +522,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
         for attack_type in attack_types:
             # All limits are compatible with all attack types
             limit_cost = LIMITS[limit_name].cost
-            if limit_cost > config.max_points:
+            if limit_cost > config.max_points_per_attack("focused"):
                 continue
 
             # Test base attack vs limit attack for each test case
@@ -1332,7 +1336,7 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
                     continue
 
                 upgrade_cost = UPGRADES[upgrade_name].cost
-                if upgrade_cost > config.max_points:
+                if upgrade_cost > config.max_points_per_attack("focused"):
                     continue
 
                 f.write(f"\nATTACK TYPE: {attack_type.upper()}\n")
@@ -1416,7 +1420,7 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
             # Test with each attack type (all limits work with all attack types)
             for attack_type in attack_types:
                 limit_cost = LIMITS[limit_name].cost
-                if limit_cost > config.max_points:
+                if limit_cost > config.max_points_per_attack("focused"):
                     continue
 
                 f.write(f"\nATTACK TYPE: {attack_type.upper()}\n")
@@ -2803,7 +2807,7 @@ class IndividualReportGenerator:
                         upgrades_to_test = PREREQUISITES[upgrade_name] + [upgrade_name]
                     upgraded_build = AttackBuild(attack_type_name, upgrades_to_test, [])
 
-                    if upgraded_build.is_valid(self.config.max_points):
+                    if upgraded_build.is_valid(self.config.max_points_per_attack("focused")):
                         upgraded_results = self._test_build_across_scenarios(upgraded_build)
                         upgraded_dpt = self._calculate_average_dpt(upgraded_results)
                         upgraded_turns = self._calculate_average_turns(upgraded_results)
@@ -2914,7 +2918,7 @@ class IndividualReportGenerator:
                     # Test limit build
                     limit_build = AttackBuild(attack_type_name, [], [limit_name])
 
-                    if limit_build.is_valid(self.config.max_points):
+                    if limit_build.is_valid(self.config.max_points_per_attack("focused")):
                         limit_results = self._test_build_across_scenarios(limit_build)
                         limit_dpt = self._calculate_average_dpt(limit_results)
                         limit_turns = self._calculate_average_turns(limit_results)
@@ -3009,7 +3013,7 @@ class IndividualReportGenerator:
                 try:
                     build = AttackBuild(attack_type_name, upgrades, [])
 
-                    if build.is_valid(self.config.max_points):
+                    if build.is_valid(self.config.max_points_per_attack("focused")):
                         scenario_results = self._test_build_across_scenarios(build)
                         combo_results[attack_type_name] = scenario_results
                 except Exception as e:
@@ -3210,8 +3214,8 @@ class IndividualReportGenerator:
             ]
 
             for build_name, build in test_builds:
-                if not build.is_valid(self.config.max_points):
-                    f.write(f"SKIPPING {build_name} - Cost {build.total_cost} exceeds limit {self.config.max_points}\n\n")
+                if not build.is_valid(self.config.max_points_per_attack("focused")):
+                    f.write(f"SKIPPING {build_name} - Cost {build.total_cost} exceeds limit {self.config.max_points_per_attack('focused')}\n\n")
                     continue
 
                 f.write(f"\n{'='*100}\n")

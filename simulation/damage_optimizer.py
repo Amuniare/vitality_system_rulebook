@@ -3,6 +3,7 @@
 Verbose damage optimization calculator with detailed combat logging
 """
 
+import os
 import time
 import multiprocessing
 import gc
@@ -169,19 +170,35 @@ def main():
 
     elif config.execution_mode == "build":
         print("Running build testing only...")
-        build_results = run_build_testing(config, reports_dir)
-        generate_reports_by_mode(config, reports_dir, build_results)
-        print("\nBuild testing complete!")
+        all_archetype_results = {}
+        for archetype in config.archetypes:
+            print(f"\n{'='*80}")
+            print(f"TESTING ARCHETYPE: {archetype.upper()}")
+            print(f"{'='*80}\n")
+            archetype_dir = f"{reports_dir}/{archetype}"
+            os.makedirs(archetype_dir, exist_ok=True)
+            build_results = run_build_testing(config, archetype, archetype_dir)
+            all_archetype_results[archetype] = build_results
+            generate_reports_by_mode(config, archetype_dir, build_results)
+        print("\nBuild testing complete for all archetypes!")
         return
 
     elif config.execution_mode == "both":
         print("Running both individual and build testing...")
         # Run individual testing first
         generate_reports_by_mode(config, reports_dir)
-        # Then run build testing
-        build_results = run_build_testing(config, reports_dir)
-        generate_reports_by_mode(config, reports_dir, build_results)
-        print("\nBoth testing modes complete!")
+        # Then run build testing for all archetypes
+        all_archetype_results = {}
+        for archetype in config.archetypes:
+            print(f"\n{'='*80}")
+            print(f"TESTING ARCHETYPE: {archetype.upper()}")
+            print(f"{'='*80}\n")
+            archetype_dir = f"{reports_dir}/{archetype}"
+            os.makedirs(archetype_dir, exist_ok=True)
+            build_results = run_build_testing(config, archetype, archetype_dir)
+            all_archetype_results[archetype] = build_results
+            generate_reports_by_mode(config, archetype_dir, build_results)
+        print("\nBoth testing modes complete for all archetypes!")
         return
 
     else:
@@ -190,9 +207,9 @@ def main():
         return
 
 
-def run_build_testing(config: SimulationConfig, reports_dir: str):
+def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str):
     """Run the build testing portion of the simulator"""
-    print("Starting build testing...")
+    print(f"Starting build testing for {archetype}...")
 
     # Generate builds to test using chunked approach
     attack_types = config.attack_types_filter or ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
@@ -201,19 +218,21 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
     chunk_size = getattr(config, 'build_chunk_size', 1000)
 
     # Determine which test function to use based on archetype
-    is_multi_attack = config.archetype in ['dual_natured', 'versatile_master']
+    is_multi_attack = archetype in ['dual_natured', 'versatile_master']
     test_func = test_multi_attack_build if is_multi_attack else test_single_build
 
     # Use archetype-based generator
-    builds_generator = generate_archetype_builds_chunked(config.archetype, config.tier, attack_types, chunk_size)
+    builds_generator = generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size)
 
     # Count total builds for progress tracking without loading all into memory
     print("Counting total builds for progress tracking...")
-    total_builds = sum(1 for _ in generate_archetype_builds_chunked(config.archetype, config.tier, attack_types, chunk_size))
-    print(f"Testing {total_builds} {config.archetype} builds (Tier {config.tier}, {config.max_points_per_attack} points per attack)...")
+    total_builds = sum(1 for _ in generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size))
+    max_points = config.max_points_per_attack(archetype)
+    num_attacks = config.num_attacks(archetype)
+    print(f"Testing {total_builds} {archetype} builds (Tier {config.tier}, {num_attacks} attack(s) × {max_points} points each)...")
 
     # Print simulation statistics receipt
-    print_simulation_stats_receipt(config, total_builds)
+    print_simulation_stats_receipt(config, total_builds, archetype)
 
     # Determine number of threads to use - use all available cores
     max_workers = multiprocessing.cpu_count()
@@ -245,7 +264,7 @@ def run_build_testing(config: SimulationConfig, reports_dir: str):
         start_time = time.time()
 
         # Process builds in chunks for memory efficiency
-        builds_generator = generate_archetype_builds_chunked(config.archetype, config.tier, attack_types, chunk_size)
+        builds_generator = generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size)
 
         # Execute builds using multiprocessing or sequential processing based on config
         completed_count = 0

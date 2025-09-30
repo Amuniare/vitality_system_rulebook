@@ -1,6 +1,6 @@
 {
   "execution_mode": "both",
-  "archetype": "focused",
+  "archetypes": ["focused", "dual_natured", "versatile_master"],
   "tier": 4,
   "use_threading": true,
   "verbose_logging": true,

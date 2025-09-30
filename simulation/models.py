@@ -63,7 +63,7 @@ class SimulationConfig:
     # Core simulation settings
     num_runs: int = 10
     target_hp: int = 100
-    archetype: str = "focused"  # "focused", "dual_natured", or "versatile_master"
+    archetypes: List[str] = None  # List of archetypes to test: "focused", "dual_natured", "versatile_master"
     tier: int = 3
     use_threading: bool = True
 
@@ -109,6 +109,9 @@ class SimulationConfig:
 
     def __post_init__(self):
         """Set default configurations if not provided"""
+        if self.archetypes is None:
+            self.archetypes = ["focused"]
+
         if self.attacker_configs is None:
             self.attacker_configs = [
                 (3, 3, 3, 3, 3),  # Balanced Tier 3
@@ -219,26 +222,24 @@ class SimulationConfig:
         """Get number of simulation runs for individual testing"""
         return self.simulation_runs.get('individual_testing_runs', 5)
 
-    @property
-    def max_points_per_attack(self) -> int:
+    def max_points_per_attack(self, archetype: str) -> int:
         """Calculate max points per attack based on archetype and tier"""
         archetype_multipliers = {
             "focused": 30,
             "dual_natured": 25,
             "versatile_master": 20
         }
-        multiplier = archetype_multipliers.get(self.archetype, 30)
+        multiplier = archetype_multipliers.get(archetype, 30)
         return self.tier * multiplier
 
-    @property
-    def num_attacks(self) -> int:
+    def num_attacks(self, archetype: str) -> int:
         """Get number of attacks based on archetype"""
         archetype_attacks = {
             "focused": 1,
             "dual_natured": 2,
             "versatile_master": 5
         }
-        return archetype_attacks.get(self.archetype, 1)
+        return archetype_attacks.get(archetype, 1)
 
 
 class AttackBuild:

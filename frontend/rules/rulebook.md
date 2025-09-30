@@ -394,76 +394,96 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 **Note:** Speak with your GM if you would like a custom flaw.
 
 **1. Flow State**
-When you haven't taken damage since last turn, cannot move this turn, and no enemies are within 5 spaces.
+- You haven't taken damage since last turn
+- Cannot move this turn
+- There are no enemies are within 5 spaces
 
 **2. Avenger**
-When an ally is unconscious or great peril occurred.
+- An ally is unconscious or great peril occurred
 
 **3. Berserk**
-When you're at 50 or less Hit Points and dealt damage or conditions on your last turn.
+- You're at 50 or less Hit Points
+- Dealt damage or conditions on your last turn
 
 **4. First Strike**
-During the first 3 rounds of combat.
+- During the first 3 rounds of combat
 
 **5. Perfect Form**
-When you're at max HP with no conditions.
+- You're at max HP with no conditions
 
 **6. Bulwark**
-When you've been hit but took no damage since last turn and cannot move this turn.
+- You've been hit but took no damage since last turn
+- Cannot move this turn
 
 **9. Death's Door**
-When you are at 25 Hit Points or less.
+- You are at 25 Hit Points or less
 
 **10. Dangerous**
-When no allies are within 15 spaces and no civilians within 30 spaces.
+- There are no allies are within 15 spaces
+- There are no civilians within 30 spaces
 
 **11. Patient**
-When it's turn 5 or later.
+- It's turn 5 or later
 
 **12. Temporal Burst**
-Activate for 2 turns, recharges after 1 minute rest. While active.
+- Activate for 2 turns, recharges after 1 minute rest, while active
 
 **13. Lucky Streak**
-Roll d20 each turn, DC 10. When you succeed.
+- Roll d20 each turn, DC 10, if you succeed
 
 **14. Executioner**
-When you defeated an enemy last turn and it's turn 3 or later.
+- You defeated an enemy last turn
+- It's turn 3 or later
 
 **15. Revenge**
-When you're at 50 or less Hit Points and you've been damaged or conditioned since your turn.
+- You're at 50 or less Hit Points
+- You've been damaged or conditioned since your turn
 
 **16. Unstoppable**
-When you've been hit but took no damage or conditions since your last turn and dealt damage or conditions to an enemy last turn.
+- You've been hit but took no damage or conditions since your last turn
+- You've dealt damage or conditions to an enemy last turn
 
 **17. Concentration**
-When you cannot move this turn and have not been attacked since your last turn.
+- You cannot move this turn
+- You have not been attacked since your last turn
 
 **20. Hunter**
-When no enemies are within 5 spaces, you dealt damage or applied a condition last turn, and you haven't taken damage since last turn.
+- There are no enemies are within 5 spaces
+- You dealt damage or applied a condition last turn
+- You haven't taken damage since last turn
 
 **21. Untouchable**
-When all attacks have missed you since last turn and you dealt damage or applied a condition this turn.
+- All attacks have missed you since last turn
+- You dealt damage or applied a condition this turn
 
 **22. High Risk**
-When you're at 50 Hit Points or less and roll d20 each turn, DC 5.
+- You're at 50 Hit Points or less
+- Roll d20 each turn, DC 5
 
 **23. Pacifist**
-When all attacks have missed you since last turn and you haven't attacked since last turn.
+- All attacks have missed you since last turn
+- You haven't attacked since last turn
 
 **24. Fortress**
-When you cannot move this turn, haven't taken damage since last turn, and turn 3 or later.
+- You cannot move this turn
+- You haven't taken damage since last turn
+- Turn 3 or later
 
 **28. Overwatch**
-When you cannot move this turn and no allies are within 10 spaces.
+- You cannot move this turn
+- There are no allies are within 10 spaces
 
 **30. Overwhelm**
-When you have more adjacent allies than enemies.
+- You have more adjacent allies than enemies
 
 **31. Cornered**
-When you're at 50 Hit Points or less and 3+ enemies are within 5 spaces.
+- You're at 50 Hit Points or less
+- There are 3+ enemies are within 5 spaces
 
 **32. Tactical Advantage**
-When you're on higher ground than your target, you don't move and there are no enemies within 5 spaces.
+- You're on higher ground than your target
+- You don't move
+- There are no enemies within 5 spaces
 
 
 
