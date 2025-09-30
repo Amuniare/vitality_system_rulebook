@@ -1,15 +1,15 @@
 # SECTION 1: BASIC RULES
 
 ### **DICE SYSTEM** 
-**D20 Rolls**
-- **Used For**: Accuracy Checks, Condition Checks, and rolls determined by random chance.
+#### **D20 Rolls**
+**Used For**: Accuracy Checks, Condition Checks, and rolls determined by random chance.
 
-- **Natural 20**: Auto-success for Accuracy and Condition checks. Additionally, a Natural 20 on an Accuracy Check adds your Tier to the Damage and/or Condition roll of the attack. A Natural 20 on the Condition Check also adds the Tier bonus again.
+**Natural 20**: Auto-success for Accuracy and Condition checks. Additionally, a Natural 20 on an Accuracy Check adds your Tier to the Damage and/or Condition roll of the attack. A Natural 20 on the Condition Check also adds the Tier bonus again.
 
-**3D6 Rolls** 
-- **Used For**: Damage Rolls and Skill Checks
+#### **3D6 Rolls** 
+**Used For**: Damage Rolls and Skill Checks
 
-- **Rolling a 6**: When you roll a 6, roll an additional d6 and add it to the total. These additional dice can also allow you to roll an extra die if they land on a 6. Add all dice rolled to the total.
+**Rolling a 6**: When you roll a 6, roll an additional d6 and add it to the total. These additional dice can also allow you to roll an extra die if they land on a 6. Add all dice rolled to the total.
 
 ### **TIER SYSTEM**
 
