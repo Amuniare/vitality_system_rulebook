@@ -209,7 +209,7 @@ All characters can take these actions at base, no special training or abilities 
 
 **Carry Action**: Pick up and move willing characters or objects with you during your movement. If the targets total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
 
-**Protect Action**: Choose an adjacent ally, all melee and ranged attacks directed at them are instead direct at you.
+**Protect Action**: Choose an adjacent ally, all melee and ranged attacks directed at them are instead directed at you.
 
 ####  **PERSONAL ACTIONS**
 
