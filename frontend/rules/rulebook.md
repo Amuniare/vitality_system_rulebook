@@ -209,7 +209,7 @@ All characters can take these actions at base, no special training or abilities 
 
 **Carry Action**: Pick up and move willing characters or objects with you during your movement. If the targets total weight is greater than your Capacity score you must succeed a Power check to carry it and can only move at half speed.
 
-**Protect Action**: Choose an adjacent ally, all melee and ranged attacks directed at them are instead direct at you.
+**Protect Action**: Choose an adjacent ally, all melee and ranged attacks directed at them are instead directed at you.
 
 ####  **PERSONAL ACTIONS**
 
@@ -400,22 +400,16 @@ When you haven't taken damage since last turn, cannot move this turn, and no ene
 When an ally is unconscious or great peril occurred.
 
 **3. Berserk**
-When you're at 50 Hit Points or less and dealt damage this turn.
+When you're at 50 or less Hit Points and dealt damage or conditions on your last turn.
 
 **4. First Strike**
 During the first 3 rounds of combat.
 
 **5. Perfect Form**
-When you're at max HP with no conditions and cannot move this turn.
+When you're at max HP with no conditions.
 
 **6. Bulwark**
 When you've been hit but took no damage since last turn and cannot move this turn.
-
-**7. Patient Predator**
-When it's turn 5 or later and you haven't attacked since last turn.
-
-**8. Aggression**
-When you're 25+ points below max HP, dealt damage last turn, and dealt damage this turn.
 
 **9. Death's Door**
 When you are at 25 Hit Points or less.
@@ -423,8 +417,8 @@ When you are at 25 Hit Points or less.
 **10. Dangerous**
 When no allies are within 15 spaces and no civilians within 30 spaces.
 
-**11. Grand Finale**
-When it's turn 8 or later.
+**11. Patient**
+When it's turn 5 or later.
 
 **12. Temporal Burst**
 Activate for 2 turns, recharges after 1 minute rest. While active.
@@ -436,28 +430,22 @@ Roll d20 each turn, DC 10. When you succeed.
 When you defeated an enemy last turn and it's turn 3 or later.
 
 **15. Revenge**
-When you've been damaged since last turn and dealt damage to an enemy last turn.
+When you're at 50 or less Hit Points and you've been damaged or conditioned since your turn.
 
 **16. Unstoppable**
-When you've been hit but took no damage since last turn and defeated an enemy last turn.
+When you've been hit but took no damage or conditions since your last turn and dealt damage or conditions to an enemy last turn.
 
 **17. Concentration**
-When you cannot move this turn and you're at max HP with no conditions.
-
-**18. Combat High**
-Activate for 3 turns, recharges after 1 minute rest. When you're 25+ points below max HP.
-
-**19. Unreliable**
-When you applied a condition this turn, it's turn 3 or later, and roll d20 each turn, DC 5.
+When you cannot move this turn and have not been attacked since your last turn.
 
 **20. Hunter**
-When no enemies are within 5 spaces, you dealt damage last turn, and haven't taken damage since last turn.
+When no enemies are within 5 spaces, you dealt damage or applied a condition last turn, and you haven't taken damage since last turn.
 
 **21. Untouchable**
-When all attacks have missed you since last turn and dealt damage this turn.
+When all attacks have missed you since last turn and you dealt damage or applied a condition this turn.
 
 **22. High Risk**
-When you haven't attacked since last turn, cannot move this turn, and roll d20 each turn, DC 5.
+When you're at 50 Hit Points or less and roll d20 each turn, DC 5.
 
 **23. Pacifist**
 When all attacks have missed you since last turn and you haven't attacked since last turn.
@@ -465,13 +453,7 @@ When all attacks have missed you since last turn and you haven't attacked since 
 **24. Fortress**
 When you cannot move this turn, haven't taken damage since last turn, and turn 3 or later.
 
-**25. Disciplined**
-When it's turn 3 or later and you're at max HP with no conditions.
-
-**27. Gambler**
-Roll d20 each turn, DC 5. When you succeed and dealt damage this turn.
-
-**28. Suppression**
+**28. Overwatch**
 When you cannot move this turn and no allies are within 10 spaces.
 
 **30. Overwhelm**
