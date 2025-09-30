@@ -273,9 +273,9 @@ All characters can take these actions at base, no special training or abilities 
 - Consistent positioning regardless of enemy interference
 
 **Vanguard**
-- Double your movement speed on turn 1
-- Punish Attacks do not consume your reaction and reduce targets movement to 0 on hit
-- Enhanced zone control and battlefield presence
+- You can move your full speed immediately at the start of initiative and take a Free Action.
+- You can use the Protect Action as a Free Action. 
+- Protect allies from harm
 
 **Mole**
 - Move your full speed through soft materials (dirt, clay, loose rock)
@@ -411,58 +411,58 @@ When you're at max HP with no conditions.
 **6. Bulwark**
 When you've been hit but took no damage since last turn and cannot move this turn.
 
-**9. Death's Door**
+**7. Death's Door**
 When you are at 25 Hit Points or less.
 
-**10. Dangerous**
+**8. Dangerous**
 When no allies are within 15 spaces and no civilians within 30 spaces.
 
-**11. Patient**
+**9. Patient**
 When it's turn 5 or later.
 
-**12. Temporal Burst**
+**10. Temporal Burst**
 Activate for 2 turns, recharges after 1 minute rest. While active.
 
-**13. Lucky Streak**
+**11. Lucky Streak**
 Roll d20 each turn, DC 10. When you succeed.
 
-**14. Executioner**
+**12. Executioner**
 When you defeated an enemy last turn and it's turn 3 or later.
 
-**15. Revenge**
+**13. Revenge**
 When you're at 50 or less Hit Points and you've been damaged or conditioned since your turn.
 
-**16. Unstoppable**
+**14. Unstoppable**
 When you've been hit but took no damage or conditions since your last turn and dealt damage or conditions to an enemy last turn.
 
-**17. Concentration**
+**15. Concentration**
 When you cannot move this turn and have not been attacked since your last turn.
 
-**20. Hunter**
+**16. Hunter**
 When no enemies are within 5 spaces, you dealt damage or applied a condition last turn, and you haven't taken damage since last turn.
 
-**21. Untouchable**
+**17. Untouchable**
 When all attacks have missed you since last turn and you dealt damage or applied a condition this turn.
 
-**22. High Risk**
+**18. High Risk**
 When you're at 50 Hit Points or less and roll d20 each turn, DC 5.
 
-**23. Pacifist**
+**19. Pacifist**
 When all attacks have missed you since last turn and you haven't attacked since last turn.
 
-**24. Fortress**
+**20. Fortress**
 When you cannot move this turn, haven't taken damage since last turn, and turn 3 or later.
 
-**28. Overwatch**
+**21. Overwatch**
 When you cannot move this turn and no allies are within 10 spaces.
 
-**30. Overwhelm**
+**22. Overwhelm**
 When you have more adjacent allies than enemies.
 
-**31. Cornered**
+**23. Cornered**
 When you're at 50 Hit Points or less and 3+ enemies are within 5 spaces.
 
-**32. Tactical Advantage**
+**24. Tactical Advantage**
 When you're on higher ground than your target, you don't move and there are no enemies within 5 spaces.
 
 
@@ -1074,15 +1074,9 @@ Limit: At 25 Hit Points or less
 Effect: +2xTier to Accuracy, Damage, and Conditions
 
 **Bloodied** 
-Cost: 20p
+Cost: 40p
 Limit: At 50 Hit Points or less
 Effect: +Tier to Accuracy, Damage, and Conditions
-
-**Unhealthy** 
-Cost: 60p
-Limit: 50 points below max HP
-Effect: +Tier to Accuracy, Damage, and Conditions
-
 
 #### Conditional
 
@@ -1206,7 +1200,7 @@ Cost: 60p
 Limit: Turn 3 or later
 Effect: +Tier to Accuracy, Damage, and Conditions
 
-**Patient** 
+**Patience** 
 Cost: 40p
 Limit: Turn 5 or later
 Effect: +Tier to Accuracy, Damage, and Conditions
@@ -1244,7 +1238,7 @@ Effect: +Tier to Accuracy, Damage, and Conditions
 
 
 **Attrition** 
-Cost: 60p
+Cost: 40p
 Limit: Each use costs 20 HP
 Restriction: Can't have regeneration, leech, healing or any other ability that restores HP
 Effect: +Tier to Accuracy, Damage, and Conditions
