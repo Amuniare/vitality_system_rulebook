@@ -153,7 +153,7 @@ In Heroic Settings, when calculating Fall Damage caused by height, multiple your
 
 
 
-# SECTION 2: CHARACTER BASICS 
+# SECTION 2: CHARACTER BASICS
 
 ### **ACTION TYPES**
 **Turn Structure:** Primary Action + Any Free Action + Movement + Reaction
