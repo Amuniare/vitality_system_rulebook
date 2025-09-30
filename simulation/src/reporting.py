@@ -7,9 +7,9 @@ import os
 import statistics
 from datetime import datetime
 from typing import Dict, List, Tuple
-from models import Character, AttackBuild, SimulationConfig
-from simulation import run_simulation_batch
-from game_data import UPGRADES, LIMITS, RuleValidator
+from src.models import Character, AttackBuild, SimulationConfig
+from src.simulation import run_simulation_batch
+from src.game_data import UPGRADES, LIMITS, RuleValidator
 
 
 def create_timestamped_reports_directory() -> str:
@@ -386,7 +386,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
 
         print(f"  Testing {upgrade_name}...")
         # Build upgrade list with prerequisites
-        from game_data import PREREQUISITES
+        from src.game_data import PREREQUISITES
         upgrades_to_test = [upgrade_name]
 
         # Add prerequisites if they exist
@@ -996,7 +996,7 @@ def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: Simu
     upgrade_data = {}  # upgrade_name -> {'top_builds': [(build, rank, dpt)], 'pairings': {other_upgrade: count}}
 
     # Initialize upgrade data structure
-    from game_data import UPGRADES
+    from src.game_data import UPGRADES
     for upgrade_name in UPGRADES.keys():
         upgrade_data[upgrade_name] = {
             'top_builds': [],
@@ -1094,8 +1094,8 @@ def generate_diagnostic_base_attacks_report(config: SimulationConfig, reports_di
     """Generate diagnostic report for base attack types across all scenarios"""
     print("Generating base attacks diagnostic report...")
 
-    from game_data import ATTACK_TYPES
-    from simulation import simulate_combat_verbose
+    from src.game_data import ATTACK_TYPES
+    from src.simulation import simulate_combat_verbose
 
     with open(f'{reports_dir}/diagnostic_base_attacks_report.txt', 'w', encoding='utf-8') as f:
         f.write("VITALITY SYSTEM - BASE ATTACK TYPES DIAGNOSTIC REPORT\n")
@@ -1152,8 +1152,8 @@ def generate_diagnostic_upgrades_report(config: SimulationConfig, reports_dir: s
     """Generate diagnostic report for individual upgrades across all scenarios"""
     print("Generating upgrades diagnostic report...")
 
-    from game_data import UPGRADES, RuleValidator
-    from simulation import simulate_combat_verbose
+    from src.game_data import UPGRADES, RuleValidator
+    from src.simulation import simulate_combat_verbose
 
     with open(f'{reports_dir}/diagnostic_upgrades_report.txt', 'w', encoding='utf-8') as f:
         f.write("VITALITY SYSTEM - UPGRADES DIAGNOSTIC REPORT\n")
@@ -1177,7 +1177,7 @@ def generate_diagnostic_upgrades_report(config: SimulationConfig, reports_dir: s
             f.write("-" * 50 + "\n")
 
             # Build upgrade list including prerequisites
-            from game_data import PREREQUISITES
+            from src.game_data import PREREQUISITES
             upgrade_list = [upgrade_name]
             if upgrade_name in PREREQUISITES:
                 prerequisite_upgrades = PREREQUISITES[upgrade_name]
@@ -1230,8 +1230,8 @@ def generate_diagnostic_limits_report(config: SimulationConfig, reports_dir: str
     """Generate diagnostic report for individual limits across all scenarios"""
     print("Generating limits diagnostic report...")
 
-    from game_data import LIMITS
-    from simulation import simulate_combat_verbose
+    from src.game_data import LIMITS
+    from src.simulation import simulate_combat_verbose
 
     with open(f'{reports_dir}/diagnostic_limits_report.txt', 'w', encoding='utf-8') as f:
         f.write("VITALITY SYSTEM - LIMITS DIAGNOSTIC REPORT\n")
@@ -1289,7 +1289,7 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
     """Generate comprehensive upgrade and limit performance analysis broken down by scenario and attack type"""
     print("Generating scenario breakdown reports...")
 
-    from game_data import UPGRADES, LIMITS, RuleValidator
+    from src.game_data import UPGRADES, LIMITS, RuleValidator
 
     # Create test cases from config
     test_cases = []
@@ -2006,79 +2006,95 @@ class TableGenerator:
 
     @staticmethod
     def format_upgrade_limit_table(upgrade_limit_data: Dict, reports_dir: str):
-        """Generate Table 2: Upgrade/Limit Analysis (sorted by DPT/Cost ratio)"""
-        from game_data import UPGRADES, LIMITS
+        """Generate Table 2: Upgrade/Limit Analysis (sorted by Avg Δ/Cost)"""
+        from src.game_data import UPGRADES, LIMITS
 
         filename = f"{reports_dir}/individual_upgrade_limit_table.txt"
 
-        # Sort items by DPT/Cost ratio (highest to lowest)
-        sorted_items = sorted(
-            upgrade_limit_data.items(),
-            key=lambda x: x[1].get('overall', {}).get('dpt_per_cost', 0),
-            reverse=True
-        )
+        # Calculate averages and sort by Avg Δ/Cost (most negative first - best turn reduction per cost)
+        items_with_metrics = []
+
+        for item_name, data in upgrade_limit_data.items():
+            # Get cost
+            cost = data.get('cost', 0)
+            if cost == 0:  # Fallback if cost not in data
+                if item_name in UPGRADES:
+                    cost = UPGRADES[item_name].cost
+                elif item_name in LIMITS:
+                    cost = LIMITS[item_name].cost
+
+            if cost == 0:
+                continue  # Skip items with no cost
+
+            # Calculate average turn difference across attack types
+            attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
+            turn_diffs = []
+            for attack_type in attack_types:
+                att_data = data.get(attack_type, {})
+                turn_diff = att_data.get('avg_turn_difference', 0)
+                turn_diffs.append(turn_diff)
+
+            avg_turn_diff = sum(turn_diffs) / len(turn_diffs) if turn_diffs else 0
+            avg_diff_per_cost = avg_turn_diff / cost if cost > 0 else 0
+
+            items_with_metrics.append((item_name, data, cost, avg_turn_diff, avg_diff_per_cost, turn_diffs))
+
+        # Sort by Avg Δ/Cost (most negative first - best turn reduction per point)
+        sorted_items = sorted(items_with_metrics, key=lambda x: x[4])
 
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write("INDIVIDUAL TESTING - UPGRADE/LIMIT PERFORMANCE TABLE\n")
-            f.write("=" * 210 + "\n\n")
+            f.write("INDIVIDUAL TESTING - UPGRADE/LIMIT PERFORMANCE TABLE (AVG TURNS)\n")
+            f.write("=" * 240 + "\n\n")
 
             # Header row
             header = f"{'Upgrade/Limit':<20}"
+            header += f"{'Avg Δ/Cost':<10}"
+            header += f"{'Avg Δ':<8}"
             header += f"{'Cost':<6}"
-            header += f"{'Overall Average':<32}"
-            header += f"{'Melee AC':<10}{'Melee DG':<10}{'Ranged':<10}{'Area':<10}{'Direct':<10}{'DirectAOE':<10}"
-            header += f"{'Scenario DPT+':<40}"
+            header += f"{'Melee_AC':<9}{'Melee_DG':<9}{'Ranged':<8}{'Area':<7}{'Direct':<8}{'DirectAOE':<10}"
+            header += f"{'ΔMelee_AC':<10}{'ΔMelee_DG':<10}{'ΔRanged':<9}{'ΔArea':<8}{'ΔDirect':<9}{'ΔDirectAOE':<11}"
+            header += f"{'1x100':<8}{'2x50':<8}{'4x25':<8}{'10x10':<8}"
             f.write(header + "\n")
 
             # Sub-header
             subheader = f"{'':<20}"
+            subheader += f"{'(turn/pt)':<10}"
+            subheader += f"{'(turns)':<8}"
             subheader += f"{'(pts)':<6}"
-            subheader += f"{'DPT/Cost':<10}{'DPT+':<11}{'%+':<11}"
-            for _ in range(6):  # For each attack type
-                subheader += f"{'DPT+':<10}"
-            subheader += f"{'1x100':<10}{'2x50':<10}{'4x25':<10}{'10x10':<10}"
+            for _ in range(6):  # Attack type turns
+                subheader += f"{'(turns)':<9}"[:9]
+            for _ in range(6):  # Attack type diffs
+                subheader += f"{'(diff)':<10}"[:10]
+            for _ in range(4):  # Scenarios
+                subheader += f"{'(turns)':<8}"
             f.write(subheader + "\n")
-            f.write("-" * 210 + "\n")
+            f.write("-" * 240 + "\n")
 
-            # Data rows for each upgrade/limit (sorted by DPT/Cost)
-            for item_name, data in sorted_items:
+            # Data rows for each upgrade/limit (sorted by Avg Δ/Cost)
+            for item_name, data, cost, avg_turn_diff, avg_diff_per_cost, turn_diffs in sorted_items:
                 row = f"{item_name:<20}"
+                row += f"{avg_diff_per_cost:>8.2f}  "
+                row += f"{avg_turn_diff:>6.2f}  "
+                row += f"{cost:>4}  "
 
-                # Get cost from data structure (includes prerequisites) or fall back to base cost
-                cost = data.get('cost', 0)
-
-                if cost == 0:  # Fallback if cost not in data
-                    if item_name in UPGRADES:
-                        cost = UPGRADES[item_name].cost
-                    elif item_name in LIMITS:
-                        cost = LIMITS[item_name].cost
-
-                row += f"{cost:>4}"
-                row += f"{'':>2}"  # spacing
-
-                # Overall averages
-                overall = data.get('overall', {})
-                row += f"{overall.get('dpt_per_cost', 0):>8.2f}"
-                row += f"{'':>2}"  # spacing
-                row += f"{overall.get('avg_dpt_improvement', 0):>8.1f}"
-                row += f"{'':>3}"  # spacing
-                row += f"{overall.get('avg_percent_improvement', 0):>6.1f}%"
-                row += f"{'':>2}"  # spacing
-
-                # Per-attack-type data
+                # Per-attack-type turns
                 attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
                 for attack_type in attack_types:
                     att_data = data.get(attack_type, {})
-                    row += f"{att_data.get('avg_dpt_improvement', 0):>8.1f}"
-                    row += f"{'':>2}"  # spacing
+                    turns_val = att_data.get('avg_turns_with_upgrade', 0)
+                    row += f"{turns_val:>7.2f}  "
+
+                # Per-attack-type differences
+                for turn_diff in turn_diffs:
+                    row += f"{turn_diff:>8.2f}  "
 
                 # Per-scenario data
                 scenarios = ['1x100', '2x50', '4x25', '10x10']
                 scenario_data = data.get('scenarios', {})
                 for scenario in scenarios:
                     scen_data = scenario_data.get(scenario, {})
-                    row += f"{scen_data.get('avg_dpt_improvement', 0):>8.1f}"
-                    row += f"{'':>2}"  # spacing
+                    turns_val = scen_data.get('avg_turns_with_upgrade', 0)
+                    row += f"{turns_val:>6.2f}  "
 
                 f.write(row + "\n")
 
@@ -2132,7 +2148,7 @@ class TableGenerator:
     @staticmethod
     def format_upgrade_limit_turns_table(upgrade_limit_data: Dict, reports_dir: str):
         """Generate Table 2: Upgrade/Limit Turns Analysis (sorted by Avg Δ/Cost)"""
-        from game_data import UPGRADES, LIMITS
+        from src.game_data import UPGRADES, LIMITS
 
         filename = f"{reports_dir}/individual_upgrade_limit_turns_table.txt"
 
@@ -2227,7 +2243,7 @@ class TableGenerator:
     @staticmethod
     def format_attack_type_specific_upgrade_tables(upgrade_limit_data: Dict, reports_dir: str):
         """Generate 5 attack-type-specific upgrade/limit performance tables"""
-        from game_data import UPGRADES, LIMITS
+        from src.game_data import UPGRADES, LIMITS
 
         attack_type_names = {
             'melee_ac': 'Melee Accuracy',
@@ -2246,7 +2262,7 @@ class TableGenerator:
     def _format_single_attack_type_upgrade_table(upgrade_limit_data: Dict, reports_dir: str,
                                                 attack_type: str, display_name: str):
         """Generate a single attack-type-specific upgrade/limit performance table"""
-        from game_data import UPGRADES, LIMITS
+        from src.game_data import UPGRADES, LIMITS
 
         filename = f"{reports_dir}/individual_upgrade_limit_turns_{attack_type}_table.txt"
 
@@ -2701,8 +2717,8 @@ class IndividualReportGenerator:
 
     def _test_base_attacks(self) -> Dict:
         """Test all base attack types individually"""
-        from game_data import ATTACK_TYPES
-        from models import AttackBuild
+        from src.game_data import ATTACK_TYPES
+        from src.models import AttackBuild
 
         print("Testing base attack types...")
         attack_type_data = {}
@@ -2774,8 +2790,8 @@ class IndividualReportGenerator:
 
     def _test_individual_upgrades(self) -> Dict:
         """Test all upgrades individually"""
-        from game_data import UPGRADES, ATTACK_TYPES
-        from models import AttackBuild
+        from src.game_data import UPGRADES, ATTACK_TYPES
+        from src.models import AttackBuild
 
         print("Testing individual upgrades...")
         upgrade_data = {}
@@ -2801,7 +2817,7 @@ class IndividualReportGenerator:
                     base_turns = self._calculate_average_turns(base_results)
 
                     # Test upgraded build (include prerequisites)
-                    from game_data import PREREQUISITES
+                    from src.game_data import PREREQUISITES
                     upgrades_to_test = [upgrade_name]
                     if upgrade_name in PREREQUISITES:
                         upgrades_to_test = PREREQUISITES[upgrade_name] + [upgrade_name]
@@ -2866,7 +2882,7 @@ class IndividualReportGenerator:
                 }
 
             # Calculate total cost including prerequisites
-            from game_data import PREREQUISITES
+            from src.game_data import PREREQUISITES
             upgrades_for_cost = [upgrade_name]
             if upgrade_name in PREREQUISITES:
                 upgrades_for_cost = PREREQUISITES[upgrade_name] + [upgrade_name]
@@ -2889,8 +2905,8 @@ class IndividualReportGenerator:
 
     def _test_individual_limits(self) -> Dict:
         """Test all limits individually"""
-        from game_data import LIMITS, ATTACK_TYPES
-        from models import AttackBuild
+        from src.game_data import LIMITS, ATTACK_TYPES
+        from src.models import AttackBuild
 
         print("Testing individual limits...")
         limit_data = {}
@@ -2994,8 +3010,8 @@ class IndividualReportGenerator:
 
     def _test_specific_combinations(self) -> Dict:
         """Test specific upgrade combinations"""
-        from models import AttackBuild
-        from game_data import ATTACK_TYPES
+        from src.models import AttackBuild
+        from src.game_data import ATTACK_TYPES
 
         combinations = self.individual_config.get('test_specific_combinations', [])
         combination_data = {}
@@ -3025,8 +3041,8 @@ class IndividualReportGenerator:
 
     def _test_build_across_scenarios(self, build: 'AttackBuild') -> Dict:
         """Test a build across all enemy scenarios"""
-        from simulation import run_simulation_batch
-        from models import Character
+        from src.simulation import run_simulation_batch
+        from src.models import Character
 
         scenario_results = {}
 
@@ -3144,9 +3160,9 @@ class IndividualReportGenerator:
 
     def _generate_detailed_combat_logs(self):
         """Generate detailed turn-by-turn combat logs"""
-        from simulation import simulate_combat_verbose
-        from models import Character, AttackBuild
-        from game_data import ATTACK_TYPES, UPGRADES, LIMITS
+        from src.simulation import simulate_combat_verbose
+        from src.models import Character, AttackBuild
+        from src.game_data import ATTACK_TYPES, UPGRADES, LIMITS
         import random
 
         log_filename = f"{self.reports_dir}/individual_detailed_combat_logs.txt"
@@ -4159,7 +4175,7 @@ def enhancement_comparison(all_build_results: List[Tuple], enhancement_results: 
     comparison_data = {}
 
     # Get all enhancement names from both upgrades and limits
-    from game_data import UPGRADES, LIMITS
+    from src.game_data import UPGRADES, LIMITS
     all_enhancements = list(UPGRADES.keys()) + list(LIMITS.keys())
 
     # Initialize comparison data

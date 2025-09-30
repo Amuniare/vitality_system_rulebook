@@ -3,8 +3,8 @@ Combat simulation logic for the Vitality System.
 """
 
 from typing import List, Tuple
-from models import Character, AttackBuild
-from combat import make_attack, make_aoe_attack
+from src.models import Character, AttackBuild
+from src.combat import make_attack, make_aoe_attack
 
 
 def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: int = 100,

@@ -4,8 +4,8 @@ Build generation and validation for the Vitality System.
 
 import itertools
 from typing import List, Generator
-from models import AttackBuild
-from game_data import UPGRADES, LIMITS, RuleValidator, MUTUAL_EXCLUSIONS
+from src.models import AttackBuild
+from src.game_data import UPGRADES, LIMITS, RuleValidator, MUTUAL_EXCLUSIONS
 
 
 class BuildGenerator:
@@ -177,7 +177,7 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
         For focused: AttackBuild objects
         For dual_natured/versatile_master: MultiAttackBuild objects
     """
-    from models import MultiAttackBuild
+    from src.models import MultiAttackBuild
 
     # Calculate points per attack based on archetype
     archetype_multipliers = {
@@ -203,7 +203,7 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
 
 def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
     """Generate all valid pairs of builds for dual-natured archetype"""
-    from models import MultiAttackBuild
+    from src.models import MultiAttackBuild
 
     if attack_types is None:
         attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
@@ -221,7 +221,7 @@ def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List
 
 def _generate_versatile_master_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
     """Generate all valid sets of 5 builds for versatile master archetype"""
-    from models import MultiAttackBuild
+    from src.models import MultiAttackBuild
 
     if attack_types is None:
         attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']

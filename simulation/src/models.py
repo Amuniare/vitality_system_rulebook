@@ -253,7 +253,7 @@ class AttackBuild:
 
     def calculate_total_cost(self) -> int:
         """Calculate the total point cost of this build"""
-        from game_data import ATTACK_TYPES, UPGRADES, LIMITS
+        from src.game_data import ATTACK_TYPES, UPGRADES, LIMITS
 
         cost = ATTACK_TYPES[self.attack_type].cost
 
@@ -273,7 +273,7 @@ class AttackBuild:
 
     def is_valid_combination(self) -> Tuple[bool, List[str]]:
         """Check if upgrade combination follows all rules"""
-        from game_data import RuleValidator
+        from src.game_data import RuleValidator
         return RuleValidator.validate_combination(self.attack_type, self.upgrades)
 
     def is_valid(self, max_points: int) -> bool:

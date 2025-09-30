@@ -159,8 +159,8 @@ class LoggingManager:
         log_file.write(f"{'='*80}\n")
 
         # Re-run detailed simulations for top builds only
-        from simulation import simulate_combat_verbose, run_simulation_batch
-        from models import Character
+        from src.simulation import simulate_combat_verbose, run_simulation_batch
+        from src.models import Character
 
         # Build test cases from configuration
         test_cases = []

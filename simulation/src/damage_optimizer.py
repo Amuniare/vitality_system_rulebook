@@ -8,17 +8,17 @@ import time
 import multiprocessing
 import gc
 from concurrent.futures import ProcessPoolExecutor
-from models import Character, AttackBuild, MultiAttackBuild, SimulationConfig
-from build_generator import generate_valid_builds, generate_valid_builds_chunked, generate_archetype_builds_chunked
-from simulation import simulate_combat_verbose, run_simulation_batch
-from reporting import (load_config, save_config, print_configuration_report,
+from src.models import Character, AttackBuild, MultiAttackBuild, SimulationConfig
+from src.build_generator import generate_valid_builds, generate_valid_builds_chunked, generate_archetype_builds_chunked
+from src.simulation import simulate_combat_verbose, run_simulation_batch
+from src.reporting import (load_config, save_config, print_configuration_report,
                       generate_upgrade_performance_report, write_upgrade_performance_report,
                       generate_combo_performance_report, write_combo_performance_report,
                       write_build_summary, generate_upgrade_ranking_report, generate_upgrade_pairing_report,
                       generate_diagnostic_report, write_attack_type_enhancement_ranking_report,
                       create_timestamped_reports_directory, generate_reports_by_mode,
                       print_simulation_stats_receipt)
-from logging_manager import LoggingManager
+from src.logging_manager import LoggingManager
 
 def test_single_build(args):
     """Test a single build across all test cases and scenarios"""

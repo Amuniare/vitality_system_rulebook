@@ -4,8 +4,8 @@ Combat mechanics and attack resolution for the Vitality System.
 
 import random
 from typing import List, Tuple, Optional
-from models import Character, AttackBuild
-from game_data import ATTACK_TYPES, UPGRADES, LIMITS
+from src.models import Character, AttackBuild
+from src.game_data import ATTACK_TYPES, UPGRADES, LIMITS
 
 
 def roll_d20() -> int:

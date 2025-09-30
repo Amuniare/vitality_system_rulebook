@@ -493,8 +493,14 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 *Permanent abilities that change how your character is built*
 **Costs:** 1 boon
 
-**Immutable**
-Choose one Secondary Resistance, you gain complete immunity in that resistance type
+**Immutable: Resolve**
+You gain complete immunity to Resolve conditions
+
+**Immutable: Vitality**
+You gain complete immunity to Vitality conditions
+
+**Immutable: Stability**
+You gain complete immunity to Stability conditions
 
 **Try-Hard** 
 You have an extra effort.
@@ -506,7 +512,7 @@ You have an extra effort.
 You can reroll once, any roll that is equal to or below your Tier.
 
 **Robot** 
-Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for healing purposes.
+Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for damage and healing purposes.
 
 
 ## **OTHER UNIQUE ABILITIES**

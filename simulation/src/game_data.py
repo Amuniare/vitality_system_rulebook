@@ -2,7 +2,7 @@
 Game data constants and rule definitions for the Vitality System.
 """
 
-from models import AttackType, Upgrade, Limit
+from src.models import AttackType, Upgrade, Limit
 from typing import List, Tuple
 
 
