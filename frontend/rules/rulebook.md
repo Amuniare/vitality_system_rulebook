@@ -273,9 +273,9 @@ All characters can take these actions at base, no special training or abilities 
 - Consistent positioning regardless of enemy interference
 
 **Vanguard**
-- Double your movement speed on turn 1
-- Punish Attacks do not consume your reaction and reduce targets movement to 0 on hit
-- Enhanced zone control and battlefield presence
+- You can move your full speed immediately at the start of initiative and take a Free Action.
+- You can use the Protect Action as a Free Action. 
+- Protect allies from harm
 
 **Mole**
 - Move your full speed through soft materials (dirt, clay, loose rock)
@@ -415,75 +415,59 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 - You've been hit but took no damage since last turn
 - Cannot move this turn
 
-**9. Death's Door**
-- You are at 25 Hit Points or less
+**7. Death's Door**
+When you are at 25 Hit Points or less.
 
-**10. Dangerous**
-- There are no allies are within 15 spaces
-- There are no civilians within 30 spaces
+**8. Dangerous**
+When no allies are within 15 spaces and no civilians within 30 spaces.
 
-**11. Patient**
-- It's turn 5 or later
+**9. Patient**
+When it's turn 5 or later.
 
-**12. Temporal Burst**
-- Activate for 2 turns, recharges after 1 minute rest, while active
+**10. Temporal Burst**
+Activate for 2 turns, recharges after 1 minute rest. While active.
 
-**13. Lucky Streak**
-- Roll d20 each turn, DC 10, if you succeed
+**11. Lucky Streak**
+Roll d20 each turn, DC 10. When you succeed.
 
-**14. Executioner**
-- You defeated an enemy last turn
-- It's turn 3 or later
+**12. Executioner**
+When you defeated an enemy last turn and it's turn 3 or later.
 
-**15. Revenge**
-- You're at 50 or less Hit Points
-- You've been damaged or conditioned since your turn
+**13. Revenge**
+When you're at 50 or less Hit Points and you've been damaged or conditioned since your turn.
 
-**16. Unstoppable**
-- You've been hit but took no damage or conditions since your last turn
-- You've dealt damage or conditions to an enemy last turn
+**14. Unstoppable**
+When you've been hit but took no damage or conditions since your last turn and dealt damage or conditions to an enemy last turn.
 
-**17. Concentration**
-- You cannot move this turn
-- You have not been attacked since your last turn
+**15. Concentration**
+When you cannot move this turn and have not been attacked since your last turn.
 
-**20. Hunter**
-- There are no enemies are within 5 spaces
-- You dealt damage or applied a condition last turn
-- You haven't taken damage since last turn
+**16. Hunter**
+When no enemies are within 5 spaces, you dealt damage or applied a condition last turn, and you haven't taken damage since last turn.
 
-**21. Untouchable**
-- All attacks have missed you since last turn
-- You dealt damage or applied a condition this turn
+**17. Untouchable**
+When all attacks have missed you since last turn and you dealt damage or applied a condition this turn.
 
-**22. High Risk**
-- You're at 50 Hit Points or less
-- Roll d20 each turn, DC 5
+**18. High Risk**
+When you're at 50 Hit Points or less and roll d20 each turn, DC 5.
 
-**23. Pacifist**
-- All attacks have missed you since last turn
-- You haven't attacked since last turn
+**19. Pacifist**
+When all attacks have missed you since last turn and you haven't attacked since last turn.
 
-**24. Fortress**
-- You cannot move this turn
-- You haven't taken damage since last turn
-- Turn 3 or later
+**20. Fortress**
+When you cannot move this turn, haven't taken damage since last turn, and turn 3 or later.
 
-**28. Overwatch**
-- You cannot move this turn
-- There are no allies are within 10 spaces
+**21. Overwatch**
+When you cannot move this turn and no allies are within 10 spaces.
 
-**30. Overwhelm**
-- You have more adjacent allies than enemies
+**22. Overwhelm**
+When you have more adjacent allies than enemies.
 
-**31. Cornered**
-- You're at 50 Hit Points or less
-- There are 3+ enemies are within 5 spaces
+**23. Cornered**
+When you're at 50 Hit Points or less and 3+ enemies are within 5 spaces.
 
-**32. Tactical Advantage**
-- You're on higher ground than your target
-- You don't move
-- There are no enemies within 5 spaces
+**24. Tactical Advantage**
+When you're on higher ground than your target, you don't move and there are no enemies within 5 spaces.
 
 
 
@@ -1100,15 +1084,9 @@ Limit: At 25 Hit Points or less
 Effect: +2xTier to Accuracy, Damage, and Conditions
 
 **Bloodied** 
-Cost: 20p
+Cost: 40p
 Limit: At 50 Hit Points or less
 Effect: +Tier to Accuracy, Damage, and Conditions
-
-**Unhealthy** 
-Cost: 60p
-Limit: 50 points below max HP
-Effect: +Tier to Accuracy, Damage, and Conditions
-
 
 #### Conditional
 
@@ -1232,7 +1210,7 @@ Cost: 60p
 Limit: Turn 3 or later
 Effect: +Tier to Accuracy, Damage, and Conditions
 
-**Patient** 
+**Patience** 
 Cost: 40p
 Limit: Turn 5 or later
 Effect: +Tier to Accuracy, Damage, and Conditions
@@ -1270,7 +1248,7 @@ Effect: +Tier to Accuracy, Damage, and Conditions
 
 
 **Attrition** 
-Cost: 60p
+Cost: 40p
 Limit: Each use costs 20 HP
 Restriction: Can't have regeneration, leech, healing or any other ability that restores HP
 Effect: +Tier to Accuracy, Damage, and Conditions
