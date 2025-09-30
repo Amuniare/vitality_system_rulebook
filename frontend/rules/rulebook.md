@@ -153,7 +153,7 @@ In Heroic Settings, when calculating Fall Damage caused by height, multiple your
 
 
 
-# SECTION 2: CHARACTER BASICS 
+# SECTION 2: CHARACTER BASICS
 
 ### **ACTION TYPES**
 **Turn Structure:** Primary Action + Any Free Action + Movement + Reaction
@@ -313,12 +313,12 @@ All characters can take these actions at base, no special training or abilities 
 
 **Dual-Natured**
 - Two distinct Special Attacks
-- Each gets 20 × Tier points
+- Each gets 25 × Tier points
 - Balanced versatility
 
 **Versitile Master**
 - 5 Special Attacks
-- Each receives 15 × Tier points
+- Each receives 20 × Tier points
 - Consistent performance without drawbacks
 
 **Specialist**
@@ -394,22 +394,26 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 **Note:** Speak with your GM if you would like a custom flaw.
 
 **1. Flow State**
-When you haven't taken damage since last turn, cannot move this turn, and no enemies are within 5 spaces.
+- You haven't taken damage since last turn
+- Cannot move this turn
+- There are no enemies are within 5 spaces
 
 **2. Avenger**
-When an ally is unconscious or great peril occurred.
+- An ally is unconscious or great peril occurred
 
 **3. Berserk**
-When you're at 50 or less Hit Points and dealt damage or conditions on your last turn.
+- You're at 50 or less Hit Points
+- Dealt damage or conditions on your last turn
 
 **4. First Strike**
-During the first 3 rounds of combat.
+- During the first 3 rounds of combat
 
 **5. Perfect Form**
-When you're at max HP with no conditions.
+- You're at max HP with no conditions
 
 **6. Bulwark**
-When you've been hit but took no damage since last turn and cannot move this turn.
+- You've been hit but took no damage since last turn
+- Cannot move this turn
 
 **7. Death's Door**
 When you are at 25 Hit Points or less.
@@ -473,8 +477,14 @@ When you're on higher ground than your target, you don't move and there are no e
 *Permanent abilities that change how your character is built*
 **Costs:** 1 boon
 
-**Immutable**
-Choose one Secondary Resistance, you gain complete immunity in that resistance type
+**Immutable: Resolve**
+You gain complete immunity to Resolve conditions
+
+**Immutable: Vitality**
+You gain complete immunity to Vitality conditions
+
+**Immutable: Stability**
+You gain complete immunity to Stability conditions
 
 **Try-Hard** 
 You have an extra effort.
@@ -486,7 +496,7 @@ You have an extra effort.
 You can reroll once, any roll that is equal to or below your Tier.
 
 **Robot** 
-Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for healing purposes.
+Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for damage and healing purposes.
 
 
 ## **OTHER UNIQUE ABILITIES**
@@ -608,11 +618,11 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 
 **MELEE ATTACK (Accuracy)** 
 - **Range:** Adjacent targets only
-- **Benefit:** Add Tier to Melee Damage/Condition rolls
+- **Benefit:** Add Tier to Melee Accuracy rolls
 
 **MELEE ATTACK (Damage & Conditions)** 
 - **Range:** Adjacent targets only
-- **Benefit:** Add Tier to Melee Accuracy rolls
+- **Benefit:** Add Tier to Melee Damage and Conditions rolls
 
 **RANGED ATTACK** 
 - **Range:** 15 spaces base
@@ -622,7 +632,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Range:** Originates from your position
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Penalty:** -Tier to all Accuracy checks
-- **Cost:** All upgrades cost 2x as much
+- **Cost Modifier:** All upgrades / limits cost 2x as much
 
 **DIRECT CONDITION ATTACK** 
 - **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
@@ -634,7 +644,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction:** Must be a Condition Effect
 - **Penalty:** -Tier x2 Condition Roll
-- **Cost:** All upgrades cost 2x as much
+- **Cost Modifier:** All upgrades / limits cost 2x as much
 
 **DIRECT DAMAGE ATTACK** 
 - **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
@@ -646,7 +656,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction:** Must be Damage Effect
 - **Penalty:** Flat 15 - Tier x2
-- **Cost:** All upgrades cost 2x as much
+- **Cost Modifier:** All upgrades / limits cost 2x as much
 
 ## **DAMAGE & CONDITIONS **
 1. You can build an attack that does damage for free or purchase a Condition for it's listed price
