@@ -29,6 +29,7 @@ def test_single_build(args):
     should_log = False
 
     total_turns = 0
+    total_dpt = 0
     total_configs = 0
 
     # Skip logging in worker processes for multiprocessing compatibility
@@ -57,6 +58,7 @@ def test_single_build(args):
             ]
 
         case_total_turns = 0
+        case_total_dpt = 0
         scenario_count = 0
 
         for scenario_data in fight_scenarios:
@@ -72,20 +74,24 @@ def test_single_build(args):
             # Skip scenario logging in worker processes
 
             case_total_turns += avg_turns
+            case_total_dpt += dpt
             scenario_count += 1
 
-        # Average turns across all scenarios for this case
+        # Average turns and dpt across all scenarios for this case
         case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
+        case_avg_dpt = case_total_dpt / scenario_count if scenario_count > 0 else 0
 
         # Skip case logging in worker processes
 
         total_turns += case_avg_turns
+        total_dpt += case_avg_dpt
         total_configs += 1
 
     avg_turns = total_turns / total_configs if total_configs > 0 else 0
+    avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
 
-    # Return build and average turns
-    return (build, avg_turns)
+    # Return build, average dpt, and average turns
+    return (build, avg_dpt, avg_turns)
 
 
 def test_multi_attack_build(args):
@@ -143,8 +149,11 @@ def test_multi_attack_build(args):
     multi_build.calculate_optimal_selections()
 
     # Return the multi-build with its overall average turns
+    # Note: DPT is set to 0 for multi-attack builds as the metric is less meaningful
+    # when switching between different attacks
     avg_turns = multi_build.get_overall_avg_turns()
-    return (multi_build, avg_turns)
+    avg_dpt = 0  # Placeholder for multi-attack builds
+    return (multi_build, avg_dpt, avg_turns)
 
 
 def main():
@@ -302,11 +311,11 @@ def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str
 
                         # Process completed futures with progress tracking
                         for future in futures:
-                            build, avg_turns = future.result()
+                            build, avg_dpt, avg_turns = future.result()
                             completed_count += 1
 
                             # Store result
-                            build_results.append((build, avg_turns))
+                            build_results.append((build, avg_dpt, avg_turns))
 
                             # Progress reporting every 100 builds
                             if completed_count % 100 == 0:
@@ -327,10 +336,10 @@ def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str
                 print(f"Processing final chunk {chunk_count} ({len(current_chunk)} builds) sequentially...")
 
                 for args in current_chunk:
-                    build, avg_turns = test_func(args)
+                    build, avg_dpt, avg_turns = test_func(args)
                     completed_count += 1
 
-                    build_results.append((build, avg_turns))
+                    build_results.append((build, avg_dpt, avg_turns))
 
                     if completed_count % 100 == 0:
                         current_time = time.time()
@@ -348,10 +357,10 @@ def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str
             # Process builds sequentially
             for build_idx, build in enumerate(builds_generator):
                 args = (build_idx, build, test_cases, config, None, False)
-                build, avg_turns = test_func(args)
+                build, avg_dpt, avg_turns = test_func(args)
                 completed_count += 1
 
-                build_results.append((build, avg_turns))
+                build_results.append((build, avg_dpt, avg_turns))
 
                 # Progress reporting
                 if completed_count % 100 == 0:
@@ -378,7 +387,7 @@ def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str
             print(f"  Execution mode: Sequential (single-threaded)")
 
         # Sort by average turns (lower is better)
-        build_results.sort(key=lambda x: x[1])
+        build_results.sort(key=lambda x: x[2])
 
         # Process top builds for detailed logging
         logger.process_top_builds(build_results, config.__dict__)
