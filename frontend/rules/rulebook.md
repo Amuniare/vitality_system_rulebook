@@ -608,11 +608,11 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 
 **MELEE ATTACK (Accuracy)** 
 - **Range:** Adjacent targets only
-- **Benefit:** Add Tier to Melee Damage/Condition rolls
+- **Benefit:** Add Tier to Melee Accuracy rolls
 
 **MELEE ATTACK (Damage & Conditions)** 
 - **Range:** Adjacent targets only
-- **Benefit:** Add Tier to Melee Accuracy rolls
+- **Benefit:** Add Tier to Melee Damage and Conditions rolls
 
 **RANGED ATTACK** 
 - **Range:** 15 spaces base
