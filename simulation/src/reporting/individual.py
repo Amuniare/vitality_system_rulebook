@@ -672,7 +672,7 @@ class IndividualReportGenerator:
                     # Single run for individual testing
                     num_runs = 1 if self.individual_config.get('single_run_per_test', True) else self.config.individual_testing_runs
 
-                    results, avg_turns, dpt = run_simulation_batch(
+                    results, avg_turns, dpt, _ = run_simulation_batch(
                         attacker, build, num_runs, enemy_hp, defender, num_enemies,
                         max_turns=self.config.max_combat_turns
                     )
@@ -856,7 +856,7 @@ class IndividualReportGenerator:
                     # Set random seed for reproducible results in detailed logs
                     random.seed(42)
 
-                    turns = simulate_combat_verbose(
+                    turns, outcome = simulate_combat_verbose(
                         attacker, build,
                         target_hp=enemy_hp,
                         log_file=f,
@@ -867,6 +867,6 @@ class IndividualReportGenerator:
 
                     total_hp = num_enemies * enemy_hp
                     dpt = total_hp / turns if turns > 0 else 0
-                    f.write(f"\nFINAL RESULTS: {turns} turns, {total_hp} total HP, {dpt:.2f} DPT\n")
+                    f.write(f"\nFINAL RESULTS: {turns} turns, Outcome: {outcome}, {total_hp} total HP, {dpt:.2f} DPT\n")
 
         print(f"Detailed combat logs saved to {log_filename}")

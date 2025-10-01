@@ -1,7 +1,7 @@
 {
   "execution_mode": "both",
-  "archetypes": ["focused", "dual_natured", "versatile_master"],
-  "tier": 4,
+  "archetypes": ["focused"],
+  "tier": 3,
   "use_threading": true,
   "verbose_logging": true,
   "top_builds_count": 100,

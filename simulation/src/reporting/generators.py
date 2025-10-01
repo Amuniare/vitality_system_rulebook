@@ -87,7 +87,7 @@ def generate_combo_performance_report(config: SimulationConfig) -> Dict:
                 ]
 
                 for num_enemies, enemy_hp in fight_scenarios:
-                    base_results, base_avg_turns, base_dpt = run_simulation_batch(
+                    base_results, base_avg_turns, base_dpt, _ = run_simulation_batch(
                         attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     base_total_dpt += base_dpt
@@ -100,7 +100,7 @@ def generate_combo_performance_report(config: SimulationConfig) -> Dict:
                 scenario_count = 0
 
                 for num_enemies, enemy_hp in fight_scenarios:
-                    combo_results_batch, combo_avg_turns, combo_dpt = run_simulation_batch(
+                    combo_results_batch, combo_avg_turns, combo_dpt, _ = run_simulation_batch(
                         attacker, combo_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     combo_total_dpt += combo_dpt
@@ -230,7 +230,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
                 ]
 
                 for num_enemies, enemy_hp in fight_scenarios:
-                    base_results, base_avg_turns, base_dpt = run_simulation_batch(
+                    base_results, base_avg_turns, base_dpt, _ = run_simulation_batch(
                         attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     base_total_dpt += base_dpt
@@ -243,7 +243,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
                 scenario_count = 0
 
                 for num_enemies, enemy_hp in fight_scenarios:
-                    upgrade_results_batch, upgrade_avg_turns, upgrade_dpt = run_simulation_batch(
+                    upgrade_results_batch, upgrade_avg_turns, upgrade_dpt, _ = run_simulation_batch(
                         attacker, upgrade_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     upgrade_total_dpt += upgrade_dpt
@@ -349,7 +349,7 @@ def generate_upgrade_performance_report(config: SimulationConfig) -> Dict:
                 scenario_count = 0
 
                 for num_enemies, enemy_hp in fight_scenarios:
-                    limit_results_batch, limit_avg_turns, limit_dpt = run_simulation_batch(
+                    limit_results_batch, limit_avg_turns, limit_dpt, _ = run_simulation_batch(
                         attacker, limit_build, config.individual_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
                     limit_total_dpt += limit_dpt
@@ -422,7 +422,7 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
     combo_rankings = {}    # combo_name -> list of ranking positions
 
     # Process each build result to track enhancement positions
-    for rank, (build, avg_turns) in enumerate(all_build_results, 1):
+    for rank, (build, avg_dpt, avg_turns) in enumerate(all_build_results, 1):
         # Track attack type rankings
         if build.attack_type not in attack_type_rankings:
             attack_type_rankings[build.attack_type] = []
@@ -627,7 +627,7 @@ def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: Simu
         }
 
     # Process each build result to collect upgrade appearance data
-    for rank, (build, avg_turns) in enumerate(all_build_results, 1):
+    for rank, (build, avg_dpt, avg_turns) in enumerate(all_build_results, 1):
         # For each upgrade in this build
         for upgrade in build.upgrades:
             if upgrade in upgrade_data:
@@ -762,9 +762,9 @@ def generate_diagnostic_base_attacks_report(config: SimulationConfig, reports_di
 
                 for scenario_name, num_enemies, enemy_hp in fight_scenarios:
                     f.write(f"\n  {scenario_name}:\n")
-                    turns = simulate_combat_verbose(attacker, base_build, config.target_hp, f, defender,
+                    turns, outcome = simulate_combat_verbose(attacker, base_build, config.target_hp, f, defender,
                                                  num_enemies=num_enemies, enemy_hp=enemy_hp)
-                    f.write(f"  Combat completed in {turns} turns\n")
+                    f.write(f"  Combat completed in {turns} turns - {outcome}\n")
 
             f.write("\n" + "="*60 + "\n\n")
 
@@ -841,9 +841,9 @@ def generate_diagnostic_upgrades_report(config: SimulationConfig, reports_dir: s
 
                 for scenario_name, num_enemies, enemy_hp in fight_scenarios:
                     f.write(f"\n  {scenario_name}:\n")
-                    turns = simulate_combat_verbose(attacker, upgrade_build, config.target_hp, f, defender,
+                    turns, outcome = simulate_combat_verbose(attacker, upgrade_build, config.target_hp, f, defender,
                                                  num_enemies=num_enemies, enemy_hp=enemy_hp)
-                    f.write(f"  Combat completed in {turns} turns\n")
+                    f.write(f"  Combat completed in {turns} turns - {outcome}\n")
 
             f.write("\n" + "="*60 + "\n\n")
 
@@ -901,9 +901,9 @@ def generate_diagnostic_limits_report(config: SimulationConfig, reports_dir: str
 
                 for scenario_name, num_enemies, enemy_hp in fight_scenarios:
                     f.write(f"\n  {scenario_name}:\n")
-                    turns = simulate_combat_verbose(attacker, limit_build, config.target_hp, f, defender,
+                    turns, outcome = simulate_combat_verbose(attacker, limit_build, config.target_hp, f, defender,
                                                  num_enemies=num_enemies, enemy_hp=enemy_hp)
-                    f.write(f"  Combat completed in {turns} turns\n")
+                    f.write(f"  Combat completed in {turns} turns - {outcome}\n")
 
             f.write("\n" + "="*60 + "\n\n")
 
@@ -979,12 +979,12 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
                         upgrade_build = AttackBuild(attack_type, [upgrade_name], [])
 
                         # Test base performance
-                        base_results, base_avg_turns, base_dpt = run_simulation_batch(
+                        base_results, base_avg_turns, base_dpt, _ = run_simulation_batch(
                             attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                             num_enemies=num_enemies, enemy_hp=enemy_hp)
 
                         # Test upgrade performance
-                        upgrade_results, upgrade_avg_turns, upgrade_dpt = run_simulation_batch(
+                        upgrade_results, upgrade_avg_turns, upgrade_dpt, _ = run_simulation_batch(
                             attacker, upgrade_build, config.individual_testing_runs, config.target_hp, defender,
                             num_enemies=num_enemies, enemy_hp=enemy_hp)
 
@@ -1063,12 +1063,12 @@ def generate_scenario_breakdown_report(config: SimulationConfig, reports_dir: st
                         limit_build = AttackBuild(attack_type, [], [limit_name])
 
                         # Test base performance
-                        base_results, base_avg_turns, base_dpt = run_simulation_batch(
+                        base_results, base_avg_turns, base_dpt, _ = run_simulation_batch(
                             attacker, base_build, config.individual_testing_runs, config.target_hp, defender,
                             num_enemies=num_enemies, enemy_hp=enemy_hp)
 
                         # Test limit performance
-                        limit_results, limit_avg_turns, limit_dpt = run_simulation_batch(
+                        limit_results, limit_avg_turns, limit_dpt, _ = run_simulation_batch(
                             attacker, limit_build, config.individual_testing_runs, config.target_hp, defender,
                             num_enemies=num_enemies, enemy_hp=enemy_hp)
 
@@ -1148,7 +1148,7 @@ def generate_individual_report(build: AttackBuild, config: SimulationConfig, rep
                 f.write(f"TEST CASE: Attacker {i+1} vs Defender {j+1}\n")
                 f.write("-" * 40 + "\n")
 
-                results, avg_turns, dpt = run_simulation_batch(
+                results, avg_turns, dpt, _ = run_simulation_batch(
                     attacker, build, config.build_testing_runs, config.target_hp, defender)
 
                 f.write(f"Individual results: {results}\n")

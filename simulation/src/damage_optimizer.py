@@ -66,7 +66,7 @@ def test_single_build(args):
             scenario_name, enemy_hp_list, num_enemies, enemy_hp = scenario_data
 
             # Run batch simulation
-            results, avg_turns, dpt = run_simulation_batch(
+            results, avg_turns, dpt, outcome_stats = run_simulation_batch(
                 attacker, build, config.build_testing_runs, config.target_hp, defender,
                 num_enemies=num_enemies if num_enemies else 0, enemy_hp=enemy_hp,
                 enemy_hp_list=enemy_hp_list)
@@ -130,7 +130,7 @@ def test_multi_attack_build(args):
                 scenario_name, enemy_hp_list, num_enemies, enemy_hp = scenario_data
 
                 # Run batch simulation for this specific attack
-                results, avg_turns, dpt = run_simulation_batch(
+                results, avg_turns, dpt, outcome_stats = run_simulation_batch(
                     attacker, attack_build, config.build_testing_runs, config.target_hp, defender,
                     num_enemies=num_enemies if num_enemies else 0, enemy_hp=enemy_hp,
                     enemy_hp_list=enemy_hp_list)

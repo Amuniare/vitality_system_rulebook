@@ -137,9 +137,9 @@ def build_turns_table(all_build_results: List[Tuple], config: SimulationConfig, 
     """Generate table of builds sorted by average turns (ascending)"""
     print("Generating build turns table report...")
 
-    # Extract build data with turns - all_build_results now contains (build, avg_turns)
+    # Extract build data with turns - all_build_results now contains (build, avg_dpt, avg_turns)
     build_data = []
-    for rank, (build, avg_turns) in enumerate(all_build_results, 1):
+    for rank, (build, avg_dpt, avg_turns) in enumerate(all_build_results, 1):
         build_data.append({
             'original_rank': rank,
             'build': build,
@@ -218,7 +218,7 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
                 scenario_count = 0
 
                 for scenario_name, num_enemies, enemy_hp in fight_scenarios:
-                    _, avg_turns, dpt = run_simulation_batch(
+                    _, avg_turns, dpt, _ = run_simulation_batch(
                         attacker, build, config.build_testing_runs, config.target_hp, defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
 
@@ -253,7 +253,7 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
         f.write("-" * 70 + "\n")
 
         # Build entries
-        for i, (build, avg_turns) in enumerate(build_results, 1):
+        for i, (build, avg_dpt, avg_turns) in enumerate(build_results, 1):
             # Format enhancements (upgrades + limits)
             enhancements = []
             if build.upgrades:
@@ -279,7 +279,7 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
         # Top 10 fastest builds
         f.write(f"\n\nTOP 10 FASTEST BUILDS\n")
         f.write("-" * 40 + "\n")
-        for i, (build, avg_turns, avg_dpt) in enumerate(build_results[:10], 1):
+        for i, (build, avg_dpt, avg_turns) in enumerate(build_results[:10], 1):
             enhancements = []
             if build.upgrades:
                 enhancements.extend(build.upgrades)

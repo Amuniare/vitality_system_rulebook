@@ -198,14 +198,14 @@ class LoggingManager:
                             pass
 
                     string_logger = StringLogger()
-                    turns = simulate_combat_verbose(attacker, build, config['target_hp'],
+                    turns, outcome = simulate_combat_verbose(attacker, build, config['target_hp'],
                                                   string_logger, defender,
                                                   num_enemies=num_enemies, enemy_hp=enemy_hp)
 
                     # Run batch simulation
                     # Get simulation runs from config structure
                     sim_runs = config.get('simulation_runs', {}).get('individual_testing_runs', 5)
-                    results, avg_turns, dpt = run_simulation_batch(
+                    results, avg_turns, dpt, _ = run_simulation_batch(
                         attacker, build, sim_runs,
                         config['target_hp'], defender,
                         num_enemies=num_enemies, enemy_hp=enemy_hp)
