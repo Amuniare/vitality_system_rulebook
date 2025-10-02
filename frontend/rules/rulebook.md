@@ -474,7 +474,7 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 - You don't move
 - There are no enemies within 5 spaces
 
-**22. Temporary Burst**
+**22. Temporal Burst**
 - Activate for 2 turns, recharges after 1 minute rest, while active
 
 **23. Unstoppable**
