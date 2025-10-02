@@ -416,58 +416,74 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 - Cannot move this turn
 
 **7. Death's Door**
-When you are at 25 Hit Points or less.
+- You are at 25 Hit Points or less
 
 **8. Dangerous**
-When no allies are within 15 spaces and no civilians within 30 spaces.
+- There are no allies are within 15 spaces
+- There are no civilians within 30 spaces
 
 **9. Patient**
-When it's turn 5 or later.
+- It's turn 5 or later
 
 **10. Temporal Burst**
-Activate for 2 turns, recharges after 1 minute rest. While active.
+- Activate for 2 turns, recharges after 1 minute rest, while active
 
 **11. Lucky Streak**
-Roll d20 each turn, DC 10. When you succeed.
+- Roll d20 each turn, DC 10, if you succeed
 
 **12. Executioner**
-When you defeated an enemy last turn and it's turn 3 or later.
+- You defeated an enemy last turn
+- It's turn 3 or later
 
 **13. Revenge**
-When you're at 50 or less Hit Points and you've been damaged or conditioned since your turn.
+- You're at 50 or less Hit Points
+- You've been damaged or conditioned since your turn
 
 **14. Unstoppable**
-When you've been hit but took no damage or conditions since your last turn and dealt damage or conditions to an enemy last turn.
+- You've been hit but took no damage or conditions since your last turn
+- You've dealt damage or conditions to an enemy last turn
 
 **15. Concentration**
-When you cannot move this turn and have not been attacked since your last turn.
+- You cannot move this turn
+- You have not been attacked since your last turn
 
 **16. Hunter**
-When no enemies are within 5 spaces, you dealt damage or applied a condition last turn, and you haven't taken damage since last turn.
+- There are no enemies are within 5 spaces
+- You dealt damage or applied a condition last turn
+- You haven't taken damage since last turn
 
 **17. Untouchable**
-When all attacks have missed you since last turn and you dealt damage or applied a condition this turn.
+- All attacks have missed you since last turn
+- You dealt damage or applied a condition this turn
 
 **18. High Risk**
-When you're at 50 Hit Points or less and roll d20 each turn, DC 5.
+- You're at 50 Hit Points or less
+- Roll d20 each turn, DC 5
 
 **19. Pacifist**
-When all attacks have missed you since last turn and you haven't attacked since last turn.
+- All attacks have missed you since last turn
+- You haven't attacked since last turn
 
 **20. Fortress**
-When you cannot move this turn, haven't taken damage since last turn, and turn 3 or later.
+- You cannot move this turn
+- You haven't taken damage since last turn
+- Turn 3 or later
 
 **21. Overwatch**
-When you cannot move this turn and no allies are within 10 spaces.
+- You cannot move this turn
+- There are no allies are within 10 spaces
 
 **22. Overwhelm**
-When you have more adjacent allies than enemies.
+- You have more adjacent allies than enemies
 
 **23. Cornered**
-When you're at 50 Hit Points or less and 3+ enemies are within 5 spaces.
+- You're at 50 Hit Points or less
+- There are 3+ enemies are within 5 spaces
 
 **24. Tactical Advantage**
-When you're on higher ground than your target, you don't move and there are no enemies within 5 spaces.
+- You're on higher ground than your target
+- You don't move
+- There are no enemies within 5 spaces
 
 
 
@@ -475,7 +491,7 @@ When you're on higher ground than your target, you don't move and there are no e
 
 ### **TRAITS**
 *Permanent abilities that change how your character is built*
-**Costs:** 1 boon
+**Cost:** 1 boon
 
 **Immutable: Resolve**
 You gain complete immunity to Resolve conditions
