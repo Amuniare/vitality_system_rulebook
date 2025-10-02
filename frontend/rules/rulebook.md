@@ -841,7 +841,7 @@ Penalty: If you use your free action to make this attack, you cannot use your ac
 Restriction: Condition effects only
 
 **Critical Condition**  
-Cost: 40p
+Cost: 20p
 Effect: Condition rolls critical hit on 15-20 range  
 Restriction: Cannot apply to AOE attacks  
 Restriction: Condition effects only
@@ -1046,7 +1046,7 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 #### Sustained Attack Systems
 
 **Channeled**  
-Cost: 60p
+Cost: 40p
 Penalty: -2xTier to Accuracy, Damage, and Condition rolls  
 Effect: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 Usage: If you don't make the channeled attack on a turn, you lose your bonus.
