@@ -120,8 +120,7 @@
     --=SplashDamage| [*R:SplashDamage]
     --=Bleed| [*R:Bleed]
 
-    --=Whirlwind| [*R:Whirlwind]
-    --=ScatterShot| [*R:ScatterShot]
+    --/| v6.0 FIX: Removed deprecated upgrades (Whirlwind, ScatterShot)
 
     --=ReliableAccuracy| [*R:ReliableAccuracy]
     --=SupremeAccuracy| 0
@@ -147,7 +146,7 @@
 
     --/| ==========NEW ACCURACY BONUSES==========
     --=AccurateAttack| [*R:AccurateAttack]
-    --=Blitz| [*R:Blitz]
+    --/| v6.0 FIX: Blitz is now a LIMIT, not an upgrade (moved to Limits section)
     --=Ricochet| [*R:Ricochet]
     --=DoubleTap| [*R:DoubleTap]
     --=ExplosiveCritical| [*R:ExplosiveCritical]
@@ -163,9 +162,8 @@
     --=Contagious| [*R:Contagious]
 
     --/| ==========NEW SPECIALIZED COMBAT==========
-    --=HeavyStrike| [*R:HeavyStrike]
+    --/| v6.0 FIX: Removed deprecated upgrades (HeavyStrike, WhirlwindStrike)
     --=QuickStrikes| [*R:QuickStrikes]
-    --=WhirlwindStrike| [*R:WhirlwindStrike]
     --=Barrage| [*R:Barrage]
     --=Headshot| [*R:Headshot]
     --=FlurryOfBlows| [*R:FlurryOfBlows]
@@ -319,10 +317,8 @@
     --?[$AttackType] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Melee]
     --?[$AttackType] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Melee]
 
-    --/| Area penalty
+    --/| Area penalty - v6.0 FIX: Only penalizes Accuracy, NOT damage/conditions
     --?[$AttackType] -eq 3|&AccuracyStringModifiers;+ - [*S:char_tier] [Area]
-    --?[$AttackType] -eq 3|&DamageStringModifiers;+ - [*S:char_tier] [Area]
-    --?[$AttackType] -eq 3|&ConditionsStringModifiers;+ - [*S:char_tier] [Area]
 
     --/| Direct Condition penalty
     --?[$AttackType] -eq 4|&ConditionsStringModifiers;+ - [*S:char_tier] [Direct Condition]
@@ -339,8 +335,7 @@
     --=DirectAreaDamagePenalty| [*S:char_tier]*2 {NEGATE}
     --?[$AttackType] -eq 7|=DamageDice; 15 + [$DirectAreaDamagePenalty]
 
-
-    --?[$EffectType] -eq 8|&ConditionsStringModifiers;+ - [*S:char_tier] [Control Penalty]
+    --/| v6.0 FIX: Removed obsolete Control penalty (EffectType 8 doesn't exist in v6.0)
 
     --/| ==========LIMIT BONUSES (APPLY TIER TO ROLLS)==========
     --?[$Timid] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Timid]
@@ -431,11 +426,14 @@
     --?[$Finale] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Finale]
     --?[$Finale] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Finale]
 
-    --?[$ChargeUp] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Charge Up]
-    --?[$ChargeUp] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Charge Up]
-    --?[$ChargeUp] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Charge Up]
+    --/| v6.0 FIX: Charge Up grants +2×Tier, not +Tier
+    --=ChargeUpBonus| [*S:char_tier]*2
+    --?[$ChargeUp] -eq 1|&AccuracyStringModifiers;+ + [$ChargeUpBonus] [Charge Up]
+    --?[$ChargeUp] -eq 1|&DamageStringModifiers;+ + [$ChargeUpBonus] [Charge Up]
+    --?[$ChargeUp] -eq 1|&ConditionsStringModifiers;+ + [$ChargeUpBonus] [Charge Up]
 
-    --=ChargeUp2Bonus| [*S:char_tier]*2
+    --/| Charge Up 2 grants +4×Tier
+    --=ChargeUp2Bonus| [*S:char_tier]*4
     --?[$ChargeUp2] -eq 1|&AccuracyStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
     --?[$ChargeUp2] -eq 1|&DamageStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
     --?[$ChargeUp2] -eq 1|&ConditionsStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
@@ -444,6 +442,45 @@
     --?[$Attrition] -eq 1|&AccuracyStringModifiers;+ + [$AttritionPenalty] [Attrition]
     --?[$Attrition] -eq 1|&DamageStringModifiers;+ + [$AttritionPenalty] [Attrition]
     --?[$Attrition] -eq 1|&ConditionsStringModifiers;+ + [$AttritionPenalty] [Attrition]
+
+    --/| v6.0 FIX: Unreliable limits with actual dice rolls
+    --?[$Unreliable1] -ne 1|PassUnreliable1Roll
+      --=UnreliableRoll1| 1d20
+      --?[$UnreliableRoll1] -ge 5|Unreliable1Success
+        --+Unreliable 1 | Failed (rolled [$UnreliableRoll1], needed 5+) - No bonus
+        --^PassUnreliable1Roll
+      --:Unreliable1Success|
+        --&AccuracyStringModifiers|+ + [*S:char_tier] [Unreliable 1]
+        --&DamageStringModifiers|+ + [*S:char_tier] [Unreliable 1]
+        --&ConditionsStringModifiers|+ + [*S:char_tier] [Unreliable 1]
+        --+Unreliable 1 | Passed (rolled [$UnreliableRoll1]) - Bonus applied
+    --:PassUnreliable1Roll|
+
+    --?[$Unreliable2] -ne 1|PassUnreliable2Roll
+      --=UnreliableRoll2| 1d20
+      --=Unreliable2Bonus| [*S:char_tier]*3
+      --?[$UnreliableRoll2] -ge 10|Unreliable2Success
+        --+Unreliable 2 | Failed (rolled [$UnreliableRoll2], needed 10+) - No bonus
+        --^PassUnreliable2Roll
+      --:Unreliable2Success|
+        --&AccuracyStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
+        --&DamageStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
+        --&ConditionsStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
+        --+Unreliable 2 | Passed (rolled [$UnreliableRoll2]) - Bonus applied (+3×Tier)
+    --:PassUnreliable2Roll|
+
+    --?[$Unreliable3] -ne 1|PassUnreliable3Roll
+      --=UnreliableRoll3| 1d20
+      --=Unreliable3Bonus| [*S:char_tier]*5
+      --?[$UnreliableRoll3] -ge 15|Unreliable3Success
+        --+Unreliable 3 | Failed (rolled [$UnreliableRoll3], needed 15+) - No bonus
+        --^PassUnreliable3Roll
+      --:Unreliable3Success|
+        --&AccuracyStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
+        --&DamageStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
+        --&ConditionsStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
+        --+Unreliable 3 | Passed (rolled [$UnreliableRoll3]) - Bonus applied (+5×Tier)
+    --:PassUnreliable3Roll|
 
     --?[$TowerDefense] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Tower Defense]
     --?[$TowerDefense] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Tower Defense]
@@ -473,11 +510,7 @@
     --?[$PowerAttack] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Power Attack]
     --?[$PowerAttack] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Power Attack]
 
-    --/| HEAVY STRIKE - FIXED WITH SEPARATE CALCULATION
-    --=HeavyStrikeBonus| [*S:char_tier]*3
-    --?[$HeavyStrike] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Heavy Strike]
-    --?[$HeavyStrike] -eq 1|&DamageStringModifiers;+ + [$HeavyStrikeBonus] [Heavy Strike]
-    --?[$HeavyStrike] -eq 1|&ConditionsStringModifiers;+ + [$HeavyStrikeBonus] [Heavy Strike]
+    --/| v6.0 FIX: Removed deprecated upgrades (Heavy Strike, Whirlwind Strike, Scatter Shot, Mass Effect)
 
     --/| HEADSHOT - FIXED WITH SEPARATE CALCULATION
     --=HeadshotBonus| [*S:char_tier]*3
@@ -485,7 +518,6 @@
     --?[$Headshot] -eq 1|&DamageStringModifiers;+ + [$HeadshotBonus] [Headshot]
     --?[$Headshot] -eq 1|&ConditionsStringModifiers;+ + [$HeadshotBonus] [Headshot]
 
-    --?[$WhirlwindStrike] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Whirlwind Strike]
     --?[$FlurryOfBlows] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
     --?[$FlurryOfBlows] -eq 1|&DamageStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
     --?[$FlurryOfBlows] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
@@ -494,9 +526,6 @@
       --&AttackNotes|+ Armor Piercing Applied,
     --:PassArmorPiercingNote|
     --?[$ArmorPiercing] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Armor Piercing]
-
-    --?[$ScatterShot] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Scatter Shot]
-    --?[$MassEffect] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Mass Effect]
 
 
 
@@ -554,9 +583,8 @@
       --?[$BossSlayer] -eq 2 -and [$MaxHP] -eq 100|&DamageRollString;+ + [*S:char_tier] [Boss Slayer]
       --?[$BossSlayer] -eq 3 -and [$MaxHP] -eq 100|&ConditionsRollString;+ + [*S:char_tier] [Boss Slayer]
 
-      --/| ==========NEW TARGET-SPECIFIC BONUSES - FIXED BLITZ CALCULATION==========
-      --=BlitzBonus| [*S:char_mobility]/6 {CEIL}
-      --?[$Blitz] -eq 1|&AccuracyRollString;+ + [$BlitzBonus] [Blitz]
+      --/| ==========NEW TARGET-SPECIFIC BONUSES==========
+      --/| v6.0 FIX: Blitz moved to Limits section (grants +Tier, not Mobility/6)
       --?[$Exploit] -eq 1|&DamageRollString;+ + [*S:char_tier] [Exploit]
       --?[$Exploit] -eq 1|&ConditionsRollString;+ + [*S:char_tier] [Exploit]
       --?[$Grappler] -eq 1|&DamageRollString;+ + [*S:char_tier] [Grappler]
@@ -572,8 +600,8 @@
       --=EnemySB| [*[&testvar]:char_stability]
       --=EnemyVT| [*[&testvar]:char_vitality]
 
-    --/| ARMOR PIERCING
-      --?[$ArmorPiercing] -eq 1|=EnemyDR;  [*[&testvar]:char_endurance]*1.5 {CEIL} {NEGATE} + [*[&testvar]:char_durability]
+    --/| ARMOR PIERCING - v6.0 FIX: Ignore Endurance bonus only (Durability = Tier + Endurance)
+      --?[$ArmorPiercing] -eq 1|=EnemyDR; [*[&testvar]:char_tier]
 
     --/| ==========NEW DEFENSE MODIFIERS==========
     --?[$Shatter] -ne 1|PassShatterNote
@@ -799,105 +827,88 @@
 
     --?[$RollCN] -lt 1|SkipTheConditionsBlock
 
-      --?[$EffectType] -ne 1|PassDisarm
-        --?[$EnemyCnFailAmount] -lt 0|PassDisarm
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];all-for-one
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one;Blank, 1
-        --?[$LastingCondition] -eq 0 -or [$EnemyCnFailAmount] -lt 10|PassDisarmLasting
-          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one
-        --:PassDisarmLasting|
-        --+Applying | Disarm to [*[&testvar]:character_name]
-      --:PassDisarm|
+      --/| v6.0: NEW CONDITION SYSTEM (7 conditions)
+      --/| EffectType: 0=None, 1=Brawl, 2=Frighten, 3=Taunt, 4=Charm, 5=Weaken, 6=Stun, 7=Control
 
-      --?[$EffectType] -ne 2|PassGrab
-        --?[$EnemyCnFailAmount] -lt 0|PassGrab
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];grab
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassGrabLasting
-          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab
-        --:PassGrabLasting|
-        --+Applying | Grab to [*[&testvar]:character_name]
-      --:PassGrab|
+      --/| Brawl (1) - Player/GM chooses: Push, Prone, or Grab
+      --?[$EffectType] -ne 1|PassBrawl
+        --?[$EnemyCnFailAmount] -lt 0|PassBrawl
+        --=BrawlPushDistance| [*S:char_tier]*3
+        --=BrawlCollisionDamage| [*S:char_tier]*3+10
+        --+Applying | Brawl to [*[&testvar]:character_name]
+        --+Choose | Push [$BrawlPushDistance]sp (collision: [$BrawlCollisionDamage] dmg), Prone (+Tier melee AC), or Grab (prevent movement)
+        --&AttackNotes|+ Brawl effect applied (manual choice),
+      --:PassBrawl|
 
-      --?[$EffectType] -ne 3|PassShove
-        --?[$EnemyCnFailAmount] -lt 0|PassShove
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];back-pain
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassShoveLasting
-          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain
-        --:PassShoveLasting|
-        --+Applying | Shove to [*[&testvar]:character_name]
-      --:PassShove|
+      --/| Frighten (2) - Target moves away
+      --?[$EffectType] -ne 2|PassFrighten
+        --?[$EnemyCnFailAmount] -lt 0|PassFrighten
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];aura;1
+        --+Applying | Frighten to [*[&testvar]:character_name] - Must move away from you
+        --&AttackNotes|+ Frighten applied,
+      --:PassFrighten|
 
-      --?[$EffectType] -ne 4|PassDaze
-        --?[$EnemyCnFailAmount] -lt 0|PassDaze
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];pummeled
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDazeLasting
-          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled
-        --:PassDazeLasting|
-        --+Applying | Daze to [*[&testvar]:character_name]
-      --:PassDaze|
-
-      --?[$EffectType] -ne 5|PassBlind
-        --?[$EnemyCnFailAmount] -lt 0|PassBlind
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];bleeding-eye
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassBlindLasting
-          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye
-        --:PassBlindLasting|
-        --+Applying | Blind to [*[&testvar]:character_name]
-      --:PassBlind|
-
-      --?[$EffectType] -ne 6|PassTaunt
+      --/| Taunt (3) - Must include you in attacks
+      --/| v6.0 FIX: Use target's Tier for Lasting Condition threshold
+      --=TargetTier| [*[&testvar]:char_tier]
+      --?[$EffectType] -ne 3|PassTaunt
         --?[$EnemyCnFailAmount] -lt 0|PassTaunt
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];screaming
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassTauntLasting
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];screaming;1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt [$TargetTier]|PassTauntLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming
         --:PassTauntLasting|
-        --+Applying | Taunt to [*[&testvar]:character_name]
+        --+Applying | Taunt to [*[&testvar]:character_name] - Must include you in attacks
+        --&AttackNotes|+ Taunt applied,
       --:PassTaunt|
 
-      --?[$EffectType] -ne 8|PassControl
-        --?[$EnemyCnFailAmount] -lt 0|PassControl
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];broken-skull
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassControlLasting
-          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull
-        --:PassControlLasting|
-        --+Applying | Control to [*[&testvar]:character_name]
-      --:PassControl|
+      --/| Charm (4) - Cannot attack you
+      --?[$EffectType] -ne 4|PassCharm
+        --?[$EnemyCnFailAmount] -lt 0|PassCharm
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];heart;1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt [$TargetTier]|PassCharmLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];heart
+        --:PassCharmLasting|
+        --+Applying | Charm to [*[&testvar]:character_name] - Cannot attack you
+        --&AttackNotes|+ Charm applied,
+      --:PassCharm|
 
-      --?[$EffectType] -ne 9|PassStun
+      --/| Weaken (5) - Reduce specific stat by 2×Tier
+      --?[$EffectType] -ne 5|PassWeaken
+        --?[$EnemyCnFailAmount] -lt 0|PassWeaken
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];radioactive;1
+        --=WeakenAmount| [*S:char_tier]*2
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt [$TargetTier]|PassWeakenLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive
+        --:PassWeakenLasting|
+        --+Applying | Weaken ([$WeakenAmount]) to [*[&testvar]:character_name] - Specify which stat
+        --&AttackNotes|+ Weaken applied (reduce stat by [$WeakenAmount]),
+      --:PassWeaken|
+
+      --/| Stun (6) - Target adds 1/5 HP to resistance
+      --?[$EffectType] -ne 6|PassStun
         --?[$EnemyCnFailAmount] -lt 0|PassStun
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];lightning-helix
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassStunLasting
+        --=StunResistanceBonus| [*[&testvar]:t-bar3_value]/5 {CEIL}
+        --+Stun | Target adds [$StunResistanceBonus] to Resistance (1/5 HP)
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];lightning-helix;1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt [$TargetTier]|PassStunLasting
           -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix
         --:PassStunLasting|
         --+Applying | Stun to [*[&testvar]:character_name]
+        --&AttackNotes|+ Stun applied (+1/5 HP to resistance),
       --:PassStun|
 
-      --?[$EffectType] -ne 10|PassWeaken
-        --?[$EnemyCnFailAmount] -lt 0|PassWeaken
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];radioactive
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassWeakenLasting
-          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive
-        --:PassWeakenLasting|
-        --+Applying | Weaken to [*[&testvar]:character_name]
-      --:PassWeaken|
-
-      --?[$EffectType] -ne 11|PassDisableSpecials
-        --?[$EnemyCnFailAmount] -lt 0|PassDisableSpecials
-        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];frozen-orb
-        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb;Blank, 1
-        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDisableSpecialsLasting
-          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb
-        --:PassDisableSpecialsLasting|
-        --+Applying | Disable Specials to [*[&testvar]:character_name]
-      --:PassDisableSpecials|
+      --/| Control (7) - Target adds 1/5 HP to resistance
+      --?[$EffectType] -ne 7|PassControl
+        --?[$EnemyCnFailAmount] -lt 0|PassControl
+        --=ControlResistanceBonus| [*[&testvar]:t-bar3_value]/5 {CEIL}
+        --+Control | Target adds [$ControlResistanceBonus] to Resistance (1/5 HP)
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];broken-skull;1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt [$TargetTier]|PassControlLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull
+        --:PassControlLasting|
+        --+Applying | Control to [*[&testvar]:character_name]
+        --&AttackNotes|+ Control applied (+1/5 HP to resistance),
+      --:PassControl|
 
       --?[$Cursed] -eq 0|PassCursed
         --=RemainingHP| [*[&testvar]:t-bar3_value]
