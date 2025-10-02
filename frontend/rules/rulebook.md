@@ -494,13 +494,13 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 **Cost:** 1 boon
 
 **Immutable: Resolve**
-You gain complete immunity to Resolve conditions
+You gain complete immunity to Resolve conditions. Can only purchase one type of Immutable.
 
 **Immutable: Vitality**
-You gain complete immunity to Vitality conditions
+You gain complete immunity to Vitality conditions. Can only purchase one type of Immutable.
 
 **Immutable: Stability**
-You gain complete immunity to Stability conditions
+You gain complete immunity to Stability conditions. Can only purchase one type of Immutable.
 
 **Try-Hard** 
 You have an extra effort.
