@@ -631,7 +631,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 **AREA ATTACK** 
 - **Range:** Originates from your position
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
-- **Penalty:** -Tier to all Accuracy checks
+- **Penalty:** -Tier to all Accuracy, Damage and Condition checks
 - **Cost Modifier:** All upgrades / limits cost 2x as much
 
 **DIRECT CONDITION ATTACK** 
