@@ -425,7 +425,7 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 **9. Patient**
 - It's turn 5 or later
 
-**10. Temporal Burst**
+**10. Temporary Burst**
 - Activate for 2 turns, recharges after 1 minute rest, while active
 
 **11. Lucky Streak**
