@@ -9,12 +9,15 @@ from src.combat import make_attack, make_aoe_attack
 
 def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: int = 100,
                           log_file=None, defender: Character = None, num_enemies: int = 1,
-                          enemy_hp: int = None, max_turns: int = 100, enemy_hp_list: List[int] = None) -> int:
-    """Simulate combat until all targets die, return number of turns
+                          enemy_hp: int = None, max_turns: int = 100, enemy_hp_list: List[int] = None) -> Tuple[int, str]:
+    """Simulate combat with defender attacks, return turns and outcome
 
     Args:
         enemy_hp_list: Optional list of HP values for mixed enemy groups.
                        If provided, overrides num_enemies and enemy_hp.
+
+    Returns:
+        Tuple of (turns, outcome) where outcome is "win", "loss", or "timeout"
     """
 
     # Use provided defender or create dummy defender for the test case
@@ -33,12 +36,17 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         enemy_template = {'hp': enemy_hp, 'max_hp': enemy_hp, 'bleed_stacks': []}
         enemies = [enemy_template.copy() for _ in range(num_enemies)]
 
+    # Track attacker HP for win/loss determination
+    attacker_hp = attacker.max_hp
+    attacker_max_hp = attacker.max_hp
+
     if log_file:
         log_file.write(f"\n{'='*80}\n")
         log_file.write(f"COMBAT SIMULATION - DETAILED ANALYSIS\n")
         log_file.write(f"{'='*80}\n")
         log_file.write(f"ATTACKER STATS:\n")
         log_file.write(f"  Focus: {attacker.focus} | Power: {attacker.power} | Mobility: {attacker.mobility} | Endurance: {attacker.endurance} | Tier: {attacker.tier}\n")
+        log_file.write(f"  Avoidance: {attacker.avoidance} | Durability: {attacker.durability} | Max HP: {attacker.max_hp}\n")
         log_file.write(f"DEFENDER STATS:\n")
         log_file.write(f"  Focus: {defender.focus} | Power: {defender.power} | Mobility: {defender.mobility} | Endurance: {defender.endurance} | Tier: {defender.tier}\n")
         log_file.write(f"  Avoidance: {defender.avoidance} | Durability: {defender.durability} | Max HP: {defender.max_hp}\n")
@@ -66,12 +74,13 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
     charge_history = []  # Track charging actions: True = charged, False = attacked
     cooldown_history = {}  # Track when limits with cooldowns were last used
 
-    while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
+    while any(enemy['hp'] > 0 for enemy in enemies) and attacker_hp > 0 and turns < max_turns:
         turns += 1
         if log_file:
             log_file.write(f"\n{'='*60}\n")
             log_file.write(f"TURN {turns} - START\n")
             log_file.write(f"{'='*60}\n")
+            log_file.write(f"Attacker HP: {attacker_hp}/{attacker_max_hp} ({attacker_hp/attacker_max_hp*100:.1f}%)\n")
             alive_enemies = [i for i, enemy in enumerate(enemies) if enemy['hp'] > 0]
             total_hp = sum(enemy['hp'] for enemy in enemies)
             max_total_hp = num_enemies * enemy_hp
@@ -343,6 +352,53 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         if len(charge_history) > 2:
             charge_history.pop(0)
 
+        # DEFENDER ATTACK PHASE - Enemies attack back
+        if any(enemy['hp'] > 0 for enemy in enemies):
+            if log_file:
+                log_file.write(f"\nDEFENDER ATTACK PHASE:\n")
+
+            # Create a basic ranged attack build for defenders (no upgrades, no limits)
+            from src.models import AttackBuild
+            defender_build = AttackBuild('ranged', [], [])
+
+            total_defender_damage = 0
+            for i, enemy in enumerate(enemies):
+                if enemy['hp'] <= 0:
+                    continue  # Dead enemies don't attack
+
+                if log_file:
+                    log_file.write(f"  Enemy {i+1} attacks attacker:\n")
+
+                # Create a character for this enemy using defender stats
+                enemy_attacker = Character(
+                    focus=defender.focus,
+                    power=defender.power,
+                    mobility=defender.mobility,
+                    endurance=defender.endurance,
+                    tier=defender.tier,
+                    max_hp=enemy['max_hp']
+                )
+
+                # Make the attack
+                damage, _ = make_attack(enemy_attacker, attacker, defender_build, log_file=log_file,
+                                       turn_number=turns, charge_history=[], cooldown_history={})
+
+                attacker_hp -= damage
+                total_defender_damage += damage
+
+                if log_file:
+                    log_file.write(f"    Damage dealt to Attacker: {damage}\n")
+                    log_file.write(f"    Attacker HP: {attacker_hp + damage} -> {attacker_hp}\n")
+
+                # Check if attacker is defeated
+                if attacker_hp <= 0:
+                    if log_file:
+                        log_file.write(f"\n  ATTACKER DEFEATED!\n")
+                    break
+
+            if log_file:
+                log_file.write(f"  Total defender damage this turn: {total_defender_damage}\n")
+
         if log_file:
             log_file.write(f"\nTURN {turns} SUMMARY:\n")
             total_bleed_damage = sum(sum(bleed_dmg for bleed_dmg, _ in enemy['bleed_stacks']) for enemy in enemies)
@@ -361,29 +417,49 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     log_file.write(f"   Enemy {i+1} DEFEATED!\n")
                     enemy['max_hp'] = 0  # Mark as logged
 
-    if log_file:
-        log_file.write(f"\nCombat ended in {turns} turns\n")
-        log_file.write(f"All {num_enemies} enemies defeated!\n")
-        log_file.write("="*50 + "\n")
+    # Determine combat outcome
+    if attacker_hp <= 0:
+        outcome = "loss"
+        if log_file:
+            log_file.write(f"\nCombat ended in {turns} turns\n")
+            log_file.write(f"ATTACKER DEFEATED - Combat Lost!\n")
+            log_file.write("="*50 + "\n")
+    elif all(enemy['hp'] <= 0 for enemy in enemies):
+        outcome = "win"
+        if log_file:
+            log_file.write(f"\nCombat ended in {turns} turns\n")
+            log_file.write(f"All {num_enemies} enemies defeated - Combat Won!\n")
+            log_file.write("="*50 + "\n")
+    else:
+        outcome = "timeout"
+        if log_file:
+            log_file.write(f"\nCombat timed out after {turns} turns\n")
+            log_file.write(f"Attacker HP: {attacker_hp}/{attacker_max_hp}\n")
+            alive_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
+            log_file.write(f"Enemies remaining: {alive_count}/{num_enemies}\n")
+            log_file.write("="*50 + "\n")
 
-    return turns
+    return turns, outcome
 
 
 def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int = 10,
                         target_hp: int = 100, defender: Character = None,
                         num_enemies: int = 1, enemy_hp: int = None, max_turns: int = 100,
-                        enemy_hp_list: List[int] = None) -> Tuple[List[int], float, float]:
-    """Run multiple combat simulations and return results
+                        enemy_hp_list: List[int] = None) -> Tuple[List[int], float, float, dict]:
+    """Run multiple combat simulations and return results with win/loss tracking
 
     Args:
         enemy_hp_list: Optional list of HP values for mixed enemy groups.
                        If provided, overrides num_enemies and enemy_hp.
 
     Returns:
-        Tuple of (individual_results, average_turns, damage_per_turn)
+        Tuple of (individual_results, average_turns, damage_per_turn, outcome_stats)
+        where outcome_stats = {"wins": int, "losses": int, "timeouts": int, "win_rate": float}
     """
     # Pre-allocate results list for better memory efficiency
     results = [0] * num_runs
+    result_outcomes = []  # Track outcome for each run
+    outcomes = {"win": 0, "loss": 0, "timeout": 0}
 
     # Calculate total HP pool once - support both homogeneous and mixed groups
     if enemy_hp_list:
@@ -392,12 +468,24 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
         total_hp_pool = (enemy_hp if enemy_hp else target_hp) * num_enemies
 
     for i in range(num_runs):
-        turns = simulate_combat_verbose(attacker, build, target_hp, defender=defender,
+        turns, outcome = simulate_combat_verbose(attacker, build, target_hp, defender=defender,
                                       num_enemies=num_enemies, enemy_hp=enemy_hp, max_turns=max_turns,
                                       enemy_hp_list=enemy_hp_list)
         results[i] = turns
+        result_outcomes.append(outcome)
+        outcomes[outcome] += 1
 
-    avg_turns = sum(results) / num_runs
-    dpt = total_hp_pool / avg_turns if avg_turns > 0 else 0
+    # Calculate stats (only count wins for average turns)
+    win_results = [results[i] for i in range(num_runs) if result_outcomes[i] == "win"]
+    avg_turns = sum(win_results) / len(win_results) if win_results else float('inf')
+    dpt = total_hp_pool / avg_turns if avg_turns > 0 and avg_turns != float('inf') else 0
 
-    return results, avg_turns, dpt
+    # Prepare outcome statistics
+    outcome_stats = {
+        "wins": outcomes["win"],
+        "losses": outcomes["loss"],
+        "timeouts": outcomes["timeout"],
+        "win_rate": (outcomes["win"] / num_runs * 100) if num_runs > 0 else 0
+    }
+
+    return results, avg_turns, dpt, outcome_stats

@@ -1,15 +1,15 @@
 # SECTION 1: BASIC RULES
 
 ### **DICE SYSTEM** 
-**D20 Rolls**
-- **Used For**: Accuracy Checks, Condition Checks, and rolls determined by random chance.
+#### **D20 Rolls**
+**Used For**: Accuracy Checks, Condition Checks, and rolls determined by random chance.
 
-- **Natural 20**: Auto-success for Accuracy and Condition checks. Additionally, a Natural 20 on an Accuracy Check adds your Tier to the Damage and/or Condition roll of the attack. A Natural 20 on the Condition Check also adds the Tier bonus again.
+**Natural 20**: Auto-success for Accuracy and Condition checks. Additionally, a Natural 20 on an Accuracy Check adds your Tier to the Damage and/or Condition roll of the attack. A Natural 20 on the Condition Check also adds the Tier bonus again.
 
-**3D6 Rolls** 
-- **Used For**: Damage Rolls and Skill Checks
+#### **3D6 Rolls** 
+**Used For**: Damage Rolls and Skill Checks
 
-- **Rolling a 6**: When you roll a 6, roll an additional d6 and add it to the total. These additional dice can also allow you to roll an extra die if they land on a 6. Add all dice rolled to the total.
+**Rolling a 6**: When you roll a 6, roll an additional d6 and add it to the total. These additional dice can also allow you to roll an extra die if they land on a 6. Add all dice rolled to the total.
 
 ### **TIER SYSTEM**
 
@@ -313,7 +313,7 @@ All characters can take these actions at base, no special training or abilities 
 
 **Dual-Natured**
 - Two distinct Special Attacks
-- Each gets 25 × Tier points
+- Each gets 25 × Tier points (round up to the nearest 10)
 - Balanced versatility
 
 **Versitile Master**
@@ -323,7 +323,7 @@ All characters can take these actions at base, no special training or abilities 
 
 **Specialist**
 - You cannot purchase Attack Upgrades
-- You instead receive Tier - 2 extra boons
+- You instead receive Tier extra boons
 - If you attack simply use the base formulas plus the bonus from any Boons you have purchased
 
 
@@ -416,58 +416,74 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 - Cannot move this turn
 
 **7. Death's Door**
-When you are at 25 Hit Points or less.
+- You are at 25 Hit Points or less
 
 **8. Dangerous**
-When no allies are within 15 spaces and no civilians within 30 spaces.
+- There are no allies are within 15 spaces
+- There are no civilians within 30 spaces
 
 **9. Patient**
-When it's turn 5 or later.
+- It's turn 5 or later
 
 **10. Temporal Burst**
-Activate for 2 turns, recharges after 1 minute rest. While active.
+- Activate for 2 turns, recharges after 1 minute rest, while active
 
 **11. Lucky Streak**
-Roll d20 each turn, DC 10. When you succeed.
+- Roll d20 each turn, DC 10, if you succeed
 
 **12. Executioner**
-When you defeated an enemy last turn and it's turn 3 or later.
+- You defeated an enemy last turn
+- It's turn 3 or later
 
 **13. Revenge**
-When you're at 50 or less Hit Points and you've been damaged or conditioned since your turn.
+- You're at 50 or less Hit Points
+- You've been damaged or conditioned since your turn
 
 **14. Unstoppable**
-When you've been hit but took no damage or conditions since your last turn and dealt damage or conditions to an enemy last turn.
+- You've been hit but took no damage or conditions since your last turn
+- You've dealt damage or conditions to an enemy last turn
 
 **15. Concentration**
-When you cannot move this turn and have not been attacked since your last turn.
+- You cannot move this turn
+- You have not been attacked since your last turn
 
 **16. Hunter**
-When no enemies are within 5 spaces, you dealt damage or applied a condition last turn, and you haven't taken damage since last turn.
+- There are no enemies are within 5 spaces
+- You dealt damage or applied a condition last turn
+- You haven't taken damage since last turn
 
 **17. Untouchable**
-When all attacks have missed you since last turn and you dealt damage or applied a condition this turn.
+- All attacks have missed you since last turn
+- You dealt damage or applied a condition this turn
 
 **18. High Risk**
-When you're at 50 Hit Points or less and roll d20 each turn, DC 5.
+- You're at 50 Hit Points or less
+- Roll d20 each turn, DC 5
 
 **19. Pacifist**
-When all attacks have missed you since last turn and you haven't attacked since last turn.
+- All attacks have missed you since last turn
+- You haven't attacked since last turn
 
 **20. Fortress**
-When you cannot move this turn, haven't taken damage since last turn, and turn 3 or later.
+- You cannot move this turn
+- You haven't taken damage since last turn
+- Turn 3 or later
 
 **21. Overwatch**
-When you cannot move this turn and no allies are within 10 spaces.
+- You cannot move this turn
+- There are no allies are within 10 spaces
 
 **22. Overwhelm**
-When you have more adjacent allies than enemies.
+- You have more adjacent allies than enemies
 
 **23. Cornered**
-When you're at 50 Hit Points or less and 3+ enemies are within 5 spaces.
+- You're at 50 Hit Points or less
+- There are 3+ enemies are within 5 spaces
 
 **24. Tactical Advantage**
-When you're on higher ground than your target, you don't move and there are no enemies within 5 spaces.
+- You're on higher ground than your target
+- You don't move
+- There are no enemies within 5 spaces
 
 
 
@@ -475,7 +491,7 @@ When you're on higher ground than your target, you don't move and there are no e
 
 ### **TRAITS**
 *Permanent abilities that change how your character is built*
-**Costs:** 1 boon
+**Cost:** 1 boon
 
 **Immutable: Resolve**
 You gain complete immunity to Resolve conditions
@@ -631,7 +647,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 **AREA ATTACK** 
 - **Range:** Originates from your position
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
-- **Penalty:** -Tier to all Accuracy checks
+- **Penalty:** -Tier to all Accuracy, Damage and Condition checks
 - **Cost Modifier:** All upgrades / limits cost 2x as much
 
 **DIRECT CONDITION ATTACK** 
@@ -841,7 +857,7 @@ Penalty: If you use your free action to make this attack, you cannot use your ac
 Restriction: Condition effects only
 
 **Critical Condition**  
-Cost: 40p
+Cost: 20p
 Effect: Condition rolls critical hit on 15-20 range  
 Restriction: Cannot apply to AOE attacks  
 Restriction: Condition effects only
@@ -1046,7 +1062,7 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 #### Sustained Attack Systems
 
 **Channeled**  
-Cost: 60p
+Cost: 40p
 Penalty: -2xTier to Accuracy, Damage, and Condition rolls  
 Effect: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 Usage: If you don't make the channeled attack on a turn, you lose your bonus.

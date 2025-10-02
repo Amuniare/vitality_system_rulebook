@@ -1,7 +1,7 @@
 {
   "execution_mode": "both",
-  "archetypes": ["focused", "dual_natured", "versatile_master"],
-  "tier": 4,
+  "archetypes": ["focused"],
+  "tier": 3,
   "use_threading": true,
   "verbose_logging": true,
   "top_builds_count": 100,
@@ -10,7 +10,7 @@
     [
       4,
       0,
-      0,
+      4,
       0,
       4
     ],
@@ -18,13 +18,13 @@
       0,
       4,
       0,
-      0,
+      4,
       4
     ]
   ],
   "defender_configs": [
     [
-      0,
+      4,
       0,
       4,
       0,
@@ -32,14 +32,14 @@
     ],
     [
       0,
-      0,
+      4,
       0,
       4,
       4
     ]
   ],
   "simulation_runs": {
-    "build_testing_runs": 10,
+    "build_testing_runs": 1,
     "individual_testing_runs": 20
   },
   "combat": {
