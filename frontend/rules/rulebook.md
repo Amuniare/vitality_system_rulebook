@@ -313,7 +313,7 @@ All characters can take these actions at base, no special training or abilities 
 
 **Dual-Natured**
 - Two distinct Special Attacks
-- Each gets 25 × Tier points
+- Each gets 25 × Tier points (round up to the nearest 10)
 - Balanced versatility
 
 **Versitile Master**
