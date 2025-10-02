@@ -1,0 +1,1100 @@
+!scriptcard {{
+  --/| ==========DECLARATIONS==========
+    +++snlib+++
+    --#sourcetoken|@{character_id}
+
+    --Rbyindex|[*S:character_id];repeating_attacks;{number}
+
+
+  --/| ###################################################################################################
+  --/| Formatting
+  --/| ###################################################################################################
+
+    --#overridetemplate| paper
+
+    --#hideTitleCard| 0
+
+    --/| Title Card Settings
+    --#titleCardBackground| #000000
+    --#titleFontFace| Quicksand
+    --#titleFontColor| #00ffff
+    --#titleFontSize| 1.4em
+    --#titleFontLineHeight| 2.0em
+    --#titleCardBottomBorder| 2px solid #00ffff
+    --#titleCardGradient| 0
+
+    --/| Subtitle Settings
+    --#subtitleFontFace| Quicksand
+    --#subtitleFontSize| 16px
+    --#subtitleFontColor| #00ffff
+    --#subtitleSeparator| 
+
+    --/| Emote Settings
+    --#emoteBackground| #000000
+    --#emoteFont| Quicksand
+    --#emoteFontSize| 14px
+    --#emoteFontColor| #ffffff
+    --#emoteFontWeight| normal
+    --#emoteState| visible
+    --#emoteSourceTokenSize| 40
+    --#emoteTargetTokenSize| 40
+
+    --/| Main Description Settings
+    --#evenRowBackground| #000000
+    --#oddRowBackground| #000000
+    --#bodyFontFace| Quicksand
+    --#bodyFontSize| 14px
+    --#evenRowFontColor| #ffffff
+    --#oddRowFontColor| #ffffff
+    --#lineHeight| 2.0em
+    --#tableBGcolor| #000000
+    --#tableBorder| 2px solid #00ffff
+    --#tableBorderRadius| 0px
+    --#tableShadow| 0px 0px 15px #00ffff
+
+    --/| Button Settings
+    --#buttonBackground| #000000
+    --#buttonFontSize| 14px
+    --#buttonFontFace| Quicksand
+    --#buttonTextColor| #00ffff
+    --#buttonPadding| 5px
+    --#buttonBorderColor| #00ffff
+
+    --/| Dice Settings
+    --#diceFontFace| Quicksand
+    --#diceFontSize| 2.5em
+    --#diceFontColor| #ffffff
+    --#rollHilightLineHeight| 1.8em
+    --#rollHilightColorBoth| #000000
+    --#rollHilightColorCrit| #000000
+    --#rollHilightColorFumble| #000000
+    --#rollHilightColorNormal| #000000
+    --#noRollHighlight| 1
+    --#noMinMaxHighlight| 1
+    --#useHollowDice| 1
+
+    --/| Output Settings
+    --#outputtagprefix| <span>
+    --#outputcontentprefix| <span>
+
+
+
+
+
+  --/| ###################################################################################################
+  --/| Player Input
+  --/| ###################################################################################################
+
+  --/| ==========Notes on Variables==========
+  --/| General Notes                      In General, unless specified elsewhere, 0 is off and 1 is on
+  --/| Left Sub                           Short Description of Attack
+  --/| Attack Type                        0 is Melee (Accuracy), 1 is Melee (Damage/Condition), 2 is Ranged, 3 is Area, 4 is Direct Condition, 5 is Direct Area Condition, 6 is Direct Damage, 7 is Direct Area Damage
+  --/| RollCN                             0 is OFF, 1 is Resolve, 2 is Stability, 3 is Vitality.
+  --/| EffectType                         If you have a CN Roll, 1 is Disarm, 2 is Grab, 3 is Shove, 4 is Daze, 5 is Blind, 6 is Taunt, 8 is Control, 9 is Stun, 10 is Weaken, 11 is DisableSpecials
+  --/| Slayer Upgrades                    0 is OFF, 1 is Accuracy, 2 is Damage, 3 is Conditions
+  --/| String Modifiers                   For Other Abilities Like Domain, put "+ [*S:char_tier] [Domain]" after the relevant ability.
+  --/| To Add Query                       Put what is in quotes but remove the "x" ==>> "?x{Domain|Yes, [*S:char_tier]|No, 0} [Domain]"
+  --/| Cursed and OverwhelmingAff.        Put the colour (blue,purple,pink) that you want to appear on the token to represent that you have permanantly controlled them
+  --/| Critical Ranged                    20 is base for a d20 roll, this means you critically hit on a 20, change to 15 if you critically hit on a 15
+  --/| FinishingBlow                      Put the number of X purchased.
+
+
+  --/| ==========Attack Basic Variables==========
+    --&AttackName| [*R:AttackName]
+    --#leftsub| [*R:leftsub] 
+    --=AttackType| [*R:AttackType]
+
+    --=RollCN| [*R:RollCN]
+    --=EffectType| [*R:EffectType]
+
+
+  --/| ==========Attack Modifiers==========
+
+    --=CriticalAccuracy| [*R:AccuracyCriticalRange]
+    --=ArmorPiercing| [*R:ArmorPiercing]
+    --=Brutal| [*R:Brutal]
+    --=Overhit| [*R:Overhit]
+    --=FinishingBlow| [*R:FinishingBlow]
+    --=CullingStrike| [*R:CullingStrike]
+    --=PowerfulCritical| [*R:PowerfulCritical]
+    --=SplashDamage| [*R:SplashDamage]
+    --=Bleed| [*R:Bleed]
+
+    --=Whirlwind| [*R:Whirlwind]
+    --=ScatterShot| [*R:ScatterShot]
+
+    --=ReliableAccuracy| [*R:ReliableAccuracy]
+    --=SupremeAccuracy| 0
+
+    --=HighImpact| [*R:HighImpact]
+    --=ReliableEffect| [*R:ReliableEffect]
+    --=ConsistentEffect| [*R:ConsistentEffect]
+    --=CriticalEffect| [*R:CriticalEffect]
+
+    --=MinionSlayer| [*R:MinionSlayer]
+    --=CaptainSlayer| [*R:CaptainSlayer]
+    --=EliteSlayer| [*R:EliteSlayer]
+    --=BossSlayer| [*R:BossSlayer]
+
+    --=CriticalCondition| [*R:ConditionCriticalRange]
+    --=LastingCondition| [*R:LastingCondition]
+    --=Cursed| [*R:Cursed]
+    --=OverwhelmingAffliction| [*R:OverwhelmingAffliction]
+    --=MassEffect| [*R:MassEffect]
+    --=EnhancedCondition| [*R:EnhancedCondition]
+    --=Concentration| [*R:Concentration]
+    --=PowerfulConditionCritical| [*R:PowerfulConditionCritical]
+
+    --/| ==========NEW ACCURACY BONUSES==========
+    --=AccurateAttack| [*R:AccurateAttack]
+    --=Blitz| [*R:Blitz]
+    --=Ricochet| [*R:Ricochet]
+    --=DoubleTap| [*R:DoubleTap]
+    --=ExplosiveCritical| [*R:ExplosiveCritical]
+
+    --/| ==========NEW DAMAGE BONUSES==========
+    --=PowerAttack| [*R:PowerAttack]
+    --=Shatter| [*R:Shatter]
+    --=EnhancedEffect| [*R:EnhancedEffect]
+    --=Leech| [*R:Leech]
+
+    --/| ==========NEW CONDITION BONUSES==========
+    --=CollateralCondition| [*R:CollateralCondition]
+    --=Contagious| [*R:Contagious]
+
+    --/| ==========NEW SPECIALIZED COMBAT==========
+    --=HeavyStrike| [*R:HeavyStrike]
+    --=QuickStrikes| [*R:QuickStrikes]
+    --=WhirlwindStrike| [*R:WhirlwindStrike]
+    --=Barrage| [*R:Barrage]
+    --=Headshot| [*R:Headshot]
+    --=FlurryOfBlows| [*R:FlurryOfBlows]
+    --=Pounce| [*R:Pounce]
+    --=Splinter| [*R:Splinter]
+    --=Menacing| [*R:Menacing]
+    --=Environmental| [*R:Environmental]
+    --=AnalyzingStrike| [*R:AnalyzingStrike]
+    --=FollowUpStrike| [*R:FollowUpStrike]
+    --=Counterattack| [*R:Counterattack]
+    --=Exploit| [*R:Exploit]
+    --=PriorityTarget| [*R:PriorityTarget]
+    --=Bully| [*R:Bully]
+    --=MartialArtist| [*R:MartialArtist]
+    --=Grappler| [*R:Grappler]
+    --=IntimidatingPresence| [*R:IntimidatingPresence]
+    --=TerrifyingDisplay| [*R:TerrifyingDisplay]
+
+    --/| ==========NEW VARIABLE BONUSES==========
+    --=LuckyStrike| [*R:LuckyStrike]
+    --=CompressedRelease| [*R:CompressedReleaseLimit]
+    --=Domain| [*R:DomainLimit]
+    --=TowerDefense| [*R:TowerDefenseLimit]
+    --=Channeled| [*R:Channeled]
+    --=Focused| [*R:Focused]
+    --=Disengage| [*R:Disengage]
+    --=ExtraAttack| [*R:ExtraAttack]
+
+    --/| ==========LIMITS (Bonus Application)==========
+    --=Timid| [*R:Timid]
+    --=NearDeath| [*R:NearDeath]
+    --=Bloodied| [*R:Bloodied]
+    --=Vengeful| [*R:Vengeful]
+    --=RevengeLimit| [*R:RevengeLimit]
+    --=Unbreakable| [*R:Unbreakable]
+    --=Untouchable| [*R:Untouchable]
+    --=AvengerLimit| [*R:AvengerLimit]
+    --=PassiveLimit| [*R:PassiveLimit]
+    --=Careful| [*R:Careful]
+    --=ComboMove| [*R:ComboMove]
+    --=InfectedLimit| [*R:InfectedLimit]
+    --=Relentless| [*R:Relentless]
+    --=Slaughter| [*R:Slaughter]
+    --=Rooted| [*R:Rooted]
+    --=BlitzLimit| [*R:BlitzLimit]
+    --=LongDistanceFighter| [*R:LongDistanceFighter]
+    --=DangerousLimit| [*R:DangerousLimit]
+    --=Unreliable1| [*R:Unreliable1]
+    --=Unreliable2| [*R:Unreliable2]
+    --=Unreliable3| [*R:Unreliable3]
+    --=Quickdraw| [*R:Quickdraw]
+    --=SteadyLimit| [*R:Steady]
+    --=PatienceLimit| [*R:PatienceLimit]
+    --=Finale| [*R:Finale]
+    --=ChargeUp| [*R:ChargeUp]
+    --=ChargeUp2| [*R:ChargeUp2]
+    --=Exhausting| [*R:Exhausting]
+    --=Cooldown| [*R:Cooldown]
+    --=Attrition| [*R:Attrition]
+    --=DrainReserves| [*R:DrainReserves]
+    --=GrapplerLimit| [*R:GrapplerLimit]
+    --=ExploitLimit| [*R:ExploitLimit]
+
+    --&AccuracyStringModifiers| [*R:AccuracyStringModifiers]
+    --&DamageStringModifiers| [*R:DamageStringModifiers]
+    --&ConditionsStringModifiers| [*R:ConditionsStringModifiers]
+
+
+
+  --/| ###################################################################################################
+  --/| End of Player Input
+  --/| ###################################################################################################
+
+
+  --/| ==========Attack Details==========
+
+
+    --&CharacterName| [*S:character_name]
+    --#title| [&CharacterName]'s [&AttackName]
+    --&AttackNotes|
+    --+| [br]
+
+  --/| ==========OUTPUT  BEGINS==========
+
+  --/| ==========Attack Dice==========
+    --&AccuracyDice| 1d20
+    --&DamageDice| 3d6
+    --=ConditionsDice| 1d20
+
+    --=RollAC| 1
+    --=RollDG| 1
+
+    --/| Direct attacks don't roll accuracy
+    --?[$AttackType] -eq 4|=RollAC; 0
+    --?[$AttackType] -eq 5|=RollAC; 0
+    --?[$AttackType] -eq 6|=RollAC; 0
+    --?[$AttackType] -eq 7|=RollAC; 0
+
+    --/| Direct Condition attacks don't roll damage
+    --?[$AttackType] -eq 4|=RollDG; 0
+    --?[$AttackType] -eq 5|=RollDG; 0
+
+    --/| Direct Damage attacks always roll damage
+    --?[$AttackType] -eq 6|=RollDG; 1
+    --?[$AttackType] -eq 7|=RollDG; 1
+
+    --/| If there's a condition roll, don't roll damage
+    --?[$RollCN] -ge 1|=RollDG; 0
+
+    --=AccuracyCriticalRange| 20
+    --=ConditionCriticalRange| 20
+
+    --?[$CriticalAccuracy] -eq 1|=AccuracyCriticalRange; 15
+    --?[$CriticalCondition] -eq 1|=ConditionCriticalRange; 15
+
+
+
+
+  --/| ==========Roll Modifiers==========
+    --?[$ReliableAccuracy] -eq 1|&AccuracyDice; 2d20kh1 - 4
+    --?[$SupremeAccuracy] -eq 1|&AccuracyDice; 3d20kh1 - 6
+
+
+    --?[$ReliableEffect] -eq 1|&DamageDice; 4d6kh3
+    --?[$ReliableEffect] -eq 2|&DamageDice; 5d6kh3
+    --?[$ReliableEffect] -eq 3|&DamageDice; 6d6kh3
+    --?[$EnhancedEffect] -eq 1|&DamageDice; 4d6
+
+    --?[$EnhancedEffect] -eq 1 -and [$ReliableEffect] -eq 1|&DamageDice; 5d6kh4
+
+
+
+    --?[$ConsistentEffect] -eq 1|&DamageDice;+r<1
+    --&DamageDice|+!
+    --?[$CriticalEffect] -eq 1|&DamageDice;+>5
+
+    --?[$HighImpact] -eq 1|&DamageDice;= 15
+
+    --/| ==========NEW DAMAGE DICE MODIFIERS==========
+
+
+
+    --=DamageDice| [&DamageDice]
+
+  --/| ==========Attack Modifiers==========
+
+    --/| Melee (Accuracy) bonus
+    --?[$AttackType] -eq 0|&AccuracyStringModifiers;+ + [*S:char_tier] [Melee]
+
+    --/| Melee (Damage/Condition) bonus
+    --?[$AttackType] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Melee]
+    --?[$AttackType] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Melee]
+
+    --/| Area penalty
+    --?[$AttackType] -eq 3|&AccuracyStringModifiers;+ - [*S:char_tier] [Area]
+    --?[$AttackType] -eq 3|&DamageStringModifiers;+ - [*S:char_tier] [Area]
+    --?[$AttackType] -eq 3|&ConditionsStringModifiers;+ - [*S:char_tier] [Area]
+
+    --/| Direct Condition penalty
+    --?[$AttackType] -eq 4|&ConditionsStringModifiers;+ - [*S:char_tier] [Direct Condition]
+
+    --/| Direct Area Condition penalty (double)
+    --=DirectAreaConditionPenalty| [*S:char_tier]*2
+    --?[$AttackType] -eq 5|&ConditionsStringModifiers;+ - [$DirectAreaConditionPenalty] [Direct Area Condition]
+
+    --/| Direct Damage uses flat 15 - Tier
+    --=DirectDamagePenalty| [*S:char_tier] {NEGATE}
+    --?[$AttackType] -eq 6|=DamageDice; 15 + [$DirectDamagePenalty]
+
+    --/| Direct Area Damage uses flat 15 - (Tier x2)
+    --=DirectAreaDamagePenalty| [*S:char_tier]*2 {NEGATE}
+    --?[$AttackType] -eq 7|=DamageDice; 15 + [$DirectAreaDamagePenalty]
+
+
+    --?[$EffectType] -eq 8|&ConditionsStringModifiers;+ - [*S:char_tier] [Control Penalty]
+
+    --/| ==========LIMIT BONUSES (APPLY TIER TO ROLLS)==========
+    --?[$Timid] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Timid]
+    --?[$Timid] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Timid]
+    --?[$Timid] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Timid]
+
+    --?[$NearDeath] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Near Death]
+    --?[$NearDeath] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Near Death]
+    --?[$NearDeath] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Near Death]
+
+    --?[$Bloodied] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Bloodied]
+    --?[$Bloodied] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Bloodied]
+    --?[$Bloodied] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Bloodied]
+
+    --?[$Vengeful] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Vengeful]
+    --?[$Vengeful] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Vengeful]
+    --?[$Vengeful] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Vengeful]
+
+    --?[$RevengeLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Revenge]
+    --?[$RevengeLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Revenge]
+    --?[$RevengeLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Revenge]
+
+    --?[$Unbreakable] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Unbreakable]
+    --?[$Unbreakable] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Unbreakable]
+    --?[$Unbreakable] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Unbreakable]
+
+    --?[$Untouchable] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Untouchable]
+    --?[$Untouchable] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Untouchable]
+    --?[$Untouchable] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Untouchable]
+
+    --?[$AvengerLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Avenger]
+    --?[$AvengerLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Avenger]
+    --?[$AvengerLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Avenger]
+
+    --?[$PassiveLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Passive]
+    --?[$PassiveLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Passive]
+    --?[$PassiveLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Passive]
+
+    --?[$Careful] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Careful]
+    --?[$Careful] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Careful]
+    --?[$Careful] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Careful]
+
+    --?[$ComboMove] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Combo Move]
+    --?[$ComboMove] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Combo Move]
+    --?[$ComboMove] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Combo Move]
+
+    --?[$InfectedLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Infected]
+    --?[$InfectedLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Infected]
+    --?[$InfectedLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Infected]
+
+    --?[$Relentless] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Relentless]
+    --?[$Relentless] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Relentless]
+    --?[$Relentless] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Relentless]
+
+    --?[$Slaughter] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Slaughter]
+    --?[$Slaughter] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Slaughter]
+    --?[$Slaughter] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Slaughter]
+
+    --?[$Rooted] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Rooted]
+    --?[$Rooted] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Rooted]
+    --?[$Rooted] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Rooted]
+
+    --?[$BlitzLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Blitz Limit]
+    --?[$BlitzLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Blitz Limit]
+    --?[$BlitzLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Blitz Limit]
+
+    --?[$LongDistanceFighter] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Long Distance Fighter]
+    --?[$LongDistanceFighter] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Long Distance Fighter]
+    --?[$LongDistanceFighter] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Long Distance Fighter]
+
+    --?[$DangerousLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Dangerous]
+    --?[$DangerousLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Dangerous]
+    --?[$DangerousLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Dangerous]
+
+    --?[$Quickdraw] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Quickdraw]
+    --?[$Quickdraw] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Quickdraw]
+    --?[$Quickdraw] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Quickdraw]
+
+    --?[$SteadyLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Steady]
+    --?[$SteadyLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Steady]
+    --?[$SteadyLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Steady]
+
+    --?[$PatienceLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Patience]
+    --?[$PatienceLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Patience]
+    --?[$PatienceLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Patience]
+
+    --?[$Finale] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Finale]
+    --?[$Finale] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Finale]
+    --?[$Finale] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Finale]
+
+    --?[$ChargeUp] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Charge Up]
+    --?[$ChargeUp] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Charge Up]
+    --?[$ChargeUp] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Charge Up]
+
+    --=ChargeUp2Bonus| [*S:char_tier]*2
+    --?[$ChargeUp2] -eq 1|&AccuracyStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
+    --?[$ChargeUp2] -eq 1|&DamageStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
+    --?[$ChargeUp2] -eq 1|&ConditionsStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
+
+    --=AttritionPenalty| [*S:char_tier] {NEGATE}
+    --?[$Attrition] -eq 1|&AccuracyStringModifiers;+ + [$AttritionPenalty] [Attrition]
+    --?[$Attrition] -eq 1|&DamageStringModifiers;+ + [$AttritionPenalty] [Attrition]
+    --?[$Attrition] -eq 1|&ConditionsStringModifiers;+ + [$AttritionPenalty] [Attrition]
+
+    --?[$TowerDefense] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Tower Defense]
+    --?[$TowerDefense] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Tower Defense]
+    --?[$TowerDefense] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Tower Defense]
+
+    --?[$CompressedRelease] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Compressed Release]
+    --?[$CompressedRelease] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Compressed Release]
+    --?[$CompressedRelease] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Compressed Release]
+
+    --?[$Domain] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Domain]
+    --?[$Domain] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Domain]
+    --?[$Domain] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Domain]
+
+    --?[$GrapplerLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Grappler]
+    --?[$GrapplerLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Grappler]
+    --?[$GrapplerLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Grappler]
+
+    --?[$ExploitLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Exploit]
+    --?[$ExploitLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Exploit]
+    --?[$ExploitLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Exploit]
+
+    --/| ==========NEW UPGRADE MODIFIERS - FIXED MATH==========
+    --?[$AccurateAttack] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Accurate Attack]
+    --?[$AccurateAttack] -eq 1|&DamageStringModifiers;+ - [*S:char_tier] [Accurate Attack]
+    --?[$AccurateAttack] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Accurate Attack]
+
+    --?[$PowerAttack] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Power Attack]
+    --?[$PowerAttack] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Power Attack]
+
+    --/| HEAVY STRIKE - FIXED WITH SEPARATE CALCULATION
+    --=HeavyStrikeBonus| [*S:char_tier]*3
+    --?[$HeavyStrike] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Heavy Strike]
+    --?[$HeavyStrike] -eq 1|&DamageStringModifiers;+ + [$HeavyStrikeBonus] [Heavy Strike]
+    --?[$HeavyStrike] -eq 1|&ConditionsStringModifiers;+ + [$HeavyStrikeBonus] [Heavy Strike]
+
+    --/| HEADSHOT - FIXED WITH SEPARATE CALCULATION
+    --=HeadshotBonus| [*S:char_tier]*3
+    --?[$Headshot] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Headshot]
+    --?[$Headshot] -eq 1|&DamageStringModifiers;+ + [$HeadshotBonus] [Headshot]
+    --?[$Headshot] -eq 1|&ConditionsStringModifiers;+ + [$HeadshotBonus] [Headshot]
+
+    --?[$WhirlwindStrike] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Whirlwind Strike]
+    --?[$FlurryOfBlows] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
+    --?[$FlurryOfBlows] -eq 1|&DamageStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
+    --?[$FlurryOfBlows] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Flurry of Blows]
+
+    --?[$ArmorPiercing] -ne 1|PassArmorPiercingNote
+      --&AttackNotes|+ Armor Piercing Applied,
+    --:PassArmorPiercingNote|
+    --?[$ArmorPiercing] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Armor Piercing]
+
+    --?[$ScatterShot] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Scatter Shot]
+    --?[$MassEffect] -eq 1|&ConditionsStringModifiers;+ - [*S:char_tier] [Mass Effect]
+
+
+
+  --/| ==========FOR LOOP DEFENSES SECTION==========
+
+    --~|array;define;myarray;
+
+    --~count|array;getcount;SC_SelectedTokens
+    --#rightsub| vs. [&count] selected target(s)
+
+    --~testvar|array;getfirst;SC_SelectedTokens
+    --:loop|
+
+    --=EnemyCnFailAmount| 0 
+
+    --=AccuracyDice| [&AccuracyDice]
+
+
+
+    --+| [c][b] Attack Against [*[&testvar]:character_name] [/b] [/c]
+
+
+    --&AccuracyRollString| [$AccuracyDice] [Base Dice] + [*S:char_accuracy] [Accuracy Bonus][&AccuracyStringModifiers]
+    --&DamageRollString| [$DamageDice]  [Base Dice] + [*S:char_damage] [Damage Bonus][&DamageStringModifiers]
+    --&ConditionsRollString| [$ConditionsDice]  [Base Dice] + [*S:char_conditions] [Conditions Bonus][&ConditionsStringModifiers]
+
+
+    --/| SLAYER UPGRADES
+      --=MaxHP| [*[&testvar]:t-bar3_max]
+      --?[$MinionSlayer] -lt 1 -or [$MaxHP] -ne 10|PassMinionSlayerNote
+        --&AttackNotes|+ Minion Slayer Applied,
+      --:PassMinionSlayerNote|
+      --?[$MinionSlayer] -eq 1 -and [$MaxHP] -eq 10|&AccuracyRollString;+ + [*S:char_tier] [Minion Slayer]
+      --?[$MinionSlayer] -eq 2 -and [$MaxHP] -eq 10|&DamageRollString;+ + [*S:char_tier] [Minion Slayer]
+      --?[$MinionSlayer] -eq 3 -and [$MaxHP] -eq 10|&ConditionsRollString;+ + [*S:char_tier] [Minion Slayer]
+
+      --?[$CaptainSlayer] -lt 1 -or [$MaxHP] -ne 25|PassCaptainSlayerNote
+        --&AttackNotes|+ Captain Slayer Applied,
+      --:PassCaptainSlayerNote|
+      --?[$CaptainSlayer] -eq 1 -and [$MaxHP] -eq 25|&AccuracyRollString;+ + [*S:char_tier] [Captain Slayer]
+      --?[$CaptainSlayer] -eq 2 -and [$MaxHP] -eq 25|&DamageRollString;+ + [*S:char_tier] [Captain Slayer]
+      --?[$CaptainSlayer] -eq 3 -and [$MaxHP] -eq 25|&ConditionsRollString;+ + [*S:char_tier] [Captain Slayer]
+
+      --?[$EliteSlayer] -lt 1 -or [$MaxHP] -ne 50|PassEliteSlayerNote
+        --&AttackNotes|+ Elite Slayer Applied,
+      --:PassEliteSlayerNote|
+      --?[$EliteSlayer] -eq 1 -and [$MaxHP] -eq 50|&AccuracyRollString;+ + [*S:char_tier] [Elite Slayer]
+      --?[$EliteSlayer] -eq 2 -and [$MaxHP] -eq 50|&DamageRollString;+ + [*S:char_tier] [Elite Slayer]
+      --?[$EliteSlayer] -eq 3 -and [$MaxHP] -eq 50|&ConditionsRollString;+ + [*S:char_tier] [Elite Slayer]
+
+      --?[$BossSlayer] -lt 1 -or [$MaxHP] -ne 100|PassBossSlayerNote
+        --&AttackNotes|+ Boss Slayer Applied,
+      --:PassBossSlayerNote|
+      --?[$BossSlayer] -eq 1 -and [$MaxHP] -eq 100|&AccuracyRollString;+ + [*S:char_tier] [Boss Slayer]
+      --?[$BossSlayer] -eq 2 -and [$MaxHP] -eq 100|&DamageRollString;+ + [*S:char_tier] [Boss Slayer]
+      --?[$BossSlayer] -eq 3 -and [$MaxHP] -eq 100|&ConditionsRollString;+ + [*S:char_tier] [Boss Slayer]
+
+      --/| ==========NEW TARGET-SPECIFIC BONUSES - FIXED BLITZ CALCULATION==========
+      --=BlitzBonus| [*S:char_mobility]/6 {CEIL}
+      --?[$Blitz] -eq 1|&AccuracyRollString;+ + [$BlitzBonus] [Blitz]
+      --?[$Exploit] -eq 1|&DamageRollString;+ + [*S:char_tier] [Exploit]
+      --?[$Exploit] -eq 1|&ConditionsRollString;+ + [*S:char_tier] [Exploit]
+      --?[$Grappler] -eq 1|&DamageRollString;+ + [*S:char_tier] [Grappler]
+
+
+
+  --/| ==========ENEMY DEFENSES SECTION==========
+
+    --/| BASEDEFENSES
+      --=EnemyAV| [*[&testvar]:char_avoidance]
+      --=EnemyDR| [*[&testvar]:char_durability]
+      --=EnemyRS| [*[&testvar]:char_resolve]
+      --=EnemySB| [*[&testvar]:char_stability]
+      --=EnemyVT| [*[&testvar]:char_vitality]
+
+    --/| ARMOR PIERCING
+      --?[$ArmorPiercing] -eq 1|=EnemyDR;  [*[&testvar]:char_endurance]*1.5 {CEIL} {NEGATE} + [*[&testvar]:char_durability]
+
+    --/| ==========NEW DEFENSE MODIFIERS==========
+    --?[$Shatter] -ne 1|PassShatterNote
+      --&AttackNotes|+ Shatter Applied,
+    --:PassShatterNote|
+    --?[$Shatter] -eq 1|=EnemyDR; [$EnemyDR]/2 {CEIL}
+
+
+  --/| ==========Enemy Conditions Modifiers==========
+
+    -->LibSN_CHECK_STATUS_MARKER|[&testvar];lightning-helix;MarkerStunnedExists;MarkerStunnedCounter
+    -->LibSN_CHECK_STATUS_MARKER|[&testvar];back-pain;MarkerProneExists;MarkerProneCounter
+
+
+    --?[&MarkerStunnedExists] -eq 1|&AttackNotes;+ Bonus from Stunned Enemy,
+    --?[&MarkerStunnedExists] -eq 1|=EnemyAV; 0
+    --?[&MarkerStunnedExists] -eq 1|=AccuracyCriticalRange; 2
+
+    --?[&MarkerProneExists] -eq 1|&AttackNotes;+ Bonus from Prone Enemy,
+    --?[&MarkerProneExists] -eq 1|&AccuracyRollString;+ +5 [Prone]
+
+
+
+  --/| ==========Attack Roll==========
+    --=AccuracyRoll| [&AccuracyRollString]
+
+    --/| CRITICAL
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&AttackNotes;+ Critical Hit,
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&DamageRollString;+  +[*S:char_tier] [CRITICAL HIT]
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL HIT]
+
+    --/| POWERFUL CRITICAL
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&AttackNotes;+ Powerful Critical Applied,
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&DamageRollString;+  +[*S:char_tier] [Powerful Critical]
+      --?[$AccuracyDice.KeptDice(1)] -ge [$AccuracyCriticalRange] -and [$RollAC] -eq 1 -and [$PowerfulCritical] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [Powerful Critical]
+
+
+    --/| ==========NEW CRITICAL EFFECTS==========
+    --?[$AccuracyDice.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$Ricochet] -ne 1|PassRicochetNote
+      --&AttackNotes|+ Ricochet Triggered,
+    --:PassRicochetNote|
+
+    --?[$AccuracyDice.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$DoubleTap] -ne 1|PassDoubleTapNote
+      --&AttackNotes|+ Double-Tap Triggered,
+    --:PassDoubleTapNote|
+
+    --?[$AccuracyDice.KeptDice(1)] -lt [$AccuracyCriticalRange] -or [$RollAC] -ne 1 -or [$ExplosiveCritical] -ne 1|PassExplosiveCriticalNote
+      --&AttackNotes|+ Explosive Critical Triggered,
+    --:PassExplosiveCriticalNote|
+
+    --/| OVERHIT
+      --=OverhitAmount| [$AccuracyRoll] - [$EnemyAV]
+      --?[$Overhit] -ne 1 -or [$OverhitAmount] -lt 5|PassOverhitNote
+        --&AttackNotes|+ Overhit Applied,
+      --:PassOverhitNote|
+      --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|=OverhitDamage;  [$OverhitAmount]/2 {CEIL}
+      --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|&DamageRollString;+  +[$OverhitDamage] [Overhit]
+      --?[$Overhit] -eq 1 -and [$OverhitAmount] -ge 5|&ConditionsRollString;+  +[$OverhitDamage] [Overhit]
+
+    --=DamageRoll| [&DamageRollString]
+
+    --/| ==========NEW DAMAGE EFFECTS==========
+    --?[$Leech] -eq 1|=LeechAmount; [$DamageRoll]/2 {CEIL}
+    --?[$Leech] -ne 1|PassLeechNote
+      --&AttackNotes|+ Leech [$LeechAmount] HP,
+    --:PassLeechNote|
+
+
+
+  --/| ==========Condition Roll==========
+
+    --/| CRITICAL
+      --?[$ConditionsDice] -lt [$ConditionCriticalRange] -or [$RollCN] -lt 1|PassCriticalCondition
+        --&AttackNotes|+ Critical Condition,
+      --:PassCriticalCondition|
+      --?[$ConditionsDice] -ge [$ConditionCriticalRange] -and [$RollCN] -ge 1|&ConditionsRollString;+  +[*S:char_tier] [CRITICAL CN]
+
+    --/| POWERFUL CONDITION CRITICAL
+      --?[$ConditionsDice] -ge [$ConditionCriticalRange] -and [$RollCN] -ge 1 -and [$PowerfulConditionCritical] -eq 1|&AttackNotes;+ Powerful Condition Critical Applied,
+      --?[$ConditionsDice] -ge [$ConditionCriticalRange] -and [$RollCN] -ge 1 -and [$PowerfulConditionCritical] -eq 1|&ConditionsRollString;+  +[*S:char_tier] [Powerful Condition Critical]
+
+
+    --=ConditionsRoll| [&ConditionsRollString]
+
+
+
+
+
+  --/| ==========ATTACK ROLL OUTPUT==========
+
+
+
+    --?[$RollAC] -ne 1|PassRollAC
+      --+Accuracy Roll|   [$AccuracyDice]  [r] [$AccuracyRoll] vs. [$EnemyAV] [/r]
+    --:PassRollAC|
+
+    --?[$RollDG] -ne 1|PassRollDG
+      --+Damage Roll| [$DamageDice]  [r] [$DamageRoll] vs. [$EnemyDR] [/r]
+    --:PassRollDG|
+
+    --?[$RollCN] -ne 1|PassRollCNRS
+      --+Conditions Roll RS|   [$ConditionsDice]   [r] [$ConditionsRoll] vs. [$EnemyRS] [/r]
+      --=EnemyCnFailAmount| [$ConditionsRoll] - [$EnemyRS]
+    --:PassRollCNRS|
+
+    --?[$RollCN] -ne 2|PassRollCNSB
+      --+Conditions Roll SB|   [$ConditionsDice]   [r] [$ConditionsRoll] vs. [$EnemySB] [/r]
+      --=EnemyCnFailAmount| [$ConditionsRoll] - [$EnemySB]
+    --:PassRollCNSB|
+
+    --?[$RollCN] -ne 3|PassRollCNVT
+      --+Conditions Roll VT|   [$ConditionsDice]   [r] [$ConditionsRoll] vs. [$EnemyVT] [/r]
+      --=EnemyCnFailAmount| [$ConditionsRoll] - [$EnemyVT]
+    --:PassRollCNVT|
+
+    --?[$RollDG] -ne 2|PassRollDG2
+      --+Damage Roll| [$DamageDice]   [r] [$DamageRoll] vs. [$EnemyDR] [/r]
+    --:PassRollDG2|
+
+
+
+
+  --/| ========== EFFECTS SECTION ==========
+
+  --?[$RollAC] -eq 1 -and [$AccuracyRoll] -lt [$EnemyAV] -or [$AccuracyRoll.KeptDice(1)] -eq 1|PassAutomaticEffectSection
+
+
+
+  --/| ==========Damage Modifiers==========
+
+
+    --?[$RollDG] -lt 1 |PassDamageAuto
+      --=DamageAmount| [$DamageRoll] - [$EnemyDR]
+
+      --?[$DamageAmount] -lt 0|PassDamageAuto
+
+      --/| BRUTAL
+        --?[$Brutal] -ne 1 -or [$DamageAmount] -lt 10|PassBrutalNote
+          --&AttackNotes|+ Brutal Applied,
+        --:PassBrutalNote|
+        --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=BrutalBonus; [$BrutalBonus]/2 {CEIL}
+        --?[$Brutal] -eq 1 -and [$DamageAmount] -ge 10|=DamageAmount; [$DamageAmount] + [$BrutalBonus]
+
+
+      --?[$Bleed] -eq 0|PassBleed
+        --?[$DamageAmount] -lt 1|PassBleed
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];red;2
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];red;Blank, 1
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];red
+        --+Applying | Bleed to [*[&testvar]:character_name]
+      --:PassBleed|
+
+      --/| ==========NEW DAMAGE EFFECTS==========
+
+
+      --?[$Environmental] -ne 1|PassEnvironmentalNote
+        --&AttackNotes|+ Area becomes hazardous terrain,
+      --:PassEnvironmentalNote|
+
+      --?[$Splinter] -ne 1 -or [$DamageAmount] -lt [$MaxHP]|PassSplinterNote
+        --&AttackNotes|+ Splinter triggered - additional attack available,
+      --:PassSplinterNote|
+
+
+
+  --/| ==========Damage Total And Application==========
+
+
+    --+Damage Total| [r] [$DamageAmount] [/r]
+
+    --=DamageAmount| [$DamageAmount] {NEGATE}
+    -->LibSN_APPLY_DAMAGE_OR_HEALING|[&testvar];3;[$DamageAmount];0;0;1
+
+
+    --=RemainingHP| [*[&testvar]:t-bar3_value]
+
+    --?[$RemainingHP] -ge 1 |PassDeadAuto
+    -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
+    --:PassDeadAuto|
+
+
+    --?[$RemainingHP] -ge 6 -or [$FinishingBlow] -ne 1|PassDeadFinishingAuto1
+    -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
+    --?[$FinishingBlow] -eq 1|&AttackNotes|+ Finishing Blow Applied,
+    --:PassDeadFinishingAuto1|
+
+    --?[$RemainingHP] -ge 11 -or [$FinishingBlow] -ne 2|PassDeadFinishingAuto2
+    -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
+    --?[$FinishingBlow] -eq 2|&AttackNotes|+ Finishing Blow Applied,
+    --:PassDeadFinishingAuto2|
+
+    --?[$RemainingHP] -ge 16 -or [$FinishingBlow] -ne 3|PassDeadFinishingAuto3
+    -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
+    --?[$FinishingBlow] -eq 3|&AttackNotes|+ Finishing Blow Applied,
+    --:PassDeadFinishingAuto3|
+
+
+    --?[$CullingStrike] -eq 0|PassDeadCullingAuto
+      --?[$MaxHP] -ne 10 -or [$RemainingHP] -ge 2|PassMinionCullingAuto
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
+        --&AttackNotes|+ Culling Strike Applied,
+      --:PassMinionCullingAuto|
+      --?[$MaxHP] -ne 25 -or [$RemainingHP] -ge 5|PassCaptainCullingAuto
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
+        --&AttackNotes|+ Culling Strike Applied,
+      --:PassCaptainCullingAuto|
+      --?[$MaxHP] -ne 50 -or [$RemainingHP] -ge 10|PassVanguardCullingAuto
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
+        --&AttackNotes|+ Culling Strike Applied,
+      --:PassVanguardCullingAuto|
+      --?[$MaxHP] -ne 100 -or [$RemainingHP] -ge 20|PassBossCullingAuto
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];dead
+        --&AttackNotes|+ Culling Strike Applied,
+      --:PassBossCullingAuto|
+    --:PassDeadCullingAuto|
+
+    --:PassDamageAuto|
+
+
+
+
+  --/| ==========Conditions Section==========
+
+    --?[$RollCN] -lt 1|SkipTheConditionsBlock
+
+      --?[$EffectType] -ne 1|PassDisarm
+        --?[$EnemyCnFailAmount] -lt 0|PassDisarm
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];all-for-one
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one;Blank, 1
+        --?[$LastingCondition] -eq 0 -or [$EnemyCnFailAmount] -lt 10|PassDisarmLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];all-for-one
+        --:PassDisarmLasting|
+        --+Applying | Disarm to [*[&testvar]:character_name]
+      --:PassDisarm|
+
+      --?[$EffectType] -ne 2|PassGrab
+        --?[$EnemyCnFailAmount] -lt 0|PassGrab
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];grab
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassGrabLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];grab
+        --:PassGrabLasting|
+        --+Applying | Grab to [*[&testvar]:character_name]
+      --:PassGrab|
+
+      --?[$EffectType] -ne 3|PassShove
+        --?[$EnemyCnFailAmount] -lt 0|PassShove
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];back-pain
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassShoveLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];back-pain
+        --:PassShoveLasting|
+        --+Applying | Shove to [*[&testvar]:character_name]
+      --:PassShove|
+
+      --?[$EffectType] -ne 4|PassDaze
+        --?[$EnemyCnFailAmount] -lt 0|PassDaze
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];pummeled
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDazeLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];pummeled
+        --:PassDazeLasting|
+        --+Applying | Daze to [*[&testvar]:character_name]
+      --:PassDaze|
+
+      --?[$EffectType] -ne 5|PassBlind
+        --?[$EnemyCnFailAmount] -lt 0|PassBlind
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];bleeding-eye
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassBlindLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];bleeding-eye
+        --:PassBlindLasting|
+        --+Applying | Blind to [*[&testvar]:character_name]
+      --:PassBlind|
+
+      --?[$EffectType] -ne 6|PassTaunt
+        --?[$EnemyCnFailAmount] -lt 0|PassTaunt
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];screaming
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassTauntLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];screaming
+        --:PassTauntLasting|
+        --+Applying | Taunt to [*[&testvar]:character_name]
+      --:PassTaunt|
+
+      --?[$EffectType] -ne 8|PassControl
+        --?[$EnemyCnFailAmount] -lt 0|PassControl
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];broken-skull
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassControlLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];broken-skull
+        --:PassControlLasting|
+        --+Applying | Control to [*[&testvar]:character_name]
+      --:PassControl|
+
+      --?[$EffectType] -ne 9|PassStun
+        --?[$EnemyCnFailAmount] -lt 0|PassStun
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];lightning-helix
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassStunLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];lightning-helix
+        --:PassStunLasting|
+        --+Applying | Stun to [*[&testvar]:character_name]
+      --:PassStun|
+
+      --?[$EffectType] -ne 10|PassWeaken
+        --?[$EnemyCnFailAmount] -lt 0|PassWeaken
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];radioactive
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassWeakenLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];radioactive
+        --:PassWeakenLasting|
+        --+Applying | Weaken to [*[&testvar]:character_name]
+      --:PassWeaken|
+
+      --?[$EffectType] -ne 11|PassDisableSpecials
+        --?[$EnemyCnFailAmount] -lt 0|PassDisableSpecials
+        -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];frozen-orb
+        -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb;Blank, 1
+        --?[$LastingCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 10|PassDisableSpecialsLasting
+          -->LibSN_INCREMENT_STATUS_MARKER|[&testvar];frozen-orb
+        --:PassDisableSpecialsLasting|
+        --+Applying | Disable Specials to [*[&testvar]:character_name]
+      --:PassDisableSpecials|
+
+      --?[$Cursed] -eq 0|PassCursed
+        --=RemainingHP| [*[&testvar]:t-bar3_value]
+        --=CursedThreshold| [$EnemyCnFailAmount]*2-[$RemainingHP]
+        --?[$CursedThreshold] -lt 0|PassCursed
+          -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];pink;1
+          --+Applying | Cursed to [*[&testvar]:character_name]
+      --:PassCursed|
+
+      --?[$OverwhelmingAffliction] -eq 0|PassOverwhelmingAffliction
+        --=OverwhelmingAfflictionThreshold| -[*[&testvar]:char_tier]*3+[$EnemyCnFailAmount]
+        --?[$OverwhelmingAfflictionThreshold] -lt 0|PassOverwhelmingAffliction
+          -->LibSN_ADD_STATUS_MARKER_SET|[&testvar];pink;1
+          --+Applying | Overwhelming Affliction to [*[&testvar]:character_name]
+      --:PassOverwhelmingAffliction|
+
+      --/| ==========NEW CONDITION EFFECTS==========
+      --?[$CollateralCondition] -ne 1 -or [$EnemyCnFailAmount] -lt 0|PassCollateralConditionNote
+        --&AttackNotes|+ Collateral Condition triggered - 3-space burst,
+      --:PassCollateralConditionNote|
+      --?[$Contagious] -ne 1 -or [$EnemyCnFailAmount] -lt 0|PassContagiousNote
+        --&AttackNotes|+ Contagious triggered - spreads to nearest enemy,
+      --:PassContagiousNote|
+
+    --:SkipTheConditionsBlock|
+
+  --/| ==========END OF FOR LOOP ==========
+
+    --:PassAutomaticEffectSection|
+
+    --+|[br]
+
+    --~testvar|array;getnext;SC_SelectedTokens
+    --?[&testvar] -ne ArrayError|loop
+
+
+
+
+  --/| ==========Attack Details ==========
+
+    --/| SPLASH DAMAGE
+      --=SplashAmount| 1d6! + [*S:char_tier]
+      --?[$SplashDamage] -ne 1|PassSplashNote
+        --&AttackNotes|+ [$SplashAmount] Splash Damage to All Adjacent Targets,
+      --:PassSplashNote|
+
+    --/| ==========NEW SECONDARY EFFECTS==========
+    --?[$Pounce] -ne 1|PassPounceNote
+      --&AttackNotes|+ Pounce - Move 6 spaces toward target,
+    --:PassPounceNote|
+    --?[$Disengage] -ne 1|PassDisengageNote
+      --&AttackNotes|+ Disengage - No opportunity attacks from hit targets,
+    --:PassDisengageNote|
+    --?[$ExtraAttack] -ne 1|PassExtraAttackNote
+      --&AttackNotes|+ Extra Attack available on successful hit and effect,
+    --:PassExtraAttackNote|
+    --?[$Menacing] -ne 1|PassMenacingNote
+      --&AttackNotes|+ Menacing - Intimidation attempt available,
+    --:PassMenacingNote|
+    --?[$PriorityTarget] -ne 1|PassPriorityTargetNote
+      --&AttackNotes|+ Priority Target marked for allies,
+    --:PassPriorityTargetNote|
+    --?[$Bully] -ne 1|PassBullyNote
+      --&AttackNotes|+ Bully - 1-space forced movement available,
+    --:PassBullyNote|
+    --?[$MartialArtist] -ne 1|PassMartialArtistNote
+      --&AttackNotes|+ Martial Artist effects available on critical,
+    --:PassMartialArtistNote|
+    --?[$Concentration] -ne 1|PassConcentrationNote
+      --&AttackNotes|+ Concentration (Free action repeat, cannot make other attacks),
+    --:PassConcentrationNote|
+    --?[$IntimidatingPresence] -ne 1|PassIntimidatingPresenceNote
+      --&AttackNotes|+ Intimidating Presence (2sp burst Taunt on defeat),
+    --:PassIntimidatingPresenceNote|
+    --?[$TerrifyingDisplay] -ne 1|PassTerrifyingDisplayNote
+      --&AttackNotes|+ Terrifying Display (2sp burst Frighten on defeat),
+    --:PassTerrifyingDisplayNote|
+
+    --/| ==========LIMIT BONUS NOTES==========
+    --?[$Timid] -ne 1|PassTimidNote
+      --&AttackNotes|+ Timid (+Tier when HP >50%),
+    --:PassTimidNote|
+    --?[$NearDeath] -ne 1|PassNearDeathNote
+      --&AttackNotes|+ Near Death (+Tier when HP <6),
+    --:PassNearDeathNote|
+    --?[$Bloodied] -ne 1|PassBloodiedNote
+      --&AttackNotes|+ Bloodied (+Tier when HP <50%),
+    --:PassBloodiedNote|
+    --?[$Vengeful] -ne 1|PassVengefulNote
+      --&AttackNotes|+ Vengeful (+Tier against last damager),
+    --:PassVengefulNote|
+    --?[$RevengeLimit] -ne 1|PassRevengeNote
+      --&AttackNotes|+ Revenge (+Tier when ally defeated this turn),
+    --:PassRevengeNote|
+    --?[$Unbreakable] -ne 1|PassUnbreakableNote
+      --&AttackNotes|+ Unbreakable (+Tier after taking damage),
+    --:PassUnbreakableNote|
+    --?[$Untouchable] -ne 1|PassUntouchableNote
+      --&AttackNotes|+ Untouchable (+Tier when not damaged this turn),
+    --:PassUntouchableNote|
+    --?[$AvengerLimit] -ne 1|PassAvengerNote
+      --&AttackNotes|+ Avenger (+Tier when adjacent ally damaged),
+    --:PassAvengerNote|
+    --?[$PassiveLimit] -ne 1|PassPassiveNote
+      --&AttackNotes|+ Passive (+Tier if no movement this turn),
+    --:PassPassiveNote|
+    --?[$Careful] -ne 1|PassCarefulNote
+      --&AttackNotes|+ Careful (+Tier if only attack this turn),
+    --:PassCarefulNote|
+    --?[$ComboMove] -ne 1|PassComboMoveNote
+      --&AttackNotes|+ Combo Move (+Tier if used previous turn),
+    --:PassComboMoveNote|
+    --?[$InfectedLimit] -ne 1|PassInfectedNote
+      --&AttackNotes|+ Infected (+Tier against Bleeding targets),
+    --:PassInfectedNote|
+    --?[$Relentless] -ne 1|PassRelentlessNote
+      --&AttackNotes|+ Relentless (+Tier when defeating enemy),
+    --:PassRelentlessNote|
+    --?[$Slaughter] -ne 1|PassSlaughterNote
+      --&AttackNotes|+ Slaughter (+Tier if defeated enemy last turn),
+    --:PassSlaughterNote|
+    --?[$Rooted] -ne 1|PassRootedNote
+      --&AttackNotes|+ Rooted (+Tier if unmoved for 2+ turns),
+    --:PassRootedNote|
+    --?[$BlitzLimit] -ne 1|PassBlitzLimitNote
+      --&AttackNotes|+ Blitz Limit (+Tier if moved 6+ spaces),
+    --:PassBlitzLimitNote|
+    --?[$LongDistanceFighter] -ne 1|PassLongDistanceFighterNote
+      --&AttackNotes|+ Long Distance Fighter (+Tier if 10+ spaces away),
+    --:PassLongDistanceFighterNote|
+    --?[$DangerousLimit] -ne 1|PassDangerousNote
+      --&AttackNotes|+ Dangerous (+Tier if adjacent to 2+ enemies),
+    --:PassDangerousNote|
+    --?[$Unreliable1] -ne 1|PassUnreliable1Note
+      --&AttackNotes|+ Unreliable 1 (DC 5 reliability check),
+    --:PassUnreliable1Note|
+    --?[$Unreliable2] -ne 1|PassUnreliable2Note
+      --&AttackNotes|+ Unreliable 2 (DC 10 reliability check),
+    --:PassUnreliable2Note|
+    --?[$Unreliable3] -ne 1|PassUnreliable3Note
+      --&AttackNotes|+ Unreliable 3 (DC 15 reliability check),
+    --:PassUnreliable3Note|
+    --?[$Quickdraw] -ne 1|PassQuickdrawNote
+      --&AttackNotes|+ Quickdraw (+Tier if first attack in combat),
+    --:PassQuickdrawNote|
+    --?[$SteadyLimit] -ne 1|PassSteadyLimitNote
+      --&AttackNotes|+ Steady (+Tier if no attacks last turn),
+    --:PassSteadyLimitNote|
+    --?[$PatienceLimit] -ne 1|PassPatienceNote
+      --&AttackNotes|+ Patience (+Tier if no attacks for 2+ turns),
+    --:PassPatienceNote|
+    --?[$Finale] -ne 1|PassFinaleNote
+      --&AttackNotes|+ Finale (+Tier on last attack of turn),
+    --:PassFinaleNote|
+    --?[$ChargeUp] -ne 1|PassChargeUpNote
+      --&AttackNotes|+ Charge Up (+Tier after spending action to charge),
+    --:PassChargeUpNote|
+    --?[$ChargeUp2] -ne 1|PassChargeUp2Note
+      --&AttackNotes|+ Charge Up 2 (+Tier×2 after 2 charge actions),
+    --:PassChargeUp2Note|
+    --?[$Exhausting] -ne 1|PassExhaustingNote
+      --&AttackNotes|+ Exhausting (Cannot use next turn),
+    --:PassExhaustingNote|
+    --?[$Cooldown] -ne 1|PassCooldownNote
+      --&AttackNotes|+ Cooldown (Cannot use for X turns),
+    --:PassCooldownNote|
+    --?[$Attrition] -ne 1|PassAttritionNote
+      --&AttackNotes|+ Attrition (-Tier each use in combat),
+    --:PassAttritionNote|
+    --?[$DrainReserves] -ne 1|PassDrainReservesNote
+      --&AttackNotes|+ Drain Reserves (Costs 1 Effort),
+    --:PassDrainReservesNote|
+    --?[$TowerDefense] -ne 1|PassTowerDefenseNote
+      --&AttackNotes|+ Tower Defense (+Tier if unmoved),
+    --:PassTowerDefenseNote|
+    --?[$CompressedRelease] -ne 1|PassCompressedReleaseNote
+      --&AttackNotes|+ Compressed Release (+Tier after charge),
+    --:PassCompressedReleaseNote|
+    --?[$Domain] -ne 1|PassDomainNote
+      --&AttackNotes|+ Domain (+Tier in designated area),
+    --:PassDomainNote|
+    --?[$GrapplerLimit] -ne 1|PassGrapplerLimitNote
+      --&AttackNotes|+ Grappler (+Tier vs Grabbed targets),
+    --:PassGrapplerLimitNote|
+    --?[$ExploitLimit] -ne 1|PassExploitLimitNote
+      --&AttackNotes|+ Exploit (+Tier vs targets with conditions),
+    --:PassExploitLimitNote|
+
+    --+|[br]
+    --+Attack Notes| [&AttackNotes] 
+
+    --+Attack Details| [*R:AttackDetails]
+
+
+    
+
+
+
+
+  --<|}}
