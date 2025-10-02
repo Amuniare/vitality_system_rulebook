@@ -28,7 +28,7 @@ class ScriptCardsTemplateManager:
     def _load_scriptcards_template(self):
         """Load the ScriptCards template from file"""
         try:
-            template_path = Path("src/scriptcards/Scripcards Attacks Library Neopunk 3.7.3.txt")
+            template_path = Path("src/roll20ScriptcardsAndSheets/scriptcards_v6/Scriptcards_Attacks_Library_v6.0.txt")
             
             if not template_path.exists():
                 logger.error(f"ScriptCards template not found at: {template_path}")
