@@ -323,7 +323,7 @@ All characters can take these actions at base, no special training or abilities 
 
 **Specialist**
 - You cannot purchase Attack Upgrades
-- You instead receive Tier - 2 extra boons
+- You instead receive Tier extra boons
 - If you attack simply use the base formulas plus the bonus from any Boons you have purchased
 
 
