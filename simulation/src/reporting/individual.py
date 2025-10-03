@@ -6,10 +6,11 @@ individual testing reports with single runs and combat logs.
 """
 
 from typing import Dict, List, Tuple
-from src.models import Character, AttackBuild, SimulationConfig
+from src.models import Character, AttackBuild, SimulationConfig, MultiAttackBuild
 from src.simulation import run_simulation_batch
 from src.game_data import UPGRADES, LIMITS, ATTACK_TYPES, PREREQUISITES
 from src.reporting.tables import TableGenerator
+from src.reporting.builds import get_build_attack_type
 
 
 class IndividualReportGenerator:
@@ -52,10 +53,13 @@ class IndividualReportGenerator:
         # Combine upgrade and limit data
         upgrade_limit_data = {**upgrade_data, **limit_data}
 
+        # Get scenario names from config
+        scenario_names = self._get_scenario_names()
+
         # Generate tables
         if self.config.reports.get('individual_reports', {}).get('attack_type_table', True):
-            TableGenerator.format_attack_type_table(attack_type_data, self.reports_dir)
-            TableGenerator.format_attack_type_turns_table(attack_type_data, self.reports_dir)
+            TableGenerator.format_attack_type_table(attack_type_data, self.reports_dir, scenario_names)
+            TableGenerator.format_attack_type_turns_table(attack_type_data, self.reports_dir, scenario_names)
 
         if self.config.reports.get('individual_reports', {}).get('upgrade_limit_table', True):
             TableGenerator.format_upgrade_limit_table(upgrade_limit_data, self.reports_dir)
@@ -72,6 +76,25 @@ class IndividualReportGenerator:
             self.generate_enhanced_individual_reports()
 
         print("Individual testing reports completed!")
+
+    def _get_scenario_names(self) -> list:
+        """Get scenario names from config as (key, display_name) tuples"""
+        scenario_names = []
+        if self.config.fight_scenarios and self.config.fight_scenarios.get('enabled', False):
+            for scenario_config in self.config.fight_scenarios.get('scenarios', []):
+                scenario_name = scenario_config['name']
+                # Create short key from scenario name (e.g., "Fight 1: 1x100 HP Boss" -> "Fight1")
+                scenario_key = scenario_name.split(':')[0].replace(' ', '')
+                scenario_names.append((scenario_key, scenario_name))
+        else:
+            # Fallback to hardcoded scenarios
+            scenario_names = [
+                ('1x100', '1x100 HP Boss'),
+                ('2x50', '2x50 HP Enemies'),
+                ('4x25', '4x25 HP Enemies'),
+                ('10x10', '10x10 HP Enemies')
+            ]
+        return scenario_names
 
     def generate_enhanced_individual_reports(self):
         """Generate enhanced individual analysis reports"""
@@ -350,13 +373,22 @@ class IndividualReportGenerator:
             total_dpt = 0
             total_count = 0
 
-            # Process each scenario
-            scenarios = [
-                ('1x100', '1x100'),
-                ('2x50', '2x50'),
-                ('4x25', '4x25'),
-                ('10x10', '10x10')
-            ]
+            # Process each scenario from config
+            scenarios = []
+            if self.config.fight_scenarios and self.config.fight_scenarios.get('enabled', False):
+                for scenario_config in self.config.fight_scenarios.get('scenarios', []):
+                    scenario_name = scenario_config['name']
+                    # Create short key from scenario name (e.g., "Fight 1: 1x100 HP Boss" -> "Fight1")
+                    scenario_key = scenario_name.split(':')[0].replace(' ', '')
+                    scenarios.append((scenario_key, scenario_name))
+            else:
+                # Fallback to hardcoded scenarios
+                scenarios = [
+                    ('1x100', '1x100 HP Boss'),
+                    ('2x50', '2x50 HP Enemies'),
+                    ('4x25', '4x25 HP Enemies'),
+                    ('10x10', '10x10 HP Enemies')
+                ]
 
             for scenario_key, scenario_name in scenarios:
                 if scenario_name in scenario_results:
@@ -660,21 +692,32 @@ class IndividualReportGenerator:
                 attacker = Character(*att_config)
                 defender = Character(*def_config)
 
-                # Run each scenario
-                fight_scenarios = [
-                    ("1x100", 1, 100),
-                    ("2x50", 2, 50),
-                    ("4x25", 4, 25),
-                    ("10x10", 10, 10)
-                ]
+                # Run each scenario from config
+                if self.config.fight_scenarios and self.config.fight_scenarios.get('enabled', False):
+                    fight_scenarios = []
+                    for scenario_config in self.config.fight_scenarios.get('scenarios', []):
+                        scenario_name = scenario_config['name']
+                        enemy_hp_list = scenario_config.get('enemy_hp_list')
+                        num_enemies = scenario_config.get('num_enemies')
+                        enemy_hp = scenario_config.get('enemy_hp')
+                        fight_scenarios.append((scenario_name, num_enemies, enemy_hp, enemy_hp_list))
+                else:
+                    # Fallback to hardcoded scenarios
+                    fight_scenarios = [
+                        ("1x100 HP Boss", 1, 100, None),
+                        ("2x50 HP Enemies", 2, 50, None),
+                        ("4x25 HP Enemies", 4, 25, None),
+                        ("10x10 HP Enemies", 10, 10, None)
+                    ]
 
-                for scenario_name, num_enemies, enemy_hp in fight_scenarios:
+                for scenario_data in fight_scenarios:
+                    scenario_name, num_enemies, enemy_hp, enemy_hp_list = scenario_data
                     # Single run for individual testing
                     num_runs = 1 if self.individual_config.get('single_run_per_test', True) else self.config.individual_testing_runs
 
                     results, avg_turns, dpt, _ = run_simulation_batch(
                         attacker, build, num_runs, enemy_hp, defender, num_enemies,
-                        max_turns=self.config.max_combat_turns
+                        max_turns=self.config.max_combat_turns, enemy_hp_list=enemy_hp_list
                     )
 
                     if scenario_name not in scenario_results:
@@ -843,7 +886,7 @@ class IndividualReportGenerator:
                 f.write(f"\n{'='*100}\n")
                 f.write(f"TESTING BUILD: {build_name}\n")
                 f.write(f"{'='*100}\n")
-                f.write(f"Attack Type: {build.attack_type}\n")
+                f.write(f"Attack Type: {get_build_attack_type(build)}\n")
                 f.write(f"Upgrades: {', '.join(build.upgrades) if build.upgrades else 'None'}\n")
                 f.write(f"Limits: {', '.join(build.limits) if build.limits else 'None'}\n")
                 f.write(f"Total Cost: {build.total_cost} points\n")

@@ -179,14 +179,16 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
     """
     from src.models import MultiAttackBuild
 
-    # Calculate points per attack based on archetype
+    # Calculate points per attack based on archetype, rounded up to nearest 10
     archetype_multipliers = {
         "focused": 30,
         "dual_natured": 25,
         "versatile_master": 20
     }
     multiplier = archetype_multipliers.get(archetype, 30)
-    max_points_per_attack = tier * multiplier
+    raw_points = tier * multiplier
+    # Round up to nearest 10
+    max_points_per_attack = ((raw_points + 9) // 10) * 10
 
     if archetype == "focused":
         # For focused archetype, just generate single builds
@@ -202,21 +204,23 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
 
 
 def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
-    """Generate all valid pairs of builds for dual-natured archetype"""
-    from src.models import MultiAttackBuild
+    """Generate dual-natured builds with fixed first attack (melee_dg + quick_strikes + powerful_critical)
+
+    For performance optimization, the first attack is standardized and only the second attack varies.
+    """
+    from src.models import MultiAttackBuild, AttackBuild
 
     if attack_types is None:
         attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
-    # Generate all valid single builds first
-    all_builds = list(generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000))
+    # Fixed first attack: melee_dg with quick_strikes and powerful_critical
+    fixed_attack = AttackBuild('melee_dg', ['quick_strikes', 'powerful_critical'], [])
 
-    # Generate all unique pairs
-    for i, build1 in enumerate(all_builds):
-        for build2 in all_builds[i:]:  # Start from i to avoid duplicate pairs
-            # Create multi-attack build with both
-            multi_build = MultiAttackBuild([build1, build2], "dual_natured")
-            yield multi_build
+    # Generate all valid builds for the second attack slot
+    for build2 in generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000):
+        # Create multi-attack build with fixed first attack and generated second attack
+        multi_build = MultiAttackBuild([fixed_attack, build2], "dual_natured")
+        yield multi_build
 
 
 def _generate_versatile_master_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:

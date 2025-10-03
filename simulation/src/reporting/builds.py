@@ -6,7 +6,26 @@ build testing reports with statistical analysis.
 """
 
 from typing import Dict, List, Tuple
-from src.models import SimulationConfig
+from src.models import SimulationConfig, MultiAttackBuild
+
+
+def is_multiattack(build):
+    """Check if a build is a MultiAttackBuild"""
+    return isinstance(build, MultiAttackBuild)
+
+
+def get_build_attack_type(build):
+    """Get attack type string for both AttackBuild and MultiAttackBuild"""
+    if is_multiattack(build):
+        return f"{build.archetype}_multi"
+    return build.attack_type
+
+
+def has_area_attack(build):
+    """Check if a build has area attacks"""
+    if is_multiattack(build):
+        return any('area' in b.attack_type for b in build.builds)
+    return 'area' in build.attack_type
 
 
 class BuildReportGenerator:
@@ -90,13 +109,17 @@ class BuildReportGenerator:
             f.write("-" * 85 + "\n")
 
             for i, (build, avg_dpt, mt_score) in enumerate(multi_target_builds[:25], 1):
-                build_str = f"{build.attack_type}"
-                if build.upgrades:
-                    build_str += f" + {' + '.join(build.upgrades)}"
-                if build.limits:
-                    build_str += f" + {' + '.join(build.limits)}"
+                build_str = get_build_attack_type(build)
+                if not is_multiattack(build):
+                    if build.upgrades:
+                        build_str += f" + {' + '.join(build.upgrades)}"
+                    if build.limits:
+                        build_str += f" + {' + '.join(build.limits)}"
+                    total_cost = build.total_cost
+                else:
+                    total_cost = build.get_total_cost()
 
-                f.write(f"{i:<4} {build_str:<50} {avg_dpt:<10.2f} {mt_score:<10.2f} {build.total_cost:<6}\n")
+                f.write(f"{i:<4} {build_str:<50} {avg_dpt:<10.2f} {mt_score:<10.2f} {total_cost:<6}\n")
 
             # Analysis section
             f.write("\n" + "="*80 + "\n")
@@ -108,7 +131,7 @@ class BuildReportGenerator:
 
             f.write("TOP AOE ARCHETYPES:\n")
             for i, (build, avg_dpt, mt_score) in enumerate(aoe_builds, 1):
-                f.write(f"{i}. {build.attack_type}")
+                f.write(f"{i}. {get_build_attack_type(build)}")
                 if build.upgrades:
                     f.write(f" + {' + '.join(build.upgrades)}")
                 f.write(f" (MT Score: {mt_score:.2f})\n")
@@ -145,7 +168,7 @@ class BuildReportGenerator:
             f.write("-" * 85 + "\n")
 
             for i, (build, avg_dpt, st_score) in enumerate(single_target_builds[:25], 1):
-                build_str = f"{build.attack_type}"
+                build_str = get_build_attack_type(build)
                 if build.upgrades:
                     build_str += f" + {' + '.join(build.upgrades)}"
                 if build.limits:
@@ -161,7 +184,7 @@ class BuildReportGenerator:
             # Attack type analysis
             attack_types = {}
             for build, _, st_score in single_target_builds[:20]:
-                attack_type = build.attack_type
+                attack_type = get_build_attack_type(build)
                 if attack_type not in attack_types:
                     attack_types[attack_type] = []
                 attack_types[attack_type].append(st_score)
@@ -203,7 +226,7 @@ class BuildReportGenerator:
             f.write("-" * 85 + "\n")
 
             for i, (build, avg_dpt, balance_score) in enumerate(balanced_builds[:25], 1):
-                build_str = f"{build.attack_type}"
+                build_str = get_build_attack_type(build)
                 if build.upgrades:
                     build_str += f" + {' + '.join(build.upgrades)}"
                 if build.limits:
@@ -299,7 +322,7 @@ class BuildReportGenerator:
                 f.write("-" * 68 + "\n")
 
                 for i, (build, avg_dpt) in enumerate(builds[:10], 1):
-                    build_str = f"{build.attack_type}"
+                    build_str = get_build_attack_type(build)
                     if build.upgrades:
                         build_str += f" + {' + '.join(build.upgrades[:2])}"  # Truncate for space
                         if len(build.upgrades) > 2:
@@ -348,16 +371,17 @@ class BuildReportGenerator:
         base_score = avg_dpt
 
         # Bonus for AOE attack types
-        if 'area' in build.attack_type:
+        if has_area_attack(build):
             base_score *= 1.5
-        elif 'direct_area' in build.attack_type:
+        elif not is_multiattack(build) and 'direct_area' in build.attack_type:
             base_score *= 1.3
 
-        # Bonus for multi-target upgrades
-        multi_target_upgrades = ['bleed', 'critical_effect', 'brutal']
-        for upgrade in build.upgrades:
-            if upgrade in multi_target_upgrades:
-                base_score *= 1.1
+        # Bonus for multi-target upgrades (skip for MultiAttackBuilds)
+        if not is_multiattack(build):
+            multi_target_upgrades = ['bleed', 'critical_effect', 'brutal']
+            for upgrade in build.upgrades:
+                if upgrade in multi_target_upgrades:
+                    base_score *= 1.1
 
         return base_score
 
@@ -369,20 +393,21 @@ class BuildReportGenerator:
         base_score = avg_dpt
 
         # Bonus for single-target attack types
-        if build.attack_type in ['melee_dg', 'melee_ac']:
+        if not is_multiattack(build) and build.attack_type in ['melee_dg', 'melee_ac']:
             base_score *= 1.2
-        elif 'direct_damage' == build.attack_type:
+        elif not is_multiattack(build) and 'direct_damage' == build.attack_type:
             base_score *= 1.1
 
         # Penalty for AOE (less effective single-target)
-        if 'area' in build.attack_type:
+        if has_area_attack(build):
             base_score *= 0.8
 
-        # Bonus for single-target upgrades
-        single_target_upgrades = ['high_impact', 'armor_piercing', 'finishing_blow_3', 'powerful_critical']
-        for upgrade in build.upgrades:
-            if upgrade in single_target_upgrades:
-                base_score *= 1.1
+        # Bonus for single-target upgrades (skip for MultiAttackBuilds)
+        if not is_multiattack(build):
+            single_target_upgrades = ['high_impact', 'armor_piercing', 'finishing_blow_3', 'powerful_critical']
+            for upgrade in build.upgrades:
+                if upgrade in single_target_upgrades:
+                    base_score *= 1.1
 
         return base_score
 
@@ -394,7 +419,7 @@ class BuildReportGenerator:
         base_score = avg_dpt
 
         # Penalty for extreme specialization
-        if 'area' in build.attack_type:
+        if has_area_attack(build):
             base_score *= 0.9  # AOE builds are less balanced
 
         # Bonus for reliable upgrades
@@ -553,7 +578,7 @@ class BuildReportGenerator:
 
                 f.write("TOP PERFORMING BUILDS:\n")
                 for i, (build, performance) in enumerate(successful_builds[:5], 1):
-                    f.write(f"{i}. {build.attack_type}")
+                    f.write(f"{i}. {get_build_attack_type(build)}")
                     if build.upgrades:
                         f.write(f" + {' + '.join(build.upgrades[:2])}")
                     f.write(f" (Performance: {performance:.2f})\n")
@@ -585,7 +610,7 @@ class BuildReportGenerator:
         # Analyze attack type performance
         attack_type_data = {}
         for build, avg_dpt, avg_turns in all_build_results:
-            attack_type = build.attack_type
+            attack_type = get_build_attack_type(build)
             if attack_type not in attack_type_data:
                 attack_type_data[attack_type] = []
             attack_type_data[attack_type].append(avg_dpt)
@@ -711,7 +736,7 @@ class BuildReportGenerator:
                 f.write("Top 5 most efficient builds:\n")
                 for i, (build, avg_dpt, cost) in enumerate(builds_by_efficiency[:5], 1):
                     efficiency = avg_dpt / cost
-                    build_str = f"{build.attack_type}"
+                    build_str = get_build_attack_type(build)
                     if build.upgrades:
                         build_str += f" + {' + '.join(build.upgrades[:2])}"
                         if len(build.upgrades) > 2:
@@ -810,9 +835,9 @@ class BuildReportGenerator:
         # In real implementation, would filter by actual scenario performance
         # For now, return mock data based on scenario type
         if "1×100" in scenario_name:
-            return [(build, dpt * 1.2) for build, dpt, avg_turns in all_build_results[:10] if 'area' not in build.attack_type]
+            return [(build, dpt * 1.2) for build, dpt, avg_turns in all_build_results[:10] if not has_area_attack(build)]
         elif "10×10" in scenario_name:
-            return [(build, dpt * 1.5) for build, dpt, avg_turns in all_build_results[:10] if 'area' in build.attack_type]
+            return [(build, dpt * 1.5) for build, dpt, avg_turns in all_build_results[:10] if has_area_attack(build)]
         else:
             return [(build, dpt) for build, dpt, avg_turns in all_build_results[:10]]
 

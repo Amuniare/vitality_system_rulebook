@@ -7,10 +7,30 @@ from typing import List, Tuple, Optional
 from src.models import Character, AttackBuild
 from src.game_data import ATTACK_TYPES, UPGRADES, LIMITS
 
+# Pre-generate random number cache for performance
+_DICE_CACHE_SIZE = 10000
+_d20_cache = [random.randint(1, 20) for _ in range(_DICE_CACHE_SIZE)]
+_d6_cache = [random.randint(1, 6) for _ in range(_DICE_CACHE_SIZE)]
+_cache_index = [0]  # Use list to allow modification in nested scope
+
+
+def _get_cached_d20() -> int:
+    """Get a cached d20 roll"""
+    idx = _cache_index[0]
+    _cache_index[0] = (idx + 1) % _DICE_CACHE_SIZE
+    return _d20_cache[idx]
+
+
+def _get_cached_d6() -> int:
+    """Get a cached d6 roll"""
+    idx = _cache_index[0]
+    _cache_index[0] = (idx + 1) % _DICE_CACHE_SIZE
+    return _d6_cache[idx]
+
 
 def roll_d20() -> int:
     """Roll a single d20"""
-    return random.randint(1, 20)
+    return _get_cached_d20()
 
 
 def roll_3d6_exploding() -> Tuple[int, List[str]]:
@@ -19,11 +39,11 @@ def roll_3d6_exploding() -> Tuple[int, List[str]]:
     dice_detail = []
     for _ in range(3):
         die_total = 0
-        die = random.randint(1, 6)
+        die = _get_cached_d6()
         die_total += die
         dice_detail.append(str(die))
         while die == 6:
-            die = random.randint(1, 6)
+            die = _get_cached_d6()
             die_total += die
             dice_detail[-1] += f"+{die}"
         total += die_total
@@ -36,11 +56,11 @@ def roll_3d6_exploding_5_6() -> Tuple[int, List[str]]:
     dice_detail = []
     for _ in range(3):
         die_total = 0
-        die = random.randint(1, 6)
+        die = _get_cached_d6()
         die_total += die
         dice_detail.append(str(die))
         while die >= 5:
-            die = random.randint(1, 6)
+            die = _get_cached_d6()
             die_total += die
             dice_detail[-1] += f"+{die}"
         total += die_total
@@ -201,7 +221,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
 
 
 
-    # Apply upgrade modifiers
+    # Apply upgrade modifiers (optimized with set checks)
+    upgrades_set = set(build.upgrades)  # Convert to set for O(1) membership testing
     for upgrade_name in build.upgrades:
         upgrade = UPGRADES[upgrade_name]
         accuracy_mod += upgrade.accuracy_mod * attacker.tier
@@ -211,16 +232,17 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         else:
             accuracy_mod -= upgrade.accuracy_penalty * attacker.tier
 
-    # Apply slayer bonuses to accuracy
+    # Apply slayer bonuses to accuracy (optimized with cached set)
     slayer_accuracy_bonus = 0
-    if any(upgrade in build.upgrades for upgrade in ['minion_slayer_acc', 'captain_slayer_acc', 'elite_slayer_acc', 'boss_slayer_acc']):
-        if 'minion_slayer_acc' in build.upgrades and defender.max_hp == 10:
+    slayer_upgrades = {'minion_slayer_acc', 'captain_slayer_acc', 'elite_slayer_acc', 'boss_slayer_acc'}
+    if upgrades_set & slayer_upgrades:  # Fast set intersection
+        if 'minion_slayer_acc' in upgrades_set and defender.max_hp == 10:
             slayer_accuracy_bonus += attacker.tier
-        elif 'captain_slayer_acc' in build.upgrades and defender.max_hp == 25:
+        elif 'captain_slayer_acc' in upgrades_set and defender.max_hp == 25:
             slayer_accuracy_bonus += attacker.tier
-        elif 'elite_slayer_acc' in build.upgrades and defender.max_hp == 50:
+        elif 'elite_slayer_acc' in upgrades_set and defender.max_hp == 50:
             slayer_accuracy_bonus += attacker.tier
-        elif 'boss_slayer_acc' in build.upgrades and defender.max_hp == 100:
+        elif 'boss_slayer_acc' in upgrades_set and defender.max_hp == 100:
             slayer_accuracy_bonus += attacker.tier
 
     # Apply melee accuracy bonus for melee_ac variant
@@ -240,8 +262,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     is_critical = False
     accuracy_roll = 0
     if not attack_type.is_direct:
-        # Handle advantage from reliable accuracy
-        if 'reliable_accuracy' in build.upgrades:
+        # Handle advantage from reliable accuracy - optimized with cached set
+        if 'reliable_accuracy' in upgrades_set:
             roll1 = roll_d20()
             roll2 = roll_d20()
             accuracy_roll = max(roll1, roll2)
@@ -250,8 +272,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         else:
             accuracy_roll = roll_d20()
 
-        # Check for critical hit
-        has_crit_accuracy = 'critical_accuracy' in build.upgrades or 'double_tap' in build.upgrades or 'powerful_critical' in build.upgrades or 'explosive_critical' in build.upgrades
+        # Check for critical hit (optimized with cached set)
+        crit_upgrades = {'critical_accuracy', 'double_tap', 'powerful_critical', 'explosive_critical'}
+        has_crit_accuracy = bool(upgrades_set & crit_upgrades)
         if has_crit_accuracy and accuracy_roll >= 15:
             is_critical = True
         elif accuracy_roll == 20:  # Natural 20 is always critical
@@ -306,8 +329,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if not attack_hits:
             if log_file:
                 log_file.write(f"      Miss!\n")
-            # For Quick Strikes, continue to make additional attacks even on miss
-            if not allow_multi or not ('quick_strikes' in build.upgrades):
+            # For Quick Strikes, continue to make additional attacks even on miss - optimized with cached set
+            if not allow_multi or not ('quick_strikes' in upgrades_set):
                 return 0, []  # Early return for non-multi-attack misses
 
     # For missed attacks, set damage to 0 but continue for multi-attacks
@@ -315,9 +338,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     conditions_applied = []
 
     if attack_type.is_direct or attack_hits:
-        # Calculate overhit bonus (only if attack hit)
+        # Calculate overhit bonus (only if attack hit) - optimized with cached set
         overhit_bonus = 0
-        if not attack_type.is_direct and 'overhit' in build.upgrades:
+        if not attack_type.is_direct and 'overhit' in upgrades_set:
             total_attack_roll = accuracy_roll + total_accuracy
             if total_attack_roll >= defender.avoidance + 5:
                 overhit_bonus = (total_attack_roll - defender.avoidance) // 2
@@ -332,9 +355,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 damage = attack_type.direct_damage_base - attacker.tier
             dice_detail = []
         else:
-            # Roll damage dice (use shared roll for AOE)
-            use_high_impact = 'high_impact' in build.upgrades
-            use_critical_effect = 'critical_effect' in build.upgrades
+            # Roll damage dice (use shared roll for AOE) - optimized with cached set
+            use_high_impact = 'high_impact' in upgrades_set
+            use_critical_effect = 'critical_effect' in upgrades_set
 
             if is_aoe and aoe_damage_roll is not None:
                 # Use shared AOE damage roll
@@ -374,25 +397,26 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 limit = LIMITS[limit_name]
                 flat_bonus += limit.damage_bonus * attacker.tier
 
-            # Apply slayer damage bonuses
+            # Apply slayer damage bonuses (optimized with cached set)
             slayer_damage_bonus = 0
-            if any(upgrade in build.upgrades for upgrade in ['minion_slayer_dmg', 'captain_slayer_dmg', 'elite_slayer_dmg', 'boss_slayer_dmg']):
-                if 'minion_slayer_dmg' in build.upgrades and defender.max_hp == 10:
+            slayer_damage_upgrades = {'minion_slayer_dmg', 'captain_slayer_dmg', 'elite_slayer_dmg', 'boss_slayer_dmg'}
+            if upgrades_set & slayer_damage_upgrades:
+                if 'minion_slayer_dmg' in upgrades_set and defender.max_hp == 10:
                     slayer_damage_bonus += attacker.tier
-                elif 'captain_slayer_dmg' in build.upgrades and defender.max_hp == 25:
+                elif 'captain_slayer_dmg' in upgrades_set and defender.max_hp == 25:
                     slayer_damage_bonus += attacker.tier
-                elif 'elite_slayer_dmg' in build.upgrades and defender.max_hp == 50:
+                elif 'elite_slayer_dmg' in upgrades_set and defender.max_hp == 50:
                     slayer_damage_bonus += attacker.tier
-                elif 'boss_slayer_dmg' in build.upgrades and defender.max_hp == 100:
+                elif 'boss_slayer_dmg' in upgrades_set and defender.max_hp == 100:
                     slayer_damage_bonus += attacker.tier
 
-            # Apply critical hit damage bonus
+            # Apply critical hit damage bonus (optimized with cached set)
             critical_damage_bonus = 0
             if is_critical:
                 # Base critical hit bonus
                 critical_damage_bonus = attacker.tier
                 # Additional bonus if they have powerful critical (which includes critical_accuracy)
-                if 'powerful_critical' in build.upgrades:
+                if 'powerful_critical' in upgrades_set:
                     critical_damage_bonus += attacker.tier
 
             damage = dice_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus
@@ -455,9 +479,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
 
                 log_file.write(f"      Total damage: {damage}\n")
 
-        # Apply durability (ALL attacks subtract durability)
+        # Apply durability (ALL attacks subtract durability) - optimized with cached set
         effective_durability = defender.durability
-        if 'armor_piercing' in build.upgrades:
+        if 'armor_piercing' in upgrades_set:
             effective_durability = defender.tier  # Ignore endurance bonus
             if log_file:
                 log_file.write(f"      Armor piercing: reducing durability from {defender.durability} to {effective_durability}\n")
@@ -470,43 +494,43 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             else:
                 log_file.write(f"      After durability ({effective_durability}): {damage_dealt} damage\n")
 
-        # Handle brutal (only for non-direct attacks)
-        if not attack_type.is_direct and 'brutal' in build.upgrades and damage > effective_durability + 10:
+        # Handle brutal (only for non-direct attacks) - optimized with cached set
+        if not attack_type.is_direct and 'brutal' in upgrades_set and damage > effective_durability + 10:
             brutal_bonus = int((damage - effective_durability - 10) * 0.5)
             damage_dealt += brutal_bonus
             if log_file:
                 log_file.write(f"      Brutal bonus: +{brutal_bonus} damage\n")
 
 
-        # Handle conditions for successful attacks
-        if 'bleed' in build.upgrades:
+        # Handle conditions for successful attacks - optimized with cached set
+        if 'bleed' in upgrades_set:
             conditions_applied.append('bleed')
             if log_file:
                 log_file.write(f"      Applied bleed condition\n")
 
-        # Handle finishing blow threshold
+        # Handle finishing blow threshold - optimized with cached set
         finishing_threshold = 0
-        if 'finishing_blow_1' in build.upgrades:
+        if 'finishing_blow_1' in upgrades_set:
             finishing_threshold = 5
-        elif 'finishing_blow_2' in build.upgrades:
+        elif 'finishing_blow_2' in upgrades_set:
             finishing_threshold = 10
-        elif 'finishing_blow_3' in build.upgrades:
+        elif 'finishing_blow_3' in upgrades_set:
             finishing_threshold = 15
 
         if finishing_threshold > 0:
             conditions_applied.append(f'finishing_{finishing_threshold}')
 
-        # Handle culling strike (defeat if below 1/5 max HP)
-        if 'culling_strike' in build.upgrades:
+        # Handle culling strike (defeat if below 1/5 max HP) - optimized with cached set
+        if 'culling_strike' in upgrades_set:
             conditions_applied.append('culling_strike')
 
-        # Handle splinter (triggers another attack if enemy is defeated)
-        if 'splinter' in build.upgrades:
+        # Handle splinter (triggers another attack if enemy is defeated) - optimized with cached set
+        if 'splinter' in upgrades_set:
             conditions_applied.append('splinter')
 
-    # Handle multiple attacks - Quick Strikes makes all attacks regardless of hit/miss
+    # Handle multiple attacks - Quick Strikes makes all attacks regardless of hit/miss - optimized with cached set
     # Handle Quick Strikes (make 2 attacks total regardless of success)
-    if allow_multi and ('quick_strikes' in build.upgrades):
+    if allow_multi and ('quick_strikes' in upgrades_set):
         # Make 1 more attack (already made 1) - happens regardless of first attack result
         upgrade_name = 'quick_strikes'
         if log_file:
@@ -521,15 +545,15 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             log_file.write(f"      Total with quick strikes: {damage_dealt} damage\n")
 
 
-    # Handle explosive critical (15-20 triggers attack against all enemies in range)
-    if allow_multi and 'explosive_critical' in build.upgrades and accuracy_roll >= 15:
+    # Handle explosive critical (15-20 triggers attack against all enemies in range) - optimized with cached set
+    if allow_multi and 'explosive_critical' in upgrades_set and accuracy_roll >= 15:
         if log_file:
             log_file.write(f"      Explosive Critical triggered! (explosive attacks not implemented in single-target context)\n")
         # Note: Explosive Critical mechanics would need multi-enemy context to fully implement
         # For now, we mark that it triggered but don't apply area damage in single-target simulation
 
-    # Handle double-tap (15-20 triggers same attack again) - double_tap includes critical_accuracy
-    if allow_multi and 'double_tap' in build.upgrades and accuracy_roll >= 15:
+    # Handle double-tap (15-20 triggers same attack again) - double_tap includes critical_accuracy - optimized with cached set
+    if allow_multi and 'double_tap' in upgrades_set and accuracy_roll >= 15:
         if log_file:
             log_file.write(f"      Double-Tap triggered! Making identical attack:\n")
         extra_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history)
@@ -537,8 +561,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if log_file:
             log_file.write(f"      Total with double-tap: {damage_dealt} damage\n")
 
-    # Handle extra attack (successful hit + effect allows identical attack)
-    if allow_multi and 'extra_attack' in build.upgrades and damage_dealt > 0 and len(conditions_applied) > 0:
+    # Handle extra attack (successful hit + effect allows identical attack) - optimized with cached set
+    if allow_multi and 'extra_attack' in upgrades_set and damage_dealt > 0 and len(conditions_applied) > 0:
         if log_file:
             log_file.write(f"      Extra Attack triggered! (hit + effect success)\n")
         extra_damage = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history)
@@ -546,8 +570,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if log_file:
             log_file.write(f"      Total with extra attack: {damage_dealt} damage\n")
 
-    # Handle barrage (chained attacks - hit + effect on each attack enables the next)
-    if allow_multi and 'barrage' in build.upgrades and damage_dealt > 0 and len(conditions_applied) > 0:
+    # Handle barrage (chained attacks - hit + effect on each attack enables the next) - optimized with cached set
+    if allow_multi and 'barrage' in upgrades_set and damage_dealt > 0 and len(conditions_applied) > 0:
         if log_file:
             log_file.write(f"      Barrage - first attack succeeded, attempting second attack:\n")
         # Second attack

@@ -223,14 +223,16 @@ class SimulationConfig:
         return self.simulation_runs.get('individual_testing_runs', 5)
 
     def max_points_per_attack(self, archetype: str) -> int:
-        """Calculate max points per attack based on archetype and tier"""
+        """Calculate max points per attack based on archetype and tier, rounded up to nearest 10"""
         archetype_multipliers = {
             "focused": 30,
             "dual_natured": 25,
             "versatile_master": 20
         }
         multiplier = archetype_multipliers.get(archetype, 30)
-        return self.tier * multiplier
+        raw_points = self.tier * multiplier
+        # Round up to nearest 10
+        return ((raw_points + 9) // 10) * 10
 
     def num_attacks(self, archetype: str) -> int:
         """Get number of attacks based on archetype"""

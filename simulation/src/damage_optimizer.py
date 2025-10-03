@@ -230,12 +230,17 @@ def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str
     is_multi_attack = archetype in ['dual_natured', 'versatile_master']
     test_func = test_multi_attack_build if is_multi_attack else test_single_build
 
-    # Use archetype-based generator
-    builds_generator = generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size)
+    # Use itertools.tee to avoid double generation
+    from itertools import tee
 
-    # Count total builds for progress tracking without loading all into memory
+    # Generate once and split into two iterators
+    print("Generating builds for testing...")
+    builds_gen_temp = generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size)
+    builds_gen_count, builds_generator = tee(builds_gen_temp)
+
+    # Count total builds for progress tracking
     print("Counting total builds for progress tracking...")
-    total_builds = sum(1 for _ in generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size))
+    total_builds = sum(1 for _ in builds_gen_count)
     max_points = config.max_points_per_attack(archetype)
     num_attacks = config.num_attacks(archetype)
     print(f"Testing {total_builds} {archetype} builds (Tier {config.tier}, {num_attacks} attack(s) × {max_points} points each)...")
@@ -272,8 +277,7 @@ def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str
         # Time tracking
         start_time = time.time()
 
-        # Process builds in chunks for memory efficiency
-        builds_generator = generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size)
+        # Use the already-generated builds_generator (no need to regenerate)
 
         # Execute builds using multiprocessing or sequential processing based on config
         completed_count = 0

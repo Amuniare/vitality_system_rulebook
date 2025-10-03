@@ -12,9 +12,14 @@ class TableGenerator:
     """Generates formatted tables for individual testing reports"""
 
     @staticmethod
-    def format_attack_type_table(attack_type_data: Dict, reports_dir: str):
+    def format_attack_type_table(attack_type_data: Dict, reports_dir: str, scenario_names: list = None):
         """Generate Table 1: Attack Type Performance sorted by average DPT (highest to lowest)"""
         filename = f"{reports_dir}/individual_attack_type_table.txt"
+
+        # Use provided scenario names or default
+        if not scenario_names:
+            scenario_names = [('1x100', '1x100 HP Boss'), ('2x50', '2x50 HP Enemies'),
+                            ('4x25', '4x25 HP Enemies'), ('10x10', '10x10 HP Enemies')]
 
         # Sort attack types by average DPT across all scenarios (highest to lowest)
         sorted_attack_types = sorted(
@@ -28,13 +33,23 @@ class TableGenerator:
             f.write("=" * 140 + "\n\n")
 
             # Header row with proper spacing matching data alignment
-            header = f"{'Attack Type':<18} │ {'Avg All Scenarios':^18} │ {'1x100 HP Boss':^18} │ {'2x50 HP Enemies':^18} │ {'4x25 HP Enemies':^18} │ {'10x10 HP Enemies':^18}"
+            header = f"{'Attack Type':<18} │ {'Avg All Scenarios':^18}"
+            for _, display_name in scenario_names:
+                # Truncate long names to fit in 18 chars
+                short_name = display_name[:16] if len(display_name) > 16 else display_name
+                header += f" │ {short_name:^18}"
             f.write(header + "\n")
 
             # Sub-header for metrics with proper alignment
-            subheader = f"{'':<18} │ {'DPT':>7} {'%':>7} │ {'DPT':>7} {'%':>7} │ {'DPT':>7} {'%':>7} │ {'DPT':>7} {'%':>7} │ {'DPT':>7} {'%':>7}"
+            subheader = f"{'':<18} │ {'DPT':>7} {'%':>7}"
+            for _ in scenario_names:
+                subheader += f" │ {'DPT':>7} {'%':>7}"
             f.write(subheader + "\n")
-            f.write("─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "\n")
+
+            sep = "─" * 18 + "─┼─" + "─" * 18
+            for _ in scenario_names:
+                sep += "─┼─" + "─" * 18
+            f.write(sep + "\n")
 
             # Data rows for each attack type (sorted by average DPT)
             for attack_type, data in sorted_attack_types:
@@ -43,14 +58,13 @@ class TableGenerator:
                 # Average across all scenarios with proper spacing
                 avg_data = data.get('average', {})
                 dpt_avg = avg_data.get('dpt_no_upgrades', 0)  # Using no_upgrades as the main DPT value
-                row += f" {dpt_avg:>6.1f} {100.0:>6.1f}% │"
+                row += f" {dpt_avg:>6.1f} {100.0:>6.1f}%"
 
                 # Per-scenario data with consistent spacing
-                scenarios = ['1x100', '2x50', '4x25', '10x10']
-                for scenario in scenarios:
-                    scenario_data = data.get(scenario, {})
+                for scenario_key, _ in scenario_names:
+                    scenario_data = data.get(scenario_key, {})
                     dpt_val = scenario_data.get('dpt_no_upgrades', 0)
-                    row += f" {dpt_val:>6.1f} {100.0:>6.1f}% │"
+                    row += f" │ {dpt_val:>6.1f} {100.0:>6.1f}%"
 
                 f.write(row + "\n")
 
@@ -153,9 +167,14 @@ class TableGenerator:
         print(f"Upgrade/limit performance table saved to {filename}")
 
     @staticmethod
-    def format_attack_type_turns_table(attack_type_data: Dict, reports_dir: str):
+    def format_attack_type_turns_table(attack_type_data: Dict, reports_dir: str, scenario_names: list = None):
         """Generate Table 1: Attack Type Turns Performance sorted by average turns (lowest to highest)"""
         filename = f"{reports_dir}/individual_attack_type_turns_table.txt"
+
+        # Use provided scenario names or default
+        if not scenario_names:
+            scenario_names = [('1x100', '1x100 HP Boss'), ('2x50', '2x50 HP Enemies'),
+                            ('4x25', '4x25 HP Enemies'), ('10x10', '10x10 HP Enemies')]
 
         # Sort attack types by average turns across all scenarios (lowest to highest)
         sorted_attack_types = sorted(
@@ -169,13 +188,22 @@ class TableGenerator:
             f.write("=" * 120 + "\n\n")
 
             # Header row with proper spacing
-            header = f"{'Attack Type':<18} │ {'Avg All Scenarios':^18} │ {'1x100 HP Boss':^18} │ {'2x50 HP Enemies':^18} │ {'4x25 HP Enemies':^18} │ {'10x10 HP Enemies':^18}"
+            header = f"{'Attack Type':<18} │ {'Avg All Scenarios':^18}"
+            for _, display_name in scenario_names:
+                short_name = display_name[:16] if len(display_name) > 16 else display_name
+                header += f" │ {short_name:^18}"
             f.write(header + "\n")
 
             # Sub-header for turns
-            subheader = f"{'':<18} │ {'Turns':>11} │ {'Turns':>11} │ {'Turns':>11} │ {'Turns':>11} │ {'Turns':>11}"
+            subheader = f"{'':<18} │ {'Turns':>11}"
+            for _ in scenario_names:
+                subheader += f" │ {'Turns':>11}"
             f.write(subheader + "\n")
-            f.write("─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "─┼─" + "─" * 18 + "\n")
+
+            sep = "─" * 18 + "─┼─" + "─" * 18
+            for _ in scenario_names:
+                sep += "─┼─" + "─" * 18
+            f.write(sep + "\n")
 
             # Data rows for each attack type (sorted by average turns)
             for attack_type, data in sorted_attack_types:
@@ -184,14 +212,13 @@ class TableGenerator:
                 # Average across all scenarios
                 avg_data = data.get('average', {})
                 turns_avg = avg_data.get('turns_no_upgrades', 0)
-                row += f" {turns_avg:>9.2f} │"
+                row += f" {turns_avg:>9.2f}"
 
                 # Per-scenario data
-                scenarios = ['1x100', '2x50', '4x25', '10x10']
-                for scenario in scenarios:
-                    scenario_data = data.get(scenario, {})
+                for scenario_key, _ in scenario_names:
+                    scenario_data = data.get(scenario_key, {})
                     turns_val = scenario_data.get('turns_no_upgrades', 0)
-                    row += f" {turns_val:>9.2f} │"
+                    row += f" │ {turns_val:>9.2f}"
 
                 f.write(row + "\n")
 

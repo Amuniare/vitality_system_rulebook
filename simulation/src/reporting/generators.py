@@ -6,11 +6,11 @@ This module contains functions that generate report data and analysis.
 
 import statistics
 from typing import Dict, List, Tuple
-from src.models import Character, AttackBuild, SimulationConfig
+from src.models import Character, AttackBuild, SimulationConfig, MultiAttackBuild
 from src.simulation import run_simulation_batch
 from src.game_data import UPGRADES, LIMITS, RuleValidator
 from src.reporting.individual import IndividualReportGenerator
-from src.reporting.builds import BuildReportGenerator
+from src.reporting.builds import BuildReportGenerator, get_build_attack_type, is_multiattack
 
 
 def generate_combo_performance_report(config: SimulationConfig) -> Dict:
@@ -423,10 +423,15 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
 
     # Process each build result to track enhancement positions
     for rank, (build, avg_dpt, avg_turns) in enumerate(all_build_results, 1):
+        # Skip MultiAttackBuilds for enhancement analysis
+        if is_multiattack(build):
+            continue
+
         # Track attack type rankings
-        if build.attack_type not in attack_type_rankings:
-            attack_type_rankings[build.attack_type] = []
-        attack_type_rankings[build.attack_type].append(rank)
+        attack_type = build.attack_type
+        if attack_type not in attack_type_rankings:
+            attack_type_rankings[attack_type] = []
+        attack_type_rankings[attack_type].append(rank)
 
         # Track upgrade rankings (upgrades are enhancements)
         for upgrade in build.upgrades:
@@ -438,9 +443,9 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
             enhancement_turns[upgrade].append(avg_turns)
 
             # Track turns by attack type for this enhancement
-            if build.attack_type not in enhancement_attack_types[upgrade]:
-                enhancement_attack_types[upgrade][build.attack_type] = []
-            enhancement_attack_types[upgrade][build.attack_type].append(avg_turns)
+            if attack_type not in enhancement_attack_types[upgrade]:
+                enhancement_attack_types[upgrade][attack_type] = []
+            enhancement_attack_types[upgrade][attack_type].append(avg_turns)
 
         # Track limit rankings (limits are enhancements)
         for limit in build.limits:
@@ -452,9 +457,9 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
             enhancement_turns[limit].append(avg_turns)
 
             # Track turns by attack type for this enhancement
-            if build.attack_type not in enhancement_attack_types[limit]:
-                enhancement_attack_types[limit][build.attack_type] = []
-            enhancement_attack_types[limit][build.attack_type].append(avg_turns)
+            if attack_type not in enhancement_attack_types[limit]:
+                enhancement_attack_types[limit][attack_type] = []
+            enhancement_attack_types[limit][attack_type].append(avg_turns)
 
         # Track combo rankings - check if build contains any of our specific combos
         for combo_name, combo_upgrades in combo_definitions:
@@ -628,6 +633,10 @@ def generate_upgrade_pairing_report(all_build_results: List[Tuple], config: Simu
 
     # Process each build result to collect upgrade appearance data
     for rank, (build, avg_dpt, avg_turns) in enumerate(all_build_results, 1):
+        # Skip MultiAttackBuilds - they don't have a single upgrades list
+        if is_multiattack(build):
+            continue
+
         # For each upgrade in this build
         for upgrade in build.upgrades:
             if upgrade in upgrade_data:
@@ -1126,11 +1135,12 @@ def generate_individual_report(build: AttackBuild, config: SimulationConfig, rep
     """Generate detailed individual build report"""
     print(f"\nGenerating individual report for: {build}")
 
-    filename = f"individual_build_{build.attack_type}"
-    if build.upgrades:
-        filename += "_" + "_".join(build.upgrades)
-    if build.limits:
-        filename += "_" + "_".join(build.limits)
+    filename = f"individual_build_{get_build_attack_type(build)}"
+    if not is_multiattack(build):
+        if build.upgrades:
+            filename += "_" + "_".join(build.upgrades)
+        if build.limits:
+            filename += "_" + "_".join(build.limits)
     filename += ".txt"
 
     with open(f'{reports_dir}/{filename}', 'w', encoding='utf-8') as f:
@@ -1183,6 +1193,10 @@ def enhancement_comparison(all_build_results: List[Tuple], enhancement_results: 
 
     # Process build results to get enhancement performance in builds
     for rank, (build, dpt, avg_turns) in enumerate(all_build_results, 1):
+        # Skip MultiAttackBuilds
+        if is_multiattack(build):
+            continue
+
         # For each enhancement in this build
         for enhancement in build.upgrades + build.limits:
             if enhancement in comparison_data:
@@ -1293,11 +1307,13 @@ def enhancement_comparison(all_build_results: List[Tuple], enhancement_results: 
 def generate_reports_by_mode(config: SimulationConfig, reports_dir: str, all_build_results: List[Tuple] = None):
     """Generate reports based on execution mode"""
 
-    if config.execution_mode in ['individual', 'both']:
+    # Only generate individual reports if no build results provided (first call in 'both' mode)
+    if config.execution_mode in ['individual', 'both'] and all_build_results is None:
         if config.reports.get('individual_reports', {}).get('enabled', True):
             individual_generator = IndividualReportGenerator(config, reports_dir)
             individual_generator.generate_all_reports()
 
+    # Only generate build reports if build results are provided
     if config.execution_mode in ['build', 'both']:
         if config.reports.get('build_reports', {}).get('enabled', True) and all_build_results:
             build_generator = BuildReportGenerator(config, reports_dir)

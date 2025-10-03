@@ -25,6 +25,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         defender = Character(focus=0, power=0, mobility=3, endurance=0, tier=attacker.tier)
 
     # Initialize enemies - support both homogeneous and mixed HP groups
+    # Optimization: Avoid dictionary copies by creating separate dictionaries
     if enemy_hp_list is not None:
         # Mixed enemy groups - each enemy can have different HP
         enemies = [{'hp': hp, 'max_hp': hp, 'bleed_stacks': []} for hp in enemy_hp_list]
@@ -33,8 +34,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         # Homogeneous enemy groups - all enemies have same HP (backward compatible)
         if enemy_hp is None:
             enemy_hp = target_hp
-        enemy_template = {'hp': enemy_hp, 'max_hp': enemy_hp, 'bleed_stacks': []}
-        enemies = [enemy_template.copy() for _ in range(num_enemies)]
+        # Create each dictionary separately to avoid .copy() overhead
+        enemies = [{'hp': enemy_hp, 'max_hp': enemy_hp, 'bleed_stacks': []} for _ in range(num_enemies)]
 
     # Track attacker HP for win/loss determination
     attacker_hp = attacker.max_hp
@@ -51,14 +52,28 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         log_file.write(f"  Focus: {defender.focus} | Power: {defender.power} | Mobility: {defender.mobility} | Endurance: {defender.endurance} | Tier: {defender.tier}\n")
         log_file.write(f"  Avoidance: {defender.avoidance} | Durability: {defender.durability} | Max HP: {defender.max_hp}\n")
         log_file.write(f"BUILD CONFIGURATION:\n")
-        log_file.write(f"  Attack Type: {build.attack_type}")
-        if build.attack_type == 'melee_ac':
-            log_file.write(f" (choosing +{attacker.tier} accuracy)")
-        elif build.attack_type == 'melee_dg':
-            log_file.write(f" (choosing +{attacker.tier} damage)")
-        log_file.write(f"\n  Upgrades: {', '.join(build.upgrades) if build.upgrades else 'None'}\n")
-        log_file.write(f"  Limits: {', '.join(build.limits) if build.limits else 'None'}\n")
-        log_file.write(f"  Total Cost: {build.total_cost} points\n")
+        # Handle both AttackBuild and MultiAttackBuild
+        if hasattr(build, 'attack_type'):
+            log_file.write(f"  Attack Type: {build.attack_type}")
+            if build.attack_type == 'melee_ac':
+                log_file.write(f" (choosing +{attacker.tier} accuracy)")
+            elif build.attack_type == 'melee_dg':
+                log_file.write(f" (choosing +{attacker.tier} damage)")
+            log_file.write(f"\n  Upgrades: {', '.join(build.upgrades) if build.upgrades else 'None'}\n")
+            log_file.write(f"  Limits: {', '.join(build.limits) if build.limits else 'None'}\n")
+            log_file.write(f"  Total Cost: {build.total_cost} points\n")
+        else:
+            # MultiAttackBuild
+            log_file.write(f"  Archetype: {build.archetype}\n")
+            log_file.write(f"  Number of Attacks: {len(build.builds)}\n")
+            for i, attack in enumerate(build.builds):
+                log_file.write(f"  Attack {i+1}: {attack.attack_type}")
+                if attack.upgrades:
+                    log_file.write(f" (Upgrades: {', '.join(attack.upgrades)})")
+                if attack.limits:
+                    log_file.write(f" (Limits: {', '.join(attack.limits)})")
+                log_file.write(f" [Cost: {attack.total_cost}]\n")
+            log_file.write(f"  Total Cost: {build.get_total_cost()} points\n")
         log_file.write(f"COMBAT PARAMETERS:\n")
         log_file.write(f"  Number of Enemies: {num_enemies}\n")
         if enemy_hp_list:
@@ -74,7 +89,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
     charge_history = []  # Track charging actions: True = charged, False = attacked
     cooldown_history = {}  # Track when limits with cooldowns were last used
 
-    while any(enemy['hp'] > 0 for enemy in enemies) and attacker_hp > 0 and turns < max_turns:
+    while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
         turns += 1
         if log_file:
             log_file.write(f"\n{'='*60}\n")
@@ -142,7 +157,12 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             log_file.write(f"\nATTACK PHASE:\n")
 
         # Determine if this is an AOE attack
-        is_aoe = build.attack_type in ['area', 'direct_area_damage']
+        # Handle both AttackBuild and MultiAttackBuild
+        if hasattr(build, 'attack_type'):
+            is_aoe = build.attack_type in ['area', 'direct_area_damage']
+        else:
+            # MultiAttackBuild - check if any of its builds are AOE
+            is_aoe = any(b.attack_type in ['area', 'direct_area_damage'] for b in build.builds)
 
         # Initialize turn tracking variables
         charged_this_turn = False
@@ -390,11 +410,10 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     log_file.write(f"    Damage dealt to Attacker: {damage}\n")
                     log_file.write(f"    Attacker HP: {attacker_hp + damage} -> {attacker_hp}\n")
 
-                # Check if attacker is defeated
+                # Log if attacker is defeated (but continue combat)
                 if attacker_hp <= 0:
                     if log_file:
-                        log_file.write(f"\n  ATTACKER DEFEATED!\n")
-                    break
+                        log_file.write(f"\n  ATTACKER DEFEATED (but combat continues)!\n")
 
             if log_file:
                 log_file.write(f"  Total defender damage this turn: {total_defender_damage}\n")
@@ -417,24 +436,25 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     log_file.write(f"   Enemy {i+1} DEFEATED!\n")
                     enemy['max_hp'] = 0  # Mark as logged
 
-    # Determine combat outcome
-    if attacker_hp <= 0:
-        outcome = "loss"
-        if log_file:
-            log_file.write(f"\nCombat ended in {turns} turns\n")
-            log_file.write(f"ATTACKER DEFEATED - Combat Lost!\n")
-            log_file.write("="*50 + "\n")
-    elif all(enemy['hp'] <= 0 for enemy in enemies):
+    # Determine combat outcome (only win or timeout - attacker can go negative)
+    if all(enemy['hp'] <= 0 for enemy in enemies):
         outcome = "win"
         if log_file:
             log_file.write(f"\nCombat ended in {turns} turns\n")
             log_file.write(f"All {num_enemies} enemies defeated - Combat Won!\n")
+            if attacker_hp <= 0:
+                log_file.write(f"Attacker HP at end: {attacker_hp}/{attacker_max_hp} (went negative but still won)\n")
+            else:
+                log_file.write(f"Attacker HP at end: {attacker_hp}/{attacker_max_hp}\n")
             log_file.write("="*50 + "\n")
     else:
         outcome = "timeout"
         if log_file:
             log_file.write(f"\nCombat timed out after {turns} turns\n")
-            log_file.write(f"Attacker HP: {attacker_hp}/{attacker_max_hp}\n")
+            log_file.write(f"Attacker HP: {attacker_hp}/{attacker_max_hp}")
+            if attacker_hp <= 0:
+                log_file.write(f" (went negative)")
+            log_file.write(f"\n")
             alive_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
             log_file.write(f"Enemies remaining: {alive_count}/{num_enemies}\n")
             log_file.write("="*50 + "\n")
@@ -475,10 +495,9 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
         result_outcomes.append(outcome)
         outcomes[outcome] += 1
 
-    # Calculate stats (only count wins for average turns)
-    win_results = [results[i] for i in range(num_runs) if result_outcomes[i] == "win"]
-    avg_turns = sum(win_results) / len(win_results) if win_results else float('inf')
-    dpt = total_hp_pool / avg_turns if avg_turns > 0 and avg_turns != float('inf') else 0
+    # Calculate stats from ALL runs (not just wins) - attacker can go negative
+    avg_turns = sum(results) / num_runs if num_runs > 0 else 0
+    dpt = total_hp_pool / avg_turns if avg_turns > 0 else 0
 
     # Prepare outcome statistics
     outcome_stats = {
