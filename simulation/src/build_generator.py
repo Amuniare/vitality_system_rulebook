@@ -204,7 +204,7 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
 
 
 def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
-    """Generate dual-natured builds with fixed first attack (melee_dg + quick_strikes + powerful_critical)
+    """Generate dual-natured builds with fixed first attack (melee_dg only)
 
     For performance optimization, the first attack is standardized and only the second attack varies.
     """
@@ -213,8 +213,8 @@ def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List
     if attack_types is None:
         attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
-    # Fixed first attack: melee_dg with quick_strikes and powerful_critical
-    fixed_attack = AttackBuild('melee_dg', ['quick_strikes', 'powerful_critical'], [])
+    # Fixed first attack: melee_dg with no upgrades
+    fixed_attack = AttackBuild('melee_dg', [], [])
 
     # Generate all valid builds for the second attack slot
     for build2 in generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000):

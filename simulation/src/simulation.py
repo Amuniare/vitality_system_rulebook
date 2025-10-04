@@ -89,6 +89,23 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
     charge_history = []  # Track charging actions: True = charged, False = attacked
     cooldown_history = {}  # Track when limits with cooldowns were last used
 
+    # Initialize combat state for new limit mechanics
+    combat_state = {
+        'last_target_hit': None,
+        'defeated_enemy_last_turn': False,
+        'dealt_damage_last_turn': False,
+        'was_hit_last_turn': False,
+        'was_damaged_last_turn': False,
+        'all_attacks_missed_last_turn': False,
+        'was_hit_no_damage_last_turn': False,
+        'was_attacked_last_turn': False,
+        'channeled_turns': 0,
+        'charges_used': {},
+        'leech_hp': 0,
+        'attrition_cost': 0,
+        'hit_same_target_last_turn': False,
+    }
+
     while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
         turns += 1
         if log_file:
@@ -175,7 +192,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             # Use the AOE attack function for proper shared damage rolls
             attack_results, total_damage_dealt = make_aoe_attack(
                 attacker, defender, build, alive_enemies, log_file=log_file,
-                turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history
+                turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
+                attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state
             )
 
             # Check if we got a charge condition instead of attack results
@@ -245,7 +263,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
                             # Make splinter attack (single target, not AOE)
                             splinter_damage, splinter_conditions = make_attack(attacker, defender, build, log_file=log_file,
-                                                                              turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history)
+                                                                              turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
+                                                                              attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
                             next_target['hp'] -= splinter_damage
                             total_damage_dealt += splinter_damage
 
@@ -278,7 +297,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     log_file.write(f"  Single target attack on Enemy {target_idx+1}\n")
 
                 damage, conditions = make_attack(attacker, defender, build, log_file=log_file,
-                                                turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history)
+                                                turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
+                                                attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
 
                 # Check if we got a charge condition instead of doing damage
                 if damage == 0 and 'charge' in conditions:
@@ -346,7 +366,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
                             # Make splinter attack
                             splinter_damage, splinter_conditions = make_attack(attacker, defender, build, log_file=log_file,
-                                                                              turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history)
+                                                                              turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
+                                                                              attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
                             next_target['hp'] -= splinter_damage
                             total_damage_dealt += splinter_damage
 
@@ -373,6 +394,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             charge_history.pop(0)
 
         # DEFENDER ATTACK PHASE - Enemies attack back
+        total_defender_damage = 0
         if any(enemy['hp'] > 0 for enemy in enemies):
             if log_file:
                 log_file.write(f"\nDEFENDER ATTACK PHASE:\n")
@@ -380,8 +402,6 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             # Create a basic ranged attack build for defenders (no upgrades, no limits)
             from src.models import AttackBuild
             defender_build = AttackBuild('ranged', [], [])
-
-            total_defender_damage = 0
             for i, enemy in enumerate(enemies):
                 if enemy['hp'] <= 0:
                     continue  # Dead enemies don't attack
@@ -417,6 +437,63 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
             if log_file:
                 log_file.write(f"  Total defender damage this turn: {total_defender_damage}\n")
+
+        # Apply HP costs and recovery from combat_state
+        if combat_state.get('attrition_cost', 0) > 0:
+            attacker_hp -= combat_state['attrition_cost']
+            if log_file:
+                log_file.write(f"\n  Attrition cost: -{combat_state['attrition_cost']} HP\n")
+                log_file.write(f"  Attacker HP: {attacker_hp + combat_state['attrition_cost']} -> {attacker_hp}\n")
+            combat_state['attrition_cost'] = 0
+
+        if combat_state.get('leech_hp', 0) > 0:
+            attacker_hp = min(attacker_hp + combat_state['leech_hp'], attacker_max_hp)
+            if log_file:
+                log_file.write(f"\n  Leech recovery: +{combat_state['leech_hp']} HP (capped at max)\n")
+                log_file.write(f"  Attacker HP: {attacker_hp - combat_state['leech_hp']} -> {attacker_hp}\n")
+            combat_state['leech_hp'] = 0
+
+        # Update combat state for next turn (track what happened this turn)
+        # Reset "last turn" trackers
+        combat_state['defeated_enemy_last_turn'] = any(enemy['hp'] <= 0 and enemy.get('defeated_this_turn', False) for enemy in enemies)
+        combat_state['dealt_damage_last_turn'] = total_damage_dealt > 0 and not charged_this_turn
+
+        # Track if same target was hit (simplified: single target attacks only)
+        current_target = None
+        if not is_aoe and target_idx is not None:
+            current_target = target_idx
+        combat_state['hit_same_target_last_turn'] = (current_target is not None and
+                                                      current_target == combat_state.get('last_target_hit'))
+        combat_state['last_target_hit'] = current_target
+
+        # Defender attack tracking (simplified - assuming all attacks that can hit, did)
+        if total_defender_damage > 0:
+            combat_state['was_attacked_last_turn'] = True
+            combat_state['was_hit_last_turn'] = True
+            combat_state['was_damaged_last_turn'] = True
+            combat_state['all_attacks_missed_last_turn'] = False
+            combat_state['was_hit_no_damage_last_turn'] = False
+        else:
+            # Check if there were any attacks (alive enemies)
+            alive_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
+            if alive_count > 0:
+                combat_state['was_attacked_last_turn'] = True
+                combat_state['all_attacks_missed_last_turn'] = True
+                combat_state['was_hit_last_turn'] = False
+                combat_state['was_damaged_last_turn'] = False
+                combat_state['was_hit_no_damage_last_turn'] = False
+            else:
+                combat_state['was_attacked_last_turn'] = False
+                combat_state['all_attacks_missed_last_turn'] = False
+                combat_state['was_hit_last_turn'] = False
+                combat_state['was_damaged_last_turn'] = False
+                combat_state['was_hit_no_damage_last_turn'] = False
+
+        # Increment channeled turns if using channeled upgrade
+        if hasattr(build, 'upgrades') and 'channeled' in build.upgrades:
+            combat_state['channeled_turns'] += 1
+        else:
+            combat_state['channeled_turns'] = 0
 
         if log_file:
             log_file.write(f"\nTURN {turns} SUMMARY:\n")

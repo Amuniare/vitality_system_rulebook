@@ -2,7 +2,7 @@
 
 ### Character System
 - **Character class**: Represents both attackers and defenders with stats (focus, power, mobility, endurance, tier)
-- **Derived stats**: Avoidance (5 + tier + mobility), Durability (tier + endurance)
+- **Derived stats**: Avoidance (10 + tier + mobility), Durability (5 + tier + endurance)
 
 ### Combat Resolution
 1. **Limit checks**: Roll d20 vs DC for unreliable upgrades
@@ -74,11 +74,16 @@ ATTACK_TYPES = {
   - **Rank 2** (40p): ≤10 HP threshold
   - **Rank 3** (80p): ≤15 HP threshold
 
-#### Slayer Upgrades - COSTS UNCHANGED
-- **Minion Slayer** (10p): +Tier to chosen roll type vs targets ≤10 HP (choose Accuracy, Damage, or Conditions when purchasing)
-- **Captain Slayer** (10p): +Tier to chosen roll type vs targets ≤25 HP (choose Accuracy, Damage, or Conditions when purchasing)
-- **Elite Slayer** (10p): +Tier to chosen roll type vs targets ≤50 HP (choose Accuracy, Damage, or Conditions when purchasing)
-- **Boss Slayer** (10p): +Tier to chosen roll type vs targets ≤100 HP (choose Accuracy, Damage, or Conditions when purchasing)
+#### Slayer Upgrades
+- **Minion Slayer** (20p): +Tier to chosen roll type vs targets ≤10 HP (choose Accuracy, Damage, or Conditions when purchasing)
+- **Captain Slayer** (20p): +Tier to chosen roll type vs targets ≤25 HP (choose Accuracy, Damage, or Conditions when purchasing)
+- **Elite Slayer** (20p): +Tier to chosen roll type vs targets ≤50 HP (choose Accuracy, Damage, or Conditions when purchasing)
+- **Boss Slayer** (20p): +Tier to chosen roll type vs targets ≤100 HP (choose Accuracy, Damage, or Conditions when purchasing)
+
+#### New Upgrades - ADDED 2025-10-04
+- **Ricochet** (30p): Critical hit on 15-20; on critical hit, make additional attack against different target within range (cannot combine with Double Tap/Powerful Critical/Explosive Critical)
+- **Channeled** (40p): Starts at -2×Tier penalty to Accuracy/Damage, gains +Tier per consecutive turn using same attack (max +5×Tier total). Resets if different attack is used.
+- **Leech** (60p): Recover HP equal to half damage dealt, -Tier to Accuracy/Damage/Conditions
 
 ### Limits (Unreliable Upgrades) - COSTS & MECHANICS UPDATED 2025-09-29
 - **Unreliable 1** (40p): +1×Tier to Accuracy and Damage, DC 5 activation
@@ -94,6 +99,29 @@ ATTACK_TYPES = {
 - **Charge Up** (40p): +2×Tier to Accuracy and Damage, spend action on previous turn
 - **Charge Up 2** (40p): +4×Tier to Accuracy and Damage, spend actions on previous two turns (was +3×Tier)
 - **Cooldown** (40p): +1×Tier to Accuracy and Damage, cannot be used again for 3 turns after activation
+
+#### New HP-Based Limits - ADDED 2025-10-04
+- **Charges 1** (30p): +Tier to Accuracy/Damage/Conditions, 1 use per rest (combat)
+- **Charges 2** (60p): +Tier to Accuracy/Damage/Conditions, 2 uses per rest (combat)
+- **Near Death** (20p): +2×Tier to Accuracy/Damage/Conditions, only at ≤25 HP
+- **Bloodied** (40p): +Tier to Accuracy/Damage/Conditions, only at ≤50 HP
+- **Timid** (40p): +Tier to Accuracy/Damage/Conditions, only at max HP (no damage taken)
+- **Attrition** (40p): +Tier to Accuracy/Damage/Conditions, costs 20 HP per use
+  *Mutually exclusive: Near Death, Bloodied, and Timid cannot be combined*
+
+#### New Turn-Tracking Limits - ADDED 2025-10-04
+**Offensive State Limits** (mutually exclusive):
+- **Slaughter** (20p): +Tier to Accuracy/Damage/Conditions, only if defeated enemy last turn
+- **Relentless** (40p): +Tier to Accuracy/Damage/Conditions, only if dealt damage last turn
+- **Combo Move** (60p): +Tier to Accuracy/Damage/Conditions, only if hit same target last turn
+
+**Defensive State Limits** (mutually exclusive):
+- **Revenge** (40p): +Tier to Accuracy/Damage/Conditions, only if took damage last turn
+- **Vengeful** (60p): +Tier to Accuracy/Damage/Conditions, only if was hit last turn
+- **Untouchable** (40p): +Tier to Accuracy/Damage/Conditions, only if all enemy attacks missed last turn
+- **Unbreakable** (40p): +Tier to Accuracy/Damage/Conditions, only if was hit but took no damage last turn
+- **Passive** (60p): +Tier to Accuracy/Damage/Conditions, only if not attacked last turn
+- **Careful** (60p): +Tier to Accuracy/Damage/Conditions, only if took no damage last turn
 
 
 

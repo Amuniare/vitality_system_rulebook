@@ -471,11 +471,20 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
     total_builds = len(all_build_results)
 
     # Calculate statistics for enhancements (both upgrades and limits)
+    from src.game_data import UPGRADES, LIMITS
+
     enhancement_stats = []
     for enhancement_name, positions in enhancement_rankings.items():
         avg_position = sum(positions) / len(positions)
         median_position = statistics.median(positions)
         percentile = (median_position / total_builds) * 100
+
+        # Get cost from game data
+        cost = 0
+        if enhancement_name in UPGRADES:
+            cost = UPGRADES[enhancement_name].cost
+        elif enhancement_name in LIMITS:
+            cost = LIMITS[enhancement_name].cost
 
         # Calculate avg_turns statistics
         turns_data = enhancement_turns[enhancement_name]
@@ -503,6 +512,7 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
 
         enhancement_stats.append({
             'name': enhancement_name,
+            'cost': cost,
             'avg_rank': avg_position,
             'median_rank': median_position,
             'percentile': percentile,
@@ -566,12 +576,12 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
 
         # Enhancement Rankings Section
         f.write("ENHANCEMENT RANKINGS BY AVERAGE TURNS\n")
-        f.write("-" * 180 + "\n")
-        f.write(f"{'Rank':<4} {'Enhancement':<20} {'Avg Turns':<10} {'Top10%':<8} {'Top50%':<8} {'Melee_AC':<9} {'Melee_DG':<9} {'Ranged':<8} {'Area':<8} {'Direct':<8} {'Uses':<6} {'Med Rank':<9}\n")
-        f.write("-" * 180 + "\n")
+        f.write("-" * 190 + "\n")
+        f.write(f"{'Rank':<4} {'Enhancement':<20} {'Cost':<5} {'Avg Turns':<10} {'Top10%':<8} {'Top50%':<8} {'Melee_AC':<9} {'Melee_DG':<9} {'Ranged':<8} {'Area':<8} {'Direct':<8} {'Uses':<6} {'Med Rank':<9}\n")
+        f.write("-" * 190 + "\n")
 
         for i, stats in enumerate(enhancement_stats, 1):
-            f.write(f"{i:<4} {stats['name']:<20} {stats['avg_turns']:>8.1f} "
+            f.write(f"{i:<4} {stats['name']:<20} {stats['cost']:>3}p {stats['avg_turns']:>8.1f} "
                    f"{stats['median_top_10']:>6.1f} {stats['median_top_50']:>6.1f} "
                    f"{stats['melee_ac_turns']:>7.1f} {stats['melee_dg_turns']:>7.1f} "
                    f"{stats['ranged_turns']:>6.1f} {stats['area_turns']:>6.1f} "

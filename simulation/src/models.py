@@ -17,11 +17,11 @@ class Character:
 
     @property
     def avoidance(self):
-        return 5 + self.tier + self.mobility
+        return 10 + self.tier + self.mobility
 
     @property
     def durability(self):
-        return self.tier + self.endurance
+        return 5 + self.tier + self.endurance
 
 
 @dataclass
@@ -66,6 +66,7 @@ class SimulationConfig:
     archetypes: List[str] = None  # List of archetypes to test: "focused", "dual_natured", "versatile_master"
     tier: int = 3
     use_threading: bool = True
+    build_chunk_size: int = 2000  # Number of builds to process per chunk in multiprocessing
 
     # Simulation run counts
     simulation_runs: dict = None

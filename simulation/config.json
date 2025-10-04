@@ -1,23 +1,16 @@
 {
   "execution_mode": "both",
-  "archetypes": ["focused","dual_natured"],
-  "tier": 2,
+  "archetypes": ["dual_natured"],
+  "tier": 4,
   "use_threading": true,
-  "verbose_logging": true,
+  "verbose_logging": false,
   "top_builds_count": 100,
-  "build_chunk_size": 2000,
+  "build_chunk_size": 10000,
   "attacker_configs": [
     [
       4,
-      0,
       4,
-      0,
-      4
-    ],
-    [
-      0,
       4,
-      0,
       4,
       4
     ]
@@ -25,21 +18,14 @@
   "defender_configs": [
     [
       4,
-      0,
       4,
-      0,
-      4
-    ],
-    [
-      0,
       4,
-      0,
       4,
       4
     ]
   ],
   "simulation_runs": {
-    "build_testing_runs": 15,
+    "build_testing_runs": 10,
     "individual_testing_runs": 20
   },
   "combat": {
@@ -76,7 +62,7 @@
     ]
   },
   "individual_testing": {
-    "enabled": true,
+    "enabled": false,
     "test_base_attacks": true,
     "test_upgrades": true,
     "test_limits": true,
@@ -116,9 +102,9 @@
     }
   },
   "logging": {
-    "separate_files": true,
-    "log_top_builds_only": true,
+    "separate_files": false,
+    "log_top_builds_only": false,
     "top_builds_for_detailed_log": 100,
-    "generate_individual_build_logs": true
+    "generate_individual_build_logs": false
   }
 }

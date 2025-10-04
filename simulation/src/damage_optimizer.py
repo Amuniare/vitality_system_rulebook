@@ -223,8 +223,8 @@ def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str
     # Generate builds to test using chunked approach
     attack_types = config.attack_types_filter or ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
-    # Get chunk size from config, default to 1000
-    chunk_size = getattr(config, 'build_chunk_size', 1000)
+    # Get chunk size from config
+    chunk_size = config.build_chunk_size
 
     # Determine which test function to use based on archetype
     is_multi_attack = archetype in ['dual_natured', 'versatile_master']

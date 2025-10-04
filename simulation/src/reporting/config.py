@@ -36,6 +36,7 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
             archetypes=data.get('archetypes', data.get('archetype', ['focused']) if isinstance(data.get('archetype'), str) else data.get('archetype', ['focused'])),
             tier=data.get('tier', 3),
             use_threading=data.get('use_threading', True),
+            build_chunk_size=data.get('build_chunk_size', 2000),
 
             # Legacy compatibility
             test_single_upgrades=data.get('test_single_upgrades', True),
@@ -57,6 +58,8 @@ def load_config(config_file: str = 'config.json') -> SimulationConfig:
             config.reports = data['reports']
         if 'simulation_runs' in data:
             config.simulation_runs = data['simulation_runs']
+        if 'fight_scenarios' in data:
+            config.fight_scenarios = data['fight_scenarios']
 
         # Set configurations from the loaded data
         if 'attacker_configs' in data:
@@ -115,7 +118,14 @@ def print_configuration_report(config: SimulationConfig):
     print("SIMULATION CONFIGURATION")
     print("=" * 50)
     print(f"Build testing runs: {config.build_testing_runs}, Individual testing runs: {config.individual_testing_runs}")
-    print("Enemy Scenarios: 1×100, 2×50, 4×25, 10×10 HP")
+
+    # Print actual scenarios from config
+    if hasattr(config, 'fight_scenarios') and config.fight_scenarios.get('enabled', True):
+        scenario_names = [s['name'].replace('Fight ', '').replace(': ', '') for s in config.fight_scenarios.get('scenarios', [])]
+        print(f"Enemy Scenarios: {', '.join(scenario_names)}")
+    else:
+        print("Enemy Scenarios: 1×100, 2×50, 4×25, 10×10 HP")
+
     print(f"Archetypes: {', '.join(config.archetypes)} | Tier: {config.tier}")
     for archetype in config.archetypes:
         points = config.max_points_per_attack(archetype)

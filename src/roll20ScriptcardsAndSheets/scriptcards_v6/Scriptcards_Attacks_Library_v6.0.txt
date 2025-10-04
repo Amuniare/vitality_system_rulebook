@@ -74,8 +74,8 @@
     --#useHollowDice| 1
 
     --/| Output Settings
-    --#outputtagprefix| <span>
-    --#outputcontentprefix| <span>
+    --#outputcontentprefix|&nbsp;
+    --#outputtagprefix|&nbsp;
 
 
 
@@ -442,43 +442,28 @@
     --=UnreliablePassed| 1
     --?[$Unreliable1] -ne 1|PassUnreliable1Roll
       --=UnreliableRoll1| 1d20
-      --?[$UnreliableRoll1] -ge 5|Unreliable1Success
-        --+Unreliable 1 | Failed (rolled [$UnreliableRoll1], needed 5+) - Attack fails
-        --=UnreliablePassed| 0
-        --^PassUnreliable1Roll
-      --:Unreliable1Success|
         --&AccuracyStringModifiers|+ + [*S:char_tier] [Unreliable 1]
         --&DamageStringModifiers|+ + [*S:char_tier] [Unreliable 1]
         --&ConditionsStringModifiers|+ + [*S:char_tier] [Unreliable 1]
-        --+Unreliable 1 | Passed (rolled [$UnreliableRoll1]) - Bonus applied
+        --+Unreliable 1 | DC 10 vs. [$UnreliableRoll1]
     --:PassUnreliable1Roll|
 
     --?[$Unreliable2] -ne 1|PassUnreliable2Roll
       --=UnreliableRoll2| 1d20
       --=Unreliable2Bonus| [*S:char_tier]*3
-      --?[$UnreliableRoll2] -ge 10|Unreliable2Success
-        --+Unreliable 2 | Failed (rolled [$UnreliableRoll2], needed 10+) - Attack fails
-        --=UnreliablePassed| 0
-        --^PassUnreliable2Roll
-      --:Unreliable2Success|
         --&AccuracyStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
         --&DamageStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
         --&ConditionsStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
-        --+Unreliable 2 | Passed (rolled [$UnreliableRoll2]) - Bonus applied (+3×Tier)
+        --+Unreliable 2 | DC 10 vs. [$UnreliableRoll2]
     --:PassUnreliable2Roll|
 
     --?[$Unreliable3] -ne 1|PassUnreliable3Roll
       --=UnreliableRoll3| 1d20
       --=Unreliable3Bonus| [*S:char_tier]*5
-      --?[$UnreliableRoll3] -ge 15|Unreliable3Success
-        --+Unreliable 3 | Failed (rolled [$UnreliableRoll3], needed 15+) - Attack fails
-        --=UnreliablePassed| 0
-        --^PassUnreliable3Roll
-      --:Unreliable3Success|
-        --&AccuracyStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
-        --&DamageStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
-        --&ConditionsStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
-        --+Unreliable 3 | Passed (rolled [$UnreliableRoll3]) - Bonus applied (+5×Tier)
+      --&AccuracyStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
+      --&DamageStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
+      --&ConditionsStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
+      --+Unreliable 3 | DC 15 vs. [$UnreliableRoll3]
     --:PassUnreliable3Roll|
 
     --?[$TowerDefense] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Tower Defense]
