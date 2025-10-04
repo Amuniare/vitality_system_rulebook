@@ -34,7 +34,7 @@
 **AREA ATTACK** 
 - **Range:** Originates from your position
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
-- **Penalty:** -Tier to all Accuracy checks
+- **Penalty:** -Tier to all Accuracy, Damage and Condition checks
 - **Cost Modifier:** All upgrades / limits cost 2x as much
 
 **DIRECT CONDITION ATTACK** 
@@ -243,8 +243,13 @@ Effect: As a free action, if this effect succeeds, on subsequent turns, you can 
 Penalty: If you use your free action to make this attack, you cannot use your action to make any attack.
 Restriction: Condition effects only
 
+**Reliable Condition**  
+Cost: 20p
+Penalty: -3 penalty to all Condition rolls  
+Effect: Advantage (roll 2d20, take higher roll) on Condition rolls
+
 **Critical Condition**  
-Cost: 40p
+Cost: 20p
 Effect: Condition rolls critical hit on 15-20 range  
 Restriction: Cannot apply to AOE attacks  
 Restriction: Condition effects only
@@ -449,7 +454,7 @@ Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when p
 #### Sustained Attack Systems
 
 **Channeled**  
-Cost: 60p
+Cost: 40p
 Penalty: -2xTier to Accuracy, Damage, and Condition rolls  
 Effect: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 Usage: If you don't make the channeled attack on a turn, you lose your bonus.

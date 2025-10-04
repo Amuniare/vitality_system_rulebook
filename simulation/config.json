@@ -1,6 +1,6 @@
 {
   "execution_mode": "both",
-  "archetypes": ["dual_natured"],
+  "archetypes": ["focused","dual_natured"],
   "tier": 2,
   "use_threading": true,
   "verbose_logging": true,
@@ -39,7 +39,7 @@
     ]
   ],
   "simulation_runs": {
-    "build_testing_runs": 1,
+    "build_testing_runs": 15,
     "individual_testing_runs": 20
   },
   "combat": {

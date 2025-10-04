@@ -52,25 +52,37 @@ class BuildReportGenerator:
 
         print("Generating build testing reports...")
 
+        # Check if we have any single-attack builds vs multi-attack builds
+        has_single_builds = any(not is_multiattack(b) for b, _, _ in all_build_results)
+        has_multi_builds = any(is_multiattack(b) for b, _, _ in all_build_results)
+
         # Generate existing reports using the current system
         if self.config.reports.get('build_reports', {}).get('build_rankings', True):
-            # Extract builds from (build, avg_dpt, avg_turns) tuples
-            builds_only = [build for build, avg_dpt, avg_turns in all_build_results]
-            write_build_summary(builds_only, self.config, self.reports_dir)
-            write_builds_turns_table(builds_only, self.config, self.reports_dir)
+            # Pass the full results with performance data
+            write_build_summary(all_build_results, self.config, self.reports_dir)
+            write_builds_turns_table(all_build_results, self.config, self.reports_dir)
 
-        if self.config.reports.get('build_reports', {}).get('upgrade_analysis', True):
-            generate_upgrade_ranking_report(all_build_results, self.config, self.reports_dir)
+        # Only generate single-build reports if we have single-attack builds
+        if has_single_builds:
+            if self.config.reports.get('build_reports', {}).get('upgrade_analysis', True):
+                generate_upgrade_ranking_report(all_build_results, self.config, self.reports_dir)
 
-        if self.config.reports.get('build_reports', {}).get('cost_effectiveness', True):
-            generate_upgrade_pairing_report(all_build_results, self.config, self.reports_dir)
+            if self.config.reports.get('build_reports', {}).get('cost_effectiveness', True):
+                generate_upgrade_pairing_report(all_build_results, self.config, self.reports_dir)
 
-        if self.config.reports.get('build_reports', {}).get('archetype_analysis', True):
-            self.generate_archetype_analysis_reports(all_build_results)
+            if self.config.reports.get('build_reports', {}).get('archetype_analysis', True):
+                self.generate_archetype_analysis_reports(all_build_results)
 
-        # Generate tactical analysis reports
-        if self.config.reports.get('build_reports', {}).get('tactical_analysis', True):
-            self.generate_tactical_analysis_reports(all_build_results)
+            # Generate tactical analysis reports
+            if self.config.reports.get('build_reports', {}).get('tactical_analysis', True):
+                self.generate_tactical_analysis_reports(all_build_results)
+        else:
+            print("Skipping single-attack build reports (all builds are MultiAttackBuild)")
+
+        # Generate MultiAttackBuild-specific reports if we have multi-attack builds
+        if has_multi_builds:
+            if self.config.reports.get('build_reports', {}).get('tactical_analysis', True):
+                self.generate_multiattack_tactical_reports(all_build_results)
 
         print("Build testing reports completed!")
 
@@ -78,10 +90,17 @@ class BuildReportGenerator:
         """Generate build archetype analysis reports"""
         print("Generating archetype analysis reports...")
 
+        # Check if we have any single-attack builds
+        has_single_builds = any(not is_multiattack(b) for b, _, _ in all_build_results)
+
         self.generate_multi_target_specialist_report(all_build_results)
-        self.generate_single_target_specialist_report(all_build_results)
-        self.generate_balanced_build_report(all_build_results)
-        self.generate_risk_reward_analysis_report(all_build_results)
+
+        if has_single_builds:
+            self.generate_single_target_specialist_report(all_build_results)
+            self.generate_balanced_build_report(all_build_results)
+            self.generate_risk_reward_analysis_report(all_build_results)
+        else:
+            print("Skipping single-attack archetype reports (all builds are MultiAttackBuild)")
 
     def generate_multi_target_specialist_report(self, all_build_results: List[Tuple]):
         """Generate report for builds optimized for multi-target scenarios"""
@@ -127,20 +146,21 @@ class BuildReportGenerator:
             f.write("="*80 + "\n\n")
 
             # Top archetypes analysis
-            aoe_builds = [(b, dpt, score) for b, dpt, score in multi_target_builds if 'area' in b.attack_type or 'direct_area' in b.attack_type][:10]
+            aoe_builds = [(b, dpt, score) for b, dpt, score in multi_target_builds if has_area_attack(b)][:10]
 
             f.write("TOP AOE ARCHETYPES:\n")
             for i, (build, avg_dpt, mt_score) in enumerate(aoe_builds, 1):
                 f.write(f"{i}. {get_build_attack_type(build)}")
-                if build.upgrades:
+                if not is_multiattack(build) and build.upgrades:
                     f.write(f" + {' + '.join(build.upgrades)}")
                 f.write(f" (MT Score: {mt_score:.2f})\n")
 
             # Key insights
             f.write(f"\nKEY INSIGHTS:\n")
             f.write(f"• Top MT Score: {multi_target_builds[0][2]:.2f}\n")
-            f.write(f"• AOE builds in top 10: {len([b for b, _, _ in multi_target_builds[:10] if 'area' in b.attack_type])}\n")
-            f.write(f"• Average cost of top 10: {sum(b.total_cost for b, _, _ in multi_target_builds[:10]) / 10:.1f} points\n")
+            f.write(f"• AOE builds in top 10: {len([b for b, _, _ in multi_target_builds[:10] if has_area_attack(b)])}\n")
+            avg_cost = sum(b.get_total_cost() if is_multiattack(b) else b.total_cost for b, _, _ in multi_target_builds[:10]) / 10
+            f.write(f"• Average cost of top 10: {avg_cost:.1f} points\n")
 
         print(f"Multi-target specialist report saved to {filename}")
 
@@ -148,9 +168,12 @@ class BuildReportGenerator:
         """Generate report for builds optimized for single-target scenarios"""
         filename = f"{self.reports_dir}/archetype_single_target_specialists.txt"
 
+        # Filter out MultiAttackBuilds for single-attack analysis
+        single_attack_results = [(b, dpt, turns) for b, dpt, turns in all_build_results if not is_multiattack(b)]
+
         # Calculate single-target performance scores
         single_target_builds = []
-        for build, avg_dpt, avg_turns in all_build_results:
+        for build, avg_dpt, avg_turns in single_attack_results:
             single_target_score = self._calculate_single_target_score(build, avg_dpt)
             single_target_builds.append((build, avg_dpt, single_target_score))
 
@@ -163,6 +186,12 @@ class BuildReportGenerator:
             f.write("Builds optimized for boss fights and high-HP single enemies (1×100 HP)\n")
             f.write("Ranked by Single-Target Performance Score\n\n")
             f.write("Single-Target Score = 1×100 HP scenario DPT\n\n")
+
+            # Check if we have any builds
+            if not single_target_builds:
+                f.write("Note: All builds are MultiAttackBuild objects. This report is for single-attack builds only.\n")
+                print(f"Single-target specialist report saved to {filename} (no single-attack builds)")
+                return
 
             f.write(f"{'Rank':<4} {'Build':<50} {'Avg DPT':<10} {'ST Score':<10} {'Cost':<6}\n")
             f.write("-" * 85 + "\n")
@@ -206,9 +235,12 @@ class BuildReportGenerator:
         """Generate report for builds that perform well across all scenarios"""
         filename = f"{self.reports_dir}/archetype_balanced_builds.txt"
 
+        # Filter out MultiAttackBuilds
+        single_attack_results = [(b, dpt, turns) for b, dpt, turns in all_build_results if not is_multiattack(b)]
+
         # Calculate balance scores (low variance across scenarios)
         balanced_builds = []
-        for build, avg_dpt, avg_turns in all_build_results:
+        for build, avg_dpt, avg_turns in single_attack_results:
             balance_score = self._calculate_balance_score(build, avg_dpt)
             balanced_builds.append((build, avg_dpt, balance_score))
 
@@ -216,6 +248,12 @@ class BuildReportGenerator:
         balanced_builds.sort(key=lambda x: x[2], reverse=True)
 
         with open(filename, 'w', encoding='utf-8') as f:
+            # Check if we have any builds
+            if not balanced_builds:
+                f.write("Note: All builds are MultiAttackBuild objects. This report is for single-attack builds only.\n")
+                print(f"Balanced builds report saved to {filename} (no single-attack builds)")
+                return
+
             f.write("VITALITY SYSTEM - BALANCED BUILDS\n")
             f.write("="*80 + "\n\n")
             f.write("Builds that perform consistently across all combat scenarios\n")
@@ -263,13 +301,16 @@ class BuildReportGenerator:
         """Generate report analyzing risk/reward for unreliable builds"""
         filename = f"{self.reports_dir}/archetype_risk_reward_analysis.txt"
 
+        # Filter out MultiAttackBuilds
+        single_attack_results = [(b, dpt, turns) for b, dpt, turns in all_build_results if not is_multiattack(b)]
+
         # Separate builds by risk level
         reliable_builds = []
         low_risk_builds = []
         medium_risk_builds = []
         high_risk_builds = []
 
-        for build, avg_dpt, avg_turns in all_build_results:
+        for build, avg_dpt, avg_turns in single_attack_results:
             risk_level = self._calculate_risk_level(build)
             if risk_level == "none":
                 reliable_builds.append((build, avg_dpt))
@@ -477,11 +518,14 @@ class BuildReportGenerator:
         """Generate upgrade synergy matrix showing which upgrades work well together"""
         filename = f"{self.reports_dir}/tactical_upgrade_synergy_matrix.txt"
 
+        # Filter out MultiAttackBuilds
+        single_attack_results = [(b, dpt, turns) for b, dpt, turns in all_build_results if not is_multiattack(b)]
+
         # Analyze upgrade combinations
         upgrade_pairs = {}
         single_upgrades = {}
 
-        for build, avg_dpt, avg_turns in all_build_results:
+        for build, avg_dpt, avg_turns in single_attack_results:
             # Track single upgrades
             if len(build.upgrades) == 1:
                 upgrade = build.upgrades[0]
@@ -554,6 +598,8 @@ class BuildReportGenerator:
         print(f"Upgrade synergy matrix saved to {filename}")
 
     def generate_scenario_deep_dive_report(self, all_build_results: List[Tuple]):
+        # Filter out MultiAttackBuilds at the start
+        all_build_results = [(b, dpt, turns) for b, dpt, turns in all_build_results if not is_multiattack(b)]
         """Generate detailed analysis of what makes builds effective in specific scenarios"""
         filename = f"{self.reports_dir}/tactical_scenario_deep_dive.txt"
 
@@ -604,6 +650,8 @@ class BuildReportGenerator:
         print(f"Scenario deep dive analysis saved to {filename}")
 
     def generate_attack_type_viability_report(self, all_build_results: List[Tuple]):
+        # Filter out MultiAttackBuilds at the start
+        all_build_results = [(b, dpt, turns) for b, dpt, turns in all_build_results if not is_multiattack(b)]
         """Generate report on when to choose each attack type"""
         filename = f"{self.reports_dir}/tactical_attack_type_viability.txt"
 
@@ -694,6 +742,8 @@ class BuildReportGenerator:
         print(f"Attack type viability chart saved to {filename}")
 
     def generate_point_efficiency_analysis_report(self, all_build_results: List[Tuple]):
+        # Filter out MultiAttackBuilds at the start
+        all_build_results = [(b, dpt, turns) for b, dpt, turns in all_build_results if not is_multiattack(b)]
         """Generate analysis of optimal spending patterns for different point budgets"""
         filename = f"{self.reports_dir}/tactical_point_efficiency_analysis.txt"
 
@@ -941,3 +991,313 @@ class BuildReportGenerator:
             return "Fair"
         else:
             return "Poor"
+
+    def generate_multiattack_tactical_reports(self, all_build_results: List[Tuple]):
+        """Generate tactical analysis reports specifically for MultiAttackBuilds"""
+        print("Generating MultiAttackBuild tactical analysis reports...")
+
+        # Filter to only MultiAttackBuilds
+        multi_results = [(b, dpt, turns) for b, dpt, turns in all_build_results if is_multiattack(b)]
+
+        if not multi_results:
+            return
+
+        self.generate_multiattack_combination_analysis(multi_results)
+        self.generate_multiattack_scenario_performance(multi_results)
+        self.generate_multiattack_enhancement_ranking(multi_results)
+        self.generate_multiattack_selection_frequency(multi_results)
+
+    def generate_multiattack_combination_analysis(self, multi_results: List[Tuple]):
+        """Analyze which attack combinations work best together"""
+        filename = f"{self.reports_dir}/multiattack_combination_analysis.txt"
+
+        # Analyze attack type combinations
+        combinations = {}
+
+        for build, avg_dpt, avg_turns in multi_results:
+            # Get attack types from the MultiAttackBuild
+            attack_types = tuple(sorted([atk.attack_type for atk in build.builds]))
+
+            if attack_types not in combinations:
+                combinations[attack_types] = {
+                    'turns': [],
+                    'builds': []
+                }
+            combinations[attack_types]['turns'].append(avg_turns)
+            combinations[attack_types]['builds'].append(build)
+
+        # Calculate stats for each combination
+        combo_stats = []
+        for combo, data in combinations.items():
+            avg_turns = sum(data['turns']) / len(data['turns'])
+            best_turns = min(data['turns'])
+            worst_turns = max(data['turns'])
+            count = len(data['turns'])
+            combo_stats.append({
+                'combo': combo,
+                'avg_turns': avg_turns,
+                'best_turns': best_turns,
+                'worst_turns': worst_turns,
+                'count': count
+            })
+
+        # Sort by average turns (lower is better)
+        combo_stats.sort(key=lambda x: x['avg_turns'])
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - MULTI-ATTACK COMBINATION ANALYSIS\n")
+            f.write("="*80 + "\n\n")
+            f.write("Analysis of which attack type combinations perform best in multi-attack builds.\n")
+            f.write(f"Total unique combinations tested: {len(combo_stats)}\n\n")
+
+            f.write("ATTACK TYPE COMBINATION RANKINGS\n")
+            f.write("-"*80 + "\n")
+            f.write(f"{'Rank':<6} {'Combination':<40} {'Avg Turns':<12} {'Best':<8} {'Count':<8}\n")
+            f.write("-"*80 + "\n")
+
+            for i, stats in enumerate(combo_stats, 1):
+                combo_str = " + ".join(stats['combo'])
+                f.write(f"{i:<6} {combo_str:<40} {stats['avg_turns']:>10.1f}   {stats['best_turns']:>6.1f}   {stats['count']:>6}\n")
+
+        print(f"MultiAttack combination analysis saved to {filename}")
+
+    def generate_multiattack_scenario_performance(self, multi_results: List[Tuple]):
+        """Analyze how MultiAttackBuilds perform across different scenarios"""
+        filename = f"{self.reports_dir}/multiattack_scenario_performance.txt"
+
+        # Analyze which attack combinations excel in which scenarios
+        # Group builds by their scenario performance
+        scenario_specialists = {
+            'boss_killers': [],  # Best at 1×100
+            'elite_hunters': [],  # Best at 2×50
+            'crowd_control': [],  # Best at 4×25 or 10×10
+            'balanced': []  # Good across all scenarios
+        }
+
+        for build, avg_dpt, avg_turns in multi_results[:100]:  # Top 100 builds
+            # Categorize based on attack types
+            attack_types = [atk.attack_type for atk in build.builds]
+            has_area = 'area' in attack_types or 'direct_area_damage' in attack_types
+            has_single_target = any(t in ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'] for t in attack_types)
+
+            if has_area and has_single_target:
+                scenario_specialists['balanced'].append((build, avg_turns))
+            elif has_area:
+                scenario_specialists['crowd_control'].append((build, avg_turns))
+            elif has_single_target:
+                if len([t for t in attack_types if t in ['melee_dg', 'direct_damage']]) > 0:
+                    scenario_specialists['boss_killers'].append((build, avg_turns))
+                else:
+                    scenario_specialists['elite_hunters'].append((build, avg_turns))
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - MULTI-ATTACK SCENARIO PERFORMANCE\n")
+            f.write("="*80 + "\n\n")
+            f.write("Analysis of multi-attack build performance across different combat scenarios.\n\n")
+
+            for category, builds in scenario_specialists.items():
+                if not builds:
+                    continue
+
+                f.write(f"\n{category.upper().replace('_', ' ')}\n")
+                f.write("-"*60 + "\n")
+
+                # Sort by turns
+                builds.sort(key=lambda x: x[1])
+
+                for i, (build, turns) in enumerate(builds[:10], 1):  # Top 10 per category
+                    attack_desc = []
+                    for atk in build.builds:
+                        parts = [atk.attack_type]
+                        if atk.upgrades:
+                            parts.extend(atk.upgrades[:2])
+                        attack_desc.append("+".join(parts))
+
+                    f.write(f"{i}. {' | '.join(attack_desc)}\n")
+                    f.write(f"   Avg Turns: {turns:.1f}\n")
+
+        print(f"MultiAttack scenario performance saved to {filename}")
+
+    def generate_multiattack_enhancement_ranking(self, multi_results: List[Tuple]):
+        """Generate enhancement ranking for Attack 2 in dual-natured builds"""
+        filename = f"{self.reports_dir}/enhancement_ranking_report.txt"
+
+        # Track enhancement performance for Attack 2
+        # (Attack 1 is fixed, so we only analyze Attack 2)
+        attack2_enhancements = {}  # enhancement_name -> list of avg_turns
+
+        for build, avg_dpt, avg_turns in multi_results:
+            if len(build.builds) < 2:
+                continue
+
+            # Get Attack 2
+            attack2 = build.builds[1]
+
+            # Track each upgrade in Attack 2
+            for upgrade in attack2.upgrades:
+                if upgrade not in attack2_enhancements:
+                    attack2_enhancements[upgrade] = {
+                        'turns': [],
+                        'count': 0,
+                        'type': 'upgrade'
+                    }
+                attack2_enhancements[upgrade]['turns'].append(avg_turns)
+                attack2_enhancements[upgrade]['count'] += 1
+
+            # Track each limit in Attack 2
+            for limit in attack2.limits:
+                if limit not in attack2_enhancements:
+                    attack2_enhancements[limit] = {
+                        'turns': [],
+                        'count': 0,
+                        'type': 'limit'
+                    }
+                attack2_enhancements[limit]['turns'].append(avg_turns)
+                attack2_enhancements[limit]['count'] += 1
+
+        # Calculate statistics for each enhancement
+        enhancement_stats = []
+        for name, data in attack2_enhancements.items():
+            if not data['turns']:
+                continue
+
+            avg_turns = sum(data['turns']) / len(data['turns'])
+            best_turns = min(data['turns'])
+            worst_turns = max(data['turns'])
+            median_turns = sorted(data['turns'])[len(data['turns'])//2]
+
+            enhancement_stats.append({
+                'name': name,
+                'type': data['type'],
+                'avg_turns': avg_turns,
+                'best_turns': best_turns,
+                'worst_turns': worst_turns,
+                'median_turns': median_turns,
+                'count': data['count']
+            })
+
+        # Sort by average turns (lower is better)
+        enhancement_stats.sort(key=lambda x: x['avg_turns'])
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - ATTACK 2 ENHANCEMENT RANKING REPORT\n")
+            f.write("="*80 + "\n\n")
+            f.write("This report shows how enhancements in Attack 2 perform in dual-natured builds.\n")
+            f.write("Attack 1 is fixed (melee_dg + quick_strikes + powerful_critical).\n")
+            f.write("Lower avg turns indicate better performance.\n")
+            f.write(f"Total enhancements analyzed: {len(enhancement_stats)}\n\n")
+
+            # Upgrades section
+            upgrades = [e for e in enhancement_stats if e['type'] == 'upgrade']
+            if upgrades:
+                f.write("UPGRADE RANKINGS (ATTACK 2)\n")
+                f.write("-"*100 + "\n")
+                f.write(f"{'Rank':<6} {'Upgrade':<30} {'Avg Turns':<12} {'Best':<8} {'Worst':<8} {'Median':<8} {'Uses':<8}\n")
+                f.write("-"*100 + "\n")
+
+                for i, stats in enumerate(upgrades, 1):
+                    f.write(f"{i:<6} {stats['name']:<30} {stats['avg_turns']:>10.1f}   "
+                           f"{stats['best_turns']:>6.1f}   {stats['worst_turns']:>6.1f}   "
+                           f"{stats['median_turns']:>6.1f}   {stats['count']:>6}\n")
+
+            # Limits section
+            limits = [e for e in enhancement_stats if e['type'] == 'limit']
+            if limits:
+                f.write(f"\n\nLIMIT RANKINGS (ATTACK 2)\n")
+                f.write("-"*100 + "\n")
+                f.write(f"{'Rank':<6} {'Limit':<30} {'Avg Turns':<12} {'Best':<8} {'Worst':<8} {'Median':<8} {'Uses':<8}\n")
+                f.write("-"*100 + "\n")
+
+                for i, stats in enumerate(limits, 1):
+                    f.write(f"{i:<6} {stats['name']:<30} {stats['avg_turns']:>10.1f}   "
+                           f"{stats['best_turns']:>6.1f}   {stats['worst_turns']:>6.1f}   "
+                           f"{stats['median_turns']:>6.1f}   {stats['count']:>6}\n")
+
+            # Top 10 overall
+            f.write(f"\n\nTOP 10 ATTACK 2 ENHANCEMENTS (OVERALL)\n")
+            f.write("-"*80 + "\n")
+            for i, stats in enumerate(enhancement_stats[:10], 1):
+                f.write(f"{i}. {stats['name']} ({stats['type']})\n")
+                f.write(f"   Avg Turns: {stats['avg_turns']:.1f} | Uses: {stats['count']}\n")
+
+        print(f"MultiAttack enhancement ranking saved to {filename}")
+
+    def generate_multiattack_selection_frequency(self, multi_results: List[Tuple]):
+        """Generate report showing which attack is selected in which scenarios"""
+        filename = f"{self.reports_dir}/attack_selection_frequency.txt"
+
+        # Track attack selections across all builds
+        selection_counts = {
+            'Attack 1': 0,
+            'Attack 2': 0
+        }
+        scenario_selections = {}  # scenario_name -> {attack_idx: count}
+
+        for build, avg_dpt, avg_turns in multi_results:
+            if not hasattr(build, 'optimal_selections') or not build.optimal_selections:
+                continue
+
+            # Count selections for each scenario
+            for scenario_name, selected_attack_idx in build.optimal_selections.items():
+                if scenario_name not in scenario_selections:
+                    scenario_selections[scenario_name] = {0: 0, 1: 0}
+                scenario_selections[scenario_name][selected_attack_idx] += 1
+
+                # Overall count
+                if selected_attack_idx == 0:
+                    selection_counts['Attack 1'] += 1
+                else:
+                    selection_counts['Attack 2'] += 1
+
+        # Calculate percentages
+        total_selections = sum(selection_counts.values())
+
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("VITALITY SYSTEM - ATTACK SELECTION FREQUENCY REPORT\n")
+            f.write("="*80 + "\n\n")
+            f.write("This report shows which attack was selected as optimal in each scenario.\n")
+            f.write("Attack 1: melee_dg + quick_strikes + powerful_critical (fixed)\n")
+            f.write("Attack 2: Variable (analyzed in other reports)\n\n")
+
+            # Overall selection frequency
+            f.write("OVERALL ATTACK SELECTION\n")
+            f.write("-"*50 + "\n")
+            if total_selections > 0:
+                attack1_pct = (selection_counts['Attack 1'] / total_selections) * 100
+                attack2_pct = (selection_counts['Attack 2'] / total_selections) * 100
+                f.write(f"Attack 1 selected: {selection_counts['Attack 1']:,} times ({attack1_pct:.1f}%)\n")
+                f.write(f"Attack 2 selected: {selection_counts['Attack 2']:,} times ({attack2_pct:.1f}%)\n")
+                f.write(f"Total selections: {total_selections:,}\n")
+            else:
+                f.write("No selection data available\n")
+
+            # Scenario breakdown
+            if scenario_selections:
+                f.write(f"\n\nSELECTION BY SCENARIO\n")
+                f.write("-"*80 + "\n")
+                f.write(f"{'Scenario':<40} {'Attack 1':<15} {'Attack 2':<15} {'A1 %':<10}\n")
+                f.write("-"*80 + "\n")
+
+                # Sort scenarios by name
+                for scenario_name in sorted(scenario_selections.keys()):
+                    counts = scenario_selections[scenario_name]
+                    total = counts[0] + counts[1]
+                    if total > 0:
+                        a1_pct = (counts[0] / total) * 100
+                        f.write(f"{scenario_name:<40} {counts[0]:>12}    {counts[1]:>12}    {a1_pct:>6.1f}%\n")
+
+            # Analysis section
+            f.write(f"\n\nANALYSIS\n")
+            f.write("-"*50 + "\n")
+            if total_selections > 0:
+                if attack1_pct > 70:
+                    f.write("Attack 1 is dominant - Attack 2 variations have limited impact.\n")
+                    f.write("Consider testing different Attack 1 configurations.\n")
+                elif attack2_pct > 70:
+                    f.write("Attack 2 is dominant - The fixed Attack 1 may not be optimal.\n")
+                    f.write("Consider testing different Attack 1 base attacks.\n")
+                else:
+                    f.write("Both attacks are used frequently - Good balance in the build.\n")
+                    f.write("Attack selection is scenario-dependent as intended.\n")
+
+        print(f"Attack selection frequency saved to {filename}")

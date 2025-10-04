@@ -199,64 +199,15 @@ def build_turns_table(all_build_results: List[Tuple], config: SimulationConfig, 
 
 
 
-def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig, reports_dir: str = "reports"):
+def write_builds_turns_table(all_build_results: List[Tuple], config: SimulationConfig, reports_dir: str = "reports"):
     """Write a builds table with average turns until defeat as the main metric"""
-    if not builds:
+    if not all_build_results:
         print("No builds to analyze for turns table.")
         return
 
-    # Calculate turns until defeat for each build
-    build_results = []
-    for build in builds[:100]:  # Show top 100 builds
-        # Skip MultiAttackBuilds - they were already tested
-        if isinstance(build, MultiAttackBuild):
-            continue
-
-        total_turns = 0
-        total_dpt = 0
-        total_configs = 0
-
-        # Define the same fight scenarios as main simulation
-        fight_scenarios = [
-            ("Fight 1: 1x100 HP Boss", 1, 100),
-            ("Fight 2: 2x50 HP Enemies", 2, 50),
-            ("Fight 3: 4x25 HP Enemies", 4, 25),
-            ("Fight 4: 10x10 HP Enemies", 10, 10)
-        ]
-
-        for att_config in config.attacker_configs:
-            for def_config in config.defender_configs:
-                attacker = Character(*att_config)
-                defender = Character(*def_config)
-
-                # Average across all fight scenarios for this config
-                case_total_dpt = 0
-                case_total_turns = 0
-                scenario_count = 0
-
-                for scenario_name, num_enemies, enemy_hp in fight_scenarios:
-                    _, avg_turns, dpt, _ = run_simulation_batch(
-                        attacker, build, config.build_testing_runs, config.target_hp, defender,
-                        num_enemies=num_enemies, enemy_hp=enemy_hp)
-
-                    case_total_dpt += dpt
-                    case_total_turns += avg_turns
-                    scenario_count += 1
-
-                # Average DPT and turns across the 4 scenarios for this case
-                case_avg_dpt = case_total_dpt / scenario_count if scenario_count > 0 else 0
-                case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
-
-                total_turns += case_avg_turns
-                total_dpt += case_avg_dpt
-                total_configs += 1
-
-        avg_turns = total_turns / total_configs if total_configs > 0 else 0
-        avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
-        build_results.append((build, avg_dpt, avg_turns))
-
-    # Sort by average turns (lower is better)
-    build_results.sort(key=lambda x: x[2])
+    # Use the pre-calculated performance data from all_build_results
+    # Take top 100 builds (they're already sorted by performance, typically by turns)
+    build_results = all_build_results[:100]
 
     # Write the results
     with open(f'{reports_dir}/builds_turns_table.md', 'w', encoding='utf-8') as f:
@@ -279,10 +230,11 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
         for i, (build, avg_dpt, avg_turns) in enumerate(build_results, 1):
             # Format enhancements (upgrades + limits)
             enhancements = []
-            if build.upgrades:
-                enhancements.extend(build.upgrades)
-            if build.limits:
-                enhancements.extend(build.limits)
+            if not isinstance(build, MultiAttackBuild):
+                if build.upgrades:
+                    enhancements.extend(build.upgrades)
+                if build.limits:
+                    enhancements.extend(build.limits)
 
             enhancements_str = ", ".join(enhancements) if enhancements else "Base"
 
@@ -291,7 +243,7 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
 
         # Summary statistics
         f.write(f"\n## SUMMARY STATISTICS\n\n")
-        all_turns = [x[1] for x in build_results]
+        all_turns = [x[2] for x in build_results]  # avg_turns is at index 2
         f.write(f"- **Fastest kill time:** {min(all_turns):.2f} turns\n")
         f.write(f"- **Slowest kill time:** {max(all_turns):.2f} turns\n")
         f.write(f"- **Average kill time:** {sum(all_turns)/len(all_turns):.2f} turns\n")
@@ -316,43 +268,20 @@ def write_builds_turns_table(builds: List[AttackBuild], config: SimulationConfig
 
 
 
-def write_build_summary(builds: List[AttackBuild], config: SimulationConfig, reports_dir: str = "reports"):
+def write_build_summary(all_build_results: List[Tuple], config: SimulationConfig, reports_dir: str = "reports"):
     """Write a summary of the top builds to file"""
     from src.models import MultiAttackBuild
 
-    if not builds:
+    print(f"[DEBUG] write_build_summary called with {len(all_build_results) if all_build_results else 0} builds, reports_dir={reports_dir}")
+
+    if not all_build_results:
         print("No builds to summarize.")
         return
 
-    # Calculate DPT for each build (skip MultiAttackBuilds as they were already tested)
-    build_results = []
-    for build in builds[:50]:  # Show top 50 builds
-        # Skip MultiAttackBuilds - they don't have attack_type and were already tested
-        if isinstance(build, MultiAttackBuild):
-            continue
-
-        total_dpt = 0
-        total_turns = 0
-        total_configs = 0
-
-        for att_config in config.attacker_configs:
-            for def_config in config.defender_configs:
-                attacker = Character(*att_config)
-                defender = Character(*def_config)
-
-                _, avg_turns, dpt, _ = run_simulation_batch(
-                    attacker, build, config.build_testing_runs, config.target_hp, defender)
-
-                total_dpt += dpt
-                total_turns += avg_turns
-                total_configs += 1
-
-        avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
-        avg_turns = total_turns / total_configs if total_configs > 0 else 0
-        build_results.append((build, avg_dpt, avg_turns))
-
-    # Sort by average DPT
-    build_results.sort(key=lambda x: x[1], reverse=True)
+    # Use the pre-calculated performance data from all_build_results
+    # Take top 50 builds (they're already sorted by performance)
+    build_results = all_build_results[:50]
+    print(f"[DEBUG] Processing top {len(build_results)} builds")
 
     # Calculate attack type statistics (skip MultiAttackBuilds)
     attack_type_results = {}
@@ -385,23 +314,36 @@ def write_build_summary(builds: List[AttackBuild], config: SimulationConfig, rep
         f.write(f"Top {len(build_results)} builds ranked by average DPT across all test configurations\n\n")
 
         # Write builds table
-        f.write("| Rank | Attack Type | Upgrades | Limits | Cost | Avg DPT | Avg Turns |\n")
-        f.write("|------|-------------|----------|--------|------|---------|-----------|\\n")
+        f.write("| Rank | Attack 1 | Attack 2 | Cost | Avg Turns |\n")
+        f.write("|------|----------|----------|------|-----------|\n")
 
         for i, (build, avg_dpt, avg_turns) in enumerate(build_results, 1):
             if isinstance(build, MultiAttackBuild):
-                attack_type = get_build_description(build, include_enhancements=False)
-                upgrades_str = "—"
-                limits_str = "—"
                 total_cost = build.get_total_cost()
+                # Show details of each attack
+                attack_strs = []
+                for atk in build.builds:
+                    parts = [atk.attack_type]
+                    if atk.upgrades:
+                        parts.extend(atk.upgrades)
+                    if atk.limits:
+                        parts.extend(atk.limits)
+                    attack_strs.append(", ".join(parts))
+                # Pad to 2 attacks if needed
+                while len(attack_strs) < 2:
+                    attack_strs.append("—")
+                f.write(f"| {i} | {attack_strs[0]} | {attack_strs[1]} | {total_cost}p | {avg_turns:.1f} |\n")
             else:
+                # Single attack build - show in Attack 1 column
                 attack_type = build.attack_type
-                upgrades_str = ", ".join(build.upgrades) if build.upgrades else "—"
-                limits_str = ", ".join(build.limits) if build.limits else "—"
+                parts = [attack_type]
+                if build.upgrades:
+                    parts.extend(build.upgrades)
+                if build.limits:
+                    parts.extend(build.limits)
+                attack1_str = ", ".join(parts)
                 total_cost = build.total_cost
-
-            f.write(f"| {i} | {attack_type} | {upgrades_str} | {limits_str} | "
-                   f"{total_cost}p | {avg_dpt:.1f} | {avg_turns:.1f} |\n")
+                f.write(f"| {i} | {attack1_str} | — | {total_cost}p | {avg_turns:.1f} |\n")
 
         # Attack Type Performance Summary (only if we have single-attack builds)
         if attack_type_summary:

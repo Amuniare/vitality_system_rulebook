@@ -139,30 +139,29 @@ def convert_report_to_markdown(input_path, output_path):
 
 
 def main():
-    """Convert all .txt reports in the specified reports directory"""
-    # Use the specific directory that has the reports
-    focused_dir = Path('reports/2025-10-03_09-48-38/focused')
+    """Convert all .txt files with tables in the simulation folder"""
+    simulation_dir = Path(__file__).parent
 
-    if not focused_dir.exists():
-        print(f"Directory not found: {focused_dir}")
-        return
+    print(f"Scanning for .txt files in: {simulation_dir}")
 
-    print(f"Converting reports in: {focused_dir}")
+    # Find all .txt files recursively in simulation folder
+    txt_files = list(simulation_dir.glob('**/*.txt'))
 
-    # Find all .txt files (excluding combat logs)
-    txt_files = list(focused_dir.glob('*.txt'))
+    print(f"Found {len(txt_files)} .txt files")
 
-    # Exclude combat logs
-    txt_files = [f for f in txt_files if 'combat_log' not in f.name.lower()]
-
-    print(f"Found {len(txt_files)} report files to convert")
-
+    converted_count = 0
     for txt_file in txt_files:
         md_file = txt_file.with_suffix('.md')
-        convert_report_to_markdown(txt_file, md_file)
+        try:
+            convert_report_to_markdown(txt_file, md_file)
+            # Delete the original .txt file after successful conversion
+            txt_file.unlink()
+            print(f"  Deleted: {txt_file.relative_to(simulation_dir)}")
+            converted_count += 1
+        except Exception as e:
+            print(f"  Error converting {txt_file.relative_to(simulation_dir)}: {e}")
 
-    print(f"\nConverted {len(txt_files)} files to markdown format")
-    print(f"Files are in: {focused_dir}")
+    print(f"\nConverted and deleted {converted_count} files")
 
 
 if __name__ == '__main__':

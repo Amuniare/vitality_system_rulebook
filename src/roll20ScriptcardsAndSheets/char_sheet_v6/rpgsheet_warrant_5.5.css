@@ -506,7 +506,7 @@ select {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    color: var(--text-light);
+    color: #000000 !important;
     font-size: 0.9rem;
     font-family: Georgia, 'Times New Roman', Times, serif;
     text-transform: uppercase;
@@ -576,7 +576,7 @@ select {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    color: var(--text-light);
+    color: #000000 !important;
     font-size: 0.8rem;
     font-family: Georgia, 'Times New Roman', Times, serif;
     text-transform: uppercase;
@@ -623,7 +623,7 @@ select {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    color: var(--text-light);
+    color: #000000 !important;
     font-size: 0.8rem;
     font-family: Georgia, 'Times New Roman', Times, serif;
     text-transform: uppercase;

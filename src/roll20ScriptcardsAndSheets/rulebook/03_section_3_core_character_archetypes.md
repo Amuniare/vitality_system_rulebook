@@ -57,7 +57,7 @@
 
 **Dual-Natured**
 - Two distinct Special Attacks
-- Each gets 25 × Tier points
+- Each gets 25 × Tier points (round up to the nearest 10)
 - Balanced versatility
 
 **Versitile Master**
@@ -67,7 +67,7 @@
 
 **Specialist**
 - You cannot purchase Attack Upgrades
-- You instead receive Tier - 2 extra boons
+- You instead receive Tier extra boons
 - If you attack simply use the base formulas plus the bonus from any Boons you have purchased
 
 

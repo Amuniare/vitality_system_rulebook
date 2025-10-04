@@ -50,8 +50,8 @@ Attributes represent what type of things your character is good at in combat and
 **Condition Check:** 1d20 + Tier + Power vs Target's Resistance 
 
 **Defenses**  
-**Avoidance Score:** 5 + Tier + Mobility  
-**Durability Score:** Tier + Endurance  
+**Avoidance Score:** 10 + Tier + Mobility  
+**Durability Score:** 5 + Tier + Endurance  
 **Resolve Score:** 10 + Tier + Focus  
 **Stability Score:** 10 + Tier + Power  
 **Vitality Score:** 10 + Tier + Endurance 
@@ -855,6 +855,11 @@ Cost: 40p
 Effect: As a free action, if this effect succeeds, on subsequent turns, you can make this attack again at the same target.
 Penalty: If you use your free action to make this attack, you cannot use your action to make any attack.
 Restriction: Condition effects only
+
+**Reliable Condition**  
+Cost: 20p
+Penalty: -3 penalty to all Condition rolls  
+Effect: Advantage (roll 2d20, take higher roll) on Condition rolls
 
 **Critical Condition**  
 Cost: 20p

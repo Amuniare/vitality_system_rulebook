@@ -10,15 +10,15 @@
         <h4>Hero Name </h4>
         <h4>Real Name </h4>
         <h5>Character Tier </h5>
-        <h5>Efforts Remaining </h5>
+        <h5>Efforts Used </h5>
         <h5>Destiny </h5>
 
         <input type="text" name="attr_character_name">
         <input type="text" name="attr_character_realname">
         <input type="number" name="attr_char_tier" value="4">
 
-        <!-- Efforts Remaining Tracker -->
-        <input type="number" name="attr_char_efforts_remaining" value="2">
+        <!-- Efforts Used Tracker -->
+        <input type="number" name="attr_char_efforts_used" value="0">
 
         <button type="roll" name="char_destiny"
             value="&{template:rolls} {{title=Destiny}} {{subtitle=@{character_name} }} {{DC ?{DC?} = [[d100]]}}"></button>
@@ -215,7 +215,7 @@
             <h4>Features, Descriptors and Senses</h4>
             <fieldset class="repeating_features">
                 <button type="roll" name="char_features"
-                    value="!scriptcard {{ --Rbyindex|[*S:character_id];repeating_features;{number} --#title|[*S:character_name]'s [*R:char_features] --#overridetemplate|paper --#titleCardBackground|#000000 --#titleFontFace|Quicksand --#titleFontColor|#00ffff --#bodyFontFace|Quicksand --#evenRowBackground|#000000 --#oddRowBackground|#000000 --#evenRowFontColor|#ffffff --#oddRowFontColor|#ffffff --=SelectedStat|?{Which Expertise Stat?|Awareness,[*S:char_awareness]|Communication,[*S:char_communication]|Intelligence,[*S:char_intelligence]|Focus,[*S:char_focus]|Mobility,[*S:char_mobility]|Endurance,[*S:char_endurance]|Power,[*S:char_power]} --=ExpertiseRoll|3d6! + [*S:char_tier] + [$SelectedStat] --+Expertise Roll|[$ExpertiseRoll] --+|[br] --+Description|[*R:featuresDesc] }}"></button>
+                    value="&{template:rolls} {{title=@{char_features} }} {{subtitle=@{character_name} }} {{desc=@{featuresDesc} }}"></button>
                 <input type="text" name="attr_char_features" value="">
                 <details>
                     <textarea name="attr_featuresDesc" value=""></textarea>
@@ -391,13 +391,6 @@
                             <option value="7">Control</option>
                         </select>
                     </label>
-                    <label>Hybrid
-                        <select name="attr_Hybrid">
-                            <option value="0">OFF</option>
-                            <option value="1">Damage → CN</option>
-                            <option value="2">CN → Damage</option>
-                        </select>
-                    </label>
                 </div>
 
 
@@ -407,12 +400,12 @@
                 <details>
                     <summary><h6>▼ Critical Bonuses</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Critical Accuracy</strong> <input type="number" name="attr_CriticalAccuracy" value="0"></label>
-                        <label><strong>Powerful Critical</strong> <input type="number" name="attr_PowerfulCritical" value="0"></label>
-                        <label><strong>Ricochet</strong> <input type="number" name="attr_Ricochet" value="0"></label>
-                        <label><strong>Double-Tap</strong> <input type="number" name="attr_DoubleTap" value="0"></label>
-                        <label><strong>Explosive Critical</strong> <input type="number" name="attr_ExplosiveCritical" value="0"></label>
-                        <label><strong>Martial Artist</strong> <input type="number" name="attr_MartialArtist" value="0"></label>
+                        <label>Critical Accuracy<input type="number" name="attr_CriticalAccuracy" value="0"></label>
+                        <label>Powerful Critical<input type="number" name="attr_PowerfulCritical" value="0"></label>
+                        <label>Ricochet<input type="number" name="attr_Ricochet" value="0"></label>
+                        <label>Double-Tap<input type="number" name="attr_DoubleTap" value="0"></label>
+                        <label>Explosive Critical<input type="number" name="attr_ExplosiveCritical" value="0"></label>
+                        <label>Martial Artist<input type="number" name="attr_MartialArtist" value="0"></label>
                     </div>
                 </details>
 
@@ -420,8 +413,9 @@
                 <details>
                     <summary><h6>▼ Accuracy Upgrades</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Reliable Accuracy</strong> <input type="number" name="attr_ReliableAccuracy" value="0"></label>
-                        <label><strong>Overhit</strong> <input type="number" name="attr_Overhit" value="0"></label>
+                        <label>Accurate Attack<input type="number" name="attr_AccurateAttack" value="0"></label>
+                        <label>Reliable Accuracy<input type="number" name="attr_ReliableAccuracy" value="0"></label>
+                        <label>Overhit<input type="number" name="attr_Overhit" value="0"></label>
                     </div>
                 </details>
 
@@ -429,17 +423,16 @@
                 <details>
                     <summary><h6>▼ Damage Upgrades</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Power Attack</strong> <input type="number" name="attr_PowerAttack" value="0"></label>
-                        <label><strong>High Impact</strong> <input type="number" name="attr_HighImpact" value="0"></label>
-                        <label><strong>Reliable Effect</strong> <input type="number" name="attr_ReliableEffect" value="0"></label>
-                        <label><strong>Critical Effect</strong> <input type="number" name="attr_CriticalEffect" value="0"></label>
-                        <label><strong>Armor Piercing</strong> <input type="number" name="attr_ArmorPiercing" value="0"></label>
-                        <label><strong>Brutal</strong> <input type="number" name="attr_Brutal" value="0"></label>
-                        <label><strong>Bleed</strong> <input type="number" name="attr_Bleed" value="0"></label>
-                        <label><strong>Shatter</strong> <input type="number" name="attr_Shatter" value="0"></label>
-                        <label><strong>Leech</strong> <input type="number" name="attr_Leech" value="0"></label>
-                        <label><strong>Finishing Blow (1-3)</strong> <input type="number" name="attr_FinishingBlow" value="0"></label>
-                        <label><strong>Culling Strike</strong> <input type="number" name="attr_CullingStrike" value="0"></label>
+                        <label>Power Attack<input type="number" name="attr_PowerAttack" value="0"></label>
+                        <label>High Impact<input type="number" name="attr_HighImpact" value="0"></label>
+                        <label>Critical Effect<input type="number" name="attr_CriticalEffect" value="0"></label>
+                        <label>Armor Piercing<input type="number" name="attr_ArmorPiercing" value="0"></label>
+                        <label>Brutal<input type="number" name="attr_Brutal" value="0"></label>
+                        <label>Bleed<input type="number" name="attr_Bleed" value="0"></label>
+                        <label>Shatter<input type="number" name="attr_Shatter" value="0"></label>
+                        <label>Leech<input type="number" name="attr_Leech" value="0"></label>
+                        <label>Finishing Blow (1-3)<input type="number" name="attr_FinishingBlow" value="0"></label>
+                        <label>Culling Strike<input type="number" name="attr_CullingStrike" value="0"></label>
                     </div>
                 </details>
 
@@ -447,13 +440,14 @@
                 <details>
                     <summary><h6>▼ Condition Upgrades</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Lasting Condition</strong> <input type="number" name="attr_LastingCondition" value="0"></label>
-                        <label><strong>Contagious</strong> <input type="number" name="attr_Contagious" value="0"></label>
-                        <label><strong>Cursed</strong> <input type="number" name="attr_Cursed" value="0"></label>
-                        <label><strong>Overwhelming</strong> <input type="number" name="attr_OverwhelmingAffliction" value="0"></label>
-                        <label><strong>Concentration</strong> <input type="number" name="attr_Concentration" value="0"></label>
-                        <label><strong>Critical Condition</strong> <input type="number" name="attr_CriticalCondition" value="0"></label>
-                        <label><strong>Powerful Condition Critical</strong> <input type="number" name="attr_PowerfulConditionCritical" value="0"></label>
+                        <label>Lasting Condition<input type="number" name="attr_LastingCondition" value="0"></label>
+                        <label>Contagious<input type="number" name="attr_Contagious" value="0"></label>
+                        <label>Reliable Condition<input type="number" name="attr_ReliableCondition" value="0"></label>
+                        <label>Cursed<input type="number" name="attr_Cursed" value="0"></label>
+                        <label>Overwhelming<input type="number" name="attr_OverwhelmingAffliction" value="0"></label>
+                        <label>Concentration<input type="number" name="attr_Concentration" value="0"></label>
+                        <label>Critical Condition<input type="number" name="attr_CriticalCondition" value="0"></label>
+                        <label>Powerful Condition Critical<input type="number" name="attr_PowerfulConditionCritical" value="0"></label>
                     </div>
                 </details>
 
@@ -461,12 +455,12 @@
                 <details>
                     <summary><h6>▼ Generic Attack Upgrades</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Extended Range</strong> <input type="number" name="attr_ExtendedRange" value="0"></label>
-                        <label><strong>Long Range</strong> <input type="number" name="attr_LongRange" value="0"></label>
-                        <label><strong>Perception Range</strong> <input type="number" name="attr_PerceptionRange" value="0"></label>
-                        <label><strong>Enhanced Scale</strong> <input type="number" name="attr_EnhancedScale" value="0"></label>
-                        <label><strong>Precise</strong> <input type="number" name="attr_Precise" value="0"></label>
-                        <label><strong>Ranged Area</strong> <input type="number" name="attr_RangedArea" value="0"></label>
+                        <label>Extended Range<input type="number" name="attr_ExtendedRange" value="0"></label>
+                        <label>Long Range<input type="number" name="attr_LongRange" value="0"></label>
+                        <label>Perception Range<input type="number" name="attr_PerceptionRange" value="0"></label>
+                        <label>Enhanced Scale<input type="number" name="attr_EnhancedScale" value="0"></label>
+                        <label>Precise<input type="number" name="attr_Precise" value="0"></label>
+                        <label>Ranged Area<input type="number" name="attr_RangedArea" value="0"></label>
                     </div>
                 </details>
 
@@ -474,16 +468,9 @@
                 <details>
                     <summary><h6>▼ Melee Specialized</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Quick Strikes</strong> <input type="number" name="attr_QuickStrikes" value="0"></label>
-                    </div>
-                </details>
-
-                <!-- RANGED SPECIALIZED -->
-                <details>
-                    <summary><h6>▼ Ranged Specialized</h6></summary>
-                    <div class="attacks-grid-compact">
-                        <label><strong>Headshot</strong> <input type="number" name="attr_Headshot" value="0"></label>
-                        <label><strong>Barrage</strong> <input type="number" name="attr_Barrage" value="0"></label>
+                        <label>Quick Strikes<input type="number" name="attr_QuickStrikes" 
+                        <label>Barrage<input type="number" name="attr_Barrage" value="0"></label>
+                        <label>Extra Attack<input type="number" name="attr_ExtraAttack" value="0"></label>
                     </div>
                 </details>
 
@@ -491,16 +478,14 @@
                 <details>
                     <summary><h6>▼ General Specialized Combat</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Flurry</strong> <input type="number" name="attr_FlurryOfBlows" value="0"></label>
-                        <label><strong>Pounce</strong> <input type="number" name="attr_Pounce" value="0"></label>
-                        <label><strong>Splinter</strong> <input type="number" name="attr_Splinter" value="0"></label>
-                        <label><strong>Priority Target</strong> <input type="number" name="attr_PriorityTarget" value="0"></label>
-                        <label><strong>Bully</strong> <input type="number" name="attr_Bully" value="0"></label>
-                        <label><strong>Menacing</strong> <input type="number" name="attr_Menacing" value="0"></label>
-                        <label><strong>Disengage</strong> <input type="number" name="attr_Disengage" value="0"></label>
-                        <label><strong>Extra Attack</strong> <input type="number" name="attr_ExtraAttack" value="0"></label>
-                        <label><strong>Intimidating Presence</strong> <input type="number" name="attr_IntimidatingPresence" value="0"></label>
-                        <label><strong>Terrifying Display</strong> <input type="number" name="attr_TerrifyingDisplay" value="0"></label>
+                        <label>Pounce<input type="number" name="attr_Pounce" value="0"></label>
+                        <label>Splinter<input type="number" name="attr_Splinter" value="0"></label>
+                        <label>Priority Target<input type="number" name="attr_PriorityTarget" value="0"></label>
+                        <label>Bully<input type="number" name="attr_Bully" value="0"></label>
+                        <label>Menacing<input type="number" name="attr_Menacing" value="0"></label>
+                        <label>Disengage<input type="number" name="attr_Disengage" value="0"></label>
+                        <label>Intimidating Presence<input type="number" name="attr_IntimidatingPresence" value="0"></label>
+                        <label>Terrifying Display<input type="number" name="attr_TerrifyingDisplay" value="0"></label>
                     </div>
                 </details>
 
@@ -508,10 +493,10 @@
                 <details>
                     <summary><h6>▼ Slayer Upgrades</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Minion Slayer</strong> <input type="number" name="attr_MinionSlayer" value="0"></label>
-                        <label><strong>Captain Slayer</strong> <input type="number" name="attr_CaptainSlayer" value="0"></label>
-                        <label><strong>Elite Slayer</strong> <input type="number" name="attr_EliteSlayer" value="0"></label>
-                        <label><strong>Boss Slayer</strong> <input type="number" name="attr_BossSlayer" value="0"></label>
+                        <label>Minion Slayer<input type="number" name="attr_MinionSlayer" value="0"></label>
+                        <label>Captain Slayer<input type="number" name="attr_CaptainSlayer" value="0"></label>
+                        <label>Elite Slayer<input type="number" name="attr_EliteSlayer" value="0"></label>
+                        <label>Boss Slayer<input type="number" name="attr_BossSlayer" value="0"></label>
                     </div>
                 </details>
 
@@ -519,7 +504,8 @@
                 <details>
                     <summary><h6>▼ Sustained Attack</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Channeled</strong> <input type="number" name="attr_Channeled" value="0"></label>
+                        <label>Channeled<input type="number" name="attr_Channeled" value="0"></label>
+                        <label>Environmental<input type="number" name="attr_Environmental" value="0"></label>
                     </div>
                 </details>
 
@@ -529,8 +515,8 @@
                 <details>
                     <summary><h6>▼ Usage Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Charges 1</strong> <input type="number" name="attr_Charges1" value="0"></label>
-                        <label><strong>Charges 2</strong> <input type="number" name="attr_Charges2" value="0"></label>
+                        <label>Charges 1<input type="number" name="attr_Charges1" value="0"></label>
+                        <label>Charges 2<input type="number" name="attr_Charges2" value="0"></label>
                     </div>
                 </details>
 
@@ -538,9 +524,9 @@
                 <details>
                     <summary><h6>▼ HP-Based Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Timid</strong> <input type="number" name="attr_Timid" value="0"></label>
-                        <label><strong>Near Death</strong> <input type="number" name="attr_NearDeath" value="0"></label>
-                        <label><strong>Bloodied</strong> <input type="number" name="attr_Bloodied" value="0"></label>
+                        <label>Timid<input type="number" name="attr_Timid" value="0"></label>
+                        <label>Near Death<input type="number" name="attr_NearDeath" value="0"></label>
+                        <label>Bloodied<input type="number" name="attr_Bloodied" value="0"></label>
                     </div>
                 </details>
 
@@ -548,13 +534,13 @@
                 <details>
                     <summary><h6>▼ Conditional Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Vengeful</strong> <input type="number" name="attr_Vengeful" value="0"></label>
-                        <label><strong>Revenge</strong> <input type="number" name="attr_RevengeLimit" value="0"></label>
-                        <label><strong>Unbreakable</strong> <input type="number" name="attr_Unbreakable" value="0"></label>
-                        <label><strong>Untouchable</strong> <input type="number" name="attr_Untouchable" value="0"></label>
-                        <label><strong>Avenger</strong> <input type="number" name="attr_AvengerLimit" value="0"></label>
-                        <label><strong>Passive</strong> <input type="number" name="attr_PassiveLimit" value="0"></label>
-                        <label><strong>Careful</strong> <input type="number" name="attr_Careful" value="0"></label>
+                        <label>Vengeful<input type="number" name="attr_Vengeful" value="0"></label>
+                        <label>Revenge<input type="number" name="attr_RevengeLimit" value="0"></label>
+                        <label>Unbreakable<input type="number" name="attr_Unbreakable" value="0"></label>
+                        <label>Untouchable<input type="number" name="attr_Untouchable" value="0"></label>
+                        <label>Avenger<input type="number" name="attr_AvengerLimit" value="0"></label>
+                        <label>Passive<input type="number" name="attr_PassiveLimit" value="0"></label>
+                        <label>Careful<input type="number" name="attr_Careful" value="0"></label>
                     </div>
                 </details>
 
@@ -562,10 +548,10 @@
                 <details>
                     <summary><h6>▼ Sequential Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Combo Move</strong> <input type="number" name="attr_ComboMove" value="0"></label>
-                        <label><strong>Infected</strong> <input type="number" name="attr_InfectedLimit" value="0"></label>
-                        <label><strong>Relentless</strong> <input type="number" name="attr_Relentless" value="0"></label>
-                        <label><strong>Slaughter</strong> <input type="number" name="attr_Slaughter" value="0"></label>
+                        <label>Combo Move<input type="number" name="attr_ComboMove" value="0"></label>
+                        <label>Infected<input type="number" name="attr_InfectedLimit" value="0"></label>
+                        <label>Relentless<input type="number" name="attr_Relentless" value="0"></label>
+                        <label>Slaughter<input type="number" name="attr_Slaughter" value="0"></label>
                     </div>
                 </details>
 
@@ -573,10 +559,10 @@
                 <details>
                     <summary><h6>▼ Positioning Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Rooted</strong> <input type="number" name="attr_Rooted" value="0"></label>
-                        <label><strong>Blitz</strong> <input type="number" name="attr_BlitzLimit" value="0"></label>
-                        <label><strong>Long Distance Fighter</strong> <input type="number" name="attr_LongDistanceFighter" value="0"></label>
-                        <label><strong>Dangerous</strong> <input type="number" name="attr_DangerousLimit" value="0"></label>
+                        <label>Rooted<input type="number" name="attr_Rooted" value="0"></label>
+                        <label>Blitz<input type="number" name="attr_BlitzLimit" value="0"></label>
+                        <label>Long Distance Fighter<input type="number" name="attr_LongDistanceFighter" value="0"></label>
+                        <label>Dangerous<input type="number" name="attr_DangerousLimit" value="0"></label>
                     </div>
                 </details>
 
@@ -584,9 +570,9 @@
                 <details>
                     <summary><h6>▼ Random Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Unreliable 1 (DC 5)</strong> <input type="number" name="attr_Unreliable1" value="0"></label>
-                        <label><strong>Unreliable 2 (DC 10)</strong> <input type="number" name="attr_Unreliable2" value="0"></label>
-                        <label><strong>Unreliable 3 (DC 15)</strong> <input type="number" name="attr_Unreliable3" value="0"></label>
+                        <label>Unreliable 1 (DC 5)<input type="number" name="attr_Unreliable1" value="0"></label>
+                        <label>Unreliable 2 (DC 10)<input type="number" name="attr_Unreliable2" value="0"></label>
+                        <label>Unreliable 3 (DC 15)<input type="number" name="attr_Unreliable3" value="0"></label>
                     </div>
                 </details>
 
@@ -594,10 +580,10 @@
                 <details>
                     <summary><h6>▼ Time-Based Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Quickdraw</strong> <input type="number" name="attr_Quickdraw" value="0"></label>
-                        <label><strong>Steady</strong> <input type="number" name="attr_Steady" value="0"></label>
-                        <label><strong>Patience</strong> <input type="number" name="attr_PatienceLimit" value="0"></label>
-                        <label><strong>Finale</strong> <input type="number" name="attr_Finale" value="0"></label>
+                        <label>Quickdraw<input type="number" name="attr_Quickdraw" value="0"></label>
+                        <label>Steady<input type="number" name="attr_Steady" value="0"></label>
+                        <label>Patience<input type="number" name="attr_PatienceLimit" value="0"></label>
+                        <label>Finale<input type="number" name="attr_Finale" value="0"></label>
                     </div>
                 </details>
 
@@ -605,17 +591,17 @@
                 <details>
                     <summary><h6>▼ Other Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Charge Up</strong> <input type="number" name="attr_ChargeUp" value="0"></label>
-                        <label><strong>Charge Up 2</strong> <input type="number" name="attr_ChargeUp2" value="0"></label>
-                        <label><strong>Exhausting</strong> <input type="number" name="attr_Exhausting" value="0"></label>
-                        <label><strong>Cooldown</strong> <input type="number" name="attr_Cooldown" value="0"></label>
-                        <label><strong>Attrition</strong> <input type="number" name="attr_Attrition" value="0"></label>
-                        <label><strong>Drain Reserves</strong> <input type="number" name="attr_DrainReserves" value="0"></label>
-                        <label><strong>Tower Defense</strong> <input type="number" name="attr_TowerDefenseLimit" value="0"></label>
-                        <label><strong>Compressed Release</strong> <input type="number" name="attr_CompressedReleaseLimit" value="0"></label>
-                        <label><strong>Domain</strong> <input type="number" name="attr_DomainLimit" value="0"></label>
-                        <label><strong>Grappler</strong> <input type="number" name="attr_GrapplerLimit" value="0"></label>
-                        <label><strong>Exploit</strong> <input type="number" name="attr_ExploitLimit" value="0"></label>
+                        <label>Charge Up<input type="number" name="attr_ChargeUp" value="0"></label>
+                        <label>Charge Up 2<input type="number" name="attr_ChargeUp2" value="0"></label>
+                        <label>Exhausting<input type="number" name="attr_Exhausting" value="0"></label>
+                        <label>Cooldown<input type="number" name="attr_Cooldown" value="0"></label>
+                        <label>Attrition<input type="number" name="attr_Attrition" value="0"></label>
+                        <label>Drain Reserves<input type="number" name="attr_DrainReserves" value="0"></label>
+                        <label>Tower Defense<input type="number" name="attr_TowerDefenseLimit" value="0"></label>
+                        <label>Compressed Release<input type="number" name="attr_CompressedReleaseLimit" value="0"></label>
+                        <label>Domain<input type="number" name="attr_DomainLimit" value="0"></label>
+                        <label>Grappler<input type="number" name="attr_GrapplerLimit" value="0"></label>
+                        <label>Exploit<input type="number" name="attr_ExploitLimit" value="0"></label>
                     </div>
                 </details>
 
@@ -623,10 +609,10 @@
                 <details>
                     <summary><h6>▼ Sacrifice Limits</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label><strong>Sacrifice Minion</strong> <input type="number" name="attr_SacrificeMinion" value="0"></label>
-                        <label><strong>Sacrifice Captain</strong> <input type="number" name="attr_SacrificeCaptain" value="0"></label>
-                        <label><strong>Sacrifice Vanguard</strong> <input type="number" name="attr_SacrificeVanguard" value="0"></label>
-                        <label><strong>Sacrifice Boss</strong> <input type="number" name="attr_SacrificeBoss" value="0"></label>
+                        <label>Sacrifice Minion<input type="number" name="attr_SacrificeMinion" value="0"></label>
+                        <label>Sacrifice Captain<input type="number" name="attr_SacrificeCaptain" value="0"></label>
+                        <label>Sacrifice Vanguard<input type="number" name="attr_SacrificeVanguard" value="0"></label>
+                        <label>Sacrifice Boss<input type="number" name="attr_SacrificeBoss" value="0"></label>
                     </div>
                 </details>
 
@@ -771,14 +757,14 @@
     // Define calculation configurations for each attribute (v6.0 Updated)
     const attributeCalculations = {
         char_avoidance: {
-            base: 5, // v6.0: Changed from 10 to 5
+            base: 10, // v6.0: Avoidance = 10 + Tier + Mobility
             keys: ["char_tier", "char_avMod", "char_mobility"],
             weakenKey: "char_weakenAvoidance",
             primaryCheckbox: "char_avPrimaryAction", // Primary Action = TEMPORARY bonus
             bonusField: "traitAvBonus"
         },
         char_durability: {
-            base: 0,
+            base: 5, // v6.0: Durability = 5 + Tier + Endurance
             keys: ["char_tier", "char_drMod", "char_endurance"],
             weakenKey: "char_weakenDurability",
             primaryCheckbox: "char_drPrimaryAction", // Primary Action = TEMPORARY bonus
@@ -841,6 +827,7 @@
             ...config.keys.map(key => `change:${key}`),
             `change:${config.weakenKey}`,
             `change:${config.primaryCheckbox}`,
+            "change:char_efforts_used",
             "sheet:opened",
             "change:repeating_traits remove:repeating_traits"
         ].join(" ");
@@ -849,7 +836,8 @@
             const requiredKeys = [
                 ...config.keys,
                 config.weakenKey,
-                config.primaryCheckbox
+                config.primaryCheckbox,
+                "char_efforts_used"
             ];
 
             getAttrs(requiredKeys, function (values) {
@@ -880,6 +868,8 @@
                         if (config.weakenKey) {
                             total -= parseInt(values[config.weakenKey]) || 0;
                         }
+                        // Subtract efforts used penalty
+                        total -= parseInt(values.char_efforts_used) || 0;
                         // Add Primary Action bonus (TEMPORARY)
                         if (values[config.primaryCheckbox] === "on") {
                             total += tier;
@@ -906,6 +896,9 @@
                             total -= parseInt(values[config.weakenKey]) || 0;
                         }
 
+                        // Subtract efforts used penalty
+                        total -= parseInt(values.char_efforts_used) || 0;
+
                         // Add Primary Action bonus (TEMPORARY - until start of next turn)
                         if (values[config.primaryCheckbox] === "on") {
                             total += tier;
@@ -922,8 +915,8 @@
     };
 
     // Special movement calculation (v6.0: New formula - Mobility + 2×Tier)
-    on('change:char_tier change:char_mobility change:char_movementMod change:char_swift change:char_weakenMovement change:char_movementPrimaryAction sheet:opened change:repeating_traits remove:repeating_traits', function () {
-        const requiredKeys = ["char_tier", "char_mobility", "char_movementMod", "char_swift", "char_weakenMovement", "char_movementPrimaryAction"];
+    on('change:char_tier change:char_mobility change:char_movementMod change:char_swift change:char_weakenMovement change:char_movementPrimaryAction change:char_efforts_used sheet:opened change:repeating_traits remove:repeating_traits', function () {
+        const requiredKeys = ["char_tier", "char_mobility", "char_movementMod", "char_swift", "char_weakenMovement", "char_movementPrimaryAction", "char_efforts_used"];
 
         getAttrs(requiredKeys, function (values) {
             const tier = parseInt(values.char_tier) || 0;
@@ -945,6 +938,8 @@
                 if (!ids || ids.length === 0) {
                     // Complete calculation without traits
                     total -= (parseInt(values.char_weakenMovement) || 0);
+                    // Subtract efforts used penalty
+                    total -= (parseInt(values.char_efforts_used) || 0);
                     // Add Primary Action bonus (TEMPORARY - Steady action)
                     if (values.char_movementPrimaryAction === "on") {
                         total += tier;
@@ -966,6 +961,8 @@
                     });
 
                     total -= (parseInt(values.char_weakenMovement) || 0);
+                    // Subtract efforts used penalty
+                    total -= (parseInt(values.char_efforts_used) || 0);
                     // Add Primary Action bonus (TEMPORARY - Steady action)
                     if (values.char_movementPrimaryAction === "on") {
                         total += tier;

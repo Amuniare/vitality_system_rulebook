@@ -2,16 +2,16 @@
 
 ### **TRAITS**
 *Permanent abilities that change how your character is built*
-**Costs:** 1 boon
+**Cost:** 1 boon
 
 **Immutable: Resolve**
-You gain complete immunity to Resolve conditions
+You gain complete immunity to Resolve conditions. Can only purchase one type of Immutable.
 
 **Immutable: Vitality**
-You gain complete immunity to Vitality conditions
+You gain complete immunity to Vitality conditions. Can only purchase one type of Immutable.
 
 **Immutable: Stability**
-You gain complete immunity to Stability conditions
+You gain complete immunity to Stability conditions. Can only purchase one type of Immutable.
 
 **Try-Hard** 
 You have an extra effort.
@@ -50,7 +50,7 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Base Radius:** 1 space
 - **Effect:** Allied characters other than you, within your aura, add your Tier to their Accuracy, Damage, Avoidance, Durability or Resistances (chosen when purchasing).
 - **Upgrades**
-  - **Greater Support:** Increase bonus by your Tier
+  - **Greater Support:** Increase bonus by your Tier, does not increase Affects Self bonus.
   - **Increase Area:** Increase Radius by 2
   - **Affects Self:** You gain the benefits of your Aura.
 

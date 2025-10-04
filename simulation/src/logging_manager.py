@@ -171,12 +171,16 @@ class LoggingManager:
                 test_cases.append((f"Att{i+1}_Def{j+1}", attacker, defender))
 
         for build_idx, (build, avg_dpt, avg_turns) in enumerate(top_builds):
-            # Skip detailed logging for MultiAttackBuild objects
+            # Log the build summary
+            log_file.write(f"\nBuild {build_idx + 1}:\n")
+            log_file.write(f"{build}\n")
+            log_file.write(f"Average DPT: {avg_dpt:.2f}\n")
+            log_file.write(f"Average Turns: {avg_turns:.2f}\n")
+
+            # Skip detailed combat simulation for MultiAttackBuild objects
+            # (since they require per-scenario attack selection logic)
             from src.models import MultiAttackBuild
             if isinstance(build, MultiAttackBuild):
-                log_file.write(f"\nBuild {build_idx + 1}: {build.archetype} MultiAttackBuild (detailed logging skipped)\n")
-                log_file.write(f"  Average DPT: {avg_dpt:.2f}\n")
-                log_file.write(f"  Average Turns: {avg_turns:.2f}\n")
                 continue
 
             self.log_build_start(build_idx, build, 'top_builds')
