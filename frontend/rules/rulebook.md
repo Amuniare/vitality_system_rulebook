@@ -692,34 +692,34 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 ### **CONDITIONS**
 
 **Control**
-- **Cost:** 50p
+- **Cost:** 2p
 - **Effect:** Gain control of the target until the start of your next turn. You can force them to take any actions available to them including attacking or stunning themseleves until the control ends. Targets add 1/5th of their remaining HP to the Resistance Score against this attack. 
 
 **Stun**
-- **Cost:** 30p
+- **Cost:** 1p
 - **Effect:** The target cannot act on their turn, their Avoidance is considered 0, all attacks that hit them are automatic critical attack rolls. Targets add 1/5th of their remaining HP to the Resistance Score against this attack. 
 
 **Weaken**
-- **Cost:** 20p
+- **Cost:** 2p
 - **Effect:** Reduce one of the targets stats, chosen when you build this attack, by 2 times your Tier until the end of your next turn.
 
 **Brawl**
-- **Cost:** 20p
+- **Cost:** 2p
 - **Effect:** 
 - Push your target a number of Spaces up to 3 times your Tier. If they collide with something they both take falling damage equal to 3 times your Tier + 10. The floor does not count unless they moved spaces to reach the floor.
 - Knock the target Prone granting melee attacks an extra Tier to their attack roll. It expends half of their Movement to stand up.
 - Grab the target preventing them from moving, this effect does not end until the target or an adjacent character to the target uses an action to break the grapple.
 
 **Frighten**
-- **Cost:** 10p
+- **Cost:** 1p
 - **Effect:** The target spends its turn moving away from you as quickly as it can until the end of your next turn.
 
 **Taunt**
-- **Cost:** 10p
+- **Cost:** 1p
 - **Effect:** he target must include you in any attacks it makes until the end of your next turn.
 
 **Charm**
-- **Cost:** 10p
+- **Cost:** 1p
 - **Effect:** The target cannot attack you until the end of your next turn.
 
 
@@ -939,7 +939,7 @@ Cost: 2p
 Effect: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 Penalty: -2×Tier to Accuracy, Damage, and Condition rolls
 Usage: If you don't make the channeled attack on a turn, you lose your bonus
-Restriction: This enhancement cannot give you more than 5×Tier Bonus
+Restriction: This enhancement cannot give you more than 5×Tier bonus
 
 #### Utility Combat Upgrades
 
