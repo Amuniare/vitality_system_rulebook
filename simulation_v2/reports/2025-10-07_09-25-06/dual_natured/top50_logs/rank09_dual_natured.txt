@@ -1,0 +1,1979 @@
+================================================================================
+TOP 50 BUILD COMBAT LOG - DETAILED MECHANICS ANALYSIS
+================================================================================
+Rank: #9
+Build: Multi-Attack (dual_natured) - 2 attacks (Total Cost: 6p)
+Average Turns: 8.15
+Generated: 2025-10-07 10:20:21
+================================================================================
+
+
+================================================================================
+SCENARIO 1: 1 Enemies x 100 HP
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: high_impact, armor_piercing, boss_slayer_acc) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 17 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 100 -> 83
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['2', '5', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 100 -> 93
+  Total defender damage this turn: 7
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 93/100 (93.0%)
+Alive Enemies: 1/1
+Total HP: 83/100 (83.0%)
+  Enemy 1: 83/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 16 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 83 -> 66
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['2', '5', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 93 -> 87
+  Total defender damage this turn: 6
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 87/100 (87.0%)
+Alive Enemies: 1/1
+Total HP: 66/100 (66.0%)
+  Enemy 1: 66/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 25 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 66 -> 49
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 87 -> 87
+  Total defender damage this turn: 0
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 87/100 (87.0%)
+Alive Enemies: 1/1
+Total HP: 49/100 (49.0%)
+  Enemy 1: 49/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 18 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 49 -> 32
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['4', '2', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 87 -> 82
+  Total defender damage this turn: 5
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 82/100 (82.0%)
+Alive Enemies: 1/1
+Total HP: 32/100 (32.0%)
+  Enemy 1: 32/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 28 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 32 -> 15
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['4', '4', '1'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 82 -> 78
+  Total defender damage this turn: 4
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 78/100 (78.0%)
+Alive Enemies: 1/1
+Total HP: 15/100 (15.0%)
+  Enemy 1: 15/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 27 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 15 -> -2
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 6 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 78/100
+==================================================
+
+============================================================
+SCENARIO 1 RESULT: WIN in 6 turns
+============================================================
+
+
+================================================================================
+SCENARIO 2: Mixed Enemy Group - HP: [50, 25, 25]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: high_impact, armor_piercing, boss_slayer_acc) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 3
+  Enemy HP: [50, 25, 25] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 3/3
+Total HP: 100/100 (100.0%)
+  Enemy 1: 50/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 20 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 50 -> 33
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['4', '3', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 100 -> 96
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 96 -> 96
+  Total defender damage this turn: 4
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 3/3
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 96/100 (96.0%)
+Alive Enemies: 3/3
+Total HP: 83/100 (83.0%)
+  Enemy 1: 33/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['4', '6+5', '6+4'] = 25
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 31
+      After durability (11): 20 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 20
+    Enemy 1 HP: 33 -> 13
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 96 -> 96
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 96 -> 96
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['6+1', '2', '2'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 96 -> 90
+  Total defender damage this turn: 6
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 20
+  Total damage this turn: 20
+  Enemies remaining: 3/3
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 90/100 (90.0%)
+Alive Enemies: 3/3
+Total HP: 63/100 (63.0%)
+  Enemy 1: 13/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 28 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 13 -> -4
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['1', '4', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 90 -> 81
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 81 -> 81
+  Total defender damage this turn: 9
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 2/3
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 81/100 (81.0%)
+Alive Enemies: 2/3
+Total HP: 46/50 (92.0%)
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 34 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 25
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 21 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 21
+    Enemy 2 HP: 25 -> 4
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['2', '1', '5'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 81 -> 78
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 78 -> 78
+  Total defender damage this turn: 3
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 21
+  Total damage this turn: 21
+  Enemies remaining: 2/3
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 78/100 (78.0%)
+Alive Enemies: 2/3
+Total HP: 25/50 (50.0%)
+  Enemy 2: 4/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 25 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 17
+    Enemy 2 HP: 4 -> -13
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['3', '3', '2'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 78 -> 71
+  Total defender damage this turn: 7
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/3
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 71/100 (71.0%)
+Alive Enemies: 1/3
+Total HP: 8/25 (32.0%)
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 33 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 17
+    Enemy 3 HP: 25 -> 8
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['5', '2', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 71 -> 68
+  Total defender damage this turn: 3
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/3
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 68/100 (68.0%)
+Alive Enemies: 1/3
+Total HP: -9/25 (-36.0%)
+  Enemy 3: 8/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 24 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 17
+    Enemy 3 HP: 8 -> -9
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 0/3
+   Enemy 3 DEFEATED!
+
+Combat ended in 7 turns
+All 3 enemies defeated - Combat Won!
+Attacker HP at end: 68/100
+==================================================
+
+============================================================
+SCENARIO 2 RESULT: WIN in 7 turns
+============================================================
+
+
+================================================================================
+SCENARIO 3: Mixed Enemy Group - HP: [25, 25, 10, 10, 10, 10, 10]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: high_impact, armor_piercing, boss_slayer_acc) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 7
+  Enemy HP: [25, 25, 10, 10, 10, 10, 10] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 7/7
+Total HP: 100/100 (100.0%)
+  Enemy 1: 25/25 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 25 -> 25
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['2', '3', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 100 -> 95
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['5', '4', '6+2'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 27
+      After durability (11): 16 damage
+    Damage dealt to Attacker: 16
+    Attacker HP: 95 -> 79
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['4', '4', '4'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 79 -> 72
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 72 -> 72
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['2', '3', '6+2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 72 -> 64
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 64 -> 64
+  Total defender damage this turn: 36
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 7/7
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 64/100 (64.0%)
+Alive Enemies: 7/7
+Total HP: 100/100 (100.0%)
+  Enemy 1: 25/25 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 34 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 25
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 21 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 21
+    Enemy 1 HP: 25 -> 4
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 64 -> 64
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 64 -> 64
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 64 -> 64
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['2', '3', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 64 -> 62
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['6+3', '4', '1'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 62 -> 53
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 53 -> 53
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 53 -> 53
+  Total defender damage this turn: 11
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 21
+  Total damage this turn: 21
+  Enemies remaining: 7/7
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 53/100 (53.0%)
+Alive Enemies: 7/7
+Total HP: 79/100 (79.0%)
+  Enemy 1: 4/25 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 19 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 4 -> -13
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 53 -> 53
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['1', '5', '5'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 53 -> 43
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['6+1', '5', '3'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 43 -> 33
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['3', '2', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 33 -> 28
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '5', '5'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 28 -> 19
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 19 -> 19
+  Total defender damage this turn: 34
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 6/7
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 19/100 (19.0%)
+Alive Enemies: 6/7
+Total HP: 62/75 (82.7%)
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 34 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 25
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 21 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 21
+    Enemy 2 HP: 25 -> 4
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['6+6+3', '3', '4'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 28
+      After durability (11): 17 damage
+    Damage dealt to Attacker: 17
+    Attacker HP: 19 -> 2
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 2 -> 2
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 2 -> 2
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['2', '2', '4'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 2 -> -1
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -1 -> -1
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -1 -> -1
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 20
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 21
+  Total damage this turn: 21
+  Enemies remaining: 6/7
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: -1/100 (-1.0%)
+Alive Enemies: 6/7
+Total HP: 41/75 (54.7%)
+  Enemy 2: 4/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 31 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 17
+    Enemy 2 HP: 4 -> -13
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['1', '3', '6+6+6+3'] = 25
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 31
+      After durability (11): 20 damage
+    Damage dealt to Attacker: 20
+    Attacker HP: -1 -> -21
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['2', '4', '5'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: -21 -> -27
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['2', '5', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: -27 -> -33
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -33 -> -33
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['3', '6+1', '2'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: -33 -> -40
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 39
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 5/7
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: -40/100 (-40.0%)
+Alive Enemies: 5/7
+Total HP: 24/50 (48.0%)
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 28 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 17
+    Enemy 3 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['1', '1', '2'] = 4
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 10
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: -40 -> -40
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -40 -> -40
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -40 -> -40
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['4', '3', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: -40 -> -45
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 5
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 4/7
+   Enemy 3 DEFEATED!
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: -45/100 (-45.0%)
+Alive Enemies: 4/7
+Total HP: 7/40 (17.5%)
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 4
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 17 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 4: 17
+    Enemy 4 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['5', '1', '5'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: -45 -> -51
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['1', '5', '5'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: -51 -> -57
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['5', '2', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: -57 -> -60
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 15
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 3/7
+   Enemy 4 DEFEATED!
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: -60/100 (-60.0%)
+Alive Enemies: 3/7
+Total HP: -10/30 (-33.3%)
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 5
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 26 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 5: 17
+    Enemy 5 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['2', '4', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: -60 -> -65
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['6+2', '1', '4'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: -65 -> -73
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 13
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 2/7
+   Enemy 5 DEFEATED!
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: -73/100 (-73.0%)
+Alive Enemies: 2/7
+Total HP: -27/20 (-135.0%)
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 6
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 29 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 6: 17
+    Enemy 6 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -73 -> -73
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/7
+   Enemy 6 DEFEATED!
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: -73/100 (-73.0%)
+Alive Enemies: 1/7
+Total HP: -44/10 (-440.0%)
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 7
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 32 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 7: 17
+    Enemy 7 HP: 10 -> -7
+
+TURN 10 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 0/7
+   Enemy 7 DEFEATED!
+
+Combat ended in 10 turns
+All 7 enemies defeated - Combat Won!
+Attacker HP at end: -73/100 (went negative but still won)
+==================================================
+
+============================================================
+SCENARIO 3 RESULT: WIN in 10 turns
+============================================================
+
+
+================================================================================
+SCENARIO 4: Mixed Enemy Group - HP: [50, 10, 10, 10, 10, 10]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: high_impact, armor_piercing, boss_slayer_acc) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 6
+  Enemy HP: [50, 10, 10, 10, 10, 10] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 6/6
+Total HP: 100/100 (100.0%)
+  Enemy 1: 50/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 32 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 50 -> 33
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['6+1', '3', '4'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 100 -> 91
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 91 -> 91
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['4', '1', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 91 -> 89
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['5', '1', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 89 -> 84
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 84 -> 84
+  Total defender damage this turn: 16
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 6/6
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 84/100 (84.0%)
+Alive Enemies: 6/6
+Total HP: 83/100 (83.0%)
+  Enemy 1: 33/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 24 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 33 -> 16
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['1', '1', '3'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 11
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 84 -> 84
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['3', '2', '6+4'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 84 -> 74
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 74 -> 74
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['6+6+2', '4', '1'] = 19
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 25
+      After durability (11): 14 damage
+    Damage dealt to Attacker: 14
+    Attacker HP: 74 -> 60
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 60 -> 60
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 60 -> 60
+  Total defender damage this turn: 24
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 6/6
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 60/100 (60.0%)
+Alive Enemies: 6/6
+Total HP: 66/100 (66.0%)
+  Enemy 1: 16/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 20 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 16 -> -1
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['4', '5', '5'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 60 -> 51
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['5', '2', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 51 -> 47
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['3', '2', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 47 -> 38
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['1', '1', '2'] = 4
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 38 -> 35
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 35 -> 35
+  Total defender damage this turn: 25
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 5/6
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 35/100 (35.0%)
+Alive Enemies: 5/6
+Total HP: 49/50 (98.0%)
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 29 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 17
+    Enemy 2 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['6+5', '6+3', '2'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 28
+      After durability (11): 17 damage
+    Damage dealt to Attacker: 17
+    Attacker HP: 35 -> 18
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['3', '2', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 18 -> 15
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 15 -> 15
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['6+1', '1', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 15 -> 9
+  Total defender damage this turn: 26
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 4/6
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 9/100 (9.0%)
+Alive Enemies: 4/6
+Total HP: 32/40 (80.0%)
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 16 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 17
+    Enemy 3 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['1', '2', '6+6+5'] = 20
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 26
+      After durability (11): 15 damage
+    Damage dealt to Attacker: 15
+    Attacker HP: 9 -> -6
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['2', '1', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: -6 -> -7
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -7 -> -7
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 16
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 3/6
+   Enemy 3 DEFEATED!
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: -7/100 (-7.0%)
+Alive Enemies: 3/6
+Total HP: 15/30 (50.0%)
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 4
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 20 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 4: 17
+    Enemy 4 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -7 -> -7
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -7 -> -7
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 2/6
+   Enemy 4 DEFEATED!
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: -7/100 (-7.0%)
+Alive Enemies: 2/6
+Total HP: -2/20 (-10.0%)
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 5
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 33 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 5: 17
+    Enemy 5 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['3', '4', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: -7 -> -12
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 5
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/6
+   Enemy 5 DEFEATED!
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: -12/100 (-12.0%)
+Alive Enemies: 1/6
+Total HP: -19/10 (-190.0%)
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 6
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 6: 0
+    Enemy 6 HP: 10 -> 10
+
+DEFENDER ATTACK PHASE:
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -12 -> -12
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/6
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: -12/100 (-12.0%)
+Alive Enemies: 1/6
+Total HP: -19/10 (-190.0%)
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 6
+    Making melee_ac attack with ['high_impact', 'armor_piercing', 'boss_slayer_acc']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Slayer] + +4 [Melee] = 30 vs 16
+      Damage dice: ['15 (flat)'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 6: 17
+    Enemy 6 HP: 10 -> -7
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 0/6
+   Enemy 6 DEFEATED!
+
+Combat ended in 9 turns
+All 6 enemies defeated - Combat Won!
+Attacker HP at end: -12/100 (went negative but still won)
+==================================================
+
+============================================================
+SCENARIO 4 RESULT: WIN in 9 turns
+============================================================
+
