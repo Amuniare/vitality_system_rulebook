@@ -757,7 +757,7 @@ Effect: Increase the size of Area attacks:
 Restriction: AOE Attacks only
 
 **Precise**
-Cost: 3p
+Cost: 2p
 Effect: Choose which targets are affected by Area attacks
 Restriction: Area and Area Direct Attacks only
 
