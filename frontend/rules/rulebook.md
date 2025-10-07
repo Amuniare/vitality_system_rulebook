@@ -788,7 +788,8 @@ Penalty: -3 penalty to all Accuracy rolls
 
 **Overhit**
 Cost: 2p
-Effect: When Accuracy exceeds target Avoidance by 5+, add half the difference to Damage roll
+Effect: For every 2 points your Accuracy roll exceeds the target's Avoidance, add +1 to the effect roll
+Restriction: Only occurs if your Accuracy roll exceeds target Avoidance by 5+
 
 **High Impact**
 Cost: 2p
@@ -864,7 +865,7 @@ Restriction: Cannot apply to AOE attacks
 Exclusion: Cannot trigger from Double Tap, Ricochet, or other Explosive Critical
 
 **Martial Artist**
-Cost: 40p
+Cost: 2p
 Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 choice of Grab, 3-space forced movement, or Prone condition
 Restriction: Cannot apply to AOE attacks
 
@@ -896,7 +897,7 @@ Effect: If attack reduces enemy to 10 HP or below, enemy is defeated instead
 Restriction: Cannot apply to AOE attacks
 
 **Finishing Blow 3**
-Cost: 4p
+Cost: 3p
 Effect: If attack reduces enemy to 15 HP or below, enemy is defeated instead
 Restriction: Cannot apply to AOE attacks
 
@@ -905,7 +906,7 @@ Cost: 1p
 Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead
 
 **Splinter**
-Cost: 4p
+Cost: 3p
 Effect: Defeating enemy triggers another attack against new target before turn ends
 Chain Penalty: Maximum Tier/2 additional attacks (rounded up)
 Restriction: Cannot apply to AOE attacks
@@ -1050,7 +1051,7 @@ Limit: Roll d20, DC 10 to activate each turn
 
 **Unreliable 3**
 Cost: 2p
-Effect: +6×Tier to Accuracy, Damage, and Conditions
+Effect: +7×Tier to Accuracy, Damage, and Conditions
 Limit: Must roll 15+ or attack fails
 
 #### Turn-Based Limits
@@ -1060,29 +1061,25 @@ Cost: 2p
 Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: First round of combat
 
-**Steady**
-Cost: 60p
-Effect: +Tier to Accuracy, Damage, and Conditions
-Limit: Turn 3 or later
 
 **Patient**
-Cost: 4p
+Cost: 3p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Turn 5 or later
 
 **Finale**
-Cost: 4p
+Cost: 3p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Turn 8 or later
 
 **Charge Up**
-Cost: 4p
+Cost: 3p
 Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: Spend an action on your previous turn
 
 **Charge Up 2**
-Cost: 4p
-Effect: +5×Tier to Accuracy, Damage, and Conditions
+Cost: 3p
+Effect: +6×Tier to Accuracy, Damage, and Conditions
 Limit: Spend actions on your previous two turns
 
 **Cooldown**

@@ -127,9 +127,9 @@
 - **Restriction**: Cannot use with AOE attacks
 
 #### Ricochet
-- **Cost**: 1 point
+- **Cost**: 2 points
 - **Effect**: On critical hit, bounce to another enemy
-- **Updated**: 2025-10-04 (was 30p)
+- **Updated**: 2025-10-07 (was 1p)
 - **Restriction**: Cannot use with AOE attacks or other crit effects
 
 ### 2-Point Upgrades
@@ -220,16 +220,16 @@
 ### 5-Point Upgrades
 
 #### Finishing Blow III
-- **Cost**: 5 points
+- **Cost**: 3 points
 - **Effect**: Instantly defeat enemies at ≤15 HP
-- **Updated**: 2025-10-05 (was 90p → 5p)
+- **Updated**: 2025-10-07 (was 5p)
 - **Restriction**: Cannot use with AOE attacks
 
 #### Splinter
-- **Cost**: 5 points
+- **Cost**: 3 points
 - **Effect**: On kill, make free attack on another enemy (Tier/2 times)
+- **Updated**: 2025-10-07 (was 5p)
 - **Restriction**: Cannot use with AOE attacks
-- **Updated**: 2025-10-05 (was 80p → 5p)
 
 ---
 
@@ -288,9 +288,9 @@
 
 #### Unreliable III
 - **Cost**: 2 points
-- **Bonus**: +6×Tier accuracy & damage
+- **Bonus**: +7×Tier accuracy & damage
 - **Condition**: DC 15+ reliability check (fail = wasted turn)
-- **Updated**: 2025-10-05
+- **Updated**: 2025-10-07 (was +6×Tier)
 - **Mutual Exclusion**: unreliable_1, unreliable_2
 
 #### Quickdraw
@@ -375,24 +375,24 @@
 ### 4-Point Limits
 
 #### Patient
-- **Cost**: 4 points
+- **Cost**: 3 points
 - **Bonus**: +Tier accuracy & damage
 - **Condition**: Turn 5 or later
-- **Updated**: 2025-10-05
+- **Updated**: 2025-10-07 (was 4p)
 - **Mutual Exclusion**: quickdraw, steady, finale, cooldown
 
 #### Finale
-- **Cost**: 4 points
+- **Cost**: 3 points
 - **Bonus**: +2×Tier accuracy & damage
 - **Condition**: Turn 7 or later
-- **Updated**: 2025-10-05
+- **Updated**: 2025-10-07 (was 4p)
 - **Mutual Exclusion**: quickdraw, steady, patient, cooldown
 
 #### Charge Up II
-- **Cost**: 4 points
-- **Bonus**: +7×Tier accuracy & damage
+- **Cost**: 3 points
+- **Bonus**: +6×Tier accuracy & damage
 - **Condition**: Spend actions on previous TWO turns charging
-- **Updated**: 2025-10-05
+- **Updated**: 2025-10-07 (was 4p, +7×Tier)
 - **Mutual Exclusion**: charge_up
 
 #### Combo Move

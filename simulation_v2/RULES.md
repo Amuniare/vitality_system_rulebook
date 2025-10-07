@@ -72,13 +72,13 @@ ATTACK_TYPES = {
 - **Reliable Accuracy** (1p): Roll with advantage, -3 penalty to all Accuracy rolls
 - **Overhit** (2p): +1 damage per 2 points exceeding avoidance by 5+
 - **Culling Strike** (1p): If target is at or below 1/5 of their maximum HP after attack, they are immediately defeated
-- **Splinter** (4p): If this attack defeats an enemy, make the same attack with new rolls against another target in range (max Tier/2 rounded up follow-up attacks)
+- **Splinter** (3p): If this attack defeats an enemy, make the same attack with new rolls against another target in range (max Tier/2 rounded up follow-up attacks)
 
 #### Finishing Blow Upgrades
 - **Finishing Blow**: If attack reduces enemy to (5 × rank) HP or below, enemy is defeated instead. Cannot apply to AOE attacks.
   - **Rank 1** (1p): ≤5 HP threshold
   - **Rank 2** (2p): ≤10 HP threshold
-  - **Rank 3** (4p): ≤15 HP threshold
+  - **Rank 3** (3p): ≤15 HP threshold
 
 #### Slayer Upgrades
 - **Minion Slayer** (1p): +Tier to chosen roll type vs targets ≤10 HP (choose Accuracy, Damage, or Conditions when purchasing)
@@ -87,22 +87,22 @@ ATTACK_TYPES = {
 - **Boss Slayer** (1p): +Tier to chosen roll type vs targets ≤100 HP (choose Accuracy, Damage, or Conditions when purchasing)
 
 #### New Upgrades
-- **Ricochet** (1p): Critical hit on 15-20; on critical hit, make additional attack against different target within range (cannot combine with Double Tap/Powerful Critical/Explosive Critical)
+- **Ricochet** (2p): Critical hit on 15-20; on critical hit, make additional attack against different target within range (cannot combine with Double Tap/Powerful Critical/Explosive Critical)
 - **Channeled** (2p): Starts at -2xTier penalty to Accuracy/Damage/Conditions, gains +Tier to Accuracy/Damage/Conditions per consecutive turn using same attack (max +5×Tier total), note: the attack does not need to hit, you just need to have used the attack. Resets if different attack is used.
 - **Leech** (3p): Recover HP equal to half damage dealt, -Tier to Accuracy/Damage/Conditions
 
 ### Limits (Unreliable Upgrades)
 - **Unreliable 1** (2p): +Tier to Accuracy and Damage, DC 5 activation
 - **Unreliable 2** (3p): +3×Tier to Accuracy and Damage, DC 10 activation
-- **Unreliable 3** (2p): +6×Tier to Accuracy and Damage, DC 15 activation - attack fails entirely on missed rolls
+- **Unreliable 3** (2p): +7×Tier to Accuracy and Damage, DC 15 activation - attack fails entirely on missed rolls
 
 
 #### Turn-Based Limit Upgrades
 - **Quickdraw** (2p): +3×Tier to Accuracy and Damage, turn 1 only
-- **Patient** (4p): +1×Tier to Accuracy and Damage, turn 5 or later
-- **Finale** (4p): +2×Tier to Accuracy and Damage, turn 8 or later
-- **Charge Up** (4p): +3×Tier to Accuracy and Damage, spend action on previous turn
-- **Charge Up 2** (4p): +5×Tier to Accuracy and Damage, spend actions on previous two turns
+- **Patient** (3p): +1×Tier to Accuracy and Damage, turn 5 or later
+- **Finale** (3p): +2×Tier to Accuracy and Damage, turn 8 or later
+- **Charge Up** (3p): +3×Tier to Accuracy and Damage, spend action on previous turn
+- **Charge Up 2** (3p): +6×Tier to Accuracy and Damage, spend actions on previous two turns
 - **Cooldown** (1p): +3×Tier to Accuracy and Damage, cannot be used again for 3 turns after activation
 
 #### HP-Based Limits

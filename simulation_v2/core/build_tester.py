@@ -42,7 +42,12 @@ class BuildTester:
 
         # Generate all valid builds
         print(f"  Generating builds (max {self.max_points} points)...")
-        builds = list(generate_archetype_builds_chunked(self.archetype, self.config.tier, max_points_per_attack=self.max_points))
+        builds = list(generate_archetype_builds_chunked(
+            self.archetype,
+            self.config.tier,
+            max_points_per_attack=self.max_points,
+            config=self.config
+        ))
 
         print(f"  Found {len(builds)} valid builds")
         print(f"  Testing builds across {len(self.config.scenarios)} scenarios...")
@@ -58,7 +63,10 @@ class BuildTester:
 
         results = []
 
-        if self.config.use_threading:
+        # Use progressive elimination if enabled
+        if self.config.progressive_elimination.enabled:
+            results = self._test_builds_with_progressive_elimination(builds)
+        elif self.config.use_threading:
             results = self._test_builds_parallel(builds)
         else:
             results = self._test_builds_sequential(builds)
@@ -210,8 +218,101 @@ class BuildTester:
 
         return all_results
 
-    def _test_single_build(self, build) -> Tuple[float, float]:
-        """Test a single build across all scenarios."""
+    def _test_builds_with_progressive_elimination(self, builds: List) -> List[Tuple]:
+        """
+        Test builds using progressive elimination strategy.
+
+        Runs multiple rounds with increasing simulation counts, eliminating
+        bottom performers after each round until final testing.
+        """
+        import time
+
+        current_builds = builds
+        process = psutil.Process(os.getpid())
+
+        print(f"\n  Progressive Elimination enabled - {len(self.config.progressive_elimination.rounds)} rounds")
+
+        for round_num, round_config in enumerate(self.config.progressive_elimination.rounds, 1):
+            # Determine simulation runs for this round (-1 means use config.simulation_runs)
+            sim_runs = (self.config.simulation_runs
+                       if round_config.simulation_runs == -1
+                       else round_config.simulation_runs)
+
+            keep_percent = round_config.keep_percent
+            is_final_round = (round_num == len(self.config.progressive_elimination.rounds))
+
+            print(f"\n  Round {round_num}/{len(self.config.progressive_elimination.rounds)}: "
+                  f"Testing {len(current_builds)} builds with {sim_runs} simulation runs...")
+
+            # Test all current builds
+            results = []
+            start_time = time.time()
+
+            for i, build in enumerate(current_builds):
+                if (i + 1) % 500 == 0:
+                    elapsed = time.time() - start_time
+                    avg_time_per_build = elapsed / (i + 1)
+                    remaining_builds = len(current_builds) - (i + 1)
+                    est_remaining = avg_time_per_build * remaining_builds
+
+                    # Format time
+                    if est_remaining < 60:
+                        time_str = f"~{int(est_remaining)}s remaining"
+                    else:
+                        mins = int(est_remaining / 60)
+                        secs = int(est_remaining % 60)
+                        time_str = f"~{mins}m {secs}s remaining"
+
+                    mem_mb = process.memory_info().rss / 1024 / 1024
+                    print(f"    Progress: {i + 1}/{len(current_builds)} ({time_str}) | Memory: {mem_mb:.1f} MB")
+
+                    if (i + 1) % 1000 == 0:
+                        gc.collect()
+
+                avg_turns, avg_dpt = self._test_single_build(build, simulation_runs=sim_runs)
+                results.append((build, avg_dpt, avg_turns))
+
+            # Sort by avg_turns (ascending = better)
+            results.sort(key=lambda x: x[2])
+
+            if is_final_round:
+                # Final round - return all results
+                print(f"  Round {round_num} complete - Final results: {len(results)} builds")
+                gc.collect()
+                return results
+            else:
+                # Eliminate bottom performers
+                keep_count = max(1, int(len(results) * keep_percent))
+                eliminated_count = len(results) - keep_count
+                eliminated_pct = (eliminated_count / len(results)) * 100
+
+                current_builds = [r[0] for r in results[:keep_count]]
+
+                print(f"  Round {round_num} complete - Eliminated {eliminated_count} builds "
+                      f"({eliminated_pct:.1f}%) → {len(current_builds)} remaining")
+                print(f"    Best avg turns: {results[0][2]:.2f}, Worst kept: {results[keep_count-1][2]:.2f}")
+
+                # Clear old results to free memory
+                del results
+                gc.collect()
+
+        # Should not reach here, but return empty if something goes wrong
+        return []
+
+    def _test_single_build(self, build, simulation_runs: int = None) -> Tuple[float, float]:
+        """
+        Test a single build across all scenarios.
+
+        Args:
+            build: Build to test
+            simulation_runs: Number of simulation runs (None = use config.simulation_runs)
+
+        Returns:
+            Tuple of (avg_turns, avg_dpt)
+        """
+        if simulation_runs is None:
+            simulation_runs = self.config.simulation_runs
+
         all_turns = []
         all_dpt = []
 
@@ -233,7 +334,7 @@ class BuildTester:
                 results, avg_turns, dpt, win_rate = run_simulation_batch_gpu(
                     self.attacker,
                     build,
-                    self.config.simulation_runs,
+                    simulation_runs,
                     100,
                     self.defender,
                     num_enemies=scenario.num_enemies,
@@ -245,7 +346,7 @@ class BuildTester:
                 results, avg_turns, dpt, win_rate = run_simulation_batch(
                     self.attacker,
                     build,
-                    self.config.simulation_runs,
+                    simulation_runs,
                     100,
                     self.defender,
                     enemy_hp_list=scenario.enemy_hp_list
@@ -255,7 +356,7 @@ class BuildTester:
                 results, avg_turns, dpt, win_rate = run_simulation_batch(
                     self.attacker,
                     build,
-                    self.config.simulation_runs,
+                    simulation_runs,
                     100,
                     self.defender,
                     num_enemies=scenario.num_enemies,

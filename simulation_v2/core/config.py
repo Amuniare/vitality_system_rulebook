@@ -7,6 +7,29 @@ from typing import List, Dict
 
 
 @dataclass
+class ProgressiveEliminationRound:
+    """Configuration for a single progressive elimination round."""
+    simulation_runs: int  # Number of simulation runs for this round (-1 = use config.simulation_runs)
+    keep_percent: float   # Fraction of builds to keep (0.0-1.0)
+
+
+@dataclass
+class ProgressiveEliminationConfig:
+    """Progressive elimination configuration for build testing optimization."""
+    enabled: bool
+    rounds: List[ProgressiveEliminationRound]
+
+
+@dataclass
+class PruningConfig:
+    """Pruning configuration for build optimization (used for versatile_master pre-generation)."""
+    enabled: bool
+    top_percent: float
+    simulation_runs: int
+    scenario_index: int = 0  # Deprecated - now tests all scenarios
+
+
+@dataclass
 class ScenarioConfig:
     """Combat scenario configuration."""
     name: str
@@ -39,6 +62,8 @@ class SimConfigV2:
     attacker_stats: List[int]
     defender_stats: List[int]
     scenarios: List[ScenarioConfig]
+    pruning: PruningConfig
+    progressive_elimination: ProgressiveEliminationConfig
 
     @classmethod
     def load(cls, config_path: str = None):
@@ -61,6 +86,31 @@ class SimConfigV2:
                 enemy_hp_list=scenario_data.get('enemy_hp_list')
             ))
 
+        # Parse pruning config (with defaults if not specified)
+        pruning_data = data.get('pruning', {})
+        pruning = PruningConfig(
+            enabled=pruning_data.get('enabled', False),
+            top_percent=pruning_data.get('top_percent', 0.05),
+            simulation_runs=pruning_data.get('simulation_runs', 5),
+            scenario_index=pruning_data.get('scenario_index', 0)
+        )
+
+        # Parse progressive elimination config (with defaults if not specified)
+        prog_elim_data = data.get('progressive_elimination', {})
+        if prog_elim_data.get('enabled', False):
+            rounds_data = prog_elim_data.get('rounds', [])
+            rounds = [
+                ProgressiveEliminationRound(
+                    simulation_runs=round_data['simulation_runs'],
+                    keep_percent=round_data['keep_percent']
+                )
+                for round_data in rounds_data
+            ]
+            progressive_elimination = ProgressiveEliminationConfig(enabled=True, rounds=rounds)
+        else:
+            # Default: disabled with empty rounds
+            progressive_elimination = ProgressiveEliminationConfig(enabled=False, rounds=[])
+
         return cls(
             tier=data['tier'],
             archetypes=data['archetypes'],
@@ -70,7 +120,9 @@ class SimConfigV2:
             build_chunk_size=data['build_chunk_size'],
             attacker_stats=data['character_config']['attacker'],
             defender_stats=data['character_config']['defender'],
-            scenarios=scenarios
+            scenarios=scenarios,
+            pruning=pruning,
+            progressive_elimination=progressive_elimination
         )
 
     def max_points_per_attack(self, archetype: str) -> int:

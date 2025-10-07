@@ -1,7 +1,7 @@
 {
   "tier": 4,
-  "archetypes": ["dual_natured"],
-  "simulation_runs": 15,
+  "archetypes": ["focused", "dual_natured", "versatile_master"], 
+  "simulation_runs": 5,
   "use_threading": true,
   "use_gpu": false,
   "build_chunk_size": 2000,
@@ -9,6 +9,20 @@
   "character_config": {
     "attacker": [2, 2, 2, 2, 4],
     "defender": [2, 2, 2, 2, 4]
+  },
+
+  "pruning": {
+    "enabled": true,
+    "top_percent": 0.05,
+    "simulation_runs": 1
+  },
+
+  "progressive_elimination": {
+    "enabled": false,
+    "rounds": [
+      {"simulation_runs": 5, "keep_percent": 0.50},
+      {"simulation_runs": -1, "keep_percent": 1.0}
+    ]
   },
 
   "scenarios": [

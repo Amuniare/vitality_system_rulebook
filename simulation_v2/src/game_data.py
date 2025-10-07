@@ -16,7 +16,7 @@ ATTACK_TYPES = {
     'direct_area_damage': AttackType('direct_area_damage', 0, is_direct=True, direct_damage_base=15, is_area=True)
 }
 
-# Upgrades - Costs updated 2025-10-05
+# Upgrades - Costs updated 2025-10-07
 UPGRADES = {
     'power_attack': Upgrade('power_attack', 1, damage_mod=1, accuracy_penalty=1),
     'high_impact': Upgrade('high_impact', 2, special_effect="flat_15"),
@@ -30,7 +30,7 @@ UPGRADES = {
     'double_tap': Upgrade('double_tap', 3, special_effect="double_tap"),
     'finishing_blow_1': Upgrade('finishing_blow_1', 1, special_effect="finishing_5"),
     'finishing_blow_2': Upgrade('finishing_blow_2', 2, special_effect="finishing_10"),
-    'finishing_blow_3': Upgrade('finishing_blow_3', 4, special_effect="finishing_15"),
+    'finishing_blow_3': Upgrade('finishing_blow_3', 3, special_effect="finishing_15"),
     'extra_attack': Upgrade('extra_attack', 3, special_effect="extra_attack"),
     'barrage': Upgrade('barrage', 2, special_effect="barrage_chain", damage_penalty=1, accuracy_penalty=1),
     'minion_slayer_acc': Upgrade('minion_slayer_acc', 1, special_effect="slayer_minion_acc"),
@@ -46,23 +46,23 @@ UPGRADES = {
     'overhit': Upgrade('overhit', 2, special_effect="overhit"),
     'explosive_critical': Upgrade('explosive_critical', 3, special_effect="explosive_critical"),
     'culling_strike': Upgrade('culling_strike', 1, special_effect="culling_strike"),
-    'splinter': Upgrade('splinter', 4, special_effect="splinter"),
-    'ricochet': Upgrade('ricochet', 1, special_effect="ricochet"),
+    'splinter': Upgrade('splinter', 3, special_effect="splinter"),
+    'ricochet': Upgrade('ricochet', 2, special_effect="ricochet"),
     'channeled': Upgrade('channeled', 2, special_effect="channeled"),
     'leech': Upgrade('leech', 3, accuracy_penalty=1, damage_penalty=1, special_effect="leech"),
 }
 
-# Limits - Costs updated 2025-10-05
+# Limits - Costs updated 2025-10-07
 LIMITS = {
     # Reliability/Turn Timing Limits
     'unreliable_1': Limit('unreliable_1', 2, 1, 5),
     'unreliable_2': Limit('unreliable_2', 3, 3, 10),
-    'unreliable_3': Limit('unreliable_3', 2, 6, 15),
+    'unreliable_3': Limit('unreliable_3', 2, 7, 15),
     'quickdraw': Limit('quickdraw', 2, 3, 0),
-    'patient': Limit('patient', 4, 1, 0),
-    'finale': Limit('finale', 4, 2, 0),
-    'charge_up': Limit('charge_up', 4, 3, 0),
-    'charge_up_2': Limit('charge_up_2', 4, 5, 0),
+    'patient': Limit('patient', 3, 1, 0),
+    'finale': Limit('finale', 3, 2, 0),
+    'charge_up': Limit('charge_up', 3, 3, 0),
+    'charge_up_2': Limit('charge_up_2', 3, 6, 0),
     'cooldown': Limit('cooldown', 2, 3, 0),
     # HP-Based Limits
     'charges_1': Limit('charges_1', 1, 4, 0),

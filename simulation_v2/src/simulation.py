@@ -7,6 +7,83 @@ from src.models import Character, AttackBuild, MultiAttackBuild
 from src.combat import make_attack, make_aoe_attack
 
 
+def rank_attacks_by_scenario(builds: List[AttackBuild], enemies: List[dict]) -> List[int]:
+    """
+    Rank attacks for versatile_master based on current combat scenario.
+
+    Returns:
+        List of attack indices in priority order (best to worst)
+    """
+    num_alive = sum(1 for e in enemies if e['hp'] > 0)
+    total_hp = sum(e['hp'] for e in enemies if e['hp'] > 0)
+    avg_hp_per_enemy = total_hp / num_alive if num_alive > 0 else 0
+
+    scores = []
+    for idx, build in enumerate(builds):
+        score = 0
+
+        # Score based on attack type match
+        is_aoe = build.attack_type in ['area', 'direct_area_damage']
+
+        if num_alive >= 5:
+            # Swarm scenario - heavily prefer AOE
+            score += 100 if is_aoe else -50
+        elif num_alive >= 3:
+            # Multi-target - prefer AOE
+            score += 50 if is_aoe else 0
+        elif num_alive == 1:
+            # Boss/single target - prefer single-target attacks
+            score += 50 if not is_aoe else -30
+        else:
+            # 2 enemies - slight preference for single-target
+            score += 20 if not is_aoe else 10
+
+        # Score based on upgrade synergies
+        for upgrade in build.upgrades:
+            # Boss slayer upgrades
+            if upgrade in ['boss_slayer_acc', 'boss_slayer_dmg']:
+                if num_alive == 1 and avg_hp_per_enemy > 50:
+                    score += 40  # Great for single high-HP targets
+                elif num_alive <= 2:
+                    score += 20  # Still good for focused targets
+                else:
+                    score -= 10  # Not ideal for swarms
+
+            # Culling strike - good for multiple lower HP enemies
+            elif upgrade == 'culling_strike':
+                if num_alive >= 3 and avg_hp_per_enemy < 40:
+                    score += 30  # Excellent for cleaning up wounded enemies
+                elif num_alive >= 2:
+                    score += 15
+
+            # Channeled - good for sustained single-target damage
+            elif upgrade == 'channeled':
+                if num_alive == 1:
+                    score += 25  # Great for boss fights
+                elif num_alive <= 2:
+                    score += 10
+                else:
+                    score -= 15  # Bad for swarms (need to switch targets)
+
+            # Powerful/deadly critical - generally good
+            elif upgrade in ['powerful_critical', 'deadly_critical']:
+                score += 10
+
+            # Area enhancers (already covered by is_aoe scoring)
+            elif upgrade in ['wide_area', 'devastating_area']:
+                pass  # Already scored via is_aoe
+
+        # Slight penalty for limits (they may restrict usage)
+        if build.limits:
+            score -= 5 * len(build.limits)
+
+        scores.append((idx, score))
+
+    # Sort by score descending, return indices
+    scores.sort(key=lambda x: x[1], reverse=True)
+    return [idx for idx, _ in scores]
+
+
 def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: int = 100,
                           log_file=None, defender: Character = None, num_enemies: int = 1,
                           enemy_hp: int = None, max_turns: int = 100, enemy_hp_list: List[int] = None) -> Tuple[int, str]:
@@ -216,12 +293,44 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     if log_file:
                         log_file.write(f"  Using Attack 2 (preferred)\n")
             else:
-                # For versatile_master or other multi-attack types, use first attack for now
-                # TODO: Implement more sophisticated selection for versatile_master
-                active_build = build.builds[0]
-                active_build_idx = 0  # Using Attack 1
-                if log_file:
-                    log_file.write(f"  Using Attack 1 (default for {build.archetype})\n")
+                # For versatile_master - use intelligent scenario-based attack selection
+                attack_priority = rank_attacks_by_scenario(build.builds, enemies)
+
+                # Try attacks in priority order, falling back if unavailable
+                active_build = None
+                for priority_idx in attack_priority:
+                    candidate_build = build.builds[priority_idx]
+
+                    # Test if this attack can be used this turn
+                    try:
+                        test_damage, test_conditions = make_attack(
+                            attacker, defender, candidate_build, allow_multi=False, log_file=None,
+                            turn_number=turns, charge_history=charge_history if charge_history is not None else [],
+                            cooldown_history=cooldown_history if cooldown_history is not None else {},
+                            attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state
+                        )
+                    except Exception as e:
+                        # If test fails, try next attack
+                        test_damage = 0
+                        test_conditions = []
+
+                    # If attack succeeds (or would charge), use it
+                    if test_damage > 0 or 'charge' in test_conditions:
+                        active_build = candidate_build
+                        active_build_idx = priority_idx
+                        if log_file:
+                            if priority_idx == attack_priority[0]:
+                                log_file.write(f"  Using Attack {priority_idx+1} (optimal for scenario)\n")
+                            else:
+                                log_file.write(f"  Using Attack {priority_idx+1} (fallback - higher priority attacks unavailable)\n")
+                        break
+
+                # If no attack worked (shouldn't happen), use first as last resort
+                if active_build is None:
+                    active_build = build.builds[0]
+                    active_build_idx = 0
+                    if log_file:
+                        log_file.write(f"  Using Attack 1 (emergency fallback)\n")
 
             # Record which attack was used for tracking
             build.record_attack_usage(active_build_idx)

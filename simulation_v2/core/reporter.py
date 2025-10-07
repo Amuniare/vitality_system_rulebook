@@ -33,14 +33,40 @@ class ReporterV2:
         # Calculate enhancement stats from build results
         enhancement_stats = self._calculate_enhancement_stats(build_results)
 
-        # Calculate overall median for balance report
+        # Calculate overall median and percentile medians for all reports
         all_turns = [avg_turns for _, _, avg_turns in build_results]
         overall_median = statistics.median(all_turns) if all_turns else 0
 
+        # Calculate percentile medians (top builds by rank)
+        sorted_builds = sorted(build_results, key=lambda x: x[2])  # Sort by avg_turns (ascending = better)
+        total_builds = len(sorted_builds)
+
+        if total_builds > 0:
+            top_5_count = max(1, int(total_builds * 0.05))
+            top_10_count = max(1, int(total_builds * 0.10))
+            top_20_count = max(1, int(total_builds * 0.20))
+            top_50_count = max(1, int(total_builds * 0.50))
+
+            top_5_median = statistics.median([turns for _, _, turns in sorted_builds[:top_5_count]])
+            top_10_median = statistics.median([turns for _, _, turns in sorted_builds[:top_10_count]])
+            top_20_median = statistics.median([turns for _, _, turns in sorted_builds[:top_20_count]])
+            top_50_median = statistics.median([turns for _, _, turns in sorted_builds[:top_50_count]])
+        else:
+            top_5_median = top_10_median = top_20_median = top_50_median = 0
+
         # Generate reports
-        self._generate_enhancement_ranking_report(enhancement_stats, len(build_results))
-        self._generate_cost_analysis_report(enhancement_stats)
-        self._generate_balance_analysis_report(enhancement_stats, build_results, overall_median)
+        self._generate_enhancement_ranking_report(
+            enhancement_stats, len(build_results), overall_median,
+            top_50_median, top_20_median, top_10_median, top_5_median
+        )
+        self._generate_cost_analysis_report(
+            enhancement_stats, overall_median,
+            top_50_median, top_20_median, top_10_median, top_5_median
+        )
+        self._generate_performance_tier_analysis(
+            build_results, overall_median,
+            top_50_median, top_20_median, top_10_median, top_5_median
+        )
 
         print(f"  Reports saved to {self.reports_dir}")
 
@@ -138,25 +164,30 @@ class ReporterV2:
             avg_turns = statistics.mean(turns_values)
             vs_median = avg_turns - median_turns
 
-            # Top 10%, Top 20%, and Top 50% statistics
+            # Top 5%, Top 10%, Top 20%, and Top 50% statistics
             sorted_appearances = sorted(appearances, key=lambda x: x[0])  # Sort by rank
+            top_5_count = max(1, len(sorted_appearances) // 20)
             top_10_count = max(1, len(sorted_appearances) // 10)
             top_20_count = max(1, len(sorted_appearances) // 5)
             top_50_count = max(1, len(sorted_appearances) // 2)
 
+            top_5_turns = [turns for _, turns in sorted_appearances[:top_5_count]]
             top_10_turns = [turns for _, turns in sorted_appearances[:top_10_count]]
             top_20_turns = [turns for _, turns in sorted_appearances[:top_20_count]]
             top_50_turns = [turns for _, turns in sorted_appearances[:top_50_count]]
 
+            median_top_5 = statistics.median(top_5_turns) if top_5_turns else 0
             median_top_10 = statistics.median(top_10_turns) if top_10_turns else 0
             median_top_20 = statistics.median(top_20_turns) if top_20_turns else 0
             median_top_50 = statistics.median(top_50_turns) if top_50_turns else 0
 
+            top5_vs_median = median_top_5 - median_turns
             top10_vs_median = median_top_10 - median_turns
             top20_vs_median = median_top_20 - median_turns
             top50_vs_median = median_top_50 - median_turns
 
             cost = data['cost']
+            top5_efficiency = top5_vs_median / cost if cost > 0 else 0
             top10_efficiency = top10_vs_median / cost if cost > 0 else 0
             top20_efficiency = top20_vs_median / cost if cost > 0 else 0
             top50_efficiency = top50_vs_median / cost if cost > 0 else 0
@@ -193,6 +224,9 @@ class ReporterV2:
                 'cost': cost,
                 'avg_turns': avg_turns,
                 'vs_median': vs_median,
+                'median_top_5': median_top_5,
+                'top5_vs_median': top5_vs_median,
+                'top5_efficiency': top5_efficiency,
                 'median_top_10': median_top_10,
                 'top10_vs_median': top10_vs_median,
                 'top10_efficiency': top10_efficiency,
@@ -234,38 +268,45 @@ class ReporterV2:
         return frozenset(enhancements)
 
     def _calculate_synergy_concentration(self, top_builds: List[Tuple], enhancement_name: str) -> float:
-        """Calculate what % of top builds use the same 2-3 most common enhancement combinations.
+        """Calculate what % of top builds contain the 2-3 most common co-occurring enhancements.
+
+        Instead of looking for exact matching sets, this counts individual enhancement
+        co-occurrences and finds the most common partners.
 
         Args:
             top_builds: List of (rank, build, avg_turns) tuples
             enhancement_name: Name of enhancement to analyze
 
         Returns:
-            Percentage (0-100) of top builds using one of the top 2-3 most common sets
+            Percentage (0-100) of top builds containing at least one of the top 2-3 partner enhancements
         """
         if not top_builds:
             return 0.0
 
-        # Extract enhancement sets (excluding the current enhancement)
-        enhancement_sets = []
+        # Count individual enhancement co-occurrences
+        partner_counts = {}
         for _, build, _ in top_builds:
             full_set = self._get_enhancement_set(build)
-            # Remove the enhancement we're analyzing
-            other_enhancements = full_set - {enhancement_name}
-            enhancement_sets.append(other_enhancements)
+            # Count each other enhancement that appears with the target
+            for other_enhancement in full_set:
+                if other_enhancement != enhancement_name:
+                    partner_counts[other_enhancement] = partner_counts.get(other_enhancement, 0) + 1
 
-        # Count occurrences of each unique set
-        set_counts = {}
-        for enhancement_set in enhancement_sets:
-            set_counts[enhancement_set] = set_counts.get(enhancement_set, 0) + 1
+        if not partner_counts:
+            return 0.0
 
-        # Find top 2-3 most common sets
-        sorted_sets = sorted(set_counts.items(), key=lambda x: x[1], reverse=True)
-        top_sets = sorted_sets[:3]  # Top 3 most common
+        # Find top 2-3 most common partner enhancements
+        sorted_partners = sorted(partner_counts.items(), key=lambda x: x[1], reverse=True)
+        top_partners = [name for name, _ in sorted_partners[:3]]  # Top 3 partners
 
-        # Calculate percentage of builds using one of these top sets
-        top_set_count = sum(count for _, count in top_sets)
-        concentration_pct = (top_set_count / len(top_builds)) * 100 if top_builds else 0.0
+        # Calculate % of builds containing at least one of these top partners
+        builds_with_top_partners = 0
+        for _, build, _ in top_builds:
+            full_set = self._get_enhancement_set(build)
+            if any(partner in full_set for partner in top_partners):
+                builds_with_top_partners += 1
+
+        concentration_pct = (builds_with_top_partners / len(top_builds)) * 100 if top_builds else 0.0
 
         return concentration_pct
 
@@ -288,7 +329,16 @@ class ReporterV2:
 
         return len(unique_sets)
 
-    def _generate_enhancement_ranking_report(self, enhancement_stats: List[Dict], total_builds: int):
+    def _generate_enhancement_ranking_report(
+        self,
+        enhancement_stats: List[Dict],
+        total_builds: int,
+        overall_median: float,
+        top_50_median: float,
+        top_20_median: float,
+        top_10_median: float,
+        top_5_median: float
+    ):
         """Generate enhancement ranking report."""
         report_path = os.path.join(self.reports_dir, f'enhancement_ranking_{self.archetype}.md')
 
@@ -303,13 +353,22 @@ class ReporterV2:
             f.write("Enhancement performance ranked by Top50% vs Med / cost.\n")
             f.write("Lower (more negative) = better efficiency.\n\n")
 
+            # Add overall statistics
+            f.write("## Overall Build Statistics\n\n")
+            f.write(f"- **Total builds tested**: {total_builds}\n")
+            f.write(f"- **Overall median turns**: {overall_median:.1f}\n")
+            f.write(f"- **Top 50% median turns**: {top_50_median:.1f}\n")
+            f.write(f"- **Top 20% median turns**: {top_20_median:.1f}\n")
+            f.write(f"- **Top 10% median turns**: {top_10_median:.1f}\n")
+            f.write(f"- **Top 5% median turns**: {top_5_median:.1f}\n\n")
+
             # Add methodology explanation
             f.write("## Methodology\n\n")
             f.write("This report ranks enhancements by their cost-efficiency in above-average builds:\n\n")
             f.write("**Key Metrics**:\n")
             f.write("1. **Avg Turns**: Mean turns across all builds containing this enhancement\n")
             f.write("2. **vs Median**: Deviation from overall median (negative = better than median)\n")
-            f.write("3. **Top10%/20%/50% Turns**: Median turns for the top X% of builds (by rank) containing this enhancement\n")
+            f.write("3. **Top5%/10%/20%/50% Turns**: Median turns for the top X% of builds (by rank) containing this enhancement\n")
             f.write("4. **TopX% vs Median**: How much better/worse the top X% performs vs overall median\n")
             f.write("5. **TopX% Efficiency**: (TopX% vs Median) / cost - efficiency metric normalized by cost\n")
             f.write("6. **Attack Type Breakdown**: Average turns when used with each attack type (0 = incompatible)\n")
@@ -318,22 +377,22 @@ class ReporterV2:
                 f.write("8. **Used1/Used2**: % of combat where Attack 1 vs 2 was actually used (combat behavior)\n")
             f.write("\n**Primary Ranking**: Top50% vs Med / cost (lower = better efficiency in above-average builds)\n\n")
             f.write("**Data Source**: All valid builds within point budget, tested across multiple combat scenarios.\n\n")
-
-            f.write(f"**Total builds tested**: {total_builds}\n\n")
+            f.write("**NOTE**: This report ranks individual enhancements in isolation. For synergy analysis and build archetypes, see `performance_tier_analysis_{}.md`.\n\n".format(self.archetype))
 
             # Table header - conditional based on archetype
             if has_multi_attack:
-                f.write("| Rank | Enhancement | Cost | Top50% vs Med / cost | Avg Turns | vs Median | Top10% | Top10% vs Med | Top10% Eff | Top20% | Top20% vs Med | Top20% Eff | Top50% | Top50% vs Med | Top50% Eff | Melee_AC | Melee_DG | Ranged | Area | Direct | Slot1 | Slot2 | Used1 | Used2 | Uses | Med Rank |\n")
-                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
+                f.write("| Rank | Enhancement | Cost | Top50% vs Med / cost | Avg Turns | vs Median | Top5% | Top5% vs Med | Top5% Eff | Top10% | Top10% vs Med | Top10% Eff | Top20% | Top20% vs Med | Top20% Eff | Top50% | Top50% vs Med | Top50% Eff | Melee_AC | Melee_DG | Ranged | Area | Direct | Slot1 | Slot2 | Used1 | Used2 | Uses | Med Rank |\n")
+                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
             else:
-                f.write("| Rank | Enhancement | Cost | Top50% vs Med / cost | Avg Turns | vs Median | Top10% | Top10% vs Median | Top10% Eff | Top20% | Top20% vs Median | Top20% Eff | Top50% | Top50% vs Median | Top50% Eff | Melee_AC | Melee_DG | Ranged | Area | Direct | Uses | Med Rank |\n")
-                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
+                f.write("| Rank | Enhancement | Cost | Top50% vs Med / cost | Avg Turns | vs Median | Top5% | Top5% vs Median | Top5% Eff | Top10% | Top10% vs Median | Top10% Eff | Top20% | Top20% vs Median | Top20% Eff | Top50% | Top50% vs Median | Top50% Eff | Melee_AC | Melee_DG | Ranged | Area | Direct | Uses | Med Rank |\n")
+                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
 
             # Table rows
             for i, stats in enumerate(enhancement_stats_sorted, 1):
                 row = (
                     f"| {i} | {stats['name']} | {stats['cost']}p | {stats['top50_efficiency']:.2f} | "
                     f"{stats['avg_turns']:.1f} | {stats['vs_median']:+.1f} | "
+                    f"{stats['median_top_5']:.1f} | {stats['top5_vs_median']:+.1f} | {stats['top5_efficiency']:.2f} | "
                     f"{stats['median_top_10']:.1f} | {stats['top10_vs_median']:+.1f} | {stats['top10_efficiency']:.2f} | "
                     f"{stats['median_top_20']:.1f} | {stats['top20_vs_median']:+.1f} | {stats['top20_efficiency']:.2f} | "
                     f"{stats['median_top_50']:.1f} | {stats['top50_vs_median']:+.1f} | {stats['top50_efficiency']:.2f} | "
@@ -356,6 +415,9 @@ class ReporterV2:
             f.write("- **Top50% vs Med / cost**: (Top50% vs Median) / cost - primary ranking metric (lower = better)\n")
             f.write("- **Avg Turns**: Average turns to kill across all builds with this enhancement\n")
             f.write("- **vs Median**: Deviation from median (negative = better than median)\n")
+            f.write("- **Top5%**: Median turns for top 5% of builds with this enhancement\n")
+            f.write("- **Top5% vs Median**: Top 5% deviation from overall median\n")
+            f.write("- **Top5% Eff**: (Top5% vs Median) / cost (efficiency metric)\n")
             f.write("- **Top10%**: Median turns for top 10% of builds with this enhancement\n")
             f.write("- **Top10% vs Median**: Top 10% deviation from overall median\n")
             f.write("- **Top10% Eff**: (Top10% vs Median) / cost (efficiency metric)\n")
@@ -374,7 +436,15 @@ class ReporterV2:
 
         print(f"  + Enhancement ranking report: enhancement_ranking_{self.archetype}.md")
 
-    def _generate_cost_analysis_report(self, enhancement_stats: List[Dict]):
+    def _generate_cost_analysis_report(
+        self,
+        enhancement_stats: List[Dict],
+        overall_median: float,
+        top_50_median: float,
+        top_20_median: float,
+        top_10_median: float,
+        top_5_median: float
+    ):
         """Generate cost analysis report."""
         report_path = os.path.join(self.reports_dir, f'cost_analysis_{self.archetype}.md')
 
@@ -395,6 +465,14 @@ class ReporterV2:
         with open(report_path, 'w', encoding='utf-8') as f:
             f.write(f"# {self.archetype.upper()} - COST ANALYSIS REPORT\n\n")
 
+            # Add overall statistics
+            f.write("## Overall Build Statistics\n\n")
+            f.write(f"- **Overall median turns**: {overall_median:.1f}\n")
+            f.write(f"- **Top 50% median turns**: {top_50_median:.1f}\n")
+            f.write(f"- **Top 20% median turns**: {top_20_median:.1f}\n")
+            f.write(f"- **Top 10% median turns**: {top_10_median:.1f}\n")
+            f.write(f"- **Top 5% median turns**: {top_5_median:.1f}\n\n")
+
             # Add methodology explanation
             f.write("## Methodology\n\n")
             f.write("This report groups enhancements by point cost to identify best value options at each tier:\n\n")
@@ -402,7 +480,7 @@ class ReporterV2:
             f.write("1. **Avg Turns**: Mean turns across all builds containing this enhancement\n")
             f.write("2. **vs Median**: Deviation from overall median (negative = better than median)\n")
             f.write("3. **Efficiency**: (vs Median) / cost - raw cost efficiency across all builds\n")
-            f.write("4. **Top10%/20%/50% Metrics**: Performance and efficiency in top-performing builds\n")
+            f.write("4. **Top5%/10%/20%/50% Metrics**: Performance and efficiency in top-performing builds\n")
             f.write("5. **TopX% Efficiency**: (TopX% vs Median) / cost - normalized efficiency in top builds\n\n")
             f.write("**Sorting**: Primary by cost (ascending), secondary by avg turns (ascending = better)\n\n")
             f.write("**Purpose**: Identify the best value enhancements at each cost tier for budget-constrained builds.\n\n")
@@ -419,8 +497,8 @@ class ReporterV2:
             # All enhancements by cost and performance
             f.write("## All Upgrades/Limits by Cost and Performance\n\n")
             f.write("Sorted by: Cost (ascending), then Avg Turns (ascending)\n\n")
-            f.write("| Enhancement | Cost | Avg Turns | vs Median | Efficiency | Top10% | Top10% vs Med | Top10% Eff | Top20% | Top20% vs Med | Top20% Eff | Top50% | Top50% vs Med | Top50% Eff |\n")
-            f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
+            f.write("| Enhancement | Cost | Avg Turns | vs Median | Efficiency | Top5% | Top5% vs Med | Top5% Eff | Top10% | Top10% vs Med | Top10% Eff | Top20% | Top20% vs Med | Top20% Eff | Top50% | Top50% vs Med | Top50% Eff |\n")
+            f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
 
             for cost in sorted(cost_groups.keys()):
                 f.write(f"| **COST {cost}** |\n")
@@ -429,6 +507,8 @@ class ReporterV2:
                     f.write(
                         f"| {stats['name']} | {cost} | {stats['avg_turns']:.1f} | "
                         f"{stats['vs_median']:+.1f} | {efficiency:.2f} | "
+                        f"{stats['median_top_5']:.1f} | {stats['top5_vs_median']:+.1f} | "
+                        f"{stats['top5_efficiency']:.2f} | "
                         f"{stats['median_top_10']:.1f} | {stats['top10_vs_median']:+.1f} | "
                         f"{stats['top10_efficiency']:.2f} | "
                         f"{stats['median_top_20']:.1f} | {stats['top20_vs_median']:+.1f} | "
@@ -442,6 +522,9 @@ class ReporterV2:
             f.write("- **Avg Turns**: Average turns to kill across all builds with this enhancement\n")
             f.write("- **vs Median**: Deviation from median turns (negative = better than median)\n")
             f.write("- **Efficiency**: (vs Median) / cost (lower is better)\n")
+            f.write("- **Top5%**: Median turns for top 5% performing builds\n")
+            f.write("- **Top5% vs Med**: Top 5% deviation from overall median\n")
+            f.write("- **Top5% Eff**: (Top5% vs Median) / cost\n")
             f.write("- **Top10%**: Median turns for top 10% performing builds\n")
             f.write("- **Top10% vs Med**: Top 10% deviation from overall median\n")
             f.write("- **Top10% Eff**: (Top10% vs Median) / cost\n")
@@ -455,164 +538,252 @@ class ReporterV2:
 
         print(f"  + Cost analysis report: cost_analysis_{self.archetype}.md")
 
-    def _generate_balance_analysis_report(
+    def _generate_performance_tier_analysis(
         self,
-        enhancement_stats: List[Dict],
         build_results: List[Tuple],
-        overall_median: float
+        overall_median: float,
+        top_50_median: float,
+        top_20_median: float,
+        top_10_median: float,
+        top_5_median: float
     ):
-        """Generate balance analysis report showing reliability and skill-dependency metrics.
+        """Generate performance tier analysis report showing build distribution and enhancement representation.
 
         Args:
-            enhancement_stats: List of enhancement statistics dictionaries
             build_results: List of (build, avg_dpt, avg_turns) tuples
             overall_median: Median turns across all builds
+            top_50_median: Median turns for top 50% of builds
+            top_20_median: Median turns for top 20% of builds
+            top_10_median: Median turns for top 10% of builds
+            top_5_median: Median turns for top 5% of builds
         """
-        report_path = os.path.join(self.reports_dir, f'balance_analysis_{self.archetype}.md')
+        report_path = os.path.join(self.reports_dir, f'performance_tier_analysis_{self.archetype}.md')
 
-        # Build lookup: enhancement_name -> list of (rank, build, avg_turns)
-        enhancement_builds = {}
-        for rank, (build, _, avg_turns) in enumerate(build_results, 1):
-            enhancement_set = self._get_enhancement_set(build)
-            for enhancement_name in enhancement_set:
-                if enhancement_name not in enhancement_builds:
-                    enhancement_builds[enhancement_name] = []
-                enhancement_builds[enhancement_name].append((rank, build, avg_turns))
+        # Sort builds by performance (ascending = better)
+        sorted_builds = sorted(build_results, key=lambda x: x[2])
+        total_builds = len(sorted_builds)
 
-        # Calculate balance metrics for each enhancement
-        balance_stats = []
-        for stats in enhancement_stats:
-            name = stats['name']
-            cost = stats['cost']
-            median_turns = stats['median_top_50']  # Use top 50% median as representative
+        # Calculate tier boundaries
+        top_5_count = max(1, int(total_builds * 0.05))
+        top_10_count = max(1, int(total_builds * 0.10))
+        top_20_count = max(1, int(total_builds * 0.20))
+        top_50_count = max(1, int(total_builds * 0.50))
 
-            # Get all builds containing this enhancement
-            builds = enhancement_builds.get(name, [])
-            if not builds:
-                continue
+        # Extract tier builds
+        tiers = {
+            'Top 5%': sorted_builds[:top_5_count],
+            'Top 10%': sorted_builds[:top_10_count],
+            'Top 20%': sorted_builds[:top_20_count],
+            'Top 50%': sorted_builds[:top_50_count],
+            'Bottom 50%': sorted_builds[top_50_count:]
+        }
 
-            # Extract raw turns values
-            raw_turns = [turns for _, _, turns in builds]
+        # Calculate tier statistics
+        tier_stats = {}
+        for tier_name, tier_builds in tiers.items():
+            turns_values = [turns for _, _, turns in tier_builds]
+            median_turns = statistics.median(turns_values) if turns_values else 0
+            std_dev = statistics.stdev(turns_values) if len(turns_values) >= 2 else 0
+            vs_overall = median_turns - overall_median
+            unique_builds = len(set(self._get_enhancement_set(build) for build, _, _ in tier_builds))
 
-            # Calculate standard deviation
-            if len(raw_turns) >= 2:
-                std_dev = statistics.stdev(raw_turns)
-            else:
-                std_dev = 0.0
-
-            # Calculate percentiles (with edge case handling)
-            if len(raw_turns) >= 4:
-                quantiles = statistics.quantiles(raw_turns, n=4)
-                floor_25 = quantiles[0]  # 25th percentile
-            else:
-                floor_25 = min(raw_turns) if raw_turns else 0.0
-
-            if len(raw_turns) >= 20:
-                quantiles_95 = statistics.quantiles(raw_turns, n=20)
-                ceiling_95 = quantiles_95[18]  # 95th percentile
-            else:
-                ceiling_95 = max(raw_turns) if raw_turns else 0.0
-
-            # Calculate reliability rating (higher = more reliable)
-            reliability_rating = median_turns - std_dev
-
-            # Calculate skill gap (floor - ceiling; negative value, larger absolute = more skill-dependent)
-            skill_gap = floor_25 - ceiling_95
-
-            # Get top 10% and top 50% builds for synergy analysis
-            sorted_builds = sorted(builds, key=lambda x: x[0])  # Sort by rank
-            top_10_count = max(1, len(sorted_builds) // 10)
-            top_50_count = max(1, len(sorted_builds) // 2)
-            top_10_builds = sorted_builds[:top_10_count]
-            top_50_builds = sorted_builds[:top_50_count]
-
-            # Calculate synergy concentration
-            synergy_concentration = self._calculate_synergy_concentration(top_10_builds, name)
-
-            # Calculate diversity index
-            diversity_index = self._calculate_diversity_index(top_50_builds)
-
-            # Calculate cost efficiencies
-            floor_efficiency = (floor_25 - overall_median) / cost if cost > 0 else 0.0
-            ceiling_efficiency = (ceiling_95 - overall_median) / cost if cost > 0 else 0.0
-
-            balance_stats.append({
-                'name': name,
-                'cost': cost,
+            tier_stats[tier_name] = {
                 'median': median_turns,
                 'std_dev': std_dev,
-                'floor_25': floor_25,
-                'ceiling_95': ceiling_95,
-                'reliability_rating': reliability_rating,
-                'skill_gap': skill_gap,
-                'synergy_concentration': synergy_concentration,
-                'diversity_index': diversity_index,
-                'floor_efficiency': floor_efficiency,
-                'ceiling_efficiency': ceiling_efficiency
+                'vs_overall': vs_overall,
+                'unique_builds': unique_builds,
+                'total_builds': len(tier_builds)
+            }
+
+        # Calculate skill expression (performance gap)
+        skill_expression = tier_stats['Bottom 50%']['median'] - tier_stats['Top 5%']['median']
+
+        # Track enhancement representation in each tier
+        enhancement_tier_data = {}
+
+        for tier_name, tier_builds in tiers.items():
+            # Count enhancement appearances in this tier
+            enhancement_counts = {}
+            for build, _, _ in tier_builds:
+                enhancement_set = self._get_enhancement_set(build)
+                for enhancement in enhancement_set:
+                    enhancement_counts[enhancement] = enhancement_counts.get(enhancement, 0) + 1
+
+            # Store representation data
+            for enhancement, count in enhancement_counts.items():
+                if enhancement not in enhancement_tier_data:
+                    enhancement_tier_data[enhancement] = {
+                        'name': enhancement,
+                        'cost': UPGRADES.get(enhancement, LIMITS.get(enhancement)).cost if enhancement in UPGRADES or enhancement in LIMITS else 0,
+                        'tier_counts': {},
+                        'tier_percentages': {}
+                    }
+
+                enhancement_tier_data[enhancement]['tier_counts'][tier_name] = count
+                enhancement_tier_data[enhancement]['tier_percentages'][tier_name] = (count / len(tier_builds)) * 100
+
+        # Calculate tier preference ratios and identify noob traps/elite picks
+        enhancement_analysis = []
+        for enhancement, data in enhancement_tier_data.items():
+            top_5_pct = data['tier_percentages'].get('Top 5%', 0)
+            bottom_50_pct = data['tier_percentages'].get('Bottom 50%', 0)
+
+            # Calculate tier preference ratio (avoid division by zero)
+            if bottom_50_pct > 0:
+                tier_ratio = top_5_pct / bottom_50_pct
+            else:
+                tier_ratio = float('inf') if top_5_pct > 0 else 0
+
+            # Identify noob traps (overrepresented in bottom tier)
+            is_noob_trap = bottom_50_pct > (top_5_pct * 1.5) and bottom_50_pct > 10
+
+            # Identify elite picks (overrepresented in top tier)
+            is_elite_pick = top_5_pct > (bottom_50_pct * 1.5) and top_5_pct > 10
+
+            enhancement_analysis.append({
+                'name': enhancement,
+                'cost': data['cost'],
+                'top_5_pct': top_5_pct,
+                'top_10_pct': data['tier_percentages'].get('Top 10%', 0),
+                'top_20_pct': data['tier_percentages'].get('Top 20%', 0),
+                'top_50_pct': data['tier_percentages'].get('Top 50%', 0),
+                'bottom_50_pct': bottom_50_pct,
+                'tier_ratio': tier_ratio,
+                'is_noob_trap': is_noob_trap,
+                'is_elite_pick': is_elite_pick
             })
 
-        # Sort by reliability rating (descending = more reliable/beginner-friendly)
-        balance_stats.sort(key=lambda x: x['reliability_rating'], reverse=True)
+        # Sort by tier ratio (descending = elite picks first)
+        enhancement_analysis.sort(key=lambda x: x['tier_ratio'], reverse=True)
+
+        # Find dominant build archetypes (common 2-3 enhancement combinations)
+        def find_common_combinations(tier_builds, top_n=10):
+            """Find most common 2-3 enhancement combinations in a tier."""
+            from collections import Counter
+            from itertools import combinations
+
+            combo_counts = Counter()
+            for build, _, _ in tier_builds:
+                enhancement_set = self._get_enhancement_set(build)
+                # Generate all 2-enhancement and 3-enhancement combinations
+                for size in [2, 3]:
+                    if len(enhancement_set) >= size:
+                        for combo in combinations(sorted(enhancement_set), size):
+                            combo_counts[combo] += 1
+
+            # Get top N combinations
+            return combo_counts.most_common(top_n)
+
+        tier_archetypes = {}
+        for tier_name in ['Top 5%', 'Top 10%', 'Top 20%']:
+            tier_archetypes[tier_name] = find_common_combinations(tiers[tier_name], top_n=10)
 
         # Write report
         with open(report_path, 'w', encoding='utf-8') as f:
-            f.write(f"# {self.archetype.upper()} - BALANCE ANALYSIS REPORT\n\n")
-            f.write("Enhancement reliability and skill-dependency metrics.\n")
-            f.write("Sorted by Reliability Rating (higher = more consistent/beginner-friendly).\n\n")
+            f.write(f"# {self.archetype.upper()} - PERFORMANCE TIER ANALYSIS\n\n")
+            f.write("Analysis of build performance distribution and enhancement representation across skill tiers.\n")
+            f.write("Focus: What do good builds look like? What combinations dominate top-tier play?\n\n")
 
-            # Add methodology explanation
-            f.write("## Methodology\n\n")
-            f.write("This report analyzes enhancement balance across multiple dimensions:\n\n")
-            f.write("**Required Calculations**:\n")
-            f.write("1. **Std Dev**: Standard deviation of turns across all builds containing each enhancement\n")
-            f.write("2. **Floor Performance**: 25th percentile (bottom quartile) turns for builds with this enhancement\n")
-            f.write("3. **Ceiling Performance**: 95th percentile (top 5%) turns for builds with this enhancement\n")
-            f.write("4. **Reliability Rating**: Median - Std Dev (higher = more reliable)\n")
-            f.write("5. **Skill Gap**: Floor Performance - Ceiling Performance (higher absolute = more skill-dependent)\n")
-            f.write("6. **Synergy Concentration**: For top 10% builds with this enhancement, calculate what % use the same 2-3 most common enhancement combinations\n")
-            f.write("7. **Build Diversity Index**: Count of unique enhancement combinations in top 50% of builds containing this enhancement\n")
-            f.write("8. **Cost Efficiency Floor**: (Floor Performance - overall_median) / cost\n")
-            f.write("9. **Cost Efficiency Ceiling**: (Ceiling Performance - overall_median) / cost\n\n")
-            f.write("**Data Source**: Build results containing (rank, avg_turns) for each enhancement appearance.\n\n")
-            f.write("**Sorting**: By Reliability Rating (descending) to show most beginner-friendly enhancements first.\n\n")
+            # Section 1: Tier Performance Distribution
+            f.write("## 1. Tier Performance Distribution\n\n")
+            f.write("| Tier | Median Turns | Std Dev | vs Overall Median | Unique Builds | Total Builds |\n")
+            f.write("|---|---|---|---|---|---|\n")
 
-            f.write(f"**Total enhancements analyzed**: {len(balance_stats)}\n")
-            f.write(f"**Overall median turns**: {overall_median:.1f}\n\n")
-
-            # Table header
-            f.write("| Rank | Enhancement | Cost | Median | Std Dev | Floor (25%) | Ceiling (5%) | Reliability | Skill Gap | Synergy Conc | Diversity | Floor Eff | Ceiling Eff |\n")
-            f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
-
-            # Table rows
-            for i, stats in enumerate(balance_stats, 1):
+            for tier_name in ['Top 5%', 'Top 10%', 'Top 20%', 'Top 50%', 'Bottom 50%']:
+                stats = tier_stats[tier_name]
                 f.write(
-                    f"| {i} | {stats['name']} | {stats['cost']}p | "
-                    f"{stats['median']:.1f} | {stats['std_dev']:.2f} | "
-                    f"{stats['floor_25']:.1f} | {stats['ceiling_95']:.1f} | "
-                    f"{stats['reliability_rating']:.2f} | {stats['skill_gap']:.2f} | "
-                    f"{stats['synergy_concentration']:.1f}% | {stats['diversity_index']} | "
-                    f"{stats['floor_efficiency']:.2f} | {stats['ceiling_efficiency']:.2f} |\n"
+                    f"| {tier_name} | {stats['median']:.1f} | {stats['std_dev']:.2f} | "
+                    f"{stats['vs_overall']:+.1f} | {stats['unique_builds']} | {stats['total_builds']} |\n"
                 )
 
-            # Notes
-            f.write("\n## Column Definitions\n\n")
-            f.write("- **Median**: Median turns for top 50% of builds with this enhancement\n")
-            f.write("- **Std Dev**: Standard deviation of turns across all builds (lower = more consistent)\n")
-            f.write("- **Floor (25%)**: 25th percentile performance (bottom quartile)\n")
-            f.write("- **Ceiling (5%)**: 95th percentile performance (top 5%)\n")
-            f.write("- **Reliability Rating**: Median - Std Dev (higher = more reliable/beginner-friendly)\n")
-            f.write("- **Skill Gap**: Floor - Ceiling (larger absolute value = more skill-dependent)\n")
-            f.write("- **Synergy Conc**: % of top 10% builds using one of the 2-3 most common enhancement combinations\n")
-            f.write("- **Diversity**: Count of unique enhancement combinations in top 50% of builds\n")
-            f.write("- **Floor Eff**: (Floor - overall median) / cost (efficiency at bottom quartile)\n")
-            f.write("- **Ceiling Eff**: (Ceiling - overall median) / cost (efficiency at top 5%)\n")
-            f.write("\n## Interpretation\n\n")
-            f.write("- **High Reliability**: Consistent performance, good for beginners\n")
-            f.write("- **Large Skill Gap** (large negative): Highly skill/synergy dependent\n")
-            f.write("- **High Synergy Conc**: Requires specific combinations to excel\n")
-            f.write("- **Low Diversity**: Works well in fewer build archetypes\n")
+            f.write(f"\n**Skill Expression**: {skill_expression:.1f} turns (Bottom 50% - Top 5%)\n")
+            f.write(f"**Overall Median**: {overall_median:.1f} turns\n\n")
 
-        print(f"  + Balance analysis report: balance_analysis_{self.archetype}.md")
+            # Section 2: Meta Diversity Analysis
+            f.write("## 2. Meta Diversity Analysis\n\n")
+
+            diversity_scores = {}
+            for tier_name in ['Top 5%', 'Top 10%', 'Top 20%']:
+                stats = tier_stats[tier_name]
+                diversity_score = (stats['unique_builds'] / stats['total_builds']) * 100
+                diversity_scores[tier_name] = diversity_score
+
+            f.write("| Tier | Unique Builds | Total Builds | Diversity Score |\n")
+            f.write("|---|---|---|---|\n")
+            for tier_name in ['Top 5%', 'Top 10%', 'Top 20%']:
+                stats = tier_stats[tier_name]
+                f.write(
+                    f"| {tier_name} | {stats['unique_builds']} | {stats['total_builds']} | "
+                    f"{diversity_scores[tier_name]:.1f}% |\n"
+                )
+
+            f.write("\n**Interpretation**:\n")
+            f.write("- **High Diversity Score** (>80%): Diverse meta with many viable strategies\n")
+            f.write("- **Low Diversity Score** (<50%): Solved meta with few dominant builds\n\n")
+
+            # Section 3: Enhancement Tier Representation
+            f.write("## 3. Enhancement Tier Representation\n\n")
+            f.write("Shows % of builds in each tier containing the enhancement.\n")
+            f.write("Sorted by Tier Preference Ratio (Top 5% / Bottom 50%).\n\n")
+
+            f.write("| Rank | Enhancement | Cost | Top 5% | Top 10% | Top 20% | Top 50% | Bottom 50% | Tier Ratio | Flag |\n")
+            f.write("|---|---|---|---|---|---|---|---|---|---|\n")
+
+            for i, data in enumerate(enhancement_analysis, 1):
+                flag = ""
+                if data['is_elite_pick']:
+                    flag = "⭐ Elite"
+                elif data['is_noob_trap']:
+                    flag = "⚠️ Noob Trap"
+
+                ratio_str = f"{data['tier_ratio']:.2f}" if data['tier_ratio'] != float('inf') else "∞"
+
+                f.write(
+                    f"| {i} | {data['name']} | {data['cost']}p | "
+                    f"{data['top_5_pct']:.1f}% | {data['top_10_pct']:.1f}% | "
+                    f"{data['top_20_pct']:.1f}% | {data['top_50_pct']:.1f}% | "
+                    f"{data['bottom_50_pct']:.1f}% | {ratio_str} | {flag} |\n"
+                )
+
+            f.write("\n**Flag Definitions**:\n")
+            f.write("- **⭐ Elite**: Overrepresented in Top 5% (appears 50%+ more frequently in top builds)\n")
+            f.write("- **⚠️ Noob Trap**: Overrepresented in Bottom 50% (appears 50%+ more frequently in bad builds)\n\n")
+
+            # Section 4: Dominant Build Archetypes
+            f.write("## 4. Dominant Build Archetypes\n\n")
+            f.write("Most common 2-3 enhancement combinations in top-performing builds.\n\n")
+
+            for tier_name in ['Top 5%', 'Top 10%', 'Top 20%']:
+                f.write(f"### {tier_name} Archetypes\n\n")
+                f.write("| Rank | Enhancement Combination | Occurrences | % of Tier |\n")
+                f.write("|---|---|---|---|\n")
+
+                tier_total = tier_stats[tier_name]['total_builds']
+                for i, (combo, count) in enumerate(tier_archetypes[tier_name], 1):
+                    combo_str = " + ".join(combo)
+                    pct = (count / tier_total) * 100
+                    f.write(f"| {i} | {combo_str} | {count} | {pct:.1f}% |\n")
+
+                f.write("\n")
+
+            # Methodology
+            f.write("## Methodology\n\n")
+            f.write("**Tier Calculation**:\n")
+            f.write("- Builds sorted by average turns (ascending = better)\n")
+            f.write("- Top 5% = best 5% of all builds tested\n")
+            f.write("- Bottom 50% = worst 50% of all builds tested\n\n")
+
+            f.write("**Enhancement Representation**:\n")
+            f.write("- For each tier, % = (builds with enhancement / total builds in tier) × 100\n")
+            f.write("- Tier Ratio = Top 5% representation / Bottom 50% representation\n")
+            f.write("- Higher ratio = more prevalent in elite builds\n\n")
+
+            f.write("**Build Archetypes**:\n")
+            f.write("- Analyzes all 2-enhancement and 3-enhancement combinations\n")
+            f.write("- Shows which synergies actually dominate top-tier play\n")
+            f.write("- Reveals real successful combinations vs theoretical rankings\n\n")
+
+        print(f"  + Performance tier analysis report: performance_tier_analysis_{self.archetype}.md")
 
     def _generate_individual_report(self, individual_results: List[IndividualResult]):
         """Generate individual enhancement testing report."""

@@ -163,7 +163,7 @@ def generate_limit_builds(max_points: int = 60, attack_types: List[str] = None) 
     return valid_builds
 
 
-def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: List[str] = None, chunk_size: int = 1000, max_points_per_attack: int = None) -> Generator:
+def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: List[str] = None, chunk_size: int = 1000, max_points_per_attack: int = None, config=None) -> Generator:
     """
     Generate builds for a specific archetype as a chunked generator
 
@@ -173,6 +173,7 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
         attack_types: List of attack types to consider
         chunk_size: Size of chunks for memory efficiency
         max_points_per_attack: Override max points calculation (if None, calculated from tier+archetype)
+        config: Optional SimConfigV2 config object for pruning
 
     Yields:
         For focused: AttackBuild objects
@@ -198,8 +199,128 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
         yield from _generate_dual_natured_builds(max_points_per_attack, attack_types)
 
     elif archetype == "versatile_master":
-        # Generate all sets of 5 builds
-        yield from _generate_versatile_master_builds(max_points_per_attack, attack_types)
+        # Generate all sets of 5 builds (with optional pruning)
+        yield from _generate_versatile_master_builds(max_points_per_attack, attack_types, config)
+
+
+def _prune_builds_by_performance(
+    builds: List[AttackBuild],
+    attacker_stats: List[int],
+    defender_stats: List[int],
+    scenarios,
+    simulation_runs: int,
+    top_percent: float
+) -> List[AttackBuild]:
+    """
+    Test builds quickly and return only top performers.
+
+    Args:
+        builds: List of AttackBuild objects to test
+        attacker_stats: Attacker character stats [focus, power, mobility, endurance, tier]
+        defender_stats: Defender character stats
+        scenarios: List of ScenarioConfig objects to test against
+        simulation_runs: Number of simulation runs per scenario
+        top_percent: Fraction of builds to keep (0.05 = top 5%)
+
+    Returns:
+        List of top performing builds sorted by avg_turns (ascending)
+    """
+    from src.models import Character
+    from src.simulation import run_simulation_batch
+
+    attacker = Character(*attacker_stats)
+    defender = Character(*defender_stats)
+
+    print(f"  Pruning {len(builds)} builds (keeping top {top_percent*100:.1f}%)...")
+    print(f"    Quick testing with {simulation_runs} runs per scenario across {len(scenarios)} scenarios")
+
+    # Test each build
+    results = []
+    for i, build in enumerate(builds):
+        if (i + 1) % 100 == 0:
+            print(f"    Progress: {i + 1}/{len(builds)} builds tested")
+
+        # Run simulation against all scenarios and average the results
+        scenario_turns = []
+        for scenario in scenarios:
+            if scenario.enemy_hp_list:
+                _, avg_turns, _, _ = run_simulation_batch(
+                    attacker, build, simulation_runs, 100, defender,
+                    enemy_hp_list=scenario.enemy_hp_list
+                )
+            else:
+                _, avg_turns, _, _ = run_simulation_batch(
+                    attacker, build, simulation_runs, 100, defender,
+                    num_enemies=scenario.num_enemies,
+                    enemy_hp=scenario.enemy_hp
+                )
+            scenario_turns.append(avg_turns)
+
+        # Average performance across all scenarios
+        overall_avg_turns = sum(scenario_turns) / len(scenario_turns)
+        results.append((build, overall_avg_turns))
+
+    # Sort by avg_turns (lower is better)
+    results.sort(key=lambda x: x[1])
+
+    # Keep top N%
+    keep_count = max(1, int(len(results) * top_percent))
+    pruned_builds = [build for build, _ in results[:keep_count]]
+
+    print(f"    Pruned to {len(pruned_builds)} builds (from {len(builds)})")
+    print(f"    Best: {results[0][1]:.2f} turns, Worst kept: {results[keep_count-1][1]:.2f} turns")
+
+    return pruned_builds
+
+
+def _apply_stratified_sampling(builds: List[AttackBuild], top_n_per_type: int) -> List[AttackBuild]:
+    """
+    Apply stratified sampling to ensure diversity across attack types and upgrade combinations.
+
+    Groups builds by attack_type, then ensures diverse upgrade/limit combinations
+    within each attack type by selecting the best performer for each unique
+    enhancement pattern.
+
+    Args:
+        builds: List of AttackBuild objects (assumed to be pre-sorted by performance)
+        top_n_per_type: Maximum number of builds to keep per attack type
+
+    Returns:
+        Curated list with diverse attack type and upgrade representation
+    """
+    from collections import defaultdict
+
+    # Group builds by attack type
+    builds_by_type = defaultdict(list)
+    for build in builds:
+        builds_by_type[build.attack_type].append(build)
+
+    # Take top N from each group, ensuring upgrade/limit diversity
+    curated = []
+    for attack_type, type_builds in builds_by_type.items():
+        # Group by upgrade/limit signature within this attack type
+        signature_to_builds = defaultdict(list)
+        for build in type_builds:
+            # Create signature from upgrades and limits
+            upgrade_sig = tuple(sorted(build.upgrades))
+            limit_sig = tuple(sorted(build.limits))
+            signature = (upgrade_sig, limit_sig)
+            signature_to_builds[signature].append(build)
+
+        # Take the best build from each signature group
+        diverse_builds = []
+        for signature, sig_builds in signature_to_builds.items():
+            # First build in group is best (builds pre-sorted by performance)
+            diverse_builds.append(sig_builds[0])
+
+        # Take top N diverse builds (or all if fewer than N)
+        selected = diverse_builds[:min(top_n_per_type, len(diverse_builds))]
+        curated.extend(selected)
+
+        print(f"    {attack_type}: {len(selected)} builds with {len(selected)} unique patterns "
+              f"(from {len(type_builds)} total, {len(signature_to_builds)} unique patterns)")
+
+    return curated
 
 
 def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
@@ -213,7 +334,7 @@ def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List
         attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
     # Fixed first attack: ranged with no upgrades
-    fixed_attack = AttackBuild('ranged', [], [])
+    fixed_attack = AttackBuild('melee_dg', [], [])
 
     # Generate all valid builds for the second attack slot
     for build2 in generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000):
@@ -222,8 +343,14 @@ def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List
         yield multi_build
 
 
-def _generate_versatile_master_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
-    """Generate all valid sets of 5 builds for versatile master archetype"""
+def _generate_versatile_master_builds(max_points_per_attack: int, attack_types: List[str] = None, config=None) -> Generator:
+    """Generate all valid sets of 3 builds for versatile master archetype
+
+    Args:
+        max_points_per_attack: Maximum points per attack
+        attack_types: List of attack types to consider
+        config: Optional SimConfigV2 config object for pruning
+    """
     from src.models import MultiAttackBuild
 
     if attack_types is None:
@@ -232,9 +359,41 @@ def _generate_versatile_master_builds(max_points_per_attack: int, attack_types: 
     # Generate all valid single builds first
     all_builds = list(generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000))
 
-    # Generate all unique combinations of 5 builds
-    # Use itertools.combinations_with_replacement to allow duplicates
+    print(f"  Generated {len(all_builds)} single builds for versatile_master")
+
+    # Apply pruning if enabled
+    if config and hasattr(config, 'pruning') and config.pruning.enabled:
+        print(f"  Pruning enabled - reducing build set before combination generation")
+        all_builds = _prune_builds_by_performance(
+            builds=all_builds,
+            attacker_stats=config.attacker_stats,
+            defender_stats=config.defender_stats,
+            scenarios=config.scenarios,
+            simulation_runs=config.pruning.simulation_runs,
+            top_percent=config.pruning.top_percent
+        )
+
+    # Apply stratified sampling for diversity
+    curated_builds = _apply_stratified_sampling(all_builds, top_n_per_type=50)
+    print(f"  After diversity-aware curation: {len(curated_builds)} builds (from {len(all_builds)})")
+
+    # Calculate expected number of combinations
     import itertools
-    for build_combo in itertools.combinations_with_replacement(all_builds, 5):
+    n = len(curated_builds)
+    expected_combos = (n + 2) * (n + 1) * n // 6  # Formula for C(n+2, 3)
+    print(f"  Generating combinations of 3 from {n} builds...")
+    print(f"  Expected total combinations: {expected_combos:,}")
+
+    combo_count = 0
+    progress_interval = 50000
+    for build_combo in itertools.combinations_with_replacement(curated_builds, 3):
         multi_build = MultiAttackBuild(list(build_combo), "versatile_master")
+        combo_count += 1
+
+        if combo_count % progress_interval == 0:
+            progress_pct = (combo_count / expected_combos) * 100
+            print(f"    Progress: {combo_count:,}/{expected_combos:,} ({progress_pct:.1f}%)")
+
         yield multi_build
+
+    print(f"  Generated {combo_count:,} versatile_master combinations")

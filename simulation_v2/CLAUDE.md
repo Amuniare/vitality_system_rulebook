@@ -104,6 +104,42 @@ Scenarios can be homogeneous or mixed enemy groups:
 {"name": "Mixed", "enemy_hp_list": [50, 25, 25]}
 ```
 
+### Progressive Elimination
+
+Progressive elimination is a performance optimization that tests builds in multiple rounds with increasing simulation counts, eliminating bottom performers after each round. This dramatically reduces testing time by avoiding expensive full simulations on clearly inferior builds.
+
+**Configuration:**
+```json
+"progressive_elimination": {
+  "enabled": true,
+  "rounds": [
+    {"simulation_runs": 1, "keep_percent": 0.40},   // Round 1: 1 run, keep top 40%
+    {"simulation_runs": 3, "keep_percent": 0.50},   // Round 2: 3 runs, keep top 50%
+    {"simulation_runs": -1, "keep_percent": 1.0}    // Round 3: full runs, keep all
+  ]
+}
+```
+
+**How it works:**
+1. **Round 1**: Test all builds with 1 simulation run across all scenarios → eliminate bottom 60%
+2. **Round 2**: Test remaining 40% with 3 simulation runs → eliminate bottom 50%
+3. **Round 3**: Test remaining 20% with full `simulation_runs` (e.g., 10) → final results
+
+**Performance impact:**
+- Without: 20,000 builds × 10 runs × 4 scenarios = **800,000 simulations**
+- With: (20,000×1×4) + (8,000×3×4) + (4,000×10×4) = **336,000 simulations** (58% reduction)
+
+**Benefits:**
+- Applies to all archetypes (focused, dual_natured, versatile_master)
+- Maintains result quality (gradually increases confidence)
+- Configurable aggressiveness via rounds and percentages
+- Each round tests across ALL scenarios (balanced elimination)
+
+**Notes:**
+- Use `-1` for `simulation_runs` in final round to use `config.simulation_runs`
+- Recommended for large build sets (>5,000 builds)
+- Can be disabled by setting `"enabled": false`
+
 ## Report Architecture
 
 ### Generated Report Types
@@ -148,9 +184,16 @@ Scenarios can be homogeneous or mixed enemy groups:
 
 - **Tier 4 dual_natured**: ~300,000+ builds to test
 - **Expected runtime**: 2-10 minutes depending on tier and simulation_runs
+- **Progressive elimination**: Enabled by default, reduces testing time by 40-60%
 - **Reduce simulation_runs** to 5 for faster testing (10+ for production analysis)
 - **Threading disabled by default** - multiprocessing has Windows compatibility issues
 - **GPU acceleration available** - Install `torch-directml` for 20x faster dice generation (see `GPU_SETUP.md`)
+
+**Optimization recommendations:**
+- Use progressive elimination for archetypes with >5,000 builds
+- For versatile_master, pruning + progressive elimination work together
+- Enable GPU acceleration for maximum performance
+- Disable threading on Windows to avoid stability issues
 
 ### Build Generation Algorithm
 
