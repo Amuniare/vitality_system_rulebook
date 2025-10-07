@@ -116,8 +116,8 @@ ATTACK_TYPES = {
 
 #### Turn-Tracking Limits
 **Offensive State Limits** (mutually exclusive):
-- **Slaughter** (2p): +5×Tier to Accuracy/Damage/Conditions, only if defeated enemy last turn
-- **Relentless** (4p): +2×Tier to Accuracy/Damage/Conditions, only if dealt damage last turn
+- **Slaughter** (2p): +4×Tier to Accuracy/Damage/Conditions, only if defeated enemy last turn
+- **Relentless** (2p): +Tier to Accuracy/Damage/Conditions, only if dealt damage last turn
 - **Combo Move** (4p): +Tier to Accuracy/Damage/Conditions, only if hit same target last turn
 
 **Defensive State Limits** (mutually exclusive):

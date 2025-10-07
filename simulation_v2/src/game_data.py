@@ -73,7 +73,7 @@ LIMITS = {
     'attrition': Limit('attrition', 2, 2, 0),
     # Turn/Combat State Limits
     'slaughter': Limit('slaughter', 2, 4, 0),
-    'relentless': Limit('relentless', 4, 2, 0),
+    'relentless': Limit('relentless', 2, 1, 0),
     'combo_move': Limit('combo_move', 4, 1, 0),
     'revenge': Limit('revenge', 3, 1, 0),
     'vengeful': Limit('vengeful', 4, 1, 0),
