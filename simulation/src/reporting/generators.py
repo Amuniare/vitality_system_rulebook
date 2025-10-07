@@ -561,66 +561,70 @@ def generate_upgrade_ranking_report(all_build_results: List[Tuple], config: Simu
             'worst_rank': max(positions)
         })
 
+    # Calculate mean of all avg_turns
+    mean_avg_turns = sum(s['avg_turns'] for s in enhancement_stats) / len(enhancement_stats) if enhancement_stats else 0
+
+    # Add deviation from mean to each stat
+    for stat in enhancement_stats:
+        stat['deviation'] = stat['avg_turns'] - mean_avg_turns
+
     # Sort by avg_turns (lower is better), then by median rank
     enhancement_stats.sort(key=lambda x: x['avg_turns'])
     attack_type_stats.sort(key=lambda x: x['median_rank'])
     combo_stats.sort(key=lambda x: x['median_rank'])
 
     # Write the report
-    with open(f'{reports_dir}/enhancement_ranking_report.txt', 'w', encoding='utf-8') as f:
-        f.write("VITALITY SYSTEM - ENHANCEMENT & ATTACK TYPE RANKING REPORT\n")
-        f.write("="*80 + "\n\n")
+    with open(f'{reports_dir}/enhancement_ranking_report.md', 'w', encoding='utf-8') as f:
+        f.write("# VITALITY SYSTEM - ENHANCEMENT & ATTACK TYPE RANKING REPORT\n\n")
         f.write("This report shows enhancement (upgrade & limit) and attack type performance ranked by average turns.\n")
         f.write("Lower avg turns indicate better performance. Includes top 10%/50% medians and per-attack-type data.\n")
-        f.write(f"Total builds tested: {total_builds}\n\n")
+        f.write(f"Total builds tested: {total_builds}\n")
+        f.write(f"Mean avg turns: {mean_avg_turns:.1f}\n\n")
 
         # Enhancement Rankings Section
-        f.write("ENHANCEMENT RANKINGS BY AVERAGE TURNS\n")
-        f.write("-" * 190 + "\n")
-        f.write(f"{'Rank':<4} {'Enhancement':<20} {'Cost':<5} {'Avg Turns':<10} {'Top10%':<8} {'Top50%':<8} {'Melee_AC':<9} {'Melee_DG':<9} {'Ranged':<8} {'Area':<8} {'Direct':<8} {'Uses':<6} {'Med Rank':<9}\n")
-        f.write("-" * 190 + "\n")
+        f.write("## ENHANCEMENT RANKINGS BY AVERAGE TURNS\n\n")
+        f.write("| Rank | Enhancement | Cost | Avg Turns | vs Mean | Top10% | Top50% | Melee_AC | Melee_DG | Ranged | Area | Direct | Uses | Med Rank |\n")
+        f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
 
         for i, stats in enumerate(enhancement_stats, 1):
-            f.write(f"{i:<4} {stats['name']:<20} {stats['cost']:>3}p {stats['avg_turns']:>8.1f} "
-                   f"{stats['median_top_10']:>6.1f} {stats['median_top_50']:>6.1f} "
-                   f"{stats['melee_ac_turns']:>7.1f} {stats['melee_dg_turns']:>7.1f} "
-                   f"{stats['ranged_turns']:>6.1f} {stats['area_turns']:>6.1f} "
-                   f"{stats['direct_damage_turns']:>6.1f} {stats['appearances']:>4} "
-                   f"{stats['median_rank']:>7.1f}\n")
+            deviation_str = f"{stats['deviation']:+.1f}"
+            f.write(f"| {i} | {stats['name']} | {stats['cost']}p | {stats['avg_turns']:.1f} | "
+                   f"{deviation_str} | {stats['median_top_10']:.1f} | {stats['median_top_50']:.1f} | "
+                   f"{stats['melee_ac_turns']:.1f} | {stats['melee_dg_turns']:.1f} | "
+                   f"{stats['ranged_turns']:.1f} | {stats['area_turns']:.1f} | "
+                   f"{stats['direct_damage_turns']:.1f} | {stats['appearances']} | "
+                   f"{stats['median_rank']:.1f} |\n")
 
         # Attack Type Rankings Section
-        f.write(f"\n\nATTACK TYPE RANKINGS BY MEDIAN POSITION\n")
-        f.write("-" * 95 + "\n")
-        f.write(f"{'Rank':<4} {'Attack Type':<25} {'Avg Rank':<10} {'Med Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
-        f.write("-" * 95 + "\n")
+        f.write(f"\n## ATTACK TYPE RANKINGS BY MEDIAN POSITION\n\n")
+        f.write("| Rank | Attack Type | Avg Rank | Med Rank | Percentile | Uses | Best | Worst |\n")
+        f.write("|---|---|---|---|---|---|---|---|\n")
 
         for i, stats in enumerate(attack_type_stats, 1):
-            f.write(f"{i:<4} {stats['name']:<25} {stats['avg_rank']:>8.1f} "
-                   f"{stats['median_rank']:>8.1f} {stats['percentile']:>9.1f}% {stats['appearances']:>4} "
-                   f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
+            f.write(f"| {i} | {stats['name']} | {stats['avg_rank']:.1f} | "
+                   f"{stats['median_rank']:.1f} | {stats['percentile']:.1f}% | {stats['appearances']} | "
+                   f"{stats['best_rank']} | {stats['worst_rank']} |\n")
 
         # Combo Rankings Section (if any combos found)
         if combo_stats:
-            f.write(f"\n\nSPECIFIC UPGRADE COMBO RANKINGS BY MEDIAN POSITION\n")
-            f.write("-" * 105 + "\n")
-            f.write(f"{'Rank':<4} {'Upgrade Combo':<35} {'Avg Rank':<10} {'Med Rank':<10} {'Percentile':<12} {'Uses':<6} {'Best':<6} {'Worst':<6}\n")
-            f.write("-" * 105 + "\n")
+            f.write(f"\n## SPECIFIC UPGRADE COMBO RANKINGS BY MEDIAN POSITION\n\n")
+            f.write("| Rank | Upgrade Combo | Avg Rank | Med Rank | Percentile | Uses | Best | Worst |\n")
+            f.write("|---|---|---|---|---|---|---|---|\n")
 
             for i, stats in enumerate(combo_stats, 1):
-                f.write(f"{i:<4} {stats['name']:<35} {stats['avg_rank']:>8.1f} "
-                       f"{stats['median_rank']:>8.1f} {stats['percentile']:>9.1f}% {stats['appearances']:>4} "
-                       f"{stats['best_rank']:>4} {stats['worst_rank']:>5}\n")
+                f.write(f"| {i} | {stats['name']} | {stats['avg_rank']:.1f} | "
+                       f"{stats['median_rank']:.1f} | {stats['percentile']:.1f}% | {stats['appearances']} | "
+                       f"{stats['best_rank']} | {stats['worst_rank']} |\n")
 
         # Percentile Explanation
-        f.write(f"\n\nPERCENTILE EXPLANATION\n")
-        f.write("-" * 40 + "\n")
+        f.write(f"\n## PERCENTILE EXPLANATION\n\n")
         f.write("Percentile shows where the upgrade/limit/attack type ranks on average:\n")
         f.write("- 0-25%: Top quartile (excellent performance)\n")
         f.write("- 25-50%: Above average performance\n")
         f.write("- 50-75%: Below average performance\n")
         f.write("- 75-100%: Bottom quartile (poor performance)\n")
 
-    print(f"Enhancement & Attack Type ranking report saved to {reports_dir}/enhancement_ranking_report.txt")
+    print(f"Enhancement & Attack Type ranking report saved to {reports_dir}/enhancement_ranking_report.md")
     return enhancement_stats, attack_type_stats
 
 

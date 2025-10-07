@@ -23,6 +23,7 @@ from src.reporting.writers import (
     write_build_summary,
     write_attack_type_enhancement_ranking_report,
     write_attack_type_limit_ranking_report,
+    write_upgrade_limit_frequency_report,
 )
 from src.reporting.generators import (
     generate_combo_performance_report,
@@ -37,6 +38,10 @@ from src.reporting.generators import (
     generate_individual_report,
     enhancement_comparison,
     generate_reports_by_mode,
+)
+from src.reporting.cost_analysis import (
+    generate_individual_cost_analysis,
+    generate_build_cost_analysis,
 )
 
 __all__ = [
@@ -58,6 +63,7 @@ __all__ = [
     'write_build_summary',
     'write_attack_type_enhancement_ranking_report',
     'write_attack_type_limit_ranking_report',
+    'write_upgrade_limit_frequency_report',
     # Generator functions
     'generate_combo_performance_report',
     'generate_upgrade_performance_report',
@@ -71,4 +77,7 @@ __all__ = [
     'generate_individual_report',
     'enhancement_comparison',
     'generate_reports_by_mode',
+    # Cost analysis functions
+    'generate_individual_cost_analysis',
+    'generate_build_cost_analysis',
 ]

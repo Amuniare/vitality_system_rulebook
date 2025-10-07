@@ -3,8 +3,74 @@ Combat simulation logic for the Vitality System.
 """
 
 from typing import List, Tuple
-from src.models import Character, AttackBuild
+from src.models import Character, AttackBuild, MultiAttackBuild
 from src.combat import make_attack, make_aoe_attack
+
+
+# Object pools for memory optimization
+_ENEMY_POOL = []
+_COMBAT_STATE_POOL = []
+
+
+def _get_enemy_dict(hp: int) -> dict:
+    """Get an enemy dictionary from pool or create new one"""
+    if _ENEMY_POOL:
+        enemy = _ENEMY_POOL.pop()
+        enemy['hp'] = hp
+        enemy['max_hp'] = hp
+        enemy['bleed_stacks'].clear()
+        return enemy
+    return {'hp': hp, 'max_hp': hp, 'bleed_stacks': []}
+
+
+def _return_enemy_dict(enemy: dict):
+    """Return enemy dictionary to pool"""
+    if len(_ENEMY_POOL) < 100:  # Limit pool size
+        enemy['bleed_stacks'].clear()
+        _ENEMY_POOL.append(enemy)
+
+
+def _get_combat_state() -> dict:
+    """Get a combat state dictionary from pool or create new one"""
+    if _COMBAT_STATE_POOL:
+        state = _COMBAT_STATE_POOL.pop()
+        # Reset all fields
+        state['last_target_hit'] = None
+        state['defeated_enemy_last_turn'] = False
+        state['dealt_damage_last_turn'] = False
+        state['was_hit_last_turn'] = False
+        state['was_damaged_last_turn'] = False
+        state['all_attacks_missed_last_turn'] = False
+        state['was_hit_no_damage_last_turn'] = False
+        state['was_attacked_last_turn'] = False
+        state['channeled_turns'] = 0
+        state['charges_used'].clear()
+        state['leech_hp'] = 0
+        state['attrition_cost'] = 0
+        state['hit_same_target_last_turn'] = False
+        return state
+    return {
+        'last_target_hit': None,
+        'defeated_enemy_last_turn': False,
+        'dealt_damage_last_turn': False,
+        'was_hit_last_turn': False,
+        'was_damaged_last_turn': False,
+        'all_attacks_missed_last_turn': False,
+        'was_hit_no_damage_last_turn': False,
+        'was_attacked_last_turn': False,
+        'channeled_turns': 0,
+        'charges_used': {},
+        'leech_hp': 0,
+        'attrition_cost': 0,
+        'hit_same_target_last_turn': False,
+    }
+
+
+def _return_combat_state(state: dict):
+    """Return combat state dictionary to pool"""
+    if len(_COMBAT_STATE_POOL) < 100:  # Limit pool size
+        state['charges_used'].clear()
+        _COMBAT_STATE_POOL.append(state)
 
 
 def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: int = 100,
@@ -25,17 +91,17 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         defender = Character(focus=0, power=0, mobility=3, endurance=0, tier=attacker.tier)
 
     # Initialize enemies - support both homogeneous and mixed HP groups
-    # Optimization: Avoid dictionary copies by creating separate dictionaries
+    # Use object pool for memory efficiency
     if enemy_hp_list is not None:
         # Mixed enemy groups - each enemy can have different HP
-        enemies = [{'hp': hp, 'max_hp': hp, 'bleed_stacks': []} for hp in enemy_hp_list]
+        enemies = [_get_enemy_dict(hp) for hp in enemy_hp_list]
         num_enemies = len(enemy_hp_list)
     else:
         # Homogeneous enemy groups - all enemies have same HP (backward compatible)
         if enemy_hp is None:
             enemy_hp = target_hp
-        # Create each dictionary separately to avoid .copy() overhead
-        enemies = [{'hp': enemy_hp, 'max_hp': enemy_hp, 'bleed_stacks': []} for _ in range(num_enemies)]
+        # Get from pool
+        enemies = [_get_enemy_dict(enemy_hp) for _ in range(num_enemies)]
 
     # Track attacker HP for win/loss determination
     attacker_hp = attacker.max_hp
@@ -89,22 +155,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
     charge_history = []  # Track charging actions: True = charged, False = attacked
     cooldown_history = {}  # Track when limits with cooldowns were last used
 
-    # Initialize combat state for new limit mechanics
-    combat_state = {
-        'last_target_hit': None,
-        'defeated_enemy_last_turn': False,
-        'dealt_damage_last_turn': False,
-        'was_hit_last_turn': False,
-        'was_damaged_last_turn': False,
-        'all_attacks_missed_last_turn': False,
-        'was_hit_no_damage_last_turn': False,
-        'was_attacked_last_turn': False,
-        'channeled_turns': 0,
-        'charges_used': {},
-        'leech_hp': 0,
-        'attrition_cost': 0,
-        'hit_same_target_last_turn': False,
-    }
+    # Initialize combat state from pool
+    combat_state = _get_combat_state()
 
     while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
         turns += 1
@@ -173,13 +225,57 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         if log_file:
             log_file.write(f"\nATTACK PHASE:\n")
 
+        # Determine which attack build to use (handle MultiAttackBuild with fallback)
+        # For dual_natured: Try Attack 2 (index 1), fall back to Attack 1 (index 0) if unavailable
+        # For versatile_master: Try attacks in reverse order (most specialized first)
+        active_build = build
+        fallback_attempted = False
+
+        if isinstance(build, MultiAttackBuild):
+            # MultiAttackBuild - implement fallback logic
+            # For dual_natured (2 attacks): Try Attack 2 first (index 1), fallback to Attack 1 (index 0)
+            # For versatile_master (5 attacks): Try in reverse order
+            if build.archetype == 'dual_natured' and len(build.builds) == 2:
+                # Try preferred attack (Attack 2) first
+                preferred_build = build.builds[1]
+                fallback_build = build.builds[0]
+
+                # Quick check if preferred build can be used this turn
+                # Test by calling make_attack with allow_multi=False to get failure status
+                try:
+                    test_damage, test_conditions = make_attack(
+                        attacker, defender, preferred_build, allow_multi=False, log_file=None,
+                        turn_number=turns, charge_history=charge_history if charge_history is not None else [],
+                        cooldown_history=cooldown_history if cooldown_history is not None else {},
+                        attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state
+                    )
+                except Exception as e:
+                    # If test fails, assume preferred attack is unavailable
+                    test_damage = 0
+                    test_conditions = []
+
+                # If preferred attack fails due to limits (returns 0 and no charge), use fallback
+                if test_damage == 0 and 'charge' not in test_conditions:
+                    active_build = fallback_build
+                    fallback_attempted = True
+                    if log_file:
+                        log_file.write(f"  Attack 2 unavailable this turn, falling back to Attack 1\n")
+                else:
+                    active_build = preferred_build
+                    if log_file:
+                        log_file.write(f"  Using Attack 2 (preferred)\n")
+            else:
+                # For versatile_master or other multi-attack types, use first attack for now
+                # TODO: Implement more sophisticated selection for versatile_master
+                active_build = build.builds[0]
+                if log_file:
+                    log_file.write(f"  Using Attack 1 (default for {build.archetype})\n")
+
         # Determine if this is an AOE attack
-        # Handle both AttackBuild and MultiAttackBuild
-        if hasattr(build, 'attack_type'):
-            is_aoe = build.attack_type in ['area', 'direct_area_damage']
+        if hasattr(active_build, 'attack_type'):
+            is_aoe = active_build.attack_type in ['area', 'direct_area_damage']
         else:
-            # MultiAttackBuild - check if any of its builds are AOE
-            is_aoe = any(b.attack_type in ['area', 'direct_area_damage'] for b in build.builds)
+            is_aoe = False
 
         # Initialize turn tracking variables
         charged_this_turn = False
@@ -191,7 +287,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
             # Use the AOE attack function for proper shared damage rolls
             attack_results, total_damage_dealt = make_aoe_attack(
-                attacker, defender, build, alive_enemies, log_file=log_file,
+                attacker, defender, active_build, alive_enemies, log_file=log_file,
                 turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                 attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state
             )
@@ -262,7 +358,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                                 log_file.write(f"     SPLINTER! Enemy {target_idx+1} defeated, attacking Enemy {next_target_idx+1} (attack {splinter_attacks}/{max_splinter_attacks})\n")
 
                             # Make splinter attack (single target, not AOE)
-                            splinter_damage, splinter_conditions = make_attack(attacker, defender, build, log_file=log_file,
+                            splinter_damage, splinter_conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                                               turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                                               attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
                             next_target['hp'] -= splinter_damage
@@ -296,7 +392,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 if log_file:
                     log_file.write(f"  Single target attack on Enemy {target_idx+1}\n")
 
-                damage, conditions = make_attack(attacker, defender, build, log_file=log_file,
+                damage, conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                 turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                 attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
 
@@ -365,7 +461,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                                 log_file.write(f"     SPLINTER! Enemy {target_idx+1} defeated, attacking Enemy {next_target_idx+1} (attack {splinter_attacks}/{max_splinter_attacks})\n")
 
                             # Make splinter attack
-                            splinter_damage, splinter_conditions = make_attack(attacker, defender, build, log_file=log_file,
+                            splinter_damage, splinter_conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                                               turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                                               attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
                             next_target['hp'] -= splinter_damage
@@ -490,7 +586,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 combat_state['was_hit_no_damage_last_turn'] = False
 
         # Increment channeled turns if using channeled upgrade
-        if hasattr(build, 'upgrades') and 'channeled' in build.upgrades:
+        if hasattr(active_build, 'upgrades') and 'channeled' in active_build.upgrades:
             combat_state['channeled_turns'] += 1
         else:
             combat_state['channeled_turns'] = 0
@@ -536,7 +632,293 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             log_file.write(f"Enemies remaining: {alive_count}/{num_enemies}\n")
             log_file.write("="*50 + "\n")
 
+    # Return objects to pool for reuse
+    for enemy in enemies:
+        _return_enemy_dict(enemy)
+    _return_combat_state(combat_state)
+
+    # Clear history lists
+    charge_history.clear()
+    cooldown_history.clear()
+
     return turns, outcome
+
+
+def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuild, fallback_build: AttackBuild,
+                                  target_hp: int = 100, log_file=None, defender: Character = None,
+                                  num_enemies: int = 1, enemy_hp: int = None, max_turns: int = 100,
+                                  enemy_hp_list: List[int] = None) -> Tuple[int, str, dict]:
+    """
+    Simulate combat with dynamic build switching based on limit conditions.
+
+    On each turn, checks if the primary_build's limits can activate. If not, uses fallback_build.
+
+    Args:
+        attacker: The attacking character
+        primary_build: The build to use when limit conditions are met
+        fallback_build: The build to use when limit conditions are NOT met
+        target_hp: Target HP for enemies (legacy parameter)
+        log_file: Optional file handle for logging
+        defender: The defending character
+        num_enemies: Number of enemies to fight
+        enemy_hp: HP per enemy
+        max_turns: Maximum combat turns before timeout
+        enemy_hp_list: Optional list of HP values for mixed enemy groups
+
+    Returns:
+        Tuple of (turns, outcome, stats) where stats includes:
+            - primary_activations: Number of turns primary build was used
+            - fallback_activations: Number of turns fallback build was used
+            - activation_percentage: % of turns primary build was active
+    """
+    from src.combat import can_activate_limit, make_attack, make_aoe_attack
+
+    # Use provided defender or create dummy defender
+    if defender is None:
+        defender = Character(focus=0, power=0, mobility=3, endurance=0, tier=attacker.tier)
+
+    # Initialize enemies - use object pool for memory efficiency
+    if enemy_hp_list is not None:
+        enemies = [_get_enemy_dict(hp) for hp in enemy_hp_list]
+        num_enemies = len(enemy_hp_list)
+    else:
+        if enemy_hp is None:
+            enemy_hp = target_hp
+        enemies = [_get_enemy_dict(enemy_hp) for _ in range(num_enemies)]
+
+    # Track attacker HP
+    attacker_hp = attacker.max_hp
+    attacker_max_hp = attacker.max_hp
+
+    turns = 0
+    charge_history = []
+    cooldown_history = {}
+
+    # Initialize combat state from pool
+    combat_state = _get_combat_state()
+
+    # Track activation stats
+    primary_activations = 0
+    fallback_activations = 0
+
+    while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
+        turns += 1
+
+        # Apply bleed damage to all enemies
+        enemies_killed_by_bleed = []
+        for i, enemy in enumerate(enemies):
+            if enemy['hp'] <= 0:
+                continue
+
+            bleed_stacks = enemy['bleed_stacks']
+            if not bleed_stacks:
+                continue
+
+            total_bleed_damage = 0
+            active_bleeds = 0
+
+            for j in range(len(bleed_stacks)):
+                bleed_damage, turns_left = bleed_stacks[j]
+                if turns_left > 0:
+                    total_bleed_damage += bleed_damage
+                    bleed_stacks[active_bleeds] = (bleed_damage, turns_left - 1)
+                    active_bleeds += 1
+
+            # Remove expired bleeds
+            del bleed_stacks[active_bleeds:]
+
+            enemy['hp'] -= total_bleed_damage
+            if enemy['hp'] <= 0:
+                enemies_killed_by_bleed.append(i)
+                enemy['defeated_this_turn'] = True
+
+        # DECIDE WHICH BUILD TO USE THIS TURN
+        can_use_primary = True
+
+        # Check each limit in primary build
+        for limit_name in primary_build.limits:
+            if not can_activate_limit(limit_name, turns, attacker_hp, attacker_max_hp,
+                                     combat_state, charge_history, cooldown_history):
+                # For charge_up limits, we still want to use primary build (it will charge)
+                # For other limits, use fallback
+                if limit_name not in ['charge_up', 'charge_up_2']:
+                    can_use_primary = False
+                    break
+
+        # Select the build to use this turn
+        if can_use_primary:
+            active_build = primary_build
+            primary_activations += 1
+        else:
+            active_build = fallback_build
+            fallback_activations += 1
+
+        # Execute attack with the selected build
+        charged_this_turn = False
+        total_damage_dealt = 0
+        target_idx = None
+        is_aoe = 'area' in active_build.attack_type
+
+        if is_aoe:
+            # AOE attack - hit all alive enemies
+            # Build targets list: (index, enemy_dict) for alive enemies
+            alive_enemies = [(i, enemy) for i, enemy in enumerate(enemies) if enemy['hp'] > 0]
+
+            # Use the AOE attack function for proper shared damage rolls
+            attack_results, total_damage_dealt = make_aoe_attack(
+                attacker, defender, active_build, alive_enemies,
+                turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
+                attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state
+            )
+
+            # Process results
+            for target_idx, damage, conditions in attack_results:
+                enemy = enemies[target_idx]
+                enemy['hp'] -= damage
+
+                # Apply bleed
+                if 'bleed' in conditions:
+                    bleed_damage = max(0, damage - attacker.tier)
+                    enemy['bleed_stacks'] = [(bleed_damage, 2)]
+
+                if enemy['hp'] <= 0:
+                    enemy['defeated_this_turn'] = True
+        else:
+            # Single target attack
+            target_enemy = None
+            for i, enemy in enumerate(enemies):
+                if enemy['hp'] > 0:
+                    target_enemy = enemy
+                    target_idx = i
+                    break
+
+            if target_enemy:
+                damage, conditions = make_attack(attacker, defender, active_build,
+                                                turn_number=turns,
+                                                charge_history=charge_history,
+                                                cooldown_history=cooldown_history,
+                                                attacker_hp=attacker_hp,
+                                                attacker_max_hp=attacker_max_hp,
+                                                combat_state=combat_state)
+
+                # Check for charge
+                if damage == 0 and 'charge' in conditions:
+                    charged_this_turn = True
+                else:
+                    target_enemy['hp'] -= damage
+                    total_damage_dealt = damage
+
+                    # Apply bleed
+                    if 'bleed' in conditions:
+                        bleed_damage = max(0, damage - attacker.tier)
+                        target_enemy['bleed_stacks'] = [(bleed_damage, 2)]
+
+                    if target_enemy['hp'] <= 0:
+                        target_enemy['defeated_this_turn'] = True
+
+        # Update charge history
+        charge_history.append(charged_this_turn)
+        if len(charge_history) > 2:
+            charge_history.pop(0)
+
+        # DEFENDER ATTACK PHASE
+        total_defender_damage = 0
+        if any(enemy['hp'] > 0 for enemy in enemies):
+            from src.models import AttackBuild as AB
+            defender_build = AB('ranged', [], [])
+            for i, enemy in enumerate(enemies):
+                if enemy['hp'] <= 0:
+                    continue
+
+                enemy_attacker = Character(
+                    focus=defender.focus,
+                    power=defender.power,
+                    mobility=defender.mobility,
+                    endurance=defender.endurance,
+                    tier=defender.tier,
+                    max_hp=enemy['max_hp']
+                )
+
+                damage, _ = make_attack(enemy_attacker, attacker, defender_build,
+                                       turn_number=turns, charge_history=[], cooldown_history={})
+
+                attacker_hp -= damage
+                total_defender_damage += damage
+
+        # Apply HP costs and recovery
+        if combat_state.get('attrition_cost', 0) > 0:
+            attacker_hp -= combat_state['attrition_cost']
+            combat_state['attrition_cost'] = 0
+
+        if combat_state.get('leech_hp', 0) > 0:
+            attacker_hp = min(attacker_hp + combat_state['leech_hp'], attacker_max_hp)
+            combat_state['leech_hp'] = 0
+
+        # Update combat state for next turn
+        combat_state['defeated_enemy_last_turn'] = any(enemy.get('defeated_this_turn', False) for enemy in enemies)
+        combat_state['dealt_damage_last_turn'] = total_damage_dealt > 0 and not charged_this_turn
+
+        # Track target hits
+        current_target = None
+        if not is_aoe and target_idx is not None:
+            current_target = target_idx
+        combat_state['hit_same_target_last_turn'] = (current_target is not None and
+                                                      current_target == combat_state.get('last_target_hit'))
+        combat_state['last_target_hit'] = current_target
+
+        # Defender attack tracking
+        if total_defender_damage > 0:
+            combat_state['was_attacked_last_turn'] = True
+            combat_state['was_hit_last_turn'] = True
+            combat_state['was_damaged_last_turn'] = True
+            combat_state['all_attacks_missed_last_turn'] = False
+            combat_state['was_hit_no_damage_last_turn'] = False
+        else:
+            alive_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
+            if alive_count > 0:
+                combat_state['was_attacked_last_turn'] = True
+                combat_state['all_attacks_missed_last_turn'] = True
+                combat_state['was_hit_last_turn'] = False
+                combat_state['was_damaged_last_turn'] = False
+                combat_state['was_hit_no_damage_last_turn'] = False
+            else:
+                combat_state['was_attacked_last_turn'] = False
+                combat_state['all_attacks_missed_last_turn'] = False
+                combat_state['was_hit_last_turn'] = False
+                combat_state['was_damaged_last_turn'] = False
+                combat_state['was_hit_no_damage_last_turn'] = False
+
+        # Clear defeated_this_turn flags
+        for enemy in enemies:
+            if 'defeated_this_turn' in enemy:
+                del enemy['defeated_this_turn']
+
+    # Determine outcome
+    if all(enemy['hp'] <= 0 for enemy in enemies):
+        outcome = "win"
+    else:
+        outcome = "timeout"
+
+    # Calculate activation stats
+    total_turns = primary_activations + fallback_activations
+    activation_percentage = (primary_activations / total_turns * 100) if total_turns > 0 else 0
+
+    stats = {
+        'primary_activations': primary_activations,
+        'fallback_activations': fallback_activations,
+        'activation_percentage': activation_percentage
+    }
+
+    # Return objects to pool for reuse
+    for enemy in enemies:
+        _return_enemy_dict(enemy)
+    _return_combat_state(combat_state)
+
+    # Clear history lists
+    charge_history.clear()
+    cooldown_history.clear()
+
+    return turns, outcome, stats
 
 
 def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int = 10,
@@ -572,6 +954,9 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
         result_outcomes.append(outcome)
         outcomes[outcome] += 1
 
+    # Clear outcome list to free memory
+    result_outcomes.clear()
+
     # Calculate stats from ALL runs (not just wins) - attacker can go negative
     avg_turns = sum(results) / num_runs if num_runs > 0 else 0
     dpt = total_hp_pool / avg_turns if avg_turns > 0 else 0
@@ -585,3 +970,80 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
     }
 
     return results, avg_turns, dpt, outcome_stats
+
+
+def run_simulation_batch_with_fallback(attacker: Character, primary_build: AttackBuild, fallback_build: AttackBuild,
+                                       num_runs: int = 10, target_hp: int = 100, defender: Character = None,
+                                       num_enemies: int = 1, enemy_hp: int = None, max_turns: int = 100,
+                                       enemy_hp_list: List[int] = None) -> Tuple[List[int], float, float, dict, dict]:
+    """
+    Run multiple combat simulations with fallback build switching.
+
+    Args:
+        attacker: The attacking character
+        primary_build: The build to use when limit conditions are met
+        fallback_build: The build to use when limit conditions are NOT met
+        num_runs: Number of simulation runs
+        target_hp: Target HP for enemies (legacy parameter)
+        defender: The defending character
+        num_enemies: Number of enemies to fight
+        enemy_hp: HP per enemy
+        max_turns: Maximum combat turns before timeout
+        enemy_hp_list: Optional list of HP values for mixed enemy groups
+
+    Returns:
+        Tuple of (individual_results, average_turns, damage_per_turn, outcome_stats, activation_stats)
+        where activation_stats = {"avg_activation_pct": float, "total_primary": int, "total_fallback": int}
+    """
+    # Pre-allocate results list
+    results = [0] * num_runs
+    result_outcomes = []
+    outcomes = {"win": 0, "loss": 0, "timeout": 0}
+
+    # Track activation statistics
+    total_primary_activations = 0
+    total_fallback_activations = 0
+
+    # Calculate total HP pool once
+    if enemy_hp_list:
+        total_hp_pool = sum(enemy_hp_list)
+    else:
+        total_hp_pool = (enemy_hp if enemy_hp else target_hp) * num_enemies
+
+    for i in range(num_runs):
+        turns, outcome, stats = simulate_combat_with_fallback(
+            attacker, primary_build, fallback_build, target_hp,
+            defender=defender, num_enemies=num_enemies, enemy_hp=enemy_hp,
+            max_turns=max_turns, enemy_hp_list=enemy_hp_list
+        )
+        results[i] = turns
+        result_outcomes.append(outcome)
+        outcomes[outcome] += 1
+
+        # Accumulate activation stats
+        total_primary_activations += stats['primary_activations']
+        total_fallback_activations += stats['fallback_activations']
+
+    # Calculate stats
+    avg_turns = sum(results) / num_runs if num_runs > 0 else 0
+    dpt = total_hp_pool / avg_turns if avg_turns > 0 else 0
+
+    # Prepare outcome statistics
+    outcome_stats = {
+        "wins": outcomes["win"],
+        "losses": outcomes["loss"],
+        "timeouts": outcomes["timeout"],
+        "win_rate": (outcomes["win"] / num_runs * 100) if num_runs > 0 else 0
+    }
+
+    # Prepare activation statistics
+    total_turns = total_primary_activations + total_fallback_activations
+    avg_activation_pct = (total_primary_activations / total_turns * 100) if total_turns > 0 else 0
+
+    activation_stats = {
+        "avg_activation_pct": avg_activation_pct,
+        "total_primary": total_primary_activations,
+        "total_fallback": total_fallback_activations
+    }
+
+    return results, avg_turns, dpt, outcome_stats, activation_stats

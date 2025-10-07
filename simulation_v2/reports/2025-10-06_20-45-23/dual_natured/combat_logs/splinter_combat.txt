@@ -1,0 +1,885 @@
+================================================================================
+COMBAT LOG - SPLINTER
+================================================================================
+Enhancement Type: Upgrade
+Cost: 4 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: splinter
+  Limits: None
+  Total Cost: 4 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 21 vs 16
+      Damage dice: ['1', '3', '3'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 2
+    Enemy 1 HP: 100 -> 98
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['2', '1', '2'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 11
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 2
+  Total damage this turn: 2
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 98/100 (98.0%)
+  Enemy 1: 98/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 30 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['2', '1', '1'] = 4
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 98 -> 95
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['1', '1', '6+3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 100 -> 94
+  Total defender damage this turn: 6
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 94/100 (94.0%)
+Alive Enemies: 1/1
+Total HP: 95/100 (95.0%)
+  Enemy 1: 95/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 14 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 95 -> 95
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 94 -> 94
+  Total defender damage this turn: 0
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 94/100 (94.0%)
+Alive Enemies: 1/1
+Total HP: 95/100 (95.0%)
+  Enemy 1: 95/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 18 vs 16
+      Damage dice: ['6+1', '5', '1'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 8
+    Enemy 1 HP: 95 -> 87
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 94 -> 94
+  Total defender damage this turn: 0
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 8
+  Total damage this turn: 8
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 94/100 (94.0%)
+Alive Enemies: 1/1
+Total HP: 87/100 (87.0%)
+  Enemy 1: 87/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 87 -> 87
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 94 -> 94
+  Total defender damage this turn: 0
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 94/100 (94.0%)
+Alive Enemies: 1/1
+Total HP: 87/100 (87.0%)
+  Enemy 1: 87/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 22 vs 16
+      Damage dice: ['4', '3', '6+4'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 12
+    Enemy 1 HP: 87 -> 75
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['5', '6+4', '5'] = 20
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 26
+      After durability (11): 15 damage
+    Damage dealt to Attacker: 15
+    Attacker HP: 94 -> 79
+  Total defender damage this turn: 15
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 12
+  Total damage this turn: 12
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 79/100 (79.0%)
+Alive Enemies: 1/1
+Total HP: 75/100 (75.0%)
+  Enemy 1: 75/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 25 vs 16
+      Damage dice: ['1', '4', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 75 -> 72
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 79 -> 79
+  Total defender damage this turn: 0
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 79/100 (79.0%)
+Alive Enemies: 1/1
+Total HP: 72/100 (72.0%)
+  Enemy 1: 72/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 72 -> 72
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['5', '3', '6+5'] = 19
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 25
+      After durability (11): 14 damage
+    Damage dealt to Attacker: 14
+    Attacker HP: 79 -> 65
+  Total defender damage this turn: 14
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 65/100 (65.0%)
+Alive Enemies: 1/1
+Total HP: 72/100 (72.0%)
+  Enemy 1: 72/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 14 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 72 -> 72
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 65 -> 65
+  Total defender damage this turn: 0
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: 65/100 (65.0%)
+Alive Enemies: 1/1
+Total HP: 72/100 (72.0%)
+  Enemy 1: 72/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 27 vs 16
+      Damage dice: ['5', '5', '2'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 72 -> 65
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 65 -> 65
+  Total defender damage this turn: 0
+
+TURN 10 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 1/1
+
+============================================================
+TURN 11 - START
+============================================================
+Attacker HP: 65/100 (65.0%)
+Alive Enemies: 1/1
+Total HP: 65/100 (65.0%)
+  Enemy 1: 65/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 26 vs 16
+      Damage dice: ['4', '2', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 5
+    Enemy 1 HP: 65 -> 60
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['6+2', '6+4', '6+6+1'] = 31
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 37
+      After durability (11): 26 damage
+    Damage dealt to Attacker: 26
+    Attacker HP: 65 -> 39
+  Total defender damage this turn: 26
+
+TURN 11 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 5
+  Total damage this turn: 5
+  Enemies remaining: 1/1
+
+============================================================
+TURN 12 - START
+============================================================
+Attacker HP: 39/100 (39.0%)
+Alive Enemies: 1/1
+Total HP: 60/100 (60.0%)
+  Enemy 1: 60/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 16 vs 16
+      Damage dice: ['2', '5', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 5
+    Enemy 1 HP: 60 -> 55
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 39 -> 39
+  Total defender damage this turn: 0
+
+TURN 12 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 5
+  Total damage this turn: 5
+  Enemies remaining: 1/1
+
+============================================================
+TURN 13 - START
+============================================================
+Attacker HP: 39/100 (39.0%)
+Alive Enemies: 1/1
+Total HP: 55/100 (55.0%)
+  Enemy 1: 55/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 13 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 55 -> 55
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '1', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 39 -> 38
+  Total defender damage this turn: 1
+
+TURN 13 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 14 - START
+============================================================
+Attacker HP: 38/100 (38.0%)
+Alive Enemies: 1/1
+Total HP: 55/100 (55.0%)
+  Enemy 1: 55/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 22 vs 16
+      Damage dice: ['1', '4', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 1
+    Enemy 1 HP: 55 -> 54
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 38 -> 38
+  Total defender damage this turn: 0
+
+TURN 14 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 1
+  Total damage this turn: 1
+  Enemies remaining: 1/1
+
+============================================================
+TURN 15 - START
+============================================================
+Attacker HP: 38/100 (38.0%)
+Alive Enemies: 1/1
+Total HP: 54/100 (54.0%)
+  Enemy 1: 54/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 54 -> 54
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['5', '5', '2'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 38 -> 31
+  Total defender damage this turn: 7
+
+TURN 15 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 16 - START
+============================================================
+Attacker HP: 31/100 (31.0%)
+Alive Enemies: 1/1
+Total HP: 54/100 (54.0%)
+  Enemy 1: 54/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 23 vs 16
+      Damage dice: ['6+2', '3', '4'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 10
+    Enemy 1 HP: 54 -> 44
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['2', '4', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 31 -> 26
+  Total defender damage this turn: 5
+
+TURN 16 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 10
+  Total damage this turn: 10
+  Enemies remaining: 1/1
+
+============================================================
+TURN 17 - START
+============================================================
+Attacker HP: 26/100 (26.0%)
+Alive Enemies: 1/1
+Total HP: 44/100 (44.0%)
+  Enemy 1: 44/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 44 -> 44
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['3', '1', '4'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 26 -> 23
+  Total defender damage this turn: 3
+
+TURN 17 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 18 - START
+============================================================
+Attacker HP: 23/100 (23.0%)
+Alive Enemies: 1/1
+Total HP: 44/100 (44.0%)
+  Enemy 1: 44/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 28 vs 16
+      Damage dice: ['4', '3', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 6
+    Enemy 1 HP: 44 -> 38
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['6+6+3', '4', '2'] = 21
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 27
+      After durability (11): 16 damage
+    Damage dealt to Attacker: 16
+    Attacker HP: 23 -> 7
+  Total defender damage this turn: 16
+
+TURN 18 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 1/1
+
+============================================================
+TURN 19 - START
+============================================================
+Attacker HP: 7/100 (7.0%)
+Alive Enemies: 1/1
+Total HP: 38/100 (38.0%)
+  Enemy 1: 38/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 26 vs 16
+      Damage dice: ['2', '2', '2'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 1
+    Enemy 1 HP: 38 -> 37
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['5', '1', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 7 -> 2
+  Total defender damage this turn: 5
+
+TURN 19 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 1
+  Total damage this turn: 1
+  Enemies remaining: 1/1
+
+============================================================
+TURN 20 - START
+============================================================
+Attacker HP: 2/100 (2.0%)
+Alive Enemies: 1/1
+Total HP: 37/100 (37.0%)
+  Enemy 1: 37/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 25 vs 16
+      Damage dice: ['5', '4', '2'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 6
+    Enemy 1 HP: 37 -> 31
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 2 -> 2
+  Total defender damage this turn: 0
+
+TURN 20 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 1/1
+
+============================================================
+TURN 21 - START
+============================================================
+Attacker HP: 2/100 (2.0%)
+Alive Enemies: 1/1
+Total HP: 31/100 (31.0%)
+  Enemy 1: 31/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 18 vs 16
+      Damage dice: ['6+5', '4', '3'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 13
+    Enemy 1 HP: 31 -> 18
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['1', '3', '1'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 11
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 2 -> 2
+  Total defender damage this turn: 0
+
+TURN 21 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 1/1
+
+============================================================
+TURN 22 - START
+============================================================
+Attacker HP: 2/100 (2.0%)
+Alive Enemies: 1/1
+Total HP: 18/100 (18.0%)
+  Enemy 1: 18/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 25 vs 16
+      Damage dice: ['4', '1', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 2
+    Enemy 1 HP: 18 -> 16
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['5', '2', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 2 -> -4
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 6
+
+TURN 22 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 2
+  Total damage this turn: 2
+  Enemies remaining: 1/1
+
+============================================================
+TURN 23 - START
+============================================================
+Attacker HP: -4/100 (-4.0%)
+Alive Enemies: 1/1
+Total HP: 16/100 (16.0%)
+  Enemy 1: 16/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['splinter']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 27 vs 16
+      Damage dice: ['6+4', '5', '6+1'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 28
+      After durability (11): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 16 -> -1
+
+TURN 23 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 23 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: -4/100 (went negative but still won)
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 23
+================================================================================

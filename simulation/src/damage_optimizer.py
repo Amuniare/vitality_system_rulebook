@@ -28,7 +28,8 @@ def test_single_build(args):
     # Instead, we'll disable detailed logging in worker processes
     should_log = False
 
-    total_turns = 0
+    # Collect ALL raw turn results (not pre-averaged) for true average calculation
+    all_raw_turns = []
     total_dpt = 0
     total_configs = 0
 
@@ -57,7 +58,6 @@ def test_single_build(args):
                 ("Fight 8: 1x100 + 4x25 HP (Boss+Captains)", [100, 25, 25, 25, 25], None, None)
             ]
 
-        case_total_turns = 0
         case_total_dpt = 0
         scenario_count = 0
 
@@ -73,21 +73,21 @@ def test_single_build(args):
 
             # Skip scenario logging in worker processes
 
-            case_total_turns += avg_turns
+            # Store raw turn results instead of pre-averaged value
+            all_raw_turns.extend(results)
             case_total_dpt += dpt
             scenario_count += 1
 
-        # Average turns and dpt across all scenarios for this case
-        case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
+        # Average dpt across all scenarios for this case
         case_avg_dpt = case_total_dpt / scenario_count if scenario_count > 0 else 0
 
         # Skip case logging in worker processes
 
-        total_turns += case_avg_turns
         total_dpt += case_avg_dpt
         total_configs += 1
 
-    avg_turns = total_turns / total_configs if total_configs > 0 else 0
+    # Calculate true average from ALL raw turn counts (not average of averages)
+    avg_turns = sum(all_raw_turns) / len(all_raw_turns) if all_raw_turns else 0
     avg_dpt = total_dpt / total_configs if total_configs > 0 else 0
 
     # Return build, average dpt, and average turns
@@ -95,63 +95,56 @@ def test_single_build(args):
 
 
 def test_multi_attack_build(args):
-    """Test a multi-attack build by testing each attack separately and tracking optimal selections"""
+    """Test a multi-attack build using fallback logic (try Attack 2, fall back to Attack 1 if unavailable)
+
+    The simulation now handles attack selection automatically:
+    - Each turn, it tries the preferred attack (Attack 2 for dual_natured)
+    - If that attack can't be used due to limits, it falls back to Attack 1
+    - This simulates intelligent combat behavior where players use their best available attack
+    """
     build_idx, multi_build, test_cases, config, logger, print_progress = args
 
-    # For each attack in the multi-build, test it across all scenarios
-    for attack_idx, attack_build in enumerate(multi_build.builds):
-        total_turns = 0
-        total_configs = 0
+    # Collect ALL raw turn results (not pre-averaged) for true average calculation
+    all_raw_turns = []
+    total_configs = 0
 
-        for case_name, attacker, defender in test_cases:
-            # Load fight scenarios from config
-            if hasattr(config, 'fight_scenarios') and config.fight_scenarios.get('enabled', True):
-                config_scenarios = config.fight_scenarios.get('scenarios', [])
-                fight_scenarios = [
-                    (s['name'], s.get('enemy_hp_list'), s.get('num_enemies'), s.get('enemy_hp'))
-                    for s in config_scenarios
-                ]
-            else:
-                fight_scenarios = [
-                    ("Fight 1: 1x100 HP Boss", None, 1, 100),
-                    ("Fight 2: 2x50 HP Enemies", None, 2, 50),
-                    ("Fight 3: 4x25 HP Enemies", None, 4, 25),
-                    ("Fight 4: 10x10 HP Enemies", None, 10, 10),
-                    ("Fight 5: 1x100 + 2x50 HP (Boss+Elites)", [100, 50, 50], None, None),
-                    ("Fight 6: 1x25 + 6x10 HP (Captain+Swarm)", [25, 10, 10, 10, 10, 10, 10], None, None),
-                    ("Fight 7: 1x50 + 6x10 HP (Elite+Swarm)", [50, 10, 10, 10, 10, 10, 10], None, None),
-                    ("Fight 8: 1x100 + 4x25 HP (Boss+Captains)", [100, 25, 25, 25, 25], None, None)
-                ]
+    for case_name, attacker, defender in test_cases:
+        # Load fight scenarios from config
+        if hasattr(config, 'fight_scenarios') and config.fight_scenarios.get('enabled', True):
+            config_scenarios = config.fight_scenarios.get('scenarios', [])
+            fight_scenarios = [
+                (s['name'], s.get('enemy_hp_list'), s.get('num_enemies'), s.get('enemy_hp'))
+                for s in config_scenarios
+            ]
+        else:
+            fight_scenarios = [
+                ("Fight 1: 1x100 HP Boss", None, 1, 100),
+                ("Fight 2: 2x50 HP Enemies", None, 2, 50),
+                ("Fight 3: 4x25 HP Enemies", None, 4, 25),
+                ("Fight 4: 10x10 HP Enemies", None, 10, 10),
+                ("Fight 5: 1x100 + 2x50 HP (Boss+Elites)", [100, 50, 50], None, None),
+                ("Fight 6: 1x25 + 6x10 HP (Captain+Swarm)", [25, 10, 10, 10, 10, 10, 10], None, None),
+                ("Fight 7: 1x50 + 6x10 HP (Elite+Swarm)", [50, 10, 10, 10, 10, 10, 10], None, None),
+                ("Fight 8: 1x100 + 4x25 HP (Boss+Captains)", [100, 25, 25, 25, 25], None, None)
+            ]
 
-            case_total_turns = 0
-            scenario_count = 0
+        for scenario_data in fight_scenarios:
+            scenario_name, enemy_hp_list, num_enemies, enemy_hp = scenario_data
 
-            for scenario_data in fight_scenarios:
-                scenario_name, enemy_hp_list, num_enemies, enemy_hp = scenario_data
+            # Run batch simulation with the full multi-attack build
+            # The simulation will handle fallback logic automatically
+            results, avg_turns, dpt, outcome_stats = run_simulation_batch(
+                attacker, multi_build, config.build_testing_runs, config.target_hp, defender,
+                num_enemies=num_enemies if num_enemies else 0, enemy_hp=enemy_hp,
+                enemy_hp_list=enemy_hp_list)
 
-                # Run batch simulation for this specific attack
-                results, avg_turns, dpt, outcome_stats = run_simulation_batch(
-                    attacker, attack_build, config.build_testing_runs, config.target_hp, defender,
-                    num_enemies=num_enemies if num_enemies else 0, enemy_hp=enemy_hp,
-                    enemy_hp_list=enemy_hp_list)
+            # Store raw turn results instead of pre-averaged value
+            all_raw_turns.extend(results)
 
-                # Record result for this attack in this scenario
-                multi_build.record_scenario_result(f"{case_name}_{scenario_name}", attack_idx, avg_turns)
+        total_configs += 1
 
-                case_total_turns += avg_turns
-                scenario_count += 1
-
-            case_avg_turns = case_total_turns / scenario_count if scenario_count > 0 else 0
-            total_turns += case_avg_turns
-            total_configs += 1
-
-    # Calculate optimal selections across all scenarios
-    multi_build.calculate_optimal_selections()
-
-    # Return the multi-build with its overall average turns
-    # Note: DPT is set to 0 for multi-attack builds as the metric is less meaningful
-    # when switching between different attacks
-    avg_turns = multi_build.get_overall_avg_turns()
+    # Calculate true average from ALL raw turn counts (not average of averages)
+    avg_turns = sum(all_raw_turns) / len(all_raw_turns) if all_raw_turns else float('inf')
     avg_dpt = 0  # Placeholder for multi-attack builds
     return (multi_build, avg_dpt, avg_turns)
 
@@ -235,7 +228,7 @@ def run_build_testing(config: SimulationConfig, archetype: str, reports_dir: str
 
     # Generate once and split into two iterators
     print("Generating builds for testing...")
-    builds_gen_temp = generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size)
+    builds_gen_temp = generate_archetype_builds_chunked(archetype, config.tier, attack_types, chunk_size, config)
     builds_gen_count, builds_generator = tee(builds_gen_temp)
 
     # Count total builds for progress tracking

@@ -1,0 +1,509 @@
+================================================================================
+COMBAT LOG - UNBREAKABLE
+================================================================================
+Enhancement Type: Limit
+Cost: 1 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: None
+  Limits: unbreakable
+  Total Cost: 1 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 27 vs 16
+      Damage dice: ['5', '3', '4'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 100 -> 93
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 93/100 (93.0%)
+  Enemy 1: 93/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 28 vs 16
+      Damage dice: ['4', '1', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 93 -> 90
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 90/100 (90.0%)
+  Enemy 1: 90/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 13 vs 16
+      Miss!
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 90 -> 90
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['2', '3', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 100 -> 98
+  Total defender damage this turn: 2
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 98/100 (98.0%)
+Alive Enemies: 1/1
+Total HP: 90/100 (90.0%)
+  Enemy 1: 90/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 17 vs 16
+      Damage dice: ['5', '6+2', '2'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 10
+    Enemy 1 HP: 90 -> 80
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['4', '3', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 98 -> 92
+  Total defender damage this turn: 6
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 10
+  Total damage this turn: 10
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 80/100 (80.0%)
+  Enemy 1: 80/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 12 vs 16
+      Miss!
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 80 -> 80
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 92 -> 92
+  Total defender damage this turn: 0
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 80/100 (80.0%)
+  Enemy 1: 80/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 21 vs 16
+      Damage dice: ['6+5', '5', '6+2'] = 24
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 30
+      After durability (11): 19 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 19
+    Enemy 1 HP: 80 -> 61
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 92 -> 92
+  Total defender damage this turn: 0
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 19
+  Total damage this turn: 19
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 61/100 (61.0%)
+  Enemy 1: 61/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 24 vs 16
+      Damage dice: ['3', '6+4', '5'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 13
+    Enemy 1 HP: 61 -> 48
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 92 -> 92
+  Total defender damage this turn: 0
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 48/100 (48.0%)
+  Enemy 1: 48/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 26 vs 16
+      Damage dice: ['5', '6+5', '6+3'] = 25
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 31
+      After durability (11): 20 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 20
+    Enemy 1 HP: 48 -> 28
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 92 -> 92
+  Total defender damage this turn: 0
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 20
+  Total damage this turn: 20
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 28/100 (28.0%)
+  Enemy 1: 28/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 25 vs 16
+      Damage dice: ['2', '5', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 4
+    Enemy 1 HP: 28 -> 24
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 92 -> 92
+  Total defender damage this turn: 0
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 4
+  Total damage this turn: 4
+  Enemies remaining: 1/1
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 24/100 (24.0%)
+  Enemy 1: 24/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 16 vs 16
+      Damage dice: ['6+4', '6+1', '3'] = 20
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 26
+      After durability (11): 15 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 15
+    Enemy 1 HP: 24 -> 9
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['3', '1', '5'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 92 -> 88
+  Total defender damage this turn: 4
+
+TURN 10 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 15
+  Total damage this turn: 15
+  Enemies remaining: 1/1
+
+============================================================
+TURN 11 - START
+============================================================
+Attacker HP: 88/100 (88.0%)
+Alive Enemies: 1/1
+Total HP: 9/100 (9.0%)
+  Enemy 1: 9/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 21 vs 16
+      Damage dice: ['1', '2', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 1
+    Enemy 1 HP: 9 -> 8
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['3', '4', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 88 -> 82
+  Total defender damage this turn: 6
+
+TURN 11 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 1
+  Total damage this turn: 1
+  Enemies remaining: 1/1
+
+============================================================
+TURN 12 - START
+============================================================
+Attacker HP: 82/100 (82.0%)
+Alive Enemies: 1/1
+Total HP: 8/100 (8.0%)
+  Enemy 1: 8/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unbreakable failed: was not hit without damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 23 vs 16
+      Damage dice: ['6+4', '5', '3'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 13
+    Enemy 1 HP: 8 -> -5
+
+TURN 12 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 12 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 82/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 12
+================================================================================

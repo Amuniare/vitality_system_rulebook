@@ -1,0 +1,302 @@
+================================================================================
+COMBAT LOG - CRITICAL_EFFECT
+================================================================================
+Enhancement Type: Upgrade
+Cost: 1 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: critical_effect
+  Limits: None
+  Total Cost: 1 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['critical_effect']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 22 vs 16
+      Damage dice: ['4', '3', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] - 2 [critical_effect] = 4
+      Total damage: 13
+      After durability (11): 2 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 2
+    Enemy 1 HP: 100 -> 98
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['1', '4', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 100 -> 97
+  Total defender damage this turn: 3
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 2
+  Total damage this turn: 2
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 97/100 (97.0%)
+Alive Enemies: 1/1
+Total HP: 98/100 (98.0%)
+  Enemy 1: 98/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['critical_effect']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 28 vs 16
+      Damage dice: ['5+6+4', '3', '5+2'] = 25
+      Flat bonus: 4 [Tier] + 2 [Power] - 2 [critical_effect] = 4
+      Total damage: 29
+      After durability (11): 18 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 18
+    Enemy 1 HP: 98 -> 80
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['4', '3', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 97 -> 92
+  Total defender damage this turn: 5
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 18
+  Total damage this turn: 18
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 80/100 (80.0%)
+  Enemy 1: 80/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['critical_effect']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 29 vs 16
+      Damage dice: ['6+4', '3', '5+6+4'] = 28
+      Flat bonus: 4 [Tier] + 2 [Power] - 2 [critical_effect] = 4
+      Total damage: 32
+      After durability (11): 21 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 21
+    Enemy 1 HP: 80 -> 59
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['3', '1', '6+4'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 92 -> 83
+  Total defender damage this turn: 9
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 21
+  Total damage this turn: 21
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 83/100 (83.0%)
+Alive Enemies: 1/1
+Total HP: 59/100 (59.0%)
+  Enemy 1: 59/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['critical_effect']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 19 vs 16
+      Damage dice: ['2', '5+4', '1'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] - 2 [critical_effect] = 4
+      Total damage: 16
+      After durability (11): 5 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 5
+    Enemy 1 HP: 59 -> 54
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '4', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 83 -> 77
+  Total defender damage this turn: 6
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 5
+  Total damage this turn: 5
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 77/100 (77.0%)
+Alive Enemies: 1/1
+Total HP: 54/100 (54.0%)
+  Enemy 1: 54/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['critical_effect']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 28 vs 16
+      Damage dice: ['6+5+5+5+5+3', '6+6+5+5+4', '1'] = 56
+      Flat bonus: 4 [Tier] + 2 [Power] - 2 [critical_effect] = 4
+      Total damage: 60
+      After durability (11): 49 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 49
+    Enemy 1 HP: 54 -> 5
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['3', '4', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 77 -> 72
+  Total defender damage this turn: 5
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 49
+  Total damage this turn: 49
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 72/100 (72.0%)
+Alive Enemies: 1/1
+Total HP: 5/100 (5.0%)
+  Enemy 1: 5/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['critical_effect']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 28 vs 16
+      Damage dice: ['2', '2', '1'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] - 2 [critical_effect] = 4
+      Total damage: 9
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 5 -> 5
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 72 -> 72
+  Total defender damage this turn: 0
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 72/100 (72.0%)
+Alive Enemies: 1/1
+Total HP: 5/100 (5.0%)
+  Enemy 1: 5/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['critical_effect']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 23 vs 16
+      Damage dice: ['6+2', '3', '2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] - 2 [critical_effect] = 4
+      Total damage: 17
+      After durability (11): 6 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 6
+    Enemy 1 HP: 5 -> -1
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 7 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 72/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 7
+================================================================================

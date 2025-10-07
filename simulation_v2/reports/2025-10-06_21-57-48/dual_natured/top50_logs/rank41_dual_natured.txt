@@ -1,0 +1,2002 @@
+================================================================================
+TOP 50 BUILD COMBAT LOG - DETAILED MECHANICS ANALYSIS
+================================================================================
+Rank: #41
+Build: Multi-Attack (dual_natured) - 2 attacks (Total Cost: 6p)
+Average Turns: 8.50
+Generated: 2025-10-06 22:48:47
+================================================================================
+
+
+================================================================================
+SCENARIO 1: 1 Enemies x 100 HP
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: finishing_blow_1, ricochet) (Limits: relentless) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['2', '5', '6+6+5'] = 24
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 30
+      After durability (11): 19 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 19
+    Enemy 1 HP: 100 -> 81
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 19
+  Total damage this turn: 19
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 81/100 (81.0%)
+  Enemy 1: 81/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 23 vs 16
+      Damage dice: ['3', '5', '6+1'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 29
+      After durability (11): 18 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 18
+    Enemy 1 HP: 81 -> 63
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['4', '1', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 100 -> 97
+  Total defender damage this turn: 3
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 18
+  Total damage this turn: 18
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 97/100 (97.0%)
+Alive Enemies: 1/1
+Total HP: 63/100 (63.0%)
+  Enemy 1: 63/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 22 vs 16
+      Damage dice: ['3', '2', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 24
+      After durability (11): 13 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 13
+    Enemy 1 HP: 63 -> 50
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['2', '4', '3'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 97 -> 93
+  Total defender damage this turn: 4
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 93/100 (93.0%)
+Alive Enemies: 1/1
+Total HP: 50/100 (50.0%)
+  Enemy 1: 50/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 35 vs 16
+      CRITICAL HIT! (rolled 17)
+      Damage dice: ['6+5', '4', '1'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 34
+      After durability (11): 23 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 23
+    Enemy 1 HP: 50 -> 27
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 93 -> 93
+  Total defender damage this turn: 0
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 23
+  Total damage this turn: 23
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 93/100 (93.0%)
+Alive Enemies: 1/1
+Total HP: 27/100 (27.0%)
+  Enemy 1: 27/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 35 vs 16
+      CRITICAL HIT! (rolled 17)
+      Damage dice: ['3', '3', '6+6+5'] = 23
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 41
+      After durability (11): 30 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 30
+    Enemy 1 HP: 27 -> -3
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 30
+  Total damage this turn: 30
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 5 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 93/100
+==================================================
+
+============================================================
+SCENARIO 1 RESULT: WIN in 5 turns
+============================================================
+
+
+================================================================================
+SCENARIO 2: Mixed Enemy Group - HP: [50, 25, 25]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: finishing_blow_1, ricochet) (Limits: relentless) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 3
+  Enemy HP: [50, 25, 25] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 3/3
+Total HP: 100/100 (100.0%)
+  Enemy 1: 50/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['3', '2', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 2
+    Enemy 1 HP: 50 -> 48
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['5', '5', '2'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 100 -> 93
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['6+1', '4', '3'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 93 -> 84
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 84 -> 84
+  Total defender damage this turn: 16
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 2
+  Total damage this turn: 2
+  Enemies remaining: 3/3
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 84/100 (84.0%)
+Alive Enemies: 3/3
+Total HP: 98/100 (98.0%)
+  Enemy 1: 48/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 27 vs 16
+      Damage dice: ['1', '3', '3'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 21
+      After durability (11): 10 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 10
+    Enemy 1 HP: 48 -> 38
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 84 -> 84
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['6+1', '5', '1'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 84 -> 76
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['1', '5', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 76 -> 71
+  Total defender damage this turn: 13
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 10
+  Total damage this turn: 10
+  Enemies remaining: 3/3
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 71/100 (71.0%)
+Alive Enemies: 3/3
+Total HP: 88/100 (88.0%)
+  Enemy 1: 38/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 35 vs 16
+      CRITICAL HIT! (rolled 17)
+      Damage dice: ['6+1', '3', '4'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 32
+      After durability (11): 21 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 21
+    Enemy 1 HP: 38 -> 17
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['6+6+3', '1', '4'] = 20
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 26
+      After durability (11): 15 damage
+    Damage dealt to Attacker: 15
+    Attacker HP: 71 -> 56
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['4', '1', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 56 -> 50
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 50 -> 50
+  Total defender damage this turn: 21
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 21
+  Total damage this turn: 21
+  Enemies remaining: 3/3
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 50/100 (50.0%)
+Alive Enemies: 3/3
+Total HP: 67/100 (67.0%)
+  Enemy 1: 17/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 27 vs 16
+      Damage dice: ['5', '2', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 23
+      After durability (11): 12 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 12
+    Enemy 1 HP: 17 -> 5
+     FINISHING BLOW! Enemy 1 at 5 HP (≤5) - DEFEATED!
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 50 -> 50
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 50 -> 50
+  Total defender damage this turn: 0
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 12
+  Total damage this turn: 12
+  Enemies remaining: 2/3
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 50/100 (50.0%)
+Alive Enemies: 2/3
+Total HP: 50/50 (100.0%)
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 34 vs 16
+      CRITICAL HIT! (rolled 16)
+      Damage dice: ['5', '3', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 29
+      After durability (11): 18 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 18
+    Enemy 2 HP: 25 -> 7
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '4', '1'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 50 -> 46
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['1', '3', '2'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 46 -> 45
+  Total defender damage this turn: 5
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 18
+  Total damage this turn: 18
+  Enemies remaining: 2/3
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 45/100 (45.0%)
+Alive Enemies: 2/3
+Total HP: 32/50 (64.0%)
+  Enemy 2: 7/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 32 vs 16
+      Damage dice: ['2', '2', '3'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 21
+      After durability (11): 10 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 10
+    Enemy 2 HP: 7 -> -3
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['1', '1', '1'] = 3
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 9
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 45 -> 45
+  Total defender damage this turn: 0
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 10
+  Total damage this turn: 10
+  Enemies remaining: 1/3
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 45/100 (45.0%)
+Alive Enemies: 1/3
+Total HP: 22/25 (88.0%)
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 21 vs 16
+      Damage dice: ['4', '1', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 22
+      After durability (11): 11 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 11
+    Enemy 3 HP: 25 -> 14
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['3', '2', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 45 -> 44
+  Total defender damage this turn: 1
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 11
+  Total damage this turn: 11
+  Enemies remaining: 1/3
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 44/100 (44.0%)
+Alive Enemies: 1/3
+Total HP: 11/25 (44.0%)
+  Enemy 3: 14/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 24 vs 16
+      Damage dice: ['4', '3', '6+4'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 31
+      After durability (11): 20 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 20
+    Enemy 3 HP: 14 -> -6
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 20
+  Total damage this turn: 20
+  Enemies remaining: 0/3
+   Enemy 3 DEFEATED!
+
+Combat ended in 8 turns
+All 3 enemies defeated - Combat Won!
+Attacker HP at end: 44/100
+==================================================
+
+============================================================
+SCENARIO 2 RESULT: WIN in 8 turns
+============================================================
+
+
+================================================================================
+SCENARIO 3: Mixed Enemy Group - HP: [25, 25, 10, 10, 10, 10, 10]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: finishing_blow_1, ricochet) (Limits: relentless) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 7
+  Enemy HP: [25, 25, 10, 10, 10, 10, 10] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 7/7
+Total HP: 100/100 (100.0%)
+  Enemy 1: 25/25 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['5', '1', '5'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 6
+    Enemy 1 HP: 25 -> 19
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['3', '2', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 100 -> 99
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['3', '4', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 99 -> 94
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['4', '2', '2'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 94 -> 91
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['4', '5', '6+5'] = 20
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 26
+      After durability (11): 15 damage
+    Damage dealt to Attacker: 15
+    Attacker HP: 91 -> 76
+  Total defender damage this turn: 24
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 7/7
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 76/100 (76.0%)
+Alive Enemies: 7/7
+Total HP: 94/100 (94.0%)
+  Enemy 1: 19/25 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 20 vs 16
+      Damage dice: ['1', '1', '2'] = 4
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 18
+      After durability (11): 7 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 19 -> 12
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 76 -> 76
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['3', '2', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 76 -> 75
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['4', '1', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 75 -> 74
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['6+6+5', '2', '1'] = 20
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 26
+      After durability (11): 15 damage
+    Damage dealt to Attacker: 15
+    Attacker HP: 74 -> 59
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['2', '1', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 59 -> 58
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 58 -> 58
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 58 -> 58
+  Total defender damage this turn: 18
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 7/7
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 58/100 (58.0%)
+Alive Enemies: 7/7
+Total HP: 87/100 (87.0%)
+  Enemy 1: 12/25 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 27 vs 16
+      Damage dice: ['2', '1', '5'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 22
+      After durability (11): 11 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 11
+    Enemy 1 HP: 12 -> 1
+     FINISHING BLOW! Enemy 1 at 1 HP (≤5) - DEFEATED!
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['2', '5', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 58 -> 54
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['4', '3', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 54 -> 47
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['1', '2', '4'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 47 -> 45
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 45 -> 45
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['6+2', '3', '3'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 45 -> 36
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 36 -> 36
+  Total defender damage this turn: 22
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 11
+  Total damage this turn: 11
+  Enemies remaining: 6/7
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 36/100 (36.0%)
+Alive Enemies: 6/7
+Total HP: 75/75 (100.0%)
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 23 vs 16
+      Damage dice: ['1', '6+5', '4'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 30
+      After durability (11): 19 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 19
+    Enemy 2 HP: 25 -> 6
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['2', '5', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 36 -> 33
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['2', '2', '2'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 33 -> 28
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 28 -> 28
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 28 -> 28
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['2', '4', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 28 -> 26
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['4', '5', '1'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 26 -> 21
+  Total defender damage this turn: 15
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 19
+  Total damage this turn: 19
+  Enemies remaining: 6/7
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 21/100 (21.0%)
+Alive Enemies: 6/7
+Total HP: 56/75 (74.7%)
+  Enemy 2: 6/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 33 vs 16
+      CRITICAL HIT! (rolled 15)
+      Damage dice: ['1', '4', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 24
+      After durability (11): 13 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 13
+    Enemy 2 HP: 6 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['2', '1', '2'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 11
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 21 -> 21
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['1', '2', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 21 -> 20
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['5', '1', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 20 -> 18
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['3', '2', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 18 -> 15
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['3', '5', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 15 -> 9
+  Total defender damage this turn: 12
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 5/7
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 9/100 (9.0%)
+Alive Enemies: 5/7
+Total HP: 43/50 (86.0%)
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 24 vs 16
+      Damage dice: ['1', '1', '4'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 20
+      After durability (11): 9 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 9
+    Enemy 3 HP: 10 -> 1
+     FINISHING BLOW! Enemy 3 at 1 HP (≤5) - DEFEATED!
+
+DEFENDER ATTACK PHASE:
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['4', '3', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 9 -> 6
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 6 -> 6
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 6 -> 6
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['4', '2', '5'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 6 -> 0
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 9
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 9
+  Total damage this turn: 9
+  Enemies remaining: 4/7
+   Enemy 3 DEFEATED!
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 0/100 (0.0%)
+Alive Enemies: 4/7
+Total HP: 33/40 (82.5%)
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 4
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 19 vs 16
+      Damage dice: ['1', '1', '1'] = 3
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 17
+      After durability (11): 6 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 4: 6
+    Enemy 4 HP: 10 -> 4
+     FINISHING BLOW! Enemy 4 at 4 HP (≤5) - DEFEATED!
+
+DEFENDER ATTACK PHASE:
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 0 -> 0
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 0 -> 0
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['1', '3', '1'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 11
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 0 -> 0
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 3/7
+   Enemy 4 DEFEATED!
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 0/100 (0.0%)
+Alive Enemies: 3/7
+Total HP: 23/30 (76.7%)
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 5
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 38 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['4', '1', '6+2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 31
+      After durability (11): 20 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 5: 20
+    Enemy 5 HP: 10 -> -10
+
+DEFENDER ATTACK PHASE:
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['3', '4', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 0 -> -6
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -6 -> -6
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 6
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 20
+  Total damage this turn: 20
+  Enemies remaining: 2/7
+   Enemy 5 DEFEATED!
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: -6/100 (-6.0%)
+Alive Enemies: 2/7
+Total HP: 3/20 (15.0%)
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 6
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 35 vs 16
+      CRITICAL HIT! (rolled 17)
+      Damage dice: ['5', '1', '3'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 27
+      After durability (11): 16 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 6: 16
+    Enemy 6 HP: 10 -> -6
+
+DEFENDER ATTACK PHASE:
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -6 -> -6
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 16
+  Total damage this turn: 16
+  Enemies remaining: 1/7
+   Enemy 6 DEFEATED!
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: -6/100 (-6.0%)
+Alive Enemies: 1/7
+Total HP: -13/10 (-130.0%)
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 7
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 31 vs 16
+      Damage dice: ['2', '6+2', '4'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 28
+      After durability (11): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 7: 17
+    Enemy 7 HP: 10 -> -7
+
+TURN 10 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 0/7
+   Enemy 7 DEFEATED!
+
+Combat ended in 10 turns
+All 7 enemies defeated - Combat Won!
+Attacker HP at end: -6/100 (went negative but still won)
+==================================================
+
+============================================================
+SCENARIO 3 RESULT: WIN in 10 turns
+============================================================
+
+
+================================================================================
+SCENARIO 4: Mixed Enemy Group - HP: [50, 10, 10, 10, 10, 10]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: finishing_blow_1, ricochet) (Limits: relentless) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 6
+  Enemy HP: [50, 10, 10, 10, 10, 10] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 6/6
+Total HP: 100/100 (100.0%)
+  Enemy 1: 50/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['6+4', '2', '5'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 12
+    Enemy 1 HP: 50 -> 38
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['5', '3', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 100 -> 94
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['4', '5', '5'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 94 -> 85
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['2', '3', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 85 -> 84
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['4', '1', '6+1'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 84 -> 77
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['2', '5', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 77 -> 73
+  Total defender damage this turn: 27
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 12
+  Total damage this turn: 12
+  Enemies remaining: 6/6
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 73/100 (73.0%)
+Alive Enemies: 6/6
+Total HP: 88/100 (88.0%)
+  Enemy 1: 38/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 33 vs 16
+      CRITICAL HIT! (rolled 15)
+      Damage dice: ['1', '3', '5'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 27
+      After durability (11): 16 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 16
+    Enemy 1 HP: 38 -> 22
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 73 -> 73
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['6+2', '1', '2'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 73 -> 67
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['3', '1', '3'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 67 -> 65
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['4', '4', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 65 -> 59
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['3', '2', '4'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 59 -> 55
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 55 -> 55
+  Total defender damage this turn: 18
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 16
+  Total damage this turn: 16
+  Enemies remaining: 6/6
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 55/100 (55.0%)
+Alive Enemies: 6/6
+Total HP: 72/100 (72.0%)
+  Enemy 1: 22/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 21 vs 16
+      Damage dice: ['2', '5', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 25
+      After durability (11): 14 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 14
+    Enemy 1 HP: 22 -> 8
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['4', '1', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 55 -> 54
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 54 -> 54
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 54 -> 54
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['5', '6+1', '5'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: 54 -> 42
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 42 -> 42
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 42 -> 42
+  Total defender damage this turn: 13
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 14
+  Total damage this turn: 14
+  Enemies remaining: 6/6
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 42/100 (42.0%)
+Alive Enemies: 6/6
+Total HP: 58/100 (58.0%)
+  Enemy 1: 8/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 34 vs 16
+      CRITICAL HIT! (rolled 16)
+      Damage dice: ['2', '3', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 28
+      After durability (11): 17 damage
+      Ricochet triggered! (will attack different target)
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 8 -> -9
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 42 -> 42
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['3', '1', '1'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 11
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 42 -> 42
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['4', '3', '6+4'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: 42 -> 30
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 30 -> 30
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 30 -> 30
+  Total defender damage this turn: 12
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 5/6
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 30/100 (30.0%)
+Alive Enemies: 5/6
+Total HP: 41/50 (82.0%)
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 24 vs 16
+      Damage dice: ['3', '1', '1'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 19
+      After durability (11): 8 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 8
+    Enemy 2 HP: 10 -> 2
+     FINISHING BLOW! Enemy 2 at 2 HP (≤5) - DEFEATED!
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['1', '6+6+1', '1'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 30 -> 20
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 20 -> 20
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 20 -> 20
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['3', '2', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 20 -> 15
+  Total defender damage this turn: 15
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 8
+  Total damage this turn: 8
+  Enemies remaining: 4/6
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 15/100 (15.0%)
+Alive Enemies: 4/6
+Total HP: 31/40 (77.5%)
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 32 vs 16
+      Damage dice: ['5', '3', '1'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 23
+      After durability (11): 12 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 12
+    Enemy 3 HP: 10 -> -2
+
+DEFENDER ATTACK PHASE:
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 15 -> 15
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 15 -> 15
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 15 -> 15
+  Total defender damage this turn: 0
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 12
+  Total damage this turn: 12
+  Enemies remaining: 3/6
+   Enemy 3 DEFEATED!
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 15/100 (15.0%)
+Alive Enemies: 3/6
+Total HP: 19/30 (63.3%)
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 4
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 21 vs 16
+      Damage dice: ['4', '4', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 25
+      After durability (11): 14 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 4: 14
+    Enemy 4 HP: 10 -> -4
+
+DEFENDER ATTACK PHASE:
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['6+4', '1', '1'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 15 -> 8
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['2', '5', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 8 -> 3
+  Total defender damage this turn: 12
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 14
+  Total damage this turn: 14
+  Enemies remaining: 2/6
+   Enemy 4 DEFEATED!
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 3/100 (3.0%)
+Alive Enemies: 2/6
+Total HP: 5/20 (25.0%)
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 5
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 32 vs 16
+      Damage dice: ['4', '4', '1'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 23
+      After durability (11): 12 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 5: 12
+    Enemy 5 HP: 10 -> -2
+
+DEFENDER ATTACK PHASE:
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 3 -> 3
+  Total defender damage this turn: 0
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 12
+  Total damage this turn: 12
+  Enemies remaining: 1/6
+   Enemy 5 DEFEATED!
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 3/100 (3.0%)
+Alive Enemies: 1/6
+Total HP: -7/10 (-70.0%)
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 6
+    Making melee_ac attack with ['finishing_blow_1', 'ricochet']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 23 vs 16
+      Damage dice: ['5', '5', '5'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 29
+      After durability (11): 18 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 6: 18
+    Enemy 6 HP: 10 -> -8
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 18
+  Total damage this turn: 18
+  Enemies remaining: 0/6
+   Enemy 6 DEFEATED!
+
+Combat ended in 9 turns
+All 6 enemies defeated - Combat Won!
+Attacker HP at end: 3/100
+==================================================
+
+============================================================
+SCENARIO 4 RESULT: WIN in 9 turns
+============================================================
+

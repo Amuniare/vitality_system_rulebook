@@ -595,4 +595,89 @@ def write_attack_type_limit_ranking_report(all_build_results: List[Tuple], limit
     print(f"Attack-type-specific limit ranking report saved to {reports_dir}/limit_ranking_by_attack_type.md")
 
 
+def write_upgrade_limit_frequency_report(all_build_results: List[Tuple], config: SimulationConfig, reports_dir: str = "reports", top_n: int = 100):
+    """Write a report showing how often each upgrade/limit appears in top builds"""
+    from collections import Counter
+
+    if not all_build_results:
+        print("No builds to analyze for frequency report.")
+        return
+
+    # Take top N builds
+    top_builds = all_build_results[:top_n]
+
+    # Count upgrades and limits
+    upgrade_counts = Counter()
+    limit_counts = Counter()
+    attack_type_counts = Counter()
+
+    for build, avg_dpt, avg_turns in top_builds:
+        if isinstance(build, MultiAttackBuild):
+            # For multi-attack builds, count all attacks
+            for attack in build.builds:
+                attack_type_counts[attack.attack_type] += 1
+                for upgrade in attack.upgrades:
+                    upgrade_counts[upgrade] += 1
+                for limit in attack.limits:
+                    limit_counts[limit] += 1
+        else:
+            # Single attack build
+            attack_type_counts[build.attack_type] += 1
+            for upgrade in build.upgrades:
+                upgrade_counts[upgrade] += 1
+            for limit in build.limits:
+                limit_counts[limit] += 1
+
+    total_builds = len(top_builds)
+
+    with open(f'{reports_dir}/upgrade_limit_frequency.md', 'w', encoding='utf-8') as f:
+        f.write("# VITALITY SYSTEM - UPGRADE/LIMIT FREQUENCY REPORT\n\n")
+        f.write(f"Analysis of top {top_n} builds\n")
+        f.write(f"Shows how often each upgrade/limit appears in top-performing builds\n\n")
+
+        # Attack Types
+        f.write("## ATTACK TYPE FREQUENCY\n\n")
+        f.write("| Attack Type | Count | % of Builds |\n")
+        f.write("|-------------|-------|-------------|\n")
+
+        for attack_type, count in attack_type_counts.most_common():
+            pct = (count / total_builds) * 100
+            f.write(f"| {attack_type} | {count} | {pct:.1f}% |\n")
+
+        # Upgrades
+        f.write("\n## UPGRADE FREQUENCY\n\n")
+        f.write("| Rank | Upgrade | Count | % of Builds |\n")
+        f.write("|------|---------|-------|-------------|\n")
+
+        for i, (upgrade, count) in enumerate(upgrade_counts.most_common(), 1):
+            pct = (count / total_builds) * 100
+            f.write(f"| {i} | {upgrade} | {count} | {pct:.1f}% |\n")
+
+        # Limits
+        f.write("\n## LIMIT FREQUENCY\n\n")
+        f.write("| Rank | Limit | Count | % of Builds |\n")
+        f.write("|------|-------|-------|-------------|\n")
+
+        for i, (limit, count) in enumerate(limit_counts.most_common(), 1):
+            pct = (count / total_builds) * 100
+            f.write(f"| {i} | {limit} | {count} | {pct:.1f}% |\n")
+
+        # Summary statistics
+        f.write("\n## SUMMARY STATISTICS\n\n")
+        f.write(f"- Total builds analyzed: {total_builds}\n")
+        f.write(f"- Unique upgrades used: {len(upgrade_counts)}\n")
+        f.write(f"- Unique limits used: {len(limit_counts)}\n")
+        f.write(f"- Unique attack types: {len(attack_type_counts)}\n")
+
+        if upgrade_counts:
+            most_common_upgrade = upgrade_counts.most_common(1)[0]
+            f.write(f"- Most common upgrade: {most_common_upgrade[0]} ({most_common_upgrade[1]} times)\n")
+
+        if limit_counts:
+            most_common_limit = limit_counts.most_common(1)[0]
+            f.write(f"- Most common limit: {most_common_limit[0]} ({most_common_limit[1]} times)\n")
+
+    print(f"Upgrade/limit frequency report saved to {reports_dir}/upgrade_limit_frequency.md")
+
+
 

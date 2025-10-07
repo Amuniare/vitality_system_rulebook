@@ -163,7 +163,7 @@ def generate_limit_builds(max_points: int = 60, attack_types: List[str] = None) 
     return valid_builds
 
 
-def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: List[str] = None, chunk_size: int = 1000) -> Generator:
+def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: List[str] = None, chunk_size: int = 1000, config=None) -> Generator:
     """
     Generate builds for a specific archetype as a chunked generator
 
@@ -172,23 +172,19 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
         tier: Character tier (determines points per attack)
         attack_types: List of attack types to consider
         chunk_size: Size of chunks for memory efficiency
+        config: SimulationConfig object (optional, for correct point calculation)
 
     Yields:
         For focused: AttackBuild objects
         For dual_natured/versatile_master: MultiAttackBuild objects
     """
-    from src.models import MultiAttackBuild
+    from src.models import MultiAttackBuild, SimulationConfig
 
-    # Calculate points per attack based on archetype, rounded up to nearest 10
-    archetype_multipliers = {
-        "focused": 30,
-        "dual_natured": 25,
-        "versatile_master": 20
-    }
-    multiplier = archetype_multipliers.get(archetype, 30)
-    raw_points = tier * multiplier
-    # Round up to nearest 10
-    max_points_per_attack = ((raw_points + 9) // 10) * 10
+    # Use config if provided, otherwise create temporary config for point calculation
+    if config is None:
+        config = SimulationConfig(tier=tier)
+
+    max_points_per_attack = config.max_points_per_attack(archetype)
 
     if archetype == "focused":
         # For focused archetype, just generate single builds
@@ -213,8 +209,8 @@ def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List
     if attack_types is None:
         attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
-    # Fixed first attack: melee_dg with no upgrades
-    fixed_attack = AttackBuild('melee_dg', [], [])
+    # Fixed first attack: ranged with no upgrades
+    fixed_attack = AttackBuild('ranged', [], [])
 
     # Generate all valid builds for the second attack slot
     for build2 in generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000):

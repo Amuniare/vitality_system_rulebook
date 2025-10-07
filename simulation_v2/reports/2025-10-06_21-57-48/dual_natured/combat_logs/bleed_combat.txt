@@ -1,0 +1,563 @@
+================================================================================
+COMBAT LOG - BLEED
+================================================================================
+Enhancement Type: Upgrade
+Cost: 3 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: bleed
+  Limits: None
+  Total Cost: 3 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 30 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['4', '2', '6+1'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 23
+      After durability (11): 12 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 12
+    Enemy 1 HP: 100 -> 88
+     BLEED APPLIED to Enemy 1: 8 damage for 2 turns (reduced from 12 by tier 4)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['1', '6+2', '6+2'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: 100 -> 88
+  Total defender damage this turn: 12
+
+TURN 1 SUMMARY:
+  Total bleed damage: 8
+  Total attack damage: 12
+  Total damage this turn: 20
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 88/100 (88.0%)
+Alive Enemies: 1/1
+Total HP: 88/100 (88.0%)
+  Enemy 1: 88/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 8 damage (2 -> 1 turns remaining)
+  Enemy 1 takes 8 bleed damage: 88 -> 80 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 21 vs 16
+      Damage dice: ['5', '1', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 5
+    Enemy 1 HP: 80 -> 75
+     BLEED APPLIED to Enemy 1: 1 damage for 2 turns (reduced from 5 by tier 4)
+      (Replaced 1 existing bleed stacks)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 88 -> 88
+  Total defender damage this turn: 0
+
+TURN 2 SUMMARY:
+  Total bleed damage: 1
+  Total attack damage: 5
+  Total damage this turn: 6
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 88/100 (88.0%)
+Alive Enemies: 1/1
+Total HP: 75/100 (75.0%)
+  Enemy 1: 75/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 1 damage (2 -> 1 turns remaining)
+  Enemy 1 takes 1 bleed damage: 75 -> 74 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 19 vs 16
+      Damage dice: ['5', '1', '2'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 74 -> 71
+     BLEED APPLIED to Enemy 1: 0 damage for 2 turns (reduced from 3 by tier 4)
+      (Replaced 1 existing bleed stacks)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 88 -> 88
+  Total defender damage this turn: 0
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 88/100 (88.0%)
+Alive Enemies: 1/1
+Total HP: 71/100 (71.0%)
+  Enemy 1: 71/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 0 damage (2 -> 1 turns remaining)
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 29 vs 16
+      Damage dice: ['2', '1', '2'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 11
+      After durability (11): 0 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 71 -> 71
+     BLEED APPLIED to Enemy 1: 0 damage for 2 turns (reduced from 0 by tier 4)
+      (Replaced 1 existing bleed stacks)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['1', '6+5', '4'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 22
+      After durability (11): 11 damage
+    Damage dealt to Attacker: 11
+    Attacker HP: 88 -> 77
+  Total defender damage this turn: 11
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 77/100 (77.0%)
+Alive Enemies: 1/1
+Total HP: 71/100 (71.0%)
+  Enemy 1: 71/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 0 damage (2 -> 1 turns remaining)
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 13 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 71 -> 71
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 77 -> 77
+  Total defender damage this turn: 0
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 77/100 (77.0%)
+Alive Enemies: 1/1
+Total HP: 71/100 (71.0%)
+  Enemy 1: 71/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 0 damage (1 -> 0 turns remaining)
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 19 vs 16
+      Damage dice: ['1', '2', '5'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 71 -> 68
+     BLEED APPLIED to Enemy 1: 0 damage for 2 turns (reduced from 3 by tier 4)
+      (Replaced 1 existing bleed stacks)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['4', '2', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 77 -> 72
+  Total defender damage this turn: 5
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 72/100 (72.0%)
+Alive Enemies: 1/1
+Total HP: 68/100 (68.0%)
+  Enemy 1: 68/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 0 damage (2 -> 1 turns remaining)
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 19 vs 16
+      Damage dice: ['6+1', '2', '4'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 8
+    Enemy 1 HP: 68 -> 60
+     BLEED APPLIED to Enemy 1: 4 damage for 2 turns (reduced from 8 by tier 4)
+      (Replaced 1 existing bleed stacks)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 72 -> 72
+  Total defender damage this turn: 0
+
+TURN 7 SUMMARY:
+  Total bleed damage: 4
+  Total attack damage: 8
+  Total damage this turn: 12
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 72/100 (72.0%)
+Alive Enemies: 1/1
+Total HP: 60/100 (60.0%)
+  Enemy 1: 60/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 4 damage (2 -> 1 turns remaining)
+  Enemy 1 takes 4 bleed damage: 60 -> 56 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 28 vs 16
+      Damage dice: ['5', '3', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 8
+    Enemy 1 HP: 56 -> 48
+     BLEED APPLIED to Enemy 1: 4 damage for 2 turns (reduced from 8 by tier 4)
+      (Replaced 1 existing bleed stacks)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['1', '4', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 72 -> 71
+  Total defender damage this turn: 1
+
+TURN 8 SUMMARY:
+  Total bleed damage: 4
+  Total attack damage: 8
+  Total damage this turn: 12
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 71/100 (71.0%)
+Alive Enemies: 1/1
+Total HP: 48/100 (48.0%)
+  Enemy 1: 48/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 4 damage (2 -> 1 turns remaining)
+  Enemy 1 takes 4 bleed damage: 48 -> 44 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 11 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 44 -> 44
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 71 -> 71
+  Total defender damage this turn: 0
+
+TURN 9 SUMMARY:
+  Total bleed damage: 4
+  Total attack damage: 0
+  Total damage this turn: 4
+  Enemies remaining: 1/1
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: 71/100 (71.0%)
+Alive Enemies: 1/1
+Total HP: 44/100 (44.0%)
+  Enemy 1: 44/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 4 damage (1 -> 0 turns remaining)
+  Enemy 1 takes 4 bleed damage: 44 -> 40 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 14 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 40 -> 40
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['6+6+2', '3', '5'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 28
+      After durability (11): 17 damage
+    Damage dealt to Attacker: 17
+    Attacker HP: 71 -> 54
+  Total defender damage this turn: 17
+
+TURN 10 SUMMARY:
+  Total bleed damage: 4
+  Total attack damage: 0
+  Total damage this turn: 4
+  Enemies remaining: 1/1
+
+============================================================
+TURN 11 - START
+============================================================
+Attacker HP: 54/100 (54.0%)
+Alive Enemies: 1/1
+Total HP: 40/100 (40.0%)
+  Enemy 1: 40/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 23 vs 16
+      Damage dice: ['3', '5', '4'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 40 -> 33
+     BLEED APPLIED to Enemy 1: 3 damage for 2 turns (reduced from 7 by tier 4)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['2', '5', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 54 -> 47
+  Total defender damage this turn: 7
+
+TURN 11 SUMMARY:
+  Total bleed damage: 3
+  Total attack damage: 7
+  Total damage this turn: 10
+  Enemies remaining: 1/1
+
+============================================================
+TURN 12 - START
+============================================================
+Attacker HP: 47/100 (47.0%)
+Alive Enemies: 1/1
+Total HP: 33/100 (33.0%)
+  Enemy 1: 33/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 3 damage (2 -> 1 turns remaining)
+  Enemy 1 takes 3 bleed damage: 33 -> 30 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['bleed']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 16 vs 16
+      Damage dice: ['6+6+1', '4', '5'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 28
+      After durability (11): 17 damage
+      Applied bleed condition
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 30 -> 13
+     BLEED APPLIED to Enemy 1: 13 damage for 2 turns (reduced from 17 by tier 4)
+      (Replaced 1 existing bleed stacks)
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 47 -> 47
+  Total defender damage this turn: 0
+
+TURN 12 SUMMARY:
+  Total bleed damage: 13
+  Total attack damage: 17
+  Total damage this turn: 30
+  Enemies remaining: 1/1
+
+============================================================
+TURN 13 - START
+============================================================
+Attacker HP: 47/100 (47.0%)
+Alive Enemies: 1/1
+Total HP: 13/100 (13.0%)
+  Enemy 1: 13/100 HP (1 bleed stacks)
+
+BLEED PHASE:
+  Enemy 1 bleed: 13 damage (2 -> 1 turns remaining)
+  Enemy 1 takes 13 bleed damage: 13 -> 0 HP
+
+ ENEMIES 1 DIE FROM BLEED DAMAGE!
+
+Combat ended in 13 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 47/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 13
+================================================================================

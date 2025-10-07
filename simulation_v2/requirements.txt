@@ -1,0 +1,6 @@
+# Simulation V2 Requirements
+# Memory optimization dependency
+psutil>=5.9.0
+
+# GPU acceleration (optional - DirectML works with AMD/NVIDIA/Intel GPUs on Windows)
+torch-directml>=0.2.0.dev240815  # PyTorch with DirectML backend for GPU acceleration

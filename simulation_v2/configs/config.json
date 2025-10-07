@@ -1,0 +1,33 @@
+{
+  "tier": 4,
+  "archetypes": ["dual_natured"],
+  "simulation_runs": 15,
+  "use_threading": true,
+  "use_gpu": false,
+  "build_chunk_size": 2000,
+
+  "character_config": {
+    "attacker": [2, 2, 2, 2, 4],
+    "defender": [2, 2, 2, 2, 4]
+  },
+
+  "scenarios": [
+    {
+      "name": "Boss",
+      "num_enemies": 1,
+      "enemy_hp": 100
+    },
+    {
+      "name": "Mixed",
+      "enemy_hp_list": [50, 25, 25]
+    },
+    {
+      "name": "Swarm 1",
+      "enemy_hp_list": [25, 25, 10, 10, 10, 10, 10]
+    },
+    {
+      "name": "Swarm 2",
+      "enemy_hp_list": [50, 10, 10, 10, 10, 10]
+    }
+  ]
+}

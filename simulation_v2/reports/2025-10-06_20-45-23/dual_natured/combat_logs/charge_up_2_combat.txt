@@ -1,0 +1,440 @@
+================================================================================
+COMBAT LOG - CHARGE_UP_2
+================================================================================
+Enhancement Type: Limit
+Cost: 4 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: None
+  Limits: charge_up_2
+  Total Cost: 4 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      charge_up_2 failed: need to charge on previous 2 turns (charging instead)
+  CHARGING UP instead of attacking!
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Action taken: CHARGED UP
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      charge_up_2 failed: need to charge on previous 2 turns (charging instead)
+  CHARGING UP instead of attacking!
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 2 SUMMARY:
+  Action taken: CHARGED UP
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +20 [charge_up_2] = 43 vs 16
+      Damage dice: ['6+3', '6+3', '1'] = 19
+      Flat bonus: 4 [Tier] + 2 [Power] + +20 [charge_up_2] = 26
+      Total damage: 45
+      After durability (11): 34 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 34
+    Enemy 1 HP: 100 -> 66
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 34
+  Total damage this turn: 34
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 66/100 (66.0%)
+  Enemy 1: 66/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      charge_up_2 failed: need to charge on previous 2 turns (charging instead)
+  CHARGING UP instead of attacking!
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['5', '2', '6+4'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: 100 -> 88
+  Total defender damage this turn: 12
+
+TURN 4 SUMMARY:
+  Action taken: CHARGED UP
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 88/100 (88.0%)
+Alive Enemies: 1/1
+Total HP: 66/100 (66.0%)
+  Enemy 1: 66/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      charge_up_2 failed: need to charge on previous 2 turns (charging instead)
+  CHARGING UP instead of attacking!
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['4', '6+2', '4'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 22
+      After durability (11): 11 damage
+    Damage dealt to Attacker: 11
+    Attacker HP: 88 -> 77
+  Total defender damage this turn: 11
+
+TURN 5 SUMMARY:
+  Action taken: CHARGED UP
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 77/100 (77.0%)
+Alive Enemies: 1/1
+Total HP: 66/100 (66.0%)
+  Enemy 1: 66/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +20 [charge_up_2] = 32 vs 16
+      Damage dice: ['2', '3', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] + +20 [charge_up_2] = 26
+      Total damage: 34
+      After durability (11): 23 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 23
+    Enemy 1 HP: 66 -> 43
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['5', '2', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 77 -> 70
+  Total defender damage this turn: 7
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 23
+  Total damage this turn: 23
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 70/100 (70.0%)
+Alive Enemies: 1/1
+Total HP: 43/100 (43.0%)
+  Enemy 1: 43/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      charge_up_2 failed: need to charge on previous 2 turns (charging instead)
+  CHARGING UP instead of attacking!
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['4', '3', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 70 -> 66
+  Total defender damage this turn: 4
+
+TURN 7 SUMMARY:
+  Action taken: CHARGED UP
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 66/100 (66.0%)
+Alive Enemies: 1/1
+Total HP: 43/100 (43.0%)
+  Enemy 1: 43/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      charge_up_2 failed: need to charge on previous 2 turns (charging instead)
+  CHARGING UP instead of attacking!
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['1', '5', '3'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 66 -> 62
+  Total defender damage this turn: 4
+
+TURN 8 SUMMARY:
+  Action taken: CHARGED UP
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 62/100 (62.0%)
+Alive Enemies: 1/1
+Total HP: 43/100 (43.0%)
+  Enemy 1: 43/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +20 [charge_up_2] = 40 vs 16
+      Damage dice: ['4', '1', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] + +20 [charge_up_2] = 26
+      Total damage: 33
+      After durability (11): 22 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 22
+    Enemy 1 HP: 43 -> 21
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['6+5', '6+3', '2'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 28
+      After durability (11): 17 damage
+    Damage dealt to Attacker: 17
+    Attacker HP: 62 -> 45
+  Total defender damage this turn: 17
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 22
+  Total damage this turn: 22
+  Enemies remaining: 1/1
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: 45/100 (45.0%)
+Alive Enemies: 1/1
+Total HP: 21/100 (21.0%)
+  Enemy 1: 21/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      charge_up_2 failed: need to charge on previous 2 turns (charging instead)
+  CHARGING UP instead of attacking!
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 45 -> 45
+  Total defender damage this turn: 0
+
+TURN 10 SUMMARY:
+  Action taken: CHARGED UP
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 11 - START
+============================================================
+Attacker HP: 45/100 (45.0%)
+Alive Enemies: 1/1
+Total HP: 21/100 (21.0%)
+  Enemy 1: 21/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      charge_up_2 failed: need to charge on previous 2 turns (charging instead)
+  CHARGING UP instead of attacking!
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['4', '4', '6+1'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 45 -> 35
+  Total defender damage this turn: 10
+
+TURN 11 SUMMARY:
+  Action taken: CHARGED UP
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 12 - START
+============================================================
+Attacker HP: 35/100 (35.0%)
+Alive Enemies: 1/1
+Total HP: 21/100 (21.0%)
+  Enemy 1: 21/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +20 [charge_up_2] = 48 vs 16
+      Damage dice: ['5', '2', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] + +20 [charge_up_2] = 26
+      Total damage: 34
+      After durability (11): 23 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 23
+    Enemy 1 HP: 21 -> -2
+
+TURN 12 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 23
+  Total damage this turn: 23
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 12 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 35/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 12
+================================================================================

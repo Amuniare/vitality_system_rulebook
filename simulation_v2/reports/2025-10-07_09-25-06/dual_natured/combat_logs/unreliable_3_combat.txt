@@ -1,0 +1,420 @@
+================================================================================
+COMBAT LOG - UNRELIABLE_3
+================================================================================
+Enhancement Type: Limit
+Cost: 2 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: None
+  Limits: unreliable_3
+  Total Cost: 2 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 5 vs DC 15
+      Attack failed due to unreliable_3!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 4 vs DC 15
+      Attack failed due to unreliable_3!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 1 vs DC 15
+      Attack failed due to unreliable_3!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 13 vs DC 15
+      Attack failed due to unreliable_3!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 14 vs DC 15
+      Attack failed due to unreliable_3!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 20 vs DC 15
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +24 [unreliable_3] = 40 vs 16
+      Damage dice: ['4', '4', '1'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] + +24 [unreliable_3] = 30
+      Total damage: 39
+      After durability (11): 28 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 28
+    Enemy 1 HP: 100 -> 72
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['3', '4', '6+4'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: 100 -> 88
+  Total defender damage this turn: 12
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 28
+  Total damage this turn: 28
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 88/100 (88.0%)
+Alive Enemies: 1/1
+Total HP: 72/100 (72.0%)
+  Enemy 1: 72/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 8 vs DC 15
+      Attack failed due to unreliable_3!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 72 -> 72
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 88 -> 88
+  Total defender damage this turn: 0
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 88/100 (88.0%)
+Alive Enemies: 1/1
+Total HP: 72/100 (72.0%)
+  Enemy 1: 72/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 16 vs DC 15
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +24 [unreliable_3] = 36 vs 16
+      Damage dice: ['1', '2', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] + +24 [unreliable_3] = 30
+      Total damage: 36
+      After durability (11): 25 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 25
+    Enemy 1 HP: 72 -> 47
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['5', '3', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 88 -> 80
+  Total defender damage this turn: 8
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 25
+  Total damage this turn: 25
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 1/1
+Total HP: 47/100 (47.0%)
+  Enemy 1: 47/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 6 vs DC 15
+      Attack failed due to unreliable_3!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 47 -> 47
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 80 -> 80
+  Total defender damage this turn: 0
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 1/1
+Total HP: 47/100 (47.0%)
+  Enemy 1: 47/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 18 vs DC 15
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +24 [unreliable_3] = 44 vs 16
+      Damage dice: ['2', '6+4', '1'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] + +24 [unreliable_3] = 30
+      Total damage: 43
+      After durability (11): 32 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 32
+    Enemy 1 HP: 47 -> 15
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 80 -> 80
+  Total defender damage this turn: 0
+
+TURN 10 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 32
+  Total damage this turn: 32
+  Enemies remaining: 1/1
+
+============================================================
+TURN 11 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 1/1
+Total HP: 15/100 (15.0%)
+  Enemy 1: 15/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      unreliable_3 check: rolled 17 vs DC 15
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +24 [unreliable_3] = 46 vs 16
+      Damage dice: ['6+5', '3', '3'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] + +24 [unreliable_3] = 30
+      Total damage: 47
+      After durability (11): 36 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 36
+    Enemy 1 HP: 15 -> -21
+
+TURN 11 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 36
+  Total damage this turn: 36
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 11 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 80/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 11
+================================================================================

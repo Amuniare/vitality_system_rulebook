@@ -1,0 +1,1946 @@
+================================================================================
+TOP 50 BUILD COMBAT LOG - DETAILED MECHANICS ANALYSIS
+================================================================================
+Rank: #43
+Build: Multi-Attack (dual_natured) - 2 attacks (Total Cost: 6p)
+Average Turns: 8.50
+Generated: 2025-10-06 21:23:30
+================================================================================
+
+
+================================================================================
+SCENARIO 1: 1 Enemies x 100 HP
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: captain_slayer_dmg, boss_slayer_dmg) (Limits: relentless) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['6+6+1', '6+3', '2'] = 24
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 30
+      After durability (11): 19 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 19
+    Enemy 1 HP: 100 -> 81
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['3', '2', '6+2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 100 -> 92
+  Total defender damage this turn: 8
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 19
+  Total damage this turn: 19
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 81/100 (81.0%)
+  Enemy 1: 81/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 29 vs 16
+      Damage dice: ['6+2', '3', '3'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 32
+      After durability (11): 21 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 21
+    Enemy 1 HP: 81 -> 60
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['2', '4', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 92 -> 90
+  Total defender damage this turn: 2
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 21
+  Total damage this turn: 21
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 90/100 (90.0%)
+Alive Enemies: 1/1
+Total HP: 60/100 (60.0%)
+  Enemy 1: 60/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 37 vs 16
+      Damage dice: ['3', '6+3', '4'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 34
+      After durability (11): 23 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 23
+    Enemy 1 HP: 60 -> 37
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['1', '2', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 90 -> 89
+  Total defender damage this turn: 1
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 23
+  Total damage this turn: 23
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 89/100 (89.0%)
+Alive Enemies: 1/1
+Total HP: 37/100 (37.0%)
+  Enemy 1: 37/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 27 vs 16
+      Damage dice: ['6+4', '4', '2'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 34
+      After durability (11): 23 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 23
+    Enemy 1 HP: 37 -> 14
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['4', '4', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 89 -> 83
+  Total defender damage this turn: 6
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 23
+  Total damage this turn: 23
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 83/100 (83.0%)
+Alive Enemies: 1/1
+Total HP: 14/100 (14.0%)
+  Enemy 1: 14/100 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 28 vs 16
+      Damage dice: ['1', '3', '5'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 27
+      After durability (11): 16 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 16
+    Enemy 1 HP: 14 -> -2
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 16
+  Total damage this turn: 16
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 6 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 83/100
+==================================================
+
+============================================================
+SCENARIO 1 RESULT: WIN in 6 turns
+============================================================
+
+
+================================================================================
+SCENARIO 2: Mixed Enemy Group - HP: [50, 25, 25]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: captain_slayer_dmg, boss_slayer_dmg) (Limits: relentless) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 3
+  Enemy HP: [50, 25, 25] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 3/3
+Total HP: 100/100 (100.0%)
+  Enemy 1: 50/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['4', '4', '6+5'] = 19
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 25
+      After durability (11): 14 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 14
+    Enemy 1 HP: 50 -> 36
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['6+5', '5', '1'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 27
+      After durability (11): 16 damage
+    Damage dealt to Attacker: 16
+    Attacker HP: 100 -> 84
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 84 -> 84
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 84 -> 84
+  Total defender damage this turn: 16
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 14
+  Total damage this turn: 14
+  Enemies remaining: 3/3
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 84/100 (84.0%)
+Alive Enemies: 3/3
+Total HP: 86/100 (86.0%)
+  Enemy 1: 36/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 34 vs 16
+      Damage dice: ['4', '2', '6+3'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 33
+      After durability (11): 22 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 22
+    Enemy 1 HP: 36 -> 14
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 84 -> 84
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['1', '4', '4'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 84 -> 80
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 80 -> 80
+  Total defender damage this turn: 4
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 22
+  Total damage this turn: 22
+  Enemies remaining: 3/3
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 3/3
+Total HP: 64/100 (64.0%)
+  Enemy 1: 14/50 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 37 vs 16
+      Damage dice: ['3', '1', '3'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 25
+      After durability (11): 14 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 14
+    Enemy 1 HP: 14 -> 0
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['2', '5', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 80 -> 76
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['3', '3', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 76 -> 74
+  Total defender damage this turn: 6
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 14
+  Total damage this turn: 14
+  Enemies remaining: 2/3
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 74/100 (74.0%)
+Alive Enemies: 2/3
+Total HP: 50/50 (100.0%)
+  Enemy 2: 25/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 21 vs 16
+      Damage dice: ['3', '4', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 26
+      After durability (11): 15 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 15
+    Enemy 2 HP: 25 -> 10
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['5', '2', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 74 -> 70
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['3', '1', '4'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 70 -> 67
+  Total defender damage this turn: 7
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 15
+  Total damage this turn: 15
+  Enemies remaining: 2/3
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 67/100 (67.0%)
+Alive Enemies: 2/3
+Total HP: 35/50 (70.0%)
+  Enemy 2: 10/25 HP
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 30 vs 16
+      Damage dice: ['1', '4', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 28
+      After durability (11): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 17
+    Enemy 2 HP: 10 -> -7
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 67 -> 67
+  Total defender damage this turn: 0
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 1/3
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 67/100 (67.0%)
+Alive Enemies: 1/3
+Total HP: 18/25 (72.0%)
+  Enemy 3: 25/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 21 vs 16
+      Damage dice: ['3', '4', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 26
+      After durability (11): 15 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 15
+    Enemy 3 HP: 25 -> 10
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['1', '5', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 67 -> 62
+  Total defender damage this turn: 5
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 15
+  Total damage this turn: 15
+  Enemies remaining: 1/3
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 62/100 (62.0%)
+Alive Enemies: 1/3
+Total HP: 3/25 (12.0%)
+  Enemy 3: 10/25 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 38 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['4', '6+3', '1'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 36
+      After durability (11): 25 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 25
+    Enemy 3 HP: 10 -> -15
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 25
+  Total damage this turn: 25
+  Enemies remaining: 0/3
+   Enemy 3 DEFEATED!
+
+Combat ended in 7 turns
+All 3 enemies defeated - Combat Won!
+Attacker HP at end: 62/100
+==================================================
+
+============================================================
+SCENARIO 2 RESULT: WIN in 7 turns
+============================================================
+
+
+================================================================================
+SCENARIO 3: Mixed Enemy Group - HP: [25, 25, 10, 10, 10, 10, 10]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: captain_slayer_dmg, boss_slayer_dmg) (Limits: relentless) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 7
+  Enemy HP: [25, 25, 10, 10, 10, 10, 10] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 7/7
+Total HP: 100/100 (100.0%)
+  Enemy 1: 25/25 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['4', '5', '6+3'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 13
+    Enemy 1 HP: 25 -> 12
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['5', '4', '2'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 100 -> 94
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['6+3', '6+6+5', '1'] = 27
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 33
+      After durability (11): 22 damage
+    Damage dealt to Attacker: 22
+    Attacker HP: 94 -> 72
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['3', '2', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 72 -> 69
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['3', '4', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 69 -> 62
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 62 -> 62
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 62 -> 62
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 62 -> 62
+  Total defender damage this turn: 38
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 7/7
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 62/100 (62.0%)
+Alive Enemies: 7/7
+Total HP: 87/100 (87.0%)
+  Enemy 1: 12/25 HP
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 26 vs 16
+      Damage dice: ['1', '1', '3'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 23
+      After durability (11): 12 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 12
+    Enemy 1 HP: 12 -> 0
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['1', '4', '6+1'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 62 -> 55
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['6+1', '1', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 55 -> 49
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 49 -> 49
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 49 -> 49
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 49 -> 49
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 49 -> 49
+  Total defender damage this turn: 13
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 12
+  Total damage this turn: 12
+  Enemies remaining: 6/7
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 49/100 (49.0%)
+Alive Enemies: 6/7
+Total HP: 75/75 (100.0%)
+  Enemy 2: 25/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 28 vs 16
+      Damage dice: ['1', '1', '2'] = 4
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 22
+      After durability (11): 11 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 11
+    Enemy 2 HP: 25 -> 14
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['1', '6+1', '2'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 49 -> 44
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 44 -> 44
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['1', '1', '4'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 44 -> 43
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 43 -> 43
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 43 -> 43
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['1', '6+4', '6+4'] = 21
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 27
+      After durability (11): 16 damage
+    Damage dealt to Attacker: 16
+    Attacker HP: 43 -> 27
+  Total defender damage this turn: 22
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 11
+  Total damage this turn: 11
+  Enemies remaining: 6/7
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 27/100 (27.0%)
+Alive Enemies: 6/7
+Total HP: 64/75 (85.3%)
+  Enemy 2: 14/25 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 21 vs 16
+      Damage dice: ['3', '5', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 31
+      After durability (11): 20 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 20
+    Enemy 2 HP: 14 -> -6
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['3', '3', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 27 -> 25
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 25 -> 25
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['4', '2', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 25 -> 23
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['5', '6+5', '2'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+    Damage dealt to Attacker: 13
+    Attacker HP: 23 -> 10
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['3', '5', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 10 -> 2
+  Total defender damage this turn: 25
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 20
+  Total damage this turn: 20
+  Enemies remaining: 5/7
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 2/100 (2.0%)
+Alive Enemies: 5/7
+Total HP: 44/50 (88.0%)
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 20 vs 16
+      Damage dice: ['6+3', '4', '6+3'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 40
+      After durability (11): 29 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 29
+    Enemy 3 HP: 10 -> -19
+
+DEFENDER ATTACK PHASE:
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['4', '1', '4'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 2 -> -2
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -2 -> -2
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -2 -> -2
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -2 -> -2
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 4
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 29
+  Total damage this turn: 29
+  Enemies remaining: 4/7
+   Enemy 3 DEFEATED!
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: -2/100 (-2.0%)
+Alive Enemies: 4/7
+Total HP: 15/40 (37.5%)
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 4
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 22 vs 16
+      Damage dice: ['2', '6+4', '6+6+4'] = 28
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 46
+      After durability (11): 35 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 4: 35
+    Enemy 4 HP: 10 -> -25
+
+DEFENDER ATTACK PHASE:
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['4', '4', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: -2 -> -14
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -14 -> -14
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['6+5', '5', '6+3'] = 25
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 35
+      After durability (11): 24 damage
+    Damage dealt to Attacker: 24
+    Attacker HP: -14 -> -38
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 36
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 35
+  Total damage this turn: 35
+  Enemies remaining: 3/7
+   Enemy 4 DEFEATED!
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: -38/100 (-38.0%)
+Alive Enemies: 3/7
+Total HP: -20/30 (-66.7%)
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 5
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 26 vs 16
+      Damage dice: ['5', '5', '6+2'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 36
+      After durability (11): 25 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 5: 25
+    Enemy 5 HP: 10 -> -15
+
+DEFENDER ATTACK PHASE:
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['4', '6+1', '2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: -38 -> -46
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['2', '1', '6+5'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: -46 -> -55
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 17
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 25
+  Total damage this turn: 25
+  Enemies remaining: 2/7
+   Enemy 5 DEFEATED!
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: -55/100 (-55.0%)
+Alive Enemies: 2/7
+Total HP: -45/20 (-225.0%)
+  Enemy 6: 10/10 HP
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 6
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 36 vs 16
+      Damage dice: ['4', '3', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 30
+      After durability (11): 19 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 6: 19
+    Enemy 6 HP: 10 -> -9
+
+DEFENDER ATTACK PHASE:
+  Enemy 7 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['3', '5', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: -55 -> -61
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 6
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 19
+  Total damage this turn: 19
+  Enemies remaining: 1/7
+   Enemy 6 DEFEATED!
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: -61/100 (-61.0%)
+Alive Enemies: 1/7
+Total HP: -64/10 (-640.0%)
+  Enemy 7: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 7
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 24 vs 16
+      Damage dice: ['3', '3', '6+4'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 34
+      After durability (11): 23 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 7: 23
+    Enemy 7 HP: 10 -> -13
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 23
+  Total damage this turn: 23
+  Enemies remaining: 0/7
+   Enemy 7 DEFEATED!
+
+Combat ended in 9 turns
+All 7 enemies defeated - Combat Won!
+Attacker HP at end: -61/100 (went negative but still won)
+==================================================
+
+============================================================
+SCENARIO 3 RESULT: WIN in 9 turns
+============================================================
+
+
+================================================================================
+SCENARIO 4: Mixed Enemy Group - HP: [50, 10, 10, 10, 10, 10]
+================================================================================
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Archetype: dual_natured
+  Number of Attacks: 2
+  Attack 1: ranged [Cost: 0]
+  Attack 2: melee_ac (Upgrades: captain_slayer_dmg, boss_slayer_dmg) (Limits: relentless) [Cost: 6]
+  Total Cost: 6 points
+COMBAT PARAMETERS:
+  Number of Enemies: 6
+  Enemy HP: [50, 10, 10, 10, 10, 10] (mixed)
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 6/6
+Total HP: 100/100 (100.0%)
+  Enemy 1: 50/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Attack 2 unavailable this turn, falling back to Attack 1
+  Single target attack on Enemy 1
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['4', '4', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 8
+    Enemy 1 HP: 50 -> 42
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['4', '1', '4'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 100 -> 96
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['1', '5', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 96 -> 94
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 94 -> 94
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 94 -> 94
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '6+4', '4'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+    Damage dealt to Attacker: 13
+    Attacker HP: 94 -> 81
+  Total defender damage this turn: 19
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 8
+  Total damage this turn: 8
+  Enemies remaining: 6/6
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 81/100 (81.0%)
+Alive Enemies: 6/6
+Total HP: 92/100 (92.0%)
+  Enemy 1: 42/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 38 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['2', '1', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 28
+      After durability (11): 17 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 17
+    Enemy 1 HP: 42 -> 25
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 81 -> 81
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['2', '1', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: 81 -> 80
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['1', '1', '5'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 80 -> 78
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '3', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 78 -> 71
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 71 -> 71
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['1', '1', '6+3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 71 -> 65
+  Total defender damage this turn: 16
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 17
+  Total damage this turn: 17
+  Enemies remaining: 6/6
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 65/100 (65.0%)
+Alive Enemies: 6/6
+Total HP: 75/100 (75.0%)
+  Enemy 1: 25/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 36 vs 16
+      Damage dice: ['5', '1', '2'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 26
+      After durability (11): 15 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 15
+    Enemy 1 HP: 25 -> 10
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 65 -> 65
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['3', '3', '5'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 65 -> 59
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['3', '3', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 59 -> 54
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['4', '6+1', '3'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 24
+      After durability (11): 13 damage
+    Damage dealt to Attacker: 13
+    Attacker HP: 54 -> 41
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['3', '4', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 41 -> 34
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['3', '5', '1'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 34 -> 26
+  Total defender damage this turn: 39
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 15
+  Total damage this turn: 15
+  Enemies remaining: 6/6
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 26/100 (26.0%)
+Alive Enemies: 6/6
+Total HP: 60/100 (60.0%)
+  Enemy 1: 10/50 HP
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 31 vs 16
+      Damage dice: ['6+5', '2', '5'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 36
+      After durability (11): 25 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 25
+    Enemy 1 HP: 10 -> -15
+
+DEFENDER ATTACK PHASE:
+  Enemy 2 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['3', '4', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 26 -> 21
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['4', '5', '1'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 21 -> 12
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['1', '2', '5'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 12 -> 9
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['6+5', '1', '5'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: 9 -> -3
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['2', '1', '3'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: -3 -> -4
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 30
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 25
+  Total damage this turn: 25
+  Enemies remaining: 5/6
+   Enemy 1 DEFEATED!
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: -4/100 (-4.0%)
+Alive Enemies: 5/6
+Total HP: 35/50 (70.0%)
+  Enemy 2: 10/10 HP
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 2
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 38 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['1', '1', '3'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 27
+      After durability (11): 16 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 2: 16
+    Enemy 2 HP: 10 -> -6
+
+DEFENDER ATTACK PHASE:
+  Enemy 3 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['6+4', '2', '5'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: -4 -> -16
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['6+4', '3', '6+4'] = 23
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 29
+      After durability (11): 18 damage
+    Damage dealt to Attacker: 18
+    Attacker HP: -16 -> -34
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['2', '3', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: -34 -> -39
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['5', '1', '6+5'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: -39 -> -51
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 47
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 16
+  Total damage this turn: 16
+  Enemies remaining: 4/6
+   Enemy 2 DEFEATED!
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: -51/100 (-51.0%)
+Alive Enemies: 4/6
+Total HP: 19/40 (47.5%)
+  Enemy 3: 10/10 HP
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 3
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 36 vs 16
+      Damage dice: ['2', '6+5', '4'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 35
+      After durability (11): 24 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 3: 24
+    Enemy 3 HP: 10 -> -14
+
+DEFENDER ATTACK PHASE:
+  Enemy 4 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -51 -> -51
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -51 -> -51
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['3', '3', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: -51 -> -56
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 5
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 24
+  Total damage this turn: 24
+  Enemies remaining: 3/6
+   Enemy 3 DEFEATED!
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: -56/100 (-56.0%)
+Alive Enemies: 3/6
+Total HP: -5/30 (-16.7%)
+  Enemy 4: 10/10 HP
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 4
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 38 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['6+6+2', '5', '3'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 44
+      After durability (11): 33 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 4: 33
+    Enemy 4 HP: 10 -> -23
+
+DEFENDER ATTACK PHASE:
+  Enemy 5 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['5', '1', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: -56 -> -58
+
+  ATTACKER DEFEATED (but combat continues)!
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -58 -> -58
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 2
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 33
+  Total damage this turn: 33
+  Enemies remaining: 2/6
+   Enemy 4 DEFEATED!
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: -58/100 (-58.0%)
+Alive Enemies: 2/6
+Total HP: -38/20 (-190.0%)
+  Enemy 5: 10/10 HP
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 5
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 25 vs 16
+      Damage dice: ['6+4', '4', '2'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 34
+      After durability (11): 23 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 5: 23
+    Enemy 5 HP: 10 -> -13
+
+DEFENDER ATTACK PHASE:
+  Enemy 6 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['3', '2', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 12
+      After durability (11): 1 damage
+    Damage dealt to Attacker: 1
+    Attacker HP: -58 -> -59
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 1
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 23
+  Total damage this turn: 23
+  Enemies remaining: 1/6
+   Enemy 5 DEFEATED!
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: -59/100 (-59.0%)
+Alive Enemies: 1/6
+Total HP: -61/10 (-610.0%)
+  Enemy 6: 10/10 HP
+
+ATTACK PHASE:
+  Using Attack 2 (preferred)
+  Single target attack on Enemy 6
+    Making melee_ac attack with ['captain_slayer_dmg', 'boss_slayer_dmg']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 27 vs 16
+      Damage dice: ['5', '4', '6+6+5'] = 26
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Slayer bonus: +4 [Captain vs 100HP]
+      Total damage: 44
+      After durability (11): 33 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 6: 33
+    Enemy 6 HP: 10 -> -23
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 33
+  Total damage this turn: 33
+  Enemies remaining: 0/6
+   Enemy 6 DEFEATED!
+
+Combat ended in 9 turns
+All 6 enemies defeated - Combat Won!
+Attacker HP at end: -59/100 (went negative but still won)
+==================================================
+
+============================================================
+SCENARIO 4 RESULT: WIN in 9 turns
+============================================================
+

@@ -1,0 +1,444 @@
+================================================================================
+COMBAT LOG - ARMOR_PIERCING
+================================================================================
+Enhancement Type: Upgrade
+Cost: 3 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: armor_piercing
+  Limits: None
+  Total Cost: 3 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 11 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['4', '3', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 100 -> 97
+  Total defender damage this turn: 3
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 97/100 (97.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 16 vs 16
+      Damage dice: ['6+5', '6+5', '4'] = 26
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 32
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 28 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 28
+    Enemy 1 HP: 100 -> 72
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 97 -> 97
+  Total defender damage this turn: 0
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 28
+  Total damage this turn: 28
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 97/100 (97.0%)
+Alive Enemies: 1/1
+Total HP: 72/100 (72.0%)
+  Enemy 1: 72/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 11 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 72 -> 72
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['2', '6+1', '1'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 97 -> 92
+  Total defender damage this turn: 5
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 72/100 (72.0%)
+  Enemy 1: 72/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 21 vs 16
+      Damage dice: ['2', '3', '6+3'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 16 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 16
+    Enemy 1 HP: 72 -> 56
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['5', '4', '6+3'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+    Damage dealt to Attacker: 13
+    Attacker HP: 92 -> 79
+  Total defender damage this turn: 13
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 16
+  Total damage this turn: 16
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 79/100 (79.0%)
+Alive Enemies: 1/1
+Total HP: 56/100 (56.0%)
+  Enemy 1: 56/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 22 vs 16
+      Damage dice: ['3', '4', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 11 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 11
+    Enemy 1 HP: 56 -> 45
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['1', '6+3', '1'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 79 -> 73
+  Total defender damage this turn: 6
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 11
+  Total damage this turn: 11
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 73/100 (73.0%)
+Alive Enemies: 1/1
+Total HP: 45/100 (45.0%)
+  Enemy 1: 45/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 27 vs 16
+      Damage dice: ['4', '5', '3'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 14 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 14
+    Enemy 1 HP: 45 -> 31
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 73 -> 73
+  Total defender damage this turn: 0
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 14
+  Total damage this turn: 14
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 73/100 (73.0%)
+Alive Enemies: 1/1
+Total HP: 31/100 (31.0%)
+  Enemy 1: 31/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 12 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 31 -> 31
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['3', '3', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 73 -> 68
+  Total defender damage this turn: 5
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 68/100 (68.0%)
+Alive Enemies: 1/1
+Total HP: 31/100 (31.0%)
+  Enemy 1: 31/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 11 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 31 -> 31
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 68 -> 68
+  Total defender damage this turn: 0
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 68/100 (68.0%)
+Alive Enemies: 1/1
+Total HP: 31/100 (31.0%)
+  Enemy 1: 31/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 21 vs 16
+      Damage dice: ['2', '5', '6+4'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 19 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 19
+    Enemy 1 HP: 31 -> 12
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '3', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 68 -> 63
+  Total defender damage this turn: 5
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 19
+  Total damage this turn: 19
+  Enemies remaining: 1/1
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: 63/100 (63.0%)
+Alive Enemies: 1/1
+Total HP: 12/100 (12.0%)
+  Enemy 1: 12/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 22 vs 16
+      Damage dice: ['2', '4', '3'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 11 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 11
+    Enemy 1 HP: 12 -> 1
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 63 -> 63
+  Total defender damage this turn: 0
+
+TURN 10 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 11
+  Total damage this turn: 11
+  Enemies remaining: 1/1
+
+============================================================
+TURN 11 - START
+============================================================
+Attacker HP: 63/100 (63.0%)
+Alive Enemies: 1/1
+Total HP: 1/100 (1.0%)
+  Enemy 1: 1/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['armor_piercing']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 25 vs 16
+      Damage dice: ['1', '5', '3'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      Armor piercing: reducing durability from 11 to 4
+      After durability (4): 11 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 11
+    Enemy 1 HP: 1 -> -10
+
+TURN 11 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 11
+  Total damage this turn: 11
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 11 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 63/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 11
+================================================================================

@@ -1,0 +1,386 @@
+================================================================================
+COMBAT LOG - COOLDOWN
+================================================================================
+Enhancement Type: Limit
+Cost: 2 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: None
+  Limits: cooldown
+  Total Cost: 2 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown activated (last used on turn -999, now used on turn 1)
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +12 [cooldown] = 40 vs 16
+      Damage dice: ['6+5', '5', '4'] = 20
+      Flat bonus: 4 [Tier] + 2 [Power] + +12 [cooldown] = 18
+      Total damage: 38
+      After durability (11): 27 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 27
+    Enemy 1 HP: 100 -> 73
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 27
+  Total damage this turn: 27
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 73/100 (73.0%)
+  Enemy 1: 73/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown failed: still on cooldown (used on turn 1, need 3 turns, currently turn 2) - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 21 vs 16
+      Damage dice: ['6+5', '5', '6+6+1'] = 29
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 35
+      After durability (11): 24 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 24
+    Enemy 1 HP: 73 -> 49
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['1', '4', '6+4'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 100 -> 90
+  Total defender damage this turn: 10
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 24
+  Total damage this turn: 24
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 90/100 (90.0%)
+Alive Enemies: 1/1
+Total HP: 49/100 (49.0%)
+  Enemy 1: 49/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown failed: still on cooldown (used on turn 1, need 3 turns, currently turn 3) - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 25 vs 16
+      Damage dice: ['1', '4', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 2
+    Enemy 1 HP: 49 -> 47
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 90 -> 90
+  Total defender damage this turn: 0
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 2
+  Total damage this turn: 2
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 90/100 (90.0%)
+Alive Enemies: 1/1
+Total HP: 47/100 (47.0%)
+  Enemy 1: 47/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown failed: still on cooldown (used on turn 1, need 3 turns, currently turn 4) - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 47 -> 47
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 90 -> 90
+  Total defender damage this turn: 0
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 90/100 (90.0%)
+Alive Enemies: 1/1
+Total HP: 47/100 (47.0%)
+  Enemy 1: 47/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown activated (last used on turn 1, now used on turn 5)
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +12 [cooldown] = 30 vs 16
+      Damage dice: ['1', '6+2', '5'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] + +12 [cooldown] = 18
+      Total damage: 32
+      After durability (11): 21 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 21
+    Enemy 1 HP: 47 -> 26
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['6+2', '2', '5'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 90 -> 80
+  Total defender damage this turn: 10
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 21
+  Total damage this turn: 21
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 1/1
+Total HP: 26/100 (26.0%)
+  Enemy 1: 26/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown failed: still on cooldown (used on turn 5, need 3 turns, currently turn 6) - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 20 vs 16
+      Damage dice: ['4', '3', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 26 -> 23
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 80 -> 80
+  Total defender damage this turn: 0
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 1/1
+Total HP: 23/100 (23.0%)
+  Enemy 1: 23/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown failed: still on cooldown (used on turn 5, need 3 turns, currently turn 7) - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 19 vs 16
+      Damage dice: ['6+5', '5', '1'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 12
+    Enemy 1 HP: 23 -> 11
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 80 -> 80
+  Total defender damage this turn: 0
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 12
+  Total damage this turn: 12
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 1/1
+Total HP: 11/100 (11.0%)
+  Enemy 1: 11/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown failed: still on cooldown (used on turn 5, need 3 turns, currently turn 8) - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 28 vs 16
+      Damage dice: ['4', '5', '2'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 6
+    Enemy 1 HP: 11 -> 5
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['6+1', '1', '1'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 80 -> 76
+  Total defender damage this turn: 4
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 76/100 (76.0%)
+Alive Enemies: 1/1
+Total HP: 5/100 (5.0%)
+  Enemy 1: 5/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      cooldown activated (last used on turn 5, now used on turn 9)
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +12 [cooldown] = 41 vs 16
+      Damage dice: ['2', '3', '6+2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] + +12 [cooldown] = 18
+      Total damage: 31
+      After durability (11): 20 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 20
+    Enemy 1 HP: 5 -> -15
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 20
+  Total damage this turn: 20
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 9 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 76/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 9
+================================================================================

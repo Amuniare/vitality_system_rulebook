@@ -1,0 +1,386 @@
+================================================================================
+COMBAT LOG - CHANNELED
+================================================================================
+Enhancement Type: Upgrade
+Cost: 2 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: channeled
+  Limits: None
+  Total Cost: 2 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] - 8 [Channeled] = 22 vs 16
+      CRITICAL HIT! (rolled 20)
+      Channeled: turn 0, bonus -8
+      Damage dice: ['3', '4', '2'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = -2
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 11
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['6+1', '6+3', '6+1'] = 23
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 29
+      After durability (11): 18 damage
+    Damage dealt to Attacker: 18
+    Attacker HP: 100 -> 82
+  Total defender damage this turn: 18
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 82/100 (82.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] - 4 [Channeled] = 10 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 100 -> 100
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '4', '4'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 82 -> 75
+  Total defender damage this turn: 7
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 75/100 (75.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 30 vs 16
+      CRITICAL HIT! (rolled 20)
+      Channeled: turn 2, bonus +0
+      Damage dice: ['2', '4', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 17
+      After durability (11): 6 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 6
+    Enemy 1 HP: 100 -> 94
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['2', '6+6+6+6+5', '2'] = 33
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 39
+      After durability (11): 28 damage
+    Damage dealt to Attacker: 28
+    Attacker HP: 75 -> 47
+  Total defender damage this turn: 28
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 47/100 (47.0%)
+Alive Enemies: 1/1
+Total HP: 94/100 (94.0%)
+  Enemy 1: 94/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +4 [Channeled] = 30 vs 16
+      Channeled: turn 3, bonus +4
+      Damage dice: ['4', '3', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 10
+      Total damage: 21
+      After durability (11): 10 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 10
+    Enemy 1 HP: 94 -> 84
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['3', '5', '6+5'] = 19
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 25
+      After durability (11): 14 damage
+    Damage dealt to Attacker: 14
+    Attacker HP: 47 -> 33
+  Total defender damage this turn: 14
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 10
+  Total damage this turn: 10
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 33/100 (33.0%)
+Alive Enemies: 1/1
+Total HP: 84/100 (84.0%)
+  Enemy 1: 84/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [Channeled] = 25 vs 16
+      Channeled: turn 4, bonus +8
+      Damage dice: ['2', '4', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 14
+      Total damage: 24
+      After durability (11): 13 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 13
+    Enemy 1 HP: 84 -> 71
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 33 -> 33
+  Total defender damage this turn: 0
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 33/100 (33.0%)
+Alive Enemies: 1/1
+Total HP: 71/100 (71.0%)
+  Enemy 1: 71/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +12 [Channeled] = 24 vs 16
+      Channeled: turn 5, bonus +12
+      Damage dice: ['1', '4', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 18
+      Total damage: 26
+      After durability (11): 15 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 15
+    Enemy 1 HP: 71 -> 56
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['4', '6+1', '3'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 33 -> 24
+  Total defender damage this turn: 9
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 15
+  Total damage this turn: 15
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 24/100 (24.0%)
+Alive Enemies: 1/1
+Total HP: 56/100 (56.0%)
+  Enemy 1: 56/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +16 [Channeled] = 41 vs 16
+      Channeled: turn 6, bonus +16
+      Damage dice: ['4', '1', '4'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 22
+      Total damage: 31
+      After durability (11): 20 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 20
+    Enemy 1 HP: 56 -> 36
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['2', '5', '6+4'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 23
+      After durability (11): 12 damage
+    Damage dealt to Attacker: 12
+    Attacker HP: 24 -> 12
+  Total defender damage this turn: 12
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 20
+  Total damage this turn: 20
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 12/100 (12.0%)
+Alive Enemies: 1/1
+Total HP: 36/100 (36.0%)
+  Enemy 1: 36/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +20 [Channeled] = 31 vs 16
+      Channeled: turn 7, bonus +20
+      Damage dice: ['4', '4', '6+1'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 26
+      Total damage: 41
+      After durability (11): 30 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 30
+    Enemy 1 HP: 36 -> 6
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 12 -> 12
+  Total defender damage this turn: 0
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 30
+  Total damage this turn: 30
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 12/100 (12.0%)
+Alive Enemies: 1/1
+Total HP: 6/100 (6.0%)
+  Enemy 1: 6/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['channeled']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +20 [Channeled] = 42 vs 16
+      Channeled: turn 8, bonus +20
+      Damage dice: ['2', '3', '6+2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 26
+      Total damage: 39
+      After durability (11): 28 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 28
+    Enemy 1 HP: 6 -> -22
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 28
+  Total damage this turn: 28
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 9 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 12/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 9
+================================================================================

@@ -75,6 +75,38 @@ class IndividualReportGenerator:
         if self.config.reports.get('individual_reports', {}).get('enhanced_analysis', True):
             self.generate_enhanced_individual_reports()
 
+        # Generate cost analysis report
+        if self.config.reports.get('individual_reports', {}).get('cost_analysis', True):
+            from src.reporting.cost_analysis import generate_individual_cost_analysis
+            generate_individual_cost_analysis(self.reports_dir)
+
+        # NEW: Test with fallback for dynamic condition checking
+        print("\n" + "="*80)
+        print("FALLBACK TESTING - Dynamic Conditional Limit Testing")
+        print("="*80)
+        fallback_data = self._test_individual_with_fallback()
+
+        # Generate fallback reports for each archetype
+        print("\nGenerating fallback reports for each archetype...")
+        for archetype in self.config.archetypes:
+            archetype_dir = f"{self.reports_dir}/{archetype}"
+            import os
+            os.makedirs(archetype_dir, exist_ok=True)
+
+            print(f"\n  Generating reports for {archetype}...")
+
+            # Generate individual builds tables (one per attack type)
+            print(f"    - Individual builds tables...")
+            TableGenerator.generate_individual_builds_tables(fallback_data, archetype_dir)
+
+            # Generate enhancement ranking report (using fallback data)
+            print(f"    - Enhancement ranking report...")
+            self._generate_enhancement_ranking_from_fallback(fallback_data, archetype_dir)
+
+            # Generate cost analysis from fallback data
+            print(f"    - Cost analysis report...")
+            self._generate_cost_analysis_from_fallback(fallback_data, archetype_dir)
+
         print("Individual testing reports completed!")
 
     def _get_scenario_names(self) -> list:
@@ -258,7 +290,6 @@ class IndividualReportGenerator:
                 ("area + minion_slayer_dmg (40 pts)", 8.9, "AOE with situational bonus"),
                 ("melee_dg + finishing_blow_1 (40 pts)", 9.8, "Execute below 5 HP"),
                 ("direct_damage + accurate_attack (30 pts)", 8.7, "Guaranteed hits with bonus"),
-                ("ranged + steady (40 pts)", 7.5, "Turn 3+ damage bonus")
             ]
         }
         return recommendations.get(category, [("No recommendations available", 0.0, "Category not found")])
@@ -682,6 +713,138 @@ class IndividualReportGenerator:
 
         return combination_data
 
+    def _test_individual_with_fallback(self) -> Dict:
+        """
+        Test all upgrades/limits individually with dynamic fallback to base ranged attack.
+
+        For each upgrade/limit, tests with each attack type. If the limit's conditions
+        aren't met on a turn, falls back to base ranged attack for that turn.
+        """
+        from src.simulation import run_simulation_batch_with_fallback
+
+        print("\nTesting individual upgrades/limits with dynamic fallback...")
+        fallback_data = {}
+
+        # Create base ranged fallback build
+        fallback_build = AttackBuild('ranged', [], [])
+
+        # Test upgrades
+        for upgrade_name in UPGRADES.keys():
+            print(f"  Testing {upgrade_name} with fallback...")
+            upgrade_results = {}
+
+            for attack_type_name in ATTACK_TYPES.keys():
+                try:
+                    # Create primary build with this upgrade
+                    upgrades_to_test = [upgrade_name]
+                    if upgrade_name in PREREQUISITES:
+                        upgrades_to_test = PREREQUISITES[upgrade_name] + [upgrade_name]
+
+                    primary_build = AttackBuild(attack_type_name, upgrades_to_test, [])
+
+                    if not primary_build.is_valid(self.config.max_points_per_attack("focused")):
+                        continue
+
+                    # Test across scenarios
+                    scenario_results = self._test_build_with_fallback_across_scenarios(
+                        primary_build, fallback_build
+                    )
+                    upgrade_results[attack_type_name] = scenario_results
+
+                except Exception as e:
+                    print(f"    Skipping {attack_type_name}: {e}")
+
+            if upgrade_results:
+                fallback_data[upgrade_name] = upgrade_results
+
+        # Test limits
+        for limit_name in LIMITS.keys():
+            print(f"  Testing {limit_name} with fallback...")
+            limit_results = {}
+
+            for attack_type_name in ATTACK_TYPES.keys():
+                try:
+                    # Create primary build with this limit
+                    primary_build = AttackBuild(attack_type_name, [], [limit_name])
+
+                    if not primary_build.is_valid(self.config.max_points_per_attack("focused")):
+                        continue
+
+                    # Test across scenarios
+                    scenario_results = self._test_build_with_fallback_across_scenarios(
+                        primary_build, fallback_build
+                    )
+                    limit_results[attack_type_name] = scenario_results
+
+                except Exception as e:
+                    print(f"    Skipping {attack_type_name}: {e}")
+
+            if limit_results:
+                fallback_data[limit_name] = limit_results
+
+        return fallback_data
+
+    def _test_build_with_fallback_across_scenarios(self, primary_build: AttackBuild,
+                                                   fallback_build: AttackBuild) -> Dict:
+        """Test a build with fallback across all enemy scenarios"""
+        from src.simulation import run_simulation_batch_with_fallback
+
+        scenario_results = {}
+
+        # Test configurations (attacker/defender pairs)
+        for att_config in self.config.attacker_configs:
+            for def_config in self.config.defender_configs:
+                attacker = Character(*att_config)
+                defender = Character(*def_config)
+
+                # Run each scenario from config
+                if self.config.fight_scenarios and self.config.fight_scenarios.get('enabled', False):
+                    fight_scenarios = []
+                    for scenario_config in self.config.fight_scenarios.get('scenarios', []):
+                        scenario_name = scenario_config['name']
+                        enemy_hp_list = scenario_config.get('enemy_hp_list')
+                        num_enemies = scenario_config.get('num_enemies')
+                        enemy_hp = scenario_config.get('enemy_hp')
+                        fight_scenarios.append((scenario_name, num_enemies, enemy_hp, enemy_hp_list))
+                else:
+                    # Fallback to hardcoded scenarios
+                    fight_scenarios = [
+                        ("1x100 HP Boss", 1, 100, None),
+                        ("2x50 HP Enemies", 2, 50, None),
+                        ("4x25 HP Enemies", 4, 25, None),
+                        ("10x10 HP Enemies", 10, 10, None)
+                    ]
+
+                for scenario_data in fight_scenarios:
+                    scenario_name, num_enemies, enemy_hp, enemy_hp_list = scenario_data
+
+                    # Run simulation with fallback
+                    num_runs = 1 if self.individual_config.get('single_run_per_test', True) else self.config.individual_testing_runs
+
+                    results, avg_turns, dpt, outcome_stats, activation_stats = run_simulation_batch_with_fallback(
+                        attacker, primary_build, fallback_build, num_runs,
+                        self.config.target_hp, defender,
+                        num_enemies=num_enemies, enemy_hp=enemy_hp,
+                        max_turns=self.config.max_combat_turns,
+                        enemy_hp_list=enemy_hp_list
+                    )
+
+                    if scenario_name not in scenario_results:
+                        scenario_results[scenario_name] = []
+
+                    scenario_results[scenario_name].append({
+                        'dpt': dpt,
+                        'turns': avg_turns,
+                        'raw_results': results,
+                        'activation_pct': activation_stats['avg_activation_pct'],
+                        'primary_activations': activation_stats['total_primary'],
+                        'fallback_activations': activation_stats['total_fallback'],
+                        'attacker': att_config,
+                        'defender': def_config
+                    })
+
+        return scenario_results
+
     def _test_build_across_scenarios(self, build: AttackBuild) -> Dict:
         """Test a build across all enemy scenarios"""
         scenario_results = {}
@@ -725,7 +888,8 @@ class IndividualReportGenerator:
 
                     scenario_results[scenario_name].append({
                         'dpt': dpt,
-                        'turns': avg_turns,
+                        'turns': avg_turns,  # Keep for backwards compatibility
+                        'raw_results': results,  # Add raw results for true averaging
                         'attacker': att_config,
                         'defender': def_config
                     })
@@ -762,25 +926,38 @@ class IndividualReportGenerator:
         return total_dpt / total_count if total_count > 0 else 0
 
     def _calculate_average_turns(self, scenario_results: Dict) -> float:
-        """Calculate average turns across all scenarios and configurations"""
-        total_turns = 0
-        total_count = 0
+        """Calculate average turns across all scenarios and configurations using raw results"""
+        all_raw_turns = []
 
         for scenario_name, results in scenario_results.items():
             for result in results:
-                total_turns += result.get('turns', 0)
-                total_count += 1
+                # Use raw results if available (new format), otherwise fall back to pre-averaged turns
+                if 'raw_results' in result:
+                    all_raw_turns.extend(result['raw_results'])
+                else:
+                    # Backwards compatibility: if no raw_results, use the pre-averaged value
+                    # This will be less accurate but maintains functionality with old data
+                    all_raw_turns.append(result.get('turns', 0))
 
-        return total_turns / total_count if total_count > 0 else 0
+        return sum(all_raw_turns) / len(all_raw_turns) if all_raw_turns else 0
 
     def _calculate_scenario_turns(self, scenario_results: Dict, scenario_name: str) -> float:
-        """Calculate average turns for a specific scenario"""
+        """Calculate average turns for a specific scenario using raw results"""
         if scenario_name not in scenario_results:
             return 0
 
         results = scenario_results[scenario_name]
-        total_turns = sum(result.get('turns', 0) for result in results)
-        return total_turns / len(results) if results else 0
+        all_raw_turns = []
+
+        for result in results:
+            # Use raw results if available (new format), otherwise fall back to pre-averaged turns
+            if 'raw_results' in result:
+                all_raw_turns.extend(result['raw_results'])
+            else:
+                # Backwards compatibility: if no raw_results, use the pre-averaged value
+                all_raw_turns.append(result.get('turns', 0))
+
+        return sum(all_raw_turns) / len(all_raw_turns) if all_raw_turns else 0
 
     def _calculate_scenario_dpt(self, scenario_results: Dict, scenario_name: str) -> float:
         """Calculate average DPT for a specific scenario"""
@@ -854,7 +1031,6 @@ class IndividualReportGenerator:
                 ('unreliable_2', 'ranged'),
                 ('unreliable_3', 'area'),
                 ('quickdraw', 'melee_dg'),
-                ('steady', 'ranged'),
                 ('patient', 'area'),
                 ('finale', 'melee_ac'),
                 ('charge_up', 'ranged'),
@@ -913,3 +1089,319 @@ class IndividualReportGenerator:
                     f.write(f"\nFINAL RESULTS: {turns} turns, Outcome: {outcome}, {total_hp} total HP, {dpt:.2f} DPT\n")
 
         print(f"Detailed combat logs saved to {log_filename}")
+
+    def _generate_enhancement_ranking_from_fallback(self, fallback_data: Dict, reports_dir: str = None):
+        """Generate enhancement ranking report from fallback testing data"""
+        import os
+        from src.game_data import UPGRADES, LIMITS
+
+        if reports_dir is None:
+            reports_dir = self.reports_dir
+
+        filename = os.path.join(reports_dir, "enhancement_ranking_report.md")
+
+        # Collect all enhancement data with metrics
+        enhancement_metrics = []
+
+        for enhancement_name, attack_type_data in fallback_data.items():
+            # Get cost and type
+            cost = 0
+            enh_type = "upgrade"
+            if enhancement_name in UPGRADES:
+                cost = UPGRADES[enhancement_name].cost
+                enh_type = "upgrade"
+            elif enhancement_name in LIMITS:
+                cost = LIMITS[enhancement_name].cost
+                enh_type = "limit"
+
+            if cost == 0:
+                continue
+
+            # Collect all turns and activation data across all attack types and scenarios
+            all_turns = []
+            all_activation_pcts = []
+            attack_type_turns = {}
+            use_count = 0
+
+            for attack_type, scenario_results in attack_type_data.items():
+                attack_turns = []
+
+                for scenario_name, results_list in scenario_results.items():
+                    for result in results_list:
+                        turns = result.get('turns', 0)
+                        activation_pct = result.get('activation_pct', 100)
+
+                        all_turns.append(turns)
+                        all_activation_pcts.append(activation_pct)
+                        attack_turns.append(turns)
+                        use_count += 1
+
+                # Calculate average for this attack type
+                if attack_turns:
+                    attack_type_turns[attack_type] = sum(attack_turns) / len(attack_turns)
+
+            # Calculate overall metrics
+            avg_turns = sum(all_turns) / len(all_turns) if all_turns else 0
+            avg_activation_pct = sum(all_activation_pcts) / len(all_activation_pcts) if all_activation_pcts else 100
+
+            enhancement_metrics.append({
+                'name': enhancement_name,
+                'type': enh_type,
+                'cost': cost,
+                'avg_turns': avg_turns,
+                'avg_activation_pct': avg_activation_pct,
+                'attack_type_turns': attack_type_turns,
+                'uses': use_count
+            })
+
+        # Sort by avg_turns (lower is better)
+        enhancement_metrics.sort(key=lambda x: x['avg_turns'])
+
+        # Calculate statistics
+        all_turns_list = [e['avg_turns'] for e in enhancement_metrics]
+        mean_turns = sum(all_turns_list) / len(all_turns_list) if all_turns_list else 0
+        sorted_turns = sorted(all_turns_list)
+
+        # Calculate percentiles
+        top10_idx = max(0, int(len(sorted_turns) * 0.1) - 1)
+        top50_idx = max(0, int(len(sorted_turns) * 0.5) - 1)
+        top10_median = sorted_turns[top10_idx] if sorted_turns else 0
+        top50_median = sorted_turns[top50_idx] if sorted_turns else 0
+
+        # Write report
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("# Enhancement Ranking Report\n\n")
+            f.write("Performance analysis of all upgrades and limits tested individually with dynamic fallback.\n\n")
+            f.write(f"**Total enhancements tested**: {len(enhancement_metrics)}\n")
+            f.write(f"**Mean avg turns**: {mean_turns:.2f}\n")
+            f.write(f"**Top 10% median**: {top10_median:.2f} turns\n")
+            f.write(f"**Top 50% median**: {top50_median:.2f} turns\n\n")
+
+            # Main table
+            f.write("| Rank | Enhancement | Type | Cost | Avg Turns | vs Mean | Top10% Med | Top50% Med | "
+                   "Melee_AC | Melee_DG | Ranged | Area | Direct | Uses | Activation % |\n")
+            f.write("|------|-------------|------|------|-----------|---------|------------|------------|"
+                   "----------|----------|--------|------|--------|------|-------------|\n")
+
+            for rank, enh in enumerate(enhancement_metrics, 1):
+                vs_mean = enh['avg_turns'] - mean_turns
+                percentile = (rank / len(enhancement_metrics)) * 100
+
+                # Get attack type specific data
+                att_types = enh['attack_type_turns']
+                melee_ac = att_types.get('melee_ac', 0)
+                melee_dg = att_types.get('melee_dg', 0)
+                ranged = att_types.get('ranged', 0)
+                area = att_types.get('area', 0)
+                direct = att_types.get('direct_damage', 0)
+
+                f.write(f"| {rank} | {enh['name']} | {enh['type']} | {enh['cost']}p | "
+                       f"{enh['avg_turns']:.2f} | {vs_mean:+.2f} | {top10_median:.2f} | {top50_median:.2f} | "
+                       f"{melee_ac:.1f} | {melee_dg:.1f} | {ranged:.1f} | {area:.1f} | {direct:.1f} | "
+                       f"{enh['uses']} | {enh['avg_activation_pct']:.1f}% |\n")
+
+            # Summary section
+            f.write(f"\n## Summary\n\n")
+            f.write(f"### Top 10 Best Performing Enhancements\n\n")
+            for i, enh in enumerate(enhancement_metrics[:10], 1):
+                f.write(f"{i}. **{enh['name']}** ({enh['type']}, {enh['cost']}p): "
+                       f"{enh['avg_turns']:.2f} avg turns, {enh['avg_activation_pct']:.1f}% activation\n")
+
+            f.write(f"\n### Bottom 10 Worst Performing Enhancements\n\n")
+            for i, enh in enumerate(enhancement_metrics[-10:], 1):
+                f.write(f"{i}. **{enh['name']}** ({enh['type']}, {enh['cost']}p): "
+                       f"{enh['avg_turns']:.2f} avg turns, {enh['avg_activation_pct']:.1f}% activation\n")
+
+            # Activation analysis
+            f.write(f"\n### Activation Rate Analysis\n\n")
+            f.write("Enhancements with lowest activation rates (conditional limits that rarely trigger):\n\n")
+
+            low_activation = sorted(enhancement_metrics, key=lambda x: x['avg_activation_pct'])[:10]
+            for i, enh in enumerate(low_activation, 1):
+                f.write(f"{i}. **{enh['name']}**: {enh['avg_activation_pct']:.1f}% activation\n")
+
+        print(f"Enhancement ranking report saved to {filename}")
+
+    def _generate_cost_analysis_from_fallback(self, fallback_data: Dict, reports_dir: str = None):
+        """Generate cost analysis report from fallback testing data"""
+        import os
+        from src.game_data import UPGRADES, LIMITS
+
+        if reports_dir is None:
+            reports_dir = self.reports_dir
+
+        filename = os.path.join(reports_dir, "cost_analysis_fallback.md")
+
+        # Collect enhancement data organized by cost
+        cost_tiers = {}
+
+        for enhancement_name, attack_type_data in fallback_data.items():
+            # Get cost and type
+            cost = 0
+            enh_type = "upgrade"
+            if enhancement_name in UPGRADES:
+                cost = UPGRADES[enhancement_name].cost
+                enh_type = "upgrade"
+            elif enhancement_name in LIMITS:
+                cost = LIMITS[enhancement_name].cost
+                enh_type = "limit"
+
+            if cost == 0:
+                continue
+
+            # Collect all turns data across all attack types and scenarios
+            all_turns = []
+            all_activation_pcts = []
+            scenario_turns = {'best': float('inf'), 'worst': 0}
+            attack_type_turns = {}
+
+            for attack_type, scenario_results in attack_type_data.items():
+                attack_turns = []
+
+                for scenario_name, results_list in scenario_results.items():
+                    for result in results_list:
+                        turns = result.get('turns', 0)
+                        activation_pct = result.get('activation_pct', 100)
+
+                        all_turns.append(turns)
+                        all_activation_pcts.append(activation_pct)
+                        attack_turns.append(turns)
+
+                        # Track best/worst scenario
+                        if turns > 0:
+                            scenario_turns['best'] = min(scenario_turns['best'], turns)
+                            scenario_turns['worst'] = max(scenario_turns['worst'], turns)
+
+                # Calculate average for this attack type
+                if attack_turns:
+                    attack_type_turns[attack_type] = sum(attack_turns) / len(attack_turns)
+
+            # Calculate overall metrics
+            avg_turns = sum(all_turns) / len(all_turns) if all_turns else 0
+            avg_activation_pct = sum(all_activation_pcts) / len(all_activation_pcts) if all_activation_pcts else 100
+
+            # Get attack type specific data
+            melee_ac = attack_type_turns.get('melee_ac', 0)
+            melee_dg = attack_type_turns.get('melee_dg', 0)
+            ranged = attack_type_turns.get('ranged', 0)
+            area = attack_type_turns.get('area', 0)
+            direct = attack_type_turns.get('direct_damage', 0)
+
+            # Add to cost tier
+            if cost not in cost_tiers:
+                cost_tiers[cost] = []
+
+            cost_tiers[cost].append({
+                'name': enhancement_name,
+                'type': enh_type,
+                'cost': cost,
+                'avg_turns': avg_turns,
+                'activation_pct': avg_activation_pct,
+                'best_case': scenario_turns['best'] if scenario_turns['best'] != float('inf') else 0,
+                'worst_case': scenario_turns['worst'],
+                'melee_ac': melee_ac,
+                'melee_dg': melee_dg,
+                'ranged': ranged,
+                'area': area,
+                'direct': direct,
+                'uses': len(all_turns)
+            })
+
+        # Sort each cost tier by avg_turns
+        for cost in cost_tiers:
+            cost_tiers[cost].sort(key=lambda x: x['avg_turns'])
+
+        # Calculate overall mean for turn delta
+        all_items = [item for tier in cost_tiers.values() for item in tier]
+        mean_turns = sum(item['avg_turns'] for item in all_items) / len(all_items) if all_items else 0
+
+        # Write report
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("# Cost Analysis Report - Fallback Testing\n\n")
+            f.write("Performance analysis organized by cost tier from dynamic fallback testing.\n\n")
+
+            # Cost distribution
+            f.write("## Cost Distribution\n\n")
+            f.write("| Cost Tier | Count | Avg Turns | Best in Tier |\n")
+            f.write("|-----------|-------|-----------|-------------|\n")
+
+            for cost in sorted(cost_tiers.keys()):
+                items = cost_tiers[cost]
+                tier_avg = sum(item['avg_turns'] for item in items) / len(items)
+                best_in_tier = min(items, key=lambda x: x['avg_turns'])
+
+                f.write(f"| {cost}p | {len(items)} | {tier_avg:.2f} | "
+                       f"{best_in_tier['name']} ({best_in_tier['avg_turns']:.2f} turns) |\n")
+
+            # Main table with all enhancements
+            f.write(f"\n## All Enhancements by Cost Tier\n\n")
+            f.write("| Cost Tier | Enhancement | Type | Avg Turns | Turn Δ | Δ/Cost | "
+                   "Best Case | Worst Case | Melee_AC | Melee_DG | Ranged | Area | Direct | Uses | Activation % |\n")
+            f.write("|-----------|-------------|------|-----------|--------|--------|"
+                   "-----------|------------|----------|----------|--------|------|--------|------|-------------|\n")
+
+            for cost in sorted(cost_tiers.keys()):
+                for item in cost_tiers[cost]:
+                    turn_delta = item['avg_turns'] - mean_turns
+                    delta_per_cost = turn_delta / cost if cost > 0 else 0
+
+                    f.write(f"| {cost}p | {item['name']} | {item['type']} | {item['avg_turns']:.2f} | "
+                           f"{turn_delta:+.2f} | {delta_per_cost:+.2f} | "
+                           f"{item['best_case']:.1f} | {item['worst_case']:.1f} | "
+                           f"{item['melee_ac']:.1f} | {item['melee_dg']:.1f} | {item['ranged']:.1f} | "
+                           f"{item['area']:.1f} | {item['direct']:.1f} | {item['uses']} | "
+                           f"{item['activation_pct']:.1f}% |\n")
+
+            # Best per cost tier section
+            f.write(f"\n## Best Enhancement Per Cost Tier\n\n")
+            f.write("| Cost | Enhancement | Type | Avg Turns | Activation % | Why It's Best |\n")
+            f.write("|------|-------------|------|-----------|--------------|---------------|\n")
+
+            for cost in sorted(cost_tiers.keys()):
+                best = cost_tiers[cost][0]
+                reason = f"Fastest at {best['avg_turns']:.2f} turns"
+                if best['activation_pct'] < 100:
+                    reason += f", {best['activation_pct']:.1f}% activation"
+
+                f.write(f"| {cost}p | {best['name']} | {best['type']} | {best['avg_turns']:.2f} | "
+                       f"{best['activation_pct']:.1f}% | {reason} |\n")
+
+            # Cost efficiency rankings
+            f.write(f"\n## Cost Efficiency Rankings\n\n")
+            f.write("Sorted by Δ/Cost (most negative = best turn reduction per point)\n\n")
+
+            # Get all items and sort by delta per cost
+            all_with_efficiency = []
+            for cost in cost_tiers:
+                for item in cost_tiers[cost]:
+                    turn_delta = item['avg_turns'] - mean_turns
+                    delta_per_cost = turn_delta / cost if cost > 0 else 0
+                    all_with_efficiency.append((item, turn_delta, delta_per_cost))
+
+            all_with_efficiency.sort(key=lambda x: x[2])
+
+            f.write("| Rank | Enhancement | Cost | Avg Turns | Turn Δ | Δ/Cost | Activation % |\n")
+            f.write("|------|-------------|------|-----------|--------|--------|-------------|\n")
+
+            for rank, (item, turn_delta, delta_per_cost) in enumerate(all_with_efficiency[:20], 1):
+                f.write(f"| {rank} | {item['name']} | {item['cost']}p | {item['avg_turns']:.2f} | "
+                       f"{turn_delta:+.2f} | {delta_per_cost:+.3f} | {item['activation_pct']:.1f}% |\n")
+
+            # Value analysis
+            f.write(f"\n## Value Analysis by Cost Tier\n\n")
+            f.write("Analysis of which cost tiers offer the best value:\n\n")
+
+            for cost in sorted(cost_tiers.keys()):
+                items = cost_tiers[cost]
+                tier_avg = sum(item['avg_turns'] for item in items) / len(items)
+                tier_delta = tier_avg - mean_turns
+                tier_efficiency = tier_delta / cost if cost > 0 else 0
+
+                f.write(f"### {cost} Point Tier\n\n")
+                f.write(f"- **Average performance**: {tier_avg:.2f} turns ({tier_delta:+.2f} vs mean)\n")
+                f.write(f"- **Efficiency**: {tier_efficiency:+.3f} turns per point\n")
+                f.write(f"- **Count**: {len(items)} enhancements\n")
+                f.write(f"- **Best**: {items[0]['name']} ({items[0]['avg_turns']:.2f} turns)\n")
+                f.write(f"- **Worst**: {items[-1]['name']} ({items[-1]['avg_turns']:.2f} turns)\n\n")
+
+        print(f"Cost analysis (fallback) saved to {filename}")

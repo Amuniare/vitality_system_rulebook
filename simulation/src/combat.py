@@ -9,8 +9,25 @@ from src.game_data import ATTACK_TYPES, UPGRADES, LIMITS
 
 # Pre-generate random number cache for performance
 _DICE_CACHE_SIZE = 10000
-_d20_cache = [random.randint(1, 20) for _ in range(_DICE_CACHE_SIZE)]
-_d6_cache = [random.randint(1, 6) for _ in range(_DICE_CACHE_SIZE)]
+
+# Try to use GPU-accelerated dice generation if available
+try:
+    import sys
+    import os
+    # Add simulation_v2 to path to import GPU module
+    sim_v2_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'simulation_v2')
+    if os.path.exists(sim_v2_path) and sim_v2_path not in sys.path:
+        sys.path.insert(0, sim_v2_path)
+
+    from src.combat_gpu import generate_dice_cache_gpu, is_gpu_available
+    _d20_cache, _d6_cache = generate_dice_cache_gpu(_DICE_CACHE_SIZE)
+    if is_gpu_available():
+        print(f"Dice cache generated on GPU ({_DICE_CACHE_SIZE} rolls)")
+except Exception as e:
+    # Fall back to CPU generation
+    _d20_cache = [random.randint(1, 20) for _ in range(_DICE_CACHE_SIZE)]
+    _d6_cache = [random.randint(1, 6) for _ in range(_DICE_CACHE_SIZE)]
+
 _cache_index = [0]  # Use list to allow modification in nested scope
 
 
@@ -48,6 +65,104 @@ def roll_3d6_exploding() -> Tuple[int, List[str]]:
             dice_detail[-1] += f"+{die}"
         total += die_total
     return total, dice_detail
+
+
+def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, attacker_max_hp: int,
+                       combat_state: dict, charge_history: List[bool] = None,
+                       cooldown_history: dict = None) -> bool:
+    """
+    Check if a limit's conditions are met for activation on this turn.
+
+    Args:
+        limit_name: Name of the limit to check
+        turn_number: Current turn number (1-indexed)
+        attacker_hp: Current HP of the attacker
+        attacker_max_hp: Maximum HP of the attacker
+        combat_state: Dictionary tracking combat state (last turn events, charges, etc.)
+        charge_history: List of charging actions (for charge_up limits)
+        cooldown_history: Dictionary tracking cooldown timers
+
+    Returns:
+        True if the limit can activate, False otherwise
+    """
+    if limit_name not in LIMITS:
+        return True  # Not a limit, allow activation
+
+    if charge_history is None:
+        charge_history = []
+    if cooldown_history is None:
+        cooldown_history = {}
+    if combat_state is None:
+        combat_state = {}
+
+    # Initialize combat_state fields if missing
+    if 'charges_used' not in combat_state:
+        combat_state['charges_used'] = {}
+
+    # Check HP-based limits
+    if limit_name == 'near_death' and attacker_hp > 25:
+        return False
+    elif limit_name == 'bloodied' and attacker_hp > 50:
+        return False
+    elif limit_name == 'timid' and attacker_hp < attacker_max_hp:
+        return False
+    elif limit_name == 'attrition' and attacker_hp < 20:
+        return False  # Not enough HP to pay cost
+
+    # Check charge limits
+    elif limit_name in ['charges_1', 'charges_2']:
+        max_charges = 1 if limit_name == 'charges_1' else 2
+        charges_used = combat_state['charges_used'].get(limit_name, 0)
+        if charges_used >= max_charges:
+            return False
+
+    # Check turn-tracking limits
+    elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_last_turn', False):
+        return False
+    elif limit_name == 'relentless' and not combat_state.get('dealt_damage_last_turn', False):
+        return False
+    elif limit_name == 'combo_move' and not combat_state.get('hit_same_target_last_turn', False):
+        return False
+    elif limit_name == 'revenge' and not combat_state.get('was_damaged_last_turn', False):
+        return False
+    elif limit_name == 'vengeful' and not combat_state.get('was_hit_last_turn', False):
+        return False
+    elif limit_name == 'untouchable' and not combat_state.get('all_attacks_missed_last_turn', False):
+        return False
+    elif limit_name == 'unbreakable' and not combat_state.get('was_hit_no_damage_last_turn', False):
+        return False
+    elif limit_name == 'passive' and combat_state.get('was_attacked_last_turn', False):
+        return False
+    elif limit_name == 'careful' and combat_state.get('was_damaged_last_turn', False):
+        return False
+
+    # Check turn-based limits
+    elif limit_name == 'quickdraw' and turn_number > 1:
+        return False  # Only first turn
+    elif limit_name == 'patient' and turn_number < 5:
+        return False  # Turn 5 or later
+    elif limit_name == 'finale' and turn_number < 8:
+        return False  # Turn 8 or later
+
+    # Check charge_up limits
+    elif limit_name == 'charge_up':
+        # Need to have charged on previous turn
+        if len(charge_history) < 1 or not charge_history[-1]:
+            return False
+    elif limit_name == 'charge_up_2':
+        # Need to have charged on previous two turns
+        if len(charge_history) < 2 or not (charge_history[-1] and charge_history[-2]):
+            return False
+
+    # Check cooldown limit
+    elif limit_name == 'cooldown':
+        # Check if still on cooldown
+        last_used_turn = cooldown_history.get(limit_name, -999)
+        if turn_number - last_used_turn <= 3:  # 3-turn cooldown
+            return False
+
+    # All checks passed
+    return True
 
 
 def roll_3d6_exploding_5_6() -> Tuple[int, List[str]]:
@@ -273,17 +388,13 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if log_file:
                 log_file.write(f"      {limit_name} failed: not first round (turn {turn_number})\n")
             return 0, []  # Attack fails - not first round (turn 1 only)
-        elif limit_name == 'steady' and turn_number < 3:
-            if log_file:
-                log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 3+)\n")
-            return 0, []  # Attack fails - too early
         elif limit_name == 'patient' and turn_number < 5:
             if log_file:
                 log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 5+)\n")
             return 0, []  # Attack fails - too early
-        elif limit_name == 'finale' and turn_number < 7:
+        elif limit_name == 'finale' and turn_number < 8:
             if log_file:
-                log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 7+)\n")
+                log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 8+)\n")
             return 0, []  # Attack fails - too early
         elif limit_name == 'cooldown':
             # Check if cooldown is still active
@@ -512,9 +623,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             channeled_bonus = 0
             if 'channeled' in upgrades_set:
                 channeled_turns = combat_state.get('channeled_turns', 0)
-                # Starts at -2×Tier penalty, gains +Tier per turn, max +5×Tier total
-                # Turn 0: -2, Turn 1: -1, Turn 2: 0, Turn 3: +1, ..., Turn 7+: +5
-                channeled_bonus = min(channeled_turns - 2, 5) * attacker.tier
+                # Starts at -2×Tier penalty, gains +Tier per turn, max +6×Tier total (updated 2025-10-05)
+                # Turn 0: -2, Turn 1: -1, Turn 2: 0, Turn 3: +1, ..., Turn 8+: +6
+                channeled_bonus = min(channeled_turns - 2, 6) * attacker.tier
                 flat_bonus += channeled_bonus
                 if log_file:
                     log_file.write(f"      Channeled: turn {channeled_turns}, bonus {channeled_bonus:+d}\n")
@@ -664,16 +775,16 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         # Make 1 more attack (already made 1) - happens regardless of first attack result
         upgrade_name = 'quick_strikes'
         if log_file:
-            log_file.write(f"      Quick Strikes - making 1 additional attack (regardless of first attack result):\n")
+            log_file.write(f"      Quick Strikes - making second attack (2 attacks total, regardless of first attack result):\n")
         extra_damage = 0
         if log_file:
-            log_file.write(f"        Additional attack 1:\n")
+            log_file.write(f"        Second attack:\n")
         extra = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history,
                                          attacker_hp, attacker_max_hp, combat_state)
         extra_damage += extra
         damage_dealt += extra_damage
         if log_file:
-            log_file.write(f"      Total with quick strikes: {damage_dealt} damage\n")
+            log_file.write(f"      Total with quick strikes (2 attacks): {damage_dealt} damage\n")
 
 
     # Handle explosive critical (15-20 triggers attack against all enemies in range) - optimized with cached set

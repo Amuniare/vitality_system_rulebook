@@ -1,0 +1,335 @@
+================================================================================
+COMBAT LOG - RELENTLESS
+================================================================================
+Enhancement Type: Limit
+Cost: 4 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: None
+  Limits: relentless
+  Total Cost: 4 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      relentless failed: did not deal damage last turn - using basic attack
+  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)
+    Making melee_ac attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] = 17 vs 16
+      Damage dice: ['1', '6+4', '6+1'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+
+  BASIC ATTACK RESULT:
+    Damage dealt to Enemy 1: 13
+    Enemy 1 HP: 100 -> 87
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 87/100 (87.0%)
+  Enemy 1: 87/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 30 vs 16
+      Damage dice: ['5', '2', '6+3'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 30
+      After durability (11): 19 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 19
+    Enemy 1 HP: 87 -> 68
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 19
+  Total damage this turn: 19
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 68/100 (68.0%)
+  Enemy 1: 68/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 28 vs 16
+      Damage dice: ['3', '3', '5'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 25
+      After durability (11): 14 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 14
+    Enemy 1 HP: 68 -> 54
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 14
+  Total damage this turn: 14
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 54/100 (54.0%)
+  Enemy 1: 54/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 21 vs 16
+      Damage dice: ['1', '2', '4'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 21
+      After durability (11): 10 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 10
+    Enemy 1 HP: 54 -> 44
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['3', '2', '6+2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 100 -> 92
+  Total defender damage this turn: 8
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 10
+  Total damage this turn: 10
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 44/100 (44.0%)
+  Enemy 1: 44/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 30 vs 16
+      Damage dice: ['4', '2', '3'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 23
+      After durability (11): 12 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 12
+    Enemy 1 HP: 44 -> 32
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 92 -> 92
+  Total defender damage this turn: 0
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 12
+  Total damage this turn: 12
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 92/100 (92.0%)
+Alive Enemies: 1/1
+Total HP: 32/100 (32.0%)
+  Enemy 1: 32/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 28 vs 16
+      Damage dice: ['1', '6+1', '4'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 26
+      After durability (11): 15 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 15
+    Enemy 1 HP: 32 -> 17
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['5', '5', '3'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 92 -> 84
+  Total defender damage this turn: 8
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 15
+  Total damage this turn: 15
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 84/100 (84.0%)
+Alive Enemies: 1/1
+Total HP: 17/100 (17.0%)
+  Enemy 1: 17/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 26 vs 16
+      Damage dice: ['5', '2', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 22
+      After durability (11): 11 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 11
+    Enemy 1 HP: 17 -> 6
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['2', '5', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 84 -> 81
+  Total defender damage this turn: 3
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 11
+  Total damage this turn: 11
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 81/100 (81.0%)
+Alive Enemies: 1/1
+Total HP: 6/100 (6.0%)
+  Enemy 1: 6/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] + +4 [Melee] + +8 [relentless] = 21 vs 16
+      Damage dice: ['2', '3', '1'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] + +8 [relentless] = 14
+      Total damage: 20
+      After durability (11): 9 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 9
+    Enemy 1 HP: 6 -> -3
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 9
+  Total damage this turn: 9
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 8 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 81/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 8
+================================================================================

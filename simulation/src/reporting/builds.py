@@ -43,7 +43,8 @@ class BuildReportGenerator:
             write_build_summary,
             write_builds_turns_table,
             generate_upgrade_ranking_report,
-            generate_upgrade_pairing_report
+            generate_upgrade_pairing_report,
+            write_upgrade_limit_frequency_report
         )
 
         if not self.build_config.get('enabled', True):
@@ -61,11 +62,17 @@ class BuildReportGenerator:
             # Pass the full results with performance data
             write_build_summary(all_build_results, self.config, self.reports_dir)
             write_builds_turns_table(all_build_results, self.config, self.reports_dir)
+            # Generate frequency report for top builds
+            write_upgrade_limit_frequency_report(all_build_results, self.config, self.reports_dir, top_n=100)
+
+        # Store enhancement stats for cost analysis
+        enhancement_stats = None
 
         # Only generate single-build reports if we have single-attack builds
         if has_single_builds:
             if self.config.reports.get('build_reports', {}).get('upgrade_analysis', True):
-                generate_upgrade_ranking_report(all_build_results, self.config, self.reports_dir)
+                # Capture enhancement stats returned from generate_upgrade_ranking_report
+                enhancement_stats, attack_type_stats = generate_upgrade_ranking_report(all_build_results, self.config, self.reports_dir)
 
             if self.config.reports.get('build_reports', {}).get('cost_effectiveness', True):
                 generate_upgrade_pairing_report(all_build_results, self.config, self.reports_dir)
@@ -83,6 +90,24 @@ class BuildReportGenerator:
         if has_multi_builds:
             if self.config.reports.get('build_reports', {}).get('tactical_analysis', True):
                 self.generate_multiattack_tactical_reports(all_build_results)
+
+        # Generate cost analysis reports
+        if self.config.reports.get('build_reports', {}).get('cost_analysis', True):
+            from src.reporting.cost_analysis import generate_build_cost_analysis
+
+            # Generate overall cost analysis if we have single builds
+            if has_single_builds:
+                generate_build_cost_analysis(all_build_results, self.config, self.reports_dir,
+                                            enhancement_stats=enhancement_stats)
+
+            # Generate archetype-specific cost analysis
+            if self.config.archetypes:
+                for archetype in self.config.archetypes:
+                    archetype_dir = f"{self.reports_dir}/{archetype}"
+                    # Note: archetype-specific enhancement stats would need separate generation
+                    # For now, pass None to use file parsing fallback for archetype reports
+                    generate_build_cost_analysis(all_build_results, self.config, archetype_dir, archetype,
+                                                enhancement_stats=None)
 
         print("Build testing reports completed!")
 
@@ -489,7 +514,7 @@ class BuildReportGenerator:
                 risk_levels.append("medium")
             elif limit == "unreliable_1":
                 risk_levels.append("low")
-            elif limit in ["quickdraw", "steady", "patient", "finale", "charge_up", "charge_up_2"]:
+            elif limit in ["quickdraw", "patient", "finale", "charge_up", "charge_up_2"]:
                 risk_levels.append("low")
 
         if not risk_levels:
@@ -1120,7 +1145,7 @@ class BuildReportGenerator:
 
     def generate_multiattack_enhancement_ranking(self, multi_results: List[Tuple]):
         """Generate enhancement ranking for Attack 2 in dual-natured builds"""
-        filename = f"{self.reports_dir}/enhancement_ranking_report.txt"
+        filename = f"{self.reports_dir}/enhancement_ranking_report.md"
 
         # Track enhancement performance for Attack 2
         # (Attack 1 is fixed, so we only analyze Attack 2)
@@ -1155,7 +1180,11 @@ class BuildReportGenerator:
                 attack2_enhancements[limit]['turns'].append(avg_turns)
                 attack2_enhancements[limit]['count'] += 1
 
+        # Import game data to get costs
+        from src.game_data import UPGRADES, LIMITS
+
         # Calculate statistics for each enhancement
+        import statistics
         enhancement_stats = []
         for name, data in attack2_enhancements.items():
             if not data['turns']:
@@ -1166,59 +1195,107 @@ class BuildReportGenerator:
             worst_turns = max(data['turns'])
             median_turns = sorted(data['turns'])[len(data['turns'])//2]
 
+            # Calculate top 10% and top 50% medians
+            sorted_turns = sorted(data['turns'])
+            top_10_count = max(1, len(sorted_turns) // 10)
+            top_50_count = max(1, len(sorted_turns) // 2)
+
+            top_10_turns = sorted_turns[:top_10_count]
+            top_50_turns = sorted_turns[:top_50_count]
+
+            median_top_10 = statistics.median(top_10_turns) if top_10_turns else 0
+            median_top_50 = statistics.median(top_50_turns) if top_50_turns else 0
+
+            # Get cost from game data
+            cost = 0
+            if data['type'] == 'upgrade' and name in UPGRADES:
+                cost = UPGRADES[name].cost
+            elif data['type'] == 'limit' and name in LIMITS:
+                cost = LIMITS[name].cost
+
             enhancement_stats.append({
                 'name': name,
                 'type': data['type'],
+                'cost': cost,
                 'avg_turns': avg_turns,
                 'best_turns': best_turns,
                 'worst_turns': worst_turns,
                 'median_turns': median_turns,
+                'median_top_10': median_top_10,
+                'median_top_50': median_top_50,
                 'count': data['count']
             })
+
+        # Calculate mean of all avg_turns
+        mean_avg_turns = sum(s['avg_turns'] for s in enhancement_stats) / len(enhancement_stats) if enhancement_stats else 0
+
+        # Add deviation from mean to each stat
+        for stat in enhancement_stats:
+            stat['deviation'] = stat['avg_turns'] - mean_avg_turns
 
         # Sort by average turns (lower is better)
         enhancement_stats.sort(key=lambda x: x['avg_turns'])
 
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write("VITALITY SYSTEM - ATTACK 2 ENHANCEMENT RANKING REPORT\n")
-            f.write("="*80 + "\n\n")
+            f.write("# VITALITY SYSTEM - ATTACK 2 ENHANCEMENT RANKING REPORT\n\n")
             f.write("This report shows how enhancements in Attack 2 perform in dual-natured builds.\n")
             f.write("Attack 1 is fixed (melee_dg + quick_strikes + powerful_critical).\n")
             f.write("Lower avg turns indicate better performance.\n")
-            f.write(f"Total enhancements analyzed: {len(enhancement_stats)}\n\n")
+            f.write(f"Total enhancements analyzed: {len(enhancement_stats)}\n")
+            f.write(f"Mean avg turns: {mean_avg_turns:.1f}\n\n")
 
-            # Upgrades section
-            upgrades = [e for e in enhancement_stats if e['type'] == 'upgrade']
-            if upgrades:
-                f.write("UPGRADE RANKINGS (ATTACK 2)\n")
-                f.write("-"*100 + "\n")
-                f.write(f"{'Rank':<6} {'Upgrade':<30} {'Avg Turns':<12} {'Best':<8} {'Worst':<8} {'Median':<8} {'Uses':<8}\n")
-                f.write("-"*100 + "\n")
+            # Combined enhancement rankings (upgrades and limits merged)
+            if enhancement_stats:
+                f.write("## ENHANCEMENT RANKINGS (ATTACK 2)\n\n")
+                f.write("| Rank | Enhancement | Type | Cost | Avg Turns | vs Mean | Top10% | Top50% | Best | Worst | Median | Uses |\n")
+                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|\n")
 
-                for i, stats in enumerate(upgrades, 1):
-                    f.write(f"{i:<6} {stats['name']:<30} {stats['avg_turns']:>10.1f}   "
-                           f"{stats['best_turns']:>6.1f}   {stats['worst_turns']:>6.1f}   "
-                           f"{stats['median_turns']:>6.1f}   {stats['count']:>6}\n")
-
-            # Limits section
-            limits = [e for e in enhancement_stats if e['type'] == 'limit']
-            if limits:
-                f.write(f"\n\nLIMIT RANKINGS (ATTACK 2)\n")
-                f.write("-"*100 + "\n")
-                f.write(f"{'Rank':<6} {'Limit':<30} {'Avg Turns':<12} {'Best':<8} {'Worst':<8} {'Median':<8} {'Uses':<8}\n")
-                f.write("-"*100 + "\n")
-
-                for i, stats in enumerate(limits, 1):
-                    f.write(f"{i:<6} {stats['name']:<30} {stats['avg_turns']:>10.1f}   "
-                           f"{stats['best_turns']:>6.1f}   {stats['worst_turns']:>6.1f}   "
-                           f"{stats['median_turns']:>6.1f}   {stats['count']:>6}\n")
+                for i, stats in enumerate(enhancement_stats, 1):
+                    deviation_str = f"{stats['deviation']:+.1f}"  # + or - sign
+                    f.write(f"| {i} | {stats['name']} | {stats['type']} | {stats['cost']}p | {stats['avg_turns']:.1f} | "
+                           f"{deviation_str} | {stats['median_top_10']:.1f} | {stats['median_top_50']:.1f} | "
+                           f"{stats['best_turns']:.1f} | {stats['worst_turns']:.1f} | "
+                           f"{stats['median_turns']:.1f} | {stats['count']} |\n")
 
             # Top 10 overall
-            f.write(f"\n\nTOP 10 ATTACK 2 ENHANCEMENTS (OVERALL)\n")
-            f.write("-"*80 + "\n")
+            f.write(f"\n## TOP 10 ATTACK 2 ENHANCEMENTS (OVERALL)\n\n")
             for i, stats in enumerate(enhancement_stats[:10], 1):
-                f.write(f"{i}. {stats['name']} ({stats['type']})\n")
-                f.write(f"   Avg Turns: {stats['avg_turns']:.1f} | Uses: {stats['count']}\n")
+                f.write(f"{i}. **{stats['name']}** ({stats['type']}, {stats['cost']}p)\n")
+                f.write(f"   - Avg Turns: {stats['avg_turns']:.1f} | Uses: {stats['count']}\n")
+
+            # Top 10% Performance Analysis
+            f.write(f"\n## TOP 10% BUILDS - ENHANCEMENT PERFORMANCE\n\n")
+            f.write("This section shows the median avg turns for each enhancement when looking only at the\n")
+            f.write("top 10% performing builds that use that enhancement (lower is better).\n\n")
+
+            # Sort by top 10% median
+            top_10_sorted = sorted(enhancement_stats, key=lambda x: x['median_top_10'])
+
+            f.write("| Rank | Enhancement | Type | Cost | Top10% Median | vs Overall Avg | Uses |\n")
+            f.write("|---|---|---|---|---|---|---|\n")
+
+            for i, stats in enumerate(top_10_sorted[:20], 1):  # Show top 20
+                improvement = stats['avg_turns'] - stats['median_top_10']
+                improvement_str = f"{improvement:+.1f}"
+                f.write(f"| {i} | {stats['name']} | {stats['type']} | {stats['cost']}p | "
+                       f"{stats['median_top_10']:.1f} | {improvement_str} | {stats['count']} |\n")
+
+            # Top 50% Performance Analysis
+            f.write(f"\n## TOP 50% BUILDS - ENHANCEMENT PERFORMANCE\n\n")
+            f.write("This section shows the median avg turns for each enhancement when looking only at the\n")
+            f.write("top 50% performing builds that use that enhancement (lower is better).\n\n")
+
+            # Sort by top 50% median
+            top_50_sorted = sorted(enhancement_stats, key=lambda x: x['median_top_50'])
+
+            f.write("| Rank | Enhancement | Type | Cost | Top50% Median | vs Overall Avg | Uses |\n")
+            f.write("|---|---|---|---|---|---|---|\n")
+
+            for i, stats in enumerate(top_50_sorted[:20], 1):  # Show top 20
+                improvement = stats['avg_turns'] - stats['median_top_50']
+                improvement_str = f"{improvement:+.1f}"
+                f.write(f"| {i} | {stats['name']} | {stats['type']} | {stats['cost']}p | "
+                       f"{stats['median_top_50']:.1f} | {improvement_str} | {stats['count']} |\n")
 
         print(f"MultiAttack enhancement ranking saved to {filename}")
 

@@ -1,0 +1,1661 @@
+================================================================================
+COMBAT LOG - BARRAGE
+================================================================================
+Enhancement Type: Upgrade
+Cost: 2 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: barrage
+  Limits: None
+  Total Cost: 2 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 21 vs 16
+      Damage dice: ['5', '3', '6+4'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 20
+      After durability (11): 9 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 9
+    Enemy 1 HP: 100 -> 91
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['6+6+5', '4', '1'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 28
+      After durability (11): 17 damage
+    Damage dealt to Attacker: 17
+    Attacker HP: 100 -> 83
+  Total defender damage this turn: 17
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 9
+  Total damage this turn: 9
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 83/100 (83.0%)
+Alive Enemies: 1/1
+Total HP: 91/100 (91.0%)
+  Enemy 1: 91/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 10 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 91 -> 91
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['1', '4', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 83 -> 78
+  Total defender damage this turn: 5
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 78/100 (78.0%)
+Alive Enemies: 1/1
+Total HP: 91/100 (91.0%)
+  Enemy 1: 91/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 24 vs 16
+      Damage dice: ['3', '1', '1'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 7
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 91 -> 91
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 78 -> 78
+  Total defender damage this turn: 0
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 78/100 (78.0%)
+Alive Enemies: 1/1
+Total HP: 91/100 (91.0%)
+  Enemy 1: 91/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 24 vs 16
+      Damage dice: ['2', '1', '4'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 9
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 91 -> 91
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['1', '2', '1'] = 4
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 10
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 78 -> 78
+  Total defender damage this turn: 0
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 78/100 (78.0%)
+Alive Enemies: 1/1
+Total HP: 91/100 (91.0%)
+  Enemy 1: 91/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 91 -> 91
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['4', '2', '3'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 78 -> 74
+  Total defender damage this turn: 4
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 74/100 (74.0%)
+Alive Enemies: 1/1
+Total HP: 91/100 (91.0%)
+  Enemy 1: 91/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 18 vs 16
+      Damage dice: ['5', '6+1', '4'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 18
+      After durability (11): 7 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 91 -> 84
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['2', '6+2', '1'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 74 -> 64
+  Total defender damage this turn: 10
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 64/100 (64.0%)
+Alive Enemies: 1/1
+Total HP: 84/100 (84.0%)
+  Enemy 1: 84/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 84 -> 84
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 64 -> 64
+  Total defender damage this turn: 0
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 64/100 (64.0%)
+Alive Enemies: 1/1
+Total HP: 84/100 (84.0%)
+  Enemy 1: 84/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 13 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 84 -> 84
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['1', '4', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 64 -> 59
+  Total defender damage this turn: 5
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 59/100 (59.0%)
+Alive Enemies: 1/1
+Total HP: 84/100 (84.0%)
+  Enemy 1: 84/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 10 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 84 -> 84
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['6+4', '4', '2'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 22
+      After durability (11): 11 damage
+    Damage dealt to Attacker: 11
+    Attacker HP: 59 -> 48
+  Total defender damage this turn: 11
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: 48/100 (48.0%)
+Alive Enemies: 1/1
+Total HP: 84/100 (84.0%)
+  Enemy 1: 84/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 84 -> 84
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['1', '4', '6+2'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 48 -> 40
+  Total defender damage this turn: 8
+
+TURN 10 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 11 - START
+============================================================
+Attacker HP: 40/100 (40.0%)
+Alive Enemies: 1/1
+Total HP: 84/100 (84.0%)
+  Enemy 1: 84/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 21 vs 16
+      Damage dice: ['4', '2', '3'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 11
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 84 -> 84
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['2', '3', '6+1'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: 40 -> 33
+  Total defender damage this turn: 7
+
+TURN 11 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 12 - START
+============================================================
+Attacker HP: 33/100 (33.0%)
+Alive Enemies: 1/1
+Total HP: 84/100 (84.0%)
+  Enemy 1: 84/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 23 vs 16
+      Damage dice: ['4', '3', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 10
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 84 -> 84
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['2', '3', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 33 -> 27
+  Total defender damage this turn: 6
+
+TURN 12 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 13 - START
+============================================================
+Attacker HP: 27/100 (27.0%)
+Alive Enemies: 1/1
+Total HP: 84/100 (84.0%)
+  Enemy 1: 84/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 20 vs 16
+      Damage dice: ['5', '3', '3'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 13
+      After durability (11): 2 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 2
+    Enemy 1 HP: 84 -> 82
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['4', '1', '2'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 27 -> 25
+  Total defender damage this turn: 2
+
+TURN 13 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 2
+  Total damage this turn: 2
+  Enemies remaining: 1/1
+
+============================================================
+TURN 14 - START
+============================================================
+Attacker HP: 25/100 (25.0%)
+Alive Enemies: 1/1
+Total HP: 82/100 (82.0%)
+  Enemy 1: 82/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 24 vs 16
+      Damage dice: ['3', '1', '3'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 9
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 82 -> 82
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['2', '2', '3'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: 25 -> 23
+  Total defender damage this turn: 2
+
+TURN 14 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 15 - START
+============================================================
+Attacker HP: 23/100 (23.0%)
+Alive Enemies: 1/1
+Total HP: 82/100 (82.0%)
+  Enemy 1: 82/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 8 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 82 -> 82
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 23 -> 23
+  Total defender damage this turn: 0
+
+TURN 15 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 16 - START
+============================================================
+Attacker HP: 23/100 (23.0%)
+Alive Enemies: 1/1
+Total HP: 82/100 (82.0%)
+  Enemy 1: 82/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 22 vs 16
+      Damage dice: ['5', '6+6+5', '3'] = 25
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 27
+      After durability (11): 16 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 16
+    Enemy 1 HP: 82 -> 66
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 23 -> 23
+  Total defender damage this turn: 0
+
+TURN 16 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 16
+  Total damage this turn: 16
+  Enemies remaining: 1/1
+
+============================================================
+TURN 17 - START
+============================================================
+Attacker HP: 23/100 (23.0%)
+Alive Enemies: 1/1
+Total HP: 66/100 (66.0%)
+  Enemy 1: 66/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 18 vs 16
+      Damage dice: ['6+4', '3', '1'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 16
+      After durability (11): 5 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 5
+    Enemy 1 HP: 66 -> 61
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] = 22 vs 16
+      Damage dice: ['2', '6+1', '6+4'] = 19
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 25
+      After durability (11): 14 damage
+    Damage dealt to Attacker: 14
+    Attacker HP: 23 -> 9
+  Total defender damage this turn: 14
+
+TURN 17 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 5
+  Total damage this turn: 5
+  Enemies remaining: 1/1
+
+============================================================
+TURN 18 - START
+============================================================
+Attacker HP: 9/100 (9.0%)
+Alive Enemies: 1/1
+Total HP: 61/100 (61.0%)
+  Enemy 1: 61/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 12 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 61 -> 61
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 9 -> 9
+  Total defender damage this turn: 0
+
+TURN 18 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 19 - START
+============================================================
+Attacker HP: 9/100 (9.0%)
+Alive Enemies: 1/1
+Total HP: 61/100 (61.0%)
+  Enemy 1: 61/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 23 vs 16
+      Damage dice: ['3', '4', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 13
+      After durability (11): 2 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 2
+    Enemy 1 HP: 61 -> 59
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] = 19 vs 16
+      Damage dice: ['5', '4', '5'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 20
+      After durability (11): 9 damage
+    Damage dealt to Attacker: 9
+    Attacker HP: 9 -> 0
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 9
+
+TURN 19 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 2
+  Total damage this turn: 2
+  Enemies remaining: 1/1
+
+============================================================
+TURN 20 - START
+============================================================
+Attacker HP: 0/100 (0.0%)
+Alive Enemies: 1/1
+Total HP: 59/100 (59.0%)
+  Enemy 1: 59/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 14 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 59 -> 59
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 0 -> 0
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 20 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 21 - START
+============================================================
+Attacker HP: 0/100 (0.0%)
+Alive Enemies: 1/1
+Total HP: 59/100 (59.0%)
+  Enemy 1: 59/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 18 vs 16
+      Damage dice: ['2', '6+3', '1'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 59 -> 56
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] = 7 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 0 -> 0
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 21 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 22 - START
+============================================================
+Attacker HP: 0/100 (0.0%)
+Alive Enemies: 1/1
+Total HP: 56/100 (56.0%)
+  Enemy 1: 56/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 24 vs 16
+      Damage dice: ['1', '1', '5'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 9
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 56 -> 56
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 0 -> 0
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 22 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 23 - START
+============================================================
+Attacker HP: 0/100 (0.0%)
+Alive Enemies: 1/1
+Total HP: 56/100 (56.0%)
+  Enemy 1: 56/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 25 vs 16
+      Damage dice: ['4', '1', '6+5'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 18
+      After durability (11): 7 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 56 -> 49
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['6+3', '1', '1'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: 0 -> -6
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 6
+
+TURN 23 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 1/1
+
+============================================================
+TURN 24 - START
+============================================================
+Attacker HP: -6/100 (-6.0%)
+Alive Enemies: 1/1
+Total HP: 49/100 (49.0%)
+  Enemy 1: 49/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 17 vs 16
+      Damage dice: ['3', '5', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 15
+      After durability (11): 4 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 4
+    Enemy 1 HP: 49 -> 45
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -6 -> -6
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 24 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 4
+  Total damage this turn: 4
+  Enemies remaining: 1/1
+
+============================================================
+TURN 25 - START
+============================================================
+Attacker HP: -6/100 (-6.0%)
+Alive Enemies: 1/1
+Total HP: 45/100 (45.0%)
+  Enemy 1: 45/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 7 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 45 -> 45
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] = 20 vs 16
+      Damage dice: ['4', '1', '6+4'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: -6 -> -16
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 10
+
+TURN 25 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 26 - START
+============================================================
+Attacker HP: -16/100 (-16.0%)
+Alive Enemies: 1/1
+Total HP: 45/100 (45.0%)
+  Enemy 1: 45/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 20 vs 16
+      Damage dice: ['2', '2', '2'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 8
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 45 -> 45
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['6+5', '6+1', '6+3'] = 27
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 33
+      After durability (11): 22 damage
+    Damage dealt to Attacker: 22
+    Attacker HP: -16 -> -38
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 22
+
+TURN 26 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 27 - START
+============================================================
+Attacker HP: -38/100 (-38.0%)
+Alive Enemies: 1/1
+Total HP: 45/100 (45.0%)
+  Enemy 1: 45/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 17 vs 16
+      Damage dice: ['2', '5', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 45 -> 42
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -38 -> -38
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 27 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 28 - START
+============================================================
+Attacker HP: -38/100 (-38.0%)
+Alive Enemies: 1/1
+Total HP: 42/100 (42.0%)
+  Enemy 1: 42/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 10 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 42 -> 42
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -38 -> -38
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 28 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 29 - START
+============================================================
+Attacker HP: -38/100 (-38.0%)
+Alive Enemies: 1/1
+Total HP: 42/100 (42.0%)
+  Enemy 1: 42/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 23 vs 16
+      Damage dice: ['5', '2', '1'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 10
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 42 -> 42
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] = 12 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -38 -> -38
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 29 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 30 - START
+============================================================
+Attacker HP: -38/100 (-38.0%)
+Alive Enemies: 1/1
+Total HP: 42/100 (42.0%)
+  Enemy 1: 42/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 6 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 12 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 42 -> 42
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -38 -> -38
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 30 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 31 - START
+============================================================
+Attacker HP: -38/100 (-38.0%)
+Alive Enemies: 1/1
+Total HP: 42/100 (42.0%)
+  Enemy 1: 42/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 17 vs 16
+      Damage dice: ['1', '4', '6+4'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 17
+      After durability (11): 6 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 6
+    Enemy 1 HP: 42 -> 36
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -38 -> -38
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 31 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 1/1
+
+============================================================
+TURN 32 - START
+============================================================
+Attacker HP: -38/100 (-38.0%)
+Alive Enemies: 1/1
+Total HP: 36/100 (36.0%)
+  Enemy 1: 36/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 15 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 36 -> 36
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['2', '1', '2'] = 5
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 11
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: -38 -> -38
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 32 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 33 - START
+============================================================
+Attacker HP: -38/100 (-38.0%)
+Alive Enemies: 1/1
+Total HP: 36/100 (36.0%)
+  Enemy 1: 36/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 19 vs 16
+      Damage dice: ['2', '2', '3'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 9
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 36 -> 36
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['1', '2', '5'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: -38 -> -41
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 3
+
+TURN 33 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 34 - START
+============================================================
+Attacker HP: -41/100 (-41.0%)
+Alive Enemies: 1/1
+Total HP: 36/100 (36.0%)
+  Enemy 1: 36/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 16 vs 16
+      Damage dice: ['3', '1', '6+5'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 17
+      After durability (11): 6 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 6
+    Enemy 1 HP: 36 -> 30
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -41 -> -41
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 34 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 6
+  Total damage this turn: 6
+  Enemies remaining: 1/1
+
+============================================================
+TURN 35 - START
+============================================================
+Attacker HP: -41/100 (-41.0%)
+Alive Enemies: 1/1
+Total HP: 30/100 (30.0%)
+  Enemy 1: 30/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 14 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 30 -> 30
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['1', '4', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 18
+      After durability (11): 7 damage
+    Damage dealt to Attacker: 7
+    Attacker HP: -41 -> -48
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 7
+
+TURN 35 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 36 - START
+============================================================
+Attacker HP: -48/100 (-48.0%)
+Alive Enemies: 1/1
+Total HP: 30/100 (30.0%)
+  Enemy 1: 30/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 16 vs 16
+      Damage dice: ['5', '6+2', '3'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 18
+      After durability (11): 7 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 30 -> 23
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['5', '2', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 17
+      After durability (11): 6 damage
+    Damage dealt to Attacker: 6
+    Attacker HP: -48 -> -54
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 6
+
+TURN 36 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 1/1
+
+============================================================
+TURN 37 - START
+============================================================
+Attacker HP: -54/100 (-54.0%)
+Alive Enemies: 1/1
+Total HP: 23/100 (23.0%)
+  Enemy 1: 23/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 1 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 7 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 23 -> 23
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] = 14 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -54 -> -54
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 37 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 38 - START
+============================================================
+Attacker HP: -54/100 (-54.0%)
+Alive Enemies: 1/1
+Total HP: 23/100 (23.0%)
+  Enemy 1: 23/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 16 vs 16
+      Damage dice: ['2', '6+3', '3'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 16
+      After durability (11): 5 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 5
+    Enemy 1 HP: 23 -> 18
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['2', '4', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 13
+      After durability (11): 2 damage
+    Damage dealt to Attacker: 2
+    Attacker HP: -54 -> -56
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 2
+
+TURN 38 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 5
+  Total damage this turn: 5
+  Enemies remaining: 1/1
+
+============================================================
+TURN 39 - START
+============================================================
+Attacker HP: -56/100 (-56.0%)
+Alive Enemies: 1/1
+Total HP: 18/100 (18.0%)
+  Enemy 1: 18/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 9 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 18 -> 18
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: -56 -> -56
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 0
+
+TURN 39 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 40 - START
+============================================================
+Attacker HP: -56/100 (-56.0%)
+Alive Enemies: 1/1
+Total HP: 18/100 (18.0%)
+  Enemy 1: 18/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 23 vs 16
+      Damage dice: ['1', '6+3', '6+2'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 20
+      After durability (11): 9 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 9
+    Enemy 1 HP: 18 -> 9
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] = 17 vs 16
+      Damage dice: ['1', '4', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: -56 -> -59
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 3
+
+TURN 40 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 9
+  Total damage this turn: 9
+  Enemies remaining: 1/1
+
+============================================================
+TURN 41 - START
+============================================================
+Attacker HP: -59/100 (-59.0%)
+Alive Enemies: 1/1
+Total HP: 9/100 (9.0%)
+  Enemy 1: 9/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 23 vs 16
+      Damage dice: ['2', '2', '6+2'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 9 -> 6
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['6+1', '3', '3'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: -59 -> -67
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 8
+
+TURN 41 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 42 - START
+============================================================
+Attacker HP: -67/100 (-67.0%)
+Alive Enemies: 1/1
+Total HP: 6/100 (6.0%)
+  Enemy 1: 6/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 13 vs 16
+      Miss!
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 6 -> 6
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['6+6+2', '3', '2'] = 19
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 25
+      After durability (11): 14 damage
+    Damage dealt to Attacker: 14
+    Attacker HP: -67 -> -81
+
+  ATTACKER DEFEATED (but combat continues)!
+  Total defender damage this turn: 14
+
+TURN 42 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 43 - START
+============================================================
+Attacker HP: -81/100 (-81.0%)
+Alive Enemies: 1/1
+Total HP: 6/100 (6.0%)
+  Enemy 1: 6/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['barrage']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] - 4 [barrage] + +4 [Melee] = 25 vs 16
+      Damage dice: ['6+5', '2', '6+3'] = 22
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [barrage] = 2
+      Total damage: 24
+      After durability (11): 13 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 13
+    Enemy 1 HP: 6 -> -7
+
+TURN 43 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 13
+  Total damage this turn: 13
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 43 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: -81/100 (went negative but still won)
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 43
+================================================================================

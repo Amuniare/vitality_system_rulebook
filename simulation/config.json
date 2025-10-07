@@ -3,34 +3,34 @@
   "archetypes": ["dual_natured"],
   "tier": 4,
   "use_threading": true,
-  "verbose_logging": false,
-  "top_builds_count": 100,
-  "build_chunk_size": 10000,
+  "verbose_logging": true,
+  "top_builds_count": 1000,
+  "build_chunk_size": 4000,
   "attacker_configs": [
     [
-      4,
-      4,
-      4,
-      4,
+      2,
+      2,
+      2,
+      2,
       4
     ]
   ],
   "defender_configs": [
     [
-      4,
-      4,
-      4,
-      4,
+      2,
+      2,
+      2,
+      2,
       4
     ]
   ],
   "simulation_runs": {
     "build_testing_runs": 10,
-    "individual_testing_runs": 20
+    "individual_testing_runs": 25
   },
   "combat": {
-    "max_turns": 25,
-    "safety_limit": 50
+    "max_turns": 30,
+    "safety_limit": 30
   },
   "fight_scenarios": {
     "enabled": true,
@@ -62,7 +62,7 @@
     ]
   },
   "individual_testing": {
-    "enabled": false,
+    "enabled": true,
     "test_base_attacks": true,
     "test_upgrades": true,
     "test_limits": true,
@@ -70,7 +70,7 @@
       "critical_accuracy + powerful_critical",
       "critical_accuracy + double_tap"
     ],
-    "single_run_per_test": false,
+    "single_run_per_test": true,
     "detailed_combat_logs": true
   },
   "build_testing": {
@@ -89,7 +89,8 @@
       "upgrade_limit_table": true,
       "mechanics_verification": true,
       "scenario_breakdown": true,
-      "enhanced_analysis": true
+      "enhanced_analysis": true,
+      "cost_analysis": true
     },
     "build_reports": {
       "enabled": true,
@@ -98,13 +99,14 @@
       "cost_effectiveness": true,
       "percentile_analysis": true,
       "archetype_analysis": true,
-      "tactical_analysis": true
+      "tactical_analysis": true,
+      "cost_analysis": true
     }
   },
   "logging": {
-    "separate_files": false,
-    "log_top_builds_only": false,
+    "separate_files": true,
+    "log_top_builds_only": true,
     "top_builds_for_detailed_log": 100,
-    "generate_individual_build_logs": false
+    "generate_individual_build_logs": true
   }
 }

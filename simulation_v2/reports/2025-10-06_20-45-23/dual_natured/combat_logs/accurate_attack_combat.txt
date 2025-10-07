@@ -1,0 +1,825 @@
+================================================================================
+COMBAT LOG - ACCURATE_ATTACK
+================================================================================
+Enhancement Type: Upgrade
+Cost: 1 points
+Archetype: dual_natured
+Scenario: Boss
+================================================================================
+
+
+================================================================================
+COMBAT SIMULATION - DETAILED ANALYSIS
+================================================================================
+ATTACKER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+DEFENDER STATS:
+  Focus: 2 | Power: 2 | Mobility: 2 | Endurance: 2 | Tier: 4
+  Avoidance: 16 | Durability: 11 | Max HP: 100
+BUILD CONFIGURATION:
+  Attack Type: melee_ac (choosing +4 accuracy)
+  Upgrades: accurate_attack
+  Limits: None
+  Total Cost: 1 points
+COMBAT PARAMETERS:
+  Number of Enemies: 1
+  Enemy HP: 100 each
+  Total HP Pool: 100
+  Combat Length Limit: 100 turns
+================================================================================
+
+
+============================================================
+TURN 1 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 100/100 (100.0%)
+  Enemy 1: 100/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 24 vs 16
+      Damage dice: ['6+5', '5', '2'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 20
+      After durability (11): 9 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 9
+    Enemy 1 HP: 100 -> 91
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 3 [Roll] + 4 [Tier] + 2 [Focus] = 9 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 1 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 9
+  Total damage this turn: 9
+  Enemies remaining: 1/1
+
+============================================================
+TURN 2 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 91/100 (91.0%)
+  Enemy 1: 91/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 34 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['2', '2', '6+3'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 19
+      After durability (11): 8 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 8
+    Enemy 1 HP: 91 -> 83
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] = 15 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 100 -> 100
+  Total defender damage this turn: 0
+
+TURN 2 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 8
+  Total damage this turn: 8
+  Enemies remaining: 1/1
+
+============================================================
+TURN 3 - START
+============================================================
+Attacker HP: 100/100 (100.0%)
+Alive Enemies: 1/1
+Total HP: 83/100 (83.0%)
+  Enemy 1: 83/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 27 vs 16
+      Damage dice: ['3', '6+5', '3'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 19
+      After durability (11): 8 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 8
+    Enemy 1 HP: 83 -> 75
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['4', '3', '6+5'] = 18
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 24
+      After durability (11): 13 damage
+    Damage dealt to Attacker: 13
+    Attacker HP: 100 -> 87
+  Total defender damage this turn: 13
+
+TURN 3 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 8
+  Total damage this turn: 8
+  Enemies remaining: 1/1
+
+============================================================
+TURN 4 - START
+============================================================
+Attacker HP: 87/100 (87.0%)
+Alive Enemies: 1/1
+Total HP: 75/100 (75.0%)
+  Enemy 1: 75/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 25 vs 16
+      Damage dice: ['1', '6+1', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 15
+      After durability (11): 4 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 4
+    Enemy 1 HP: 75 -> 71
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['1', '3', '5'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 87 -> 83
+  Total defender damage this turn: 4
+
+TURN 4 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 4
+  Total damage this turn: 4
+  Enemies remaining: 1/1
+
+============================================================
+TURN 5 - START
+============================================================
+Attacker HP: 83/100 (83.0%)
+Alive Enemies: 1/1
+Total HP: 71/100 (71.0%)
+  Enemy 1: 71/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 11 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 25 vs 16
+      Damage dice: ['2', '4', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 12
+      After durability (11): 1 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 1
+    Enemy 1 HP: 71 -> 70
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['1', '4', '3'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 14
+      After durability (11): 3 damage
+    Damage dealt to Attacker: 3
+    Attacker HP: 83 -> 80
+  Total defender damage this turn: 3
+
+TURN 5 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 1
+  Total damage this turn: 1
+  Enemies remaining: 1/1
+
+============================================================
+TURN 6 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 1/1
+Total HP: 70/100 (70.0%)
+  Enemy 1: 70/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 16 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 30 vs 16
+      Damage dice: ['5', '2', '5'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 70 -> 67
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 80 -> 80
+  Total defender damage this turn: 0
+
+TURN 6 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 7 - START
+============================================================
+Attacker HP: 80/100 (80.0%)
+Alive Enemies: 1/1
+Total HP: 67/100 (67.0%)
+  Enemy 1: 67/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 27 vs 16
+      Damage dice: ['2', '1', '6+1'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 12
+      After durability (11): 1 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 1
+    Enemy 1 HP: 67 -> 66
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] = 21 vs 16
+      Damage dice: ['3', '1', '6+5'] = 15
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 21
+      After durability (11): 10 damage
+    Damage dealt to Attacker: 10
+    Attacker HP: 80 -> 70
+  Total defender damage this turn: 10
+
+TURN 7 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 1
+  Total damage this turn: 1
+  Enemies remaining: 1/1
+
+============================================================
+TURN 8 - START
+============================================================
+Attacker HP: 70/100 (70.0%)
+Alive Enemies: 1/1
+Total HP: 66/100 (66.0%)
+  Enemy 1: 66/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 26 vs 16
+      Damage dice: ['4', '6+1', '1'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 66 -> 63
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 70 -> 70
+  Total defender damage this turn: 0
+
+TURN 8 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 9 - START
+============================================================
+Attacker HP: 70/100 (70.0%)
+Alive Enemies: 1/1
+Total HP: 63/100 (63.0%)
+  Enemy 1: 63/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 27 vs 16
+      Damage dice: ['6+1', '5', '5'] = 17
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 19
+      After durability (11): 8 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 8
+    Enemy 1 HP: 63 -> 55
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 70 -> 70
+  Total defender damage this turn: 0
+
+TURN 9 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 8
+  Total damage this turn: 8
+  Enemies remaining: 1/1
+
+============================================================
+TURN 10 - START
+============================================================
+Attacker HP: 70/100 (70.0%)
+Alive Enemies: 1/1
+Total HP: 55/100 (55.0%)
+  Enemy 1: 55/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 18 vs 16
+      Damage dice: ['6+2', '2', '2'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 55 -> 52
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 7 [Roll] + 4 [Tier] + 2 [Focus] = 13 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 70 -> 70
+  Total defender damage this turn: 0
+
+TURN 10 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 11 - START
+============================================================
+Attacker HP: 70/100 (70.0%)
+Alive Enemies: 1/1
+Total HP: 52/100 (52.0%)
+  Enemy 1: 52/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 14 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 28 vs 16
+      Damage dice: ['4', '5', '3'] = 12
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 14
+      After durability (11): 3 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 3
+    Enemy 1 HP: 52 -> 49
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 70 -> 70
+  Total defender damage this turn: 0
+
+TURN 11 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 3
+  Total damage this turn: 3
+  Enemies remaining: 1/1
+
+============================================================
+TURN 12 - START
+============================================================
+Attacker HP: 70/100 (70.0%)
+Alive Enemies: 1/1
+Total HP: 49/100 (49.0%)
+  Enemy 1: 49/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 15 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 29 vs 16
+      Damage dice: ['2', '2', '4'] = 8
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 10
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 49 -> 49
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 10 [Roll] + 4 [Tier] + 2 [Focus] = 16 vs 16
+      Damage dice: ['3', '4', '3'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 70 -> 65
+  Total defender damage this turn: 5
+
+TURN 12 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 13 - START
+============================================================
+Attacker HP: 65/100 (65.0%)
+Alive Enemies: 1/1
+Total HP: 49/100 (49.0%)
+  Enemy 1: 49/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 19 vs 16
+      Damage dice: ['6+4', '2', '4'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 18
+      After durability (11): 7 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 49 -> 42
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] = 24 vs 16
+      Damage dice: ['1', '3', '5'] = 9
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 15
+      After durability (11): 4 damage
+    Damage dealt to Attacker: 4
+    Attacker HP: 65 -> 61
+  Total defender damage this turn: 4
+
+TURN 13 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 1/1
+
+============================================================
+TURN 14 - START
+============================================================
+Attacker HP: 61/100 (61.0%)
+Alive Enemies: 1/1
+Total HP: 42/100 (42.0%)
+  Enemy 1: 42/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 33 vs 16
+      Damage dice: ['1', '5', '4'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 12
+      After durability (11): 1 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 1
+    Enemy 1 HP: 42 -> 41
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] = 10 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 61 -> 61
+  Total defender damage this turn: 0
+
+TURN 14 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 1
+  Total damage this turn: 1
+  Enemies remaining: 1/1
+
+============================================================
+TURN 15 - START
+============================================================
+Attacker HP: 61/100 (61.0%)
+Alive Enemies: 1/1
+Total HP: 41/100 (41.0%)
+  Enemy 1: 41/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 32 vs 16
+      Damage dice: ['2', '5', '4'] = 11
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 13
+      After durability (11): 2 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 2
+    Enemy 1 HP: 41 -> 39
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 20 [Roll] + 4 [Tier] + 2 [Focus] = 26 vs 16
+      CRITICAL HIT! (rolled 20)
+      Damage dice: ['1', '3', '2'] = 6
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Critical bonus: +4 [Critical Hit]
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 61 -> 56
+  Total defender damage this turn: 5
+
+TURN 15 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 2
+  Total damage this turn: 2
+  Enemies remaining: 1/1
+
+============================================================
+TURN 16 - START
+============================================================
+Attacker HP: 56/100 (56.0%)
+Alive Enemies: 1/1
+Total HP: 39/100 (39.0%)
+  Enemy 1: 39/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 18 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 32 vs 16
+      Damage dice: ['2', '6+3', '3'] = 14
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 16
+      After durability (11): 5 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 5
+    Enemy 1 HP: 39 -> 34
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 17 [Roll] + 4 [Tier] + 2 [Focus] = 23 vs 16
+      Damage dice: ['3', '5', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 19
+      After durability (11): 8 damage
+    Damage dealt to Attacker: 8
+    Attacker HP: 56 -> 48
+  Total defender damage this turn: 8
+
+TURN 16 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 5
+  Total damage this turn: 5
+  Enemies remaining: 1/1
+
+============================================================
+TURN 17 - START
+============================================================
+Attacker HP: 48/100 (48.0%)
+Alive Enemies: 1/1
+Total HP: 34/100 (34.0%)
+  Enemy 1: 34/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 9 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 23 vs 16
+      Damage dice: ['6+6+2', '1', '1'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 18
+      After durability (11): 7 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 34 -> 27
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 2 [Roll] + 4 [Tier] + 2 [Focus] = 8 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 48 -> 48
+  Total defender damage this turn: 0
+
+TURN 17 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 1/1
+
+============================================================
+TURN 18 - START
+============================================================
+Attacker HP: 48/100 (48.0%)
+Alive Enemies: 1/1
+Total HP: 27/100 (27.0%)
+  Enemy 1: 27/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 13 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 27 vs 16
+      Damage dice: ['4', '2', '1'] = 7
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 9
+      After durability (11): 0 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 0
+    Enemy 1 HP: 27 -> 27
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 5 [Roll] + 4 [Tier] + 2 [Focus] = 11 vs 16
+      Miss!
+    Damage dealt to Attacker: 0
+    Attacker HP: 48 -> 48
+  Total defender damage this turn: 0
+
+TURN 18 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 0
+  Total damage this turn: 0
+  Enemies remaining: 1/1
+
+============================================================
+TURN 19 - START
+============================================================
+Attacker HP: 48/100 (48.0%)
+Alive Enemies: 1/1
+Total HP: 27/100 (27.0%)
+  Enemy 1: 27/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 8 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 22 vs 16
+      Damage dice: ['5', '3', '5'] = 13
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 15
+      After durability (11): 4 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 4
+    Enemy 1 HP: 27 -> 23
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 12 [Roll] + 4 [Tier] + 2 [Focus] = 18 vs 16
+      Damage dice: ['2', '1', '1'] = 4
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 10
+      After durability (11): 0 damage
+    Damage dealt to Attacker: 0
+    Attacker HP: 48 -> 48
+  Total defender damage this turn: 0
+
+TURN 19 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 4
+  Total damage this turn: 4
+  Enemies remaining: 1/1
+
+============================================================
+TURN 20 - START
+============================================================
+Attacker HP: 48/100 (48.0%)
+Alive Enemies: 1/1
+Total HP: 23/100 (23.0%)
+  Enemy 1: 23/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 4 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 18 vs 16
+      Damage dice: ['2', '5', '6+3'] = 16
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 18
+      After durability (11): 7 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 7
+    Enemy 1 HP: 23 -> 16
+
+DEFENDER ATTACK PHASE:
+  Enemy 1 attacks attacker:
+    Making ranged attack with []
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] = 25 vs 16
+      Damage dice: ['1', '4', '5'] = 10
+      Flat bonus: 4 [Tier] + 2 [Power] = 6
+      Total damage: 16
+      After durability (11): 5 damage
+    Damage dealt to Attacker: 5
+    Attacker HP: 48 -> 43
+  Total defender damage this turn: 5
+
+TURN 20 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 7
+  Total damage this turn: 7
+  Enemies remaining: 1/1
+
+============================================================
+TURN 21 - START
+============================================================
+Attacker HP: 43/100 (43.0%)
+Alive Enemies: 1/1
+Total HP: 16/100 (16.0%)
+  Enemy 1: 16/100 HP
+
+ATTACK PHASE:
+  Single target attack on Enemy 1
+    Making melee_ac attack with ['accurate_attack']
+      Accuracy: 19 [Roll] + 4 [Tier] + 2 [Focus] + +4 [accurate_attack] + +4 [Melee] = 33 vs 16
+      Damage dice: ['6+6+4', '5', '6+1'] = 28
+      Flat bonus: 4 [Tier] + 2 [Power] - 4 [accurate_attack] = 2
+      Total damage: 30
+      After durability (11): 19 damage
+
+  ATTACK RESULT:
+    Damage dealt to Enemy 1: 19
+    Enemy 1 HP: 16 -> -3
+
+TURN 21 SUMMARY:
+  Total bleed damage: 0
+  Total attack damage: 19
+  Total damage this turn: 19
+  Enemies remaining: 0/1
+   Enemy 1 DEFEATED!
+
+Combat ended in 21 turns
+All 1 enemies defeated - Combat Won!
+Attacker HP at end: 43/100
+==================================================
+
+================================================================================
+COMBAT RESULT
+================================================================================
+Outcome: WIN
+Turns: 21
+================================================================================
