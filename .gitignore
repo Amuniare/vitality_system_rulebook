@@ -32,3 +32,4 @@ simulation/reports
 combat_log.txt
 simulation/backup_2025-09-26_10-51-16/reports
 venv_gpu/
+reports/
