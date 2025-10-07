@@ -739,7 +739,7 @@ Effect: Attacks reach 30 spaces instead of 15 Sp
 Restriction: Ranged and Direct Attacks only
 
 **Long Range**
-Cost: 3p
+Cost: 2p
 Effect: Attacks reach 100 spaces instead of 30 Sp
 Restriction: Ranged Attacks only
 
