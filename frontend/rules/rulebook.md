@@ -828,7 +828,7 @@ Penalty: -Tier to Accuracy, Damage, and Condition rolls
 Restriction: Cannot be put on an AOE attack
 
 **Extra Attack**
-Cost: 3p
+Cost: 2p
 Effect: Successful hit with successful effect allows identical attack against same target
 Usage: Must hit and succeed on both Accuracy and Effect
 Frequency: Once per turn maximum
@@ -852,13 +852,13 @@ Restriction: Cannot apply to AOE attacks
 Exclusion: Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet
 
 **Double Tap**
-Cost: 3p
+Cost: 2p
 Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger same attack again against same target
 Restriction: Cannot apply to AOE attacks
 Exclusion: Cannot trigger from Ricochet, Explosive Critical, or other Double Tap
 
 **Explosive Critical**
-Cost: 3p
+Cost: 2p
 Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them
 Penalty: -Tier to Accuracy, Damage and Condition Rolls
 Restriction: Cannot apply to AOE attacks
@@ -1045,12 +1045,12 @@ Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Roll d20, DC 5 to activate each turn
 
 **Unreliable 2**
-Cost: 3p
+Cost: 2p
 Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: Roll d20, DC 10 to activate each turn
 
 **Unreliable 3**
-Cost: 2p
+Cost: 1p
 Effect: +7×Tier to Accuracy, Damage, and Conditions
 Limit: Must roll 15+ or attack fails
 
@@ -1073,24 +1073,24 @@ Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Turn 8 or later
 
 **Charge Up**
-Cost: 3p
+Cost: 2p
 Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: Spend an action on your previous turn
 
 **Charge Up 2**
-Cost: 3p
+Cost: 2p
 Effect: +6×Tier to Accuracy, Damage, and Conditions
 Limit: Spend actions on your previous two turns
 
 **Cooldown**
 Cost: 1p
-Effect: +3×Tier to Accuracy, Damage, and Conditions
+Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Cannot use again for 3 turns after use
 
 #### HP-Based Limits
 
 **Timid**
-Cost: 1p
+Cost: 2p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: At max HP with no conditions
 
@@ -1100,7 +1100,7 @@ Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: At 25 Hit Points or less
 
 **Bloodied**
-Cost: 3p
+Cost: 2p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: At 50 Hit Points or less
 
@@ -1123,7 +1123,7 @@ Limit: 2 uses, recharges after 1 minute rest
 #### Conditional Limits
 
 **Vengeful**
-Cost: 4p
+Cost: 3p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Been hit since last turn
 
@@ -1138,7 +1138,7 @@ Effect: +4×Tier to Accuracy, Damage, and Conditions
 Limit: Been hit but took no damage since last turn
 
 **Untouchable**
-Cost: 2p
+Cost: 1p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: All attacks missed since last turn
 
@@ -1148,7 +1148,7 @@ Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Ally unconscious or great peril occurred
 
 **Passive**
-Cost: 2p
+Cost: 1p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Not attacked since last turn
 
@@ -1160,7 +1160,7 @@ Limit: Not damaged since last turn
 #### Sequential Action Limits
 
 **Combo Move**
-Cost: 4p
+Cost: 3p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Hit same enemy last turn
 
@@ -1175,7 +1175,7 @@ Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Dealt damage to enemy last turn
 
 **Slaughter**
-Cost: 2p
+Cost: 1p
 Effect: +4×Tier to Accuracy, Damage, and Conditions
 Limit: Defeated enemy last turn
 

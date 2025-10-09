@@ -60,15 +60,15 @@ ATTACK_TYPES = {
 
 #### Multi-Attack Upgrades
 - **Quick Strikes** (2p): Attack 2 times (non-AOE attacks only), -Tier accuracy and damage per attack
-- **Extra Attack** (3p): Make identical attack when hit + effect succeeds
+- **Extra Attack** (2p): Make identical attack when hit + effect succeeds
 - **Barrage** (2p): Chain attacks - hit + effect on each attack enables the next attack, up to 3 attacks total, -Tier accuracy and damage per attack (non-AOE attacks only)
 
 #### Condition & Effect Upgrades
 - **Bleed** (3p): Target takes same damage for next 2 turns (replaces existing bleed)
 - **Critical Accuracy** (1p): Critical hit on 15-20 instead of just 20
 - **Powerful Critical** (2p): Critical hit on 15-20 instead of just 20; +Tier bonus to Damage and Condition rolls on critical hits
-- **Double Tap** (3p): Critical hit on 15-20 instead of just 20; if crit, attack again, effect only occurs once.
-- **Explosive Critical** (3p): Critical hit on 15-20 instead of just 20; on critical hit, attack triggers against all enemies in range (AOE Burst 2sp effect)
+- **Double Tap** (2p): Critical hit on 15-20 instead of just 20; if crit, attack again, effect only occurs once.
+- **Explosive Critical** (2p): Critical hit on 15-20 instead of just 20; on critical hit, attack triggers against all enemies in range (AOE Burst 2sp effect)
 - **Reliable Accuracy** (1p): Roll with advantage, -3 penalty to all Accuracy rolls
 - **Overhit** (2p): +1 damage per 2 points exceeding avoidance by 5+
 - **Culling Strike** (1p): If target is at or below 1/5 of their maximum HP after attack, they are immediately defeated
@@ -93,39 +93,39 @@ ATTACK_TYPES = {
 
 ### Limits (Unreliable Upgrades)
 - **Unreliable 1** (2p): +Tier to Accuracy and Damage, DC 5 activation
-- **Unreliable 2** (3p): +3×Tier to Accuracy and Damage, DC 10 activation
-- **Unreliable 3** (2p): +7×Tier to Accuracy and Damage, DC 15 activation - attack fails entirely on missed rolls
+- **Unreliable 2** (2p): +3×Tier to Accuracy and Damage, DC 10 activation
+- **Unreliable 3** (1p): +7×Tier to Accuracy and Damage, DC 15 activation - attack fails entirely on missed rolls
 
 
 #### Turn-Based Limit Upgrades
 - **Quickdraw** (2p): +3×Tier to Accuracy and Damage, turn 1 only
 - **Patient** (3p): +1×Tier to Accuracy and Damage, turn 5 or later
 - **Finale** (3p): +2×Tier to Accuracy and Damage, turn 8 or later
-- **Charge Up** (3p): +3×Tier to Accuracy and Damage, spend action on previous turn
-- **Charge Up 2** (3p): +6×Tier to Accuracy and Damage, spend actions on previous two turns
-- **Cooldown** (1p): +3×Tier to Accuracy and Damage, cannot be used again for 3 turns after activation
+- **Charge Up** (2p): +3×Tier to Accuracy and Damage, spend action on previous turn
+- **Charge Up 2** (2p): +6×Tier to Accuracy and Damage, spend actions on previous two turns
+- **Cooldown** (1p): +2×Tier to Accuracy and Damage, cannot be used again for 2 turns after activation
 
 #### HP-Based Limits
 - **Charges 1** (1p): +5×Tier to Accuracy/Damage/Conditions, 1 use per rest (combat)
 - **Charges 2** (2p): +2×Tier to Accuracy/Damage/Conditions, 2 uses per rest (combat)
 - **Near Death** (3p): +2×Tier to Accuracy/Damage/Conditions, only at ≤25 HP
-- **Bloodied** (3p): +Tier to Accuracy/Damage/Conditions, only at ≤50 HP
-- **Timid** (1p): +2×Tier to Accuracy/Damage/Conditions, only at max HP (no damage taken)
+- **Bloodied** (2p): +Tier to Accuracy/Damage/Conditions, only at ≤50 HP
+- **Timid** (2p): +2×Tier to Accuracy/Damage/Conditions, only at max HP (no damage taken)
 - **Attrition** (2p): +2×Tier to Accuracy/Damage/Conditions, costs 20 HP per use
   *Mutually exclusive: Near Death, Bloodied, and Timid cannot be combined*
 
 #### Turn-Tracking Limits
 **Offensive State Limits** (mutually exclusive):
-- **Slaughter** (2p): +4×Tier to Accuracy/Damage/Conditions, only if defeated enemy last turn
+- **Slaughter** (1p): +4×Tier to Accuracy/Damage/Conditions, only if defeated enemy last turn
 - **Relentless** (2p): +Tier to Accuracy/Damage/Conditions, only if dealt damage last turn
-- **Combo Move** (4p): +Tier to Accuracy/Damage/Conditions, only if hit same target last turn
+- **Combo Move** (3p): +Tier to Accuracy/Damage/Conditions, only if hit same target last turn
 
 **Defensive State Limits** (mutually exclusive):
 - **Revenge** (3p): +Tier to Accuracy/Damage/Conditions, only if took damage last turn
-- **Vengeful** (4p): +Tier to Accuracy/Damage/Conditions, only if was hit last turn
-- **Untouchable** (2p): +2×Tier to Accuracy/Damage/Conditions, only if all enemy attacks missed last turn
+- **Vengeful** (3p): +Tier to Accuracy/Damage/Conditions, only if was hit last turn
+- **Untouchable** (1p): +2×Tier to Accuracy/Damage/Conditions, only if all enemy attacks missed last turn
 - **Unbreakable** (1p): +4×Tier to Accuracy/Damage/Conditions, only if was hit but took no damage last turn
-- **Passive** (2p): +2×Tier to Accuracy/Damage/Conditions, only if not attacked last turn
+- **Passive** (1p): +2×Tier to Accuracy/Damage/Conditions, only if not attacked last turn
 - **Careful** (3p): +2×Tier to Accuracy/Damage/Conditions, only if took no damage last turn
 
 
