@@ -325,7 +325,7 @@ Point budgets per attack based on tier and archetype:
 - Each gets points from table above
 - Balanced versatility
 
-**Versitile Master**
+**Versatile Master**
 - 5 Special Attacks
 - Each receives points from table above
 - Consistent performance without drawbacks
@@ -762,7 +762,7 @@ Effect: Choose which targets are affected by Area attacks
 Restriction: Area and Area Direct Attacks only
 
 **Ranged Area**
-Cost: 2p
+Cost: 1p
 Effect: Instead of the point of orin being yourself, you can target a point up to 15 Sp away from you
 Restriction: Area Burst and Area Direct Attacks only
 Usage: You can be damage by your own attack.
@@ -852,7 +852,7 @@ Restriction: Cannot apply to AOE attacks
 Exclusion: Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet
 
 **Double Tap**
-Cost: 2p
+Cost: 3p
 Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger same attack again against same target
 Restriction: Cannot apply to AOE attacks
 Exclusion: Cannot trigger from Ricochet, Explosive Critical, or other Double Tap
@@ -917,21 +917,25 @@ Restriction: Cannot apply to AOE attacks
 Cost: 1p
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 Usage: Bonus applies against 10 maximum HP enemies
+Restriction: Can only have 1 Slayer bonus per attack
 
 **Captain Slayer**
 Cost: 1p
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 Usage: Bonus applies against 25 maximum HP enemies
+Restriction: Can only have 1 Slayer bonus per attack
 
 **Elite Slayer**
 Cost: 1p
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 Usage: Bonus applies against 50 maximum HP enemies
+Restriction: Can only have 1 Slayer bonus per attack
 
 **Boss Slayer**
 Cost: 1p
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 Usage: Bonus applies against 100 maximum HP enemies
+Restriction: Can only have 1 Slayer bonus per attack
 
 #### Sustained Attack Upgrades
 
@@ -968,23 +972,23 @@ Cost: 1p
 Effect: Damaging target with lower Power score allows forced movement equal to the difference between your Power scores
 
 **Priority Target**
-Cost: 3p
+Cost: 2p
 Effect: After hitting target, mark them as Priority Target until start of next turn
 Ally Bonus: Other characters gain Tier Accuracy bonus against marked target
 Frequency: Once per turn
 
 **Menacing**
-Cost: 4p
+Cost: 3p
 Effect: Reducing enemy to 0 HP allows Intimidation attempt against all enemies within 3 spaces of the target
 Surrender Threshold: Enemies with HP ≤ (Intimidation check - 10) surrender
 
 **Intimidating Presence**
-Cost: 3p
+Cost: 2p
 Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Taunt condition and uses your normal Condition Check roll
 Usage: Triggers on enemy defeat, activation is optional
 
 **Terrifying Display**
-Cost: 3p
+Cost: 2p
 Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Frighten condition and uses your normal Condition Check roll
 Usage: Triggers on enemy defeat, activation is optional
 
@@ -1165,7 +1169,7 @@ Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Hit same enemy last turn
 
 **Infected**
-Cost: 3p
+Cost: 2p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Applied Condition last turn
 
@@ -1182,7 +1186,7 @@ Limit: Defeated enemy last turn
 #### Positioning Limits
 
 **Rooted**
-Cost: 3p
+Cost: 2p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Cannot move this turn
 
@@ -1192,7 +1196,7 @@ Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Must have moved more than half your movement in a straight line towards your target
 
 **Long Distance Fighter**
-Cost: 4p
+Cost: 3p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: No enemies within 5 spaces
 
