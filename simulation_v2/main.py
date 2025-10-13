@@ -18,6 +18,41 @@ from core.build_tester import BuildTester
 from core.reporter import ReporterV2
 from src.models import Character, AttackBuild, MultiAttackBuild
 from src.simulation import simulate_combat_verbose
+import shutil
+
+
+def cleanup_old_reports(reports_base_dir: str, max_folders: int = 5):
+    """Delete oldest report folders if there are more than max_folders.
+
+    Args:
+        reports_base_dir: Path to the reports directory
+        max_folders: Maximum number of report folders to keep (default: 5)
+    """
+    if not os.path.exists(reports_base_dir):
+        return
+
+    # Get all subdirectories in reports folder
+    folders = []
+    for item in os.listdir(reports_base_dir):
+        item_path = os.path.join(reports_base_dir, item)
+        if os.path.isdir(item_path):
+            folders.append((item_path, os.path.getctime(item_path)))
+
+    # If we have more than max_folders, delete the oldest ones
+    if len(folders) > max_folders:
+        # Sort by creation time (oldest first)
+        folders.sort(key=lambda x: x[1])
+
+        # Delete oldest folders
+        num_to_delete = len(folders) - max_folders
+        for folder_path, _ in folders[:num_to_delete]:
+            folder_name = os.path.basename(folder_path)
+            print(f"  Deleting old report folder: {folder_name}")
+            try:
+                shutil.rmtree(folder_path, ignore_errors=True)
+            except (PermissionError, OSError) as e:
+                print(f"    WARNING: Could not delete {folder_name}: {e}")
+                print(f"    (OneDrive or file locks may prevent deletion - skipping)")
 
 
 def format_build_name(build: AttackBuild | MultiAttackBuild, rank: int) -> str:
@@ -165,9 +200,14 @@ def run_simulation_v2(config_path: str = None):
     else:
         print(f"  GPU: disabled in config")
 
+    # Cleanup old reports if needed
+    reports_parent_dir = os.path.join(os.path.dirname(__file__), 'reports')
+    print("\nCleaning up old reports...")
+    cleanup_old_reports(reports_parent_dir, max_folders=5)
+
     # Create timestamped reports directory
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    base_reports_dir = os.path.join(os.path.dirname(__file__), 'reports', timestamp)
+    base_reports_dir = os.path.join(reports_parent_dir, timestamp)
     os.makedirs(base_reports_dir, exist_ok=True)
     print(f"\nReports will be saved to: {base_reports_dir}")
 

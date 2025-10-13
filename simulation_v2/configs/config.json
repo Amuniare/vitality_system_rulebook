@@ -4,7 +4,7 @@
   "simulation_runs": 3,
   "use_threading": true,
   "use_gpu": false,
-  "build_chunk_size": 1000,
+  "build_chunk_size": 2000,
 
   "character_config": {
     "attacker": [2, 2, 2, 2, 4],
@@ -20,7 +20,7 @@
   "progressive_elimination": {
     "enabled": false,
     "rounds": [
-      {"simulation_runs": 5, "keep_percent": 0.50},
+      {"simulation_runs": 5, "keep_percent": 0.20},
       {"simulation_runs": -1, "keep_percent": 1.0}
     ]
   },

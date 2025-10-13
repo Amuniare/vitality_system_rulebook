@@ -12,8 +12,8 @@ ATTACK_TYPES = {
     'melee_dg': AttackType('melee_dg', 0),  # Melee with +Tier damage bonus
     'ranged': AttackType('ranged', 0),
     'area': AttackType('area', 0, accuracy_mod=-1, damage_mod=-1, is_area=True),
-    'direct_damage': AttackType('direct_damage', 0, is_direct=True, direct_damage_base=15),
-    'direct_area_damage': AttackType('direct_area_damage', 0, is_direct=True, direct_damage_base=15, is_area=True)
+    'direct_damage': AttackType('direct_damage', 0, is_direct=True, direct_damage_base=15, damage_mod=-1),
+    'direct_area_damage': AttackType('direct_area_damage', 0, is_direct=True, direct_damage_base=15, is_area=True, damage_mod=-2)
 }
 
 # Upgrades - Costs updated 2025-10-07
@@ -24,10 +24,10 @@ UPGRADES = {
     'armor_piercing': Upgrade('armor_piercing', 3, special_effect="ignore_endurance"),
     'brutal': Upgrade('brutal', 2, special_effect="brutal_10"),
     'quick_strikes': Upgrade('quick_strikes', 2, special_effect="quick_strikes_2", damage_penalty=1, accuracy_penalty=1),
-    'bleed': Upgrade('bleed', 3, special_effect="bleed_2_turns"),
+    'bleed': Upgrade('bleed', 3, damage_penalty=1, special_effect="bleed_2_turns"),
     'critical_accuracy': Upgrade('critical_accuracy', 1, special_effect="crit_15_20"),
     'powerful_critical': Upgrade('powerful_critical', 2, special_effect="powerful_crit"),
-    'double_tap': Upgrade('double_tap', 2, special_effect="double_tap"),
+    'double_tap': Upgrade('double_tap', 3, special_effect="double_tap"),
     'finishing_blow_1': Upgrade('finishing_blow_1', 1, special_effect="finishing_5"),
     'finishing_blow_2': Upgrade('finishing_blow_2', 2, special_effect="finishing_10"),
     'finishing_blow_3': Upgrade('finishing_blow_3', 3, special_effect="finishing_15"),
@@ -44,11 +44,11 @@ UPGRADES = {
     'accurate_attack': Upgrade('accurate_attack', 1, accuracy_mod=1, damage_penalty=1),
     'reliable_accuracy': Upgrade('reliable_accuracy', 1, accuracy_penalty=3, special_effect="advantage"),
     'overhit': Upgrade('overhit', 2, special_effect="overhit"),
-    'explosive_critical': Upgrade('explosive_critical', 2, special_effect="explosive_critical"),
+    'explosive_critical': Upgrade('explosive_critical', 2, accuracy_penalty=1, damage_penalty=1, special_effect="explosive_critical"),
     'culling_strike': Upgrade('culling_strike', 1, special_effect="culling_strike"),
     'splinter': Upgrade('splinter', 3, special_effect="splinter"),
     'ricochet': Upgrade('ricochet', 2, special_effect="ricochet"),
-    'channeled': Upgrade('channeled', 2, special_effect="channeled"),
+    'channeled': Upgrade('channeled', 2, accuracy_penalty=2, damage_penalty=2, special_effect="channeled"),
     'leech': Upgrade('leech', 3, accuracy_penalty=1, damage_penalty=1, special_effect="leech"),
 }
 
@@ -65,9 +65,9 @@ LIMITS = {
     'charge_up_2': Limit('charge_up_2', 2, 6, 0),
     'cooldown': Limit('cooldown', 1, 2, 0),
     # HP-Based Limits
-    'charges_1': Limit('charges_1', 1, 4, 0),
+    'charges_1': Limit('charges_1', 1, 5, 0),
     'charges_2': Limit('charges_2', 2, 2, 0),
-    'near_death': Limit('near_death', 2, 2, 0),
+    'near_death': Limit('near_death', 3, 2, 0),
     'bloodied': Limit('bloodied', 2, 1, 0),
     'timid': Limit('timid', 2, 2, 0),
     'attrition': Limit('attrition', 2, 2, 0),
@@ -75,6 +75,7 @@ LIMITS = {
     'slaughter': Limit('slaughter', 1, 4, 0),
     'relentless': Limit('relentless', 2, 1, 0),
     'combo_move': Limit('combo_move', 3, 1, 0),
+    # 'infected': Limit('infected', 2, 1, 0),  # REMOVED: Requires Condition system (not yet implemented)
     'revenge': Limit('revenge', 3, 1, 0),
     'vengeful': Limit('vengeful', 3, 1, 0),
     'untouchable': Limit('untouchable', 1, 2, 0),
@@ -99,11 +100,9 @@ MUTUAL_EXCLUSIONS = [
     ['quickdraw', 'patient', 'finale', 'cooldown'],
     ['charge_up', 'charge_up_2'],
     ['charges_1', 'charges_2'],  # Can only have one charge limit
-    # Slayer upgrades - can only pick one type per slayer level
-    ['minion_slayer_acc', 'minion_slayer_dmg'],
-    ['captain_slayer_acc', 'captain_slayer_dmg'],
-    ['elite_slayer_acc', 'elite_slayer_dmg'],
-    ['boss_slayer_acc', 'boss_slayer_dmg'],
+    # Slayer upgrades - can only have one slayer bonus per attack (any type, any tier)
+    ['minion_slayer_acc', 'minion_slayer_dmg', 'captain_slayer_acc', 'captain_slayer_dmg',
+     'elite_slayer_acc', 'elite_slayer_dmg', 'boss_slayer_acc', 'boss_slayer_dmg'],
     # HP-based limits - can only have one HP condition
     ['near_death', 'bloodied', 'timid'],
     # Turn tracking limits - can only have one per category
@@ -122,8 +121,9 @@ ATTACK_TYPE_RESTRICTIONS = {
 
 AOE_RESTRICTIONS = [
     'finishing_blow_1', 'finishing_blow_2', 'finishing_blow_3',
-    'culling_strike', 'leech', 'critical_accuracy', 'critical_condition',
-    'explosive_critical', 'splinter', 'ricochet'
+    'culling_strike', 'critical_accuracy', 'powerful_critical', 'double_tap',
+    'explosive_critical', 'splinter', 'ricochet',
+    'quick_strikes', 'barrage', 'extra_attack'
 ]
 
 

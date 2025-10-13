@@ -30,8 +30,13 @@ class ReporterV2:
             self._generate_individual_report(individual_results)
             self._generate_individual_cost_analysis(individual_results)
 
+        # Build individual results dictionary for synergy calculation
+        individual_results_dict = None
+        if individual_results:
+            individual_results_dict = {result.enhancement_name: result for result in individual_results}
+
         # Calculate enhancement stats from build results
-        enhancement_stats = self._calculate_enhancement_stats(build_results)
+        enhancement_stats = self._calculate_enhancement_stats(build_results, individual_results_dict)
 
         # Calculate overall median and percentile medians for all reports
         all_turns = [avg_turns for _, _, avg_turns in build_results]
@@ -69,12 +74,20 @@ class ReporterV2:
             build_results, overall_median,
             top_50_median, top_20_median, top_10_median, top_5_median, top_1_median
         )
+        self._generate_top_1000_builds_report(
+            build_results, overall_median
+        )
+
+        # Generate balance assessment report if individual results provided
+        if individual_results_dict:
+            self._generate_balance_assessment_report(enhancement_stats, overall_median)
 
         print(f"  Reports saved to {self.reports_dir}")
 
     def _calculate_enhancement_stats(
         self,
-        build_results: List[Tuple]
+        build_results: List[Tuple],
+        individual_results_dict: Dict[str, IndividualResult] = None
     ) -> List[Dict]:
         """Calculate enhancement statistics from build results."""
         # Track enhancement appearances
@@ -225,6 +238,52 @@ class ReporterV2:
                 used1_pct = int(combat_usage_total[0] / combat_usage_count)
                 used2_pct = int(combat_usage_total[1] / combat_usage_count)
 
+            # === NEW BALANCE METRICS ===
+
+            # 1. Median Rank Percentile (0-100, where 0=best, 100=worst)
+            # Only consider top 50% of builds for median rank calculation
+            total_builds = len(build_results)
+            top_50_count_global = max(1, int(total_builds * 0.50))
+            top_50_ranks = [rank for rank, _ in appearances if rank <= top_50_count_global]
+            median_rank_val = statistics.median(top_50_ranks) if top_50_ranks else None
+            median_rank_percentile = (median_rank_val / total_builds) * 100 if median_rank_val else 100
+
+            # 2. Top 10% Saturation (% of top 10% builds that contain this enhancement)
+            top_10_count_global = max(1, int(total_builds * 0.10))
+            appearances_in_top_10 = len([r for r, _ in sorted_appearances if r <= top_10_count_global])
+            top_10_saturation = (appearances_in_top_10 / top_10_count_global) * 100 if top_10_count_global > 0 else 0
+
+            # 3. Synergy Dependence Score (Top 50% builds only)
+            # Negative = better in builds, positive = worse in builds
+            synergy_score = 0.0
+            if individual_results_dict and name in individual_results_dict:
+                # Get top 50% builds with this enhancement (by global rank, not local)
+                top_50_count_global = max(1, int(total_builds * 0.50))
+                top_50_appearances = [turns for rank, turns in sorted_appearances if rank <= top_50_count_global]
+
+                if top_50_appearances:
+                    top_50_avg_turns = statistics.mean(top_50_appearances)
+                    individual_avg_turns = individual_results_dict[name].avg_turns
+
+                    # Calculate synergy: negative = better in builds, positive = worse in builds
+                    synergy_score = ((top_50_avg_turns - individual_avg_turns) / individual_avg_turns) * 100
+
+            # 4. Balance Flags
+            is_overpowered = median_rank_percentile < 20 and top_10_saturation > 60
+            is_underpowered = median_rank_percentile > 70 and top_10_saturation < 5
+            is_synergy_dependent = synergy_score < -15  # Performs 15%+ better in builds
+            is_anti_synergy = synergy_score > 15  # Performs 15%+ worse in builds
+
+            balance_flags = []
+            if is_overpowered:
+                balance_flags.append("OP")
+            if is_underpowered:
+                balance_flags.append("UP")
+            if is_synergy_dependent:
+                balance_flags.append("SYNERGY")
+            if is_anti_synergy:
+                balance_flags.append("ANTI-SYN")
+
             enhancement_stats.append({
                 'name': name,
                 'type': data['type'],
@@ -247,12 +306,17 @@ class ReporterV2:
                 'top50_vs_median': top50_vs_median,
                 'top50_efficiency': top50_efficiency,
                 'appearances': len(appearances),
-                'median_rank': statistics.median([rank for rank, _ in appearances]),
+                'median_rank': median_rank_val if median_rank_val else 0,  # Already calculated above using top 50%
                 'slot1_pct': slot1_pct,
                 'slot2_pct': slot2_pct,
                 'used1_pct': used1_pct,
                 'used2_pct': used2_pct,
                 'has_multi_attack': total_attack_uses > 0,
+                # New balance metrics
+                'median_rank_percentile': median_rank_percentile,
+                'top_10_saturation': top_10_saturation,
+                'synergy_score': synergy_score,
+                'balance_flags': balance_flags,
                 **attack_type_turns
             })
 
@@ -448,7 +512,7 @@ class ReporterV2:
                 f.write("- **Slot1/Slot2**: Percentage of builds where this enhancement is in Attack Slot 1 vs Slot 2 (build composition)\n")
                 f.write("- **Used1/Used2**: Percentage of combat turns where Attack 1 vs Attack 2 was actually used (combat behavior)\n")
             f.write("- **Uses**: Number of builds containing this enhancement\n")
-            f.write("- **Med Rank**: Median rank position of builds with this enhancement\n")
+            f.write("- **Med Rank**: Median rank position of builds with this enhancement (considers only top 50% of builds)\n")
 
         print(f"  + Enhancement ranking report: enhancement_ranking_{self.archetype}.md")
 
@@ -969,3 +1033,612 @@ class ReporterV2:
             f.write("- **Cost Efficiency**: Lower cost + lower turns = better value\n")
 
         print(f"  + Individual cost analysis report: individual_cost_analysis_{self.archetype}.md")
+
+    def _generate_top_1000_builds_report(
+        self,
+        build_results: List[Tuple],
+        overall_median: float
+    ):
+        """Generate top 1000 builds report showing ranked list of best builds.
+
+        Args:
+            build_results: List of (build, avg_dpt, avg_turns) tuples, already sorted by performance
+            overall_median: Median turns across all builds
+        """
+        report_path = os.path.join(self.reports_dir, f'top_1000_builds_{self.archetype}.md')
+
+        # Deduplicate builds - keep best performance for each unique build
+        seen_builds = {}
+        for build, avg_dpt, avg_turns in build_results:
+            # Create a hashable key for the build
+            if isinstance(build, MultiAttackBuild):
+                # For multi-attack, hash all sub-builds
+                build_key = tuple(
+                    (sub.attack_type, tuple(sorted(sub.upgrades)), tuple(sorted(sub.limits)))
+                    for sub in build.builds
+                )
+            else:
+                # For single attack
+                build_key = (build.attack_type, tuple(sorted(build.upgrades)), tuple(sorted(build.limits)))
+
+            # Keep the best (lowest avg_turns) for each unique build
+            if build_key not in seen_builds or avg_turns < seen_builds[build_key][2]:
+                seen_builds[build_key] = (build, avg_dpt, avg_turns)
+
+        # Convert back to list and sort by performance
+        deduplicated_results = sorted(seen_builds.values(), key=lambda x: x[2])
+
+        # Take top 1000 builds (or all if less than 1000)
+        top_builds = deduplicated_results[:1000]
+        total_analyzed = len(top_builds)
+        total_before_dedup = len(build_results[:1000]) if len(build_results) >= 1000 else len(build_results)
+        duplicates_removed = total_before_dedup - total_analyzed
+
+        # Calculate statistics
+        turns_values = [turns for _, _, turns in top_builds]
+        costs = []
+        for build, _, _ in top_builds:
+            if isinstance(build, MultiAttackBuild):
+                costs.append(build.get_total_cost())
+            else:
+                costs.append(build.total_cost)
+
+        best_turns = min(turns_values)
+        worst_turns = max(turns_values)
+        median_turns = statistics.median(turns_values)
+        mean_turns = statistics.mean(turns_values)
+        std_dev = statistics.stdev(turns_values) if len(turns_values) >= 2 else 0
+
+        min_cost = min(costs)
+        max_cost = max(costs)
+        median_cost = statistics.median(costs)
+        mean_cost = statistics.mean(costs)
+
+        # Calculate detailed statistics
+        from collections import Counter
+
+        # Enhancement representation analysis
+        enhancement_counts = Counter()
+        cost_by_point = {1: [], 2: [], 3: []}  # Track counts of 1pt, 2pt, 3pt enhancements per build
+        attack_type_counts = Counter()
+        synergy_pairs = Counter()  # Track 2-enhancement combinations
+        synergy_triples = Counter()  # Track 3-enhancement combinations
+
+        for build, _, _ in top_builds:
+            if isinstance(build, MultiAttackBuild):
+                # Multi-attack build
+                attack_type_pattern = " + ".join([sub.attack_type for sub in build.builds])
+                attack_type_counts[attack_type_pattern] += 1
+
+                # Collect all enhancements
+                all_enhancements = []
+                for sub_build in build.builds:
+                    all_enhancements.extend(sub_build.upgrades)
+                    all_enhancements.extend(sub_build.limits)
+
+                # Count enhancements and costs
+                cost_breakdown = {1: 0, 2: 0, 3: 0}
+                for enh in all_enhancements:
+                    enhancement_counts[enh] += 1
+                    # Track cost breakdown
+                    if enh in UPGRADES:
+                        cost = UPGRADES[enh].cost
+                    else:
+                        cost = LIMITS[enh].cost
+                    cost_breakdown[cost] += 1
+
+                cost_by_point[1].append(cost_breakdown[1])
+                cost_by_point[2].append(cost_breakdown[2])
+                cost_by_point[3].append(cost_breakdown[3])
+
+                # Track synergies
+                unique_enhancements = set(all_enhancements)
+                from itertools import combinations
+                for pair in combinations(sorted(unique_enhancements), 2):
+                    synergy_pairs[pair] += 1
+                for triple in combinations(sorted(unique_enhancements), 3):
+                    synergy_triples[triple] += 1
+            else:
+                # Single attack build
+                attack_type_counts[build.attack_type] += 1
+
+                # Collect enhancements
+                all_enhancements = list(build.upgrades) + list(build.limits)
+
+                # Count enhancements and costs
+                cost_breakdown = {1: 0, 2: 0, 3: 0}
+                for enh in all_enhancements:
+                    enhancement_counts[enh] += 1
+                    # Track cost breakdown
+                    if enh in UPGRADES:
+                        cost = UPGRADES[enh].cost
+                    else:
+                        cost = LIMITS[enh].cost
+                    cost_breakdown[cost] += 1
+
+                cost_by_point[1].append(cost_breakdown[1])
+                cost_by_point[2].append(cost_breakdown[2])
+                cost_by_point[3].append(cost_breakdown[3])
+
+                # Track synergies
+                unique_enhancements = set(all_enhancements)
+                from itertools import combinations
+                for pair in combinations(sorted(unique_enhancements), 2):
+                    synergy_pairs[pair] += 1
+                for triple in combinations(sorted(unique_enhancements), 3):
+                    synergy_triples[triple] += 1
+
+        # Calculate diversity metrics
+        unique_combinations = set()
+        for build, _, _ in top_builds:
+            if isinstance(build, MultiAttackBuild):
+                combo = tuple(sorted(
+                    enh for sub in build.builds
+                    for enh in list(sub.upgrades) + list(sub.limits)
+                ))
+            else:
+                combo = tuple(sorted(list(build.upgrades) + list(build.limits)))
+            unique_combinations.add(combo)
+
+        diversity_index = (len(unique_combinations) / len(top_builds)) * 100
+
+        # Calculate percentile benchmarks
+        percentiles = [10, 25, 50, 75, 90]
+        percentile_values = {}
+        for p in percentiles:
+            idx = int((p / 100) * len(turns_values))
+            percentile_values[p] = turns_values[idx] if idx < len(turns_values) else turns_values[-1]
+
+        # Calculate cost efficiency (performance per point)
+        cost_efficiency_data = []
+        for (build, _, avg_turns), cost in zip(top_builds, costs):
+            if cost > 0:
+                efficiency = avg_turns / cost  # Lower is better
+                cost_efficiency_data.append((cost, efficiency, avg_turns))
+
+        # Find efficiency sweet spots (best performance/cost ratios)
+        cost_efficiency_data.sort(key=lambda x: x[1])  # Sort by efficiency
+        top_efficiency = cost_efficiency_data[:10] if len(cost_efficiency_data) >= 10 else cost_efficiency_data
+
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(f"# {self.archetype.upper()} - TOP 1000 BUILDS REPORT\n\n")
+            f.write("Comprehensive ranked list of the best performing builds with detailed statistical analysis.\n\n")
+
+            # Overall Statistics section
+            f.write("## Overall Statistics\n\n")
+            f.write(f"**Total builds analyzed**: {total_analyzed}\n")
+            if duplicates_removed > 0:
+                f.write(f"**Duplicates removed**: {duplicates_removed}\n")
+            f.write("\n")
+
+            f.write("**Performance Metrics**:\n")
+            f.write(f"- Best performance: {best_turns:.1f} turns\n")
+            f.write(f"- Worst performance: {worst_turns:.1f} turns\n")
+            f.write(f"- Performance gap: {worst_turns - best_turns:.1f} turns\n")
+            f.write(f"- Median: {median_turns:.1f} turns\n")
+            f.write(f"- Mean: {mean_turns:.1f} turns\n")
+            f.write(f"- Std Dev: {std_dev:.2f} turns\n")
+            f.write(f"- vs Overall Median: {median_turns - overall_median:+.1f} turns\n\n")
+
+            f.write("**Cost Distribution**:\n")
+            f.write(f"- Min cost: {min_cost}p\n")
+            f.write(f"- Max cost: {max_cost}p\n")
+            f.write(f"- Median cost: {median_cost:.1f}p\n")
+            f.write(f"- Mean cost: {mean_cost:.1f}p\n\n")
+
+            # Detailed Statistics section
+            f.write("## Detailed Statistics\n\n")
+
+            # 1. Enhancement Representation
+            f.write("### 1. Enhancement Representation Analysis\n\n")
+            f.write("Shows which enhancements appear most frequently in top 1000 builds.\n\n")
+
+            # Top 10 most common
+            top_10_enhancements = enhancement_counts.most_common(10)
+            f.write("**Top 10 Most Common Enhancements**:\n\n")
+            f.write("| Rank | Enhancement | Appearances | % of Top 1000 | Cost |\n")
+            f.write("|---|---|---|---|---|\n")
+            for i, (enh, count) in enumerate(top_10_enhancements, 1):
+                pct = (count / len(top_builds)) * 100
+                cost = UPGRADES[enh].cost if enh in UPGRADES else LIMITS[enh].cost
+                f.write(f"| {i} | {enh} | {count} | {pct:.1f}% | {cost}p |\n")
+            f.write("\n")
+
+            # Least common (< 5% representation)
+            rare_enhancements = [(enh, count) for enh, count in enhancement_counts.items()
+                                if (count / len(top_builds)) * 100 < 5]
+            rare_enhancements.sort(key=lambda x: x[1])
+
+            if rare_enhancements:
+                f.write(f"**Rare Enhancements** (<5% representation): {len(rare_enhancements)} enhancements\n\n")
+                f.write("| Enhancement | Appearances | % of Top 1000 | Cost |\n")
+                f.write("|---|---|---|---|\n")
+                for enh, count in rare_enhancements[:15]:  # Show top 15 rarest
+                    pct = (count / len(top_builds)) * 100
+                    cost = UPGRADES[enh].cost if enh in UPGRADES else LIMITS[enh].cost
+                    f.write(f"| {enh} | {count} | {pct:.1f}% | {cost}p |\n")
+                f.write("\n")
+
+            # 2. Attack Type Distribution
+            f.write("### 2. Attack Type Distribution\n\n")
+            f.write("Shows distribution of attack types/combinations in top 1000 builds.\n\n")
+            f.write("| Attack Type / Pattern | Count | % of Top 1000 |\n")
+            f.write("|---|---|---|\n")
+            for attack_pattern, count in attack_type_counts.most_common():
+                pct = (count / len(top_builds)) * 100
+                f.write(f"| {attack_pattern} | {count} | {pct:.1f}% |\n")
+            f.write("\n")
+
+            # 3. Cost Distribution Analysis
+            f.write("### 3. Cost Distribution Analysis\n\n")
+
+            # Build cost histogram
+            cost_histogram = Counter(costs)
+            f.write("**Builds by Total Cost**:\n\n")
+            f.write("| Total Cost | Count | % of Top 1000 |\n")
+            f.write("|---|---|---|\n")
+            for cost in sorted(cost_histogram.keys()):
+                count = cost_histogram[cost]
+                pct = (count / len(top_builds)) * 100
+                f.write(f"| {cost}p | {count} | {pct:.1f}% |\n")
+            f.write("\n")
+
+            # Enhancement cost breakdown
+            avg_1pt = statistics.mean(cost_by_point[1]) if cost_by_point[1] else 0
+            avg_2pt = statistics.mean(cost_by_point[2]) if cost_by_point[2] else 0
+            avg_3pt = statistics.mean(cost_by_point[3]) if cost_by_point[3] else 0
+
+            f.write("**Average Enhancement Composition**:\n")
+            f.write(f"- Average 1pt enhancements per build: {avg_1pt:.2f}\n")
+            f.write(f"- Average 2pt enhancements per build: {avg_2pt:.2f}\n")
+            f.write(f"- Average 3pt enhancements per build: {avg_3pt:.2f}\n\n")
+
+            # 4. Build Diversity Metrics
+            f.write("### 4. Build Diversity Metrics\n\n")
+            f.write(f"- **Unique enhancement combinations**: {len(unique_combinations)}\n")
+            f.write(f"- **Diversity index**: {diversity_index:.1f}%\n")
+            f.write(f"  - 100% = every build is unique\n")
+            f.write(f"  - 0% = all builds are identical\n\n")
+
+            # Most common synergies
+            top_synergy_pairs = synergy_pairs.most_common(10)
+            f.write("**Top 10 Most Common 2-Enhancement Synergies**:\n\n")
+            f.write("| Rank | Enhancement Pair | Occurrences | % of Top 1000 |\n")
+            f.write("|---|---|---|---|\n")
+            for i, (pair, count) in enumerate(top_synergy_pairs, 1):
+                pct = (count / len(top_builds)) * 100
+                pair_str = " + ".join(pair)
+                f.write(f"| {i} | {pair_str} | {count} | {pct:.1f}% |\n")
+            f.write("\n")
+
+            top_synergy_triples = synergy_triples.most_common(10)
+            f.write("**Top 10 Most Common 3-Enhancement Synergies**:\n\n")
+            f.write("| Rank | Enhancement Triple | Occurrences | % of Top 1000 |\n")
+            f.write("|---|---|---|---|\n")
+            for i, (triple, count) in enumerate(top_synergy_triples, 1):
+                pct = (count / len(top_builds)) * 100
+                triple_str = " + ".join(triple)
+                f.write(f"| {i} | {triple_str} | {count} | {pct:.1f}% |\n")
+            f.write("\n")
+
+            # 5. Performance Benchmarks
+            f.write("### 5. Performance Benchmarks\n\n")
+            f.write("**Percentile Performance**:\n\n")
+            f.write("| Percentile | Avg Turns |\n")
+            f.write("|---|---|\n")
+            for p in percentiles:
+                f.write(f"| {p}th | {percentile_values[p]:.2f} |\n")
+            f.write("\n")
+
+            f.write("**Cost Efficiency Analysis** (Top 10 by turns/cost ratio):\n\n")
+            f.write("| Rank | Total Cost | Efficiency (turns/point) | Avg Turns |\n")
+            f.write("|---|---|---|---|\n")
+            for i, (cost, efficiency, avg_turns) in enumerate(top_efficiency, 1):
+                f.write(f"| {i} | {cost}p | {efficiency:.2f} | {avg_turns:.2f} |\n")
+            f.write("\n")
+            f.write("*Note: Lower efficiency ratio = better performance per point spent*\n\n")
+
+            # Determine if we have multi-attack builds
+            has_multi_attack = any(isinstance(build, MultiAttackBuild) for build, _, _ in top_builds)
+
+            # Detailed builds table
+            f.write("## Top Builds (Ranked by Performance)\n\n")
+
+            if has_multi_attack:
+                f.write("| Rank | Avg Turns | Attack Type(s) | Enhancements | Cost |\n")
+                f.write("|---|---|---|---|---|\n")
+            else:
+                f.write("| Rank | Avg Turns | Attack Type | Enhancements | Cost |\n")
+                f.write("|---|---|---|---|---|\n")
+
+            for rank, (build, _, avg_turns) in enumerate(top_builds, 1):
+                if isinstance(build, MultiAttackBuild):
+                    # Multi-attack build formatting
+                    attack_types = []
+                    enhancements = []
+
+                    for idx, sub_build in enumerate(build.builds, 1):
+                        attack_types.append(f"Atk{idx}: {sub_build.attack_type}")
+
+                        # Combine upgrades and limits
+                        sub_enhancements = []
+                        if sub_build.upgrades:
+                            sub_enhancements.extend(sub_build.upgrades)
+                        if sub_build.limits:
+                            sub_enhancements.extend(sub_build.limits)
+
+                        if sub_enhancements:
+                            enhancements.append(f"Atk{idx}: {', '.join(sub_enhancements)}")
+                        else:
+                            enhancements.append(f"Atk{idx}: (none)")
+
+                    attack_type_str = "; ".join(attack_types)
+                    enhancements_str = " &#124; ".join(enhancements)  # Use HTML entity for pipe
+                    cost = build.get_total_cost()
+                else:
+                    # Single attack build formatting
+                    attack_type_str = build.attack_type
+
+                    # Combine upgrades and limits
+                    all_enhancements = []
+                    if build.upgrades:
+                        all_enhancements.extend(build.upgrades)
+                    if build.limits:
+                        all_enhancements.extend(build.limits)
+
+                    enhancements_str = ", ".join(all_enhancements) if all_enhancements else "(none)"
+                    cost = build.total_cost
+
+                f.write(f"| {rank} | {avg_turns:.2f} | {attack_type_str} | {enhancements_str} | {cost}p |\n")
+
+            # Notes section
+            f.write("\n## Notes\n\n")
+            f.write("- **Rank**: Position from 1-1000 (or fewer if less than 1000 valid builds)\n")
+            f.write("- **Avg Turns**: Average turns to kill across all scenarios (lower is better)\n")
+            f.write("- **Attack Type(s)**: \n")
+            if has_multi_attack:
+                f.write("  - Single builds: `melee_ac`, `ranged`, etc.\n")
+                f.write("  - Multi-attack: `Atk1: melee_ac; Atk2: ranged`\n")
+            else:
+                f.write("  - `melee_ac`, `melee_dg`, `ranged`, `area`, `direct_damage`\n")
+            f.write("- **Enhancements**: All upgrades and limits\n")
+            if has_multi_attack:
+                f.write("  - Single builds: `upgrade1, upgrade2, limit1`\n")
+                f.write("  - Multi-attack: `Atk1: enhancement_list | Atk2: enhancement_list`\n")
+            else:
+                f.write("  - Format: `upgrade1, upgrade2, limit1, limit2`\n")
+            f.write("- **Cost**: Total point cost of all enhancements\n")
+            f.write(f"- **Archetype**: {self.archetype.title()}\n")
+
+        print(f"  + Top 1000 builds report: top_1000_builds_{self.archetype}.md")
+
+    def _generate_balance_assessment_report(
+        self,
+        enhancement_stats: List[Dict],
+        overall_median: float
+    ):
+        """Generate balance assessment report with new metrics.
+
+        Args:
+            enhancement_stats: List of enhancement statistics dictionaries
+            overall_median: Median turns across all builds
+        """
+        report_path = os.path.join(self.reports_dir, f'balance_assessment_{self.archetype}.md')
+
+        # Separate upgrades and limits for analysis
+        upgrades = [s for s in enhancement_stats if s['type'] == 'upgrade']
+        limits = [s for s in enhancement_stats if s['type'] == 'limit']
+
+        # Sort by median rank percentile (ascending = better)
+        sorted_by_rank_pct = sorted(enhancement_stats, key=lambda x: x['median_rank_percentile'])
+
+        # Sort by top 10% saturation (descending = more meta-defining)
+        sorted_by_saturation = sorted(enhancement_stats, key=lambda x: x['top_10_saturation'], reverse=True)
+
+        # Sort by synergy score (ascending = most synergy-dependent)
+        sorted_by_synergy = sorted(enhancement_stats, key=lambda x: x['synergy_score'])
+
+        # Count balance flags
+        flag_counts = {'OP': 0, 'UP': 0, 'SYNERGY': 0, 'ANTI-SYN': 0}
+        flagged_enhancements = {'OP': [], 'UP': [], 'SYNERGY': [], 'ANTI-SYN': []}
+
+        for stats in enhancement_stats:
+            for flag in stats['balance_flags']:
+                flag_counts[flag] += 1
+                flagged_enhancements[flag].append(stats['name'])
+
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(f"# {self.archetype.upper()} - BALANCE ASSESSMENT REPORT\n\n")
+            f.write("Comprehensive balance analysis using advanced metrics.\n")
+            f.write("Focus: Power level, synergy dependencies, and meta-defining characteristics.\n\n")
+
+            # Overall statistics
+            f.write("## Overall Statistics\n\n")
+            f.write(f"- **Total enhancements analyzed**: {len(enhancement_stats)}\n")
+            f.write(f"  - Upgrades: {len(upgrades)}\n")
+            f.write(f"  - Limits: {len(limits)}\n")
+            f.write(f"- **Overall median turns**: {overall_median:.1f}\n")
+            f.write(f"- **Balance flags detected**: {sum(flag_counts.values())}\n")
+            f.write(f"  - OP: {flag_counts['OP']}\n")
+            f.write(f"  - UP: {flag_counts['UP']}\n")
+            f.write(f"  - SYNERGY: {flag_counts['SYNERGY']}\n")
+            f.write(f"  - ANTI-SYN: {flag_counts['ANTI-SYN']}\n\n")
+
+            # Section 1: Overall Balance Rankings
+            f.write("## 1. Overall Balance Rankings\n\n")
+            f.write("Enhancements sorted by median rank percentile (0=best, 100=worst).\n\n")
+            f.write("| Rank | Enhancement | Cost | Med Rank % | Top10% Sat | Synergy | Flags |\n")
+            f.write("|---|---|---|---|---|---|---|\n")
+
+            for i, stats in enumerate(sorted_by_rank_pct, 1):
+                flags_str = ", ".join(stats['balance_flags']) if stats['balance_flags'] else "-"
+                f.write(
+                    f"| {i} | {stats['name']} | {stats['cost']}p | "
+                    f"{stats['median_rank_percentile']:.1f}% | {stats['top_10_saturation']:.1f}% | "
+                    f"{stats['synergy_score']:+.1f}% | {flags_str} |\n"
+                )
+
+            # Section 2: Saturation Analysis
+            f.write("\n## 2. Saturation Analysis\n\n")
+            f.write("**Top 10% Saturation**: % of top 10% builds containing each enhancement.\n")
+            f.write("Higher saturation = more meta-defining.\n\n")
+
+            # High saturation enhancements (>50%)
+            high_sat = [s for s in sorted_by_saturation if s['top_10_saturation'] > 50]
+            f.write(f"### Meta-Defining Enhancements (>50% saturation)\n\n")
+            if high_sat:
+                f.write("| Rank | Enhancement | Cost | Top10% Sat | Med Rank % | Flags |\n")
+                f.write("|---|---|---|---|---|---|\n")
+                for i, stats in enumerate(high_sat, 1):
+                    flags_str = ", ".join(stats['balance_flags']) if stats['balance_flags'] else "-"
+                    f.write(
+                        f"| {i} | {stats['name']} | {stats['cost']}p | "
+                        f"{stats['top_10_saturation']:.1f}% | {stats['median_rank_percentile']:.1f}% | "
+                        f"{flags_str} |\n"
+                    )
+            else:
+                f.write("*No enhancements found with >50% saturation.*\n")
+
+            f.write("\n")
+
+            # Low saturation enhancements (<10%)
+            low_sat = [s for s in sorted_by_saturation if s['top_10_saturation'] < 10]
+            f.write(f"### Niche/Situational Enhancements (<10% saturation)\n\n")
+            if low_sat:
+                f.write("| Rank | Enhancement | Cost | Top10% Sat | Med Rank % | Flags |\n")
+                f.write("|---|---|---|---|---|---|\n")
+                for i, stats in enumerate(low_sat, 1):
+                    flags_str = ", ".join(stats['balance_flags']) if stats['balance_flags'] else "-"
+                    f.write(
+                        f"| {i} | {stats['name']} | {stats['cost']}p | "
+                        f"{stats['top_10_saturation']:.1f}% | {stats['median_rank_percentile']:.1f}% | "
+                        f"{flags_str} |\n"
+                    )
+            else:
+                f.write("*No enhancements found with <10% saturation.*\n")
+
+            # Section 3: Synergy Analysis
+            f.write("\n## 3. Synergy Analysis\n\n")
+            f.write("**Synergy Score**: Compares performance in top 50% builds vs isolation.\n")
+            f.write("- Negative score = better in builds (synergy-dependent)\n")
+            f.write("- Positive score = worse in builds (anti-synergy)\n")
+            f.write("- Zero score = no synergy data available\n\n")
+
+            # Synergy-dependent enhancements (score < -15%)
+            synergy_dependent = [s for s in sorted_by_synergy if s['synergy_score'] < -15]
+            f.write(f"### Combo-Dependent Enhancements (score < -15%)\n\n")
+            if synergy_dependent:
+                f.write("These perform significantly better in builds than in isolation.\n\n")
+                f.write("| Rank | Enhancement | Cost | Synergy | Top10% Sat | Med Rank % | Flags |\n")
+                f.write("|---|---|---|---|---|---|---|\n")
+                for i, stats in enumerate(synergy_dependent, 1):
+                    flags_str = ", ".join(stats['balance_flags']) if stats['balance_flags'] else "-"
+                    f.write(
+                        f"| {i} | {stats['name']} | {stats['cost']}p | "
+                        f"{stats['synergy_score']:+.1f}% | {stats['top_10_saturation']:.1f}% | "
+                        f"{stats['median_rank_percentile']:.1f}% | {flags_str} |\n"
+                    )
+            else:
+                f.write("*No enhancements found with strong positive synergy.*\n")
+
+            f.write("\n")
+
+            # Anti-synergy enhancements (score > 15%)
+            anti_synergy = [s for s in sorted_by_synergy if s['synergy_score'] > 15]
+            anti_synergy.reverse()  # Highest anti-synergy first
+            f.write(f"### Standalone-Strong Enhancements (score > 15%)\n\n")
+            if anti_synergy:
+                f.write("These perform worse in builds than in isolation (diluted by other enhancements).\n\n")
+                f.write("| Rank | Enhancement | Cost | Synergy | Top10% Sat | Med Rank % | Flags |\n")
+                f.write("|---|---|---|---|---|---|---|\n")
+                for i, stats in enumerate(anti_synergy, 1):
+                    flags_str = ", ".join(stats['balance_flags']) if stats['balance_flags'] else "-"
+                    f.write(
+                        f"| {i} | {stats['name']} | {stats['cost']}p | "
+                        f"{stats['synergy_score']:+.1f}% | {stats['top_10_saturation']:.1f}% | "
+                        f"{stats['median_rank_percentile']:.1f}% | {flags_str} |\n"
+                    )
+            else:
+                f.write("*No enhancements found with strong anti-synergy.*\n")
+
+            # Section 4: Balance Flags Summary
+            f.write("\n## 4. Balance Flags Summary\n\n")
+
+            if flag_counts['OP'] > 0:
+                f.write(f"### Overpowered (OP) - {flag_counts['OP']} enhancements\n\n")
+                f.write("*Criteria: Med Rank % < 20 AND Top10% Sat > 60*\n\n")
+                for name in flagged_enhancements['OP']:
+                    stats = next(s for s in enhancement_stats if s['name'] == name)
+                    f.write(
+                        f"- **{name}** ({stats['cost']}p): {stats['median_rank_percentile']:.1f}% rank, "
+                        f"{stats['top_10_saturation']:.1f}% saturation\n"
+                    )
+                f.write("\n")
+
+            if flag_counts['UP'] > 0:
+                f.write(f"### Underpowered (UP) - {flag_counts['UP']} enhancements\n\n")
+                f.write("*Criteria: Med Rank % > 70 AND Top10% Sat < 5*\n\n")
+                for name in flagged_enhancements['UP']:
+                    stats = next(s for s in enhancement_stats if s['name'] == name)
+                    f.write(
+                        f"- **{name}** ({stats['cost']}p): {stats['median_rank_percentile']:.1f}% rank, "
+                        f"{stats['top_10_saturation']:.1f}% saturation\n"
+                    )
+                f.write("\n")
+
+            if flag_counts['SYNERGY'] > 0:
+                f.write(f"### Synergy-Dependent (SYNERGY) - {flag_counts['SYNERGY']} enhancements\n\n")
+                f.write("*Criteria: Synergy score < -15% (performs 15%+ better in builds)*\n\n")
+                for name in flagged_enhancements['SYNERGY']:
+                    stats = next(s for s in enhancement_stats if s['name'] == name)
+                    f.write(
+                        f"- **{name}** ({stats['cost']}p): {stats['synergy_score']:+.1f}% synergy\n"
+                    )
+                f.write("\n")
+
+            if flag_counts['ANTI-SYN'] > 0:
+                f.write(f"### Anti-Synergy (ANTI-SYN) - {flag_counts['ANTI-SYN']} enhancements\n\n")
+                f.write("*Criteria: Synergy score > 15% (performs 15%+ worse in builds)*\n\n")
+                for name in flagged_enhancements['ANTI-SYN']:
+                    stats = next(s for s in enhancement_stats if s['name'] == name)
+                    f.write(
+                        f"- **{name}** ({stats['cost']}p): {stats['synergy_score']:+.1f}% synergy\n"
+                    )
+                f.write("\n")
+
+            if sum(flag_counts.values()) == 0:
+                f.write("*No balance flags detected. All enhancements appear reasonably balanced.*\n\n")
+
+            # Section 5: Methodology
+            f.write("## 5. Methodology\n\n")
+            f.write("### Median Rank Percentile\n")
+            f.write("- Formula: `(median_rank / total_builds) * 100` (considers only top 50% of builds)\n")
+            f.write("- Range: 0-100 (0 = best, 100 = worst)\n")
+            f.write("- Shows typical rank position for builds containing this enhancement\n")
+            f.write("- Only includes builds in the top 50% to exclude clearly inferior builds\n\n")
+
+            f.write("### Top 10% Saturation\n")
+            f.write("- Formula: `(appearances_in_top_10% / top_10%_count) * 100`\n")
+            f.write("- Range: 0-100%\n")
+            f.write("- High saturation (>50%) = meta-defining\n")
+            f.write("- Low saturation (<10%) = niche/situational\n\n")
+
+            f.write("### Synergy Score\n")
+            f.write("- Formula: `((top_50%_avg_turns - individual_avg_turns) / individual_avg_turns) * 100`\n")
+            f.write("- **CRITICAL**: Only uses top 50% builds to avoid noise from bad combinations\n")
+            f.write("- Negative = better in builds (synergy-dependent)\n")
+            f.write("- Positive = worse in builds (anti-synergy)\n")
+            f.write("- Zero = no individual testing data available\n\n")
+
+            f.write("### Balance Flags\n")
+            f.write("- **OP**: Med Rank % < 20 AND Top10% Sat > 60\n")
+            f.write("- **UP**: Med Rank % > 70 AND Top10% Sat < 5\n")
+            f.write("- **SYNERGY**: Synergy score < -15%\n")
+            f.write("- **ANTI-SYN**: Synergy score > 15%\n\n")
+
+            f.write("### Data Sources\n")
+            f.write("- **Build testing**: All valid builds within point budget, tested across multiple scenarios\n")
+            f.write("- **Individual testing**: Each enhancement tested in isolation (baseline + enhancement only)\n")
+            f.write("- **Synergy calculation**: Compares top 50% build performance vs individual testing\n")
+
+        print(f"  + Balance assessment report: balance_assessment_{self.archetype}.md")

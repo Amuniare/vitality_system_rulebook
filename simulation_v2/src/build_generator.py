@@ -45,18 +45,17 @@ class BuildGenerator:
         available_upgrades = list(UPGRADES.keys())
         combinations = []
 
-        # Generate combinations of specified size or smaller
-        for r in range(0, max_count + 1):
-            for combo in itertools.combinations(available_upgrades, r):
-                upgrades = list(combo)
+        # Generate combinations of exactly max_count size (not "or smaller" to avoid duplicates)
+        for combo in itertools.combinations(available_upgrades, max_count):
+            upgrades = list(combo)
 
-                # Check if this combination is valid according to rules
-                is_valid, errors = RuleValidator.validate_combination(attack_type, upgrades)
-                if is_valid:
-                    # Quick cost check to avoid expensive builds early
-                    total_cost = sum(UPGRADES[u].cost for u in upgrades)
-                    if total_cost <= self.max_points:
-                        combinations.append(upgrades)
+            # Check if this combination is valid according to rules
+            is_valid, errors = RuleValidator.validate_combination(attack_type, upgrades)
+            if is_valid:
+                # Quick cost check to avoid expensive builds early
+                total_cost = sum(UPGRADES[u].cost for u in upgrades)
+                if total_cost <= self.max_points:
+                    combinations.append(upgrades)
 
         return combinations
 

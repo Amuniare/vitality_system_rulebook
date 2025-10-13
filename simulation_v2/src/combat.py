@@ -222,7 +222,8 @@ def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild
         damage, conditions = make_attack(attacker, defender, build, log_file=log_file,
                                        turn_number=turn_number, charge_history=charge_history,
                                        is_aoe=True, aoe_damage_roll=shared_dice_roll, cooldown_history=cooldown_history,
-                                       attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
+                                       attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                                       enemy_max_hp=enemy_data['max_hp'])
 
         results.append((target_idx, damage, conditions))
         total_damage += damage
@@ -246,7 +247,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                charge_history: List[bool] = None, is_aoe: bool = False,
                aoe_damage_roll: Tuple[int, List[str]] = None, cooldown_history: dict = None,
                attacker_hp: int = None, attacker_max_hp: int = 100,
-               combat_state: dict = None) -> Tuple[int, List[str]]:
+               combat_state: dict = None, enemy_max_hp: int = None) -> Tuple[int, List[str]]:
     """Make one attack and return damage dealt and conditions applied
 
     For AOE attacks:
@@ -442,13 +443,15 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     slayer_accuracy_bonus = 0
     slayer_upgrades = {'minion_slayer_acc', 'captain_slayer_acc', 'elite_slayer_acc', 'boss_slayer_acc'}
     if upgrades_set & slayer_upgrades:  # Fast set intersection
-        if 'minion_slayer_acc' in upgrades_set and defender.max_hp == 10:
+        # Use enemy_max_hp if provided, otherwise fall back to defender.max_hp
+        target_max_hp = enemy_max_hp if enemy_max_hp is not None else defender.max_hp
+        if 'minion_slayer_acc' in upgrades_set and target_max_hp == 10:
             slayer_accuracy_bonus += attacker.tier
-        elif 'captain_slayer_acc' in upgrades_set and defender.max_hp == 25:
+        elif 'captain_slayer_acc' in upgrades_set and target_max_hp == 25:
             slayer_accuracy_bonus += attacker.tier
-        elif 'elite_slayer_acc' in upgrades_set and defender.max_hp == 50:
+        elif 'elite_slayer_acc' in upgrades_set and target_max_hp == 50:
             slayer_accuracy_bonus += attacker.tier
-        elif 'boss_slayer_acc' in upgrades_set and defender.max_hp == 100:
+        elif 'boss_slayer_acc' in upgrades_set and target_max_hp == 100:
             slayer_accuracy_bonus += attacker.tier
 
     # Apply melee accuracy bonus for melee_ac variant
@@ -566,10 +569,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
 
         # Calculate damage
         if attack_type.is_direct:
-            if build.attack_type == 'direct_area_damage':
-                damage = attack_type.direct_damage_base - (attacker.tier * 2)
-            else:
-                damage = attack_type.direct_damage_base - attacker.tier
+            damage = attack_type.direct_damage_base + (attack_type.damage_mod * attacker.tier)
             dice_detail = []
         else:
             # Roll damage dice (use shared roll for AOE) - optimized with cached set
@@ -629,13 +629,15 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             slayer_damage_bonus = 0
             slayer_damage_upgrades = {'minion_slayer_dmg', 'captain_slayer_dmg', 'elite_slayer_dmg', 'boss_slayer_dmg'}
             if upgrades_set & slayer_damage_upgrades:
-                if 'minion_slayer_dmg' in upgrades_set and defender.max_hp == 10:
+                # Use enemy_max_hp if provided, otherwise fall back to defender.max_hp
+                target_max_hp = enemy_max_hp if enemy_max_hp is not None else defender.max_hp
+                if 'minion_slayer_dmg' in upgrades_set and target_max_hp == 10:
                     slayer_damage_bonus += attacker.tier
-                elif 'captain_slayer_dmg' in upgrades_set and defender.max_hp == 25:
+                elif 'captain_slayer_dmg' in upgrades_set and target_max_hp == 25:
                     slayer_damage_bonus += attacker.tier
-                elif 'elite_slayer_dmg' in upgrades_set and defender.max_hp == 50:
+                elif 'elite_slayer_dmg' in upgrades_set and target_max_hp == 50:
                     slayer_damage_bonus += attacker.tier
-                elif 'boss_slayer_dmg' in upgrades_set and defender.max_hp == 100:
+                elif 'boss_slayer_dmg' in upgrades_set and target_max_hp == 100:
                     slayer_damage_bonus += attacker.tier
 
             # Apply critical hit damage bonus (optimized with cached set)

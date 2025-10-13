@@ -230,7 +230,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
             # Trim the list to active bleeds only
             bleed_stacks[:] = bleed_stacks[:active_bleeds]
-            enemy['hp'] -= total_bleed_damage
+            enemy['hp'] = max(0, enemy['hp'] - total_bleed_damage)
 
             if log_file and total_bleed_damage > 0:
                 log_file.write(f"  Enemy {i+1} takes {total_bleed_damage} bleed damage: {enemy['hp'] + total_bleed_damage} -> {enemy['hp']} HP\n")
@@ -379,7 +379,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 enemies_hit = []
                 for enemy_idx, damage, conditions in attack_results:
                     if damage > 0:
-                        enemies[enemy_idx]['hp'] -= damage
+                        enemies[enemy_idx]['hp'] = max(0, enemies[enemy_idx]['hp'] - damage)
                         enemies_hit.append(enemy_idx)
                         if enemies[enemy_idx]['hp'] <= 0:
                             enemies[enemy_idx]['defeated_this_turn'] = True
@@ -389,7 +389,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 # Apply results to each target
                 for target_idx, damage, conditions in attack_results:
                     enemy = enemies[target_idx]
-                    enemy['hp'] -= damage
+                    enemy['hp'] = max(0, enemy['hp'] - damage)
 
                     if damage > 0:
                         enemies_hit.append(target_idx+1)
@@ -400,7 +400,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         threshold = int(finishing_conditions[0].split('_')[1])
                         if enemy['hp'] <= threshold:
                             if log_file:
-                                log_file.write(f"     FINISHING BLOW! Enemy {target_idx+1} at {enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
+                                log_file.write(f"     FINISHING BLOW! Enemy {target_idx+1} at {enemy['hp']} HP (<={threshold}) - DEFEATED!\n")
                             enemy['hp'] = 0  # Enemy is defeated
 
                     # Check for culling strike after damage is applied
@@ -408,7 +408,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         culling_threshold = enemy['max_hp'] // 5  # 1/5 of maximum HP
                         if enemy['hp'] <= culling_threshold:
                             if log_file:
-                                log_file.write(f"     CULLING STRIKE! Enemy {target_idx+1} at {enemy['hp']} HP (≤{culling_threshold}, 1/5 of {enemy['max_hp']}) - DEFEATED!\n")
+                                log_file.write(f"     CULLING STRIKE! Enemy {target_idx+1} at {enemy['hp']} HP (<={culling_threshold}, 1/5 of {enemy['max_hp']}) - DEFEATED!\n")
                             enemy['hp'] = 0  # Enemy is defeated
 
                     # Apply conditions to this enemy
@@ -446,7 +446,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             splinter_damage, splinter_conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                                               turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                                               attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
-                            next_target['hp'] -= splinter_damage
+                            next_target['hp'] = max(0, next_target['hp'] - splinter_damage)
                             total_damage_dealt += splinter_damage
 
                             # Apply splinter attack conditions
@@ -479,7 +479,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
                 damage, conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                 turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
-                                                attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
+                                                attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                                                enemy_max_hp=target_enemy['max_hp'])
 
                 # Check if we got a charge condition instead of doing damage
                 if damage == 0 and 'charge' in conditions:
@@ -497,9 +498,10 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     # Re-run attack with basic build
                     damage, conditions = make_attack(attacker, defender, basic_build, log_file=log_file,
                                                     turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
-                                                    attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
+                                                    attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                                                    enemy_max_hp=target_enemy['max_hp'])
                     # Apply damage from basic attack
-                    target_enemy['hp'] -= damage
+                    target_enemy['hp'] = max(0, target_enemy['hp'] - damage)
                     total_damage_dealt = damage
                     if log_file:
                         log_file.write(f"\n  BASIC ATTACK RESULT:\n")
@@ -508,7 +510,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     if target_enemy['hp'] <= 0:
                         target_enemy['defeated_this_turn'] = True
                 else:
-                    target_enemy['hp'] -= damage
+                    target_enemy['hp'] = max(0, target_enemy['hp'] - damage)
                     total_damage_dealt = damage
 
                     if log_file:
@@ -522,7 +524,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         threshold = int(finishing_conditions[0].split('_')[1])
                         if target_enemy['hp'] <= threshold:
                             if log_file:
-                                log_file.write(f"     FINISHING BLOW! Enemy {target_idx+1} at {target_enemy['hp']} HP (≤{threshold}) - DEFEATED!\n")
+                                log_file.write(f"     FINISHING BLOW! Enemy {target_idx+1} at {target_enemy['hp']} HP (<={threshold}) - DEFEATED!\n")
                             target_enemy['hp'] = 0  # Enemy is defeated
 
                     # Check for culling strike after damage is applied
@@ -530,7 +532,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         culling_threshold = target_enemy['max_hp'] // 5  # 1/5 of maximum HP
                         if target_enemy['hp'] <= culling_threshold:
                             if log_file:
-                                log_file.write(f"     CULLING STRIKE! Enemy {target_idx+1} at {target_enemy['hp']} HP (≤{culling_threshold}, 1/5 of {target_enemy['max_hp']}) - DEFEATED!\n")
+                                log_file.write(f"     CULLING STRIKE! Enemy {target_idx+1} at {target_enemy['hp']} HP (<={culling_threshold}, 1/5 of {target_enemy['max_hp']}) - DEFEATED!\n")
                             target_enemy['hp'] = 0  # Enemy is defeated
 
                     # Apply conditions to target
@@ -569,7 +571,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             splinter_damage, splinter_conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                                               turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                                               attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
-                            next_target['hp'] -= splinter_damage
+                            next_target['hp'] = max(0, next_target['hp'] - splinter_damage)
                             total_damage_dealt += splinter_damage
 
                             # Apply splinter attack conditions
@@ -620,9 +622,11 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     max_hp=enemy['max_hp']
                 )
 
-                # Make the attack
+                # Make the attack (enemy attacking player, so pass player's max_hp)
                 damage, _ = make_attack(enemy_attacker, attacker, defender_build, log_file=log_file,
-                                       turn_number=turns, charge_history=[], cooldown_history={})
+                                       turn_number=turns, charge_history=[], cooldown_history={},
+                                       attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp,
+                                       combat_state=combat_state, enemy_max_hp=attacker_max_hp)
 
                 attacker_hp -= damage
                 total_defender_damage += damage
@@ -837,7 +841,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
             # Remove expired bleeds
             del bleed_stacks[active_bleeds:]
 
-            enemy['hp'] -= total_bleed_damage
+            enemy['hp'] = max(0, enemy['hp'] - total_bleed_damage)
             if enemy['hp'] <= 0:
                 enemies_killed_by_bleed.append(i)
                 enemy['defeated_this_turn'] = True
@@ -884,7 +888,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
             # Process results
             for target_idx, damage, conditions in attack_results:
                 enemy = enemies[target_idx]
-                enemy['hp'] -= damage
+                enemy['hp'] = max(0, enemy['hp'] - damage)
 
                 # Apply bleed
                 if 'bleed' in conditions:
@@ -915,7 +919,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
                 if damage == 0 and 'charge' in conditions:
                     charged_this_turn = True
                 else:
-                    target_enemy['hp'] -= damage
+                    target_enemy['hp'] = max(0, target_enemy['hp'] - damage)
                     total_damage_dealt = damage
 
                     # Apply bleed

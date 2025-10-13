@@ -4,6 +4,7 @@ import gc
 import psutil
 import os
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List, Tuple
 from src.game_data import UPGRADES, LIMITS
 from src.models import Character, AttackBuild, MultiAttackBuild
@@ -101,9 +102,17 @@ class BuildTester:
                     secs = int(est_remaining % 60)
                     time_str = f"~{mins}m {secs}s remaining"
 
+                # Format elapsed time
+                elapsed_mins = int(elapsed / 60)
+                elapsed_secs = int(elapsed % 60)
+                elapsed_str = f"{elapsed_mins}m {elapsed_secs}s"
+
+                # Get current time
+                current_time = datetime.now().strftime("%H:%M:%S")
+
                 # Get memory usage
                 mem_mb = process.memory_info().rss / 1024 / 1024
-                print(f"    Progress: {i + 1}/{len(builds)} builds tested ({time_str}) | Memory: {mem_mb:.1f} MB")
+                print(f"    Progress: {i + 1}/{len(builds)} builds tested ({time_str}) | Elapsed: {elapsed_str} | Time: {current_time} | Memory: {mem_mb:.1f} MB")
 
                 # Trigger garbage collection every 1000 builds to prevent memory buildup
                 gc.collect()
@@ -168,14 +177,23 @@ class BuildTester:
                                 secs = int(est_remaining % 60)
                                 time_str = f"~{mins}m {secs}s remaining"
 
-                            print(f"    Processing chunk {chunk_idx + 1}/{len(build_chunks)}... ({time_str}) | Memory: {mem_mb:.1f} MB")
+                            # Format elapsed time
+                            elapsed_mins = int(elapsed / 60)
+                            elapsed_secs = int(elapsed % 60)
+                            elapsed_str = f"{elapsed_mins}m {elapsed_secs}s"
+
+                            # Get current time
+                            current_time = datetime.now().strftime("%H:%M:%S")
+
+                            print(f"    Processing chunk {chunk_idx + 1}/{len(build_chunks)}... ({time_str}) | Elapsed: {elapsed_str} | Time: {current_time} | Memory: {mem_mb:.1f} MB")
 
                             # Warn if memory is high
                             if mem_mb > 2048:
                                 print(f"    WARNING: High memory usage detected ({mem_mb:.1f} MB)")
                         else:
                             mem_mb = process.memory_info().rss / 1024 / 1024
-                            print(f"    Processing chunk {chunk_idx + 1}/{len(build_chunks)}... | Memory: {mem_mb:.1f} MB")
+                            current_time = datetime.now().strftime("%H:%M:%S")
+                            print(f"    Processing chunk {chunk_idx + 1}/{len(build_chunks)}... | Time: {current_time} | Memory: {mem_mb:.1f} MB")
 
                         # Create arguments for parallel processing
                         test_args = [(build, self.attacker, self.defender, self.config) for build in chunk]
@@ -263,8 +281,16 @@ class BuildTester:
                         secs = int(est_remaining % 60)
                         time_str = f"~{mins}m {secs}s remaining"
 
+                    # Format elapsed time
+                    elapsed_mins = int(elapsed / 60)
+                    elapsed_secs = int(elapsed % 60)
+                    elapsed_str = f"{elapsed_mins}m {elapsed_secs}s"
+
+                    # Get current time
+                    current_time = datetime.now().strftime("%H:%M:%S")
+
                     mem_mb = process.memory_info().rss / 1024 / 1024
-                    print(f"    Progress: {i + 1}/{len(current_builds)} ({time_str}) | Memory: {mem_mb:.1f} MB")
+                    print(f"    Progress: {i + 1}/{len(current_builds)} ({time_str}) | Elapsed: {elapsed_str} | Time: {current_time} | Memory: {mem_mb:.1f} MB")
 
                     if (i + 1) % 1000 == 0:
                         gc.collect()
