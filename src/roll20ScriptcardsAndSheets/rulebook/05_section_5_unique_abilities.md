@@ -50,9 +50,8 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Base Radius:** 1 space
 - **Effect:** Allied characters other than you, within your aura, add your Tier to their Accuracy, Damage, Avoidance, Durability or Resistances (chosen when purchasing).
 - **Upgrades**
-  - **Greater Support:** Increase bonus by your Tier, does not increase Affects Self bonus.
+  - **Greater Support:** Increase bonus by your Tier
   - **Increase Area:** Increase Radius by 2
-  - **Affects Self:** You gain the benefits of your Aura.
 
 
 ### **CREATE WALL**

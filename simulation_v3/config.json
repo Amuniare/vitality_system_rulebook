@@ -1,0 +1,74 @@
+{
+  "tier": 4,
+  "archetype": "dual_natured",
+  "points_per_attack": 6,
+
+  "stage1": {
+    "simulation_runs": 1,
+    "top_percent": 0.2,
+    "specialist_percent": 0.2,
+    "pruning_strategy": "enhancement_based",
+    "enhancement_percent": 0.2
+  },
+
+  "stage2": {
+    "simulation_runs": 1,
+    "max_turns": 25,
+    "max_pairs": 100000000,
+    "pair_sample_percent": 0.01
+  },
+
+  "performance": {
+    "use_threading": true,
+    "num_workers": 0,
+    "chunk_size": 50000
+  },
+
+  "character_config": {
+    "attacker": [2, 2, 2, 2, 4]
+  },
+
+  "defensive_profiles": [
+    {
+      "name": "Evasive",
+      "stats": [2, 2, 4, 0, 4],
+      "description": "High mobility enemy (Avoidance: 18, Durability: 11)"
+    },
+    {
+      "name": "Tanky",
+      "stats": [2, 2, 0, 4, 4],
+      "description": "High endurance enemy (Avoidance: 16, Durability: 13)"
+    }
+  ],
+
+  "buff_configurations": [
+    {
+      "name": "No Buffs",
+      "attacker_accuracy_bonus": 0,
+      "attacker_damage_bonus": 0,
+      "defender_avoidance_bonus": 0,
+      "defender_durability_bonus": 0,
+      "description": "Baseline - no passive effects"
+    }
+  ],
+
+  "scenarios": [
+    {
+      "name": "Boss",
+      "num_enemies": 1,
+      "enemy_hp": 100
+    },
+    {
+      "name": "Mixed",
+      "enemy_hp_list": [50, 25, 25]
+    },
+    {
+      "name": "Swarm",
+      "enemy_hp_list": [25, 25, 10, 10, 10, 10, 10]
+    },
+    {
+      "name": "Swarm 2",
+      "enemy_hp_list": [50, 10, 10, 10, 10, 10]
+    }
+  ]
+}

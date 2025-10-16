@@ -134,7 +134,7 @@ You can temporarily bind yourself to an object or location, granting limited inf
 Someone has invested a great deal of time and/or money to get you where you are. You have greater access to resources, and they are inclined to protect their investment. However, you are beholden to them, and they might cut their losses if things get too dicey.
 
 **Stealth Guidance**
-You can add your Awareness score to the Stealth checks of any allies within 3 spaces of you that you designate. This ability helps your team move undetected while you coordinate their movements and watch for threats.
+You can add your Awareness score to the Stealth checks of any allies within 2 spaces of you that you designate. This ability helps your team move undetected while you coordinate their movements and watch for threats.
 
 **Street Performer**
 You can always find opportunities to earn money and resources through performances, hustling, or social connections. Make a Communication check to acquire money or secure free lodging and meals. The GM determines the difficulty based on the amount needed and local circumstances. Success may involve entertaining crowds, making deals, or leveraging social networks.

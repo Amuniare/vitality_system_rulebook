@@ -50,8 +50,8 @@ Attributes represent what type of things your character is good at in combat and
 **Condition Check:** 1d20 + Tier + Power vs Target's Resistance 
 
 **Defenses**  
-**Avoidance Score:** 5 + Tier + Mobility  
-**Durability Score:** Tier + Endurance  
+**Avoidance Score:** 10 + Tier + Mobility  
+**Durability Score:** 5 + Tier + Endurance  
 **Resolve Score:** 10 + Tier + Focus  
 **Stability Score:** 10 + Tier + Power  
 **Vitality Score:** 10 + Tier + Endurance 

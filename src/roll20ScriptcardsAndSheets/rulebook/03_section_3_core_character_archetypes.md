@@ -50,19 +50,28 @@
 ### **ATTACK ARCHETYPES**
 *Defines development and use of unique combat abilities*
 
+### Archetype Level System
+Point budgets per attack based on tier and archetype:
+
+| Tier | Focused | Dual Natured | Versatile Master |
+|------|---------|--------------|------------------|
+| 3    |  6       | 4            |     2           |
+| 4    |  8       | 6            |     4           |
+| 5    |  10      | 8            |     6           |
+
 **Focused Attacker**
-- Single Special Attack 
-- Tier × 30 points 
+- Single Special Attack
+- See table above for points per tier
 - High-risk, high-reward specialization
 
 **Dual-Natured**
 - Two distinct Special Attacks
-- Each gets 25 × Tier points (round up to the nearest 10)
+- Each gets points from table above
 - Balanced versatility
 
-**Versitile Master**
+**Versatile Master**
 - 5 Special Attacks
-- Each receives 20 × Tier points
+- Each receives points from table above
 - Consistent performance without drawbacks
 
 **Specialist**

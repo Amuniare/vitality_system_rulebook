@@ -612,7 +612,7 @@ class CharacterUpdater:
                 return None
             
             # Load the new scriptcards template
-            template_path = Path("src/roll20ScriptcardsAndSheets/scriptcards_v6/Scriptcards_Attacks_Library_v6.0.txt")
+            template_path = Path("src/roll20ScriptcardsAndSheets/scriptcards_v6/Scriptcards_Attacks_Library_v6.1.txt")
             if not template_path.exists():
                 logger.error(f"Scriptcards template not found: {template_path}")
                 return None
