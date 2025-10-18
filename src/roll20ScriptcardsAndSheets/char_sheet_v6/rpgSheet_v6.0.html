@@ -315,6 +315,11 @@
                 </div>
 
                 <div class="attribute-item" style="margin-bottom: 10px;">
+                        <input type="checkbox" name="attr_char_perfectionist" value="1">
+                        <span>Perfectionist (Reroll any roll ≤5 once)</span>
+                </div>
+
+                <div class="attribute-item" style="margin-bottom: 10px;">
                         <input type="checkbox" name="attr_char_structure_vehicle" value="1">
                         <span>Structure / Vehicle</span>
                 </div>
@@ -396,61 +401,6 @@
 
 
 
-                <!-- CRITICAL BONUSES -->
-                <details>
-                    <summary><h6>▼ Critical Bonuses</h6></summary>
-                    <div class="attacks-grid-compact">
-                        <label>Critical Accuracy<input type="number" name="attr_CriticalAccuracy" value="0"></label>
-                        <label>Powerful Critical<input type="number" name="attr_PowerfulCritical" value="0"></label>
-                        <label>Ricochet<input type="number" name="attr_Ricochet" value="0"></label>
-                        <label>Double-Tap<input type="number" name="attr_DoubleTap" value="0"></label>
-                        <label>Explosive Critical<input type="number" name="attr_ExplosiveCritical" value="0"></label>
-                        <label>Martial Artist<input type="number" name="attr_MartialArtist" value="0"></label>
-                    </div>
-                </details>
-
-                <!-- ACCURACY UPGRADES -->
-                <details>
-                    <summary><h6>▼ Accuracy Upgrades</h6></summary>
-                    <div class="attacks-grid-compact">
-                        <label>Accurate Attack<input type="number" name="attr_AccurateAttack" value="0"></label>
-                        <label>Reliable Accuracy<input type="number" name="attr_ReliableAccuracy" value="0"></label>
-                        <label>Overhit<input type="number" name="attr_Overhit" value="0"></label>
-                    </div>
-                </details>
-
-                <!-- DAMAGE UPGRADES -->
-                <details>
-                    <summary><h6>▼ Damage Upgrades</h6></summary>
-                    <div class="attacks-grid-compact">
-                        <label>Power Attack<input type="number" name="attr_PowerAttack" value="0"></label>
-                        <label>High Impact<input type="number" name="attr_HighImpact" value="0"></label>
-                        <label>Critical Effect<input type="number" name="attr_CriticalEffect" value="0"></label>
-                        <label>Armor Piercing<input type="number" name="attr_ArmorPiercing" value="0"></label>
-                        <label>Brutal<input type="number" name="attr_Brutal" value="0"></label>
-                        <label>Bleed<input type="number" name="attr_Bleed" value="0"></label>
-                        <label>Shatter<input type="number" name="attr_Shatter" value="0"></label>
-                        <label>Leech<input type="number" name="attr_Leech" value="0"></label>
-                        <label>Finishing Blow (1-3)<input type="number" name="attr_FinishingBlow" value="0"></label>
-                        <label>Culling Strike<input type="number" name="attr_CullingStrike" value="0"></label>
-                    </div>
-                </details>
-
-                <!-- CONDITION UPGRADES -->
-                <details>
-                    <summary><h6>▼ Condition Upgrades</h6></summary>
-                    <div class="attacks-grid-compact">
-                        <label>Lasting Condition<input type="number" name="attr_LastingCondition" value="0"></label>
-                        <label>Contagious<input type="number" name="attr_Contagious" value="0"></label>
-                        <label>Reliable Condition<input type="number" name="attr_ReliableCondition" value="0"></label>
-                        <label>Cursed<input type="number" name="attr_Cursed" value="0"></label>
-                        <label>Overwhelming<input type="number" name="attr_OverwhelmingAffliction" value="0"></label>
-                        <label>Concentration<input type="number" name="attr_Concentration" value="0"></label>
-                        <label>Critical Condition<input type="number" name="attr_CriticalCondition" value="0"></label>
-                        <label>Powerful Condition Critical<input type="number" name="attr_PowerfulConditionCritical" value="0"></label>
-                    </div>
-                </details>
-
                 <!-- GENERIC ATTACK UPGRADES -->
                 <details>
                     <summary><h6>▼ Generic Attack Upgrades</h6></summary>
@@ -464,34 +414,66 @@
                     </div>
                 </details>
 
-                <!-- MELEE SPECIALIZED -->
+                <!-- CORE COMBAT UPGRADES -->
                 <details>
-                    <summary><h6>▼ Melee Specialized</h6></summary>
+                    <summary><h6>▼ Core Combat Upgrades</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label>Quick Strikes<input type="number" name="attr_QuickStrikes" 
+                        <label>Accurate Attack<input type="number" name="attr_AccurateAttack" value="0"></label>
+                        <label>Power Attack<input type="number" name="attr_PowerAttack" value="0"></label>
+                        <label>Reliable Accuracy<input type="number" name="attr_ReliableAccuracy" value="0"></label>
+                        <label>Overhit<input type="number" name="attr_Overhit" value="0"></label>
+                        <label>High Impact<input type="number" name="attr_HighImpact" value="0"></label>
+                        <label>Critical Effect<input type="number" name="attr_CriticalEffect" value="0"></label>
+                        <label>Armor Piercing<input type="number" name="attr_ArmorPiercing" value="0"></label>
+                        <label>Brutal<input type="number" name="attr_Brutal" value="0"></label>
+                    </div>
+                </details>
+
+                <!-- MULTI-ATTACK UPGRADES -->
+                <details>
+                    <summary><h6>▼ Multi-Attack Upgrades</h6></summary>
+                    <div class="attacks-grid-compact">
+                        <label>Quick Strikes<input type="number" name="attr_QuickStrikes" value="0"></label>
                         <label>Barrage<input type="number" name="attr_Barrage" value="0"></label>
                         <label>Extra Attack<input type="number" name="attr_ExtraAttack" value="0"></label>
                     </div>
                 </details>
 
-                <!-- GENERAL SPECIALIZED -->
+                <!-- CRITICAL HIT UPGRADES -->
                 <details>
-                    <summary><h6>▼ General Specialized Combat</h6></summary>
+                    <summary><h6>▼ Critical Hit Upgrades</h6></summary>
                     <div class="attacks-grid-compact">
-                        <label>Pounce<input type="number" name="attr_Pounce" value="0"></label>
-                        <label>Splinter<input type="number" name="attr_Splinter" value="0"></label>
-                        <label>Priority Target<input type="number" name="attr_PriorityTarget" value="0"></label>
-                        <label>Bully<input type="number" name="attr_Bully" value="0"></label>
-                        <label>Menacing<input type="number" name="attr_Menacing" value="0"></label>
-                        <label>Disengage<input type="number" name="attr_Disengage" value="0"></label>
-                        <label>Intimidating Presence<input type="number" name="attr_IntimidatingPresence" value="0"></label>
-                        <label>Terrifying Display<input type="number" name="attr_TerrifyingDisplay" value="0"></label>
+                        <label>Critical Accuracy<input type="number" name="attr_CriticalAccuracy" value="0"></label>
+                        <label>Powerful Critical<input type="number" name="attr_PowerfulCritical" value="0"></label>
+                        <label>Ricochet<input type="number" name="attr_Ricochet" value="0"></label>
+                        <label>Double-Tap<input type="number" name="attr_DoubleTap" value="0"></label>
+                        <label>Explosive Critical<input type="number" name="attr_ExplosiveCritical" value="0"></label>
+                        <label>Martial Artist<input type="number" name="attr_MartialArtist" value="0"></label>
                     </div>
                 </details>
 
-                <!-- SLAYER UPGRADES -->
+                <!-- DAMAGE OVER TIME UPGRADES -->
                 <details>
-                    <summary><h6>▼ Slayer Upgrades</h6></summary>
+                    <summary><h6>▼ Damage Over Time Upgrades</h6></summary>
+                    <div class="attacks-grid-compact">
+                        <label>Bleed<input type="number" name="attr_Bleed" value="0"></label>
+                        <label>Environmental<input type="number" name="attr_Environmental" value="0"></label>
+                    </div>
+                </details>
+
+                <!-- INSTANT DEFEAT UPGRADES -->
+                <details>
+                    <summary><h6>▼ Instant Defeat Upgrades</h6></summary>
+                    <div class="attacks-grid-compact">
+                        <label>Finishing Blow (1-3)<input type="number" name="attr_FinishingBlow" value="0"></label>
+                        <label>Culling Strike<input type="number" name="attr_CullingStrike" value="0"></label>
+                        <label>Splinter<input type="number" name="attr_Splinter" value="0"></label>
+                    </div>
+                </details>
+
+                <!-- ENEMY TYPE BONUSES -->
+                <details>
+                    <summary><h6>▼ Enemy Type Bonuses</h6></summary>
                     <div class="attacks-grid-compact">
                         <label>Minion Slayer<input type="number" name="attr_MinionSlayer" value="0"></label>
                         <label>Captain Slayer<input type="number" name="attr_CaptainSlayer" value="0"></label>
@@ -500,12 +482,42 @@
                     </div>
                 </details>
 
-                <!-- SUSTAINED ATTACK -->
+                <!-- SUSTAINED ATTACK UPGRADES -->
                 <details>
-                    <summary><h6>▼ Sustained Attack</h6></summary>
+                    <summary><h6>▼ Sustained Attack Upgrades</h6></summary>
                     <div class="attacks-grid-compact">
                         <label>Channeled<input type="number" name="attr_Channeled" value="0"></label>
-                        <label>Environmental<input type="number" name="attr_Environmental" value="0"></label>
+                    </div>
+                </details>
+
+                <!-- UTILITY COMBAT UPGRADES -->
+                <details>
+                    <summary><h6>▼ Utility Combat Upgrades</h6></summary>
+                    <div class="attacks-grid-compact">
+                        <label>Leech<input type="number" name="attr_Leech" value="0"></label>
+                        <label>Shatter<input type="number" name="attr_Shatter" value="0"></label>
+                        <label>Pounce<input type="number" name="attr_Pounce" value="0"></label>
+                        <label>Disengage<input type="number" name="attr_Disengage" value="0"></label>
+                        <label>Bully<input type="number" name="attr_Bully" value="0"></label>
+                        <label>Priority Target<input type="number" name="attr_PriorityTarget" value="0"></label>
+                        <label>Menacing<input type="number" name="attr_Menacing" value="0"></label>
+                        <label>Intimidating Presence<input type="number" name="attr_IntimidatingPresence" value="0"></label>
+                        <label>Terrifying Display<input type="number" name="attr_TerrifyingDisplay" value="0"></label>
+                    </div>
+                </details>
+
+                <!-- CONDITION EFFECT UPGRADES -->
+                <details>
+                    <summary><h6>▼ Condition Effect Upgrades</h6></summary>
+                    <div class="attacks-grid-compact">
+                        <label>Reliable Condition<input type="number" name="attr_ReliableCondition" value="0"></label>
+                        <label>Lasting Condition<input type="number" name="attr_LastingCondition" value="0"></label>
+                        <label>Contagious<input type="number" name="attr_Contagious" value="0"></label>
+                        <label>Cursed<input type="number" name="attr_Cursed" value="0"></label>
+                        <label>Overwhelming<input type="number" name="attr_OverwhelmingAffliction" value="0"></label>
+                        <label>Concentration<input type="number" name="attr_Concentration" value="0"></label>
+                        <label>Critical Condition<input type="number" name="attr_CriticalCondition" value="0"></label>
+                        <label>Powerful Condition Critical<input type="number" name="attr_PowerfulConditionCritical" value="0"></label>
                     </div>
                 </details>
 

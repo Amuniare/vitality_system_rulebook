@@ -323,7 +323,10 @@ ATTACK_UPGRADE_MAPPINGS = {
     "Domain": "Domain",
     "Tower_Defense": "TowerDefense",
     "Channeled": "Channeled",
-    "Focused": "Focused"
+    "Focused": "Focused",
+
+    # AOE/Scale Upgrades
+    "Enhanced_Scale": "EnhancedScale"
 }
 
 logger.info(f"Roll20 schema loaded with {len(ATTACK_UPGRADE_MAPPINGS)} attack upgrade mappings")

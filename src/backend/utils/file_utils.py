@@ -11,6 +11,8 @@ from typing import List, Dict, Any, Optional
 import logging
 
 from ..character.schema.schema_mapper import SchemaMapper
+from ..character.schema.format_adapter import FormatAdapter
+from ..character.schema.new_format_adapter import NewFormatAdapter
 
 logger = logging.getLogger(__name__)
 
@@ -40,18 +42,36 @@ def process_downloaded_characters() -> None:
             logger.info(f"=== DEBUGGING: Loading web builder JSON from {file_path} ===")
             with open(file_path, 'r', encoding='utf-8') as f:
                 web_data = json.load(f)
-            
+
             logger.info(f"=== DEBUGGING: Web data loaded successfully ===")
             logger.info(f"=== DEBUGGING: Web data keys: {list(web_data.keys()) if web_data else 'NONE'} ===")
             logger.info(f"=== DEBUGGING: Character name: {web_data.get('name', 'UNKNOWN') if web_data else 'NO_DATA'} ===")
-            
+
+            # Detect and convert format if needed
+            logger.info(f"=== DEBUGGING: Detecting format version ===")
+
+            # Try new format adapter first (most specific)
+            if NewFormatAdapter.is_new_format(web_data):
+                logger.info(f"=== DEBUGGING: Detected NEW WEBSITE format ===")
+                logger.info(f"=== DEBUGGING: Converting new website format to old format ===")
+                web_data = NewFormatAdapter.convert_to_old_format(web_data)
+                logger.info(f"=== DEBUGGING: Conversion complete, new keys: {list(web_data.keys())} ===")
+            else:
+                # Fall back to old format adapter for legacy formats
+                format_version = FormatAdapter.detect_format(web_data)
+                logger.info(f"=== DEBUGGING: Detected format: {format_version} ===")
+
+                if format_version == "new":
+                    logger.info(f"=== DEBUGGING: Converting using legacy adapter ===")
+                    web_data = FormatAdapter.new_to_old_format(web_data)
+                    logger.info(f"=== DEBUGGING: Conversion complete, new keys: {list(web_data.keys())} ===")
+                else:
+                    logger.info(f"=== DEBUGGING: No format conversion needed ===")
+
             # Convert using schema system
             logger.info(f"=== DEBUGGING: Initializing SchemaMapper ===")
             mapper = SchemaMapper()
-            logger.info(f"=== DEBUGGING: Calling mapper.map_character() ===")
-            
-            # Note: The function calls map_character but the actual method is web_builder_to_roll20
-            logger.info(f"=== DEBUGGING: ERROR - map_character method doesn't exist! Using web_builder_to_roll20 ===")
+            logger.info(f"=== DEBUGGING: Calling web_builder_to_roll20 ===")
             roll20_data = mapper.web_builder_to_roll20(web_data)
             
             if roll20_data is None:

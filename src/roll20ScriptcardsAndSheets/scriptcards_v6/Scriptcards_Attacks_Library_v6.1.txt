@@ -215,7 +215,6 @@
     --=Unreliable2| [*R:Unreliable2]
     --=Unreliable3| [*R:Unreliable3]
     --=Quickdraw| [*R:Quickdraw]
-    --=SteadyLimit| [*R:Steady]
     --=PatienceLimit| [*R:PatienceLimit]
     --=Finale| [*R:Finale]
     --=ChargeUp| [*R:ChargeUp]
@@ -250,6 +249,35 @@
     --+| [br]
 
   --/| ==========OUTPUT  BEGINS==========
+
+
+    --/| ==========MULTI-STRIKE SETUP==========
+    --=StrikeCount| 1
+    --?[$QuickStrikes] -eq 1|=StrikeCount; 2
+    --?[$ExtraAttack] -eq 1|=StrikeCount; 2
+    --?[$Barrage] -eq 1|=StrikeCount; 3
+    --=CurrentStrike| 1
+
+    --/| Store base string modifiers before multi-strike loop
+    --&BaseAccuracyStringModifiers|[&AccuracyStringModifiers]
+    --&BaseDamageStringModifiers|[&DamageStringModifiers]
+    --&BaseConditionsStringModifiers|[&ConditionsStringModifiers]
+
+    --:MultiStrikeLoop|
+
+    --/| Initialize success tracking for this strike
+    --=PositiveDamageAmount| 0
+    --&AttackNotes|
+
+    --/| Reset string modifiers to base values for each strike
+    --&AccuracyStringModifiers|[&BaseAccuracyStringModifiers]
+    --&DamageStringModifiers|[&BaseDamageStringModifiers]
+    --&ConditionsStringModifiers|[&BaseConditionsStringModifiers]
+
+    --?[$StrikeCount] -eq 1|PassMultiattackNote
+      --+| [c][b] Multi-Attack Strike [$CurrentStrike] [/b] [/c]
+    --:PassMultiattackNote|
+
 
   --/| ==========Attack Dice==========
     --&AccuracyDice| 1d20
@@ -286,6 +314,11 @@
 
 
   --/| ==========Roll Modifiers==========
+
+    --/| ==========PERFECTIONIST REROLL MODIFIER==========
+    --?[*S:char_perfectionist] -eq 1|&AccuracyDice; 1d20ro<6
+    --?[*S:char_perfectionist] -eq 1|=ConditionsDice; 1d20ro<6
+
     --?[$ReliableAccuracy] -eq 1|&AccuracyDice; 2d20kh1 - 3
     --?[$SupremeAccuracy] -eq 1|&AccuracyDice; 3d20kh1 - 5
 
@@ -360,26 +393,30 @@
     --?[$RevengeLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Revenge]
     --?[$RevengeLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Revenge]
 
-    --?[$Unbreakable] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Unbreakable]
-    --?[$Unbreakable] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Unbreakable]
-    --?[$Unbreakable] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Unbreakable]
+    --=UnbreakableBonus| [*S:char_tier]*4
+    --?[$Unbreakable] -eq 1|&AccuracyStringModifiers;+ + [$UnbreakableBonus] [Unbreakable]
+    --?[$Unbreakable] -eq 1|&DamageStringModifiers;+ + [$UnbreakableBonus] [Unbreakable]
+    --?[$Unbreakable] -eq 1|&ConditionsStringModifiers;+ + [$UnbreakableBonus] [Unbreakable]
 
-    --?[$Untouchable] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Untouchable]
-    --?[$Untouchable] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Untouchable]
-    --?[$Untouchable] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Untouchable]
+    --=UntouchableBonus| [*S:char_tier]*2
+    --?[$Untouchable] -eq 1|&AccuracyStringModifiers;+ + [$UntouchableBonus] [Untouchable]
+    --?[$Untouchable] -eq 1|&DamageStringModifiers;+ + [$UntouchableBonus] [Untouchable]
+    --?[$Untouchable] -eq 1|&ConditionsStringModifiers;+ + [$UntouchableBonus] [Untouchable]
 
     --=AvengerBonus| [*S:char_tier]*2
     --?[$AvengerLimit] -eq 1|&AccuracyStringModifiers;+ + [$AvengerBonus] [Avenger]
     --?[$AvengerLimit] -eq 1|&DamageStringModifiers;+ + [$AvengerBonus] [Avenger]
     --?[$AvengerLimit] -eq 1|&ConditionsStringModifiers;+ + [$AvengerBonus] [Avenger]
 
-    --?[$PassiveLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Passive]
-    --?[$PassiveLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Passive]
-    --?[$PassiveLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Passive]
+    --=PassiveBonus| [*S:char_tier]*2
+    --?[$PassiveLimit] -eq 1|&AccuracyStringModifiers;+ + [$PassiveBonus] [Passive]
+    --?[$PassiveLimit] -eq 1|&DamageStringModifiers;+ + [$PassiveBonus] [Passive]
+    --?[$PassiveLimit] -eq 1|&ConditionsStringModifiers;+ + [$PassiveBonus] [Passive]
 
-    --?[$Careful] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Careful]
-    --?[$Careful] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Careful]
-    --?[$Careful] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Careful]
+    --=CarefulBonus| [*S:char_tier]*2
+    --?[$Careful] -eq 1|&AccuracyStringModifiers;+ + [$CarefulBonus] [Careful]
+    --?[$Careful] -eq 1|&DamageStringModifiers;+ + [$CarefulBonus] [Careful]
+    --?[$Careful] -eq 1|&ConditionsStringModifiers;+ + [$CarefulBonus] [Careful]
 
     --?[$ComboMove] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Combo Move]
     --?[$ComboMove] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Combo Move]
@@ -393,9 +430,10 @@
     --?[$Relentless] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Relentless]
     --?[$Relentless] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Relentless]
 
-    --?[$Slaughter] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Slaughter]
-    --?[$Slaughter] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Slaughter]
-    --?[$Slaughter] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Slaughter]
+    --=SlaughterBonus| [*S:char_tier]*4
+    --?[$Slaughter] -eq 1|&AccuracyStringModifiers;+ + [$SlaughterBonus] [Slaughter]
+    --?[$Slaughter] -eq 1|&DamageStringModifiers;+ + [$SlaughterBonus] [Slaughter]
+    --?[$Slaughter] -eq 1|&ConditionsStringModifiers;+ + [$SlaughterBonus] [Slaughter]
 
     --?[$Rooted] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Rooted]
     --?[$Rooted] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Rooted]
@@ -413,14 +451,10 @@
     --?[$DangerousLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Dangerous]
     --?[$DangerousLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Dangerous]
 
-    --=QuickdrawBonus| [*S:char_tier]*2
+    --=QuickdrawBonus| [*S:char_tier]*3
     --?[$Quickdraw] -eq 1|&AccuracyStringModifiers;+ + [$QuickdrawBonus] [Quickdraw]
     --?[$Quickdraw] -eq 1|&DamageStringModifiers;+ + [$QuickdrawBonus] [Quickdraw]
     --?[$Quickdraw] -eq 1|&ConditionsStringModifiers;+ + [$QuickdrawBonus] [Quickdraw]
-
-    --?[$SteadyLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Steady]
-    --?[$SteadyLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Steady]
-    --?[$SteadyLimit] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Steady]
 
     --?[$PatienceLimit] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Patience]
     --?[$PatienceLimit] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Patience]
@@ -431,13 +465,13 @@
     --?[$Finale] -eq 1|&DamageStringModifiers;+ + [$FinaleBonus] [Finale]
     --?[$Finale] -eq 1|&ConditionsStringModifiers;+ + [$FinaleBonus] [Finale]
 
-    --=ChargeUpBonus| [*S:char_tier]*2
+    --=ChargeUpBonus| [*S:char_tier]*3
     --?[$ChargeUp] -eq 1|&AccuracyStringModifiers;+ + [$ChargeUpBonus] [Charge Up]
     --?[$ChargeUp] -eq 1|&DamageStringModifiers;+ + [$ChargeUpBonus] [Charge Up]
     --?[$ChargeUp] -eq 1|&ConditionsStringModifiers;+ + [$ChargeUpBonus] [Charge Up]
 
-    --/| Charge Up 2 grants +4×Tier
-    --=ChargeUp2Bonus| [*S:char_tier]*4
+    --/| Charge Up 2 grants +6×Tier
+    --=ChargeUp2Bonus| [*S:char_tier]*6
     --?[$ChargeUp2] -eq 1|&AccuracyStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
     --?[$ChargeUp2] -eq 1|&DamageStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
     --?[$ChargeUp2] -eq 1|&ConditionsStringModifiers;+ + [$ChargeUp2Bonus] [Charge Up 2]
@@ -446,9 +480,15 @@
     --?[$Exhausting] -eq 1|&DamageStringModifiers;+ + [$ExhaustingBonus] [Exhausting]
     --?[$Exhausting] -eq 1|&ConditionsStringModifiers;+ + [$ExhaustingBonus] [Exhausting]
 
-    --?[$Attrition] -eq 1|&AccuracyStringModifiers;+ + [*S:char_tier] [Attrition]
-    --?[$Attrition] -eq 1|&DamageStringModifiers;+ + [*S:char_tier] [Attrition]
-    --?[$Attrition] -eq 1|&ConditionsStringModifiers;+ + [*S:char_tier] [Attrition]
+    --=AttritionBonus| [*S:char_tier]*2
+    --?[$Attrition] -eq 1|&AccuracyStringModifiers;+ + [$AttritionBonus] [Attrition]
+    --?[$Attrition] -eq 1|&DamageStringModifiers;+ + [$AttritionBonus] [Attrition]
+    --?[$Attrition] -eq 1|&ConditionsStringModifiers;+ + [$AttritionBonus] [Attrition]
+
+    --=CooldownBonus| [*S:char_tier]*2
+    --?[$Cooldown] -eq 1|&AccuracyStringModifiers;+ + [$CooldownBonus] [Cooldown]
+    --?[$Cooldown] -eq 1|&DamageStringModifiers;+ + [$CooldownBonus] [Cooldown]
+    --?[$Cooldown] -eq 1|&ConditionsStringModifiers;+ + [$CooldownBonus] [Cooldown]
 
     --=Charges1Bonus| [*S:char_tier]*5
     --?[$Charges1] -eq 1|&AccuracyStringModifiers;+ + [$Charges1Bonus] [Charges 1]
@@ -523,7 +563,6 @@
     --?[$ArmorPiercing] -ne 1|PassArmorPiercingNote
       --&AttackNotes|+ Armor Piercing Applied,
     --:PassArmorPiercingNote|
-    --?[$ArmorPiercing] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Armor Piercing]
 
     --/| ==========SPECIALIZED COMBAT MODIFIERS==========
     --?[$QuickStrikes] -eq 1|&AccuracyStringModifiers;+ - [*S:char_tier] [Quick Strikes]
@@ -560,20 +599,7 @@
 
     --+| [c][b] Attack Against [*[&testvar]:character_name] [/b] [/c]
 
-    --/| ==========MULTI-STRIKE SETUP==========
-    --=StrikeCount| 1
-    --?[$QuickStrikes] -eq 1|=StrikeCount; 2
-    --?[$Barrage] -eq 1|=StrikeCount; 3
-    --=CurrentStrike| 1
-    --=BarrageHitStreak| 1
 
-    --:MultiStrikeLoop|
-
-    --?[$Barrage] -ne 1|SkipBarrageCheck
-      --?[$CurrentStrike] -gt 1 -and [$BarrageHitStreak] -eq 0|SkipToNextTarget
-    --:SkipBarrageCheck|
-
-    --?[$CurrentStrike] -gt 1|+| [br][c][b]--- Strike [$CurrentStrike] ---[/b][/c]
 
     --&AccuracyRollString| [$AccuracyDice] [Base Dice] + [*S:char_accuracy] [Accuracy Bonus][&AccuracyStringModifiers]
     --&DamageRollString| [$DamageDice]  [Base Dice] + [*S:char_damage] [Damage Bonus][&DamageStringModifiers]
@@ -764,13 +790,6 @@
   --/| Check Unreliable - if failed, skip all damage/condition application
   --?[$UnreliablePassed] -eq 0|PassAutomaticEffectSection
 
-  --?[$RollAC] -eq 1 -and [$AccuracyRoll] -lt [$EnemyAV] -or [$AccuracyRoll.KeptDice(1)] -eq 1|AttackMissed
-  --^AttackHit
-  --:AttackMissed|
-    --=BarrageHitStreak| 0
-    --^PassAutomaticEffectSection
-  --:AttackHit|
-
 
 
   --/| ==========Damage Modifiers==========
@@ -782,10 +801,11 @@
       --?[$DamageAmount] -lt 0|PassDamageAuto
 
       --/| BRUTAL - When damage exceeds DR by 10+, multiply damage by 1.5x
-        --?[$Brutal] -ne 1 -or [$DamageAmount] -lt 10|PassBrutal
-          --=BrutalBonus| [$DamageAmount]/2 {CEIL}
-          --=DamageAmount| [$DamageAmount] + [$BrutalBonus]
-          --&AttackNotes|+ Brutal ([$BrutalBonus]) Applied,
+        --?[$Brutal] -ne 1|PassBrutal
+          --?[$DamageAmount] -lt 10|PassBrutal
+            --=BrutalBonus| [$DamageAmount]/2 {CEIL}
+            --=DamageAmount| [$DamageAmount] + [$BrutalBonus]
+            --&AttackNotes|+ Brutal [$BrutalBonus] Applied,
         --:PassBrutal|
 
 
@@ -816,6 +836,8 @@
 
     --+Damage Total| [r] [$DamageAmount] [/r]
 
+    --/| Save damage amount before negating for multi-strike checks
+    --=PositiveDamageAmount| [$DamageAmount]
     --=DamageAmount| [$DamageAmount] {NEGATE}
     -->LibSN_APPLY_DAMAGE_OR_HEALING|[&testvar];3;[$DamageAmount];0;0;1
 
@@ -975,11 +997,13 @@
 
     --:SkipTheConditionsBlock|
 
-  --/| ==========MULTI-STRIKE LOOP CONTINUATION==========
-    --=CurrentStrike| [$CurrentStrike] + 1
-    --?[$CurrentStrike] -le [$StrikeCount]|MultiStrikeLoop
 
-  --:SkipToNextTarget|
+
+
+
+
+
+
 
   --/| ==========END OF FOR LOOP ==========
 
@@ -993,13 +1017,9 @@
 
 
 
-  --/| ==========Attack Details ==========
 
-    --/| SPLASH DAMAGE
-      --=SplashAmount| 1d6! + [*S:char_tier]
-      --?[$SplashDamage] -ne 1|PassSplashNote
-        --&AttackNotes|+ [$SplashAmount] Splash Damage to All Adjacent Targets,
-      --:PassSplashNote|
+
+
 
     --/| ==========NEW SECONDARY EFFECTS==========
 
@@ -1036,120 +1056,122 @@
       --&AttackNotes|+ Reliable Condition (Advantage on Condition rolls, -3 penalty),
     --:PassReliableConditionNote|
 
-    --/| ==========LIMIT BONUS NOTES==========
+    --/| ==========CHARACTER ATTRIBUTE NOTES==========
+    --?[*S:char_perfectionist] -ne 1|PassPerfectionistNote
+      --&AttackNotes|+ Perfectionist (Rerolling any die ≤5 once),
+    --:PassPerfectionistNote|
+
+    --/| ==========LIMIT NOTES (REQUIREMENTS TO USE ATTACK)==========
     --?[$Timid] -ne 1|PassTimidNote
-      --&AttackNotes|+ Timid (+2×Tier at max HP with no conditions),
+      --&AttackNotes|+ Timid Limit (+2×Tier - Requires: max HP with no conditions),
     --:PassTimidNote|
     --?[$NearDeath] -ne 1|PassNearDeathNote
-      --&AttackNotes|+ Near Death (+2×Tier at 25 HP or less),
+      --&AttackNotes|+ Near Death Limit (+2×Tier - Requires: 25 HP or less),
     --:PassNearDeathNote|
     --?[$Bloodied] -ne 1|PassBloodiedNote
-      --&AttackNotes|+ Bloodied (+Tier at 50 HP or less),
+      --&AttackNotes|+ Bloodied Limit (+Tier - Requires: 50 HP or less),
     --:PassBloodiedNote|
     --?[$Vengeful] -ne 1|PassVengefulNote
-      --&AttackNotes|+ Vengeful (+Tier when hit since last turn),
+      --&AttackNotes|+ Vengeful Limit (+Tier - Requires: been hit since last turn),
     --:PassVengefulNote|
     --?[$RevengeLimit] -ne 1|PassRevengeNote
-      --&AttackNotes|+ Revenge (+Tier when damaged since last turn),
+      --&AttackNotes|+ Revenge Limit (+Tier - Requires: been damaged since last turn),
     --:PassRevengeNote|
     --?[$Unbreakable] -ne 1|PassUnbreakableNote
-      --&AttackNotes|+ Unbreakable (+Tier when hit but took no damage since last turn),
+      --&AttackNotes|+ Unbreakable Limit (+4×Tier - Requires: hit but took no damage since last turn),
     --:PassUnbreakableNote|
     --?[$Untouchable] -ne 1|PassUntouchableNote
-      --&AttackNotes|+ Untouchable (+Tier when all attacks missed since last turn),
+      --&AttackNotes|+ Untouchable Limit (+2×Tier - Requires: all attacks missed since last turn),
     --:PassUntouchableNote|
     --?[$AvengerLimit] -ne 1|PassAvengerNote
-      --&AttackNotes|+ Avenger (+2×Tier when ally unconscious or in great peril),
+      --&AttackNotes|+ Avenger Limit (+2×Tier - Requires: ally unconscious or in great peril),
     --:PassAvengerNote|
     --?[$PassiveLimit] -ne 1|PassPassiveNote
-      --&AttackNotes|+ Passive (+Tier when not attacked since last turn),
+      --&AttackNotes|+ Passive Limit (+2×Tier - Requires: not attacked since last turn),
     --:PassPassiveNote|
     --?[$Careful] -ne 1|PassCarefulNote
-      --&AttackNotes|+ Careful (+Tier when not damaged since last turn),
+      --&AttackNotes|+ Careful Limit (+2×Tier - Requires: not damaged since last turn),
     --:PassCarefulNote|
     --?[$ComboMove] -ne 1|PassComboMoveNote
-      --&AttackNotes|+ Combo Move (+Tier when hit same enemy last turn),
+      --&AttackNotes|+ Combo Move Limit (+Tier - Requires: hit same enemy last turn),
     --:PassComboMoveNote|
     --?[$InfectedLimit] -ne 1|PassInfectedNote
-      --&AttackNotes|+ Infected (+Tier when applied Condition last turn),
+      --&AttackNotes|+ Infected Limit (+Tier - Requires: applied Condition last turn),
     --:PassInfectedNote|
     --?[$Relentless] -ne 1|PassRelentlessNote
-      --&AttackNotes|+ Relentless (+Tier when dealt damage to enemy last turn),
+      --&AttackNotes|+ Relentless Limit (+Tier - Requires: dealt damage to enemy last turn),
     --:PassRelentlessNote|
     --?[$Slaughter] -ne 1|PassSlaughterNote
-      --&AttackNotes|+ Slaughter (+Tier when defeated enemy last turn),
+      --&AttackNotes|+ Slaughter Limit (+4×Tier - Requires: defeated enemy last turn),
     --:PassSlaughterNote|
     --?[$Rooted] -ne 1|PassRootedNote
-      --&AttackNotes|+ Rooted (+Tier when cannot move this turn),
+      --&AttackNotes|+ Rooted Limit (+Tier - Requires: cannot move this turn),
     --:PassRootedNote|
     --?[$BlitzLimit] -ne 1|PassBlitzLimitNote
-      --&AttackNotes|+ Blitz (+Tier when moved >half movement in straight line toward target),
+      --&AttackNotes|+ Blitz Limit (+Tier - Requires: moved >half movement in straight line toward target),
     --:PassBlitzLimitNote|
     --?[$LongDistanceFighter] -ne 1|PassLongDistanceFighterNote
-      --&AttackNotes|+ Long Distance Fighter (+Tier when no enemies within 5 spaces),
+      --&AttackNotes|+ Long Distance Fighter Limit (+Tier - Requires: no enemies within 5 spaces),
     --:PassLongDistanceFighterNote|
     --?[$DangerousLimit] -ne 1|PassDangerousNote
-      --&AttackNotes|+ Dangerous (+Tier when no allies within 15sp, no civilians within 30sp),
+      --&AttackNotes|+ Dangerous Limit (+Tier - Requires: no allies within 15sp, no civilians within 30sp),
     --:PassDangerousNote|
     --?[$Unreliable1] -ne 1|PassUnreliable1Note
-      --&AttackNotes|+ Unreliable 1 (DC 5 reliability check),
+      --&AttackNotes|+ Unreliable 1 Limit (+Tier - Requires: DC 5 reliability check),
     --:PassUnreliable1Note|
     --?[$Unreliable2] -ne 1|PassUnreliable2Note
-      --&AttackNotes|+ Unreliable 2 (DC 10 reliability check),
+      --&AttackNotes|+ Unreliable 2 Limit (+3×Tier - Requires: DC 10 reliability check),
     --:PassUnreliable2Note|
     --?[$Unreliable3] -ne 1|PassUnreliable3Note
-      --&AttackNotes|+ Unreliable 3 (DC 15 reliability check),
+      --&AttackNotes|+ Unreliable 3 Limit (+7×Tier - Requires: DC 15 reliability check),
     --:PassUnreliable3Note|
     --?[$Quickdraw] -ne 1|PassQuickdrawNote
-      --&AttackNotes|+ Quickdraw (+2×Tier on first round of combat),
+      --&AttackNotes|+ Quickdraw Limit (+3×Tier - Requires: first round of combat),
     --:PassQuickdrawNote|
-    --?[$SteadyLimit] -ne 1|PassSteadyLimitNote
-      --&AttackNotes|+ Steady (+Tier on turn 3 or later),
-    --:PassSteadyLimitNote|
     --?[$PatienceLimit] -ne 1|PassPatienceNote
-      --&AttackNotes|+ Patience (+Tier on turn 5 or later),
+      --&AttackNotes|+ Patience Limit (+Tier - Requires: turn 5 or later),
     --:PassPatienceNote|
     --?[$Finale] -ne 1|PassFinaleNote
-      --&AttackNotes|+ Finale (+2×Tier on turn 8 or later),
+      --&AttackNotes|+ Finale Limit (+2×Tier - Requires: turn 8 or later),
     --:PassFinaleNote|
     --?[$ChargeUp] -ne 1|PassChargeUpNote
-      --&AttackNotes|+ Charge Up (+2×Tier after spending action on previous turn),
+      --&AttackNotes|+ Charge Up Limit (+3×Tier - Requires: spent action on previous turn),
     --:PassChargeUpNote|
     --?[$ChargeUp2] -ne 1|PassChargeUp2Note
-      --&AttackNotes|+ Charge Up 2 (+4×Tier after spending two actions on previous two turns),
+      --&AttackNotes|+ Charge Up 2 Limit (+6×Tier - Requires: spent actions on previous two turns),
     --:PassChargeUp2Note|
     --?[$Exhausting] -ne 1|PassExhaustingNote
-      --&AttackNotes|+ Exhausting (+2×Tier, costs an effort to make attack),
+      --&AttackNotes|+ Exhausting Limit (+2×Tier - Requires: costs an effort),
     --:PassExhaustingNote|
     --?[$Cooldown] -ne 1|PassCooldownNote
-      --&AttackNotes|+ Cooldown (+Tier, cannot use again for 3 turns after use),
+      --&AttackNotes|+ Cooldown Limit (+2×Tier - Requires: cannot use for 3 turns after),
     --:PassCooldownNote|
     --?[$Attrition] -ne 1|PassAttritionNote
-      --&AttackNotes|+ Attrition (+Tier, each use costs 20 HP),
+      --&AttackNotes|+ Attrition Limit (+2×Tier - Requires: costs 20 HP),
     --:PassAttritionNote|
     --?[$Charges1] -ne 1|PassCharges1Note
-      --&AttackNotes|+ Charges 1 (+5×Tier, 1 use, recharges after 1 minute rest),
+      --&AttackNotes|+ Charges 1 Limit (+5×Tier - Requires: 1 use available, recharges after 1 minute rest),
     --:PassCharges1Note|
     --?[$Charges2] -ne 1|PassCharges2Note
-      --&AttackNotes|+ Charges 2 (+2×Tier, 2 uses, recharges after 1 minute rest),
+      --&AttackNotes|+ Charges 2 Limit (+2×Tier - Requires: charge available, 2 uses, recharges after 1 minute rest),
     --:PassCharges2Note|
     --?[$DrainReserves] -ne 1|PassDrainReservesNote
-      --&AttackNotes|+ Drain Reserves (+Tier, must have healing ability, lose a healing charge),
+      --&AttackNotes|+ Drain Reserves Limit (+Tier - Requires: healing ability, lose a healing charge),
     --:PassDrainReservesNote|
     --?[$TowerDefense] -ne 1|PassTowerDefenseNote
-      --&AttackNotes|+ Tower Defense (+Tier, must have Active Wall ability, targets adjacent to wall),
+      --&AttackNotes|+ Tower Defense Limit (+Tier - Requires: Active Wall ability, targets adjacent to wall),
     --:PassTowerDefenseNote|
     --?[$CompressedRelease] -ne 1|PassCompressedReleaseNote
-      --&AttackNotes|+ Compressed Release (+Tier, must have Active Aura ability, disable until start of next turn),
+      --&AttackNotes|+ Compressed Release Limit (+Tier - Requires: Active Aura ability, disable until start of next turn),
     --:PassCompressedReleaseNote|
     --?[$Domain] -ne 1|PassDomainNote
-      --&AttackNotes|+ Domain (+Tier when attacking targets within your Barrier),
+      --&AttackNotes|+ Domain Limit (+Tier - Requires: targets within your Barrier),
     --:PassDomainNote|
     --?[$GrapplerLimit] -ne 1|PassGrapplerLimitNote
-      --&AttackNotes|+ Grappler (+Tier when Grab condition active on target),
+      --&AttackNotes|+ Grappler Limit (+Tier - Requires: Grab condition active on target),
     --:PassGrapplerLimitNote|
     --?[$ExploitLimit] -ne 1|PassExploitLimitNote
-      --&AttackNotes|+ Exploit (+Tier vs targets currently afflicted by any Condition),
+      --&AttackNotes|+ Exploit Limit (+Tier - Requires: target afflicted by any Condition),
     --:PassExploitLimitNote|
 
     --+|[br]
@@ -1157,7 +1179,24 @@
 
     --+Attack Details| [*R:AttackDetails]
 
+    --/| ==========MULTI-STRIKE END==========
+    --/| Check if we should continue to next strike BEFORE incrementing
+    --=ShouldContinue| 0
 
+    --/| QuickStrikes always gets 2 attacks
+    --?[$QuickStrikes] -eq 1 -and [$CurrentStrike] -lt 2|=ShouldContinue; 1
+
+    --/| Barrage gets 3 attacks if each hits and deals damage
+    --?[$Barrage] -eq 1 -and [$CurrentStrike] -lt 3 -and [$AccuracyRoll] -ge [$EnemyAV] -and [$PositiveDamageAmount] -ge 1|=ShouldContinue; 1
+
+    --/| Extra Attack gets 2 attacks if first hits and deals damage/effect
+    --?[$ExtraAttack] -eq 1 -and [$CurrentStrike] -lt 2 -and [$AccuracyRoll] -ge [$EnemyAV] -and [$PositiveDamageAmount] -ge 1|=ShouldContinue; 1
+
+    --?[$ShouldContinue] -ne 1|EndMultiAttack
+      --=CurrentStrike| [$CurrentStrike] + 1
+      -->MultiStrikeLoop|
+
+    --:EndMultiAttack|
     
 
 

@@ -518,7 +518,7 @@ You have an extra effort.
 3 rerolls per day, keep the higher roll
 
 **Perfectionist** 
-You can reroll once, any roll that is equal to or below your Tier.
+You can reroll once, any roll that is 5 or less.
 
 **Robot** 
 Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricity, requires repairs to heal during a rest rather han natural healing, you count as object for damage and healing purposes.
@@ -1732,6 +1732,8 @@ Command over ionized matter and high-energy particle states.
 * [Sensory] Detect plasma generators and high-energy sources
 
 
+
+
 ### Specialized Descriptors (5p)
 
 **Biological**
@@ -1775,6 +1777,33 @@ Command over magical forces, mystical energy, and supernatural phenomena.
 * Manipulate raw magical energy
 * [Resistance] Immunity to magical effects and supernatural manipulation
 * [Sensory] Detect magical activity and enchanted objects
+
+
+
+## **Holy**
+Command over divine energy, sacred power, and spiritual purification.
+
+* Consecrate areas to ward against malevolent forces
+* Purify corrupted or tainted objects and beings
+* Channel divine light for guidance and revelation
+* Sanctify weapons and objects with blessed energy
+* Exorcise possessing entities and malicious spirits
+* **[Resistance]** Immunity to necrotic damage and unholy corruption
+* **[Sensory]** Detect evil intent, undead presence, and desecrated locations
+
+
+## **Nature**
+Mastery of natural forces, wildlife communion, and environmental manipulation.
+
+* Accelerate plant growth and control vegetation
+* Communicate with and influence animal behavior
+* Sense disturbances in natural ecosystems
+* Manipulate natural weather patterns in local areas
+* Purify natural environments of pollution and toxins
+* **[Resistance]** Immunity to natural poisons, diseases, and environmental hazards
+* **[Sensory]** Detect nearby lifeforms, track through natural terrain, and sense ecological imbalances
+
+
 
 ### Reality Descriptors (10p)
 

@@ -575,11 +575,17 @@ class SchemaMapper:
             
             for trait in traits:
                 row_id = self._generate_unique_row_id('trait')
-                
-                # Build trait name from conditions
-                conditions = trait.get('conditions', [])
-                trait_name = " / ".join([c.title() for c in conditions]) if conditions else "Custom Trait"
-                
+
+                # Get trait name - use the name field if present, otherwise build from conditions
+                trait_name = trait.get('name', '')
+                if not trait_name:
+                    # Fall back to building from conditions
+                    conditions = trait.get('conditions', [])
+                    trait_name = " / ".join([c.title() for c in conditions]) if conditions else "Custom Trait"
+                else:
+                    # Still get conditions for the trait data
+                    conditions = trait.get('conditions', [])
+
                 # Get stat bonuses and tier
                 stat_bonuses = trait.get('statBonuses', [])
                 tier = int(web_data.get('tier', 4))
@@ -609,7 +615,16 @@ class SchemaMapper:
                         trait_data['traitCnBonus'] = str(tier)
                     elif bonus_type == 'avoidance':
                         trait_data['traitAvBonus'] = str(tier)
-                    # Add other mappings as needed
+                    elif bonus_type == 'durability':
+                        trait_data['traitDrBonus'] = str(tier)
+                    elif bonus_type == 'resolve':
+                        trait_data['traitRsBonus'] = str(tier)
+                    elif bonus_type == 'stability':
+                        trait_data['traitSbBonus'] = str(tier)
+                    elif bonus_type == 'vitality':
+                        trait_data['traitVtBonus'] = str(tier)
+                    elif bonus_type == 'movement':
+                        trait_data['traitMBonus'] = str(tier)
                 
                 roll20_char.repeating_sections['traits'][row_id] = trait_data
                 logger.debug(f"Mapped trait: {trait_name} with bonuses: {stat_bonuses}")
