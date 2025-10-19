@@ -973,7 +973,6 @@ class ReporterV2:
             f.write("This report measures each enhancement's raw power in isolation:\n\n")
             f.write("**Testing Method**:\n")
             f.write("- Each enhancement tested with baseline attack only (no other enhancements)\n")
-            f.write("- Prerequisites added when required (e.g., critical_accuracy for powerful_critical)\n")
             f.write("- Tested across all compatible attack types and scenarios\n")
             f.write("- Results show standalone performance without synergies\n\n")
             f.write("**Key Metrics**:\n")

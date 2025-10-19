@@ -89,7 +89,7 @@ def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, atta
         return False
     elif limit_name == 'timid' and attacker_hp < attacker_max_hp:
         return False
-    elif limit_name == 'attrition' and attacker_hp < 20:
+    elif limit_name == 'attrition' and attacker_hp < 25:
         return False  # Not enough HP to pay cost
 
     # Check charge limits
@@ -114,7 +114,7 @@ def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, atta
         return False
     elif limit_name == 'unbreakable' and not combat_state.get('was_hit_no_damage_last_turn', False):
         return False
-    elif limit_name == 'passive' and combat_state.get('was_attacked_last_turn', False):
+    elif limit_name == 'passive' and combat_state.get('dealt_damage_last_turn', False):
         return False
     elif limit_name == 'careful' and combat_state.get('was_damaged_last_turn', False):
         return False
@@ -123,10 +123,10 @@ def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, atta
     elif limit_name == 'quickdraw' and turn_number > 1:
         return False  # Only first turn
 
-    elif limit_name == 'patient' and turn_number < 5:
-        return False  # Turn 5 or later
-    elif limit_name == 'finale' and turn_number < 8:
-        return False  # Turn 8 or later
+    elif limit_name == 'patient' and turn_number < 4:
+        return False  # Turn 4 or later
+    elif limit_name == 'finale' and turn_number < 7:
+        return False  # Turn 7 or later
 
     # Check charge_up limits
     elif limit_name == 'charge_up':
@@ -289,8 +289,32 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     if attacker_hp is None:
         attacker_hp = attacker_max_hp
 
-    # Check limits first
+    # Determine if we're currently charging (charged on previous turn/s)
+    is_currently_charging = False
+    if charge_history and len(charge_history) > 0:
+        # If we have charge_up, check if we charged last turn
+        # If we have charge_up_2, check if we charged last 2 turns
+        if 'charge_up_2' in build.limits:
+            is_currently_charging = len(charge_history) >= 2 and charge_history[-1] and charge_history[-2]
+        elif 'charge_up' in build.limits:
+            is_currently_charging = charge_history[-1]
+
+    # Define action-based limits (only checked on first charge turn, not during charging)
+    action_based_limits = {'slaughter', 'relentless', 'combo_move'}
+
+    # Check limits first - TWO PASSES to ensure charge_up limits are checked AFTER all other limits
+    # PASS 1: Check all non-charge_up limits
     for limit_name in build.limits:
+        # Skip charge_up limits in first pass - they will be checked in second pass
+        if limit_name in ['charge_up', 'charge_up_2']:
+            continue
+
+        # Skip action-based limits if we're currently charging (only check them on first charge turn)
+        if is_currently_charging and limit_name in action_based_limits:
+            if log_file:
+                log_file.write(f"      {limit_name} skipped: currently charging (only checked on first charge turn)\n")
+            continue
+
         limit = LIMITS[limit_name]
 
         # Check HP-based limits
@@ -314,10 +338,10 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 return 0, ['basic_attack']
             # HP cost will be tracked in combat_state for simulation to apply
             if log_file:
-                log_file.write(f"      {limit_name} activated: will cost 20 HP\n")
+                log_file.write(f"      {limit_name} activated: will cost 25 HP\n")
             if 'attrition_cost' not in combat_state:
                 combat_state['attrition_cost'] = 0
-            combat_state['attrition_cost'] += 20
+            combat_state['attrition_cost'] += 25
 
         # Check charge limits
         elif limit_name in ['charges_1', 'charges_2']:
@@ -361,9 +385,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if log_file:
                 log_file.write(f"      {limit_name} failed: was not hit without damage last turn - using basic attack\n")
             return 0, ['basic_attack']
-        elif limit_name == 'passive' and combat_state.get('was_attacked_last_turn', False):
+        elif limit_name == 'passive' and combat_state.get('dealt_damage_last_turn', False):
             if log_file:
-                log_file.write(f"      {limit_name} failed: was attacked last turn - using basic attack\n")
+                log_file.write(f"      {limit_name} failed: made an attack last turn - using basic attack\n")
             return 0, ['basic_attack']
         elif limit_name == 'careful' and combat_state.get('was_damaged_last_turn', False):
             if log_file:
@@ -375,9 +399,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if log_file:
                 log_file.write(f"      {limit_name} failed: not first round (turn {turn_number}) - using basic attack\n")
             return 0, ['basic_attack']  # Use basic attack - not first round
-        elif limit_name == 'patient' and turn_number < 5:
+        elif limit_name == 'patient' and turn_number < 4:
             if log_file:
-                log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 5+) - using basic attack\n")
+                log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 4+) - using basic attack\n")
             return 0, ['basic_attack']  # Use basic attack - too early
         elif limit_name == 'finale' and turn_number < 7:
             if log_file:
@@ -399,8 +423,20 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 if log_file:
                     log_file.write(f"      {limit_name} activated (last used on turn {last_used}, now used on turn {turn_number})\n")
 
-        # Check charge up limits
-        elif limit_name == 'charge_up':
+        # Handle unreliable DC checks
+        elif limit.dc > 0:
+            limit_roll = roll_d20()
+            if log_file:
+                log_file.write(f"      {limit_name} check: rolled {limit_roll} vs DC {limit.dc}\n")
+            if limit_roll < limit.dc:
+                if log_file:
+                    log_file.write(f"      Attack failed due to {limit_name}!\n")
+                return 0, []  # Attack fails due to unreliability
+
+    # PASS 2: Check charge_up limits (only after all other limits have passed)
+    # This ensures that limits like passive/careful must be met on the turn you START charging
+    for limit_name in build.limits:
+        if limit_name == 'charge_up':
             # Need to have charged on previous turn
             if charge_history is None or len(charge_history) == 0 or not charge_history[-1]:
                 if log_file:
@@ -413,16 +449,6 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 if log_file:
                     log_file.write(f"      {limit_name} failed: need to charge on previous 2 turns (charging instead)\n")
                 return 0, ['charge']  # Return special 'charge' condition instead of attacking
-
-        # Handle unreliable DC checks
-        elif limit.dc > 0:
-            limit_roll = roll_d20()
-            if log_file:
-                log_file.write(f"      {limit_name} check: rolled {limit_roll} vs DC {limit.dc}\n")
-            if limit_roll < limit.dc:
-                if log_file:
-                    log_file.write(f"      Attack failed due to {limit_name}!\n")
-                return 0, []  # Attack fails due to unreliability
 
     # Calculate accuracy
     base_accuracy = attacker.tier + attacker.focus
@@ -491,7 +517,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             accuracy_roll = roll_d20()
 
         # Check for critical hit (optimized with cached set)
-        crit_upgrades = {'critical_accuracy', 'double_tap', 'powerful_critical', 'explosive_critical', 'ricochet'}
+        crit_upgrades = {'double_tap', 'powerful_critical', 'explosive_critical', 'ricochet'}
         has_crit_accuracy = bool(upgrades_set & crit_upgrades)
         if has_crit_accuracy and accuracy_roll >= 15:
             is_critical = True
@@ -647,12 +673,21 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if not attack_type.is_direct and is_critical:
             # Base critical hit bonus
             critical_damage_bonus = attacker.tier
-            # Additional bonus if they have powerful critical (which includes critical_accuracy)
+            # Additional bonus if they have powerful critical
             if 'powerful_critical' in upgrades_set:
                 critical_damage_bonus += attacker.tier
 
+        # Apply empower bonus if available
+        empower_bonus = combat_state.get('empower_bonus', 0) if combat_state else 0
+
         # Calculate total damage
-        damage = base_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus + tier_bonus
+        damage = base_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus + tier_bonus + empower_bonus
+
+        # Clear empower bonus after applying (one-time use)
+        if combat_state and 'empower_bonus' in combat_state and empower_bonus > 0:
+            combat_state['empower_bonus'] = 0
+            if log_file:
+                log_file.write(f"      Empower bonus applied: +{empower_bonus}\n")
 
         # Logging
         if log_file:
@@ -778,7 +813,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         # Note: Explosive Critical mechanics would need multi-enemy context to fully implement
         # For now, we mark that it triggered but don't apply area damage in single-target simulation
 
-    # Handle double-tap (15-20 triggers same attack again) - double_tap includes critical_accuracy - optimized with cached set
+    # Handle double-tap (15-20 triggers same attack again) - optimized with cached set
     if allow_multi and 'double_tap' in upgrades_set and accuracy_roll >= 15:
         if log_file:
             log_file.write(f"      Double-Tap triggered! Making identical attack:\n")
@@ -788,12 +823,13 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if log_file:
             log_file.write(f"      Total with double-tap: {damage_dealt} damage\n")
 
-    # Handle ricochet (15-20 triggers attack on different target) - optimized with cached set
+    # Handle ricochet (15-20 triggers attack on up to 2 different targets) - optimized with cached set
     if allow_multi and 'ricochet' in upgrades_set and accuracy_roll >= 15:
         # Mark for ricochet - actual targeting handled by simulation layer
         conditions_applied.append('ricochet')
+        conditions_applied.append('ricochet')  # Add twice for 2 targets
         if log_file:
-            log_file.write(f"      Ricochet triggered! (will attack different target)\n")
+            log_file.write(f"      Ricochet triggered! (will attack up to 2 different targets)\n")
 
     # Handle extra attack (successful hit + effect allows identical attack) - optimized with cached set
     if allow_multi and 'extra_attack' in upgrades_set and damage_dealt > 0 and len(conditions_applied) > 0:

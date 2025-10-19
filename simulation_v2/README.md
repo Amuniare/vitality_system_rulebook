@@ -335,8 +335,8 @@ The simulation tests 6 different attack types, each with unique mechanics:
 | **melee_dg** | 0 | 0 | +Tier | Melee with damage bonus |
 | **ranged** | 0 | 0 | 0 | Standard ranged attack |
 | **area** | 0 | -1 | 0 | Hits multiple targets |
-| **direct_damage** | 0 | 0 | 0 | 10 flat damage (auto-hit, no dice) |
-| **direct_area_damage** | 0 | 0 | -1 | 10 - Tier flat damage to area (auto-hit, no dice) |
+| **direct_damage** | 0 | 0 | 0 | 11 flat damage (auto-hit, no dice) |
+| **direct_area_damage** | 0 | 0 | -1 | 11 - Tier flat damage to area (auto-hit, no dice) |
 
 **Notes:**
 - Area attacks (`area`, `direct_area_damage`) pay **2x cost** for all upgrades and limits due to their multi-target capability.

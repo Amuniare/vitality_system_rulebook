@@ -76,14 +76,14 @@ Point budgets per attack based on tier and archetype:
 - **Type Code**: `direct_damage`
 - **Range**: 15 spaces, auto-hit (no Accuracy roll needed)
 - **Restriction**: Must be Damage Effect
-- **Damage**: Flat 10
+- **Damage**: Flat 12
 
 ### **DIRECT AREA DAMAGE ATTACK**
 - **Type Code**: `direct_area_damage`
 - **Range**: Originates from your position, auto-hit (no Accuracy roll needed)
 - **Area Options**: 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction**: Must be Damage Effect
-- **Damage**: Flat 10 - Tier
+- **Damage**: Flat 12 - Tier
 - **Cost Modifier**: All upgrades / limits cost 2× as much
 
 ---
@@ -120,7 +120,7 @@ Point budgets per attack based on tier and archetype:
 
 **Critical Effect** (1p)
 - **Effect**: All dice explode on a 5-6, cumulatively
-- **Penalty**: -2 penalty to all Damage rolls
+- **Penalty**: -3 penalty to all Damage rolls
 - **Restriction**: Damage effects only
 
 **Armor Piercing** (3p)
@@ -138,7 +138,7 @@ Point budgets per attack based on tier and archetype:
 - **Effect**: Make same attack three times against single target
 - **Penalty**: -2×Tier to Accuracy, Damage, and Condition rolls
 
-**Extra Attack** (1p)
+**Extra Attack** (2p)
 - **Effect**: Successful hit with successful effect allows identical attack against same target
 - **Usage**: Must hit and succeed on both Accuracy and Effect
 - **Penalty**: -Tier to Accuracy, Damage, and Condition rolls
@@ -146,35 +146,30 @@ Point budgets per attack based on tier and archetype:
 
 ### Critical Hit Upgrades
 
-**Critical Accuracy** (1p)
-- **Effect**: Critical hit range expanded to 15-20 on d20
-
 **Powerful Critical** (2p)
 - **Effect**: Critical hit range expanded to 15-20 on d20, add Tier bonus again to Damage and Conditions rolls on a Critical Accuracy roll
+- **Restrictions**: Cannot be paired with Explosive Critical
 
 **Ricochet** (2p)
-- **Effect**: Critical hit range expanded to 15-20 on d20, trigger an additional attack against a different target within range
-- **Restriction**: Cannot apply to AOE attacks
-- **Exclusion**: Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet
+- **Effect**: Critical hit range expanded to 15-20 on d20, trigger additional attacks against up to 2 different targets within range
+- **Restrictions**: Cannot apply to AOE attacks. Cannot be paired with Double Tap or Explosive Critical. Cannot trigger from Double-Tap, Explosive Critical, or other Ricochet
 
 **Double Tap** (3p)
 - **Effect**: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger same attack again against same target
-- **Restriction**: Cannot apply to AOE attacks
-- **Exclusion**: Cannot trigger from Ricochet, Explosive Critical, or other Double Tap
+- **Restrictions**: Cannot apply to AOE attacks. Cannot be paired with Explosive Critical or Ricochet. Cannot trigger from Ricochet, Explosive Critical, or other Double Tap
 
-**Explosive Critical** (2p)
+**Explosive Critical** (1p)
 - **Effect**: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them
-- **Penalty**: -Tier to Accuracy, Damage and Condition Rolls
-- **Restriction**: Cannot apply to AOE attacks
-- **Exclusion**: Cannot trigger from Double Tap, Ricochet, or other Explosive Critical
+- **Penalty**: -Tier to Accuracy rolls
+- **Restrictions**: Cannot apply to AOE attacks. Cannot be paired with Double Tap, Powerful Critical, or Ricochet. Cannot trigger from Double Tap, Ricochet, or other Explosive Critical
 
 
 ### Damage Over Time Upgrades
 
 **Bleed** (3p)
-- **Effect**: Target takes identical damage again at end of your next 2 turns
+- **Effect**: Target takes identical damage again at end of your next turn
 - **Penalty**: -Tier to Damage
-- **Duration**: 2 additional damage instances
+- **Duration**: 1 additional damage instance
 - **Restriction**: Target can only be affected by one instance of bleed at a time, Damage only
 
 
@@ -198,26 +193,26 @@ Point budgets per attack based on tier and archetype:
 **Minion Slayer** (2p)
 - **Effect**: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 - **Usage**: Bonus applies against 10 maximum HP enemies
-- **Restriction**: Can only have 1 Slayer bonus per attack
+- **Restrictions**: Can only have 1 Slayer bonus per attack. If choosing Accuracy, cannot also have Minion Slayer (Damage). If choosing Damage, cannot also have Minion Slayer (Accuracy)
 
 **Captain Slayer** (2p)
 - **Effect**: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 - **Usage**: Bonus applies against 25 maximum HP enemies
-- **Restriction**: Can only have 1 Slayer bonus per attack
+- **Restrictions**: Can only have 1 Slayer bonus per attack. If choosing Accuracy, cannot also have Captain Slayer (Damage). If choosing Damage, cannot also have Captain Slayer (Accuracy)
 
 **Elite Slayer** (2p)
 - **Effect**: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 - **Usage**: Bonus applies against 50 maximum HP enemies
-- **Restriction**: Can only have 1 Slayer bonus per attack
+- **Restrictions**: Can only have 1 Slayer bonus per attack. If choosing Accuracy, cannot also have Elite Slayer (Damage). If choosing Damage, cannot also have Elite Slayer (Accuracy)
 
 **Boss Slayer** (2p)
 - **Effect**: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 - **Usage**: Bonus applies against 100 maximum HP enemies
-- **Restriction**: Can only have 1 Slayer bonus per attack
+- **Restrictions**: Can only have 1 Slayer bonus per attack. If choosing Accuracy, cannot also have Boss Slayer (Damage). If choosing Damage, cannot also have Boss Slayer (Accuracy)
 
 ### Sustained Attack Upgrades
 
-**Channeled** (3p)
+**Channeled** (2p)
 - **Effect**: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 - **Penalty**: -2×Tier to Accuracy, Damage, and Condition rolls
 - **Usage**: If you don't make the channeled attack on a turn, you lose your bonus
@@ -231,111 +226,142 @@ Point budgets per attack based on tier and archetype:
 
 ### Random Activation Limits
 
-**Unreliable 1** (2p)
-- **Effect**: +Tier to Accuracy, Damage, and Conditions
-- **Limit**: Roll d20, DC 5 to activate each turn
+**Note**: Unreliable checks happen once when the attack is made (not during charge-up turns). If the check fails, the attack fails completely and the action is wasted.
 
-**Unreliable 2** (2p)
+**Unreliable 1** (1p)
+- **Effect**: +Tier to Accuracy, Damage, and Conditions
+- **Limit**: Roll d20, DC 5 or attack fails and action is wasted
+- **Restrictions**: Cannot be paired with Unreliable 2 or Unreliable 3
+
+**Unreliable 2** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Roll d20, DC 10 to activate each turn
+- **Limit**: Roll d20, DC 10 or attack fails and action is wasted
+- **Restrictions**: Cannot be paired with Unreliable 1 or Unreliable 3
 
 **Unreliable 3** (1p)
 - **Effect**: +5×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Must roll 15+ or attack fails
+- **Limit**: Must roll 15+ or attack fails and action is wasted
+- **Restrictions**: Cannot be paired with Unreliable 1 or Unreliable 2
 
 ### Turn-Based Limits
 
 **Quickdraw** (2p)
 - **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: First round of combat
+- **Restrictions**: Cannot be paired with Patient, Finale, Cooldown, Timid, Careful, Passive, Charges 1, Charges 2, Combo Move, Relentless, or Slaughter
 
-**Patient** (3p)
+**Patient** (1p)
+- **Effect**: +1×Tier to Accuracy, Damage, and Conditions
+- **Limit**: Turn 4 or later
+- **Restrictions**: Cannot be paired with Quickdraw, Finale, or Cooldown
+
+**Finale** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Turn 5 or later
-
-**Finale** (2p)
-- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Turn 8 or later
+- **Limit**: Turn 7 or later
+- **Restrictions**: Cannot be paired with Quickdraw, Patient, or Cooldown
 
 **Charge Up** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Spend an action on your previous turn
+- **Restrictions**: Cannot be paired with Charge Up 2
+- **Note**: State-based limits (passive, careful, timid, HP conditions, turn timing) are checked every turn including charge turns. Action-based limits (slaughter, relentless, combo_move) are only checked on the FIRST charge turn.
 
 **Charge Up 2** (2p)
 - **Effect**: +4×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Spend actions on your previous two turns
+- **Restrictions**: Cannot be paired with Charge Up
+- **Note**: State-based limits (passive, careful, timid, HP conditions, turn timing) are checked every turn including charge turns. Action-based limits (slaughter, relentless, combo_move) are only checked on the FIRST charge turn.
 
 **Cooldown** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Cannot use again for 3 turns after use
+- **Restrictions**: Cannot be paired with Quickdraw, Patient, Finale, Charges 1, or Charges 2
 
 ### HP-Based Limits
 
-**Timid** (2p)
-- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
+**Timid** (1p)
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At max HP with no conditions
+- **Restrictions**: Cannot be paired with Near Death, Bloodied, or Quickdraw
 
 **Near Death** (2p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At 25 Hit Points or less
+- **Restrictions**: Cannot be paired with Timid or Bloodied
 
 **Bloodied** (1p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: At 50 Hit Points or less
+- **Restrictions**: Cannot be paired with Timid or Near Death
 
-**Attrition** (3p)
+<!--
+**Attrition** (2p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Each use costs 20 HP
+- **Limit**: Each use costs 25 HP
 - **Restriction**: Can't have regeneration, healing or any other ability that restores HP
+- **NOTE**: REMOVED FROM SIMULATION - HP cost mechanic not suitable for combat simulation
+-->
 
 **Charges 1** (1p)
-- **Effect**: +5×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +6×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Single use, recharges after 1 minute rest
+- **Restrictions**: Cannot be paired with Charges 2 or Cooldown
 
 **Charges 2** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: 2 uses, recharges after 1 minute rest
+- **Restrictions**: Cannot be paired with Charges 1 or Cooldown
 
 ### Conditional Limits
 
-**Vengeful** (2p)
+**Vengeful** (3p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been hit since last turn
+- **Restrictions**: Cannot be paired with Revenge, Untouchable, Unbreakable, or Careful
 
-**Revenge** (3p)
+**Revenge** (2p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been damaged since last turn
+- **Restrictions**: Cannot be paired with Vengeful, Untouchable, Unbreakable, or Careful
 
 **Unbreakable** (1p)
 - **Effect**: +4×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been hit but took no damage since last turn
+- **Restrictions**: Cannot be paired with Revenge, Vengeful, Untouchable, or Careful
 
 **Untouchable** (2p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: All attacks missed since last turn, must have been attacked
+- **Restrictions**: Cannot be paired with Revenge, Vengeful, Unbreakable, or Careful
 
 
-**Passive** (2p)
-- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Not attacked since last turn
+**Passive** (1p)
+- **Effect**: +1×Tier to Accuracy, Damage, and Conditions
+- **Limit**: You haven't made an attack since last turn
+- **Restrictions**: Cannot be paired with Quickdraw
 
-**Careful** (2p)
+
+**Careful** (3p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Not damaged since last turn
+- **Restrictions**: Cannot be paired with Timid, Quickdraw, Revenge, Vengeful, Untouchable, or Unbreakable
 
 ### Sequential Action Limits
 
-**Combo Move** (2p)
+**Combo Move** (1p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Hit same enemy last turn
+- **Restrictions**: Cannot be paired with Slaughter or Relentless
 
 **Relentless** (2p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Dealt damage to enemy last turn
+- **Restrictions**: Cannot be paired with Slaughter or Combo Move
 
 **Slaughter** (1p)
 - **Effect**: +4×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Defeated enemy last turn
+- **Restrictions**: Cannot be paired with Relentless or Combo Move
 
 
 
@@ -364,7 +390,7 @@ The following upgrades **cannot** be used with **direct attacks** (direct_damage
 - high_impact, critical_effect
 
 **Critical Effects** (no accuracy rolls or crits):
-- critical_accuracy, powerful_critical
+- powerful_critical
 - explosive_critical, double_tap, ricochet, splinter
 
 **Special Mechanics**:
@@ -380,46 +406,5 @@ The following upgrades **cannot** be used with AOE attacks (area, direct_area_da
 - ricochet
 - splinter
 
-### Mutual Exclusions
 
-**Critical Effect Upgrades** (pick only one):
-- double_tap ⊗ powerful_critical ⊗ explosive_critical ⊗ ricochet
-
-**Unreliable Limits** (pick only one):
-- unreliable_1 ⊗ unreliable_2 ⊗ unreliable_3
-
-**Turn-Based Limits** (pick only one):
-- quickdraw ⊗ patient ⊗ finale ⊗ cooldown
-
-**Charge Limits** (pick only one):
-- charge_up ⊗ charge_up_2
-- charges_1 ⊗ charges_2
-
-**Slayer Exclusions** (pick accuracy OR damage per tier):
-- minion_slayer_acc ⊗ minion_slayer_dmg
-- captain_slayer_acc ⊗ captain_slayer_dmg
-- elite_slayer_acc ⊗ elite_slayer_dmg
-- boss_slayer_acc ⊗ boss_slayer_dmg
-
-**HP-Based Limits** (pick only one):
-- near_death ⊗ bloodied ⊗ timid
-
-**Offensive Turn Tracking** (pick only one):
-- slaughter ⊗ relentless ⊗ combo_move
-
-**Defensive Turn Tracking** (pick only one):
-- revenge ⊗ vengeful ⊗ untouchable ⊗ unbreakable ⊗ passive ⊗ careful
-
----
-
-## COST MULTIPLIERS
-
-### AOE Attack Cost Multiplier
-When using **area** or **direct_area_damage** or **direct_area_condition** attacks:
-- All upgrade costs are **doubled**
-- All limit costs are **doubled**
-
-### Example
-- Power Attack (1pt) on melee attack = 1 point
-- Power Attack (1pt) on area attack = 2 points
 

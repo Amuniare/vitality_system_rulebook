@@ -12,23 +12,22 @@ ATTACK_TYPES = {
     'melee_dg': AttackType('melee_dg', 0),  # Melee with +Tier damage bonus
     'ranged': AttackType('ranged', 0),
     'area': AttackType('area', 0, accuracy_mod=-1, is_area=True),
-    'direct_damage': AttackType('direct_damage', 0, is_direct=True, direct_damage_base=10, damage_mod=0),
-    'direct_area_damage': AttackType('direct_area_damage', 0, is_direct=True, direct_damage_base=10, is_area=True, damage_mod=-1)
+    'direct_damage': AttackType('direct_damage', 0, is_direct=True, direct_damage_base=12, damage_mod=0),
+    'direct_area_damage': AttackType('direct_area_damage', 0, is_direct=True, direct_damage_base=12, is_area=True, damage_mod=-1)
 }
 
 # Upgrades - Costs updated 2025-10-07
 UPGRADES = {
     'power_attack': Upgrade('power_attack', 1, damage_mod=1, accuracy_penalty=1),
     'high_impact': Upgrade('high_impact', 3, special_effect="flat_15"),
-    'critical_effect': Upgrade('critical_effect', 1, damage_penalty=2, special_effect="explode_5_6"),
+    'critical_effect': Upgrade('critical_effect', 1, damage_penalty=3, special_effect="explode_5_6"),
     'armor_piercing': Upgrade('armor_piercing', 3, accuracy_penalty=1, special_effect="ignore_endurance"),
     'brutal': Upgrade('brutal', 2, special_effect="brutal_20"),
-    'bleed': Upgrade('bleed', 3, damage_penalty=1, special_effect="bleed_2_turns"),
-    'critical_accuracy': Upgrade('critical_accuracy', 1, special_effect="crit_15_20"),
+    'bleed': Upgrade('bleed', 3, damage_penalty=1, special_effect="bleed_1_turn"),
     'powerful_critical': Upgrade('powerful_critical', 2, special_effect="powerful_crit"),
     'double_tap': Upgrade('double_tap', 3, special_effect="double_tap"),
     'finishing_blow_1': Upgrade('finishing_blow_1', 3, special_effect="finishing_10"),
-    'extra_attack': Upgrade('extra_attack', 1, accuracy_penalty=1, damage_penalty=1, special_effect="extra_attack"),
+    'extra_attack': Upgrade('extra_attack', 2, accuracy_penalty=1, damage_penalty=1, special_effect="extra_attack"),
     'barrage': Upgrade('barrage', 1, special_effect="barrage_chain", damage_penalty=2, accuracy_penalty=2),
     'minion_slayer_acc': Upgrade('minion_slayer_acc', 2, special_effect="slayer_minion_acc"),
     'minion_slayer_dmg': Upgrade('minion_slayer_dmg', 2, special_effect="slayer_minion_dmg"),
@@ -41,43 +40,43 @@ UPGRADES = {
     'accurate_attack': Upgrade('accurate_attack', 1, accuracy_mod=1, damage_penalty=1),
     'reliable_accuracy': Upgrade('reliable_accuracy', 2, accuracy_penalty=3, special_effect="advantage"),
     'overhit': Upgrade('overhit', 2, special_effect="overhit"),
-    'explosive_critical': Upgrade('explosive_critical', 2, accuracy_penalty=1, special_effect="explosive_critical"),
+    'explosive_critical': Upgrade('explosive_critical', 1, accuracy_penalty=1, special_effect="explosive_critical"),
     'culling_strike': Upgrade('culling_strike', 3, special_effect="culling_strike"),
     'splinter': Upgrade('splinter', 3, accuracy_penalty=1, damage_penalty=1, special_effect="splinter"),
     'ricochet': Upgrade('ricochet', 2, special_effect="ricochet"),
-    'channeled': Upgrade('channeled', 3, accuracy_penalty=2, damage_penalty=2, special_effect="channeled"),
+    'channeled': Upgrade('channeled', 2, accuracy_penalty=2, damage_penalty=2, special_effect="channeled"),
 }
 
 # Limits - Costs updated 2025-10-18
 LIMITS = {
     # Reliability/Turn Timing Limits
-    'unreliable_1': Limit('unreliable_1', 2, 1, 5),
-    'unreliable_2': Limit('unreliable_2', 2, 2, 10),
+    'unreliable_1': Limit('unreliable_1', 1, 1, 5),
+    'unreliable_2': Limit('unreliable_2', 1, 2, 10),
     'unreliable_3': Limit('unreliable_3', 1, 5, 15),
     'quickdraw': Limit('quickdraw', 2, 3, 0),
-    'patient': Limit('patient', 3, 2, 0),
-    'finale': Limit('finale', 2, 3, 0),
+    'patient': Limit('patient', 1, 1, 0),
+    'finale': Limit('finale', 1, 2, 0),
     'charge_up': Limit('charge_up', 1, 2, 0),
     'charge_up_2': Limit('charge_up_2', 2, 4, 0),
     'cooldown': Limit('cooldown', 1, 2, 0),
     # HP-Based Limits
-    'charges_1': Limit('charges_1', 1, 5, 0),
+    'charges_1': Limit('charges_1', 1, 6, 0),
     'charges_2': Limit('charges_2', 1, 2, 0),
     'near_death': Limit('near_death', 2, 2, 0),
     'bloodied': Limit('bloodied', 1, 1, 0),
-    'timid': Limit('timid', 2, 3, 0),
-    'attrition': Limit('attrition', 3, 2, 0),
+    'timid': Limit('timid', 1, 2, 0),
+    # 'attrition': Limit('attrition', 2, 2, 0),  # REMOVED: HP cost mechanic not suitable for simulation
     # Turn/Combat State Limits
     'slaughter': Limit('slaughter', 1, 4, 0),
     'relentless': Limit('relentless', 2, 1, 0),
-    'combo_move': Limit('combo_move', 2, 1, 0),
+    'combo_move': Limit('combo_move', 1, 1, 0),
     # 'infected': Limit('infected', 2, 1, 0),  # REMOVED: Requires Condition system (not yet implemented)
-    'revenge': Limit('revenge', 3, 2, 0),
-    'vengeful': Limit('vengeful', 2, 2, 0),
+    'revenge': Limit('revenge', 2, 2, 0),
+    'vengeful': Limit('vengeful', 3, 2, 0),
     'untouchable': Limit('untouchable', 2, 2, 0),
     'unbreakable': Limit('unbreakable', 1, 4, 0),
-    'passive': Limit('passive', 2, 3, 0),
-    'careful': Limit('careful', 2, 2, 0),
+    'passive': Limit('passive', 1, 1, 0),
+    'careful': Limit('careful', 3, 2, 0),
 }
 
 # Rule Validation System
@@ -85,8 +84,9 @@ PREREQUISITES = {
 }
 
 MUTUAL_EXCLUSIONS = [
-    # Critical Effect Upgrades - can only pick one
-    ['double_tap', 'powerful_critical', 'explosive_critical', 'ricochet'],
+    # Critical Effect Upgrades - explosive_critical conflicts with all others, but powerful_critical can pair with double_tap/ricochet
+    ['double_tap', 'explosive_critical', 'ricochet'],
+    ['powerful_critical', 'explosive_critical'],
 
     ['unreliable_1', 'unreliable_2', 'unreliable_3'],
     ['quickdraw', 'patient', 'finale', 'cooldown'],
@@ -99,7 +99,13 @@ MUTUAL_EXCLUSIONS = [
     ['near_death', 'bloodied', 'timid'],
     # Turn tracking limits - can only have one per category
     ['slaughter', 'relentless', 'combo_move'],  # Last turn offensive actions
-    ['revenge', 'vengeful', 'untouchable', 'unbreakable', 'passive', 'careful'],  # Last turn defensive states
+    ['revenge', 'vengeful', 'untouchable', 'unbreakable', 'careful'],  # Last turn hit/damage tracking limits
+    ['careful', 'timid'],  # Careful (not damaged) conflicts with Timid (max HP)
+    # Cross-category incompatibilities
+    ['quickdraw', 'timid', 'careful'],  # Quickdraw conflicts with defensive HP/turn conditions
+    ['quickdraw', 'passive'],  # Quickdraw (early turn bonus) conflicts with passive (no offensive action)
+    ['quickdraw', 'charges_1', 'charges_2', 'combo_move', 'relentless', 'slaughter'],  # Quickdraw conflicts with charges and turn-based offensive limits
+    ['cooldown', 'charges_1', 'charges_2'],  # Cooldown (reuse restriction) conflicts with charge limits
 ]
 
 ATTACK_TYPE_RESTRICTIONS = {
@@ -118,7 +124,6 @@ ATTACK_TYPE_RESTRICTIONS = {
     'critical_effect': ['melee_ac', 'melee_dg', 'ranged', 'area'],
 
     # Critical-based effects - require accuracy rolls (cannot apply to direct attacks)
-    'critical_accuracy': ['melee_ac', 'melee_dg', 'ranged', 'area'],
     'powerful_critical': ['melee_ac', 'melee_dg', 'ranged', 'area'],
     'explosive_critical': ['melee_ac', 'melee_dg', 'ranged'],  # Also cannot apply to AOE
     'double_tap': ['melee_ac', 'melee_dg', 'ranged'],  # Also cannot apply to AOE

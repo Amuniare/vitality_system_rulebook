@@ -100,16 +100,16 @@ def verify_attack_types(verifier: RuleVerifier):
     dd = ATTACK_TYPES['direct_damage']
     verifier.check("direct_damage exists", 'direct_damage' in ATTACK_TYPES, "exists", "exists")
     verifier.check("direct_damage is_direct", dd.is_direct == True, "True", str(dd.is_direct))
-    verifier.check("direct_damage base", dd.direct_damage_base == 10, "10", str(dd.direct_damage_base))
-    verifier.check("direct_damage damage_mod", dd.damage_mod == 0, "0 (for flat 10)", str(dd.damage_mod))
+    verifier.check("direct_damage base", dd.direct_damage_base == 12, "12", str(dd.direct_damage_base))
+    verifier.check("direct_damage damage_mod", dd.damage_mod == 0, "0 (for flat 12)", str(dd.damage_mod))
 
     # Check direct_area_damage
     dad = ATTACK_TYPES['direct_area_damage']
     verifier.check("direct_area_damage exists", 'direct_area_damage' in ATTACK_TYPES, "exists", "exists")
     verifier.check("direct_area_damage is_direct", dad.is_direct == True, "True", str(dad.is_direct))
     verifier.check("direct_area_damage is_area", dad.is_area == True, "True", str(dad.is_area))
-    verifier.check("direct_area_damage base", dad.direct_damage_base == 10, "10", str(dad.direct_damage_base))
-    verifier.check("direct_area_damage damage_mod", dad.damage_mod == -1, "-1 (for 10-Tier)", str(dad.damage_mod))
+    verifier.check("direct_area_damage base", dad.direct_damage_base == 12, "12", str(dad.direct_damage_base))
+    verifier.check("direct_area_damage damage_mod", dad.damage_mod == -1, "-1 (for 11-Tier)", str(dad.damage_mod))
 
 
 def verify_upgrade_costs(verifier: RuleVerifier):
@@ -122,8 +122,8 @@ def verify_upgrade_costs(verifier: RuleVerifier):
         'overhit': 2, 'high_impact': 3, 'critical_effect': 1,
         'armor_piercing': 3, 'brutal': 2,
         'barrage': 1, 'extra_attack': 1,
-        'critical_accuracy': 1, 'powerful_critical': 2, 'ricochet': 2,
-        'double_tap': 3, 'explosive_critical': 2,
+        'powerful_critical': 2, 'ricochet': 2,
+        'double_tap': 3, 'explosive_critical': 1,
         'bleed': 3,
         'finishing_blow_1': 3,
         'culling_strike': 3, 'splinter': 3,
@@ -131,7 +131,7 @@ def verify_upgrade_costs(verifier: RuleVerifier):
         'captain_slayer_acc': 2, 'captain_slayer_dmg': 2,
         'elite_slayer_acc': 2, 'elite_slayer_dmg': 2,
         'boss_slayer_acc': 2, 'boss_slayer_dmg': 2,
-        'channeled': 3,
+        'channeled': 2,
     }
 
     for upgrade_name, expected_cost in expected_costs.items():
@@ -150,14 +150,14 @@ def verify_limit_costs(verifier: RuleVerifier):
 
     # Expected costs from RULES.md
     expected_costs = {
-        'unreliable_1': 2, 'unreliable_2': 2, 'unreliable_3': 1,
-        'quickdraw': 2, 'patient': 3, 'finale': 2,
+        'unreliable_1': 1, 'unreliable_2': 1, 'unreliable_3': 1,
+        'quickdraw': 2, 'patient': 1, 'finale': 1,
         'charge_up': 1, 'charge_up_2': 2, 'cooldown': 1,
-        'timid': 2, 'near_death': 2, 'bloodied': 1, 'attrition': 3,
+        'timid': 1, 'near_death': 2, 'bloodied': 1,
         'charges_1': 1, 'charges_2': 1,
-        'vengeful': 2, 'revenge': 3, 'unbreakable': 1, 'untouchable': 2,
-        'passive': 2, 'careful': 2,
-        'combo_move': 2, 'relentless': 2, 'slaughter': 1,
+        'vengeful': 3, 'revenge': 2, 'unbreakable': 1, 'untouchable': 2,
+        'passive': 1, 'careful': 3,
+        'combo_move': 1, 'relentless': 2, 'slaughter': 1,
     }
 
     for limit_name, expected_cost in expected_costs.items():
@@ -177,12 +177,12 @@ def verify_limit_bonuses(verifier: RuleVerifier):
     # Expected bonuses (multiplier of Tier)
     expected_bonuses = {
         'unreliable_1': 1, 'unreliable_2': 2, 'unreliable_3': 5,
-        'quickdraw': 3, 'patient': 2, 'finale': 3,
+        'quickdraw': 3, 'patient': 1, 'finale': 2,
         'charge_up': 2, 'charge_up_2': 4, 'cooldown': 2,
-        'timid': 3, 'near_death': 2, 'bloodied': 1, 'attrition': 2,
-        'charges_1': 5, 'charges_2': 2,
+        'timid': 2, 'near_death': 2, 'bloodied': 1,
+        'charges_1': 6, 'charges_2': 2,
         'vengeful': 2, 'revenge': 2, 'unbreakable': 4, 'untouchable': 2,
-        'passive': 3, 'careful': 2,
+        'passive': 1, 'careful': 2,
         'combo_move': 1, 'relentless': 1, 'slaughter': 4,
     }
 
@@ -212,7 +212,7 @@ def verify_limit_activation(verifier: RuleVerifier):
         ('near_death', 'near_death'),
         ('bloodied', 'bloodied'),
         ('timid', 'timid'),
-        ('attrition', 'attrition'),
+        # ('attrition', 'attrition'),  # Removed from simulation
         ('charges_1', 'charges_1'),
         ('charges_2', 'charges_2'),
         ('slaughter', 'slaughter'),
@@ -241,7 +241,7 @@ def verify_limit_activation(verifier: RuleVerifier):
 
 
 def verify_finale_turn_number(verifier: RuleVerifier):
-    """Verify finale limit requires Turn 8+ (not Turn 7+)"""
+    """Verify finale limit requires Turn 7+"""
     print("\n[VERIFYING] Finale Turn Number...")
 
     import os
@@ -253,10 +253,10 @@ def verify_finale_turn_number(verifier: RuleVerifier):
     for i, line in enumerate(combat_lines):
         if 'finale' in line.lower() and 'turn_number' in line:
             # Check the condition
-            if 'turn_number < 8' in line:
-                verifier.check("Finale requires Turn 8+", True, "Turn 8+", "Turn 8+ (code checks < 8)")
-            elif 'turn_number < 7' in line:
-                verifier.failed.append(f"[FAIL] Finale turn check: RULES.md says 'Turn 8+' but code line {i+1} checks 'turn_number < 7'")
+            if 'turn_number < 7' in line:
+                verifier.check("Finale requires Turn 7+", True, "Turn 7+", "Turn 7+ (code checks < 7)")
+            elif 'turn_number < 8' in line:
+                verifier.failed.append(f"[FAIL] Finale turn check: RULES.md says 'Turn 7+' but code line {i+1} checks 'turn_number < 8'")
             break
 
 
@@ -283,7 +283,7 @@ def verify_mutual_exclusions(verifier: RuleVerifier):
         # Offensive Turn Tracking
         {'slaughter', 'relentless', 'combo_move'},
         # Defensive Turn Tracking
-        {'revenge', 'vengeful', 'untouchable', 'unbreakable', 'passive', 'careful'},
+        {'revenge', 'vengeful', 'untouchable', 'unbreakable', 'careful'},
     ]
 
     # Convert actual exclusions to sets for comparison
@@ -374,21 +374,21 @@ def verify_damage_calculations(verifier: RuleVerifier):
                   "formula verified in code")
 
     # Test 2: Direct damage base value (from RULES.md and CHANGELOG)
-    # RULES.md says: "Flat 10"
-    # CHANGELOG says: "10 flat (no tier scaling)"
+    # RULES.md says: "Flat 12"
+    # CHANGELOG says: "12 flat (no tier scaling)"
     dd_type = ATTACK_TYPES['direct_damage']
     verifier.check("direct_damage base value",
-                  dd_type.direct_damage_base == 10,
-                  "10 (from RULES.md and CHANGELOG)",
+                  dd_type.direct_damage_base == 12,
+                  "12 (from RULES.md and CHANGELOG)",
                   str(dd_type.direct_damage_base))
     verifier.check("direct_damage tier scaling",
                   dd_type.damage_mod == 0,
-                  "0 (for flat '10' formula)",
+                  "0 (for flat '12' formula)",
                   str(dd_type.damage_mod))
 
     # Test 3: Direct damage gets flat bonuses (THE BUG WE FIXED)
-    # Formula: 10 + tier + power
-    # At tier 4: 10 + 4 + 2 = 16
+    # Formula: 12 + tier + power
+    # At tier 4: 12 + 4 + 2 = 18
     dd_build = AttackBuild('direct_damage', [], [])
     actual_base = dd_type.direct_damage_base + (dd_type.damage_mod * attacker.tier)
     expected_flat = attacker.tier + attacker.power  # 4 + 2 = 6
@@ -399,21 +399,21 @@ def verify_damage_calculations(verifier: RuleVerifier):
                   "verified fixed")
 
     # Test 4: Direct area damage base value (from RULES.md and CHANGELOG)
-    # RULES.md says: "Flat 10 - Tier"
-    # CHANGELOG says: "10 - Tier"
+    # RULES.md says: "Flat 12 - Tier"
+    # CHANGELOG says: "12 - Tier"
     dad_type = ATTACK_TYPES['direct_area_damage']
     verifier.check("direct_area_damage base value",
-                  dad_type.direct_damage_base == 10,
-                  "10 (from RULES.md and CHANGELOG)",
+                  dad_type.direct_damage_base == 12,
+                  "12 (from RULES.md and CHANGELOG)",
                   str(dad_type.direct_damage_base))
     verifier.check("direct_area_damage tier scaling",
                   dad_type.damage_mod == -1,
-                  "-1 (for '10 - Tier' formula)",
+                  "-1 (for '12 - Tier' formula)",
                   str(dad_type.damage_mod))
 
     # Test 5: Direct area damage formula
-    # Formula: (10 - tier) + tier + power = 10 + power
-    # At tier 4: (10 - 4) + 4 + 2 = 6 + 6 = 12
+    # Formula: (12 - tier) + tier + power = 12 + power
+    # At tier 4: (12 - 4) + 4 + 2 = 8 + 6 = 14
     dad_build = AttackBuild('direct_area_damage', [], [])
     actual_dad_base = dad_type.direct_damage_base + (dad_type.damage_mod * attacker.tier)
     expected_dad_flat = attacker.tier + attacker.power  # 6
@@ -561,8 +561,8 @@ def verify_accuracy_calculations(verifier: RuleVerifier):
                   f"-{ap_upgrade.accuracy_penalty}")
 
     # Test 9: Critical hit range expansion
-    # Critical accuracy, powerful critical, double tap, etc. expand to 15-20
-    critical_upgrades = ['critical_accuracy', 'powerful_critical', 'double_tap',
+    # Powerful critical, double tap, etc. expand to 15-20
+    critical_upgrades = ['powerful_critical', 'double_tap',
                          'explosive_critical', 'ricochet']
     for upgrade_name in critical_upgrades:
         verifier.check(f"{upgrade_name} expands critical range",
@@ -632,11 +632,11 @@ def verify_edge_cases(verifier: RuleVerifier):
                   "max(0, damage - durability)",
                   "verified in code (line 726)")
 
-    # Test 2: Critical Effect has flat -2 penalty (not tier-scaled)
+    # Test 2: Critical Effect has flat -3 penalty (not tier-scaled)
     ce_upgrade = UPGRADES['critical_effect']
     verifier.check("critical_effect flat damage penalty",
-                  ce_upgrade.damage_penalty == 2,
-                  "-2 (flat, not tier-scaled)",
+                  ce_upgrade.damage_penalty == 3,
+                  "-3 (flat, not tier-scaled)",
                   f"-{ce_upgrade.damage_penalty}")
 
     # Test 3: High Impact is flat 15 damage (not dice)

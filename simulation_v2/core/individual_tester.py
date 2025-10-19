@@ -220,7 +220,8 @@ class IndividualTester:
                 100,  # target_hp
                 buffer,
                 self.defender,
-                enemy_hp_list=scenario.enemy_hp_list
+                enemy_hp_list=scenario.enemy_hp_list,
+                archetype=self.archetype
             )
         else:
             turns, outcome = simulate_combat_verbose(
@@ -230,7 +231,8 @@ class IndividualTester:
                 buffer,
                 self.defender,
                 num_enemies=scenario.num_enemies,
-                enemy_hp=scenario.enemy_hp
+                enemy_hp=scenario.enemy_hp,
+                archetype=self.archetype
             )
 
         buffer.write(f"\n{'='*80}\n")

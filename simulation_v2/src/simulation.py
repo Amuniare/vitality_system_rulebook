@@ -86,7 +86,8 @@ def rank_attacks_by_scenario(builds: List[AttackBuild], enemies: List[dict]) -> 
 
 def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: int = 100,
                           log_file=None, defender: Character = None, num_enemies: int = 1,
-                          enemy_hp: int = None, max_turns: int = 100, enemy_hp_list: List[int] = None) -> Tuple[int, str]:
+                          enemy_hp: int = None, max_turns: int = 100, enemy_hp_list: List[int] = None,
+                          archetype: str = None) -> Tuple[int, str]:
     """Simulate combat with defender attacks, return turns and outcome
 
     Args:
@@ -191,6 +192,11 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
     while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
         turns += 1
+
+        # Track if we actually made a channeled attack this turn
+        # (not basic attack fallback, not no attack due to focused archetype)
+        made_channeled_attack_this_turn = False
+
         if log_file:
             log_file.write(f"\n{'='*60}\n")
             log_file.write(f"TURN {turns} - START\n")
@@ -379,20 +385,42 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 total_damage_dealt = 0
                 if log_file:
                     log_file.write(f"  CHARGING UP instead of attacking!\n")
-            # Check if we need to fallback to basic attack
+            # Check if we need to fallback to basic attack or empower
             elif attack_results and attack_results[0][1] == 0 and 'basic_attack' in attack_results[0][2]:
-                if log_file:
-                    log_file.write(f"  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)\n")
-                # Create a basic attack build with same attack type but no upgrades/limits
-                from src.models import AttackBuild
-                basic_build = AttackBuild(active_build.attack_type, [], [])
-                # Re-run attack with basic build
-                attack_results, total_damage_dealt = make_aoe_attack(
-                    attacker, defender, basic_build, alive_enemies, log_file=log_file,
-                    turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
-                    attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
-                    tier_bonus=tier_bonus
-                )
+                # Check archetype - focused builds cannot use basic attacks
+                if archetype == 'focused':
+                    if log_file:
+                        log_file.write(f"  Limit failed - focused archetype cannot use basic attack, no action this turn\n")
+                    total_damage_dealt = 0
+                    attack_results = []
+                    charged_this_turn = False
+                # Check if this build has passive - if so, empower instead of basic attack
+                elif 'passive' in active_build.limits:
+                    if log_file:
+                        log_file.write(f"  Limit failed (passive) - taking EMPOWER ACTION (+Tier to next damage roll)\n")
+                    # Set empower flag in combat_state
+                    if 'empower_bonus' not in combat_state:
+                        combat_state['empower_bonus'] = 0
+                    combat_state['empower_bonus'] += attacker.tier
+                    # No attack this turn - just empower
+                    total_damage_dealt = 0
+                    attack_results = []
+                    charged_this_turn = False
+                else:
+                    if log_file:
+                        log_file.write(f"  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)\n")
+                    # Create a basic attack build with same attack type but no upgrades/limits
+                    from src.models import AttackBuild
+                    basic_build = AttackBuild(active_build.attack_type, [], [])
+                    # Re-run attack with basic build
+                    attack_results, total_damage_dealt = make_aoe_attack(
+                        attacker, defender, basic_build, alive_enemies, log_file=log_file,
+                        turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
+                        attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                        tier_bonus=tier_bonus
+                    )
+                    # Mark that we used basic attack fallback this turn
+                    used_basic_attack_this_turn = True
                 # Apply damage from basic attack
                 enemies_hit = []
                 for enemy_idx, damage, conditions in attack_results:
@@ -402,6 +430,10 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         if enemies[enemy_idx]['hp'] <= 0:
                             enemies[enemy_idx]['defeated_this_turn'] = True
             else:
+                # Normal AOE attack case - check if channeled was used
+                if 'channeled' in active_build.upgrades:
+                    made_channeled_attack_this_turn = True
+
                 enemies_hit = []
 
                 # Apply results to each target
@@ -433,9 +465,9 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     if 'bleed' in conditions:
                         old_bleed_count = len(enemy['bleed_stacks'])
                         bleed_damage = max(0, damage - attacker.tier)  # Reduce by tier
-                        enemy['bleed_stacks'] = [(bleed_damage, 2)]  # Same damage for 2 more turns
+                        enemy['bleed_stacks'] = [(bleed_damage, 1)]  # Same damage for 1 more turn
                         if log_file:
-                            log_file.write(f"     BLEED APPLIED to Enemy {target_idx+1}: {bleed_damage} damage for 2 turns (reduced from {damage} by tier {attacker.tier})\n")
+                            log_file.write(f"     BLEED APPLIED to Enemy {target_idx+1}: {bleed_damage} damage for 1 turn (reduced from {damage} by tier {attacker.tier})\n")
                             if old_bleed_count > 0:
                                 log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
 
@@ -472,9 +504,9 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             if 'bleed' in splinter_conditions:
                                 old_bleed_count = len(next_target['bleed_stacks'])
                                 bleed_damage = max(0, splinter_damage - attacker.tier)
-                                next_target['bleed_stacks'] = [(bleed_damage, 2)]
+                                next_target['bleed_stacks'] = [(bleed_damage, 1)]
                                 if log_file:
-                                    log_file.write(f"     BLEED APPLIED to Enemy {next_target_idx+1}: {bleed_damage} damage for 2 turns\n")
+                                    log_file.write(f"     BLEED APPLIED to Enemy {next_target_idx+1}: {bleed_damage} damage for 1 turn\n")
 
                 if log_file:
                     log_file.write(f"\n  AOE ATTACK SUMMARY:\n")
@@ -507,16 +539,34 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     total_damage_dealt = 0
                     if log_file:
                         log_file.write(f"  CHARGING UP instead of attacking!\n")
-                # Check if we need to fallback to basic attack
+                # Check if we need to fallback to basic attack or empower
                 elif damage == 0 and 'basic_attack' in conditions:
-                    if log_file:
-                        log_file.write(f"  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)\n")
-                    # Create a basic attack build with same attack type but no upgrades/limits
-                    from src.models import AttackBuild
-                    basic_build = AttackBuild(active_build.attack_type, [], [])
-                    # Re-run attack with basic build
-                    damage, conditions = make_attack(attacker, defender, basic_build, log_file=log_file,
-                                                    turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
+                    # Check archetype - focused builds cannot use basic attacks
+                    if archetype == 'focused':
+                        if log_file:
+                            log_file.write(f"  Limit failed - focused archetype cannot use basic attack, no action this turn\n")
+                        damage = 0
+                        conditions = []
+                    # Check if this build has passive - if so, empower instead of basic attack
+                    elif 'passive' in active_build.limits:
+                        if log_file:
+                            log_file.write(f"  Limit failed (passive) - taking EMPOWER ACTION (+Tier to next damage roll)\n")
+                        # Set empower flag in combat_state
+                        if 'empower_bonus' not in combat_state:
+                            combat_state['empower_bonus'] = 0
+                        combat_state['empower_bonus'] += attacker.tier
+                        # No attack this turn - just empower
+                        damage = 0
+                        conditions = []
+                    else:
+                        if log_file:
+                            log_file.write(f"  Limit failed - falling back to BASIC ATTACK (no upgrades/limits)\n")
+                        # Create a basic attack build with same attack type but no upgrades/limits
+                        from src.models import AttackBuild
+                        basic_build = AttackBuild(active_build.attack_type, [], [])
+                        # Re-run attack with basic build
+                        damage, conditions = make_attack(attacker, defender, basic_build, log_file=log_file,
+                                                        turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                     attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
                                                     enemy_max_hp=target_enemy['max_hp'], tier_bonus=tier_bonus)
                     # Apply damage from basic attack
@@ -529,6 +579,10 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     if target_enemy['hp'] <= 0:
                         target_enemy['defeated_this_turn'] = True
                 else:
+                    # Normal attack case - check if channeled was used
+                    if 'channeled' in active_build.upgrades:
+                        made_channeled_attack_this_turn = True
+
                     target_enemy['hp'] = max(0, target_enemy['hp'] - damage)
                     total_damage_dealt = damage
 
@@ -558,9 +612,9 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     if 'bleed' in conditions:
                         old_bleed_count = len(target_enemy['bleed_stacks'])
                         bleed_damage = max(0, damage - attacker.tier)  # Reduce by tier
-                        target_enemy['bleed_stacks'] = [(bleed_damage, 2)]  # Same damage for 2 more turns
+                        target_enemy['bleed_stacks'] = [(bleed_damage, 1)]  # Same damage for 1 more turn
                         if log_file:
-                            log_file.write(f"     BLEED APPLIED to Enemy {target_idx+1}: {bleed_damage} damage for 2 turns (reduced from {damage} by tier {attacker.tier})\n")
+                            log_file.write(f"     BLEED APPLIED to Enemy {target_idx+1}: {bleed_damage} damage for 1 turn (reduced from {damage} by tier {attacker.tier})\n")
                             if old_bleed_count > 0:
                                 log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
 
@@ -598,9 +652,9 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             if 'bleed' in splinter_conditions:
                                 old_bleed_count = len(next_target['bleed_stacks'])
                                 bleed_damage = max(0, splinter_damage - attacker.tier)
-                                next_target['bleed_stacks'] = [(bleed_damage, 2)]
+                                next_target['bleed_stacks'] = [(bleed_damage, 1)]
                                 if log_file:
-                                    log_file.write(f"     BLEED APPLIED to Enemy {next_target_idx+1}: {bleed_damage} damage for 2 turns\n")
+                                    log_file.write(f"     BLEED APPLIED to Enemy {next_target_idx+1}: {bleed_damage} damage for 1 turn\n")
 
                             # Check if this splinter attack also defeated an enemy (recursive splinter)
                             if next_target['hp'] <= 0:
@@ -697,6 +751,12 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         combat_state['defeated_enemy_last_turn'] = any(enemy['hp'] <= 0 and enemy.get('defeated_this_turn', False) for enemy in enemies)
         combat_state['dealt_damage_last_turn'] = total_damage_dealt > 0 and not charged_this_turn
 
+        # Clear empower bonus if it wasn't used this turn (expires if not used on next turn)
+        if 'empower_bonus' in combat_state and combat_state['empower_bonus'] > 0:
+            if log_file:
+                log_file.write(f"  Empower bonus expired (not used this turn): {combat_state['empower_bonus']}\n")
+            combat_state['empower_bonus'] = 0
+
         # Track if same target was hit (simplified: single target attacks only)
         current_target = None
         if not is_aoe and target_idx is not None:
@@ -728,8 +788,9 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 combat_state['was_damaged_last_turn'] = False
                 combat_state['was_hit_no_damage_last_turn'] = False
 
-        # Increment channeled turns if using channeled upgrade
-        if hasattr(active_build, 'upgrades') and 'channeled' in active_build.upgrades:
+        # Increment channeled turns only if channeled attack was actually made this turn
+        # (not if we fell back to basic attack or did nothing due to focused archetype)
+        if made_channeled_attack_this_turn:
             combat_state['channeled_turns'] += 1
         else:
             combat_state['channeled_turns'] = 0
@@ -1015,6 +1076,12 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
         # Update combat state for next turn
         combat_state['defeated_enemy_last_turn'] = any(enemy.get('defeated_this_turn', False) for enemy in enemies)
         combat_state['dealt_damage_last_turn'] = total_damage_dealt > 0 and not charged_this_turn
+
+        # Clear empower bonus if it wasn't used this turn (expires if not used on next turn)
+        if 'empower_bonus' in combat_state and combat_state['empower_bonus'] > 0:
+            if log_file:
+                log_file.write(f"  Empower bonus expired (not used this turn): {combat_state['empower_bonus']}\n")
+            combat_state['empower_bonus'] = 0
 
         # Track target hits
         current_target = None

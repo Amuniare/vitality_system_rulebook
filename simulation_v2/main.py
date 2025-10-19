@@ -93,7 +93,8 @@ def generate_combat_log_for_build(
     rank: int,
     avg_turns: float,
     config: SimConfigV2,
-    output_dir: str
+    output_dir: str,
+    archetype: str = None
 ):
     """Generate a detailed combat log for a specific build."""
     from io import StringIO
@@ -136,7 +137,8 @@ def generate_combat_log_for_build(
                 log_file=buffer,
                 defender=defender,
                 enemy_hp_list=scenario.enemy_hp_list,
-                max_turns=100
+                max_turns=100,
+                archetype=archetype
             )
         else:
             buffer.write(f"{scenario.num_enemies} Enemies x {scenario.enemy_hp} HP\n")
@@ -150,7 +152,8 @@ def generate_combat_log_for_build(
                 defender=defender,
                 num_enemies=scenario.num_enemies,
                 enemy_hp=scenario.enemy_hp,
-                max_turns=100
+                max_turns=100,
+                archetype=archetype
             )
 
         buffer.write(f"\n{'='*60}\n")
@@ -258,7 +261,8 @@ def run_simulation_v2(config_path: str = None):
                     rank=rank,
                     avg_turns=avg_turns,
                     config=config,
-                    output_dir=top50_logs_dir
+                    output_dir=top50_logs_dir,
+                    archetype=archetype
                 )
             except Exception as e:
                 print(f"    ERROR: {e}")
