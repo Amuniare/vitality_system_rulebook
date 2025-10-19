@@ -169,7 +169,8 @@ def roll_3d6_exploding_5_6() -> Tuple[int, List[str]]:
 def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild,
                    targets: List[Tuple[int, dict]], log_file=None, turn_number: int = 1,
                    charge_history: List[bool] = None, cooldown_history: dict = None,
-                   attacker_hp: int = None, attacker_max_hp: int = 100, combat_state: dict = None) -> Tuple[List[Tuple[int, int, List[str]]], int]:
+                   attacker_hp: int = None, attacker_max_hp: int = 100, combat_state: dict = None,
+                   tier_bonus: int = 0) -> Tuple[List[Tuple[int, int, List[str]]], int]:
     """Make an AOE attack against multiple targets with shared damage roll
 
     Returns:
@@ -189,7 +190,8 @@ def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild
     test_damage, test_conditions = make_attack(attacker, defender, build, log_file=None,
                                              turn_number=turn_number, charge_history=charge_history,
                                              is_aoe=False, aoe_damage_roll=None, cooldown_history=cooldown_history,
-                                             attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
+                                             attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                                             tier_bonus=tier_bonus)
 
     # If we got a charge condition, return it for all targets
     if test_damage == 0 and 'charge' in test_conditions:
@@ -223,7 +225,7 @@ def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild
                                        turn_number=turn_number, charge_history=charge_history,
                                        is_aoe=True, aoe_damage_roll=shared_dice_roll, cooldown_history=cooldown_history,
                                        attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
-                                       enemy_max_hp=enemy_data['max_hp'])
+                                       enemy_max_hp=enemy_data['max_hp'], tier_bonus=tier_bonus)
 
         results.append((target_idx, damage, conditions))
         total_damage += damage
@@ -247,7 +249,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                charge_history: List[bool] = None, is_aoe: bool = False,
                aoe_damage_roll: Tuple[int, List[str]] = None, cooldown_history: dict = None,
                attacker_hp: int = None, attacker_max_hp: int = 100,
-               combat_state: dict = None, enemy_max_hp: int = None) -> Tuple[int, List[str]]:
+               combat_state: dict = None, enemy_max_hp: int = None, tier_bonus: int = 0) -> Tuple[int, List[str]]:
     """Make one attack and return damage dealt and conditions applied
 
     For AOE attacks:
@@ -472,7 +474,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         # Starts at -2×Tier penalty, gains +Tier per turn, max +5×Tier total
         channeled_accuracy_bonus = min(channeled_turns - 2, 5) * attacker.tier
 
-    total_accuracy = base_accuracy + accuracy_mod + slayer_accuracy_bonus + melee_accuracy_bonus + limit_accuracy_bonus + channeled_accuracy_bonus
+    total_accuracy = base_accuracy + accuracy_mod + slayer_accuracy_bonus + melee_accuracy_bonus + limit_accuracy_bonus + channeled_accuracy_bonus + tier_bonus
 
     # Hit check (unless direct attack)
     is_critical = False
@@ -562,7 +564,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         overhit_bonus = 0
         if not attack_type.is_direct and 'overhit' in upgrades_set:
             total_attack_roll = accuracy_roll + total_accuracy
-            if total_attack_roll >= defender.avoidance + 5:
+            if total_attack_roll >= defender.avoidance + 15:
                 overhit_bonus = (total_attack_roll - defender.avoidance) // 2
                 if log_file:
                     log_file.write(f"      Overhit! Exceeded avoidance by {total_attack_roll - defender.avoidance}, adding {overhit_bonus} to damage\n")
@@ -649,7 +651,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 if 'powerful_critical' in upgrades_set:
                     critical_damage_bonus += attacker.tier
 
-            damage = dice_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus
+            damage = dice_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus + tier_bonus
 
             if log_file:
                 log_file.write(f"      Damage dice: {dice_detail} = {dice_damage}\n")
@@ -725,8 +727,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 log_file.write(f"      After durability ({effective_durability}): {damage_dealt} damage\n")
 
         # Handle brutal (only for non-direct attacks) - optimized with cached set
-        if not attack_type.is_direct and 'brutal' in upgrades_set and damage > effective_durability + 10:
-            brutal_bonus = int((damage - effective_durability - 10) * 0.5)
+        if not attack_type.is_direct and 'brutal' in upgrades_set and damage > effective_durability + 20:
+            brutal_bonus = int((damage - effective_durability - 20) * 0.5)
             damage_dealt += brutal_bonus
             if log_file:
                 log_file.write(f"      Brutal bonus: +{brutal_bonus} damage\n")

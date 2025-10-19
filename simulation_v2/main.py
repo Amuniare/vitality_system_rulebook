@@ -211,6 +211,9 @@ def run_simulation_v2(config_path: str = None):
     os.makedirs(base_reports_dir, exist_ok=True)
     print(f"\nReports will be saved to: {base_reports_dir}")
 
+    # Collect all build results for combined reports
+    all_archetype_results = {}  # archetype_name -> build_results
+
     # Process each archetype
     for archetype in config.archetypes:
         print("\n" + "="*80)
@@ -236,6 +239,10 @@ def run_simulation_v2(config_path: str = None):
 
         # Sort results by avg_turns (ascending = better)
         build_results.sort(key=lambda x: x[2])  # x[2] is avg_turns
+
+        # Store build results for combined reporting (if archetype is focused or dual_natured)
+        if archetype in ['focused', 'dual_natured']:
+            all_archetype_results[archetype] = build_results
 
         # Step 3: Generate top 50 combat logs
         print("\n--- Generating Top 50 Combat Logs ---")
@@ -263,6 +270,51 @@ def run_simulation_v2(config_path: str = None):
         # Step 4: Generate reports
         reporter = ReporterV2(archetype_reports_dir, archetype)
         reporter.generate_all_reports(build_results, individual_results)
+
+    # Generate combined reports (focused + dual_natured only)
+    if 'focused' in all_archetype_results and 'dual_natured' in all_archetype_results:
+        print("\n" + "="*80)
+        print("GENERATING COMBINED REPORTS (FOCUSED + DUAL_NATURED)")
+        print("="*80)
+
+        # Create combined reports directory
+        combined_reports_dir = os.path.join(base_reports_dir, 'combined')
+        os.makedirs(combined_reports_dir, exist_ok=True)
+
+        # Calculate median from each archetype for info
+        focused_turns = [t for _, _, t in all_archetype_results['focused']]
+        dual_turns = [t for _, _, t in all_archetype_results['dual_natured']]
+        focused_median = __import__('statistics').median(focused_turns) if focused_turns else 0
+        dual_median = __import__('statistics').median(dual_turns) if dual_turns else 0
+
+        # Calculate combined median (from all builds merged)
+        all_turns = focused_turns + dual_turns
+        combined_median = __import__('statistics').median(all_turns) if all_turns else 0
+
+        print(f"  Focused builds: {len(all_archetype_results['focused'])} (median: {focused_median:.2f})")
+        print(f"  Dual_natured builds: {len(all_archetype_results['dual_natured'])} (median: {dual_median:.2f})")
+        print(f"  Combined median turns: {combined_median:.2f}")
+        print(f"  Using stratified sampling: top N/2 from each archetype")
+
+        # Create a temporary reporter for combined reports
+        # Use a dummy archetype name since we're combining multiple
+        combined_reporter = ReporterV2(combined_reports_dir, "combined")
+
+        # Generate top N reports with stratified sampling
+        # Pass the archetype results dict so reports can do stratified selection
+        print("\n  Generating combined Top N analysis reports...")
+        combined_reporter._generate_top_n_attack_type_reports_stratified(
+            all_archetype_results,
+            combined_median,
+            archetype_label="COMBINED (FOCUSED + DUAL_NATURED)"
+        )
+        combined_reporter._generate_top_n_saturation_reports_stratified(
+            all_archetype_results,
+            combined_median,
+            archetype_label="COMBINED (FOCUSED + DUAL_NATURED)"
+        )
+
+        print(f"\n  Combined reports saved to: {combined_reports_dir}")
 
     print("\n" + "="*80)
     print("SIMULATION V2 COMPLETE")

@@ -74,7 +74,7 @@ class IndividualTester:
         all_turns = []
 
         # Test with each compatible attack type
-        for attack_type_name in ATTACK_TYPES.keys():
+        for attack_type_name in self.config.attack_types:
             is_valid, errors = RuleValidator.validate_combination(attack_type_name, upgrades_to_test)
             if not is_valid:
                 continue
@@ -136,7 +136,7 @@ class IndividualTester:
         all_turns = []
 
         # Test with each attack type (limits work with all)
-        for attack_type_name in ATTACK_TYPES.keys():
+        for attack_type_name in self.config.attack_types:
             # Test across all scenarios
             scenario_turns = []
             for scenario in self.config.scenarios:
@@ -171,7 +171,7 @@ class IndividualTester:
 
         # Generate combat log if directory specified
         if self.combat_logs_dir:
-            self._log_single_combat(limit_name, 'limit', AttackBuild(list(ATTACK_TYPES.keys())[0], [], [limit_name]), limit_cost)
+            self._log_single_combat(limit_name, 'limit', AttackBuild(self.config.attack_types[0], [], [limit_name]), limit_cost)
 
         return IndividualResult(
             enhancement_name=limit_name,

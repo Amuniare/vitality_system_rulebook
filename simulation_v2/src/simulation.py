@@ -166,6 +166,12 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
     charge_history = []  # Track charging actions: True = charged, False = attacked
     cooldown_history = {}  # Track when limits with cooldowns were last used
 
+    # Pre-calculate expected damages for dual_natured intelligent attack selection
+    expected_damages = None
+    if isinstance(build, MultiAttackBuild) and build.archetype == 'dual_natured':
+        from src.damage_calculator import calculate_all_expected_damages
+        expected_damages = calculate_all_expected_damages(build.builds, attacker, defender, build.tier_bonus)
+
     # Initialize combat state for new limit mechanics
     combat_state = {
         'last_target_hit': None,
@@ -250,48 +256,58 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         if log_file:
             log_file.write(f"\nATTACK PHASE:\n")
 
-        # Determine which attack build to use (handle MultiAttackBuild with fallback)
-        # For dual_natured: Try Attack 2 (index 1), fall back to Attack 1 (index 0) if unavailable
-        # For versatile_master: Try attacks in reverse order (most specialized first)
+        # Determine which attack build to use (handle MultiAttackBuild with intelligent fallback)
         active_build = build
         active_build_idx = None  # Track which attack index is being used
-        fallback_attempted = False
+        tier_bonus = 0  # Tier bonus for fallback attacks
 
         if isinstance(build, MultiAttackBuild):
-            # MultiAttackBuild - implement fallback logic
-            # For dual_natured (2 attacks): Try Attack 2 first (index 1), fallback to Attack 1 (index 0)
-            # For versatile_master (5 attacks): Try in reverse order
+            # MultiAttackBuild - implement intelligent attack selection
             if build.archetype == 'dual_natured' and len(build.builds) == 2:
-                # Try preferred attack (Attack 2) first
-                preferred_build = build.builds[1]
-                fallback_build = build.builds[0]
+                from src.combat import can_activate_limit
+                from src.damage_calculator import is_aoe_attack
 
-                # Quick check if preferred build can be used this turn
-                # Test by calling make_attack with allow_multi=False to get failure status
-                try:
-                    test_damage, test_conditions = make_attack(
-                        attacker, defender, preferred_build, allow_multi=False, log_file=None,
-                        turn_number=turns, charge_history=charge_history if charge_history is not None else [],
-                        cooldown_history=cooldown_history if cooldown_history is not None else {},
-                        attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state
-                    )
-                except Exception as e:
-                    # If test fails, assume preferred attack is unavailable
-                    test_damage = 0
-                    test_conditions = []
+                # Dual natured: primary (index 0) with upgrades/limits, fallback (index 1) basic attack
+                primary_build = build.builds[0]
+                fallback_build = build.builds[1]
+                tier_bonus = build.tier_bonus  # Apply tier bonus to fallback
 
-                # If preferred attack fails due to limits (returns 0 and no charge), use fallback
-                if test_damage == 0 and 'charge' not in test_conditions:
-                    active_build = fallback_build
-                    active_build_idx = 0  # Using Attack 1
-                    fallback_attempted = True
-                    if log_file:
-                        log_file.write(f"  Attack 2 unavailable this turn, falling back to Attack 1\n")
+                # Check if primary can activate (all limit conditions met)
+                can_use_primary = all(
+                    can_activate_limit(limit, turns, attacker_hp, attacker_max_hp, combat_state, charge_history, cooldown_history)
+                    for limit in primary_build.limits
+                )
+
+                # Calculate current enemy state
+                num_alive = sum(1 for e in enemies if e['hp'] > 0)
+
+                # Choose attack based on expected damage + availability
+                if can_use_primary:
+                    # Compare primary vs fallback using pre-calculated expected damages
+                    primary_exp = expected_damages[0]
+                    # For AOE fallback, scale by number of alive enemies
+                    fallback_exp = expected_damages[1]
+                    if is_aoe_attack(fallback_build):
+                        fallback_exp *= num_alive
+
+                    # Choose higher expected damage
+                    if primary_exp >= fallback_exp:
+                        active_build = primary_build
+                        active_build_idx = 0
+                        tier_bonus = 0  # No tier bonus for primary
+                        if log_file:
+                            log_file.write(f"  Using primary attack (exp dmg: {primary_exp:.1f} vs fallback: {fallback_exp:.1f})\n")
+                    else:
+                        active_build = fallback_build
+                        active_build_idx = 1
+                        if log_file:
+                            log_file.write(f"  Using fallback attack (exp dmg: {fallback_exp:.1f} vs primary: {primary_exp:.1f})\n")
                 else:
-                    active_build = preferred_build
-                    active_build_idx = 1  # Using Attack 2
+                    # Primary unavailable - use fallback
+                    active_build = fallback_build
+                    active_build_idx = 1
                     if log_file:
-                        log_file.write(f"  Using Attack 2 (preferred)\n")
+                        log_file.write(f"  Primary unavailable this turn, using fallback\n")
             else:
                 # For versatile_master - use intelligent scenario-based attack selection
                 attack_priority = rank_attacks_by_scenario(build.builds, enemies)
@@ -353,7 +369,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             attack_results, total_damage_dealt = make_aoe_attack(
                 attacker, defender, active_build, alive_enemies, log_file=log_file,
                 turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
-                attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state
+                attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                tier_bonus=tier_bonus
             )
 
             # Check if we got a charge condition instead of attack results
@@ -373,7 +390,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 attack_results, total_damage_dealt = make_aoe_attack(
                     attacker, defender, basic_build, alive_enemies, log_file=log_file,
                     turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
-                    attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state
+                    attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                    tier_bonus=tier_bonus
                 )
                 # Apply damage from basic attack
                 enemies_hit = []
@@ -445,7 +463,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             # Make splinter attack (single target, not AOE)
                             splinter_damage, splinter_conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                                               turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
-                                                                              attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
+                                                                              attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                                                                              tier_bonus=tier_bonus)
                             next_target['hp'] = max(0, next_target['hp'] - splinter_damage)
                             total_damage_dealt += splinter_damage
 
@@ -480,7 +499,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 damage, conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                 turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                 attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
-                                                enemy_max_hp=target_enemy['max_hp'])
+                                                enemy_max_hp=target_enemy['max_hp'], tier_bonus=tier_bonus)
 
                 # Check if we got a charge condition instead of doing damage
                 if damage == 0 and 'charge' in conditions:
@@ -499,7 +518,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     damage, conditions = make_attack(attacker, defender, basic_build, log_file=log_file,
                                                     turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                     attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
-                                                    enemy_max_hp=target_enemy['max_hp'])
+                                                    enemy_max_hp=target_enemy['max_hp'], tier_bonus=tier_bonus)
                     # Apply damage from basic attack
                     target_enemy['hp'] = max(0, target_enemy['hp'] - damage)
                     total_damage_dealt = damage
@@ -570,7 +589,8 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             # Make splinter attack
                             splinter_damage, splinter_conditions = make_attack(attacker, defender, active_build, log_file=log_file,
                                                                               turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
-                                                                              attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
+                                                                              attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                                                                              tier_bonus=tier_bonus)
                             next_target['hp'] = max(0, next_target['hp'] - splinter_damage)
                             total_damage_dealt += splinter_damage
 
@@ -605,9 +625,22 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             # Create a basic ranged attack build for defenders (no upgrades, no limits)
             from src.models import AttackBuild
             defender_build = AttackBuild('ranged', [], [])
+
+            # Count alive enemies and limit attacks to 1 per turn
+            alive_enemies_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
+            attacks_made = 0
+            max_attacks_per_turn = 1
+
             for i, enemy in enumerate(enemies):
                 if enemy['hp'] <= 0:
                     continue  # Dead enemies don't attack
+
+                # Limit to 1 attack per turn when there are multiple enemies
+                if attacks_made >= max_attacks_per_turn:
+                    if log_file and alive_enemies_count > max_attacks_per_turn:
+                        remaining_enemies = alive_enemies_count - attacks_made
+                        log_file.write(f"  Remaining {remaining_enemies} enemy(ies) cannot attack (max {max_attacks_per_turn} attacks per turn)\n")
+                    break
 
                 if log_file:
                     log_file.write(f"  Enemy {i+1} attacks attacker:\n")
@@ -630,6 +663,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
                 attacker_hp -= damage
                 total_defender_damage += damage
+                attacks_made += 1
 
                 if log_file:
                     log_file.write(f"    Damage dealt to Attacker: {damage}\n")
@@ -940,9 +974,18 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
         if any(enemy['hp'] > 0 for enemy in enemies):
             from src.models import AttackBuild as AB
             defender_build = AB('ranged', [], [])
+
+            # Count alive enemies and limit attacks to 1 per turn
+            attacks_made = 0
+            max_attacks_per_turn = 1
+
             for i, enemy in enumerate(enemies):
                 if enemy['hp'] <= 0:
                     continue
+
+                # Limit to 1 attack per turn when there are multiple enemies
+                if attacks_made >= max_attacks_per_turn:
+                    break
 
                 enemy_attacker = Character(
                     focus=defender.focus,
@@ -958,6 +1001,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
 
                 attacker_hp -= damage
                 total_defender_damage += damage
+                attacks_made += 1
 
         # Apply HP costs and recovery
         if combat_state.get('attrition_cost', 0) > 0:

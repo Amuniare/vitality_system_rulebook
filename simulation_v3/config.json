@@ -4,7 +4,7 @@
   "points_per_attack": 6,
 
   "stage1": {
-    "simulation_runs": 1,
+    "simulation_runs": 3,
     "top_percent": 0.2,
     "specialist_percent": 0.2,
     "pruning_strategy": "enhancement_based",
@@ -12,10 +12,10 @@
   },
 
   "stage2": {
-    "simulation_runs": 1,
+    "simulation_runs": 2,
     "max_turns": 25,
     "max_pairs": 100000000,
-    "pair_sample_percent": 0.01
+    "pair_sample_percent": 0.005
   },
 
   "performance": {

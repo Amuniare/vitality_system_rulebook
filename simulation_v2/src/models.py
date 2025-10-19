@@ -130,16 +130,20 @@ class AttackBuild:
 class MultiAttackBuild:
     """Represents a collection of attack builds for versatile archetypes"""
 
-    def __init__(self, builds: List[AttackBuild], archetype: str):
+    def __init__(self, builds: List[AttackBuild], archetype: str, fallback_type: str = None, tier_bonus: int = 0):
         """
         Initialize a multi-attack build collection
 
         Args:
             builds: List of AttackBuild objects
             archetype: Type of archetype ("focused", "dual_natured", "versatile_master")
+            fallback_type: For dual_natured, the attack type of the fallback attack (e.g., "melee_dg", "area")
+            tier_bonus: Bonus to accuracy and damage for fallback attacks
         """
         self.builds = builds
         self.archetype = archetype
+        self.fallback_type = fallback_type
+        self.tier_bonus = tier_bonus
         self.scenario_results = {}  # Maps scenario_name -> {build_idx: avg_turns}
         self.optimal_selections = {}  # Maps scenario_name -> build_idx
         self.attack_usage_counts = {}  # Maps attack_idx -> usage_count (tracks actual combat usage)
@@ -202,6 +206,8 @@ class MultiAttackBuild:
         parts = [f"{self.archetype.replace('_', ' ').title()} Build ({len(self.builds)} attacks)"]
         for i, build in enumerate(self.builds):
             parts.append(f"  Attack {i+1}: {build}")
+        if self.fallback_type:
+            parts.append(f"  Fallback: {self.fallback_type}+{self.tier_bonus}")
         if self.optimal_selections:
             parts.append(f"  Overall Avg Turns: {self.get_overall_avg_turns():.2f}")
         return "\n".join(parts)
@@ -214,8 +220,10 @@ class MultiAttackBuild:
         if not isinstance(other, MultiAttackBuild):
             return False
         return (self.archetype == other.archetype and
-                set(self.builds) == set(other.builds))
+                set(self.builds) == set(other.builds) and
+                self.fallback_type == other.fallback_type and
+                self.tier_bonus == other.tier_bonus)
 
     def __hash__(self) -> int:
         """Make multi-attack builds hashable for use in sets/dicts"""
-        return hash((self.archetype, tuple(sorted(self.builds, key=lambda b: hash(b)))))
+        return hash((self.archetype, tuple(sorted(self.builds, key=lambda b: hash(b))), self.fallback_type, self.tier_bonus))

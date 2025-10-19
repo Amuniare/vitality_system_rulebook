@@ -17,6 +17,7 @@
    - **Damage Roll**: 3d6 + Tier + Power - Target's Durability
    - **Condition Check**: 1d20 + Tier + Power vs Target's Resistance
 4. **Apply Results** → Reduce HP by damage taken or apply condition effect
+5. **Enemy Retaliation** → In multi-enemy scenarios, the attacker is attacked by at most 2 enemies per turn (even if more enemies are alive)
 
 ### Attack Build System
 - **Attack Build class**: Combines attack type, upgrades, and limits
@@ -105,15 +106,15 @@ Point budgets per attack based on tier and archetype:
 - **Penalty**: -Tier to Accuracy rolls
 - **Restriction**: Melee, Ranged, Area attacks only
 
-**Reliable Accuracy** (1p)
+**Reliable Accuracy** (2p)
 - **Effect**: Advantage (roll 2d20, take higher roll) on Accuracy rolls
 - **Penalty**: -3 penalty to all Accuracy rolls
 
 **Overhit** (2p)
 - **Effect**: For every 2 points your Accuracy roll exceeds the target's Avoidance, add +1 to the effect roll
-- **Restriction**: Only occurs if your Accuracy roll exceeds target Avoidance by 5+
+- **Restriction**: Only occurs if your Accuracy roll exceeds target Avoidance by 15+
 
-**High Impact** (2p)
+**High Impact** (3p)
 - **Effect**: Replace 3d6 damage roll with flat 15 damage
 - **Restriction**: Damage effects only
 
@@ -124,26 +125,27 @@ Point budgets per attack based on tier and archetype:
 
 **Armor Piercing** (3p)
 - **Effect**: Ignore target's Durability Endurance bonus
+- **Penalty**: -1 to Accuracy rolls (flat penalty, not tier-based)
 - **Restriction**: Cannot take with Direct or Direct Area Attacks, Damage effects only
 
 **Brutal** (2p)
-- **Effect**: When Damage roll exceeds target Durability by 10+, deal extra damage equal to half the difference
+- **Effect**: When Damage roll exceeds target Durability by 20+, deal extra damage equal to half the difference
 - **Restriction**: Damage effects only
 
 ### Multi-Attack Upgrades
 
-**Quick Strikes** (2p)
+**Quick Strikes** (3p)
 - **Effect**: Make same attack two times against single target
 - **Penalty**: -Tier to Accuracy, Damage, and Condition rolls
 - **Restriction**: Cannot be put on an AOE attack
 
-**Barrage** (2p)
+**Barrage** (3p)
 - **Effect**: Make same attack three times against single target
 - **Usage**: First attack must hit and effect, in order to make second attack, and same for the second and third attacks
 - **Penalty**: -Tier to Accuracy, Damage, and Condition rolls
 - **Restriction**: Cannot be put on an AOE attack
 
-**Extra Attack** (2p)
+**Extra Attack** (3p)
 - **Effect**: Successful hit with successful effect allows identical attack against same target
 - **Usage**: Must hit and succeed on both Accuracy and Effect
 - **Frequency**: Once per turn maximum
@@ -187,44 +189,41 @@ Point budgets per attack based on tier and archetype:
 
 ### Instant Defeat Upgrades
 
-**Finishing Blow 1** (1p)
+**Finishing Blow 1** (2p)
 - **Effect**: If attack reduces enemy to 5 HP or below, enemy is defeated instead
 - **Restriction**: Cannot apply to AOE attacks
 
-**Finishing Blow 2** (2p)
-- **Effect**: If attack reduces enemy to 10 HP or below, enemy is defeated instead
-- **Restriction**: Cannot apply to AOE attacks
-
-**Finishing Blow 3** (3p)
+**Finishing Blow 2** (3p)
 - **Effect**: If attack reduces enemy to 15 HP or below, enemy is defeated instead
 - **Restriction**: Cannot apply to AOE attacks
 
-**Culling Strike** (1p)
+**Culling Strike** (2p)
 - **Effect**: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead
 
 **Splinter** (3p)
 - **Effect**: Defeating enemy triggers another attack against new target before turn ends
+- **Penalty**: -Tier to accuracy and damage
 - **Chain Penalty**: Maximum Tier/2 additional attacks (rounded up)
 - **Restriction**: Cannot apply to AOE attacks
 
 ### Enemy Type Bonuses
 
-**Minion Slayer** (1p)
+**Minion Slayer** (2p)
 - **Effect**: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 - **Usage**: Bonus applies against 10 maximum HP enemies
 - **Restriction**: Can only have 1 Slayer bonus per attack
 
-**Captain Slayer** (1p)
+**Captain Slayer** (2p)
 - **Effect**: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 - **Usage**: Bonus applies against 25 maximum HP enemies
 - **Restriction**: Can only have 1 Slayer bonus per attack
 
-**Elite Slayer** (1p)
+**Elite Slayer** (2p)
 - **Effect**: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 - **Usage**: Bonus applies against 50 maximum HP enemies
 - **Restriction**: Can only have 1 Slayer bonus per attack
 
-**Boss Slayer** (1p)
+**Boss Slayer** (2p)
 - **Effect**: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 - **Usage**: Bonus applies against 100 maximum HP enemies
 - **Restriction**: Can only have 1 Slayer bonus per attack
@@ -254,33 +253,33 @@ Point budgets per attack based on tier and archetype:
 - **Limit**: Roll d20, DC 5 to activate each turn
 
 **Unreliable 2** (2p)
-- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Roll d20, DC 10 to activate each turn
 
 **Unreliable 3** (1p)
-- **Effect**: +7×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +5×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Must roll 15+ or attack fails
 
 ### Turn-Based Limits
 
-**Quickdraw** (2p)
+**Quickdraw** (3p)
 - **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: First round of combat
 
-**Patient** (3p)
+**Patient** (2p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Turn 5 or later
 
-**Finale** (3p)
+**Finale** (2p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Turn 8 or later
 
 **Charge Up** (2p)
-- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Spend an action on your previous turn
 
 **Charge Up 2** (2p)
-- **Effect**: +6×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +4×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Spend actions on your previous two turns
 
 **Cooldown** (1p)
@@ -293,15 +292,15 @@ Point budgets per attack based on tier and archetype:
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At max HP with no conditions
 
-**Near Death** (3p)
+**Near Death** (2p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At 25 Hit Points or less
 
-**Bloodied** (2p)
+**Bloodied** (1p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: At 50 Hit Points or less
 
-**Attrition** (2p)
+**Attrition** (3p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Each use costs 20 HP
 - **Restriction**: Can't have regeneration, leech, healing or any other ability that restores HP
@@ -310,18 +309,18 @@ Point budgets per attack based on tier and archetype:
 - **Effect**: +5×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Single use, recharges after 1 minute rest
 
-**Charges 2** (2p)
+**Charges 2** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: 2 uses, recharges after 1 minute rest
 
 ### Conditional Limits
 
-**Vengeful** (3p)
+**Vengeful** (2p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been hit since last turn
 
 **Revenge** (3p)
-- **Effect**: +Tier to Accuracy, Damage, and Conditions
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been damaged since last turn
 
 **Unbreakable** (1p)
@@ -330,10 +329,10 @@ Point budgets per attack based on tier and archetype:
 
 **Untouchable** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
-- **Limit**: All attacks missed since last turn
+- **Limit**: All attacks missed since last turn, must have been attacked
 
 
-**Passive** (1p)
+**Passive** (2p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Not attacked since last turn
 
@@ -343,12 +342,11 @@ Point budgets per attack based on tier and archetype:
 
 ### Sequential Action Limits
 
-**Combo Move** (3p)
+**Combo Move** (2p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Hit same enemy last turn
 
-
-**Relentless** (2p)
+**Relentless** (3p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Dealt damage to enemy last turn
 
@@ -378,7 +376,7 @@ Some upgrades only work with specific attack types:
 
 The following upgrades **cannot** be used with AOE attacks (area, direct_area_damage):
 
-- finishing_blow_1, finishing_blow_2, finishing_blow_3
+- finishing_blow_1, finishing_blow_2
 - culling_strike
 - critical_accuracy
 - powerful_critical

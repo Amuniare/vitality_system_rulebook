@@ -195,7 +195,7 @@ def generate_archetype_builds_chunked(archetype: str, tier: int, attack_types: L
 
     elif archetype == "dual_natured":
         # Generate all pairs of builds
-        yield from _generate_dual_natured_builds(max_points_per_attack, attack_types)
+        yield from _generate_dual_natured_builds(max_points_per_attack, attack_types, config)
 
     elif archetype == "versatile_master":
         # Generate all sets of 5 builds (with optional pruning)
@@ -322,24 +322,45 @@ def _apply_stratified_sampling(builds: List[AttackBuild], top_n_per_type: int) -
     return curated
 
 
-def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List[str] = None) -> Generator:
-    """Generate dual-natured builds with fixed first attack (ranged only)
+def _generate_dual_natured_builds(max_points_per_attack: int, attack_types: List[str] = None, config=None) -> Generator:
+    """Generate dual-natured builds with multiple fallback attack types.
 
-    For performance optimization, the first attack is standardized and only the second attack varies.
+    For each valid primary build, generates one MultiAttackBuild per fallback type.
+    Each primary+fallback combination is a distinct build for ranking purposes.
+
+    Args:
+        max_points_per_attack: Maximum points allowed per attack
+        attack_types: List of attack types to consider for primary attacks
+        config: SimConfigV2 config object (for dual_natured settings)
     """
     from src.models import MultiAttackBuild, AttackBuild
 
     if attack_types is None:
         attack_types = ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']
 
-    # Fixed first attack: ranged with no upgrades
-    fixed_attack = AttackBuild('melee_dg', [], [])
+    # Get fallback configuration (with defaults if config not provided)
+    if config and hasattr(config, 'dual_natured'):
+        fallback_attacks = config.dual_natured.fallback_attacks
+        tier_bonus = config.dual_natured.fallback_tier_bonus
+    else:
+        fallback_attacks = ['melee_dg']  # Default fallback
+        tier_bonus = 1  # Default tier bonus
 
-    # Generate all valid builds for the second attack slot
-    for build2 in generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000):
-        # Create multi-attack build with fixed first attack and generated second attack
-        multi_build = MultiAttackBuild([fixed_attack, build2], "dual_natured")
-        yield multi_build
+    # Generate all valid builds for the primary attack slot
+    for primary_build in generate_valid_builds_chunked(max_points_per_attack, attack_types, chunk_size=10000):
+        # For each fallback type, create a separate MultiAttackBuild
+        for fallback_type in fallback_attacks:
+            # Create basic fallback attack (no upgrades, no limits)
+            fallback_build = AttackBuild(fallback_type, [], [])
+
+            # Create multi-attack build: [primary with upgrades/limits, fallback basic]
+            multi_build = MultiAttackBuild(
+                builds=[primary_build, fallback_build],
+                archetype="dual_natured",
+                fallback_type=fallback_type,
+                tier_bonus=tier_bonus
+            )
+            yield multi_build
 
 
 def _generate_versatile_master_builds(max_points_per_attack: int, attack_types: List[str] = None, config=None) -> Generator:

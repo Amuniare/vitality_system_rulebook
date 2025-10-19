@@ -258,7 +258,7 @@
     --?[$Barrage] -eq 1|=StrikeCount; 3
     --=CurrentStrike| 1
 
-    --/| Store base string modifiers before multi-strike loop
+    --/| Store base string modifiers AFTER all limit bonuses are applied
     --&BaseAccuracyStringModifiers|[&AccuracyStringModifiers]
     --&BaseDamageStringModifiers|[&DamageStringModifiers]
     --&BaseConditionsStringModifiers|[&ConditionsStringModifiers]
@@ -269,7 +269,7 @@
     --=PositiveDamageAmount| 0
     --&AttackNotes|
 
-    --/| Reset string modifiers to base values for each strike
+    --/| Reset string modifiers to base values (removes per-target bonuses from previous strike)
     --&AccuracyStringModifiers|[&BaseAccuracyStringModifiers]
     --&DamageStringModifiers|[&BaseDamageStringModifiers]
     --&ConditionsStringModifiers|[&BaseConditionsStringModifiers]
@@ -319,10 +319,13 @@
     --?[*S:char_perfectionist] -eq 1|&AccuracyDice; 1d20ro<6
     --?[*S:char_perfectionist] -eq 1|=ConditionsDice; 1d20ro<6
 
-    --?[$ReliableAccuracy] -eq 1|&AccuracyDice; 2d20kh1 - 3
-    --?[$SupremeAccuracy] -eq 1|&AccuracyDice; 3d20kh1 - 5
+    --?[$ReliableAccuracy] -eq 1|&AccuracyDice; 2d20kh1
+    --?[$ReliableAccuracy] -eq 1|&AccuracyStringModifiers;+ - 3 [Reliable Accuracy]
+    --?[$SupremeAccuracy] -eq 1|&AccuracyDice; 3d20kh1
+    --?[$SupremeAccuracy] -eq 1|&AccuracyStringModifiers;+ - 5 [Supreme Accuracy]
 
-    --?[$ReliableCondition] -eq 1|&ConditionsDice; 2d20kh1 - 3
+    --?[$ReliableCondition] -eq 1|&ConditionsDice; 2d20kh1
+    --?[$ReliableCondition] -eq 1|&ConditionsStringModifiers;+ - 3 [Reliable Condition]
 
 
 
@@ -503,27 +506,30 @@
     --=UnreliablePassed| 1
     --?[$Unreliable1] -ne 1|PassUnreliable1Roll
       --=UnreliableRoll1| 1d20
-        --&AccuracyStringModifiers|+ + [*S:char_tier] [Unreliable 1]
-        --&DamageStringModifiers|+ + [*S:char_tier] [Unreliable 1]
-        --&ConditionsStringModifiers|+ + [*S:char_tier] [Unreliable 1]
-        --+Unreliable 1 | DC 5 vs. [$UnreliableRoll1]
+      --?[$UnreliableRoll1] -lt 5|=UnreliablePassed; 0
+      --?[$UnreliableRoll1] -ge 5|&AccuracyStringModifiers;+ + [*S:char_tier] [Unreliable 1]
+      --?[$UnreliableRoll1] -ge 5|&DamageStringModifiers;+ + [*S:char_tier] [Unreliable 1]
+      --?[$UnreliableRoll1] -ge 5|&ConditionsStringModifiers;+ + [*S:char_tier] [Unreliable 1]
+      --+Unreliable 1 | DC 5 vs. [$UnreliableRoll1]
     --:PassUnreliable1Roll|
 
     --?[$Unreliable2] -ne 1|PassUnreliable2Roll
       --=UnreliableRoll2| 1d20
       --=Unreliable2Bonus| [*S:char_tier]*3
-        --&AccuracyStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
-        --&DamageStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
-        --&ConditionsStringModifiers|+ + [$Unreliable2Bonus] [Unreliable 2]
-        --+Unreliable 2 | DC 10 vs. [$UnreliableRoll2]
+      --?[$UnreliableRoll2] -lt 10|=UnreliablePassed; 0
+      --?[$UnreliableRoll2] -ge 10|&AccuracyStringModifiers;+ + [$Unreliable2Bonus] [Unreliable 2]
+      --?[$UnreliableRoll2] -ge 10|&DamageStringModifiers;+ + [$Unreliable2Bonus] [Unreliable 2]
+      --?[$UnreliableRoll2] -ge 10|&ConditionsStringModifiers;+ + [$Unreliable2Bonus] [Unreliable 2]
+      --+Unreliable 2 | DC 10 vs. [$UnreliableRoll2]
     --:PassUnreliable2Roll|
 
     --?[$Unreliable3] -ne 1|PassUnreliable3Roll
       --=UnreliableRoll3| 1d20
       --=Unreliable3Bonus| [*S:char_tier]*7
-      --&AccuracyStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
-      --&DamageStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
-      --&ConditionsStringModifiers|+ + [$Unreliable3Bonus] [Unreliable 3]
+      --?[$UnreliableRoll3] -lt 15|=UnreliablePassed; 0
+      --?[$UnreliableRoll3] -ge 15|&AccuracyStringModifiers;+ + [$Unreliable3Bonus] [Unreliable 3]
+      --?[$UnreliableRoll3] -ge 15|&DamageStringModifiers;+ + [$Unreliable3Bonus] [Unreliable 3]
+      --?[$UnreliableRoll3] -ge 15|&ConditionsStringModifiers;+ + [$Unreliable3Bonus] [Unreliable 3]
       --+Unreliable 3 | DC 15 vs. [$UnreliableRoll3]
     --:PassUnreliable3Roll|
 
@@ -787,13 +793,15 @@
 
   --/| ========== EFFECTS SECTION ==========
 
-  --/| Check Unreliable - if failed, skip all damage/condition application
-  --?[$UnreliablePassed] -eq 0|PassAutomaticEffectSection
+  --/| Check Unreliable - if failed, skip to next target
+  --?[$UnreliablePassed] -eq 0|SkipToNextTarget
 
 
 
   --/| ==========Damage Modifiers==========
 
+    --/| Skip damage if attack missed (only for attacks that roll accuracy)
+    --?[$RollAC] -eq 1 -and [$AccuracyRoll] -lt [$EnemyAV]|PassDamageAuto
 
     --?[$RollDG] -lt 1 |PassDamageAuto
       --=DamageAmount| [$DamageRoll] - [$EnemyDR]
@@ -892,6 +900,12 @@
   --/| ==========Conditions Section==========
 
     --?[$RollCN] -lt 1|SkipTheConditionsBlock
+
+      --/| Skip conditions if condition roll failed
+      --?[$EnemyCnFailAmount] -lt 0|SkipTheConditionsBlock
+
+      --/| Skip conditions if accuracy-based attack missed
+      --?[$RollAC] -eq 1 -and [$AccuracyRoll] -lt [$EnemyAV]|SkipTheConditionsBlock
 
       --/| EffectType: 0=None, 1=Brawl, 2=Frighten, 3=Taunt, 4=Charm, 5=Weaken, 6=Stun, 7=Control
 
@@ -1007,6 +1021,7 @@
 
   --/| ==========END OF FOR LOOP ==========
 
+    --:SkipToNextTarget|
     --:PassAutomaticEffectSection|
 
     --+|[br]

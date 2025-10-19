@@ -240,7 +240,7 @@ def calculate_damage_batch_gpu(
     flat_bonuses: torch.Tensor,
     durability: int,
     use_brutal: bool = False,
-    brutal_threshold: int = 10
+    brutal_threshold: int = 20
 ) -> torch.Tensor:
     """
     Calculate damage for a batch of attacks on GPU.

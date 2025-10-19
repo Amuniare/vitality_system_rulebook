@@ -46,6 +46,7 @@ class BuildTester:
         builds = list(generate_archetype_builds_chunked(
             self.archetype,
             self.config.tier,
+            attack_types=self.config.attack_types,
             max_points_per_attack=self.max_points,
             config=self.config
         ))

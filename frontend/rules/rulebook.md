@@ -491,7 +491,7 @@ Choose one Limit, you must put that limit on all your attacks, you cannot be a F
 - You've dealt damage or conditions to an enemy last turn
 
 **24. Untouchable**
-- All attacks have missed you since last turn
+- All attacks have missed you since last turn, must have been attacked
 - You dealt damage or applied a condition this turn
 
 
@@ -977,10 +977,6 @@ Effect: After hitting target, mark them as Priority Target until start of next t
 Ally Bonus: Other characters gain Tier Accuracy bonus against marked target
 Frequency: Once per turn
 
-**Menacing**
-Cost: 3p
-Effect: Reducing enemy to 0 HP allows Intimidation attempt against all enemies within 2 spaces of the target
-Surrender Threshold: Enemies with HP ≤ (Intimidation check - 10) surrender
 
 **Intimidating Presence**
 Cost: 2p
@@ -1144,7 +1140,7 @@ Limit: Been hit but took no damage since last turn
 **Untouchable**
 Cost: 1p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
-Limit: All attacks missed since last turn
+Limit: All attacks missed since last turn, must have been attacked
 
 **Avenger**
 Cost: 1p

@@ -21,6 +21,13 @@ class ProgressiveEliminationConfig:
 
 
 @dataclass
+class DualNaturedConfig:
+    """Dual natured archetype configuration for fallback attack system."""
+    fallback_attacks: List[str]
+    fallback_tier_bonus: int
+
+
+@dataclass
 class PruningConfig:
     """Pruning configuration for build optimization (used for versatile_master pre-generation)."""
     enabled: bool
@@ -55,6 +62,7 @@ class SimConfigV2:
     """Simplified simulation configuration."""
     tier: int
     archetypes: List[str]
+    attack_types: List[str]  # Which attack types to test (default: all)
     simulation_runs: int
     use_threading: bool
     use_gpu: bool  # Enable GPU acceleration for dice rolling and batch operations
@@ -62,6 +70,7 @@ class SimConfigV2:
     attacker_stats: List[int]
     defender_stats: List[int]
     scenarios: List[ScenarioConfig]
+    dual_natured: DualNaturedConfig
     pruning: PruningConfig
     progressive_elimination: ProgressiveEliminationConfig
 
@@ -85,6 +94,13 @@ class SimConfigV2:
                 enemy_hp=scenario_data.get('enemy_hp'),
                 enemy_hp_list=scenario_data.get('enemy_hp_list')
             ))
+
+        # Parse dual_natured config (with defaults if not specified)
+        dual_natured_data = data.get('dual_natured', {})
+        dual_natured = DualNaturedConfig(
+            fallback_attacks=dual_natured_data.get('fallback_attacks', ['melee_dg']),
+            fallback_tier_bonus=dual_natured_data.get('fallback_tier_bonus', 1)
+        )
 
         # Parse pruning config (with defaults if not specified)
         pruning_data = data.get('pruning', {})
@@ -114,6 +130,7 @@ class SimConfigV2:
         return cls(
             tier=data['tier'],
             archetypes=data['archetypes'],
+            attack_types=data.get('attack_types', ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage', 'direct_area_damage']),
             simulation_runs=data['simulation_runs'],
             use_threading=data['use_threading'],
             use_gpu=data.get('use_gpu', True),  # Default to True if not specified
@@ -121,6 +138,7 @@ class SimConfigV2:
             attacker_stats=data['character_config']['attacker'],
             defender_stats=data['character_config']['defender'],
             scenarios=scenarios,
+            dual_natured=dual_natured,
             pruning=pruning,
             progressive_elimination=progressive_elimination
         )

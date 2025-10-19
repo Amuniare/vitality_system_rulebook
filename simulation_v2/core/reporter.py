@@ -2,6 +2,7 @@
 
 import os
 import statistics
+from datetime import datetime
 from typing import List, Tuple, Dict
 
 from src.game_data import UPGRADES, LIMITS
@@ -82,7 +83,17 @@ class ReporterV2:
         if individual_results_dict:
             self._generate_balance_assessment_report(enhancement_stats, overall_median)
 
-        print(f"  Reports saved to {self.reports_dir}")
+        # Generate multi-tier reports (saturation and ranking)
+        print(f"\n  Generating multi-tier reports...")
+        self._generate_enhancement_saturation_report(build_results, overall_median)
+        self._generate_enhancement_ranking_tiers_report(build_results, overall_median)
+
+        # Generate top N reports (attack type distribution and enhancement saturation)
+        print(f"\n  Generating top N analysis reports...")
+        self._generate_top_n_attack_type_reports(build_results, overall_median)
+        self._generate_top_n_saturation_reports(build_results, overall_median)
+
+        print(f"\n  Reports saved to {self.reports_dir}")
 
     def _calculate_enhancement_stats(
         self,
@@ -179,26 +190,42 @@ class ReporterV2:
             avg_turns = statistics.mean(turns_values)
             vs_median = avg_turns - median_turns
 
-            # Top 1%, Top 5%, Top 10%, Top 20%, and Top 50% statistics
+            # Top 0.02%, Top 0.05%, Top 0.2%, Top 0.5%, Top 1%, Top 5%, Top 10%, Top 20%, and Top 50% statistics
             sorted_appearances = sorted(appearances, key=lambda x: x[0])  # Sort by rank
+            top_0_02_count = max(1, len(sorted_appearances) // 5000)  # Top 0.02%
+            top_0_05_count = max(1, len(sorted_appearances) // 2000)  # Top 0.05%
+            top_0_2_count = max(1, len(sorted_appearances) // 500)   # Top 0.2%
+            top_0_5_count = max(1, len(sorted_appearances) // 200)   # Top 0.5%
             top_1_count = max(1, len(sorted_appearances) // 100)
             top_5_count = max(1, len(sorted_appearances) // 20)
             top_10_count = max(1, len(sorted_appearances) // 10)
             top_20_count = max(1, len(sorted_appearances) // 5)
             top_50_count = max(1, len(sorted_appearances) // 2)
 
+            top_0_02_turns = [turns for _, turns in sorted_appearances[:top_0_02_count]]
+            top_0_05_turns = [turns for _, turns in sorted_appearances[:top_0_05_count]]
+            top_0_2_turns = [turns for _, turns in sorted_appearances[:top_0_2_count]]
+            top_0_5_turns = [turns for _, turns in sorted_appearances[:top_0_5_count]]
             top_1_turns = [turns for _, turns in sorted_appearances[:top_1_count]]
             top_5_turns = [turns for _, turns in sorted_appearances[:top_5_count]]
             top_10_turns = [turns for _, turns in sorted_appearances[:top_10_count]]
             top_20_turns = [turns for _, turns in sorted_appearances[:top_20_count]]
             top_50_turns = [turns for _, turns in sorted_appearances[:top_50_count]]
 
+            median_top_0_02 = statistics.median(top_0_02_turns) if top_0_02_turns else 0
+            median_top_0_05 = statistics.median(top_0_05_turns) if top_0_05_turns else 0
+            median_top_0_2 = statistics.median(top_0_2_turns) if top_0_2_turns else 0
+            median_top_0_5 = statistics.median(top_0_5_turns) if top_0_5_turns else 0
             median_top_1 = statistics.median(top_1_turns) if top_1_turns else 0
             median_top_5 = statistics.median(top_5_turns) if top_5_turns else 0
             median_top_10 = statistics.median(top_10_turns) if top_10_turns else 0
             median_top_20 = statistics.median(top_20_turns) if top_20_turns else 0
             median_top_50 = statistics.median(top_50_turns) if top_50_turns else 0
 
+            top0_02_vs_median = median_top_0_02 - median_turns
+            top0_05_vs_median = median_top_0_05 - median_turns
+            top0_2_vs_median = median_top_0_2 - median_turns
+            top0_5_vs_median = median_top_0_5 - median_turns
             top1_vs_median = median_top_1 - median_turns
             top5_vs_median = median_top_5 - median_turns
             top10_vs_median = median_top_10 - median_turns
@@ -206,6 +233,10 @@ class ReporterV2:
             top50_vs_median = median_top_50 - median_turns
 
             cost = data['cost']
+            top0_02_efficiency = top0_02_vs_median / cost if cost > 0 else 0
+            top0_05_efficiency = top0_05_vs_median / cost if cost > 0 else 0
+            top0_2_efficiency = top0_2_vs_median / cost if cost > 0 else 0
+            top0_5_efficiency = top0_5_vs_median / cost if cost > 0 else 0
             top1_efficiency = top1_vs_median / cost if cost > 0 else 0
             top5_efficiency = top5_vs_median / cost if cost > 0 else 0
             top10_efficiency = top10_vs_median / cost if cost > 0 else 0
@@ -290,6 +321,18 @@ class ReporterV2:
                 'cost': cost,
                 'avg_turns': avg_turns,
                 'vs_median': vs_median,
+                'median_top_0_02': median_top_0_02,
+                'top0_02_vs_median': top0_02_vs_median,
+                'top0_02_efficiency': top0_02_efficiency,
+                'median_top_0_05': median_top_0_05,
+                'top0_05_vs_median': top0_05_vs_median,
+                'top0_05_efficiency': top0_05_efficiency,
+                'median_top_0_2': median_top_0_2,
+                'top0_2_vs_median': top0_2_vs_median,
+                'top0_2_efficiency': top0_2_efficiency,
+                'median_top_0_5': median_top_0_5,
+                'top0_5_vs_median': top0_5_vs_median,
+                'top0_5_efficiency': top0_5_efficiency,
                 'median_top_1': median_top_1,
                 'top1_vs_median': top1_vs_median,
                 'top1_efficiency': top1_efficiency,
@@ -444,7 +487,7 @@ class ReporterV2:
             f.write("**Key Metrics**:\n")
             f.write("1. **Avg Turns**: Mean turns across all builds containing this enhancement\n")
             f.write("2. **vs Median**: Deviation from overall median (negative = better than median)\n")
-            f.write("3. **Top1%/5%/10%/20%/50% Turns**: Median turns for the top X% of builds (by rank) containing this enhancement\n")
+            f.write("3. **Top0.02%/0.05%/0.2%/0.5%/1%/5%/10%/20%/50% Turns**: Median turns for the top X% of builds (by rank) containing this enhancement\n")
             f.write("4. **TopX% vs Median**: How much better/worse the top X% performs vs overall median\n")
             f.write("5. **TopX% Efficiency**: (TopX% vs Median) / cost - efficiency metric normalized by cost\n")
             f.write("6. **Attack Type Breakdown**: Average turns when used with each attack type (0 = incompatible)\n")
@@ -457,17 +500,21 @@ class ReporterV2:
 
             # Table header - conditional based on archetype
             if has_multi_attack:
-                f.write("| Rank | Enhancement | Cost | Top20% vs Med / cost | Avg Turns | vs Median | Top1% | Top1% vs Med | Top1% Eff | Top5% | Top5% vs Med | Top5% Eff | Top10% | Top10% vs Med | Top10% Eff | Top20% | Top20% vs Med | Top20% Eff | Top50% | Top50% vs Med | Top50% Eff | Melee_AC | Melee_DG | Ranged | Area | Direct | Slot1 | Slot2 | Used1 | Used2 | Uses | Med Rank |\n")
-                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
+                f.write("| Rank | Enhancement | Cost | Top20% vs Med / cost | Avg Turns | vs Median | Top0.02% | Top0.02% vs Med | Top0.02% Eff | Top0.05% | Top0.05% vs Med | Top0.05% Eff | Top0.2% | Top0.2% vs Med | Top0.2% Eff | Top0.5% | Top0.5% vs Med | Top0.5% Eff | Top1% | Top1% vs Med | Top1% Eff | Top5% | Top5% vs Med | Top5% Eff | Top10% | Top10% vs Med | Top10% Eff | Top20% | Top20% vs Med | Top20% Eff | Top50% | Top50% vs Med | Top50% Eff | Melee_AC | Melee_DG | Ranged | Area | Direct | Slot1 | Slot2 | Used1 | Used2 | Uses | Med Rank |\n")
+                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
             else:
-                f.write("| Rank | Enhancement | Cost | Top20% vs Med / cost | Avg Turns | vs Median | Top1% | Top1% vs Median | Top1% Eff | Top5% | Top5% vs Median | Top5% Eff | Top10% | Top10% vs Median | Top10% Eff | Top20% | Top20% vs Median | Top20% Eff | Top50% | Top50% vs Median | Top50% Eff | Melee_AC | Melee_DG | Ranged | Area | Direct | Uses | Med Rank |\n")
-                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
+                f.write("| Rank | Enhancement | Cost | Top20% vs Med / cost | Avg Turns | vs Median | Top0.02% | Top0.02% vs Median | Top0.02% Eff | Top0.05% | Top0.05% vs Median | Top0.05% Eff | Top0.2% | Top0.2% vs Median | Top0.2% Eff | Top0.5% | Top0.5% vs Median | Top0.5% Eff | Top1% | Top1% vs Median | Top1% Eff | Top5% | Top5% vs Median | Top5% Eff | Top10% | Top10% vs Median | Top10% Eff | Top20% | Top20% vs Median | Top20% Eff | Top50% | Top50% vs Median | Top50% Eff | Melee_AC | Melee_DG | Ranged | Area | Direct | Uses | Med Rank |\n")
+                f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
 
             # Table rows
             for i, stats in enumerate(enhancement_stats_sorted, 1):
                 row = (
                     f"| {i} | {stats['name']} | {stats['cost']}p | {stats['top20_efficiency']:.2f} | "
                     f"{stats['avg_turns']:.1f} | {stats['vs_median']:+.1f} | "
+                    f"{stats['median_top_0_02']:.1f} | {stats['top0_02_vs_median']:+.1f} | {stats['top0_02_efficiency']:.2f} | "
+                    f"{stats['median_top_0_05']:.1f} | {stats['top0_05_vs_median']:+.1f} | {stats['top0_05_efficiency']:.2f} | "
+                    f"{stats['median_top_0_2']:.1f} | {stats['top0_2_vs_median']:+.1f} | {stats['top0_2_efficiency']:.2f} | "
+                    f"{stats['median_top_0_5']:.1f} | {stats['top0_5_vs_median']:+.1f} | {stats['top0_5_efficiency']:.2f} | "
                     f"{stats['median_top_1']:.1f} | {stats['top1_vs_median']:+.1f} | {stats['top1_efficiency']:.2f} | "
                     f"{stats['median_top_5']:.1f} | {stats['top5_vs_median']:+.1f} | {stats['top5_efficiency']:.2f} | "
                     f"{stats['median_top_10']:.1f} | {stats['top10_vs_median']:+.1f} | {stats['top10_efficiency']:.2f} | "
@@ -492,6 +539,18 @@ class ReporterV2:
             f.write("- **Top20% vs Med / cost**: (Top20% vs Median) / cost - primary ranking metric (lower = better)\n")
             f.write("- **Avg Turns**: Average turns to kill across all builds with this enhancement\n")
             f.write("- **vs Median**: Deviation from median (negative = better than median)\n")
+            f.write("- **Top0.02%**: Median turns for top 0.02% of builds with this enhancement (ultra-elite tier)\n")
+            f.write("- **Top0.02% vs Median**: Top 0.02% deviation from overall median\n")
+            f.write("- **Top0.02% Eff**: (Top0.02% vs Median) / cost (efficiency metric)\n")
+            f.write("- **Top0.05%**: Median turns for top 0.05% of builds with this enhancement (ultra-elite tier)\n")
+            f.write("- **Top0.05% vs Median**: Top 0.05% deviation from overall median\n")
+            f.write("- **Top0.05% Eff**: (Top0.05% vs Median) / cost (efficiency metric)\n")
+            f.write("- **Top0.2%**: Median turns for top 0.2% of builds with this enhancement (elite tier)\n")
+            f.write("- **Top0.2% vs Median**: Top 0.2% deviation from overall median\n")
+            f.write("- **Top0.2% Eff**: (Top0.2% vs Median) / cost (efficiency metric)\n")
+            f.write("- **Top0.5%**: Median turns for top 0.5% of builds with this enhancement (elite tier)\n")
+            f.write("- **Top0.5% vs Median**: Top 0.5% deviation from overall median\n")
+            f.write("- **Top0.5% Eff**: (Top0.5% vs Median) / cost (efficiency metric)\n")
             f.write("- **Top1%**: Median turns for top 1% of builds with this enhancement\n")
             f.write("- **Top1% vs Median**: Top 1% deviation from overall median\n")
             f.write("- **Top1% Eff**: (Top1% vs Median) / cost (efficiency metric)\n")
@@ -562,7 +621,7 @@ class ReporterV2:
             f.write("1. **Avg Turns**: Mean turns across all builds containing this enhancement\n")
             f.write("2. **vs Median**: Deviation from overall median (negative = better than median)\n")
             f.write("3. **Efficiency**: (vs Median) / cost - raw cost efficiency across all builds\n")
-            f.write("4. **Top1%/5%/10%/20%/50% Metrics**: Performance and efficiency in top-performing builds\n")
+            f.write("4. **Top0.02%/0.05%/0.2%/0.5%/1%/5%/10%/20%/50% Metrics**: Performance and efficiency in top-performing builds\n")
             f.write("5. **TopX% Efficiency**: (TopX% vs Median) / cost - normalized efficiency in top builds\n\n")
             f.write("**Sorting**: Primary by cost (ascending), secondary by avg turns (ascending = better)\n\n")
             f.write("**Purpose**: Identify the best value enhancements at each cost tier for budget-constrained builds.\n\n")
@@ -579,8 +638,8 @@ class ReporterV2:
             # All enhancements by cost and performance
             f.write("## All Upgrades/Limits by Cost and Performance\n\n")
             f.write("Sorted by: Cost (ascending), then Avg Turns (ascending)\n\n")
-            f.write("| Enhancement | Cost | Avg Turns | vs Median | Efficiency | Top1% | Top1% vs Med | Top1% Eff | Top5% | Top5% vs Med | Top5% Eff | Top10% | Top10% vs Med | Top10% Eff | Top20% | Top20% vs Med | Top20% Eff | Top50% | Top50% vs Med | Top50% Eff |\n")
-            f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
+            f.write("| Enhancement | Cost | Avg Turns | vs Median | Efficiency | Top0.02% | Top0.02% vs Med | Top0.02% Eff | Top0.05% | Top0.05% vs Med | Top0.05% Eff | Top0.2% | Top0.2% vs Med | Top0.2% Eff | Top0.5% | Top0.5% vs Med | Top0.5% Eff | Top1% | Top1% vs Med | Top1% Eff | Top5% | Top5% vs Med | Top5% Eff | Top10% | Top10% vs Med | Top10% Eff | Top20% | Top20% vs Med | Top20% Eff | Top50% | Top50% vs Med | Top50% Eff |\n")
+            f.write("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n")
 
             for cost in sorted(cost_groups.keys()):
                 f.write(f"| **COST {cost}** |\n")
@@ -589,6 +648,14 @@ class ReporterV2:
                     f.write(
                         f"| {stats['name']} | {cost} | {stats['avg_turns']:.1f} | "
                         f"{stats['vs_median']:+.1f} | {efficiency:.2f} | "
+                        f"{stats['median_top_0_02']:.1f} | {stats['top0_02_vs_median']:+.1f} | "
+                        f"{stats['top0_02_efficiency']:.2f} | "
+                        f"{stats['median_top_0_05']:.1f} | {stats['top0_05_vs_median']:+.1f} | "
+                        f"{stats['top0_05_efficiency']:.2f} | "
+                        f"{stats['median_top_0_2']:.1f} | {stats['top0_2_vs_median']:+.1f} | "
+                        f"{stats['top0_2_efficiency']:.2f} | "
+                        f"{stats['median_top_0_5']:.1f} | {stats['top0_5_vs_median']:+.1f} | "
+                        f"{stats['top0_5_efficiency']:.2f} | "
                         f"{stats['median_top_1']:.1f} | {stats['top1_vs_median']:+.1f} | "
                         f"{stats['top1_efficiency']:.2f} | "
                         f"{stats['median_top_5']:.1f} | {stats['top5_vs_median']:+.1f} | "
@@ -606,6 +673,18 @@ class ReporterV2:
             f.write("- **Avg Turns**: Average turns to kill across all builds with this enhancement\n")
             f.write("- **vs Median**: Deviation from median turns (negative = better than median)\n")
             f.write("- **Efficiency**: (vs Median) / cost (lower is better)\n")
+            f.write("- **Top0.02%**: Median turns for top 0.02% performing builds (ultra-elite tier)\n")
+            f.write("- **Top0.02% vs Med**: Top 0.02% deviation from overall median\n")
+            f.write("- **Top0.02% Eff**: (Top0.02% vs Median) / cost\n")
+            f.write("- **Top0.05%**: Median turns for top 0.05% performing builds (ultra-elite tier)\n")
+            f.write("- **Top0.05% vs Med**: Top 0.05% deviation from overall median\n")
+            f.write("- **Top0.05% Eff**: (Top0.05% vs Median) / cost\n")
+            f.write("- **Top0.2%**: Median turns for top 0.2% performing builds (elite tier)\n")
+            f.write("- **Top0.2% vs Med**: Top 0.2% deviation from overall median\n")
+            f.write("- **Top0.2% Eff**: (Top0.2% vs Median) / cost\n")
+            f.write("- **Top0.5%**: Median turns for top 0.5% performing builds (elite tier)\n")
+            f.write("- **Top0.5% vs Med**: Top 0.5% deviation from overall median\n")
+            f.write("- **Top0.5% Eff**: (Top0.5% vs Median) / cost\n")
             f.write("- **Top1%**: Median turns for top 1% performing builds\n")
             f.write("- **Top1% vs Med**: Top 1% deviation from overall median\n")
             f.write("- **Top1% Eff**: (Top1% vs Median) / cost\n")
@@ -1107,7 +1186,12 @@ class ReporterV2:
         for build, _, _ in top_builds:
             if isinstance(build, MultiAttackBuild):
                 # Multi-attack build
-                attack_type_pattern = " + ".join([sub.attack_type for sub in build.builds])
+                if build.archetype == 'dual_natured' and hasattr(build, 'fallback_type'):
+                    # Show as "primary (FB: fallback)"
+                    attack_type_pattern = f"{build.builds[0].attack_type} (FB: {build.fallback_type})"
+                else:
+                    # Show all attacks joined
+                    attack_type_pattern = " + ".join([sub.attack_type for sub in build.builds])
                 attack_type_counts[attack_type_pattern] += 1
 
                 # Collect all enhancements
@@ -1357,7 +1441,14 @@ class ReporterV2:
                     attack_types = []
                     enhancements = []
 
-                    for idx, sub_build in enumerate(build.builds, 1):
+                    # For dual_natured, only show the primary attack (builds[0])
+                    # The fallback (builds[1]) is shown via FB metadata
+                    if build.archetype == 'dual_natured':
+                        builds_to_show = [build.builds[0]]  # Only primary
+                    else:
+                        builds_to_show = build.builds  # All attacks for other archetypes
+
+                    for idx, sub_build in enumerate(builds_to_show, 1):
                         attack_types.append(f"Atk{idx}: {sub_build.attack_type}")
 
                         # Combine upgrades and limits
@@ -1373,6 +1464,9 @@ class ReporterV2:
                             enhancements.append(f"Atk{idx}: (none)")
 
                     attack_type_str = "; ".join(attack_types)
+                    # Add fallback type for dual_natured builds
+                    if hasattr(build, 'fallback_type') and build.fallback_type:
+                        attack_type_str += f" | FB: {build.fallback_type}+{build.tier_bonus}"
                     enhancements_str = " &#124; ".join(enhancements)  # Use HTML entity for pipe
                     cost = build.get_total_cost()
                 else:
@@ -1642,3 +1736,1367 @@ class ReporterV2:
             f.write("- **Synergy calculation**: Compares top 50% build performance vs individual testing\n")
 
         print(f"  + Balance assessment report: balance_assessment_{self.archetype}.md")
+
+    def _generate_enhancement_saturation_report(
+        self,
+        build_results: List[Tuple],
+        overall_median: float
+    ):
+        """Generate multi-tier enhancement saturation reports (Top 50%, 20%, 5%, 1%, 0.5%, 0.2%, 0.1%, 0.05%, 0.02%, 0.01%).
+
+        Shows what % of builds in each performance tier contain each enhancement.
+        Counts each enhancement once per build (no double-counting).
+
+        Args:
+            build_results: List of (build, avg_dpt, avg_turns) tuples, already sorted by performance
+            overall_median: Median turns across all builds
+        """
+        from collections import defaultdict
+
+        # Define tier thresholds
+        tiers = {
+            'top_50': (0.50, 'Top 50%'),
+            'top_20': (0.20, 'Top 20%'),
+            'top_5': (0.05, 'Top 5%'),
+            'top_1': (0.01, 'Top 1%'),
+            'top_0_5': (0.005, 'Top 0.5%'),
+            'top_0_2': (0.002, 'Top 0.2%'),
+            'top_0_1': (0.001, 'Top 0.1%'),
+            'top_0_05': (0.0005, 'Top 0.05%'),
+            'top_0_02': (0.0002, 'Top 0.02%'),
+            'top_0_01': (0.0001, 'Top 0.01%')
+        }
+
+        for tier_key, (threshold, tier_name) in tiers.items():
+            tier_count = max(1, int(len(build_results) * threshold))
+            tier_results = build_results[:tier_count]
+
+            # Track enhancement appearances
+            enhancement_counts = defaultdict(int)
+            enhancement_types = {}
+            enhancement_costs = {}
+
+            for build, _, _ in tier_results:
+                # Track unique enhancements per build (avoid double counting)
+                enhancements_in_build = set()
+
+                if isinstance(build, MultiAttackBuild):
+                    # Process each sub-build
+                    for sub_build in build.builds:
+                        for upgrade in sub_build.upgrades:
+                            enhancements_in_build.add(upgrade)
+                            if upgrade not in enhancement_types:
+                                enhancement_types[upgrade] = 'upgrade'
+                                enhancement_costs[upgrade] = UPGRADES[upgrade].cost
+
+                        for limit in sub_build.limits:
+                            enhancements_in_build.add(limit)
+                            if limit not in enhancement_types:
+                                enhancement_types[limit] = 'limit'
+                                enhancement_costs[limit] = LIMITS[limit].cost
+                else:
+                    # Single attack build
+                    for upgrade in build.upgrades:
+                        enhancements_in_build.add(upgrade)
+                        if upgrade not in enhancement_types:
+                            enhancement_types[upgrade] = 'upgrade'
+                            enhancement_costs[upgrade] = UPGRADES[upgrade].cost
+
+                    for limit in build.limits:
+                        enhancements_in_build.add(limit)
+                        if limit not in enhancement_types:
+                            enhancement_types[limit] = 'limit'
+                            enhancement_costs[limit] = LIMITS[limit].cost
+
+                # Count each unique enhancement once per build
+                for enh in enhancements_in_build:
+                    enhancement_counts[enh] += 1
+
+            # Calculate saturation rates
+            saturation_data = []
+            for name, count in enhancement_counts.items():
+                saturation_rate = (count / len(tier_results)) * 100
+
+                saturation_data.append({
+                    'name': name,
+                    'type': enhancement_types[name],
+                    'cost': enhancement_costs[name],
+                    'appearances': count,
+                    'saturation_rate': saturation_rate
+                })
+
+            # Sort by saturation rate (descending)
+            saturation_data.sort(key=lambda x: x['saturation_rate'], reverse=True)
+
+            # Write report
+            report_path = os.path.join(self.reports_dir, f'enhancement_saturation_{tier_key}.md')
+            with open(report_path, 'w', encoding='utf-8') as f:
+                f.write(f"# {self.archetype.upper()} - Enhancement Saturation Report ({tier_name})\n\n")
+                f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
+                # Summary
+                f.write("## Summary\n\n")
+                f.write(f"- **Tier**: {tier_name} of all builds ({len(tier_results):,} builds)\n")
+                f.write(f"- **Unique enhancements found**: {len(saturation_data)}\n")
+                if saturation_data:
+                    f.write(f"- **Average saturation rate**: {statistics.mean([d['saturation_rate'] for d in saturation_data]):.1f}%\n")
+                    f.write(f"- **Median saturation rate**: {statistics.median([d['saturation_rate'] for d in saturation_data]):.1f}%\n\n")
+                else:
+                    f.write("- **Average saturation rate**: N/A\n")
+                    f.write("- **Median saturation rate**: N/A\n\n")
+
+                # Methodology
+                f.write("## Methodology\n\n")
+                f.write(f"This report shows saturation rates for enhancements in the {tier_name} of all tested builds.\n\n")
+                f.write("**Key Metrics**:\n")
+                f.write("1. **Saturation Rate**: % of builds containing this enhancement (counts once per build)\n")
+                f.write("2. **Appearances**: Number of builds containing this enhancement\n")
+                f.write("3. **Type**: upgrade or limit\n")
+                f.write("4. **Cost**: Point cost of enhancement\n\n")
+                f.write("**Interpretation**:\n")
+                f.write("- **High saturation (>60%)**: Core enhancement, appears in most top builds\n")
+                f.write("- **Medium saturation (30-60%)**: Common enhancement, frequently used\n")
+                f.write("- **Low saturation (<30%)**: Niche enhancement, situational use\n\n")
+
+                # Main table
+                f.write("## Enhancement Saturation Rankings\n\n")
+                f.write("Sorted by saturation rate (descending).\n\n")
+                f.write("| Rank | Enhancement | Type | Cost | Appearances | Saturation Rate |\n")
+                f.write("|------|-------------|------|------|-------------|----------------|\n")
+
+                for rank, data in enumerate(saturation_data, 1):
+                    f.write(
+                        f"| {rank} | {data['name']} | {data['type']} | {data['cost']}p | "
+                        f"{data['appearances']:,} | {data['saturation_rate']:.1f}% |\n"
+                    )
+
+                # Distribution analysis
+                f.write("\n## Saturation Distribution\n\n")
+
+                # Count by saturation bracket
+                high_sat = sum(1 for d in saturation_data if d['saturation_rate'] > 60)
+                medium_sat = sum(1 for d in saturation_data if 30 <= d['saturation_rate'] <= 60)
+                low_sat = sum(1 for d in saturation_data if d['saturation_rate'] < 30)
+
+                f.write("| Saturation Level | Count | % of Enhancements |\n")
+                f.write("|-----------------|-------|------------------|\n")
+                if saturation_data:
+                    f.write(f"| High (>60%) | {high_sat} | {high_sat / len(saturation_data) * 100:.1f}% |\n")
+                    f.write(f"| Medium (30-60%) | {medium_sat} | {medium_sat / len(saturation_data) * 100:.1f}% |\n")
+                    f.write(f"| Low (<30%) | {low_sat} | {low_sat / len(saturation_data) * 100:.1f}% |\n")
+                else:
+                    f.write(f"| High (>60%) | 0 | 0.0% |\n")
+                    f.write(f"| Medium (30-60%) | 0 | 0.0% |\n")
+                    f.write(f"| Low (<30%) | 0 | 0.0% |\n")
+
+                # Top 10 saturated enhancements
+                f.write("\n## Top 10 Most Saturated Enhancements\n\n")
+                f.write("| Enhancement | Type | Cost | Saturation Rate |\n")
+                f.write("|-------------|------|------|----------------|\n")
+
+                for data in saturation_data[:10]:
+                    f.write(
+                        f"| {data['name']} | {data['type']} | {data['cost']}p | "
+                        f"{data['saturation_rate']:.1f}% |\n"
+                    )
+
+                # Bottom 10 least saturated enhancements
+                if len(saturation_data) > 10:
+                    f.write("\n## Bottom 10 Least Saturated Enhancements\n\n")
+                    f.write("| Enhancement | Type | Cost | Saturation Rate |\n")
+                    f.write("|-------------|------|------|----------------|\n")
+
+                    for data in saturation_data[-10:]:
+                        f.write(
+                            f"| {data['name']} | {data['type']} | {data['cost']}p | "
+                            f"{data['saturation_rate']:.1f}% |\n"
+                        )
+
+                # Notes
+                f.write("\n## Notes\n\n")
+                f.write("- **Saturation Rate**: Calculated as (builds with enhancement / total builds in tier) × 100\n")
+                f.write("- **Each enhancement counted once per build**: If an enhancement appears in multiple attacks, it's still counted as one appearance\n")
+                f.write("- **High saturation indicates meta-defining enhancements**: Core to successful builds in this tier\n")
+                f.write("- **Low saturation doesn't mean weak**: May be situational or niche but powerful in specific contexts\n")
+
+            print(f"  + {tier_name} saturation report: enhancement_saturation_{tier_key}.md")
+
+    def _generate_enhancement_ranking_tiers_report(
+        self,
+        build_results: List[Tuple],
+        overall_median: float
+    ):
+        """Generate multi-tier enhancement ranking reports with detailed performance metrics.
+
+        Shows performance statistics for enhancements in each performance tier (Top 50%, 20%, 5%, 1%, 0.5%, 0.2%, 0.1%, 0.05%, 0.02%, 0.01%).
+        Includes slot positions, usage percentages, and attack type breakdowns.
+
+        Args:
+            build_results: List of (build, avg_dpt, avg_turns) tuples, already sorted by performance
+            overall_median: Median turns across all builds
+        """
+        from collections import defaultdict
+
+        # Define tier thresholds
+        tiers = {
+            'top_50': (0.50, 'Top 50%'),
+            'top_20': (0.20, 'Top 20%'),
+            'top_5': (0.05, 'Top 5%'),
+            'top_1': (0.01, 'Top 1%'),
+            'top_0_5': (0.005, 'Top 0.5%'),
+            'top_0_2': (0.002, 'Top 0.2%'),
+            'top_0_1': (0.001, 'Top 0.1%'),
+            'top_0_05': (0.0005, 'Top 0.05%'),
+            'top_0_02': (0.0002, 'Top 0.02%'),
+            'top_0_01': (0.0001, 'Top 0.01%')
+        }
+
+        for tier_key, (threshold, tier_name) in tiers.items():
+            tier_count = max(1, int(len(build_results) * threshold))
+            tier_results = build_results[:tier_count]
+
+            # Calculate tier median
+            tier_turns = [avg_turns for _, _, avg_turns in tier_results]
+            tier_median = statistics.median(tier_turns)
+
+            # Track enhancement statistics
+            enhancement_data = defaultdict(lambda: {
+                'appearances': 0,
+                'total_turns': 0,
+                'slot_positions': defaultdict(int),  # Which attack slot (0, 1, 2, etc.)
+                'by_attack_type': defaultdict(list),
+            })
+
+            # Collect enhancement statistics
+            for build, _, avg_turns in tier_results:
+                if isinstance(build, MultiAttackBuild):
+                    # Process each sub-build
+                    for slot_idx, sub_build in enumerate(build.builds):
+                        for upgrade in sub_build.upgrades:
+                            enhancement_data[upgrade]['appearances'] += 1
+                            enhancement_data[upgrade]['total_turns'] += avg_turns
+                            enhancement_data[upgrade]['slot_positions'][slot_idx] += 1
+                            enhancement_data[upgrade]['by_attack_type'][sub_build.attack_type].append(avg_turns)
+
+                        for limit in sub_build.limits:
+                            enhancement_data[limit]['appearances'] += 1
+                            enhancement_data[limit]['total_turns'] += avg_turns
+                            enhancement_data[limit]['slot_positions'][slot_idx] += 1
+                            enhancement_data[limit]['by_attack_type'][sub_build.attack_type].append(avg_turns)
+                else:
+                    # Single attack build - always slot 0
+                    for upgrade in build.upgrades:
+                        enhancement_data[upgrade]['appearances'] += 1
+                        enhancement_data[upgrade]['total_turns'] += avg_turns
+                        enhancement_data[upgrade]['slot_positions'][0] += 1
+                        enhancement_data[upgrade]['by_attack_type'][build.attack_type].append(avg_turns)
+
+                    for limit in build.limits:
+                        enhancement_data[limit]['appearances'] += 1
+                        enhancement_data[limit]['total_turns'] += avg_turns
+                        enhancement_data[limit]['slot_positions'][0] += 1
+                        enhancement_data[limit]['by_attack_type'][build.attack_type].append(avg_turns)
+
+            # Calculate statistics for each enhancement
+            enhancement_stats = []
+            for name, data in enhancement_data.items():
+                if data['appearances'] == 0:
+                    continue
+
+                avg_turns = data['total_turns'] / data['appearances']
+                vs_median = avg_turns - tier_median
+
+                # Determine type and cost
+                if name in UPGRADES:
+                    enh_type = 'upgrade'
+                    cost = UPGRADES[name].cost
+                elif name in LIMITS:
+                    enh_type = 'limit'
+                    cost = LIMITS[name].cost
+                else:
+                    continue
+
+                efficiency = vs_median / cost if cost > 0 else 0
+
+                # Calculate slot percentages
+                slot_positions = data['slot_positions']
+                total_slot_appearances = sum(slot_positions.values())
+                slot1_pct = (slot_positions.get(0, 0) / total_slot_appearances * 100) if total_slot_appearances > 0 else 0
+                slot2_pct = (slot_positions.get(1, 0) / total_slot_appearances * 100) if total_slot_appearances > 0 else 0
+                slot3_pct = (slot_positions.get(2, 0) / total_slot_appearances * 100) if total_slot_appearances > 0 else 0
+
+                # Calculate appearance rate (% of builds in tier)
+                appearance_rate = (data['appearances'] / len(tier_results)) * 100
+
+                # Attack type breakdown (average turns when paired with each attack type)
+                attack_type_turns = {}
+                for attack_type in ['melee_ac', 'melee_dg', 'ranged', 'area', 'direct_damage']:
+                    if attack_type in data['by_attack_type']:
+                        attack_type_turns[attack_type] = statistics.mean(data['by_attack_type'][attack_type])
+                    else:
+                        attack_type_turns[attack_type] = None
+
+                enhancement_stats.append({
+                    'name': name,
+                    'type': enh_type,
+                    'cost': cost,
+                    'appearances': data['appearances'],
+                    'appearance_rate': appearance_rate,
+                    'avg_turns': avg_turns,
+                    'vs_median': vs_median,
+                    'efficiency': efficiency,
+                    'slot1_pct': slot1_pct,
+                    'slot2_pct': slot2_pct,
+                    'slot3_pct': slot3_pct,
+                    'has_multi_slots': total_slot_appearances > data['appearances'],  # Appears in multiple slots
+                    **attack_type_turns
+                })
+
+            # Sort by efficiency (ascending = better)
+            enhancement_stats.sort(key=lambda x: x['efficiency'])
+
+            # Write report
+            report_path = os.path.join(self.reports_dir, f'enhancement_ranking_{tier_key}.md')
+            with open(report_path, 'w', encoding='utf-8') as f:
+                f.write(f"# {self.archetype.upper()} - Enhancement Ranking Report ({tier_name})\n\n")
+                f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
+                # Summary
+                f.write("## Summary\n\n")
+                f.write(f"- **Tier**: {tier_name} of all builds ({len(tier_results):,} builds)\n")
+                f.write(f"- **Tier Median**: {tier_median:.2f} turns\n")
+                f.write(f"- **Overall Median**: {overall_median:.2f} turns\n")
+                f.write(f"- **Unique enhancements**: {len(enhancement_stats)}\n\n")
+
+                # Methodology
+                f.write("## Methodology\n\n")
+                f.write(f"This report ranks enhancements by their performance in the {tier_name} of all tested builds.\n\n")
+                f.write("**Key Metrics**:\n")
+                f.write("1. **Appearance Rate**: % of builds in tier containing this enhancement\n")
+                f.write("2. **Avg Turns**: Average turns for builds with this enhancement\n")
+                f.write("3. **vs Median**: Deviation from tier median (negative = better)\n")
+                f.write("4. **Efficiency**: (vs Median) / cost - cost-normalized performance (lower = better value)\n")
+                f.write("5. **Slot1/Slot2/Slot3**: % of appearances in each attack slot\n")
+                f.write("6. **Attack Type Columns**: Average turns when paired with each attack type\n\n")
+                f.write("**Sorting**: By efficiency (lower = better value)\n\n")
+
+                # Main table
+                f.write("## Enhancement Performance Rankings\n\n")
+                f.write("| Rank | Enhancement | Type | Cost | Appearances | App % | Avg Turns | vs Median | Efficiency |\n")
+                f.write("|------|-------------|------|------|-------------|-------|-----------|-----------|------------|\n")
+
+                for rank, stat in enumerate(enhancement_stats, 1):
+                    f.write(
+                        f"| {rank} | {stat['name']} | {stat['type']} | {stat['cost']}p | "
+                        f"{stat['appearances']:,} | {stat['appearance_rate']:.1f}% | "
+                        f"{stat['avg_turns']:.2f} | {stat['vs_median']:+.2f} | {stat['efficiency']:.3f} |\n"
+                    )
+
+                # Slot Distribution (only for multi-attack archetypes)
+                has_multi_attack = any(stat['slot2_pct'] > 0 or stat['slot3_pct'] > 0 for stat in enhancement_stats)
+                if has_multi_attack:
+                    f.write("\n## Slot Distribution\n\n")
+                    f.write("Shows which attack slot each enhancement typically appears in.\n\n")
+                    f.write("| Enhancement | Type | Slot 1 | Slot 2 | Slot 3 |\n")
+                    f.write("|-------------|------|--------|--------|--------|\n")
+
+                    for stat in enhancement_stats:
+                        if stat['slot2_pct'] > 0 or stat['slot3_pct'] > 0:
+                            f.write(
+                                f"| {stat['name']} | {stat['type']} | "
+                                f"{stat['slot1_pct']:.0f}% | {stat['slot2_pct']:.0f}% | {stat['slot3_pct']:.0f}% |\n"
+                            )
+
+                # Attack Type Breakdown
+                f.write("\n## Attack Type Performance Breakdown\n\n")
+                f.write("Average turns when paired with each attack type.\n\n")
+                f.write("| Enhancement | Type | Melee AC | Melee DG | Ranged | Area | Direct DMG |\n")
+                f.write("|-------------|------|----------|----------|--------|------|------------|\n")
+
+                for stat in enhancement_stats[:20]:  # Top 20 only to keep readable
+                    melee_ac = f"{stat['melee_ac']:.2f}" if stat['melee_ac'] is not None else "—"
+                    melee_dg = f"{stat['melee_dg']:.2f}" if stat['melee_dg'] is not None else "—"
+                    ranged = f"{stat['ranged']:.2f}" if stat['ranged'] is not None else "—"
+                    area = f"{stat['area']:.2f}" if stat['area'] is not None else "—"
+                    direct_damage = f"{stat['direct_damage']:.2f}" if stat['direct_damage'] is not None else "—"
+
+                    f.write(
+                        f"| {stat['name']} | {stat['type']} | {melee_ac} | {melee_dg} | "
+                        f"{ranged} | {area} | {direct_damage} |\n"
+                    )
+
+                # Top 10 by efficiency
+                f.write("\n## Top 10 Best Value Enhancements\n\n")
+                f.write("Ranked by efficiency (cost-normalized performance).\n\n")
+                f.write("| Enhancement | Type | Cost | Efficiency | vs Median |\n")
+                f.write("|-------------|------|------|------------|----------|\n")
+
+                for stat in enhancement_stats[:10]:
+                    f.write(
+                        f"| {stat['name']} | {stat['type']} | {stat['cost']}p | "
+                        f"{stat['efficiency']:.3f} | {stat['vs_median']:+.2f} |\n"
+                    )
+
+                # Bottom 10 by efficiency (worst value)
+                if len(enhancement_stats) > 10:
+                    f.write("\n## Bottom 10 Worst Value Enhancements\n\n")
+                    f.write("Lowest efficiency in this tier.\n\n")
+                    f.write("| Enhancement | Type | Cost | Efficiency | vs Median |\n")
+                    f.write("|-------------|------|------|------------|----------|\n")
+
+                    for stat in enhancement_stats[-10:]:
+                        f.write(
+                            f"| {stat['name']} | {stat['type']} | {stat['cost']}p | "
+                            f"{stat['efficiency']:.3f} | {stat['vs_median']:+.2f} |\n"
+                        )
+
+                # Notes
+                f.write("\n## Notes\n\n")
+                f.write("- **Efficiency**: (vs Median) / cost - lower is better (more negative = better value)\n")
+                f.write("- **Appearance Rate**: % of builds in this tier containing the enhancement\n")
+                f.write("- **Slot Distribution**: Shows which attack position the enhancement typically occupies\n")
+                f.write("- **Attack Type Breakdown**: Average performance when paired with specific attack types\n")
+                f.write("- **'—' in tables**: Enhancement not compatible or not tested with that attack type\n")
+
+            print(f"  + {tier_name} ranking report: enhancement_ranking_{tier_key}.md")
+
+    def _generate_top_n_attack_type_reports(
+        self,
+        build_results: List[Tuple],
+        overall_median: float,
+        archetype_label: str = None
+    ):
+        """Generate attack type distribution reports for fixed top N builds.
+
+        Shows which attack types appear most frequently in top N builds.
+        For MultiAttackBuilds, counts only primary attacks (excludes fallback attacks).
+
+        Args:
+            build_results: List of (build, avg_dpt, avg_turns, [archetype]) tuples, already sorted by performance
+            overall_median: Median turns across all builds
+            archetype_label: Optional label for combined reports (e.g., "COMBINED (FOCUSED + DUAL_NATURED)")
+        """
+        from collections import defaultdict
+
+        # Create top_n_analysis subdirectory
+        top_n_dir = os.path.join(self.reports_dir, 'top_n_analysis')
+        os.makedirs(top_n_dir, exist_ok=True)
+
+        # Define top N thresholds
+        thresholds = [10, 50, 100, 200, 500, 1000]
+
+        for n in thresholds:
+            # Skip if not enough builds
+            if len(build_results) < n:
+                print(f"  Skipping Top {n} attack type report (only {len(build_results)} builds)")
+                continue
+
+            top_n_results = build_results[:n]
+
+            # Track attack type appearances and archetype distribution
+            attack_type_counts = defaultdict(int)
+            attack_type_turns = defaultdict(list)
+            archetype_counts = defaultdict(int)  # Track builds by archetype
+            archetype_attack_types = defaultdict(lambda: defaultdict(int))  # Track attack types per archetype
+            total_attacks = 0
+
+            for result in top_n_results:
+                # Handle both 3-tuple and 4-tuple formats (with/without archetype)
+                if len(result) == 4:
+                    build, _, avg_turns, source_archetype = result
+                elif len(result) == 3:
+                    build, _, avg_turns = result
+                    source_archetype = self.archetype if hasattr(self, 'archetype') else None
+                else:
+                    continue
+
+                # Track archetype if available
+                if source_archetype:
+                    archetype_counts[source_archetype] += 1
+
+                if isinstance(build, MultiAttackBuild):
+                    # For dual_natured builds, only count primary attack (builds[0]), skip fallback (builds[1])
+                    if build.fallback_type:
+                        # Only count the primary attack (first build)
+                        primary_build = build.builds[0]
+                        attack_type = primary_build.attack_type
+                        attack_type_counts[attack_type] += 1
+                        attack_type_turns[attack_type].append(avg_turns)
+                        if source_archetype:
+                            archetype_attack_types[source_archetype][attack_type] += 1
+                        total_attacks += 1
+                    else:
+                        # For other multi-attack builds (versatile_master), count all attacks
+                        for sub_build in build.builds:
+                            attack_type = sub_build.attack_type
+                            attack_type_counts[attack_type] += 1
+                            attack_type_turns[attack_type].append(avg_turns)
+                            if source_archetype:
+                                archetype_attack_types[source_archetype][attack_type] += 1
+                            total_attacks += 1
+                else:
+                    # Single attack build (focused)
+                    attack_type = build.attack_type
+                    attack_type_counts[attack_type] += 1
+                    attack_type_turns[attack_type].append(avg_turns)
+                    if source_archetype:
+                        archetype_attack_types[source_archetype][attack_type] += 1
+                    total_attacks += 1
+
+            # Calculate statistics
+            attack_type_data = []
+            for attack_type, count in attack_type_counts.items():
+                saturation_rate = (count / total_attacks) * 100
+                avg_turns = statistics.mean(attack_type_turns[attack_type])
+
+                attack_type_data.append({
+                    'attack_type': attack_type,
+                    'appearances': count,
+                    'saturation_rate': saturation_rate,
+                    'avg_turns': avg_turns
+                })
+
+            # Sort by saturation rate (descending)
+            attack_type_data.sort(key=lambda x: x['saturation_rate'], reverse=True)
+
+            # Write report
+            report_path = os.path.join(top_n_dir, f'attack_type_distribution_top{n}.md')
+            with open(report_path, 'w', encoding='utf-8') as f:
+                # Header - use archetype_label if provided, otherwise use self.archetype
+                header_archetype = archetype_label if archetype_label else self.archetype.upper()
+                f.write(f"# {header_archetype} - Attack Type Distribution Report (Top {n})\n\n")
+                f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
+                # Summary
+                f.write("## Summary\n\n")
+                f.write(f"- **Analyzed Builds**: Top {n} builds by performance\n")
+                f.write(f"- **Total Attack Slots**: {total_attacks:,}\n")
+                f.write(f"- **Unique Attack Types**: {len(attack_type_data)}\n")
+                f.write(f"- **Overall Median Turns**: {overall_median:.2f}\n")
+
+                # Add archetype distribution if we have that data
+                if archetype_counts:
+                    f.write(f"\n**Archetype Distribution**:\n")
+                    total_builds = sum(archetype_counts.values())
+                    for arch in sorted(archetype_counts.keys()):
+                        count = archetype_counts[arch]
+                        pct = (count / total_builds) * 100
+                        f.write(f"- {arch.replace('_', ' ').title()}: {count} builds ({pct:.1f}%)\n")
+                f.write("\n")
+
+                # Methodology
+                f.write("## Methodology\n\n")
+                f.write(f"This report shows which attack types appear most frequently in the top {n} builds.\n\n")
+                f.write("**Key Metrics**:\n")
+                f.write("1. **Saturation Rate**: % of attack slots using this type\n")
+                f.write("2. **Appearances**: Number of times this attack type appears\n")
+                f.write("3. **Avg Turns**: Average turns for builds using this attack type\n\n")
+                f.write("**Important**: For dual_natured builds, only the primary attack is counted (fallback attacks are excluded).\n")
+                f.write("For versatile_master builds, all attack slots are counted.\n\n")
+
+                # Main table
+                f.write("## Attack Type Distribution\n\n")
+                f.write("Sorted by saturation rate (descending).\n\n")
+                f.write("| Rank | Attack Type | Appearances | Saturation Rate | Avg Turns |\n")
+                f.write("|------|-------------|-------------|----------------|-----------|")
+
+                for rank, data in enumerate(attack_type_data, 1):
+                    f.write(
+                        f"\n| {rank} | {data['attack_type']} | {data['appearances']:,} | "
+                        f"{data['saturation_rate']:.1f}% | {data['avg_turns']:.2f} |"
+                    )
+
+                # Distribution analysis
+                f.write("\n\n## Distribution Analysis\n\n")
+
+                if attack_type_data:
+                    most_common = attack_type_data[0]
+                    f.write(f"**Most Common**: {most_common['attack_type']} appears in {most_common['saturation_rate']:.1f}% of attack slots\n\n")
+
+                    if len(attack_type_data) > 1:
+                        least_common = attack_type_data[-1]
+                        f.write(f"**Least Common**: {least_common['attack_type']} appears in {least_common['saturation_rate']:.1f}% of attack slots\n\n")
+
+                # Archetype breakdown section (only if we have archetype data)
+                if archetype_attack_types:
+                    f.write("\n## Archetype Breakdown\n\n")
+                    f.write("Attack type distribution by archetype:\n\n")
+
+                    for arch in sorted(archetype_attack_types.keys()):
+                        f.write(f"### {arch.replace('_', ' ').title()}\n\n")
+                        arch_attack_types = archetype_attack_types[arch]
+                        total_arch_attacks = sum(arch_attack_types.values())
+
+                        f.write("| Attack Type | Appearances | % of Archetype Attacks |\n")
+                        f.write("|-------------|-------------|------------------------|\n")
+
+                        # Sort by appearances (descending)
+                        sorted_arch_attacks = sorted(arch_attack_types.items(), key=lambda x: x[1], reverse=True)
+                        for attack_type, count in sorted_arch_attacks:
+                            pct = (count / total_arch_attacks) * 100 if total_arch_attacks > 0 else 0
+                            f.write(f"| {attack_type} | {count} | {pct:.1f}% |\n")
+                        f.write("\n")
+
+                # Notes
+                f.write("\n## Notes\n\n")
+                f.write("- Attack types sorted by how frequently they appear in top builds\n")
+                f.write("- Higher saturation rate indicates more popular/effective attack type\n")
+                f.write("- Avg Turns shows overall build performance, not attack type performance in isolation\n")
+                f.write("- Fallback attacks in dual_natured builds are excluded from all counts\n")
+
+            print(f"  + Top {n} attack type distribution report: attack_type_distribution_top{n}.md")
+
+    def _generate_top_n_saturation_reports(
+        self,
+        build_results: List[Tuple],
+        overall_median: float,
+        archetype_label: str = None
+    ):
+        """Generate enhancement saturation reports for fixed top N builds.
+
+        Shows which enhancements appear most frequently in top N builds.
+        Counts each enhancement once per build (no double-counting).
+        For dual_natured builds, only counts enhancements from primary attack (excludes fallback).
+
+        Args:
+            build_results: List of (build, avg_dpt, avg_turns, [archetype]) tuples, already sorted by performance
+            overall_median: Median turns across all builds
+            archetype_label: Optional label for combined reports (e.g., "COMBINED (FOCUSED + DUAL_NATURED)")
+        """
+        from collections import defaultdict
+
+        # Create top_n_analysis subdirectory
+        top_n_dir = os.path.join(self.reports_dir, 'top_n_analysis')
+        os.makedirs(top_n_dir, exist_ok=True)
+
+        # Define top N thresholds
+        thresholds = [10, 50, 100, 200, 500, 1000]
+
+        for n in thresholds:
+            # Skip if not enough builds
+            if len(build_results) < n:
+                print(f"  Skipping Top {n} saturation report (only {len(build_results)} builds)")
+                continue
+
+            top_n_results = build_results[:n]
+
+            # Track enhancement appearances and archetype distribution
+            enhancement_counts = defaultdict(int)
+            enhancement_types = {}
+            enhancement_costs = {}
+            enhancement_turns = defaultdict(list)
+            archetype_counts = defaultdict(int)  # Track builds by archetype
+            archetype_enhancement_counts = defaultdict(lambda: defaultdict(int))  # Track enhancements per archetype
+
+            for result in top_n_results:
+                # Handle both 3-tuple and 4-tuple formats (with/without archetype)
+                if len(result) == 4:
+                    build, _, avg_turns, source_archetype = result
+                elif len(result) == 3:
+                    build, _, avg_turns = result
+                    source_archetype = self.archetype if hasattr(self, 'archetype') else None
+                else:
+                    continue
+
+                # Track archetype if available
+                if source_archetype:
+                    archetype_counts[source_archetype] += 1
+
+                # Track unique enhancements per build (avoid double counting)
+                enhancements_in_build = set()
+
+                if isinstance(build, MultiAttackBuild):
+                    # For dual_natured builds, only count enhancements from primary attack (builds[0])
+                    if build.fallback_type:
+                        # Only process primary attack
+                        primary_build = build.builds[0]
+                        for upgrade in primary_build.upgrades:
+                            enhancements_in_build.add(upgrade)
+                            if upgrade not in enhancement_types:
+                                enhancement_types[upgrade] = 'upgrade'
+                                enhancement_costs[upgrade] = UPGRADES[upgrade].cost
+
+                        for limit in primary_build.limits:
+                            enhancements_in_build.add(limit)
+                            if limit not in enhancement_types:
+                                enhancement_types[limit] = 'limit'
+                                enhancement_costs[limit] = LIMITS[limit].cost
+                    else:
+                        # For other multi-attack builds (versatile_master), process all sub-builds
+                        for sub_build in build.builds:
+                            for upgrade in sub_build.upgrades:
+                                enhancements_in_build.add(upgrade)
+                                if upgrade not in enhancement_types:
+                                    enhancement_types[upgrade] = 'upgrade'
+                                    enhancement_costs[upgrade] = UPGRADES[upgrade].cost
+
+                            for limit in sub_build.limits:
+                                enhancements_in_build.add(limit)
+                                if limit not in enhancement_types:
+                                    enhancement_types[limit] = 'limit'
+                                    enhancement_costs[limit] = LIMITS[limit].cost
+                else:
+                    # Single attack build (focused)
+                    for upgrade in build.upgrades:
+                        enhancements_in_build.add(upgrade)
+                        if upgrade not in enhancement_types:
+                            enhancement_types[upgrade] = 'upgrade'
+                            enhancement_costs[upgrade] = UPGRADES[upgrade].cost
+
+                    for limit in build.limits:
+                        enhancements_in_build.add(limit)
+                        if limit not in enhancement_types:
+                            enhancement_types[limit] = 'limit'
+                            enhancement_costs[limit] = LIMITS[limit].cost
+
+                # Count each unique enhancement once per build
+                for enh in enhancements_in_build:
+                    enhancement_counts[enh] += 1
+                    enhancement_turns[enh].append(avg_turns)
+                    if source_archetype:
+                        archetype_enhancement_counts[source_archetype][enh] += 1
+
+            # Calculate saturation rates
+            saturation_data = []
+            for name, count in enhancement_counts.items():
+                saturation_rate = (count / n) * 100
+                avg_turns = statistics.mean(enhancement_turns[name])
+
+                saturation_data.append({
+                    'name': name,
+                    'type': enhancement_types[name],
+                    'cost': enhancement_costs[name],
+                    'appearances': count,
+                    'saturation_rate': saturation_rate,
+                    'avg_turns': avg_turns
+                })
+
+            # Sort by saturation rate (descending), then by avg_turns (ascending)
+            saturation_data.sort(key=lambda x: (-x['saturation_rate'], x['avg_turns']))
+
+            # Write report
+            report_path = os.path.join(top_n_dir, f'enhancement_saturation_top{n}.md')
+            with open(report_path, 'w', encoding='utf-8') as f:
+                # Header - use archetype_label if provided, otherwise use self.archetype
+                header_archetype = archetype_label if archetype_label else self.archetype.upper()
+                f.write(f"# {header_archetype} - Enhancement Saturation Report (Top {n})\n\n")
+                f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
+                # Summary
+                f.write("## Summary\n\n")
+                f.write(f"- **Analyzed Builds**: Top {n} builds by performance\n")
+                f.write(f"- **Unique Enhancements Found**: {len(saturation_data)}\n")
+                f.write(f"- **Overall Median Turns**: {overall_median:.2f}\n")
+
+                # Add archetype distribution if we have that data
+                if archetype_counts:
+                    f.write(f"\n**Archetype Distribution**:\n")
+                    total_builds = sum(archetype_counts.values())
+                    for arch in sorted(archetype_counts.keys()):
+                        count = archetype_counts[arch]
+                        pct = (count / total_builds) * 100
+                        f.write(f"- {arch.replace('_', ' ').title()}: {count} builds ({pct:.1f}%)\n")
+                f.write("\n")
+
+                if saturation_data:
+                    f.write(f"- **Average Saturation Rate**: {statistics.mean([d['saturation_rate'] for d in saturation_data]):.1f}%\n")
+                    f.write(f"- **Median Saturation Rate**: {statistics.median([d['saturation_rate'] for d in saturation_data]):.1f}%\n\n")
+                else:
+                    f.write("- **Average Saturation Rate**: N/A\n")
+                    f.write("- **Median Saturation Rate**: N/A\n\n")
+
+                # Methodology
+                f.write("## Methodology\n\n")
+                f.write(f"This report shows saturation rates for enhancements in the top {n} builds.\n\n")
+                f.write("**Key Metrics**:\n")
+                f.write("1. **Saturation Rate**: % of builds containing this enhancement (counts once per build)\n")
+                f.write("2. **Appearances**: Number of builds containing this enhancement\n")
+                f.write("3. **Type**: upgrade or limit\n")
+                f.write("4. **Cost**: Point cost of enhancement\n")
+                f.write("5. **Avg Turns**: Average turns for builds containing this enhancement\n\n")
+                f.write("**Important**: For dual_natured builds, only enhancements from the primary attack are counted (fallback attack enhancements are excluded).\n\n")
+                f.write("**Interpretation**:\n")
+                f.write("- **High saturation (>60%)**: Core enhancement, appears in most top builds\n")
+                f.write("- **Medium saturation (30-60%)**: Common enhancement, frequently used\n")
+                f.write("- **Low saturation (<30%)**: Niche enhancement, situational use\n\n")
+
+                # Main table
+                f.write("## Enhancement Saturation Rankings\n\n")
+                f.write("Sorted by saturation rate (descending), then by average turns (ascending).\n\n")
+                f.write("| Rank | Enhancement | Type | Cost | Appearances | Saturation Rate | Avg Turns |\n")
+                f.write("|------|-------------|------|------|-------------|----------------|-----------|")
+
+                for rank, data in enumerate(saturation_data, 1):
+                    f.write(
+                        f"\n| {rank} | {data['name']} | {data['type']} | {data['cost']}p | "
+                        f"{data['appearances']:,} | {data['saturation_rate']:.1f}% | {data['avg_turns']:.2f} |"
+                    )
+
+                # Distribution analysis
+                f.write("\n\n## Saturation Distribution\n\n")
+
+                # Count by saturation bracket
+                high_sat = sum(1 for d in saturation_data if d['saturation_rate'] > 60)
+                medium_sat = sum(1 for d in saturation_data if 30 <= d['saturation_rate'] <= 60)
+                low_sat = sum(1 for d in saturation_data if d['saturation_rate'] < 30)
+
+                f.write("| Saturation Level | Count | % of Enhancements |\n")
+                f.write("|-----------------|-------|------------------|")
+                if saturation_data:
+                    f.write(f"\n| High (>60%) | {high_sat} | {high_sat / len(saturation_data) * 100:.1f}% |")
+                    f.write(f"\n| Medium (30-60%) | {medium_sat} | {medium_sat / len(saturation_data) * 100:.1f}% |")
+                    f.write(f"\n| Low (<30%) | {low_sat} | {low_sat / len(saturation_data) * 100:.1f}% |")
+                else:
+                    f.write("\n| High (>60%) | 0 | 0.0% |")
+                    f.write("\n| Medium (30-60%) | 0 | 0.0% |")
+                    f.write("\n| Low (<30%) | 0 | 0.0% |")
+
+                # Top 10 saturated enhancements
+                f.write("\n\n## Top 10 Most Saturated Enhancements\n\n")
+                f.write("| Enhancement | Type | Cost | Saturation Rate | Avg Turns |\n")
+                f.write("|-------------|------|------|----------------|-----------|")
+
+                for data in saturation_data[:10]:
+                    f.write(
+                        f"\n| {data['name']} | {data['type']} | {data['cost']}p | "
+                        f"{data['saturation_rate']:.1f}% | {data['avg_turns']:.2f} |"
+                    )
+
+                # Archetype breakdown section (only if we have archetype data)
+                if archetype_enhancement_counts:
+                    f.write("\n\n## Archetype Breakdown\n\n")
+                    f.write("Enhancement saturation by archetype (top 10 per archetype):\n\n")
+
+                    for arch in sorted(archetype_enhancement_counts.keys()):
+                        f.write(f"### {arch.replace('_', ' ').title()}\n\n")
+                        arch_enhancements = archetype_enhancement_counts[arch]
+                        arch_build_count = archetype_counts[arch]
+
+                        # Calculate saturation rates for this archetype
+                        arch_sat_data = []
+                        for enh_name, count in arch_enhancements.items():
+                            sat_rate = (count / arch_build_count) * 100 if arch_build_count > 0 else 0
+                            arch_sat_data.append({
+                                'name': enh_name,
+                                'type': enhancement_types.get(enh_name, 'unknown'),
+                                'cost': enhancement_costs.get(enh_name, 0),
+                                'saturation_rate': sat_rate,
+                                'appearances': count
+                            })
+
+                        # Sort by saturation rate (descending)
+                        arch_sat_data.sort(key=lambda x: x['saturation_rate'], reverse=True)
+
+                        f.write("| Enhancement | Type | Cost | Appearances | Saturation Rate |\n")
+                        f.write("|-------------|------|------|-------------|----------------|\n")
+
+                        # Show top 10 for each archetype
+                        for data in arch_sat_data[:10]:
+                            f.write(
+                                f"| {data['name']} | {data['type']} | {data['cost']}p | "
+                                f"{data['appearances']} | {data['saturation_rate']:.1f}% |\n"
+                            )
+                        f.write("\n")
+
+                # Notes
+                f.write("\n## Notes\n\n")
+                f.write("- Enhancements sorted by saturation rate (most common first)\n")
+                f.write("- Each enhancement counted once per build (no double-counting)\n")
+                f.write("- High saturation indicates core enhancements for optimal builds\n")
+                f.write("- Avg Turns shows performance of builds containing the enhancement\n")
+                f.write("- Fallback attack enhancements in dual_natured builds are excluded from all counts\n")
+
+            print(f"  + Top {n} enhancement saturation report: enhancement_saturation_top{n}.md")
+
+    def _stratified_sample_top_n(
+        self,
+        archetype_results: Dict[str, List[Tuple]],
+        n: int
+    ) -> List[Tuple]:
+        """
+        Create a stratified sample of top N builds with equal representation from each archetype.
+
+        Takes top N/2 from each archetype (or N/num_archetypes for more than 2 archetypes).
+        Tags each result with its source archetype as 4th tuple element.
+
+        Args:
+            archetype_results: Dict mapping archetype name -> list of (build, avg_dpt, avg_turns) tuples
+            n: Total number of builds to sample
+
+        Returns:
+            List of (build, avg_dpt, avg_turns, archetype) tuples, sorted by avg_turns
+        """
+        num_archetypes = len(archetype_results)
+        if num_archetypes == 0:
+            return []
+
+        # Calculate how many to take from each archetype
+        per_archetype = n // num_archetypes
+        remainder = n % num_archetypes
+
+        stratified_results = []
+        archetype_names = sorted(archetype_results.keys())  # Sort for deterministic ordering
+
+        for idx, archetype_name in enumerate(archetype_names):
+            results = archetype_results[archetype_name]
+
+            # Give remainder to first archetypes (deterministic)
+            count_from_this = per_archetype + (1 if idx < remainder else 0)
+
+            # Take top count_from_this results (already sorted by avg_turns)
+            for build, avg_dpt, avg_turns in results[:count_from_this]:
+                stratified_results.append((build, avg_dpt, avg_turns, archetype_name))
+
+        # Sort combined results by performance for display
+        stratified_results.sort(key=lambda x: x[2])  # x[2] is avg_turns
+
+        return stratified_results
+
+    def _generate_top_n_attack_type_reports_stratified(
+        self,
+        archetype_results: Dict[str, List[Tuple]],
+        overall_median: float,
+        archetype_label: str = None
+    ):
+        """Generate attack type distribution reports using stratified sampling from multiple archetypes.
+
+        Takes top N/2 from each archetype to ensure equal representation.
+        Identical logic to _generate_top_n_attack_type_reports but with stratified sampling.
+
+        Args:
+            archetype_results: Dict mapping archetype name -> list of (build, avg_dpt, avg_turns) tuples
+            overall_median: Median turns across all builds
+            archetype_label: Optional label for combined reports
+        """
+        from collections import defaultdict
+
+        # Create top_n_analysis subdirectory
+        top_n_dir = os.path.join(self.reports_dir, 'top_n_analysis')
+        os.makedirs(top_n_dir, exist_ok=True)
+
+        # Define top N thresholds
+        thresholds = [10, 50, 100, 200, 500, 1000]
+
+        num_archetypes = len(archetype_results)
+        per_archetype_text = f"top {{}}/{num_archetypes} from each archetype"
+
+        for n in thresholds:
+            # Get stratified sample (top N/2 from each archetype)
+            stratified_sample = self._stratified_sample_top_n(archetype_results, n)
+
+            if len(stratified_sample) < n:
+                print(f"  Skipping Top {n} attack type report (only {len(stratified_sample)} builds available)")
+                continue
+
+            top_n_results = stratified_sample[:n]  # Ensure exactly n builds
+
+            # Track attack type appearances and archetype distribution
+            attack_type_counts = defaultdict(int)
+            attack_type_turns = defaultdict(list)
+            archetype_counts = defaultdict(int)
+            archetype_attack_types = defaultdict(lambda: defaultdict(int))
+            total_attacks = 0
+
+            for result in top_n_results:
+                # All results from stratified sample have 4-tuple format
+                build, _, avg_turns, source_archetype = result
+
+                # Track archetype
+                archetype_counts[source_archetype] += 1
+
+                if isinstance(build, MultiAttackBuild):
+                    # For dual_natured builds, only count primary attack
+                    if build.fallback_type:
+                        primary_build = build.builds[0]
+                        attack_type = primary_build.attack_type
+                        attack_type_counts[attack_type] += 1
+                        attack_type_turns[attack_type].append(avg_turns)
+                        archetype_attack_types[source_archetype][attack_type] += 1
+                        total_attacks += 1
+                    else:
+                        # For other multi-attack builds, count all attacks
+                        for sub_build in build.builds:
+                            attack_type = sub_build.attack_type
+                            attack_type_counts[attack_type] += 1
+                            attack_type_turns[attack_type].append(avg_turns)
+                            archetype_attack_types[source_archetype][attack_type] += 1
+                            total_attacks += 1
+                else:
+                    # Single attack build (focused)
+                    attack_type = build.attack_type
+                    attack_type_counts[attack_type] += 1
+                    attack_type_turns[attack_type].append(avg_turns)
+                    archetype_attack_types[source_archetype][attack_type] += 1
+                    total_attacks += 1
+
+            # Calculate statistics
+            attack_type_data = []
+            for attack_type, count in attack_type_counts.items():
+                saturation_rate = (count / total_attacks) * 100 if total_attacks > 0 else 0
+                avg_turns_val = statistics.mean(attack_type_turns[attack_type])
+
+                attack_type_data.append({
+                    'attack_type': attack_type,
+                    'appearances': count,
+                    'saturation_rate': saturation_rate,
+                    'avg_turns': avg_turns_val
+                })
+
+            # Sort by saturation rate (descending)
+            attack_type_data.sort(key=lambda x: x['saturation_rate'], reverse=True)
+
+            # Write report
+            report_path = os.path.join(top_n_dir, f'attack_type_distribution_top{n}.md')
+            with open(report_path, 'w', encoding='utf-8') as f:
+                # Header
+                header_archetype = archetype_label if archetype_label else "COMBINED"
+                f.write(f"# {header_archetype} - Attack Type Distribution Report (Top {n})\n\n")
+                f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
+                # Summary
+                f.write("## Summary\n\n")
+                f.write(f"- **Analyzed Builds**: Top {n} builds by performance\n")
+                f.write(f"- **Total Attack Slots**: {total_attacks:,}\n")
+                f.write(f"- **Unique Attack Types**: {len(attack_type_data)}\n")
+                f.write(f"- **Overall Median Turns**: {overall_median:.2f}\n")
+                f.write(f"- **Sampling Method**: Stratified ({per_archetype_text.format(n // num_archetypes)})\n")
+
+                # Add archetype distribution
+                if archetype_counts:
+                    f.write(f"\n**Archetype Distribution**:\n")
+                    total_builds = sum(archetype_counts.values())
+                    for arch in sorted(archetype_counts.keys()):
+                        count = archetype_counts[arch]
+                        pct = (count / total_builds) * 100
+                        f.write(f"- {arch.replace('_', ' ').title()}: {count} builds ({pct:.1f}%)\n")
+                f.write("\n")
+
+                # Methodology
+                f.write("## Methodology\n\n")
+                f.write(f"This report shows which attack types appear most frequently in the top {n} builds.\n\n")
+                f.write("**Sampling Strategy**:\n")
+                f.write(f"- Stratified sampling ensures equal representation from each archetype\n")
+                f.write(f"- Takes {per_archetype_text.format(n // num_archetypes)} to guarantee balanced comparison\n")
+                f.write(f"- Total of {n} builds analyzed ({' + '.join([f'{n // num_archetypes} {arch}' for arch in sorted(archetype_results.keys())])})\n\n")
+                f.write("**Key Metrics**:\n")
+                f.write("1. **Saturation Rate**: % of attack slots using this type\n")
+                f.write("2. **Appearances**: Number of times this attack type appears\n")
+                f.write("3. **Avg Turns**: Average turns for builds using this attack type\n\n")
+                f.write("**Important**: For dual_natured builds, only the primary attack is counted (fallback attacks are excluded).\n")
+                f.write("For versatile_master builds, all attack slots are counted.\n\n")
+
+                # Main table
+                f.write("## Attack Type Distribution\n\n")
+                f.write("Sorted by saturation rate (descending).\n\n")
+                f.write("| Rank | Attack Type | Appearances | Saturation Rate | Avg Turns |\n")
+                f.write("|------|-------------|-------------|----------------|-----------|")
+
+                for rank, data in enumerate(attack_type_data, 1):
+                    f.write(
+                        f"\n| {rank} | {data['attack_type']} | {data['appearances']:,} | "
+                        f"{data['saturation_rate']:.1f}% | {data['avg_turns']:.2f} |"
+                    )
+
+                # Distribution analysis
+                f.write("\n\n## Distribution Analysis\n\n")
+
+                if attack_type_data:
+                    most_common = attack_type_data[0]
+                    f.write(f"**Most Common**: {most_common['attack_type']} appears in {most_common['saturation_rate']:.1f}% of attack slots\n\n")
+
+                    if len(attack_type_data) > 1:
+                        least_common = attack_type_data[-1]
+                        f.write(f"**Least Common**: {least_common['attack_type']} appears in {least_common['saturation_rate']:.1f}% of attack slots\n\n")
+
+                # Archetype breakdown section
+                if archetype_attack_types:
+                    f.write("\n## Archetype Breakdown\n\n")
+                    f.write("Attack type distribution by archetype:\n\n")
+
+                    for arch in sorted(archetype_attack_types.keys()):
+                        f.write(f"### {arch.replace('_', ' ').title()}\n\n")
+                        arch_attack_types = archetype_attack_types[arch]
+                        total_arch_attacks = sum(arch_attack_types.values())
+
+                        f.write("| Attack Type | Appearances | % of Archetype Attacks |\n")
+                        f.write("|-------------|-------------|------------------------|\n")
+
+                        # Sort by appearances (descending)
+                        sorted_arch_attacks = sorted(arch_attack_types.items(), key=lambda x: x[1], reverse=True)
+                        for attack_type, count in sorted_arch_attacks:
+                            pct = (count / total_arch_attacks) * 100 if total_arch_attacks > 0 else 0
+                            f.write(f"| {attack_type} | {count} | {pct:.1f}% |\n")
+                        f.write("\n")
+
+                # Notes
+                f.write("\n## Notes\n\n")
+                f.write("- **Stratified sampling** ensures both archetypes are represented equally\n")
+                f.write("- Attack types sorted by how frequently they appear in top builds\n")
+                f.write("- Higher saturation rate indicates more popular/effective attack type\n")
+                f.write("- Avg Turns shows overall build performance, not attack type performance in isolation\n")
+                f.write("- Fallback attacks in dual_natured builds are excluded from all counts\n")
+
+            print(f"  + Top {n} attack type distribution report: attack_type_distribution_top{n}.md")
+
+    def _generate_top_n_saturation_reports_stratified(
+        self,
+        archetype_results: Dict[str, List[Tuple]],
+        overall_median: float,
+        archetype_label: str = None
+    ):
+        """Generate enhancement saturation reports using stratified sampling from multiple archetypes.
+
+        Takes top N/2 from each archetype to ensure equal representation.
+        Identical logic to _generate_top_n_saturation_reports but with stratified sampling.
+
+        Args:
+            archetype_results: Dict mapping archetype name -> list of (build, avg_dpt, avg_turns) tuples
+            overall_median: Median turns across all builds
+            archetype_label: Optional label for combined reports
+        """
+        from collections import defaultdict
+
+        # Create top_n_analysis subdirectory
+        top_n_dir = os.path.join(self.reports_dir, 'top_n_analysis')
+        os.makedirs(top_n_dir, exist_ok=True)
+
+        # Define top N thresholds
+        thresholds = [10, 50, 100, 200, 500, 1000]
+
+        num_archetypes = len(archetype_results)
+        per_archetype_text = f"top {{}}/{num_archetypes} from each archetype"
+
+        for n in thresholds:
+            # Get stratified sample (top N/2 from each archetype)
+            stratified_sample = self._stratified_sample_top_n(archetype_results, n)
+
+            if len(stratified_sample) < n:
+                print(f"  Skipping Top {n} saturation report (only {len(stratified_sample)} builds available)")
+                continue
+
+            top_n_results = stratified_sample[:n]  # Ensure exactly n builds
+
+            # Track enhancement appearances and archetype distribution
+            enhancement_counts = defaultdict(int)
+            enhancement_types = {}
+            enhancement_costs = {}
+            enhancement_turns = defaultdict(list)
+            archetype_counts = defaultdict(int)
+            archetype_enhancement_counts = defaultdict(lambda: defaultdict(int))
+
+            for result in top_n_results:
+                # All results from stratified sample have 4-tuple format
+                build, _, avg_turns, source_archetype = result
+
+                # Track archetype
+                archetype_counts[source_archetype] += 1
+
+                # Track unique enhancements per build (avoid double counting)
+                enhancements_in_build = set()
+
+                if isinstance(build, MultiAttackBuild):
+                    # For dual_natured builds, only count enhancements from primary attack
+                    if build.fallback_type:
+                        primary_build = build.builds[0]
+                        for upgrade in primary_build.upgrades:
+                            enhancements_in_build.add(upgrade)
+                            if upgrade not in enhancement_types:
+                                enhancement_types[upgrade] = 'upgrade'
+                                enhancement_costs[upgrade] = UPGRADES[upgrade].cost
+
+                        for limit in primary_build.limits:
+                            enhancements_in_build.add(limit)
+                            if limit not in enhancement_types:
+                                enhancement_types[limit] = 'limit'
+                                enhancement_costs[limit] = LIMITS[limit].cost
+                    else:
+                        # For other multi-attack builds, process all sub-builds
+                        for sub_build in build.builds:
+                            for upgrade in sub_build.upgrades:
+                                enhancements_in_build.add(upgrade)
+                                if upgrade not in enhancement_types:
+                                    enhancement_types[upgrade] = 'upgrade'
+                                    enhancement_costs[upgrade] = UPGRADES[upgrade].cost
+
+                            for limit in sub_build.limits:
+                                enhancements_in_build.add(limit)
+                                if limit not in enhancement_types:
+                                    enhancement_types[limit] = 'limit'
+                                    enhancement_costs[limit] = LIMITS[limit].cost
+                else:
+                    # Single attack build (focused)
+                    for upgrade in build.upgrades:
+                        enhancements_in_build.add(upgrade)
+                        if upgrade not in enhancement_types:
+                            enhancement_types[upgrade] = 'upgrade'
+                            enhancement_costs[upgrade] = UPGRADES[upgrade].cost
+
+                    for limit in build.limits:
+                        enhancements_in_build.add(limit)
+                        if limit not in enhancement_types:
+                            enhancement_types[limit] = 'limit'
+                            enhancement_costs[limit] = LIMITS[limit].cost
+
+                # Count each unique enhancement once per build
+                for enh in enhancements_in_build:
+                    enhancement_counts[enh] += 1
+                    enhancement_turns[enh].append(avg_turns)
+                    archetype_enhancement_counts[source_archetype][enh] += 1
+
+            # Calculate saturation rates
+            saturation_data = []
+            for name, count in enhancement_counts.items():
+                saturation_rate = (count / n) * 100
+                avg_turns_val = statistics.mean(enhancement_turns[name])
+
+                saturation_data.append({
+                    'name': name,
+                    'type': enhancement_types[name],
+                    'cost': enhancement_costs[name],
+                    'appearances': count,
+                    'saturation_rate': saturation_rate,
+                    'avg_turns': avg_turns_val
+                })
+
+            # Sort by saturation rate (descending), then by avg_turns (ascending)
+            saturation_data.sort(key=lambda x: (-x['saturation_rate'], x['avg_turns']))
+
+            # Write report
+            report_path = os.path.join(top_n_dir, f'enhancement_saturation_top{n}.md')
+            with open(report_path, 'w', encoding='utf-8') as f:
+                # Header
+                header_archetype = archetype_label if archetype_label else "COMBINED"
+                f.write(f"# {header_archetype} - Enhancement Saturation Report (Top {n})\n\n")
+                f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
+                # Summary
+                f.write("## Summary\n\n")
+                f.write(f"- **Analyzed Builds**: Top {n} builds by performance\n")
+                f.write(f"- **Unique Enhancements Found**: {len(saturation_data)}\n")
+                f.write(f"- **Overall Median Turns**: {overall_median:.2f}\n")
+                f.write(f"- **Sampling Method**: Stratified ({per_archetype_text.format(n // num_archetypes)})\n")
+
+                # Add archetype distribution
+                if archetype_counts:
+                    f.write(f"\n**Archetype Distribution**:\n")
+                    total_builds = sum(archetype_counts.values())
+                    for arch in sorted(archetype_counts.keys()):
+                        count = archetype_counts[arch]
+                        pct = (count / total_builds) * 100
+                        f.write(f"- {arch.replace('_', ' ').title()}: {count} builds ({pct:.1f}%)\n")
+                f.write("\n")
+
+                if saturation_data:
+                    f.write(f"- **Average Saturation Rate**: {statistics.mean([d['saturation_rate'] for d in saturation_data]):.1f}%\n")
+                    f.write(f"- **Median Saturation Rate**: {statistics.median([d['saturation_rate'] for d in saturation_data]):.1f}%\n\n")
+                else:
+                    f.write("- **Average Saturation Rate**: N/A\n")
+                    f.write("- **Median Saturation Rate**: N/A\n\n")
+
+                # Methodology
+                f.write("## Methodology\n\n")
+                f.write(f"This report shows saturation rates for enhancements in the top {n} builds.\n\n")
+                f.write("**Sampling Strategy**:\n")
+                f.write(f"- Stratified sampling ensures equal representation from each archetype\n")
+                f.write(f"- Takes {per_archetype_text.format(n // num_archetypes)} to guarantee balanced comparison\n")
+                f.write(f"- Total of {n} builds analyzed ({' + '.join([f'{n // num_archetypes} {arch}' for arch in sorted(archetype_results.keys())])})\n\n")
+                f.write("**Key Metrics**:\n")
+                f.write("1. **Saturation Rate**: % of builds containing this enhancement (counts once per build)\n")
+                f.write("2. **Appearances**: Number of builds containing this enhancement\n")
+                f.write("3. **Type**: upgrade or limit\n")
+                f.write("4. **Cost**: Point cost of enhancement\n")
+                f.write("5. **Avg Turns**: Average turns for builds containing this enhancement\n\n")
+                f.write("**Important**: For dual_natured builds, only enhancements from the primary attack are counted (fallback attack enhancements are excluded).\n\n")
+                f.write("**Interpretation**:\n")
+                f.write("- **High saturation (>60%)**: Core enhancement, appears in most top builds\n")
+                f.write("- **Medium saturation (30-60%)**: Common enhancement, frequently used\n")
+                f.write("- **Low saturation (<30%)**: Niche enhancement, situational use\n\n")
+
+                # Main table
+                f.write("## Enhancement Saturation Rankings\n\n")
+                f.write("Sorted by saturation rate (descending), then by average turns (ascending).\n\n")
+                f.write("| Rank | Enhancement | Type | Cost | Appearances | Saturation Rate | Avg Turns |\n")
+                f.write("|------|-------------|------|------|-------------|----------------|-----------|")
+
+                for rank, data in enumerate(saturation_data, 1):
+                    f.write(
+                        f"\n| {rank} | {data['name']} | {data['type']} | {data['cost']}p | "
+                        f"{data['appearances']:,} | {data['saturation_rate']:.1f}% | {data['avg_turns']:.2f} |"
+                    )
+
+                # Distribution analysis
+                f.write("\n\n## Saturation Distribution\n\n")
+
+                # Count by saturation bracket
+                high_sat = sum(1 for d in saturation_data if d['saturation_rate'] > 60)
+                medium_sat = sum(1 for d in saturation_data if 30 <= d['saturation_rate'] <= 60)
+                low_sat = sum(1 for d in saturation_data if d['saturation_rate'] < 30)
+
+                f.write("| Saturation Level | Count | % of Enhancements |\n")
+                f.write("|-----------------|-------|------------------|")
+                if saturation_data:
+                    f.write(f"\n| High (>60%) | {high_sat} | {high_sat / len(saturation_data) * 100:.1f}% |")
+                    f.write(f"\n| Medium (30-60%) | {medium_sat} | {medium_sat / len(saturation_data) * 100:.1f}% |")
+                    f.write(f"\n| Low (<30%) | {low_sat} | {low_sat / len(saturation_data) * 100:.1f}% |")
+                else:
+                    f.write("\n| High (>60%) | 0 | 0.0% |")
+                    f.write("\n| Medium (30-60%) | 0 | 0.0% |")
+                    f.write("\n| Low (<30%) | 0 | 0.0% |")
+
+                # Top 10 saturated enhancements
+                f.write("\n\n## Top 10 Most Saturated Enhancements\n\n")
+                f.write("| Enhancement | Type | Cost | Saturation Rate | Avg Turns |\n")
+                f.write("|-------------|------|------|----------------|-----------|")
+
+                for data in saturation_data[:10]:
+                    f.write(
+                        f"\n| {data['name']} | {data['type']} | {data['cost']}p | "
+                        f"{data['saturation_rate']:.1f}% | {data['avg_turns']:.2f} |"
+                    )
+
+                # Archetype breakdown section
+                if archetype_enhancement_counts:
+                    f.write("\n\n## Archetype Breakdown\n\n")
+                    f.write("Enhancement saturation by archetype (top 10 per archetype):\n\n")
+
+                    for arch in sorted(archetype_enhancement_counts.keys()):
+                        f.write(f"### {arch.replace('_', ' ').title()}\n\n")
+                        arch_enhancements = archetype_enhancement_counts[arch]
+                        arch_build_count = archetype_counts[arch]
+
+                        # Calculate saturation rates for this archetype
+                        arch_sat_data = []
+                        for enh_name, count in arch_enhancements.items():
+                            sat_rate = (count / arch_build_count) * 100 if arch_build_count > 0 else 0
+                            arch_sat_data.append({
+                                'name': enh_name,
+                                'type': enhancement_types.get(enh_name, 'unknown'),
+                                'cost': enhancement_costs.get(enh_name, 0),
+                                'saturation_rate': sat_rate,
+                                'appearances': count
+                            })
+
+                        # Sort by saturation rate (descending)
+                        arch_sat_data.sort(key=lambda x: x['saturation_rate'], reverse=True)
+
+                        f.write("| Enhancement | Type | Cost | Appearances | Saturation Rate |\n")
+                        f.write("|-------------|------|------|-------------|----------------|\n")
+
+                        # Show top 10 for each archetype
+                        for data in arch_sat_data[:10]:
+                            f.write(
+                                f"| {data['name']} | {data['type']} | {data['cost']}p | "
+                                f"{data['appearances']} | {data['saturation_rate']:.1f}% |\n"
+                            )
+                        f.write("\n")
+
+                # Notes
+                f.write("\n## Notes\n\n")
+                f.write("- **Stratified sampling** ensures both archetypes are represented equally\n")
+                f.write("- Enhancements sorted by saturation rate (most common first)\n")
+                f.write("- Each enhancement counted once per build (no double-counting)\n")
+                f.write("- High saturation indicates core enhancements for optimal builds\n")
+                f.write("- Avg Turns shows performance of builds containing the enhancement\n")
+                f.write("- Fallback attack enhancements in dual_natured builds are excluded from all counts\n")
+
+            print(f"  + Top {n} enhancement saturation report: enhancement_saturation_top{n}.md")
