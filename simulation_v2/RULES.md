@@ -143,6 +143,7 @@ Point budgets per attack based on tier and archetype:
 - **Usage**: Must hit and succeed on both Accuracy and Effect
 - **Penalty**: -Tier to Accuracy, Damage, and Condition rolls
 - **Frequency**: Once per turn maximum
+- **Restrictions**: Cannot be used with Direct Damage or Direct Area Damage attacks
 
 ### Critical Hit Upgrades
 
@@ -212,7 +213,7 @@ Point budgets per attack based on tier and archetype:
 
 ### Sustained Attack Upgrades
 
-**Channeled** (2p)
+**Channeled** (1p)
 - **Effect**: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 - **Penalty**: -2×Tier to Accuracy, Damage, and Condition rolls
 - **Usage**: If you don't make the channeled attack on a turn, you lose your bonus
@@ -245,12 +246,12 @@ Point budgets per attack based on tier and archetype:
 
 ### Turn-Based Limits
 
-**Quickdraw** (2p)
-- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
+**Quickdraw** (1p)
+- **Effect**: +4×Tier to Accuracy, Damage, and Conditions
 - **Limit**: First round of combat
 - **Restrictions**: Cannot be paired with Patient, Finale, Cooldown, Timid, Careful, Passive, Charges 1, Charges 2, Combo Move, Relentless, or Slaughter
 
-**Patient** (1p)
+**Patient** (2p)
 - **Effect**: +1×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Turn 4 or later
 - **Restrictions**: Cannot be paired with Quickdraw, Finale, or Cooldown
@@ -280,7 +281,7 @@ Point budgets per attack based on tier and archetype:
 ### HP-Based Limits
 
 **Timid** (1p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At max HP with no conditions
 - **Restrictions**: Cannot be paired with Near Death, Bloodied, or Quickdraw
 
@@ -294,13 +295,6 @@ Point budgets per attack based on tier and archetype:
 - **Limit**: At 50 Hit Points or less
 - **Restrictions**: Cannot be paired with Timid or Near Death
 
-<!--
-**Attrition** (2p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Each use costs 25 HP
-- **Restriction**: Can't have regeneration, healing or any other ability that restores HP
-- **NOTE**: REMOVED FROM SIMULATION - HP cost mechanic not suitable for combat simulation
--->
 
 **Charges 1** (1p)
 - **Effect**: +6×Tier to Accuracy, Damage, and Conditions

@@ -131,7 +131,7 @@ def verify_upgrade_costs(verifier: RuleVerifier):
         'captain_slayer_acc': 2, 'captain_slayer_dmg': 2,
         'elite_slayer_acc': 2, 'elite_slayer_dmg': 2,
         'boss_slayer_acc': 2, 'boss_slayer_dmg': 2,
-        'channeled': 2,
+        'channeled': 1,
     }
 
     for upgrade_name, expected_cost in expected_costs.items():
@@ -151,7 +151,7 @@ def verify_limit_costs(verifier: RuleVerifier):
     # Expected costs from RULES.md
     expected_costs = {
         'unreliable_1': 1, 'unreliable_2': 1, 'unreliable_3': 1,
-        'quickdraw': 2, 'patient': 1, 'finale': 1,
+        'quickdraw': 1, 'patient': 2, 'finale': 1,
         'charge_up': 1, 'charge_up_2': 2, 'cooldown': 1,
         'timid': 1, 'near_death': 2, 'bloodied': 1,
         'charges_1': 1, 'charges_2': 1,
@@ -177,9 +177,9 @@ def verify_limit_bonuses(verifier: RuleVerifier):
     # Expected bonuses (multiplier of Tier)
     expected_bonuses = {
         'unreliable_1': 1, 'unreliable_2': 2, 'unreliable_3': 5,
-        'quickdraw': 3, 'patient': 1, 'finale': 2,
+        'quickdraw': 4, 'patient': 1, 'finale': 2,
         'charge_up': 2, 'charge_up_2': 4, 'cooldown': 2,
-        'timid': 2, 'near_death': 2, 'bloodied': 1,
+        'timid': 3, 'near_death': 2, 'bloodied': 1,
         'charges_1': 6, 'charges_2': 2,
         'vengeful': 2, 'revenge': 2, 'unbreakable': 4, 'untouchable': 2,
         'passive': 1, 'careful': 2,

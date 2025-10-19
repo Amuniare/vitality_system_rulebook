@@ -44,7 +44,7 @@ UPGRADES = {
     'culling_strike': Upgrade('culling_strike', 3, special_effect="culling_strike"),
     'splinter': Upgrade('splinter', 3, accuracy_penalty=1, damage_penalty=1, special_effect="splinter"),
     'ricochet': Upgrade('ricochet', 2, special_effect="ricochet"),
-    'channeled': Upgrade('channeled', 2, accuracy_penalty=2, damage_penalty=2, special_effect="channeled"),
+    'channeled': Upgrade('channeled', 1, accuracy_penalty=2, damage_penalty=2, special_effect="channeled"),
 }
 
 # Limits - Costs updated 2025-10-18
@@ -53,8 +53,8 @@ LIMITS = {
     'unreliable_1': Limit('unreliable_1', 1, 1, 5),
     'unreliable_2': Limit('unreliable_2', 1, 2, 10),
     'unreliable_3': Limit('unreliable_3', 1, 5, 15),
-    'quickdraw': Limit('quickdraw', 2, 3, 0),
-    'patient': Limit('patient', 1, 1, 0),
+    'quickdraw': Limit('quickdraw', 1, 4, 0),
+    'patient': Limit('patient', 2, 1, 0),
     'finale': Limit('finale', 1, 2, 0),
     'charge_up': Limit('charge_up', 1, 2, 0),
     'charge_up_2': Limit('charge_up_2', 2, 4, 0),
@@ -64,7 +64,7 @@ LIMITS = {
     'charges_2': Limit('charges_2', 1, 2, 0),
     'near_death': Limit('near_death', 2, 2, 0),
     'bloodied': Limit('bloodied', 1, 1, 0),
-    'timid': Limit('timid', 1, 2, 0),
+    'timid': Limit('timid', 1, 3, 0),
     # 'attrition': Limit('attrition', 2, 2, 0),  # REMOVED: HP cost mechanic not suitable for simulation
     # Turn/Combat State Limits
     'slaughter': Limit('slaughter', 1, 4, 0),
@@ -133,6 +133,7 @@ ATTACK_TYPE_RESTRICTIONS = {
     # Special mechanics that don't work with direct attacks
     'armor_piercing': ['melee_ac', 'melee_dg', 'ranged', 'area'],  # Direct attacks don't need armor piercing
     'combo_move': ['melee_ac', 'melee_dg', 'ranged', 'area'],  # Combo tracking doesn't work with direct attacks
+    'extra_attack': ['melee_ac', 'melee_dg', 'ranged', 'area'],  # Extra attack requires hit/effect tracking
 }
 
 AOE_RESTRICTIONS = [

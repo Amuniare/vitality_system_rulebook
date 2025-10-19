@@ -849,9 +849,10 @@ Effect: Successful hit with successful effect allows identical attack against sa
 Penalty: -Tier to Accuracy, Damage, and Condition rolls
 Usage: Must hit and succeed on both Accuracy and Effect
 Frequency: Once per turn maximum
+Restriction: Cannot be used with Direct Damage or Direct Area Damage attacks
 
 **Channeled**
-Cost: 2p
+Cost: 1p
 Effect: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 Penalty: -2×Tier to Accuracy, Damage, and Condition rolls
 Usage: If you don't make the channeled attack on a turn, you lose your bonus
@@ -1030,14 +1031,14 @@ Restrictions: Cannot be paired with Unreliable 1 or Unreliable 2
 #### Turn-Based Limits
 
 **Quickdraw**
-Cost: 2p
-Effect: +3×Tier to Accuracy, Damage, and Conditions
+Cost: 1p
+Effect: +4×Tier to Accuracy, Damage, and Conditions
 Limit: First round of combat
 Restrictions: Cannot be paired with Patient, Finale, Cooldown, Timid, Careful, Passive, Charges 1, Charges 2, Combo Move, Relentless, or Slaughter
 
 
 **Patient**
-Cost: 1p
+Cost: 2p
 Effect: +1×Tier to Accuracy, Damage, and Conditions
 Limit: Turn 4 or later
 Restrictions: Cannot be paired with Quickdraw, Finale, or Cooldown
@@ -1070,7 +1071,7 @@ Restrictions: Cannot be paired with Quickdraw, Patient, Finale, Charges 1, or Ch
 
 **Timid**
 Cost: 1p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: At max HP with no conditions
 Restrictions: Cannot be paired with Near Death, Bloodied, or Quickdraw
 
