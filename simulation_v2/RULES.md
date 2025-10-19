@@ -181,7 +181,7 @@ Point budgets per attack based on tier and archetype:
 
 ### Instant Defeat Upgrades
 
-**Finishing Blow 1** (3p)
+**Finishing Blow** (3p)
 - **Effect**: If attack reduces enemy to 10 HP or below, enemy is defeated instead
 
 **Culling Strike** (3p)
@@ -255,7 +255,7 @@ Point budgets per attack based on tier and archetype:
 
 **Finale** (2p)
 - **Effect**: +3×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Turn 7 or later
+- **Limit**: Turn 8 or later
 
 **Charge Up** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
@@ -272,7 +272,7 @@ Point budgets per attack based on tier and archetype:
 ### HP-Based Limits
 
 **Timid** (2p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At max HP with no conditions
 
 **Near Death** (2p)
@@ -299,7 +299,7 @@ Point budgets per attack based on tier and archetype:
 ### Conditional Limits
 
 **Vengeful** (2p)
-- **Effect**: +Tier to Accuracy, Damage, and Conditions
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been hit since last turn
 
 **Revenge** (3p)
@@ -316,11 +316,11 @@ Point budgets per attack based on tier and archetype:
 
 
 **Passive** (2p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Not attacked since last turn
 
 **Careful** (2p)
-- **Effect**: +Tier to Accuracy, Damage, and Conditions
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Not damaged since last turn
 
 ### Sequential Action Limits

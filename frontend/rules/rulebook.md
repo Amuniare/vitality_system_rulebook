@@ -775,16 +775,17 @@ Restriction: Melee, Ranged, Area attacks only
 Cost: 2p
 Effect: Advantage (roll 2d20, take higher roll) on Accuracy rolls
 Penalty: -3 penalty to all Accuracy rolls
+Restriction: Melee, Ranged, Area attacks only
 
 **Overhit**
 Cost: 2p
-Effect: For every 2 points your Accuracy roll exceeds the target's Avoidance, add +1 to the effect roll
-Restriction: Only occurs if your Accuracy roll exceeds target Avoidance by 15+
+Effect: For every 2 points your Accuracy roll exceeds the target's Avoidance, add +1 to the effect roll. Only occurs if your Accuracy roll exceeds target Avoidance by 15+
+Restriction: Melee, Ranged, Area attacks only
 
 **High Impact**
 Cost: 3p
 Effect: Replace 3d6 damage roll with flat 15 damage
-Restriction: Damage effects only
+Restriction: Damage effects only, Melee, Ranged, Area attacks only
 
 **Critical Effect**
 Cost: 1p
@@ -845,7 +846,7 @@ Exclusion: Cannot trigger from Ricochet, Explosive Critical, or other Double Tap
 **Explosive Critical**
 Cost: 2p
 Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them
-Penalty: -Tier to Accuracy
+Penalty: -Tier to Accuracy, Damage and Condition Rolls
 Restriction: Cannot apply to AOE attacks
 Exclusion: Cannot trigger from Double Tap, Ricochet, or other Explosive Critical
 
@@ -871,10 +872,9 @@ Restriction: Cannot have precise
 
 #### Instant Defeat Upgrades
 
-**Finishing Blow 1**
+**Finishing Blow**
 Cost: 3p
 Effect: If attack reduces enemy to 10 HP or below, enemy is defeated instead
-Restriction: Cannot apply to AOE attacks
 
 **Culling Strike**
 Cost: 3p
@@ -887,7 +887,7 @@ Cost: 3p
 Effect: Defeating enemy triggers another attack against new target before turn ends
 Penalty: -Tier to accuracy and damage
 Chain Penalty: Maximum Tier/2 additional attacks (rounded up)
-Restriction: Cannot apply to AOE attacks
+Restriction: Cannot apply to Area attacks
 
 **Intimidating Presence**
 Cost: 2p
@@ -1050,17 +1050,19 @@ Limit: Turn 5 or later
 **Finale**
 Cost: 2p
 Effect: +3×Tier to Accuracy, Damage, and Conditions
-Limit: Turn 7 or later
+Limit: Turn 8 or later
 
 **Charge Up**
 Cost: 1p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Spend an action on your previous turn
+Clarification: You must be able to meet the limits on the charge up turn as well. 
 
 **Charge Up 2**
 Cost: 2p
 Effect: +4×Tier to Accuracy, Damage, and Conditions
 Limit: Spend actions on your previous two turns
+Clarification: You must be able to meet the limits on the charge up turn as well. 
 
 **Cooldown**
 Cost: 1p

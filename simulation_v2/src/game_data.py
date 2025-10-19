@@ -85,12 +85,8 @@ PREREQUISITES = {
 }
 
 MUTUAL_EXCLUSIONS = [
-    ['double_tap', 'powerful_critical'],  # Both include critical accuracy, can't stack
-    ['double_tap', 'explosive_critical'],  # Explosive Critical cannot trigger from Double-Tap
-    ['double_tap', 'ricochet'],  # Can't combine multiple critical trigger effects
-    ['powerful_critical', 'explosive_critical'],
-    ['powerful_critical', 'ricochet'],
-    ['explosive_critical', 'ricochet'],
+    # Critical Effect Upgrades - can only pick one
+    ['double_tap', 'powerful_critical', 'explosive_critical', 'ricochet'],
 
     ['unreliable_1', 'unreliable_2', 'unreliable_3'],
     ['quickdraw', 'patient', 'finale', 'cooldown'],

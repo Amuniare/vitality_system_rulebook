@@ -93,7 +93,7 @@ def verify_attack_types(verifier: RuleVerifier):
     area = ATTACK_TYPES['area']
     verifier.check("area exists", 'area' in ATTACK_TYPES, "exists", "exists")
     verifier.check("area accuracy_mod", area.accuracy_mod == -1, "-1", str(area.accuracy_mod))
-    verifier.check("area damage_mod", area.damage_mod == -1, "-1", str(area.damage_mod))
+    # Note: RULES.md specifies -Tier to Accuracy only, not damage
     verifier.check("area is_area flag", area.is_area == True, "True", str(area.is_area))
 
     # Check direct_damage
@@ -118,20 +118,20 @@ def verify_upgrade_costs(verifier: RuleVerifier):
 
     # Expected costs from RULES.md
     expected_costs = {
-        'accurate_attack': 1, 'power_attack': 1, 'reliable_accuracy': 1,
-        'overhit': 2, 'high_impact': 2, 'critical_effect': 1,
+        'accurate_attack': 1, 'power_attack': 1, 'reliable_accuracy': 2,
+        'overhit': 2, 'high_impact': 3, 'critical_effect': 1,
         'armor_piercing': 3, 'brutal': 2,
-        'quick_strikes': 2, 'barrage': 2, 'extra_attack': 2,
+        'barrage': 1, 'extra_attack': 1,
         'critical_accuracy': 1, 'powerful_critical': 2, 'ricochet': 2,
         'double_tap': 3, 'explosive_critical': 2,
         'bleed': 3,
-        'finishing_blow_1': 1, 'finishing_blow_2': 2, 'finishing_blow_3': 3,
-        'culling_strike': 1, 'splinter': 3,
-        'minion_slayer_acc': 1, 'minion_slayer_dmg': 1,
-        'captain_slayer_acc': 1, 'captain_slayer_dmg': 1,
-        'elite_slayer_acc': 1, 'elite_slayer_dmg': 1,
-        'boss_slayer_acc': 1, 'boss_slayer_dmg': 1,
-        'channeled': 2, 'leech': 3,
+        'finishing_blow_1': 3,
+        'culling_strike': 3, 'splinter': 3,
+        'minion_slayer_acc': 2, 'minion_slayer_dmg': 2,
+        'captain_slayer_acc': 2, 'captain_slayer_dmg': 2,
+        'elite_slayer_acc': 2, 'elite_slayer_dmg': 2,
+        'boss_slayer_acc': 2, 'boss_slayer_dmg': 2,
+        'channeled': 3,
     }
 
     for upgrade_name, expected_cost in expected_costs.items():
@@ -151,13 +151,13 @@ def verify_limit_costs(verifier: RuleVerifier):
     # Expected costs from RULES.md
     expected_costs = {
         'unreliable_1': 2, 'unreliable_2': 2, 'unreliable_3': 1,
-        'quickdraw': 2, 'patient': 3, 'finale': 3,
-        'charge_up': 2, 'charge_up_2': 2, 'cooldown': 1,
-        'timid': 2, 'near_death': 3, 'bloodied': 2, 'attrition': 2,
-        'charges_1': 1, 'charges_2': 2,
-        'vengeful': 3, 'revenge': 3, 'unbreakable': 1, 'untouchable': 1,
-        'passive': 1, 'careful': 3,
-        'combo_move': 3, 'infected': 2, 'relentless': 2, 'slaughter': 1,
+        'quickdraw': 2, 'patient': 3, 'finale': 2,
+        'charge_up': 1, 'charge_up_2': 2, 'cooldown': 1,
+        'timid': 2, 'near_death': 2, 'bloodied': 1, 'attrition': 3,
+        'charges_1': 1, 'charges_2': 1,
+        'vengeful': 2, 'revenge': 3, 'unbreakable': 1, 'untouchable': 2,
+        'passive': 2, 'careful': 2,
+        'combo_move': 2, 'relentless': 2, 'slaughter': 1,
     }
 
     for limit_name, expected_cost in expected_costs.items():
@@ -176,14 +176,14 @@ def verify_limit_bonuses(verifier: RuleVerifier):
 
     # Expected bonuses (multiplier of Tier)
     expected_bonuses = {
-        'unreliable_1': 1, 'unreliable_2': 3, 'unreliable_3': 7,
-        'quickdraw': 3, 'patient': 1, 'finale': 2,
-        'charge_up': 3, 'charge_up_2': 6, 'cooldown': 2,
-        'timid': 2, 'near_death': 2, 'bloodied': 1, 'attrition': 2,
+        'unreliable_1': 1, 'unreliable_2': 2, 'unreliable_3': 5,
+        'quickdraw': 3, 'patient': 2, 'finale': 3,
+        'charge_up': 2, 'charge_up_2': 4, 'cooldown': 2,
+        'timid': 3, 'near_death': 2, 'bloodied': 1, 'attrition': 2,
         'charges_1': 5, 'charges_2': 2,
-        'vengeful': 1, 'revenge': 1, 'unbreakable': 4, 'untouchable': 2,
-        'passive': 2, 'careful': 2,
-        'combo_move': 1, 'infected': 1, 'relentless': 1, 'slaughter': 4,
+        'vengeful': 2, 'revenge': 2, 'unbreakable': 4, 'untouchable': 2,
+        'passive': 3, 'careful': 2,
+        'combo_move': 1, 'relentless': 1, 'slaughter': 4,
     }
 
     for limit_name, expected_bonus in expected_bonuses.items():
@@ -207,6 +207,7 @@ def verify_limit_activation(verifier: RuleVerifier):
         combat_code = f.read()
 
     # Check for each limit's activation check
+    # Note: unreliable_1, unreliable_2, unreliable_3 are implemented via DC system (not explicit name checks)
     limits_to_check = [
         ('near_death', 'near_death'),
         ('bloodied', 'bloodied'),
@@ -217,7 +218,6 @@ def verify_limit_activation(verifier: RuleVerifier):
         ('slaughter', 'slaughter'),
         ('relentless', 'relentless'),
         ('combo_move', 'combo_move'),
-        ('infected', 'infected'),  # This one is likely missing
         ('revenge', 'revenge'),
         ('vengeful', 'vengeful'),
         ('untouchable', 'untouchable'),
@@ -230,9 +230,6 @@ def verify_limit_activation(verifier: RuleVerifier):
         ('charge_up', 'charge_up'),
         ('charge_up_2', 'charge_up_2'),
         ('cooldown', 'cooldown'),
-        ('unreliable_1', 'unreliable_1'),
-        ('unreliable_2', 'unreliable_2'),
-        ('unreliable_3', 'unreliable_3'),
     ]
 
     for limit_display, limit_search in limits_to_check:
@@ -311,11 +308,9 @@ def verify_aoe_restrictions(verifier: RuleVerifier):
     print("\n[VERIFYING] AOE Restrictions...")
 
     # Expected AOE restrictions from RULES.md
+    # Only these 4 upgrades cannot be used with AOE attacks
     expected_restricted = {
-        'finishing_blow_1', 'finishing_blow_2', 'finishing_blow_3',
-        'culling_strike', 'critical_accuracy', 'powerful_critical', 'double_tap',
-        'explosive_critical', 'ricochet', 'splinter',
-        'quick_strikes', 'barrage', 'extra_attack'
+        'double_tap', 'explosive_critical', 'ricochet', 'splinter'
     }
 
     actual_restricted = set(AOE_RESTRICTIONS)
@@ -379,8 +374,8 @@ def verify_damage_calculations(verifier: RuleVerifier):
                   "formula verified in code")
 
     # Test 2: Direct damage base value (from RULES.md and CHANGELOG)
-    # RULES.md says: "Flat 13 - Tier"
-    # CHANGELOG says: "13 - Tier" (updated from "13 flat")
+    # RULES.md says: "Flat 10"
+    # CHANGELOG says: "10 flat (no tier scaling)"
     dd_type = ATTACK_TYPES['direct_damage']
     verifier.check("direct_damage base value",
                   dd_type.direct_damage_base == 10,

@@ -125,8 +125,8 @@ def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, atta
 
     elif limit_name == 'patient' and turn_number < 5:
         return False  # Turn 5 or later
-    elif limit_name == 'finale' and turn_number < 7:
-        return False  # Turn 7 or later
+    elif limit_name == 'finale' and turn_number < 8:
+        return False  # Turn 8 or later
 
     # Check charge_up limits
     elif limit_name == 'charge_up':
