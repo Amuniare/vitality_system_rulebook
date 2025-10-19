@@ -4,19 +4,21 @@ A cleaner, more focused version of the Vitality System combat simulation engine 
 
 ## Key Improvements
 
-✅ **Simplified Configuration** - Only essential parameters in `config.json`
+✅ **Simplified Configuration** - Clean JSON with essential parameters (tier, archetypes, attack_types, etc.)
 ✅ **Clear Data Flow** - Individual testing → Build testing → Top 50 logs → Reports
-✅ **3 Report Types** - Enhancement ranking, Cost analysis, Combat logs (individual + top 50)
-✅ **Enhanced Metrics** - vs Median columns, efficiency metrics for better analysis
-✅ **Multi-Archetype Support** - Test focused, dual_natured, and versatile_master
-✅ **Performance Optimizations** - Progressive elimination, pruning, optional GPU acceleration
-✅ **Reuses Optimized Code** - Imports game_data, combat, simulation from parent `/simulation` directory
+✅ **4 Report Types** - Enhancement ranking, Cost analysis, Individual logs, Top 50 logs
+✅ **Enhanced Metrics** - vs Median columns, Top10%/Top50% efficiency metrics, Med Rank positioning
+✅ **Multi-Archetype Support** - Test focused, dual_natured, and versatile_master builds
+✅ **Performance Optimizations** - Progressive elimination, pruning, GPU acceleration, attack type filtering
+✅ **Local Game Logic** - Complete `src/` directory with 30+ upgrades, 20+ limits, 6 attack types
+✅ **Automatic Cleanup** - Keeps only 5 most recent report folders
+✅ **Configurable Testing** - Filter attack types, customize dual_natured fallback attacks
 ✅ **Clean Codebase** - No legacy bloat, easier to understand and maintain
 
 ## Quick Start
 
 ```bash
-# Run with default config (tier 4, all archetypes)
+# Run with default config (tier 4, dual_natured and focused archetypes)
 python main.py
 
 # Run with specific config
@@ -32,23 +34,28 @@ pip install torch-directml
 ## Configuration
 
 Config files are stored in `configs/` directory:
-- `tier3_focused.json` - Quick test config (tier 3, focused archetype)
-- `config.json` - Default config (tier 4, dual_natured archetype)
+- `config.json` - Default config (tier 4, dual_natured and focused archetypes)
 
 ### Example Configuration
 
 ```json
 {
   "tier": 4,
-  "archetypes": ["dual_natured", "focused", "versatile_master"],
-  "simulation_runs": 3,
+  "archetypes": ["dual_natured", "focused"],
+  "attack_types": ["melee_dg", "area", "direct_damage", "direct_area_damage"],
+  "simulation_runs": 5,
   "use_threading": true,
   "use_gpu": false,
-  "build_chunk_size": 2000,
+  "build_chunk_size": 5000,
 
   "character_config": {
     "attacker": [2, 2, 2, 2, 4],
     "defender": [2, 2, 2, 2, 4]
+  },
+
+  "dual_natured": {
+    "fallback_attacks": ["ranged", "area"],
+    "fallback_tier_bonus": 1
   },
 
   "pruning": {
@@ -77,14 +84,26 @@ Config files are stored in `configs/` directory:
 ### Configuration Options
 
 **Core Settings:**
-- **tier**: Character tier (1-5), determines point budgets
-- **archetypes**: List of archetypes to test (`"focused"`, `"dual_natured"`, `"versatile_master"`)
-- **simulation_runs**: Number of iterations per combat test (higher = more accurate, slower)
-- **use_threading**: Enable multiprocessing (faster but may have issues on Windows)
-- **use_gpu**: Enable GPU acceleration for dice generation (requires `torch-directml`)
-- **build_chunk_size**: Number of builds to process per chunk when threading enabled
+- **tier**: Character tier (1-5), determines point budgets (default: 4)
+- **archetypes**: List of archetypes to test (default: `["dual_natured", "focused"]`)
+  - Available: `"focused"`, `"dual_natured"`, `"versatile_master"`
+- **attack_types**: Which attack types to include in testing (default: 4 types for faster testing)
+  - Default: `["melee_dg", "area", "direct_damage", "direct_area_damage"]`
+  - Available: `"melee_ac"`, `"melee_dg"`, `"ranged"`, `"area"`, `"direct_damage"`, `"direct_area_damage"`
+  - **Tip:** Test fewer attack types to dramatically reduce build count (e.g., just `["melee_dg", "area"]`)
+- **simulation_runs**: Number of iterations per combat test (default: 5, recommended: 10+ for production)
+- **use_threading**: Enable multiprocessing (default: true, may have issues on Windows)
+- **use_gpu**: Enable GPU acceleration for dice generation (default: false, requires `torch-directml`)
+- **build_chunk_size**: Number of builds to process per chunk when threading enabled (default: 5000)
 - **character_config**: Stats for attacker and defender `[focus, power, mobility, endurance, tier]`
+  - Default: `[2, 2, 2, 2, 4]` - balanced tier 4 character
 - **scenarios**: Combat scenarios to test (single boss, mixed enemies, swarms)
+  - Default: 4 scenarios (Boss, Mixed, Swarm 1, Swarm 2)
+
+**Archetype-Specific Settings:**
+- **dual_natured**: Configuration for dual_natured archetype fallback attack system
+  - `fallback_attacks`: List of attack types to use for second attack (e.g., `["ranged", "area"]`)
+  - `fallback_tier_bonus`: Bonus point budget for fallback attack (typically 1)
 
 **Performance Optimizations:**
 - **pruning**: Pre-filter versatile_master builds to top performers before full testing
@@ -163,19 +182,52 @@ Enhancements grouped by point cost with efficiency analysis.
 - **Top50% vs Med** - Top 50% deviation
 - **Top50% Eff** - Top 50% efficiency
 
+### How to Use Reports
+
+**Enhancement Ranking Report** - Best for:
+- Identifying strongest upgrades and limits overall
+- Understanding which enhancements work well across many builds
+- Comparing performance by attack type (see columns: Melee_AC, Ranged, Area, etc.)
+- Finding versatile enhancements (low Med Rank = appears in top builds)
+
+**Cost Analysis Report** - Best for:
+- Finding best value enhancements at each cost tier
+- Comparing efficiency (performance/cost) across tiers
+- Building budget-conscious attack builds
+- Understanding diminishing returns at higher costs
+
+**Individual Enhancement Logs** - Best for:
+- Understanding exactly how a specific upgrade/limit works
+- Seeing turn-by-turn mechanics and special effect triggers
+- Debugging unexpected behavior
+- Learning combat mechanics through examples
+
+**Top 50 Build Combat Logs** - Best for:
+- Understanding why top builds perform well
+- Seeing complete builds in action across all scenarios
+- Learning optimal build patterns and synergies
+- Comparing performance across different enemy configurations
+
 ## Architecture
 
 ### Directory Structure
 ```
 simulation_v2/
 ├── configs/                   # Configuration files
-│   ├── tier3_focused.json     # Test config (tier 3, focused)
-│   └── config.json            # Default config (tier 4, all archetypes)
+│   └── config.json            # Default config (tier 4, dual_natured + focused)
 ├── core/                      # Simulation V2 orchestration layer
 │   ├── config.py              # Config loader with archetype point budgets
 │   ├── individual_tester.py   # Test enhancements in isolation
 │   ├── build_tester.py        # Test all build combinations
 │   └── reporter.py            # Generate ranking and cost analysis reports
+├── src/                       # Core game logic (local copies, can override ../simulation)
+│   ├── game_data.py           # Attack types, upgrades, limits, validation rules
+│   ├── models.py              # Data classes (Character, AttackBuild, MultiAttackBuild)
+│   ├── combat.py              # Attack resolution, dice rolling, condition tracking
+│   ├── combat_gpu.py          # Optional GPU acceleration via DirectML
+│   ├── simulation.py          # Combat simulation loop
+│   ├── build_generator.py    # Build combination generation algorithms
+│   └── damage_calculator.py   # Damage calculation utilities
 ├── reports/                   # Output directory (timestamped)
 │   └── {timestamp}/
 │       └── {archetype}/
@@ -190,7 +242,7 @@ simulation_v2/
 └── README.md                  # This file
 ```
 
-**Note:** Core game logic (`game_data.py`, `combat.py`, `simulation.py`, `models.py`, `build_generator.py`) is imported from `../simulation/src/` directory.
+**Note:** Core game logic is in the `src/` directory. These are local copies that can be customized for simulation_v2. The original versions are in `../simulation/src/`.
 
 ### Data Flow
 1. **Load Config** - Parse JSON config from `configs/` directory
@@ -202,22 +254,23 @@ simulation_v2/
    - **Report Generation** - Calculate enhancement stats and generate ranking + cost analysis reports
 
 ### Code Organization
-Simulation V2 follows a modular import strategy:
+Simulation V2 uses local copies of game logic in the `src/` directory:
 
-**Imported from parent simulation:**
-- `../simulation/src/game_data.py` - Attack types, upgrades, limits, validation rules
-- `../simulation/src/combat.py` - Attack resolution, dice rolling, condition tracking
-- `../simulation/src/combat_gpu.py` - Optional GPU acceleration (DirectML)
-- `../simulation/src/simulation.py` - Combat simulation loop
-- `../simulation/src/models.py` - Data classes (Character, AttackBuild, MultiAttackBuild)
-- `../simulation/src/build_generator.py` - Build generation algorithms
+**Core game logic** (`src/`):
+- `game_data.py` - Attack types, upgrades, limits, validation rules (30+ upgrades, 20+ limits)
+- `models.py` - Data classes (Character, AttackBuild, MultiAttackBuild)
+- `combat.py` - Attack resolution, dice rolling, condition tracking
+- `combat_gpu.py` - Optional GPU acceleration via DirectML (20x faster dice cache)
+- `simulation.py` - Combat simulation loop
+- `build_generator.py` - Build combination generation algorithms
+- `damage_calculator.py` - Damage calculation utilities
 
-**V2-specific orchestration:**
-- `core/config.py` - Configuration management
-- `core/individual_tester.py` - Enhancement isolation testing
-- `core/build_tester.py` - Build combination testing
-- `core/reporter.py` - Report generation
-- `main.py` - Pipeline coordination
+**V2-specific orchestration** (`core/`):
+- `config.py` - Configuration management with archetype point budgets
+- `individual_tester.py` - Enhancement isolation testing
+- `build_tester.py` - Build combination testing with progressive elimination
+- `reporter.py` - Report generation (enhancement ranking, cost analysis)
+- `main.py` - Pipeline coordination and orchestration
 
 ## Performance Notes
 
@@ -270,6 +323,49 @@ Characters can specialize in different attack patterns with varying point budget
 
 Point budgets are **per-attack**. MultiAttackBuilds intelligently select the optimal attack for each scenario.
 
+## Attack Types & Game Mechanics
+
+### Available Attack Types
+
+The simulation tests 6 different attack types, each with unique mechanics:
+
+| Attack Type | Base Cost | Accuracy Mod | Damage Mod | Special Features |
+|-------------|-----------|--------------|------------|------------------|
+| **melee_ac** | 0 | +Tier | 0 | Melee with accuracy bonus |
+| **melee_dg** | 0 | 0 | +Tier | Melee with damage bonus |
+| **ranged** | 0 | 0 | 0 | Standard ranged attack |
+| **area** | 0 | -1 | 0 | Hits multiple targets |
+| **direct_damage** | 0 | 0 | 0 | 10 flat damage (auto-hit, no dice) |
+| **direct_area_damage** | 0 | 0 | -1 | 10 - Tier flat damage to area (auto-hit, no dice) |
+
+**Notes:**
+- Area attacks (`area`, `direct_area_damage`) pay **2x cost** for all upgrades and limits due to their multi-target capability.
+- Direct attacks (`direct_damage`, `direct_area_damage`) **auto-hit** and cannot use accuracy-based upgrades (power_attack, slayer_acc, critical effects, etc.).
+
+### Enhancement System
+
+**Upgrades** (30+ available):
+- Modify attack accuracy, damage, or add special effects
+- Cost: 1-3 points each
+- Examples: `power_attack` (+1 damage, -1 accuracy, 1pt), `brutal` (brutal_20 effect, 2pt), `armor_piercing` (ignore endurance, -2 accuracy, 3pt)
+- Some upgrades are mutually exclusive (e.g., can't combine `double_tap` + `powerful_critical`)
+- Some upgrades restricted to specific attack types (e.g., `explosive_critical` can't apply to AOE)
+
+**Limits** (20+ available):
+- Restrict when/how an attack can be used for point refunds
+- Gain: 1-3 points each
+- Examples: `unreliable_1` (50% chance, +2pt), `quickdraw` (turn 1-3 only, +3pt), `bloodied` (when HP < 50%, +1pt)
+- Mutually exclusive within categories (e.g., can only have one HP condition limit)
+
+### Rule Validation
+
+The simulation enforces strict game rules:
+- **Mutual exclusions** - Incompatible upgrade/limit combinations
+- **Prerequisites** - Some upgrades require others first
+- **Attack type restrictions** - Certain upgrades only work with specific attack types
+- **AOE cost multiplier** - Area attacks pay double for enhancements
+- **Max 3 upgrades** - Per attack build (enforced by generation algorithm)
+
 ## Differences from Original Simulation
 
 ### What's Removed
@@ -277,28 +373,33 @@ Point budgets are **per-attack**. MultiAttackBuilds intelligently select the opt
 - ❌ Archetype-specific scenario reports (single target, multi-target, etc.)
 - ❌ Upgrade pairing analysis (can be derived from build testing)
 - ❌ Build recommendation engine (top 50 logs serve this purpose)
+- ❌ Legacy report configuration (complex nested enable/disable flags)
 
 ### What's Enhanced
 - ✅ **vs Median columns** - Better than "vs Mean" for understanding relative performance
-- ✅ **Efficiency metrics** - (performance / cost) at Top10%, Top50%, and overall
-- ✅ **Top 50 combat logs** - Detailed mechanics for best builds across all scenarios
-- ✅ **Individual enhancement logs** - Turn-by-turn testing of each upgrade/limit
-- ✅ **Simplified config** - No nested report enable/disable flags
-- ✅ **Progressive elimination** - Multi-round testing system for all archetypes
-- ✅ **GPU acceleration** - Optional DirectML support for faster testing
+- ✅ **Efficiency metrics** - (performance / cost) at Top10%, Top50%, and overall levels
+- ✅ **Top 50 combat logs** - Detailed turn-by-turn mechanics for best builds across ALL scenarios
+- ✅ **Individual enhancement logs** - Isolated testing shows exactly how each upgrade/limit works
+- ✅ **Simplified config** - Clean JSON with no nested flags, just essential parameters
+- ✅ **Progressive elimination** - Multi-round testing system that works for all archetypes
+- ✅ **GPU acceleration** - Optional DirectML support (20x faster dice cache generation)
+- ✅ **Attack type filtering** - Choose which attack types to test (reduces build count)
+- ✅ **Dual natured fallback system** - Configurable fallback attacks for second attack slot
+- ✅ **Automatic report cleanup** - Keeps only 5 most recent report folders
 
 ### What's Preserved
-- ✅ All core combat mechanics from original simulation
-- ✅ Build generation algorithms with full rule validation
-- ✅ Multi-scenario testing (boss, mixed enemies, swarms)
-- ✅ Character data models and attack types
+- ✅ All core combat mechanics (attack resolution, special effects, conditions)
+- ✅ Build generation algorithms with full rule validation (mutual exclusions, prerequisites)
+- ✅ Multi-scenario testing (boss fights, mixed enemy groups, swarms)
+- ✅ Character data models and all 6 attack types
 - ✅ Dice cache optimization (10,000 pre-generated rolls)
+- ✅ All 30+ upgrades and 20+ limits from game_data.py
 
 ## Troubleshooting
 
-### "ImportError: cannot import name X"
-**Problem:** Cannot import from `../simulation/src/`
-**Solution:** Make sure you're in a directory containing both `/simulation` and `/simulation_v2` folders
+### Missing dependencies
+**Problem:** `ModuleNotFoundError` when running simulation
+**Solution:** Install dependencies: `pip install -r requirements.txt` (if available) or manually install needed packages
 
 ### Multiprocessing errors on Windows
 **Problem:** Crashes or hangs with threading enabled

@@ -336,17 +336,7 @@ Point budgets per attack based on tier and archetype:
 - If you attack simply use the base formulas plus the bonus from any Boons you have purchased
 
 
-### **UTILITY ARCHETYPES**
-*Defines non-combat capabilities and specialized skills*
 
-**Specialized**  
-Choose an Attribute, you add your Tier three times to any skill checks made using that Attribute
-
-**Practical**  
-Choose 2 Attributes, you add your Tier twice to all skill checks using those Attributes
-
-**Jack of All Trades**  
-You add your Tier once to all skill checks
 
 
 
@@ -652,10 +642,10 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Range:** 15 spaces base
 - **Penalty:** -Tier to Accuracy if adjacent to hostile character
 
-**AREA ATTACK** 
+**AREA ATTACK**
 - **Range:** Originates from your position
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
-- **Penalty:** -Tier to all Accuracy, Damage and Condition checks
+- **Penalty:** -Tier to Accuracy checks
 - **Cost Modifier:** All upgrades / limits cost 2x as much
 
 **DIRECT CONDITION ATTACK** 
@@ -670,16 +660,16 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 - **Penalty:** -Tier x2 Condition Roll
 - **Cost Modifier:** All upgrades / limits cost 2x as much
 
-**DIRECT DAMAGE ATTACK** 
+**DIRECT DAMAGE ATTACK**
 - **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
 - **Restriction:** Must be Damage Effect
-- **Penalty:** Flat 15 - Tier
+- **Damage:** Flat 10
 
-**DIRECT AREA DAMAGE ATTACK** 
+**DIRECT AREA DAMAGE ATTACK**
 - **Range:** Originates from your position, auto-hit (no Accuracy roll needed)
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction:** Must be Damage Effect
-- **Penalty:** Flat 15 - Tier x2
+- **Damage:** Flat 10 - Tier
 - **Cost Modifier:** All upgrades / limits cost 2x as much
 
 ## **DAMAGE & CONDITIONS **
@@ -782,17 +772,17 @@ Penalty: -Tier to Accuracy rolls
 Restriction: Melee, Ranged, Area attacks only
 
 **Reliable Accuracy**
-Cost: 1p
+Cost: 2p
 Effect: Advantage (roll 2d20, take higher roll) on Accuracy rolls
 Penalty: -3 penalty to all Accuracy rolls
 
 **Overhit**
 Cost: 2p
 Effect: For every 2 points your Accuracy roll exceeds the target's Avoidance, add +1 to the effect roll
-Restriction: Only occurs if your Accuracy roll exceeds target Avoidance by 5+
+Restriction: Only occurs if your Accuracy roll exceeds target Avoidance by 15+
 
 **High Impact**
-Cost: 2p
+Cost: 3p
 Effect: Replace 3d6 damage roll with flat 15 damage
 Restriction: Damage effects only
 
@@ -805,31 +795,26 @@ Restriction: Damage effects only
 **Armor Piercing**
 Cost: 3p
 Effect: Ignore target's Durability Endurance bonus
+Penalty: -1 to Accuracy rolls (flat penalty, not tier-based)
 Restriction: Cannot take with Direct or Direct Area Attacks, Damage effects only
 
 **Brutal**
 Cost: 2p
-Effect: When Damage roll exceeds target Durability by 10+, deal extra damage equal to half the difference
+Effect: When Damage roll exceeds target Durability by 20+, deal extra damage equal to half the difference
 Restriction: Damage effects only
 
 #### Multi-Attack Upgrades
 
-**Quick Strikes**
-Cost: 2p
-Effect: Make same attack two times against single target
-Penalty: -Tier to Accuracy, Damage, and Condition rolls
-Restriction: Cannot be put on an AOE attack
-
 **Barrage**
-Cost: 2p
+Cost: 1p
 Effect: Make same attack three times against single target
-Usage: First attack must hit and effect, in order to make second attack, and same for the second and third attacks
-Penalty: -Tier to Accuracy, Damage, and Condition rolls
+Penalty: -2×Tier to Accuracy, Damage, and Condition rolls
 Restriction: Cannot be put on an AOE attack
 
 **Extra Attack**
-Cost: 2p
+Cost: 1p
 Effect: Successful hit with successful effect allows identical attack against same target
+Penalty: -Tier to Accuracy, Damage, and Condition rolls
 Usage: Must hit and succeed on both Accuracy and Effect
 Frequency: Once per turn maximum
 
@@ -860,7 +845,7 @@ Exclusion: Cannot trigger from Ricochet, Explosive Critical, or other Double Tap
 **Explosive Critical**
 Cost: 2p
 Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them
-Penalty: -Tier to Accuracy, Damage and Condition Rolls
+Penalty: -Tier to Accuracy
 Restriction: Cannot apply to AOE attacks
 Exclusion: Cannot trigger from Double Tap, Ricochet, or other Explosive Critical
 
@@ -887,22 +872,12 @@ Restriction: Cannot have precise
 #### Instant Defeat Upgrades
 
 **Finishing Blow 1**
-Cost: 1p
-Effect: If attack reduces enemy to 5 HP or below, enemy is defeated instead
-Restriction: Cannot apply to AOE attacks
-
-**Finishing Blow 2**
-Cost: 2p
+Cost: 3p
 Effect: If attack reduces enemy to 10 HP or below, enemy is defeated instead
 Restriction: Cannot apply to AOE attacks
 
-**Finishing Blow 3**
-Cost: 3p
-Effect: If attack reduces enemy to 15 HP or below, enemy is defeated instead
-Restriction: Cannot apply to AOE attacks
-
 **Culling Strike**
-Cost: 1p
+Cost: 3p
 Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead
 
 #### Multi-target Section
@@ -910,6 +885,7 @@ Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead
 **Splinter**
 Cost: 3p
 Effect: Defeating enemy triggers another attack against new target before turn ends
+Penalty: -Tier to accuracy and damage
 Chain Penalty: Maximum Tier/2 additional attacks (rounded up)
 Restriction: Cannot apply to AOE attacks
 
@@ -927,25 +903,25 @@ Usage: Triggers on enemy defeat, activation is optional
 #### Enemy Type Bonuses
 
 **Minion Slayer**
-Cost: 1p
+Cost: 2p
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 Usage: Bonus applies against 10 maximum HP enemies
 Restriction: Can only have 1 Slayer bonus per attack
 
 **Captain Slayer**
-Cost: 1p
+Cost: 2p
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 Usage: Bonus applies against 25 maximum HP enemies
 Restriction: Can only have 1 Slayer bonus per attack
 
 **Elite Slayer**
-Cost: 1p
+Cost: 2p
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 Usage: Bonus applies against 50 maximum HP enemies
 Restriction: Can only have 1 Slayer bonus per attack
 
 **Boss Slayer**
-Cost: 1p
+Cost: 2p
 Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
 Usage: Bonus applies against 100 maximum HP enemies
 Restriction: Can only have 1 Slayer bonus per attack
@@ -953,7 +929,7 @@ Restriction: Can only have 1 Slayer bonus per attack
 #### Sustained Attack Upgrades
 
 **Channeled**
-Cost: 2p
+Cost: 3p
 Effect: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 Penalty: -2×Tier to Accuracy, Damage, and Condition rolls
 Usage: If you don't make the channeled attack on a turn, you lose your bonus
@@ -1050,12 +1026,12 @@ Limit: Roll d20, DC 5 to activate each turn
 
 **Unreliable 2**
 Cost: 2p
-Effect: +3×Tier to Accuracy, Damage, and Conditions
+Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Roll d20, DC 10 to activate each turn
 
 **Unreliable 3**
 Cost: 1p
-Effect: +7×Tier to Accuracy, Damage, and Conditions
+Effect: +5×Tier to Accuracy, Damage, and Conditions
 Limit: Must roll 15+ or attack fails
 
 #### Turn-Based Limits
@@ -1068,22 +1044,22 @@ Limit: First round of combat
 
 **Patient**
 Cost: 3p
-Effect: +Tier to Accuracy, Damage, and Conditions
+Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Turn 5 or later
 
 **Finale**
-Cost: 3p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
-Limit: Turn 8 or later
-
-**Charge Up**
 Cost: 2p
 Effect: +3×Tier to Accuracy, Damage, and Conditions
+Limit: Turn 7 or later
+
+**Charge Up**
+Cost: 1p
+Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Spend an action on your previous turn
 
 **Charge Up 2**
 Cost: 2p
-Effect: +6×Tier to Accuracy, Damage, and Conditions
+Effect: +4×Tier to Accuracy, Damage, and Conditions
 Limit: Spend actions on your previous two turns
 
 **Cooldown**
@@ -1095,21 +1071,21 @@ Limit: Cannot use again for 3 turns after use
 
 **Timid**
 Cost: 2p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: At max HP with no conditions
 
 **Near Death**
-Cost: 3p
+Cost: 2p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: At 25 Hit Points or less
 
 **Bloodied**
-Cost: 2p
+Cost: 1p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: At 50 Hit Points or less
 
 **Attrition**
-Cost: 2p
+Cost: 3p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Each use costs 20 HP
 Restriction: Can't have regeneration, leech, healing or any other ability that restores HP
@@ -1120,20 +1096,20 @@ Effect: +5×Tier to Accuracy, Damage, and Conditions
 Limit: Single use, recharges after 1 minute rest
 
 **Charges 2**
-Cost: 2p
+Cost: 1p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: 2 uses, recharges after 1 minute rest
 
 #### Conditional Limits
 
 **Vengeful**
-Cost: 3p
-Effect: +Tier to Accuracy, Damage, and Conditions
+Cost: 2p
+Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Been hit since last turn
 
 **Revenge**
 Cost: 3p
-Effect: +Tier to Accuracy, Damage, and Conditions
+Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Been damaged since last turn
 
 **Unbreakable**
@@ -1142,7 +1118,7 @@ Effect: +4×Tier to Accuracy, Damage, and Conditions
 Limit: Been hit but took no damage since last turn
 
 **Untouchable**
-Cost: 1p
+Cost: 2p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: All attacks missed since last turn, must have been attacked
 
@@ -1152,19 +1128,19 @@ Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Ally unconscious or great peril occurred
 
 **Passive**
-Cost: 1p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Cost: 2p
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: Not attacked since last turn
 
 **Careful**
-Cost: 3p
+Cost: 2p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Not damaged since last turn
 
 #### Sequential Action Limits
 
 **Combo Move**
-Cost: 3p
+Cost: 2p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Hit same enemy last turn
 
@@ -1274,12 +1250,18 @@ These abilities represent your character's capabilities outside of combat.
 - Utility Points: 5 × (Tier) points
 - Can be spend on Features, Senses, Movement Abilites, or Descriptors
 
+**Skills**
+Choose 2 Attributes, you add your Tier twice to all skill checks using those Attributes
+
+
 
 ## Features
 
 Abilities that enable entirely new categories of actions and checks impossible through standard character capabilities. Features grant access to supernatural effects, reality manipulation, or fundamentally new interaction methods with the game world.
 
 **Core Principle:** Features allow you to make checks you normally couldn't make. They create new possibilities rather than enhancing existing ones.
+
+**Checks:** Some features call for checks, some may have you make a check, when making that check, you get 3xTier to the roll.
 
 **Cost Structure:** 1, 3, 5, or 10 utility points based on mechanical impact and scope of new capabilities enabled.
 
@@ -1301,7 +1283,7 @@ You can recall any information you've previously encountered with perfect accura
 You know a dozen languages, including more exotic or ancient ones. If you encounter a language you don't know, you can attempt to decipher its meaning over time using intelligence.
 
 **Lock**
-You can place a protective barrier around a container or room. Your bonus to resist someone breaking into the container or room is 3 × your Intelligence. You can only have one lock active at a time, but you can disable and activate a new one at any time from anywhere.
+You can place a protective barrier around a container or room. Your bonus to resist someone breaking into the container or room is 3 × Tier. You can only have one lock active at a time, but you can disable and activate a new one at any time from anywhere.
 
 **Multi-limbed**
 You have additional limbs. Each purchase of this feature grants you one extra limb.
@@ -1333,7 +1315,7 @@ You can communicate with ancestral spirits for guidance.
 You can call upon your personal assistant to help with mundane activities such as a butler, driver, or secretary. The assistant can handle routine tasks, carry out errands, and serve as a go-between for important social interactions, offering access to otherwise unavailable opportunities.
 
 **Auratic Sway**
-Emits a subtle aura that affects emotions or moods in the immediate vicinity. You can make an Intimidation or Communication check against everyone nearby to slightly alter their mood or emotions.
+Emits a subtle aura that affects emotions or moods in the immediate vicinity. You can make a Feature check (3×Tier) against everyone nearby to slightly alter their mood or emotions.
 
 **Distinguished Background**
 Your distinct heritage, noble birth, or foreign origin marks you as notable wherever you go. This grants you respect and curiosity that can open doors to influential individuals, exclusive events, and valuable information. However, it also makes you memorable and may create unwanted attention or suspicion depending on local politics and attitudes.
@@ -1348,19 +1330,19 @@ Stretch your limbs to reach distant objects or compress your body to fit through
 Completely negate fall damage from any height automatically.
 
 **Familiar**
-You have a small-sized creature or construct that obeys your commands. You can see through its senses and control its movement. It uses your skills for any checks; if it's a creature, it uses your Awareness instead of Mobility. It cannot take actions other than skill checks. It has 0 in all combat stats, and if it takes damage, it is destroyed and cannot be resummoned until after a full rest. The familiar can scout dangerous areas, retrieve objects, or act as a distraction.
+You have a small-sized creature or construct that obeys your commands. You can see through its senses and control its movement. It uses 3×Tier for any checks it makes. It cannot take actions other than skill checks. It has 0 in all combat stats, and if it takes damage, it is destroyed and cannot be resummoned until after a full rest. The familiar can scout dangerous areas, retrieve objects, or act as a distraction.
 
 **Forbiddance**
-Once per rest, over the course of an hour, you may create a ward that protects up to a 100 by 100 space area from observation, teleportation, and communication through the barrier. Choose one category of being (work with GM to define). Chosen creatures take (10 + Focus or Power) damage per turn spent in the area. The ward lasts one day. If you use this feature every day for 100 days in the same spot, the effect becomes permanent.
+Once per rest, over the course of an hour, you may create a ward that protects up to a 100 by 100 space area from observation, teleportation, and communication through the barrier. Choose one category of being (work with GM to define). Chosen creatures take (10 + 3×Tier) damage per turn spent in the area. The ward lasts one day. If you use this feature every day for 100 days in the same spot, the effect becomes permanent.
 
 **Glyph of Warding**
-It takes one hour to set up the trap, and you may set it to release one of your special attacks. The glyph may not be moved from where it was set up. You can have a number of active traps equal to your Intelligence score. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness or Intelligence check against double your Intelligence to detect.
+It takes one hour to set up the trap, and you may set it to release one of your special attacks. The glyph may not be moved from where it was set up. You can have a number of active traps equal to your Tier. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require a Feature check (3×Tier) against double your Tier to detect.
 
 **Jury Rigging**
-You can repair or modify the function of any item or object without using materials. However, the repair is temporary and will break again at the end of the session or after intense use. The quality and duration of your repair is based on an Intelligence check determined by the GM.
+You can repair or modify the function of any item or object without using materials. However, the repair is temporary and will break again at the end of the session or after intense use. The quality and duration of your repair is based on a Feature check (3×Tier) determined by the GM.
 
 **Light Sleeper**
-You do not require sleep and are passively aware of your surroundings even while resting. Your Awareness checks are not reduced while resting, and you can remain alert during the party's rest periods. You still require the same rest duration to recover HP, Efforts, and ability uses.
+You do not require sleep and are passively aware of your surroundings even while resting. Your Feature checks (3×Tier) are not reduced while resting, and you can remain alert during the party's rest periods. You still require the same rest duration to recover HP, Efforts, and ability uses.
 
 **Master Sculptor**
 Choose a specific material (stone, metal, wood, clay, etc.). You can precisely shape, mold, or alter that material at rapid pace, working on up to 8 cubic meters per minute. This allows you to create tools, artistic works, or modify existing structures made of your chosen material without requiring traditional crafting tools.
@@ -1402,10 +1384,10 @@ You can temporarily bind yourself to an object or location, granting limited inf
 Someone has invested a great deal of time and/or money to get you where you are. You have greater access to resources, and they are inclined to protect their investment. However, you are beholden to them, and they might cut their losses if things get too dicey.
 
 **Stealth Guidance**
-You can add your Awareness score to the Stealth checks of any allies within 2 spaces of you that you designate. This ability helps your team move undetected while you coordinate their movements and watch for threats.
+You can add 3×Tier to the Stealth checks of any allies within 2 spaces of you that you designate. This ability helps your team move undetected while you coordinate their movements and watch for threats.
 
 **Street Performer**
-You can always find opportunities to earn money and resources through performances, hustling, or social connections. Make a Communication check to acquire money or secure free lodging and meals. The GM determines the difficulty based on the amount needed and local circumstances. Success may involve entertaining crowds, making deals, or leveraging social networks.
+You can always find opportunities to earn money and resources through performances, hustling, or social connections. Make a Feature check (3×Tier) to acquire money or secure free lodging and meals. The GM determines the difficulty based on the amount needed and local circumstances. Success may involve entertaining crowds, making deals, or leveraging social networks.
 
 **Streetwise Network**
 You have connections throughout various segments of society, providing you with valuable information about local people and places wherever you travel.
@@ -1428,13 +1410,13 @@ Once per session, if you say, "I Know a Guy," workshop with the GM to create an 
 ### **5 Point Features**
 
 **Alchemist**
-You are a master of creating experimental tinctures and tonics. The concoctions work a single time to accomplish a specific goal. You will need time to gather the required ingredients, requiring an Intelligence or Awareness check to forage or rolling a d100 and Communication to purchase. The GM will decide the DCs, the amount of time it takes, and any costs.
+You are a master of creating experimental tinctures and tonics. The concoctions work a single time to accomplish a specific goal. You will need time to gather the required ingredients, requiring a Feature check (3×Tier) to forage or rolling a d100 and a Feature check (3×Tier) to purchase. The GM will decide the DCs, the amount of time it takes, and any costs.
 
 **Astral Projection**
 While resting, you can travel to other locations using a spectral form. You are visible but intangible while astral projecting, able to move through solid objects and observe your surroundings. You can return to your body at will from any distance. You can use this form to gather information or travel to otherwise unreachable places.
 
 **Bard**
-You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Communication score can add your Tier to a skill check declared before they roll.
+You can sing a tune to help inspire others. For the next hour, a number of present characters up to your Tier can add your Tier to a skill check declared before they roll.
 
 **Consciousness Transfer**
 You can temporarily swap consciousness with willing participants.
@@ -1449,16 +1431,16 @@ Think and perceive at extremely accelerated speeds while performing hundreds of 
 You are able to inflict complex, lasting, and nearly incurable curses on others. To cast the curse, the target must be aware they are being cursed and within 18 spaces of you for one minute. Additionally, you must know the target's true name and/or one special condition determined by you and the GM. Work with GM to determine appropriate curse effects and lifting conditions.
 
 **Hidden Trap**
-It takes one hour to set up the trap, and you may set it to release one of your special attacks. You can set a number of traps equal to your Awareness per rest. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require an Awareness check against double your Awareness to detect and a Mobility check to disarm or avoid.
+It takes one hour to set up the trap, and you may set it to release one of your special attacks. You can set a number of traps equal to your Tier per rest. If the trap is triggered, the attack is released. You suffer/are limited by your limits when setting the trap. Hidden traps require a Feature check (3×Tier) against double your Tier to detect and a Mobility check to disarm or avoid.
 
 **Immortality**
 You are immortal, you can be killed but you will return to life after 24 hours. Work with the GM to establish a limitation for said immortality, a way in which you can truly be killed. Additionally, determine where you return and if there are any changes that affect you.
 
 **Inventor**
-You can create technological inventions. These inventions work a single time and to accomplish a specific goal. The GM will determine the Intelligence check difficulty based on the setting. It will take a number of hours of active downtime equal to the difficulty minus 10. Requires a suitable lab or workshop.
+You can create technological inventions. These inventions work a single time and to accomplish a specific goal. The GM will determine the Feature check (3×Tier) difficulty based on the setting. It will take a number of hours of active downtime equal to the difficulty minus 10. Requires a suitable lab or workshop.
 
 **Know It All**
-You're very bossy and like to tell others how to do things. If you can spend one minute explaining how to do something better, another character can add your Intelligence to any check, provided they follow your advice.
+You're very bossy and like to tell others how to do things. If you can spend one minute explaining how to do something better, another character can add 3×Tier to any check, provided they follow your advice.
 
 **Long-Range Teleportation**
 Teleport to any location that you can clearly visualize or have previously visited automatically after spending at least 1 minute in preparation, the longer the distance the greater the amount of time it takes.
@@ -1467,7 +1449,7 @@ Teleport to any location that you can clearly visualize or have previously visit
 You can view, modify, or implant memories in willing or unconscious subjects. Cannot be used on actively resisting targets.
 
 **Mind Reading**
-Make an Intelligence or Awareness check to attempt to read a target's mind that you can see. The GM determines the difficulty based on the target's mental defenses and what information you're seeking. Success reveals the desired thoughts, memories, or knowledge the target possesses.
+Make a Feature check (3×Tier) to attempt to read a target's mind that you can see. The GM determines the difficulty based on the target's mental defenses and what information you're seeking. Success reveals the desired thoughts, memories, or knowledge the target possesses.
 
 **Molecular Manipulation**
 You can convert one mundane material into another mundane material of similar density and hardness. Wood can become plastic, stone can become metal, or cloth can become leather.
@@ -1488,7 +1470,7 @@ As you activate this feature, increase your Tier by 4, for 6 rounds. At the end 
 You can move and manipulate objects at a distance using mental force. You can affect objects within your line of sight. The weight limit is based on your Capacity score: light objects effortlessly, medium objects with concentration, and heavy objects requiring significant effort.
 
 **Telepath**
-You can communicate telepathically with any sentient being you can see or are familiar with across unlimited distances. They can communicate back if willing. You can maintain simultaneous mental links with a number of beings equal to your Intelligence score. Additionally, you can:
+You can communicate telepathically with any sentient being you can see or are familiar with across unlimited distances. They can communicate back if willing. You can maintain simultaneous mental links with a number of beings equal to your Tier. Additionally, you can:
 - Share complex memories, emotions, or sensory experiences
 - Establish permanent mental bonds that persist even when unconscious
 - Create group mental networks allowing all linked minds to communicate
@@ -1523,84 +1505,84 @@ Move forward or backward through time automatically after spending 1 hour in pre
 
 ## Senses
 
-Enhanced perceptual capabilities that enable Awareness checks impossible through normal human senses. Senses expand what you can perceive and detect in your environment.
+Enhanced perceptual capabilities that enable Feature checks impossible through normal human senses. Senses expand what you can perceive and detect in your environment.
 
-**Core Principle:** Senses allow you to make Awareness checks to perceive things that would be impossible with normal human senses.
+**Core Principle:** Senses allow you to make Feature checks (3×Tier) to perceive things that would be impossible with normal human senses.
 
 ### Senses (1p)
 
 
 **Darkvision**
-Make Awareness checks to see clearly in complete darkness as if it were dim light.
+Make Feature checks (3×Tier) to see clearly in complete darkness as if it were dim light.
 
 **Enhanced Hearing**
-Make Awareness checks to hear sounds at frequencies beyond normal human range or at much greater distances.
+Make Feature checks (3×Tier) to hear sounds at frequencies beyond normal human range or at much greater distances.
 
 **Scent Enhancement**
-Make Awareness checks to identify specific individuals, substances, or emotional states through smell.
+Make Feature checks (3×Tier) to identify specific individuals, substances, or emotional states through smell.
 
 **Tactile Sensitivity**
-Make Awareness checks to detect minute textures, vibrations, or temperature differences through touch.
+Make Feature checks (3×Tier) to detect minute textures, vibrations, or temperature differences through touch.
 
 **Magnetic Sense**
-Make Awareness checks to determine cardinal directions and detect magnetic fields or metal objects.
+Make Feature checks (3×Tier) to determine cardinal directions and detect magnetic fields or metal objects.
 
 **Scent Tracking**
-Make Awareness checks to follow trails by scent, even hours or days old.
+Make Feature checks (3×Tier) to follow trails by scent, even hours or days old.
 
 ### Senses (3p)
 
 **Echolocation**
-Make Awareness checks to navigate and identify objects in complete darkness using sound reflection. Range: Tier × 10 Sp.
+Make Feature checks (3×Tier) to navigate and identify objects in complete darkness using sound reflection. Range: Tier × 10 Sp.
 
 **Thermal Vision**
-Make Awareness checks to see heat signatures through walls and detect living creatures by their body temperature.
+Make Feature checks (3×Tier) to see heat signatures through walls and detect living creatures by their body temperature.
 
 **Microscopic Vision**
-Make Awareness checks to see cellular-level detail, identify microscopic organisms, or examine fine craftsmanship.
+Make Feature checks (3×Tier) to see cellular-level detail, identify microscopic organisms, or examine fine craftsmanship.
 
 **Tremor Sense**
-Make Awareness checks to detect movement and identify creatures through ground vibrations. Range: Tier × 5 Sp.
+Make Feature checks (3×Tier) to detect movement and identify creatures through ground vibrations. Range: Tier × 5 Sp.
 
 **Aura Sight**
-Make Awareness checks to perceive emotional states, health conditions, and supernatural auras around living beings.
+Make Feature checks (3×Tier) to perceive emotional states, health conditions, and supernatural auras around living beings.
 
 **Time Sense**
-Make Awareness checks to perceive temporal distortions, time dilation effects, or chronological inconsistencies.
+Make Feature checks (3×Tier) to perceive temporal distortions, time dilation effects, or chronological inconsistencies.
 
 
 
 ### Senses (5p)
 
 **X-Ray Vision**
-Make Awareness checks to see through solid objects up to Tier × 2 Sp thick, revealing hidden structures or concealed items.
+Make Feature checks (3×Tier) to see through solid objects up to Tier × 2 Sp thick, revealing hidden structures or concealed items.
 
 **Psychic Resonance**
-Make Awareness checks to detect psychic activity, mental powers in use, or lingering psychic imprints.
+Make Feature checks (3×Tier) to detect psychic activity, mental powers in use, or lingering psychic imprints.
 
 **Dimensional Sight**
-Make Awareness checks to see into adjacent dimensions, detect dimensional rifts, or spot interdimensional travelers.
+Make Feature checks (3×Tier) to see into adjacent dimensions, detect dimensional rifts, or spot interdimensional travelers.
 
 **Life Detection**
-Make Awareness checks to sense all living creatures within Tier × 100 Sp, regardless of concealment or barriers.
+Make Feature checks (3×Tier) to sense all living creatures within Tier × 100 Sp, regardless of concealment or barriers.
 
 **Energy Sight**
-Make Awareness checks to see all forms of energy (electrical, magical, radioactive) as visible spectrums.
+Make Feature checks (3×Tier) to see all forms of energy (electrical, magical, radioactive) as visible spectrums.
 
 **Precognition**
-Make Awareness checks to glimpse potential futures.
+Make Feature checks (3×Tier) to glimpse potential futures.
 
 ### Senses (10p)
 
 
 **Scrying**
-Make Awareness checks to remotely view any location you can clearly visualize or have previously visited. You can see and hear as if you were present at that location. Range is unlimited but clarity decreases with distance and unfamiliarity.
+Make Feature checks (3×Tier) to remotely view any location you can clearly visualize or have previously visited. You can see and hear as if you were present at that location. Range is unlimited but clarity decreases with distance and unfamiliarity.
 
-**Aura Analysis** 
-Make Awareness checks to perceive detailed information about any living being's powers, health status, emotional state, recent activities, and supernatural nature. This reveals their capabilities, conditions, and recent significant experiences through their personal aura.
+**Aura Analysis**
+Make Feature checks (3×Tier) to perceive detailed information about any living being's powers, health status, emotional state, recent activities, and supernatural nature. This reveals their capabilities, conditions, and recent significant experiences through their personal aura.
 
 **Truth Sight**
-Make Awareness checks to see through all forms of deception, illusion, disguise, and concealment. This reveals the true nature of people, objects, and situations, cutting through magical and mundane forms of misdirection.
+Make Feature checks (3×Tier) to see through all forms of deception, illusion, disguise, and concealment. This reveals the true nature of people, objects, and situations, cutting through magical and mundane forms of misdirection.
 
 
 
@@ -1608,7 +1590,7 @@ Make Awareness checks to see through all forms of deception, illusion, disguise,
 ### Unique Senses
 
 **Unique Sense (Variable)**
-Gain a supernatural sense for a specific phenomenon within 10 spaces at Tier 1, doubling each additional Tier. You automatically detect obvious manifestations; subtle ones require opposed Awareness checks. Examples include effects from a Descriptor (Electricity, Space, Time, Magic), a type of being (Human, divine beings, eldritch horror, powered person), or usage of an ability (Teleporting, Burrowing, specific Feature usage).
+Gain a supernatural sense for a specific phenomenon within 10 spaces at Tier 1, doubling each additional Tier. You automatically detect obvious manifestations; subtle ones require opposed Feature checks (3×Tier). Examples include effects from a Descriptor (Electricity, Space, Time, Magic), a type of being (Human, divine beings, eldritch horror, powered person), or usage of an ability (Teleporting, Burrowing, specific Feature usage).
 
 
 

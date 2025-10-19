@@ -11,9 +11,9 @@ ATTACK_TYPES = {
     'melee_ac': AttackType('melee_ac', 0),  # Melee with +Tier accuracy bonus
     'melee_dg': AttackType('melee_dg', 0),  # Melee with +Tier damage bonus
     'ranged': AttackType('ranged', 0),
-    'area': AttackType('area', 0, accuracy_mod=-1, damage_mod=-1, is_area=True),
-    'direct_damage': AttackType('direct_damage', 0, is_direct=True, direct_damage_base=15, damage_mod=-1),
-    'direct_area_damage': AttackType('direct_area_damage', 0, is_direct=True, direct_damage_base=15, is_area=True, damage_mod=-2)
+    'area': AttackType('area', 0, accuracy_mod=-1, is_area=True),
+    'direct_damage': AttackType('direct_damage', 0, is_direct=True, direct_damage_base=10, damage_mod=0),
+    'direct_area_damage': AttackType('direct_area_damage', 0, is_direct=True, direct_damage_base=10, is_area=True, damage_mod=-1)
 }
 
 # Upgrades - Costs updated 2025-10-07
@@ -23,15 +23,13 @@ UPGRADES = {
     'critical_effect': Upgrade('critical_effect', 1, damage_penalty=2, special_effect="explode_5_6"),
     'armor_piercing': Upgrade('armor_piercing', 3, accuracy_penalty=1, special_effect="ignore_endurance"),
     'brutal': Upgrade('brutal', 2, special_effect="brutal_20"),
-    'quick_strikes': Upgrade('quick_strikes', 3, special_effect="quick_strikes_2", damage_penalty=1, accuracy_penalty=1),
     'bleed': Upgrade('bleed', 3, damage_penalty=1, special_effect="bleed_2_turns"),
     'critical_accuracy': Upgrade('critical_accuracy', 1, special_effect="crit_15_20"),
     'powerful_critical': Upgrade('powerful_critical', 2, special_effect="powerful_crit"),
     'double_tap': Upgrade('double_tap', 3, special_effect="double_tap"),
-    'finishing_blow_1': Upgrade('finishing_blow_1', 2, special_effect="finishing_5"),
-    'finishing_blow_2': Upgrade('finishing_blow_2', 3, special_effect="finishing_15"),
-    'extra_attack': Upgrade('extra_attack', 3, special_effect="extra_attack"),
-    'barrage': Upgrade('barrage', 3, special_effect="barrage_chain", damage_penalty=1, accuracy_penalty=1),
+    'finishing_blow_1': Upgrade('finishing_blow_1', 3, special_effect="finishing_10"),
+    'extra_attack': Upgrade('extra_attack', 1, accuracy_penalty=1, damage_penalty=1, special_effect="extra_attack"),
+    'barrage': Upgrade('barrage', 1, special_effect="barrage_chain", damage_penalty=2, accuracy_penalty=2),
     'minion_slayer_acc': Upgrade('minion_slayer_acc', 2, special_effect="slayer_minion_acc"),
     'minion_slayer_dmg': Upgrade('minion_slayer_dmg', 2, special_effect="slayer_minion_dmg"),
     'captain_slayer_acc': Upgrade('captain_slayer_acc', 2, special_effect="slayer_captain_acc"),
@@ -43,12 +41,11 @@ UPGRADES = {
     'accurate_attack': Upgrade('accurate_attack', 1, accuracy_mod=1, damage_penalty=1),
     'reliable_accuracy': Upgrade('reliable_accuracy', 2, accuracy_penalty=3, special_effect="advantage"),
     'overhit': Upgrade('overhit', 2, special_effect="overhit"),
-    'explosive_critical': Upgrade('explosive_critical', 2, accuracy_penalty=1, damage_penalty=1, special_effect="explosive_critical"),
-    'culling_strike': Upgrade('culling_strike', 2, special_effect="culling_strike"),
+    'explosive_critical': Upgrade('explosive_critical', 2, accuracy_penalty=1, special_effect="explosive_critical"),
+    'culling_strike': Upgrade('culling_strike', 3, special_effect="culling_strike"),
     'splinter': Upgrade('splinter', 3, accuracy_penalty=1, damage_penalty=1, special_effect="splinter"),
     'ricochet': Upgrade('ricochet', 2, special_effect="ricochet"),
-    'channeled': Upgrade('channeled', 2, accuracy_penalty=2, damage_penalty=2, special_effect="channeled"),
-    'leech': Upgrade('leech', 3, accuracy_penalty=1, damage_penalty=1, special_effect="leech"),
+    'channeled': Upgrade('channeled', 3, accuracy_penalty=2, damage_penalty=2, special_effect="channeled"),
 }
 
 # Limits - Costs updated 2025-10-18
@@ -57,10 +54,10 @@ LIMITS = {
     'unreliable_1': Limit('unreliable_1', 2, 1, 5),
     'unreliable_2': Limit('unreliable_2', 2, 2, 10),
     'unreliable_3': Limit('unreliable_3', 1, 5, 15),
-    'quickdraw': Limit('quickdraw', 3, 3, 0),
-    'patient': Limit('patient', 2, 1, 0),
-    'finale': Limit('finale', 2, 2, 0),
-    'charge_up': Limit('charge_up', 2, 2, 0),
+    'quickdraw': Limit('quickdraw', 2, 3, 0),
+    'patient': Limit('patient', 3, 2, 0),
+    'finale': Limit('finale', 2, 3, 0),
+    'charge_up': Limit('charge_up', 1, 2, 0),
     'charge_up_2': Limit('charge_up_2', 2, 4, 0),
     'cooldown': Limit('cooldown', 1, 2, 0),
     # HP-Based Limits
@@ -68,19 +65,19 @@ LIMITS = {
     'charges_2': Limit('charges_2', 1, 2, 0),
     'near_death': Limit('near_death', 2, 2, 0),
     'bloodied': Limit('bloodied', 1, 1, 0),
-    'timid': Limit('timid', 2, 2, 0),
+    'timid': Limit('timid', 2, 3, 0),
     'attrition': Limit('attrition', 3, 2, 0),
     # Turn/Combat State Limits
     'slaughter': Limit('slaughter', 1, 4, 0),
-    'relentless': Limit('relentless', 3, 1, 0),
+    'relentless': Limit('relentless', 2, 1, 0),
     'combo_move': Limit('combo_move', 2, 1, 0),
     # 'infected': Limit('infected', 2, 1, 0),  # REMOVED: Requires Condition system (not yet implemented)
     'revenge': Limit('revenge', 3, 2, 0),
-    'vengeful': Limit('vengeful', 2, 1, 0),
-    'untouchable': Limit('untouchable', 1, 2, 0),
+    'vengeful': Limit('vengeful', 2, 2, 0),
+    'untouchable': Limit('untouchable', 2, 2, 0),
     'unbreakable': Limit('unbreakable', 1, 4, 0),
-    'passive': Limit('passive', 2, 2, 0),
-    'careful': Limit('careful', 3, 2, 0),
+    'passive': Limit('passive', 2, 3, 0),
+    'careful': Limit('careful', 2, 2, 0),
 }
 
 # Rule Validation System
@@ -110,19 +107,36 @@ MUTUAL_EXCLUSIONS = [
 ]
 
 ATTACK_TYPE_RESTRICTIONS = {
-    'quick_strikes': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],
-    'barrage': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],
-    'extra_attack': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],
-    'explosive_critical': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],  # Cannot apply to AOE attacks
-    'splinter': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],  # Cannot apply to AOE attacks
-    'ricochet': ['melee_ac', 'melee_dg', 'ranged', 'direct_damage'],  # Cannot apply to AOE attacks
+    # Accuracy modifiers - cannot apply to direct attacks (auto-hit)
+    'power_attack': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'accurate_attack': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'reliable_accuracy': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'overhit': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'minion_slayer_acc': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'captain_slayer_acc': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'elite_slayer_acc': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'boss_slayer_acc': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+
+    # Dice roll modifiers - cannot apply to direct attacks (flat damage, no dice)
+    'high_impact': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'critical_effect': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+
+    # Critical-based effects - require accuracy rolls (cannot apply to direct attacks)
+    'critical_accuracy': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'powerful_critical': ['melee_ac', 'melee_dg', 'ranged', 'area'],
+    'explosive_critical': ['melee_ac', 'melee_dg', 'ranged'],  # Also cannot apply to AOE
+    'double_tap': ['melee_ac', 'melee_dg', 'ranged'],  # Also cannot apply to AOE
+    'ricochet': ['melee_ac', 'melee_dg', 'ranged'],  # Also cannot apply to AOE
+    'splinter': ['melee_ac', 'melee_dg', 'ranged'],  # Also cannot apply to AOE
+
+    # Special mechanics that don't work with direct attacks
+    'armor_piercing': ['melee_ac', 'melee_dg', 'ranged', 'area'],  # Direct attacks don't need armor piercing
+    'combo_move': ['melee_ac', 'melee_dg', 'ranged', 'area'],  # Combo tracking doesn't work with direct attacks
 }
 
 AOE_RESTRICTIONS = [
-    'finishing_blow_1', 'finishing_blow_2',
-    'culling_strike', 'critical_accuracy', 'powerful_critical', 'double_tap',
-    'explosive_critical', 'splinter', 'ricochet',
-    'quick_strikes', 'barrage', 'extra_attack'
+    'double_tap',
+    'explosive_critical', 'splinter', 'ricochet'
 ]
 
 

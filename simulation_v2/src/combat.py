@@ -379,7 +379,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if log_file:
                 log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 5+) - using basic attack\n")
             return 0, ['basic_attack']  # Use basic attack - too early
-        elif limit_name == 'finale' and turn_number < 8:
+        elif limit_name == 'finale' and turn_number < 7:
             if log_file:
                 log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 7+) - using basic attack\n")
             return 0, ['basic_attack']  # Use basic attack - too early
@@ -435,8 +435,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     for upgrade_name in build.upgrades:
         upgrade = UPGRADES[upgrade_name]
         accuracy_mod += upgrade.accuracy_mod * attacker.tier
-        # Reliable Accuracy has flat accuracy penalty, not tier-scaled
-        if upgrade_name == 'reliable_accuracy':
+        # Reliable Accuracy and Armor Piercing have flat accuracy penalties, not tier-scaled
+        if upgrade_name in ['reliable_accuracy', 'armor_piercing']:
             accuracy_mod -= upgrade.accuracy_penalty
         else:
             accuracy_mod -= upgrade.accuracy_penalty * attacker.tier
@@ -514,8 +514,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                     mod_value = upgrade.accuracy_mod * attacker.tier
                     accuracy_parts.append(f"{mod_value:+d} [{upgrade_name}]")
                 if upgrade.accuracy_penalty != 0:
-                    # Reliable Accuracy has flat penalty, others are tier-scaled
-                    if upgrade_name == 'reliable_accuracy':
+                    # Reliable Accuracy and Armor Piercing have flat penalties, others are tier-scaled
+                    if upgrade_name in ['reliable_accuracy', 'armor_piercing']:
                         penalty_value = -upgrade.accuracy_penalty
                     else:
                         penalty_value = -(upgrade.accuracy_penalty * attacker.tier)
@@ -551,16 +551,14 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if not attack_hits:
             if log_file:
                 log_file.write(f"      Miss!\n")
-            # For Quick Strikes, continue to make additional attacks even on miss - optimized with cached set
-            if not allow_multi or not ('quick_strikes' in upgrades_set):
-                return 0, []  # Early return for non-multi-attack misses
+            return 0, []  # Early return for misses
 
     # For missed attacks, set damage to 0 but continue for multi-attacks
     damage_dealt = 0
     conditions_applied = []
 
     if attack_type.is_direct or attack_hits:
-        # Calculate overhit bonus (only if attack hit) - optimized with cached set
+        # Calculate overhit bonus (only if attack hit and non-direct) - optimized with cached set
         overhit_bonus = 0
         if not attack_type.is_direct and 'overhit' in upgrades_set:
             total_attack_roll = accuracy_roll + total_accuracy
@@ -569,147 +567,154 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 if log_file:
                     log_file.write(f"      Overhit! Exceeded avoidance by {total_attack_roll - defender.avoidance}, adding {overhit_bonus} to damage\n")
 
-        # Calculate damage
+        # Calculate base damage (either dice roll or direct damage)
         if attack_type.is_direct:
-            damage = attack_type.direct_damage_base + (attack_type.damage_mod * attacker.tier)
+            # Direct attacks: fixed base damage
+            base_damage = attack_type.direct_damage_base + (attack_type.damage_mod * attacker.tier)
             dice_detail = []
         else:
-            # Roll damage dice (use shared roll for AOE) - optimized with cached set
+            # Dice-based attacks: roll damage dice (use shared roll for AOE) - optimized with cached set
             use_high_impact = 'high_impact' in upgrades_set
             use_critical_effect = 'critical_effect' in upgrades_set
 
             if is_aoe and aoe_damage_roll is not None:
                 # Use shared AOE damage roll
-                dice_damage, dice_detail = aoe_damage_roll
+                base_damage, dice_detail = aoe_damage_roll
             else:
                 # Roll new damage dice
                 if use_high_impact:
-                    dice_damage = 15  # Flat 15
+                    base_damage = 15  # Flat 15
                     dice_detail = ["15 (flat)"]
                 elif use_critical_effect:
-                    dice_damage, dice_detail = roll_3d6_exploding_5_6()
+                    base_damage, dice_detail = roll_3d6_exploding_5_6()
                 else:
-                    dice_damage, dice_detail = roll_3d6_exploding()
+                    base_damage, dice_detail = roll_3d6_exploding()
 
-            # Add flat bonuses
-            flat_bonus = attacker.tier + attacker.power
+        # Calculate flat bonuses (applies to BOTH direct and dice attacks)
+        flat_bonus = attacker.tier + attacker.power
+
+        # Add attack type damage modifier (only for dice attacks, already in base_damage for direct)
+        if not attack_type.is_direct:
             flat_bonus += attack_type.damage_mod * attacker.tier
 
-            # Melee damage bonus for melee_dg variant
+        # Melee damage bonus for melee_dg variant
+        if build.attack_type in ['melee_dg']:
+            flat_bonus += attacker.tier
+
+        # Apply upgrade bonuses/penalties
+        for upgrade_name in build.upgrades:
+            upgrade = UPGRADES[upgrade_name]
+            flat_bonus += upgrade.damage_mod * attacker.tier
+            # Critical Effect has flat damage penalty, not tier-scaled
+            if upgrade_name == 'critical_effect':
+                flat_bonus -= upgrade.damage_penalty
+            else:
+                flat_bonus -= upgrade.damage_penalty * attacker.tier
+
+        # Apply limit bonuses
+        for limit_name in build.limits:
+            limit = LIMITS[limit_name]
+            flat_bonus += limit.damage_bonus * attacker.tier
+
+        # Apply channeled bonus (optimized with cached set)
+        channeled_bonus = 0
+        if 'channeled' in upgrades_set:
+            channeled_turns = combat_state.get('channeled_turns', 0)
+            # Starts at -2×Tier penalty, gains +Tier per turn, max +5×Tier total (updated 2025-10-05)
+            # Turn 0: -2, Turn 1: -1, Turn 2: 0, Turn 3: +1, ..., Turn 7+: +5
+            channeled_bonus = min(channeled_turns - 2, 5) * attacker.tier
+            flat_bonus += channeled_bonus
+            if log_file:
+                log_file.write(f"      Channeled: turn {channeled_turns}, bonus {channeled_bonus:+d}\n")
+
+        # Apply slayer damage bonuses (applies to BOTH direct and dice attacks) - optimized with cached set
+        slayer_damage_bonus = 0
+        slayer_damage_upgrades = {'minion_slayer_dmg', 'captain_slayer_dmg', 'elite_slayer_dmg', 'boss_slayer_dmg'}
+        if upgrades_set & slayer_damage_upgrades:
+            # Use enemy_max_hp if provided, otherwise fall back to defender.max_hp
+            target_max_hp = enemy_max_hp if enemy_max_hp is not None else defender.max_hp
+            if 'minion_slayer_dmg' in upgrades_set and target_max_hp == 10:
+                slayer_damage_bonus += attacker.tier
+            elif 'captain_slayer_dmg' in upgrades_set and target_max_hp == 25:
+                slayer_damage_bonus += attacker.tier
+            elif 'elite_slayer_dmg' in upgrades_set and target_max_hp == 50:
+                slayer_damage_bonus += attacker.tier
+            elif 'boss_slayer_dmg' in upgrades_set and target_max_hp == 100:
+                slayer_damage_bonus += attacker.tier
+
+        # Apply critical hit damage bonus (only for non-direct attacks) - optimized with cached set
+        critical_damage_bonus = 0
+        if not attack_type.is_direct and is_critical:
+            # Base critical hit bonus
+            critical_damage_bonus = attacker.tier
+            # Additional bonus if they have powerful critical (which includes critical_accuracy)
+            if 'powerful_critical' in upgrades_set:
+                critical_damage_bonus += attacker.tier
+
+        # Calculate total damage
+        damage = base_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus + tier_bonus
+
+        # Logging
+        if log_file:
+            if attack_type.is_direct:
+                log_file.write(f"      Direct damage base: {base_damage}\n")
+            else:
+                log_file.write(f"      Damage dice: {dice_detail} = {base_damage}\n")
+
+            # Enhanced flat bonus breakdown
+            flat_parts = [f"{attacker.tier} [Tier]", f"{attacker.power} [Power]"]
+
+            # Add attack type damage modifier (only shown for dice attacks)
+            if not attack_type.is_direct and attack_type.damage_mod != 0:
+                mod_value = attack_type.damage_mod * attacker.tier
+                flat_parts.append(f"{mod_value:+d} [{build.attack_type.title()}]")
+
+            # Melee damage bonus
             if build.attack_type in ['melee_dg']:
-                flat_bonus += attacker.tier
+                flat_parts.append(f"+{attacker.tier} [Melee]")
 
-            # 10×tier bonus for melee and ranged attacks removed - replaced with AOE limit cost penalty
-
-            # Apply upgrade bonuses/penalties
+            # Upgrade damage modifiers
             for upgrade_name in build.upgrades:
                 upgrade = UPGRADES[upgrade_name]
-                flat_bonus += upgrade.damage_mod * attacker.tier
-                # Critical Effect has flat damage penalty, not tier-scaled
-                if upgrade_name == 'critical_effect':
-                    flat_bonus -= upgrade.damage_penalty
-                else:
-                    flat_bonus -= upgrade.damage_penalty * attacker.tier
+                if upgrade.damage_mod != 0:
+                    mod_value = upgrade.damage_mod * attacker.tier
+                    flat_parts.append(f"{mod_value:+d} [{upgrade_name}]")
+                if upgrade.damage_penalty != 0:
+                    # Critical Effect has flat penalty, others are tier-scaled
+                    if upgrade_name == 'critical_effect':
+                        penalty_value = -upgrade.damage_penalty
+                    else:
+                        penalty_value = -(upgrade.damage_penalty * attacker.tier)
+                    flat_parts.append(f"{penalty_value:+d} [{upgrade_name}]")
 
-            # Apply limit bonuses
+            # Limit damage bonuses
             for limit_name in build.limits:
                 limit = LIMITS[limit_name]
-                flat_bonus += limit.damage_bonus * attacker.tier
+                if limit.damage_bonus > 0:
+                    bonus_value = limit.damage_bonus * attacker.tier
+                    flat_parts.append(f"+{bonus_value} [{limit_name}]")
 
-            # Apply channeled bonus (optimized with cached set)
-            channeled_bonus = 0
-            if 'channeled' in upgrades_set:
-                channeled_turns = combat_state.get('channeled_turns', 0)
-                # Starts at -2×Tier penalty, gains +Tier per turn, max +5×Tier total (updated 2025-10-05)
-                # Turn 0: -2, Turn 1: -1, Turn 2: 0, Turn 3: +1, ..., Turn 7+: +5
-                channeled_bonus = min(channeled_turns - 2, 5) * attacker.tier
-                flat_bonus += channeled_bonus
-                if log_file:
-                    log_file.write(f"      Channeled: turn {channeled_turns}, bonus {channeled_bonus:+d}\n")
+            flat_breakdown = " + ".join(flat_parts).replace(" + -", " - ")
+            log_file.write(f"      Flat bonus: {flat_breakdown} = {flat_bonus}\n")
 
-            # Apply slayer damage bonuses (optimized with cached set)
-            slayer_damage_bonus = 0
-            slayer_damage_upgrades = {'minion_slayer_dmg', 'captain_slayer_dmg', 'elite_slayer_dmg', 'boss_slayer_dmg'}
-            if upgrades_set & slayer_damage_upgrades:
-                # Use enemy_max_hp if provided, otherwise fall back to defender.max_hp
-                target_max_hp = enemy_max_hp if enemy_max_hp is not None else defender.max_hp
-                if 'minion_slayer_dmg' in upgrades_set and target_max_hp == 10:
-                    slayer_damage_bonus += attacker.tier
-                elif 'captain_slayer_dmg' in upgrades_set and target_max_hp == 25:
-                    slayer_damage_bonus += attacker.tier
-                elif 'elite_slayer_dmg' in upgrades_set and target_max_hp == 50:
-                    slayer_damage_bonus += attacker.tier
-                elif 'boss_slayer_dmg' in upgrades_set and target_max_hp == 100:
-                    slayer_damage_bonus += attacker.tier
-
-            # Apply critical hit damage bonus (optimized with cached set)
-            critical_damage_bonus = 0
-            if is_critical:
-                # Base critical hit bonus
-                critical_damage_bonus = attacker.tier
-                # Additional bonus if they have powerful critical (which includes critical_accuracy)
-                if 'powerful_critical' in upgrades_set:
-                    critical_damage_bonus += attacker.tier
-
-            damage = dice_damage + flat_bonus + slayer_damage_bonus + critical_damage_bonus + overhit_bonus + tier_bonus
-
-            if log_file:
-                log_file.write(f"      Damage dice: {dice_detail} = {dice_damage}\n")
-
-                # Enhanced flat bonus breakdown
-                flat_parts = [f"{attacker.tier} [Tier]", f"{attacker.power} [Power]"]
-                if attack_type.damage_mod != 0:
-                    mod_value = attack_type.damage_mod * attacker.tier
-                    flat_parts.append(f"{mod_value:+d} [{build.attack_type.title()}]")
-
-                # Melee damage bonus
-                if build.attack_type in ['melee_dg']:
-                    flat_parts.append(f"+{attacker.tier} [Melee]")
-
-                # 10×tier bonus for melee and ranged attacks removed
-
-                # Upgrade damage modifiers
+            if slayer_damage_bonus > 0:
+                slayer_type = ""
                 for upgrade_name in build.upgrades:
-                    upgrade = UPGRADES[upgrade_name]
-                    if upgrade.damage_mod != 0:
-                        mod_value = upgrade.damage_mod * attacker.tier
-                        flat_parts.append(f"{mod_value:+d} [{upgrade_name}]")
-                    if upgrade.damage_penalty != 0:
-                        # Critical Effect has flat penalty, others are tier-scaled
-                        if upgrade_name == 'critical_effect':
-                            penalty_value = -upgrade.damage_penalty
-                        else:
-                            penalty_value = -(upgrade.damage_penalty * attacker.tier)
-                        flat_parts.append(f"{penalty_value:+d} [{upgrade_name}]")
+                    if 'slayer' in upgrade_name and 'dmg' in upgrade_name:
+                        slayer_type = upgrade_name.replace('_slayer_dmg', '').title()
+                        break
+                log_file.write(f"      Slayer bonus: +{slayer_damage_bonus} [{slayer_type} vs {target_max_hp}HP]\n")
 
-                # Limit damage bonuses
-                for limit_name in build.limits:
-                    limit = LIMITS[limit_name]
-                    if limit.damage_bonus > 0:
-                        bonus_value = limit.damage_bonus * attacker.tier
-                        flat_parts.append(f"+{bonus_value} [{limit_name}]")
+            if critical_damage_bonus > 0:
+                if 'powerful_critical' in build.upgrades:
+                    log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit +{attacker.tier} + Powerful Critical +{attacker.tier}]\n")
+                else:
+                    log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit]\n")
 
-                flat_breakdown = " + ".join(flat_parts).replace(" + -", " - ")
-                log_file.write(f"      Flat bonus: {flat_breakdown} = {flat_bonus}\n")
+            if overhit_bonus > 0:
+                log_file.write(f"      Overhit bonus: +{overhit_bonus} [Exceeded avoidance by {accuracy_roll + total_accuracy - defender.avoidance}]\n")
 
-                if slayer_damage_bonus > 0:
-                    slayer_type = ""
-                    for upgrade_name in build.upgrades:
-                        if 'slayer' in upgrade_name and 'dmg' in upgrade_name:
-                            slayer_type = upgrade_name.replace('_slayer_dmg', '').title()
-                            break
-                    log_file.write(f"      Slayer bonus: +{slayer_damage_bonus} [{slayer_type} vs {defender.max_hp}HP]\n")
-
-                if critical_damage_bonus > 0:
-                    if 'powerful_critical' in build.upgrades:
-                        log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit +{attacker.tier} + Powerful Critical +{attacker.tier}]\n")
-                    else:
-                        log_file.write(f"      Critical bonus: +{critical_damage_bonus} [Critical Hit]\n")
-
-                if overhit_bonus > 0:
-                    log_file.write(f"      Overhit bonus: +{overhit_bonus} [Exceeded avoidance by {accuracy_roll + total_accuracy - defender.avoidance}]\n")
-
-                log_file.write(f"      Total damage: {damage}\n")
+            log_file.write(f"      Total damage: {damage}\n")
 
         # Apply durability (ALL attacks subtract durability) - optimized with cached set
         effective_durability = defender.durability
@@ -751,8 +756,6 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         # Handle finishing blow threshold - optimized with cached set
         finishing_threshold = 0
         if 'finishing_blow_1' in upgrades_set:
-            finishing_threshold = 5
-        elif 'finishing_blow_2' in upgrades_set:
             finishing_threshold = 10
         elif 'finishing_blow_3' in upgrades_set:
             finishing_threshold = 15
@@ -767,24 +770,6 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         # Handle splinter (triggers another attack if enemy is defeated) - optimized with cached set
         if 'splinter' in upgrades_set:
             conditions_applied.append('splinter')
-
-    # Handle multiple attacks - Quick Strikes makes all attacks regardless of hit/miss - optimized with cached set
-    # Handle Quick Strikes (make 2 attacks total regardless of success)
-    if allow_multi and ('quick_strikes' in upgrades_set):
-        # Make 1 more attack (already made 1) - happens regardless of first attack result
-        upgrade_name = 'quick_strikes'
-        if log_file:
-            log_file.write(f"      Quick Strikes - making 1 additional attack (regardless of first attack result):\n")
-        extra_damage = 0
-        if log_file:
-            log_file.write(f"        Additional attack 1:\n")
-        extra = make_single_attack_damage(attacker, defender, build, log_file, turn_number, charge_history, cooldown_history,
-                                         attacker_hp, attacker_max_hp, combat_state)
-        extra_damage += extra
-        damage_dealt += extra_damage
-        if log_file:
-            log_file.write(f"      Total with quick strikes: {damage_dealt} damage\n")
-
 
     # Handle explosive critical (15-20 triggers attack against all enemies in range) - optimized with cached set
     if allow_multi and 'explosive_critical' in upgrades_set and accuracy_roll >= 15:

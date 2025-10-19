@@ -67,7 +67,7 @@ Point budgets per attack based on tier and archetype:
 - **Type Code**: `area`
 - **Range**: Originates from your position
 - **Area Options**: 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
-- **Penalty**: -Tier to all Accuracy, Damage and Condition checks
+- **Penalty**: -Tier to Accuracy checks
 - **Cost Modifier**: All upgrades / limits cost 2× as much
 
 
@@ -76,14 +76,14 @@ Point budgets per attack based on tier and archetype:
 - **Type Code**: `direct_damage`
 - **Range**: 15 spaces, auto-hit (no Accuracy roll needed)
 - **Restriction**: Must be Damage Effect
-- **Penalty**: Flat 15 - Tier
+- **Damage**: Flat 10
 
 ### **DIRECT AREA DAMAGE ATTACK**
 - **Type Code**: `direct_area_damage`
 - **Range**: Originates from your position, auto-hit (no Accuracy roll needed)
 - **Area Options**: 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction**: Must be Damage Effect
-- **Penalty**: Flat 15 - Tier × 2
+- **Damage**: Flat 10 - Tier
 - **Cost Modifier**: All upgrades / limits cost 2× as much
 
 ---
@@ -134,31 +134,23 @@ Point budgets per attack based on tier and archetype:
 
 ### Multi-Attack Upgrades
 
-**Quick Strikes** (3p)
-- **Effect**: Make same attack two times against single target
-- **Penalty**: -Tier to Accuracy, Damage, and Condition rolls
-- **Restriction**: Cannot be put on an AOE attack
-
-**Barrage** (3p)
+**Barrage** (1p)
 - **Effect**: Make same attack three times against single target
-- **Usage**: First attack must hit and effect, in order to make second attack, and same for the second and third attacks
-- **Penalty**: -Tier to Accuracy, Damage, and Condition rolls
-- **Restriction**: Cannot be put on an AOE attack
+- **Penalty**: -2×Tier to Accuracy, Damage, and Condition rolls
 
-**Extra Attack** (3p)
+**Extra Attack** (1p)
 - **Effect**: Successful hit with successful effect allows identical attack against same target
 - **Usage**: Must hit and succeed on both Accuracy and Effect
+- **Penalty**: -Tier to Accuracy, Damage, and Condition rolls
 - **Frequency**: Once per turn maximum
 
 ### Critical Hit Upgrades
 
 **Critical Accuracy** (1p)
 - **Effect**: Critical hit range expanded to 15-20 on d20
-- **Restriction**: Cannot apply to AOE attacks
 
 **Powerful Critical** (2p)
 - **Effect**: Critical hit range expanded to 15-20 on d20, add Tier bonus again to Damage and Conditions rolls on a Critical Accuracy roll
-- **Restriction**: Cannot apply to AOE attacks
 
 **Ricochet** (2p)
 - **Effect**: Critical hit range expanded to 15-20 on d20, trigger an additional attack against a different target within range
@@ -189,15 +181,10 @@ Point budgets per attack based on tier and archetype:
 
 ### Instant Defeat Upgrades
 
-**Finishing Blow 1** (2p)
-- **Effect**: If attack reduces enemy to 5 HP or below, enemy is defeated instead
-- **Restriction**: Cannot apply to AOE attacks
+**Finishing Blow 1** (3p)
+- **Effect**: If attack reduces enemy to 10 HP or below, enemy is defeated instead
 
-**Finishing Blow 2** (3p)
-- **Effect**: If attack reduces enemy to 15 HP or below, enemy is defeated instead
-- **Restriction**: Cannot apply to AOE attacks
-
-**Culling Strike** (2p)
+**Culling Strike** (3p)
 - **Effect**: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead
 
 **Splinter** (3p)
@@ -230,17 +217,13 @@ Point budgets per attack based on tier and archetype:
 
 ### Sustained Attack Upgrades
 
-**Channeled** (2p)
+**Channeled** (3p)
 - **Effect**: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
 - **Penalty**: -2×Tier to Accuracy, Damage, and Condition rolls
 - **Usage**: If you don't make the channeled attack on a turn, you lose your bonus
 - **Restriction**: This enhancement cannot give you more than 5×Tier bonus
 
 ### Utility Combat Upgrades
-
-**Leech** (3p)
-- **Effect**: Regain HP equal to half damage dealt
-- **Penalty**: -Tier to Accuracy, Damage and Condition Rolls
 
 
 
@@ -262,19 +245,19 @@ Point budgets per attack based on tier and archetype:
 
 ### Turn-Based Limits
 
-**Quickdraw** (3p)
+**Quickdraw** (2p)
 - **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: First round of combat
 
-**Patient** (2p)
-- **Effect**: +Tier to Accuracy, Damage, and Conditions
+**Patient** (3p)
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Turn 5 or later
 
 **Finale** (2p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Turn 8 or later
+- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
+- **Limit**: Turn 7 or later
 
-**Charge Up** (2p)
+**Charge Up** (1p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Spend an action on your previous turn
 
@@ -303,7 +286,7 @@ Point budgets per attack based on tier and archetype:
 **Attrition** (3p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Each use costs 20 HP
-- **Restriction**: Can't have regeneration, leech, healing or any other ability that restores HP
+- **Restriction**: Can't have regeneration, healing or any other ability that restores HP
 
 **Charges 1** (1p)
 - **Effect**: +5×Tier to Accuracy, Damage, and Conditions
@@ -327,7 +310,7 @@ Point budgets per attack based on tier and archetype:
 - **Effect**: +4×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been hit but took no damage since last turn
 
-**Untouchable** (1p)
+**Untouchable** (2p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: All attacks missed since last turn, must have been attacked
 
@@ -336,8 +319,8 @@ Point budgets per attack based on tier and archetype:
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Not attacked since last turn
 
-**Careful** (3p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
+**Careful** (2p)
+- **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Not damaged since last turn
 
 ### Sequential Action Limits
@@ -346,7 +329,7 @@ Point budgets per attack based on tier and archetype:
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Hit same enemy last turn
 
-**Relentless** (3p)
+**Relentless** (2p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Dealt damage to enemy last turn
 
@@ -369,25 +352,33 @@ Point budgets per attack based on tier and archetype:
 
 Some upgrades only work with specific attack types:
 
-- **quick_strikes, barrage, extra_attack**: melee_ac, melee_dg, ranged, direct_damage only
-- **explosive_critical, splinter, ricochet, martial_artist**: Cannot use with AOE attacks
+#### Direct Attack Restrictions
 
-### AOE Restrictions
+The following upgrades **cannot** be used with **direct attacks** (direct_damage, direct_area_damage) because they auto-hit and use flat damage:
+
+**Accuracy Modifiers** (no accuracy roll):
+- power_attack, accurate_attack, reliable_accuracy, overhit
+- minion_slayer_acc, captain_slayer_acc, elite_slayer_acc, boss_slayer_acc
+
+**Dice Modifiers** (flat damage, no dice):
+- high_impact, critical_effect
+
+**Critical Effects** (no accuracy rolls or crits):
+- critical_accuracy, powerful_critical
+- explosive_critical, double_tap, ricochet, splinter
+
+**Special Mechanics**:
+- armor_piercing (not needed for direct damage)
+- combo_move (hit tracking incompatible)
+
+#### AOE Restrictions
 
 The following upgrades **cannot** be used with AOE attacks (area, direct_area_damage):
 
-- finishing_blow_1, finishing_blow_2
-- culling_strike
-- critical_accuracy
-- powerful_critical
 - double_tap
 - explosive_critical
 - ricochet
-- martial_artist
 - splinter
-- quick_strikes
-- barrage
-- extra_attack
 
 ### Mutual Exclusions
 
