@@ -905,11 +905,24 @@ Restriction: Cannot apply to AOE attacks
 Cost: 1p
 Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead
 
+#### Multi-target Section
+
 **Splinter**
 Cost: 3p
 Effect: Defeating enemy triggers another attack against new target before turn ends
 Chain Penalty: Maximum Tier/2 additional attacks (rounded up)
 Restriction: Cannot apply to AOE attacks
+
+**Intimidating Presence**
+Cost: 2p
+Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Taunt condition and uses your normal Condition Check roll
+Usage: Triggers on enemy defeat, activation is optional
+
+**Terrifying Display**
+Cost: 2p
+Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Frighten condition and uses your normal Condition Check roll
+Usage: Triggers on enemy defeat, activation is optional
+
 
 #### Enemy Type Bonuses
 
@@ -978,15 +991,6 @@ Ally Bonus: Other characters gain Tier Accuracy bonus against marked target
 Frequency: Once per turn
 
 
-**Intimidating Presence**
-Cost: 2p
-Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Taunt condition and uses your normal Condition Check roll
-Usage: Triggers on enemy defeat, activation is optional
-
-**Terrifying Display**
-Cost: 2p
-Effect: When you defeat an enemy, you may immediately make a 2-space burst Condition attack centered on the defeated enemy's location targeting all enemies in the area. This attack inflicts the Frighten condition and uses your normal Condition Check roll
-Usage: Triggers on enemy defeat, activation is optional
 
 #### Condition Effect Upgrades
 
