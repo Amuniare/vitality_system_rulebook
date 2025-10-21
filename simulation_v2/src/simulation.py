@@ -2,6 +2,7 @@
 Combat simulation logic for the Vitality System.
 """
 
+import copy
 from typing import List, Tuple
 from src.models import Character, AttackBuild, MultiAttackBuild
 from src.combat import make_attack, make_aoe_attack
@@ -40,8 +41,8 @@ def rank_attacks_by_scenario(builds: List[AttackBuild], enemies: List[dict]) -> 
 
         # Score based on upgrade synergies
         for upgrade in build.upgrades:
-            # Boss slayer upgrades
-            if upgrade in ['boss_slayer_acc', 'boss_slayer_dmg']:
+            # Boss slayer upgrade
+            if upgrade == 'boss_slayer':
                 if num_alive == 1 and avg_hp_per_enemy > 50:
                     score += 40  # Great for single high-HP targets
                 elif num_alive <= 2:
@@ -177,6 +178,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
     combat_state = {
         'last_target_hit': None,
         'defeated_enemy_last_turn': False,
+        'defeated_enemy_this_turn': False,  # Track if any enemy defeated this turn (for slaughter)
         'dealt_damage_last_turn': False,
         'was_hit_last_turn': False,
         'was_damaged_last_turn': False,
@@ -192,6 +194,9 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
     while any(enemy['hp'] > 0 for enemy in enemies) and turns < max_turns:
         turns += 1
+
+        # Reset defeated_enemy_this_turn at start of each turn
+        combat_state['defeated_enemy_this_turn'] = False
 
         # Track if we actually made a channeled attack this turn
         # (not basic attack fallback, not no attack due to focused archetype)
@@ -270,7 +275,6 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
         if isinstance(build, MultiAttackBuild):
             # MultiAttackBuild - implement intelligent attack selection
             if build.archetype == 'dual_natured' and len(build.builds) == 2:
-                from src.combat import can_activate_limit
                 from src.damage_calculator import is_aoe_attack
 
                 # Dual natured: primary (index 0) with upgrades/limits, fallback (index 1) basic attack
@@ -278,20 +282,35 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 fallback_build = build.builds[1]
                 tier_bonus = build.tier_bonus  # Apply tier bonus to fallback
 
-                # Check if primary can activate (all limit conditions met)
-                can_use_primary = all(
-                    can_activate_limit(limit, turns, attacker_hp, attacker_max_hp, combat_state, charge_history, cooldown_history)
-                    for limit in primary_build.limits
+                # Test if primary can be used (including charging)
+                # Use deep copy of combat_state so test doesn't consume charges/cooldowns
+                test_combat_state = copy.deepcopy(combat_state) if combat_state else None
+                test_damage, test_conditions, _ = make_attack(
+                    attacker, defender, primary_build, allow_multi=False, log_file=None,
+                    turn_number=turns, charge_history=charge_history,
+                    cooldown_history=cooldown_history,
+                    attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp,
+                    combat_state=test_combat_state
                 )
 
                 # Calculate current enemy state
                 num_alive = sum(1 for e in enemies if e['hp'] > 0)
 
-                # Choose attack based on expected damage + availability
-                if can_use_primary:
-                    # Compare primary vs fallback using pre-calculated expected damages
+                # Check if primary needs to charge
+                if test_damage == 0 and 'charge' in test_conditions:
+                    # Primary needs to charge - always use it
+                    active_build = primary_build
+                    active_build_idx = 0
+                    tier_bonus = 0
+                    if log_file:
+                        log_file.write(f"  Primary needs to charge - using primary\n")
+                # Check if primary can attack
+                elif test_damage > 0 or len(test_conditions) > 0:
+                    # Primary can attack - compare with fallback using expected damage
                     primary_exp = expected_damages[0]
-                    # For AOE fallback, scale by number of alive enemies
+                    if is_aoe_attack(primary_build):
+                        primary_exp *= num_alive
+
                     fallback_exp = expected_damages[1]
                     if is_aoe_attack(fallback_build):
                         fallback_exp *= num_alive
@@ -309,11 +328,11 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         if log_file:
                             log_file.write(f"  Using fallback attack (exp dmg: {fallback_exp:.1f} vs primary: {primary_exp:.1f})\n")
                 else:
-                    # Primary unavailable - use fallback
+                    # Primary failed completely (e.g., unreliable check) - use fallback
                     active_build = fallback_build
                     active_build_idx = 1
                     if log_file:
-                        log_file.write(f"  Primary unavailable this turn, using fallback\n")
+                        log_file.write(f"  Primary failed (unreliable/conditions not met) - using fallback\n")
             else:
                 # For versatile_master - use intelligent scenario-based attack selection
                 attack_priority = rank_attacks_by_scenario(build.builds, enemies)
@@ -325,7 +344,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
                     # Test if this attack can be used this turn
                     try:
-                        test_damage, test_conditions = make_attack(
+                        test_damage, test_conditions, _ = make_attack(
                             attacker, defender, candidate_build, allow_multi=False, log_file=None,
                             turn_number=turns, charge_history=charge_history if charge_history is not None else [],
                             cooldown_history=cooldown_history if cooldown_history is not None else {},
@@ -429,6 +448,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         enemies_hit.append(enemy_idx)
                         if enemies[enemy_idx]['hp'] <= 0:
                             enemies[enemy_idx]['defeated_this_turn'] = True
+                            combat_state['defeated_enemy_this_turn'] = True  # Activate slaughter for subsequent attacks
             else:
                 # Normal AOE attack case - check if channeled was used
                 if 'channeled' in active_build.upgrades:
@@ -493,7 +513,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                                 log_file.write(f"     SPLINTER! Enemy {target_idx+1} defeated, attacking Enemy {next_target_idx+1} (attack {splinter_attacks}/{max_splinter_attacks})\n")
 
                             # Make splinter attack (single target, not AOE)
-                            splinter_damage, splinter_conditions = make_attack(attacker, defender, active_build, log_file=log_file,
+                            splinter_damage, splinter_conditions, _ = make_attack(attacker, defender, active_build, log_file=log_file,
                                                                               turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                                               attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
                                                                               tier_bonus=tier_bonus)
@@ -528,7 +548,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 if log_file:
                     log_file.write(f"  Single target attack on Enemy {target_idx+1}\n")
 
-                damage, conditions = make_attack(attacker, defender, active_build, log_file=log_file,
+                damage, conditions, _ = make_attack(attacker, defender, active_build, log_file=log_file,
                                                 turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                 attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
                                                 enemy_max_hp=target_enemy['max_hp'], tier_bonus=tier_bonus)
@@ -539,6 +559,12 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                     total_damage_dealt = 0
                     if log_file:
                         log_file.write(f"  CHARGING UP instead of attacking!\n")
+                # Check if attack failed due to unreliable (damage=0, no conditions)
+                elif damage == 0 and len(conditions) == 0:
+                    # Unreliable attack failed - no attack was made, channeled should reset
+                    if log_file:
+                        log_file.write(f"  Attack failed (likely unreliable) - no damage dealt\n")
+                    # Don't set made_channeled_attack_this_turn - let it stay False to reset counter
                 # Check if we need to fallback to basic attack or empower
                 elif damage == 0 and 'basic_attack' in conditions:
                     # Check archetype - focused builds cannot use basic attacks
@@ -565,7 +591,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         from src.models import AttackBuild
                         basic_build = AttackBuild(active_build.attack_type, [], [])
                         # Re-run attack with basic build
-                        damage, conditions = make_attack(attacker, defender, basic_build, log_file=log_file,
+                        damage, conditions, _ = make_attack(attacker, defender, basic_build, log_file=log_file,
                                                         turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                     attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
                                                     enemy_max_hp=target_enemy['max_hp'], tier_bonus=tier_bonus)
@@ -578,6 +604,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                         log_file.write(f"    Enemy {target_idx+1} HP: {target_enemy['hp'] + damage} -> {target_enemy['hp']}\n")
                     if target_enemy['hp'] <= 0:
                         target_enemy['defeated_this_turn'] = True
+                        combat_state['defeated_enemy_this_turn'] = True  # Activate slaughter for subsequent attacks
                 else:
                     # Normal attack case - check if channeled was used
                     if 'channeled' in active_build.upgrades:
@@ -618,6 +645,48 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                             if old_bleed_count > 0:
                                 log_file.write(f"      (Replaced {old_bleed_count} existing bleed stacks)\n")
 
+                    # Check for explosive critical - splash to all other enemies in range
+                    if 'explosive_critical' in conditions:
+                        explosive_targets = []
+                        for i, enemy in enumerate(enemies):
+                            if i != target_idx and enemy['hp'] > 0:
+                                explosive_targets.append((i, enemy))
+
+                        if explosive_targets:
+                            if log_file:
+                                log_file.write(f"     EXPLOSIVE CRITICAL! Splashing to {len(explosive_targets)} other enemies:\n")
+
+                            for splash_idx, splash_enemy in explosive_targets:
+                                # Make splash attack against this enemy
+                                splash_damage, splash_conditions, _ = make_attack(
+                                    attacker, defender, active_build, log_file=log_file,
+                                    turn_number=turns, charge_history=charge_history,
+                                    cooldown_history=cooldown_history,
+                                    attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp,
+                                    combat_state=combat_state, enemy_max_hp=splash_enemy['max_hp'],
+                                    tier_bonus=tier_bonus
+                                )
+
+                                splash_enemy['hp'] = max(0, splash_enemy['hp'] - splash_damage)
+                                total_damage_dealt += splash_damage
+
+                                if log_file:
+                                    log_file.write(f"       Enemy {splash_idx+1}: {splash_damage} damage (HP: {splash_enemy['hp'] + splash_damage} -> {splash_enemy['hp']})\n")
+
+                                # Apply splash attack conditions (bleed, culling strike, etc.)
+                                if 'bleed' in splash_conditions:
+                                    bleed_damage = max(0, splash_damage - attacker.tier)
+                                    splash_enemy['bleed_stacks'] = [(bleed_damage, 1)]
+                                    if log_file:
+                                        log_file.write(f"        BLEED APPLIED: {bleed_damage} damage for 1 turn\n")
+
+                                if 'culling_strike' in splash_conditions and splash_enemy['hp'] > 0:
+                                    culling_threshold = splash_enemy['max_hp'] // 5
+                                    if splash_enemy['hp'] <= culling_threshold:
+                                        splash_enemy['hp'] = 0
+                                        if log_file:
+                                            log_file.write(f"        CULLING STRIKE! Enemy defeated\n")
+
                     # Check for splinter effects if target was defeated
                     if 'splinter' in conditions and target_enemy['hp'] <= 0:
                         splinter_attacks = 0
@@ -641,7 +710,7 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                                 log_file.write(f"     SPLINTER! Enemy {target_idx+1} defeated, attacking Enemy {next_target_idx+1} (attack {splinter_attacks}/{max_splinter_attacks})\n")
 
                             # Make splinter attack
-                            splinter_damage, splinter_conditions = make_attack(attacker, defender, active_build, log_file=log_file,
+                            splinter_damage, splinter_conditions, _ = make_attack(attacker, defender, active_build, log_file=log_file,
                                                                               turn_number=turns, charge_history=charge_history, cooldown_history=cooldown_history,
                                                                               attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
                                                                               tier_bonus=tier_bonus)
@@ -672,6 +741,9 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
 
         # DEFENDER ATTACK PHASE - Enemies attack back
         total_defender_damage = 0
+        attacks_made = 0  # Initialize before conditional block
+        defender_hits = 0  # Initialize before conditional block
+
         if any(enemy['hp'] > 0 for enemy in enemies):
             if log_file:
                 log_file.write(f"\nDEFENDER ATTACK PHASE:\n")
@@ -680,10 +752,17 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
             from src.models import AttackBuild
             defender_build = AttackBuild('ranged', [], [])
 
-            # Count alive enemies and limit attacks to 1 per turn
+            # Count alive enemies and scale attacks based on enemy count
             alive_enemies_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
-            attacks_made = 0
-            max_attacks_per_turn = 1
+
+            # Scale attacks based on number of alive enemies:
+            # 1 enemy: 1 attack, 2 enemies: 2 attacks, 3+ enemies: 3 attacks
+            if alive_enemies_count == 1:
+                max_attacks_per_turn = 1
+            elif alive_enemies_count == 2:
+                max_attacks_per_turn = 2
+            else:
+                max_attacks_per_turn = min(3, alive_enemies_count)
 
             for i, enemy in enumerate(enemies):
                 if enemy['hp'] <= 0:
@@ -710,13 +789,15 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                 )
 
                 # Make the attack (enemy attacking player, so pass player's max_hp)
-                damage, _ = make_attack(enemy_attacker, attacker, defender_build, log_file=log_file,
+                damage, _, did_hit = make_attack(enemy_attacker, attacker, defender_build, log_file=log_file,
                                        turn_number=turns, charge_history=[], cooldown_history={},
                                        attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp,
                                        combat_state=combat_state, enemy_max_hp=attacker_max_hp)
 
                 attacker_hp -= damage
                 total_defender_damage += damage
+                if did_hit:
+                    defender_hits += 1
                 attacks_made += 1
 
                 if log_file:
@@ -765,28 +846,37 @@ def simulate_combat_verbose(attacker: Character, build: AttackBuild, target_hp: 
                                                       current_target == combat_state.get('last_target_hit'))
         combat_state['last_target_hit'] = current_target
 
-        # Defender attack tracking (simplified - assuming all attacks that can hit, did)
-        if total_defender_damage > 0:
+        # Defender attack tracking - properly distinguish between miss, hit-no-damage, and hit-with-damage
+        if attacks_made > 0:
+            # Enemies attempted attacks
             combat_state['was_attacked_last_turn'] = True
-            combat_state['was_hit_last_turn'] = True
-            combat_state['was_damaged_last_turn'] = True
+
+            if defender_hits > 0:
+                # At least one attack hit
+                combat_state['was_hit_last_turn'] = True
+                combat_state['all_attacks_missed_last_turn'] = False
+
+                if total_defender_damage > 0:
+                    # Hit and dealt damage
+                    combat_state['was_damaged_last_turn'] = True
+                    combat_state['was_hit_no_damage_last_turn'] = False
+                else:
+                    # Hit but dealt no damage (durability absorbed all damage)
+                    combat_state['was_damaged_last_turn'] = False
+                    combat_state['was_hit_no_damage_last_turn'] = True  # FIX: This is the key change!
+            else:
+                # All attacks missed
+                combat_state['was_hit_last_turn'] = False
+                combat_state['was_damaged_last_turn'] = False
+                combat_state['all_attacks_missed_last_turn'] = True
+                combat_state['was_hit_no_damage_last_turn'] = False
+        else:
+            # No enemies alive to attack
+            combat_state['was_attacked_last_turn'] = False
+            combat_state['was_hit_last_turn'] = False
+            combat_state['was_damaged_last_turn'] = False
             combat_state['all_attacks_missed_last_turn'] = False
             combat_state['was_hit_no_damage_last_turn'] = False
-        else:
-            # Check if there were any attacks (alive enemies)
-            alive_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
-            if alive_count > 0:
-                combat_state['was_attacked_last_turn'] = True
-                combat_state['all_attacks_missed_last_turn'] = True
-                combat_state['was_hit_last_turn'] = False
-                combat_state['was_damaged_last_turn'] = False
-                combat_state['was_hit_no_damage_last_turn'] = False
-            else:
-                combat_state['was_attacked_last_turn'] = False
-                combat_state['all_attacks_missed_last_turn'] = False
-                combat_state['was_hit_last_turn'] = False
-                combat_state['was_damaged_last_turn'] = False
-                combat_state['was_hit_no_damage_last_turn'] = False
 
         # Increment channeled turns only if channeled attack was actually made this turn
         # (not if we fell back to basic attack or did nothing due to focused archetype)
@@ -893,6 +983,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
     combat_state = {
         'last_target_hit': None,
         'defeated_enemy_last_turn': False,
+        'defeated_enemy_this_turn': False,  # Track if any enemy defeated this turn (for slaughter)
         'dealt_damage_last_turn': False,
         'was_hit_last_turn': False,
         'was_damaged_last_turn': False,
@@ -940,6 +1031,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
             if enemy['hp'] <= 0:
                 enemies_killed_by_bleed.append(i)
                 enemy['defeated_this_turn'] = True
+                combat_state['defeated_enemy_this_turn'] = True  # Activate slaughter for subsequent attacks
 
         # DECIDE WHICH BUILD TO USE THIS TURN
         can_use_primary = True
@@ -992,6 +1084,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
 
                 if enemy['hp'] <= 0:
                     enemy['defeated_this_turn'] = True
+                    combat_state['defeated_enemy_this_turn'] = True  # Activate slaughter for subsequent attacks
         else:
             # Single target attack
             target_enemy = None
@@ -1002,7 +1095,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
                     break
 
             if target_enemy:
-                damage, conditions = make_attack(attacker, defender, active_build,
+                damage, conditions, _ = make_attack(attacker, defender, active_build,
                                                 turn_number=turns,
                                                 charge_history=charge_history,
                                                 cooldown_history=cooldown_history,
@@ -1024,6 +1117,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
 
                     if target_enemy['hp'] <= 0:
                         target_enemy['defeated_this_turn'] = True
+                        combat_state['defeated_enemy_this_turn'] = True  # Activate slaughter for subsequent attacks
 
         # Update charge history
         charge_history.append(charged_this_turn)
@@ -1032,13 +1126,24 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
 
         # DEFENDER ATTACK PHASE
         total_defender_damage = 0
+        attacks_made = 0  # Initialize before conditional block
+        defender_hits = 0  # Initialize before conditional block
+
         if any(enemy['hp'] > 0 for enemy in enemies):
             from src.models import AttackBuild as AB
             defender_build = AB('ranged', [], [])
 
-            # Count alive enemies and limit attacks to 1 per turn
-            attacks_made = 0
-            max_attacks_per_turn = 1
+            # Count alive enemies and scale attacks based on enemy count
+            alive_enemies_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
+
+            # Scale attacks based on number of alive enemies:
+            # 1 enemy: 1 attack, 2 enemies: 2 attacks, 3+ enemies: 3 attacks
+            if alive_enemies_count == 1:
+                max_attacks_per_turn = 1
+            elif alive_enemies_count == 2:
+                max_attacks_per_turn = 2
+            else:
+                max_attacks_per_turn = min(3, alive_enemies_count)
 
             for i, enemy in enumerate(enemies):
                 if enemy['hp'] <= 0:
@@ -1057,11 +1162,13 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
                     max_hp=enemy['max_hp']
                 )
 
-                damage, _ = make_attack(enemy_attacker, attacker, defender_build,
+                damage, _, did_hit = make_attack(enemy_attacker, attacker, defender_build,
                                        turn_number=turns, charge_history=[], cooldown_history={})
 
                 attacker_hp -= damage
                 total_defender_damage += damage
+                if did_hit:
+                    defender_hits += 1
                 attacks_made += 1
 
         # Apply HP costs and recovery
@@ -1091,27 +1198,37 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
                                                       current_target == combat_state.get('last_target_hit'))
         combat_state['last_target_hit'] = current_target
 
-        # Defender attack tracking
-        if total_defender_damage > 0:
+        # Defender attack tracking - properly distinguish between miss, hit-no-damage, and hit-with-damage
+        if attacks_made > 0:
+            # Enemies attempted attacks
             combat_state['was_attacked_last_turn'] = True
-            combat_state['was_hit_last_turn'] = True
-            combat_state['was_damaged_last_turn'] = True
+
+            if defender_hits > 0:
+                # At least one attack hit
+                combat_state['was_hit_last_turn'] = True
+                combat_state['all_attacks_missed_last_turn'] = False
+
+                if total_defender_damage > 0:
+                    # Hit and dealt damage
+                    combat_state['was_damaged_last_turn'] = True
+                    combat_state['was_hit_no_damage_last_turn'] = False
+                else:
+                    # Hit but dealt no damage (durability absorbed all damage)
+                    combat_state['was_damaged_last_turn'] = False
+                    combat_state['was_hit_no_damage_last_turn'] = True  # FIX: This is the key change!
+            else:
+                # All attacks missed
+                combat_state['was_hit_last_turn'] = False
+                combat_state['was_damaged_last_turn'] = False
+                combat_state['all_attacks_missed_last_turn'] = True
+                combat_state['was_hit_no_damage_last_turn'] = False
+        else:
+            # No enemies alive to attack
+            combat_state['was_attacked_last_turn'] = False
+            combat_state['was_hit_last_turn'] = False
+            combat_state['was_damaged_last_turn'] = False
             combat_state['all_attacks_missed_last_turn'] = False
             combat_state['was_hit_no_damage_last_turn'] = False
-        else:
-            alive_count = sum(1 for enemy in enemies if enemy['hp'] > 0)
-            if alive_count > 0:
-                combat_state['was_attacked_last_turn'] = True
-                combat_state['all_attacks_missed_last_turn'] = True
-                combat_state['was_hit_last_turn'] = False
-                combat_state['was_damaged_last_turn'] = False
-                combat_state['was_hit_no_damage_last_turn'] = False
-            else:
-                combat_state['was_attacked_last_turn'] = False
-                combat_state['all_attacks_missed_last_turn'] = False
-                combat_state['was_hit_last_turn'] = False
-                combat_state['was_damaged_last_turn'] = False
-                combat_state['was_hit_no_damage_last_turn'] = False
 
         # Clear defeated_this_turn flags
         for enemy in enemies:
@@ -1140,7 +1257,7 @@ def simulate_combat_with_fallback(attacker: Character, primary_build: AttackBuil
 def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int = 10,
                         target_hp: int = 100, defender: Character = None,
                         num_enemies: int = 1, enemy_hp: int = None, max_turns: int = 100,
-                        enemy_hp_list: List[int] = None) -> Tuple[List[int], float, float, dict]:
+                        enemy_hp_list: List[int] = None, archetype: str = None) -> Tuple[List[int], float, float, dict]:
     """Run multiple combat simulations and return results with win/loss tracking
 
     Args:
@@ -1165,7 +1282,7 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
     for i in range(num_runs):
         turns, outcome = simulate_combat_verbose(attacker, build, target_hp, defender=defender,
                                       num_enemies=num_enemies, enemy_hp=enemy_hp, max_turns=max_turns,
-                                      enemy_hp_list=enemy_hp_list)
+                                      enemy_hp_list=enemy_hp_list, archetype=archetype)
         results[i] = turns
         result_outcomes.append(outcome)
         outcomes[outcome] += 1
@@ -1188,7 +1305,7 @@ def run_simulation_batch(attacker: Character, build: AttackBuild, num_runs: int 
 def run_simulation_batch_with_fallback(attacker: Character, primary_build: AttackBuild, fallback_build: AttackBuild,
                                        num_runs: int = 10, target_hp: int = 100, defender: Character = None,
                                        num_enemies: int = 1, enemy_hp: int = None, max_turns: int = 100,
-                                       enemy_hp_list: List[int] = None) -> Tuple[List[int], float, float, dict, dict]:
+                                       enemy_hp_list: List[int] = None, archetype: str = None) -> Tuple[List[int], float, float, dict, dict]:
     """
     Run multiple combat simulations with fallback build switching.
 

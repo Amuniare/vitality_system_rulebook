@@ -3,6 +3,7 @@ Combat mechanics and attack resolution for the Vitality System.
 """
 
 import random
+import copy
 from typing import List, Tuple, Optional
 from src.models import Character, AttackBuild
 from src.game_data import ATTACK_TYPES, UPGRADES, LIMITS
@@ -92,7 +93,7 @@ def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, atta
     elif limit_name == 'attrition' and attacker_hp < 25:
         return False  # Not enough HP to pay cost
 
-    # Check charge limits
+    # Check charge limits (single-use per combat, recharges between encounters)
     elif limit_name in ['charges_1', 'charges_2']:
         max_charges = 1 if limit_name == 'charges_1' else 2
         charges_used = combat_state['charges_used'].get(limit_name, 0)
@@ -100,7 +101,7 @@ def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, atta
             return False
 
     # Check turn-tracking limits
-    elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_last_turn', False):
+    elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_this_turn', False):
         return False
     elif limit_name == 'relentless' and not combat_state.get('dealt_damage_last_turn', False):
         return False
@@ -120,8 +121,8 @@ def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, atta
         return False
 
     # Check turn-based limits
-    elif limit_name == 'quickdraw' and turn_number > 1:
-        return False  # Only first turn
+    elif limit_name == 'quickdraw' and turn_number > 2:
+        return False  # Turn 1 or 2 only
 
     elif limit_name == 'patient' and turn_number < 4:
         return False  # Turn 4 or later
@@ -187,10 +188,12 @@ def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild
 
     # Check charge up limits first (before doing any attack work)
     # Do a test attack to see if we need to charge instead
-    test_damage, test_conditions = make_attack(attacker, defender, build, log_file=None,
+    # IMPORTANT: Use a deep copy of combat_state so the test doesn't consume charges/cooldowns
+    test_combat_state = copy.deepcopy(combat_state) if combat_state else None
+    test_damage, test_conditions, _ = make_attack(attacker, defender, build, log_file=None,
                                              turn_number=turn_number, charge_history=charge_history,
                                              is_aoe=False, aoe_damage_roll=None, cooldown_history=cooldown_history,
-                                             attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
+                                             attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=test_combat_state,
                                              tier_bonus=tier_bonus)
 
     # If we got a charge condition, return it for all targets
@@ -216,16 +219,22 @@ def make_aoe_attack(attacker: Character, defender: Character, build: AttackBuild
             dice_damage, dice_detail = shared_dice_roll
             log_file.write(f"  Shared damage roll: {dice_detail} = {dice_damage}\n")
 
+    # For AOE attacks with charge limits: consume charge once on first target,
+    # then skip consumption for remaining targets (but still apply the bonus)
     for i, (target_idx, enemy_data) in enumerate(targets):
         if log_file:
             log_file.write(f"\n  --- Targeting Enemy {target_idx+1} ---\n")
 
+        # First target (i=0) consumes the charge, subsequent targets skip consumption
+        skip_consumption = (i > 0)
+
         # All targets use the shared dice roll
-        damage, conditions = make_attack(attacker, defender, build, log_file=log_file,
+        damage, conditions, _ = make_attack(attacker, defender, build, log_file=log_file,
                                        turn_number=turn_number, charge_history=charge_history,
                                        is_aoe=True, aoe_damage_roll=shared_dice_roll, cooldown_history=cooldown_history,
                                        attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state,
-                                       enemy_max_hp=enemy_data['max_hp'], tier_bonus=tier_bonus)
+                                       enemy_max_hp=enemy_data['max_hp'], tier_bonus=tier_bonus,
+                                       skip_limit_consumption=skip_consumption)
 
         results.append((target_idx, damage, conditions))
         total_damage += damage
@@ -237,7 +246,7 @@ def make_single_attack_damage(attacker: Character, defender: Character, build: A
                              log_file, turn_number: int = 1, charge_history: List[bool] = None, cooldown_history: dict = None,
                              attacker_hp: int = None, attacker_max_hp: int = 100, combat_state: dict = None) -> int:
     """Make a single attack and return only damage (for multi-attacks)"""
-    damage, _ = make_attack(attacker, defender, build, allow_multi=False,
+    damage, _, _ = make_attack(attacker, defender, build, allow_multi=False,
                            log_file=log_file, turn_number=turn_number, charge_history=charge_history,
                            is_aoe=False, aoe_damage_roll=None, cooldown_history=cooldown_history,
                            attacker_hp=attacker_hp, attacker_max_hp=attacker_max_hp, combat_state=combat_state)
@@ -249,8 +258,15 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                charge_history: List[bool] = None, is_aoe: bool = False,
                aoe_damage_roll: Tuple[int, List[str]] = None, cooldown_history: dict = None,
                attacker_hp: int = None, attacker_max_hp: int = 100,
-               combat_state: dict = None, enemy_max_hp: int = None, tier_bonus: int = 0) -> Tuple[int, List[str]]:
-    """Make one attack and return damage dealt and conditions applied
+               combat_state: dict = None, enemy_max_hp: int = None, tier_bonus: int = 0,
+               skip_limit_consumption: bool = False) -> Tuple[int, List[str], bool]:
+    """Make one attack and return damage dealt, conditions applied, and hit status
+
+    Returns:
+        Tuple of (damage_dealt, conditions, did_hit)
+        - damage_dealt: int - damage dealt after durability
+        - conditions: List[str] - conditions applied (bleed, charge, basic_attack, etc.)
+        - did_hit: bool - True if attack hit (accuracy roll succeeded), False otherwise
 
     For AOE attacks:
     - is_aoe: True if this is part of an AOE attack
@@ -321,21 +337,21 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if limit_name == 'near_death' and attacker_hp > 25:
             if log_file:
                 log_file.write(f"      {limit_name} failed: HP too high ({attacker_hp} > 25) - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'bloodied' and attacker_hp > 50:
             if log_file:
                 log_file.write(f"      {limit_name} failed: HP too high ({attacker_hp} > 50) - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'timid' and attacker_hp < attacker_max_hp:
             if log_file:
                 log_file.write(f"      {limit_name} failed: not at max HP ({attacker_hp} < {attacker_max_hp}) - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'attrition':
             # Costs 20 HP to use
             if attacker_hp < 20:
                 if log_file:
                     log_file.write(f"      {limit_name} failed: not enough HP ({attacker_hp} < 20) - using basic attack\n")
-                return 0, ['basic_attack']
+                return 0, ['basic_attack'], False
             # HP cost will be tracked in combat_state for simulation to apply
             if log_file:
                 log_file.write(f"      {limit_name} activated: will cost 25 HP\n")
@@ -343,70 +359,79 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 combat_state['attrition_cost'] = 0
             combat_state['attrition_cost'] += 25
 
-        # Check charge limits
+        # Check charge limits (single-use per combat, recharges between encounters)
         elif limit_name in ['charges_1', 'charges_2']:
             max_charges = 1 if limit_name == 'charges_1' else 2
             charges_used = combat_state['charges_used'].get(limit_name, 0)
-            if charges_used >= max_charges:
+
+            # For AOE subsequent targets (skip_limit_consumption=True), check against pre-consumption state
+            # by subtracting 1 from charges_used (since target 1 already consumed it)
+            effective_charges_used = charges_used - 1 if skip_limit_consumption else charges_used
+
+            if effective_charges_used >= max_charges:
                 if log_file:
                     log_file.write(f"      {limit_name} failed: all charges used ({charges_used}/{max_charges}) - using basic attack\n")
-                return 0, ['basic_attack']
-            # Track charge use
-            combat_state['charges_used'][limit_name] = charges_used + 1
+                return 0, ['basic_attack'], False
+            # Track charge use (only if not skipping consumption for AOE subsequent targets)
+            if not skip_limit_consumption:
+                combat_state['charges_used'][limit_name] = charges_used + 1
             if log_file:
-                log_file.write(f"      {limit_name} activated: charge {charges_used + 1}/{max_charges} used\n")
+                if skip_limit_consumption:
+                    log_file.write(f"      {limit_name} activated (AOE shared charge): bonus applied\n")
+                else:
+                    log_file.write(f"      {limit_name} activated: charge {charges_used + 1}/{max_charges} used\n")
 
         # Check turn-tracking limits
-        elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_last_turn', False):
+        elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_this_turn', False):
             if log_file:
-                log_file.write(f"      {limit_name} failed: did not defeat enemy last turn - using basic attack\n")
-            return 0, ['basic_attack']
+                log_file.write(f"      {limit_name} failed: did not defeat enemy this turn - using basic attack\n")
+            return 0, ['basic_attack'], False
         elif limit_name == 'relentless' and not combat_state.get('dealt_damage_last_turn', False):
             if log_file:
                 log_file.write(f"      {limit_name} failed: did not deal damage last turn - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'combo_move' and not combat_state.get('hit_same_target_last_turn', False):
             if log_file:
                 log_file.write(f"      {limit_name} failed: did not hit same target last turn - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'revenge' and not combat_state.get('was_damaged_last_turn', False):
             if log_file:
                 log_file.write(f"      {limit_name} failed: was not damaged last turn - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'vengeful' and not combat_state.get('was_hit_last_turn', False):
             if log_file:
                 log_file.write(f"      {limit_name} failed: was not hit last turn - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'untouchable' and not combat_state.get('all_attacks_missed_last_turn', False):
             if log_file:
                 log_file.write(f"      {limit_name} failed: not all attacks missed last turn - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'unbreakable' and not combat_state.get('was_hit_no_damage_last_turn', False):
             if log_file:
                 log_file.write(f"      {limit_name} failed: was not hit without damage last turn - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'passive' and combat_state.get('dealt_damage_last_turn', False):
             if log_file:
                 log_file.write(f"      {limit_name} failed: made an attack last turn - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
         elif limit_name == 'careful' and combat_state.get('was_damaged_last_turn', False):
             if log_file:
                 log_file.write(f"      {limit_name} failed: was damaged last turn - using basic attack\n")
-            return 0, ['basic_attack']
+            return 0, ['basic_attack'], False
 
         # Check turn-based limits first
-        if limit_name == 'quickdraw' and turn_number > 1:
+        if limit_name == 'quickdraw' and turn_number > 2:
             if log_file:
-                log_file.write(f"      {limit_name} failed: not first round (turn {turn_number}) - using basic attack\n")
-            return 0, ['basic_attack']  # Use basic attack - not first round
+                log_file.write(f"      {limit_name} failed: not turn 1 or 2 (turn {turn_number}) - using basic attack\n")
+            return 0, ['basic_attack'], False  # Use basic attack - not turn 1 or 2
         elif limit_name == 'patient' and turn_number < 4:
             if log_file:
                 log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 4+) - using basic attack\n")
-            return 0, ['basic_attack']  # Use basic attack - too early
+            return 0, ['basic_attack'], False  # Use basic attack - too early
         elif limit_name == 'finale' and turn_number < 7:
             if log_file:
                 log_file.write(f"      {limit_name} failed: too early (turn {turn_number}, need turn 7+) - using basic attack\n")
-            return 0, ['basic_attack']  # Use basic attack - too early
+            return 0, ['basic_attack'], False  # Use basic attack - too early
         elif limit_name == 'cooldown':
             # Check if cooldown is still active
             if cooldown_history is None:
@@ -416,7 +441,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if turns_since_use <= 3:
                 if log_file:
                     log_file.write(f"      {limit_name} failed: still on cooldown (used on turn {last_used}, need 3 turns, currently turn {turn_number}) - using basic attack\n")
-                return 0, ['basic_attack']  # Use basic attack - still on cooldown
+                return 0, ['basic_attack'], False  # Use basic attack - still on cooldown
             else:
                 # Mark that cooldown was used this turn
                 cooldown_history['cooldown'] = turn_number
@@ -431,7 +456,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if limit_roll < limit.dc:
                 if log_file:
                     log_file.write(f"      Attack failed due to {limit_name}!\n")
-                return 0, []  # Attack fails due to unreliability
+                return 0, [], False  # Attack fails due to unreliability
 
     # PASS 2: Check charge_up limits (only after all other limits have passed)
     # This ensures that limits like passive/careful must be met on the turn you START charging
@@ -441,14 +466,14 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if charge_history is None or len(charge_history) == 0 or not charge_history[-1]:
                 if log_file:
                     log_file.write(f"      {limit_name} failed: need to charge on previous turn (charging instead)\n")
-                return 0, ['charge']  # Return special 'charge' condition instead of attacking
+                return 0, ['charge'], False  # Return special 'charge' condition instead of attacking
         elif limit_name == 'charge_up_2':
             # Need to have charged on previous 2 turns
             if (charge_history is None or len(charge_history) < 2 or
                 not charge_history[-1] or not charge_history[-2]):
                 if log_file:
                     log_file.write(f"      {limit_name} failed: need to charge on previous 2 turns (charging instead)\n")
-                return 0, ['charge']  # Return special 'charge' condition instead of attacking
+                return 0, ['charge'], False  # Return special 'charge' condition instead of attacking
 
     # Calculate accuracy
     base_accuracy = attacker.tier + attacker.focus
@@ -469,17 +494,17 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
 
     # Apply slayer bonuses to accuracy (optimized with cached set)
     slayer_accuracy_bonus = 0
-    slayer_upgrades = {'minion_slayer_acc', 'captain_slayer_acc', 'elite_slayer_acc', 'boss_slayer_acc'}
+    slayer_upgrades = {'minion_slayer', 'captain_slayer', 'elite_slayer', 'boss_slayer'}
     if upgrades_set & slayer_upgrades:  # Fast set intersection
         # Use enemy_max_hp if provided, otherwise fall back to defender.max_hp
         target_max_hp = enemy_max_hp if enemy_max_hp is not None else defender.max_hp
-        if 'minion_slayer_acc' in upgrades_set and target_max_hp == 10:
+        if 'minion_slayer' in upgrades_set and target_max_hp == 10:
             slayer_accuracy_bonus += attacker.tier
-        elif 'captain_slayer_acc' in upgrades_set and target_max_hp == 25:
+        elif 'captain_slayer' in upgrades_set and target_max_hp == 25:
             slayer_accuracy_bonus += attacker.tier
-        elif 'elite_slayer_acc' in upgrades_set and target_max_hp == 50:
+        elif 'elite_slayer' in upgrades_set and target_max_hp == 50:
             slayer_accuracy_bonus += attacker.tier
-        elif 'boss_slayer_acc' in upgrades_set and target_max_hp == 100:
+        elif 'boss_slayer' in upgrades_set and target_max_hp == 100:
             slayer_accuracy_bonus += attacker.tier
 
     # Apply melee accuracy bonus for melee_ac variant
@@ -497,8 +522,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
     channeled_accuracy_bonus = 0
     if 'channeled' in upgrades_set:
         channeled_turns = combat_state.get('channeled_turns', 0)
-        # Starts at -2×Tier penalty, gains +Tier per turn, max +5×Tier total
-        channeled_accuracy_bonus = min(channeled_turns - 2, 5) * attacker.tier
+        # Starts at -3×Tier penalty, gains +Tier per turn, max +5×Tier total
+        channeled_accuracy_bonus = min(channeled_turns - 3, 5) * attacker.tier
 
     total_accuracy = base_accuracy + accuracy_mod + slayer_accuracy_bonus + melee_accuracy_bonus + limit_accuracy_bonus + channeled_accuracy_bonus + tier_bonus
 
@@ -577,7 +602,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         if not attack_hits:
             if log_file:
                 log_file.write(f"      Miss!\n")
-            return 0, []  # Early return for misses
+            return 0, [], False  # Early return for misses
 
     # For missed attacks, set damage to 0 but continue for multi-attacks
     damage_dealt = 0
@@ -588,7 +613,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         overhit_bonus = 0
         if not attack_type.is_direct and 'overhit' in upgrades_set:
             total_attack_roll = accuracy_roll + total_accuracy
-            if total_attack_roll >= defender.avoidance + 15:
+            overhit_threshold = 3 * attacker.tier
+            if total_attack_roll >= defender.avoidance + overhit_threshold:
                 overhit_bonus = (total_attack_roll - defender.avoidance) // 2
                 if log_file:
                     log_file.write(f"      Overhit! Exceeded avoidance by {total_attack_roll - defender.avoidance}, adding {overhit_bonus} to damage\n")
@@ -646,26 +672,26 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         channeled_bonus = 0
         if 'channeled' in upgrades_set:
             channeled_turns = combat_state.get('channeled_turns', 0)
-            # Starts at -2×Tier penalty, gains +Tier per turn, max +5×Tier total (updated 2025-10-05)
-            # Turn 0: -2, Turn 1: -1, Turn 2: 0, Turn 3: +1, ..., Turn 7+: +5
-            channeled_bonus = min(channeled_turns - 2, 5) * attacker.tier
+            # Starts at -3×Tier penalty, gains +Tier per turn, max +5×Tier total (updated 2025-10-21)
+            # Turn 0: -3, Turn 1: -2, Turn 2: -1, Turn 3: 0, Turn 4: +1, ..., Turn 8+: +5
+            channeled_bonus = min(channeled_turns - 3, 5) * attacker.tier
             flat_bonus += channeled_bonus
             if log_file:
                 log_file.write(f"      Channeled: turn {channeled_turns}, bonus {channeled_bonus:+d}\n")
 
         # Apply slayer damage bonuses (applies to BOTH direct and dice attacks) - optimized with cached set
         slayer_damage_bonus = 0
-        slayer_damage_upgrades = {'minion_slayer_dmg', 'captain_slayer_dmg', 'elite_slayer_dmg', 'boss_slayer_dmg'}
+        slayer_damage_upgrades = {'minion_slayer', 'captain_slayer', 'elite_slayer', 'boss_slayer'}
         if upgrades_set & slayer_damage_upgrades:
             # Use enemy_max_hp if provided, otherwise fall back to defender.max_hp
             target_max_hp = enemy_max_hp if enemy_max_hp is not None else defender.max_hp
-            if 'minion_slayer_dmg' in upgrades_set and target_max_hp == 10:
+            if 'minion_slayer' in upgrades_set and target_max_hp == 10:
                 slayer_damage_bonus += attacker.tier
-            elif 'captain_slayer_dmg' in upgrades_set and target_max_hp == 25:
+            elif 'captain_slayer' in upgrades_set and target_max_hp == 25:
                 slayer_damage_bonus += attacker.tier
-            elif 'elite_slayer_dmg' in upgrades_set and target_max_hp == 50:
+            elif 'elite_slayer' in upgrades_set and target_max_hp == 50:
                 slayer_damage_bonus += attacker.tier
-            elif 'boss_slayer_dmg' in upgrades_set and target_max_hp == 100:
+            elif 'boss_slayer' in upgrades_set and target_max_hp == 100:
                 slayer_damage_bonus += attacker.tier
 
         # Apply critical hit damage bonus (only for non-direct attacks) - optimized with cached set
@@ -735,8 +761,8 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if slayer_damage_bonus > 0:
                 slayer_type = ""
                 for upgrade_name in build.upgrades:
-                    if 'slayer' in upgrade_name and 'dmg' in upgrade_name:
-                        slayer_type = upgrade_name.replace('_slayer_dmg', '').title()
+                    if 'slayer' in upgrade_name:
+                        slayer_type = upgrade_name.replace('_slayer', '').title()
                         break
                 log_file.write(f"      Slayer bonus: +{slayer_damage_bonus} [{slayer_type} vs {target_max_hp}HP]\n")
 
@@ -767,8 +793,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                 log_file.write(f"      After durability ({effective_durability}): {damage_dealt} damage\n")
 
         # Handle brutal (only for non-direct attacks) - optimized with cached set
-        if not attack_type.is_direct and 'brutal' in upgrades_set and damage > effective_durability + 20:
-            brutal_bonus = int((damage - effective_durability - 20) * 0.5)
+        brutal_threshold = 5 * attacker.tier
+        if not attack_type.is_direct and 'brutal' in upgrades_set and damage > effective_durability + brutal_threshold:
+            brutal_bonus = int((damage - effective_durability - brutal_threshold) * 0.5)
             damage_dealt += brutal_bonus
             if log_file:
                 log_file.write(f"      Brutal bonus: +{brutal_bonus} damage\n")
@@ -808,10 +835,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
 
     # Handle explosive critical (15-20 triggers attack against all enemies in range) - optimized with cached set
     if allow_multi and 'explosive_critical' in upgrades_set and accuracy_roll >= 15:
+        conditions_applied.append('explosive_critical')
         if log_file:
-            log_file.write(f"      Explosive Critical triggered! (explosive attacks not implemented in single-target context)\n")
-        # Note: Explosive Critical mechanics would need multi-enemy context to fully implement
-        # For now, we mark that it triggered but don't apply area damage in single-target simulation
+            log_file.write(f"      Explosive Critical triggered! (will splash to other enemies in range)\n")
 
     # Handle double-tap (15-20 triggers same attack again) - optimized with cached set
     if allow_multi and 'double_tap' in upgrades_set and accuracy_roll >= 15:
@@ -863,4 +889,6 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
             if log_file:
                 log_file.write(f"      Total with barrage (2 attacks): {damage_dealt} damage\n")
 
-    return damage_dealt, conditions_applied
+    # Attack hit successfully (either direct attack or passed accuracy check)
+    # Direct attacks auto-hit, regular attacks that reach here have passed the hit check
+    return damage_dealt, conditions_applied, True

@@ -6,6 +6,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Simulation V2 is a streamlined combat simulation engine for the Vitality System RPG. It generates comprehensive analysis reports on attack build performance across multiple combat scenarios. This is a focused rewrite that imports core game logic from the parent `/simulation` directory while providing cleaner configuration and reporting.
 
+## CRITICAL: Rule Update Workflow
+
+**When the user asks to "update rules", you MUST update ALL THREE files together:**
+
+1. **RULES.md** - Source of truth documentation for game mechanics
+2. **src/game_data.py** - Implementation of all game rules (upgrades, limits, costs, mechanics)
+3. **CHANGELOG.md** - Documentation of what changed and why
+
+**RULES.md and game_data.py must ALWAYS be in complete alignment.**
+
+### Rule Update Process
+
+When updating game rules, follow this exact workflow:
+
+1. **Update RULES.md** - Document the rule change in human-readable format
+2. **Update src/game_data.py** - Implement the rule change in code (UPGRADES, LIMITS, RuleValidator, etc.)
+3. **Update CHANGELOG.md** - Record the change with date and rationale
+4. **Verify alignment** - Search the codebase for old references and ensure consistency
+
+**Never update just one or two of these files. All three must be updated together to maintain system integrity.**
+
 ## Common Development Commands
 
 ```bash

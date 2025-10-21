@@ -124,10 +124,10 @@ def generate_combat_log_for_build(
     # Run simulation for each scenario
     for scenario_idx, scenario in enumerate(config.scenarios, 1):
         buffer.write(f"\n{'='*80}\n")
-        buffer.write(f"SCENARIO {scenario_idx}: ")
+        buffer.write(f"SCENARIO {scenario_idx}: {scenario.name}\n")
 
         if scenario.enemy_hp_list:
-            buffer.write(f"Mixed Enemy Group - HP: {scenario.enemy_hp_list}\n")
+            buffer.write(f"Enemy Group - HP: {scenario.enemy_hp_list}\n")
             buffer.write(f"{'='*80}\n")
 
             turns, outcome = simulate_combat_verbose(
@@ -141,7 +141,7 @@ def generate_combat_log_for_build(
                 archetype=archetype
             )
         else:
-            buffer.write(f"{scenario.num_enemies} Enemies x {scenario.enemy_hp} HP\n")
+            buffer.write(f"{scenario.num_enemies} x {scenario.enemy_hp} HP\n")
             buffer.write(f"{'='*80}\n")
 
             turns, outcome = simulate_combat_verbose(
@@ -157,7 +157,7 @@ def generate_combat_log_for_build(
             )
 
         buffer.write(f"\n{'='*60}\n")
-        buffer.write(f"SCENARIO {scenario_idx} RESULT: {outcome.upper()} in {turns} turns\n")
+        buffer.write(f"SCENARIO {scenario_idx} ({scenario.name}) RESULT: {outcome.upper()} in {turns} turns\n")
         buffer.write(f"{'='*60}\n\n")
 
     # Write buffer to file in one operation
@@ -313,6 +313,11 @@ def run_simulation_v2(config_path: str = None):
             archetype_label="COMBINED (FOCUSED + DUAL_NATURED)"
         )
         combined_reporter._generate_top_n_saturation_reports_stratified(
+            all_archetype_results,
+            combined_median,
+            archetype_label="COMBINED (FOCUSED + DUAL_NATURED)"
+        )
+        combined_reporter._generate_enhancement_saturation_summary(
             all_archetype_results,
             combined_median,
             archetype_label="COMBINED (FOCUSED + DUAL_NATURED)"

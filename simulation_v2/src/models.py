@@ -86,7 +86,7 @@ class AttackBuild:
     def is_valid_combination(self) -> Tuple[bool, List[str]]:
         """Check if upgrade combination follows all rules"""
         from src.game_data import RuleValidator
-        return RuleValidator.validate_combination(self.attack_type, self.upgrades)
+        return RuleValidator.validate_combination(self.attack_type, self.upgrades, self.limits)
 
     def is_valid(self, max_points: int) -> bool:
         """Check if build is valid (within budget and follows rules)"""

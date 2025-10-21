@@ -92,6 +92,7 @@ class ReporterV2:
         print(f"\n  Generating top N analysis reports...")
         self._generate_top_n_attack_type_reports(build_results, overall_median)
         self._generate_top_n_saturation_reports(build_results, overall_median)
+        self._generate_enhancement_saturation_summary(build_results, overall_median)
 
         print(f"\n  Reports saved to {self.reports_dir}")
 
@@ -3099,3 +3100,253 @@ class ReporterV2:
                 f.write("- Fallback attack enhancements in dual_natured builds are excluded from all counts\n")
 
             print(f"  + Top {n} enhancement saturation report: enhancement_saturation_top{n}.md")
+
+    def _generate_enhancement_saturation_summary(
+        self,
+        build_results,  # Can be List[Tuple] or Dict[str, List[Tuple]]
+        overall_median: float,
+        archetype_label: str = None
+    ):
+        """Generate a heatmap-style enhancement saturation summary report.
+
+        Creates a single report showing saturation rates across all Top N thresholds
+        (10, 50, 100, 200, 500, 1000) in one table with H/M/L tags.
+
+        Args:
+            build_results: List of (build, avg_dpt, avg_turns, [archetype]) tuples, already sorted by performance
+                          OR Dict mapping archetype name -> list of tuples (for stratified sampling)
+            overall_median: Median turns across all builds
+            archetype_label: Optional label for combined reports
+        """
+        from collections import defaultdict
+
+        # Create top_n_analysis subdirectory
+        top_n_dir = os.path.join(self.reports_dir, 'top_n_analysis')
+        os.makedirs(top_n_dir, exist_ok=True)
+
+        # Define thresholds
+        thresholds = [10, 50, 100, 200, 500, 1000]
+
+        # Helper function to get saturation tag
+        def get_saturation_tag(rate: float) -> str:
+            if rate > 6:
+                return 'H'
+            elif rate >= 1:
+                return 'M'
+            else:
+                return 'L'
+
+        # Check if we need stratified sampling
+        use_stratified = isinstance(build_results, dict)
+
+        # Collect saturation data for each threshold
+        enhancement_saturation_by_threshold = {}  # threshold -> {enhancement: saturation_rate}
+        enhancement_metadata = {}  # enhancement -> {type, cost}
+
+        for n in thresholds:
+            # Get the appropriate sample for this threshold
+            if use_stratified:
+                top_n_results = self._stratified_sample_top_n(build_results, n)
+                if not top_n_results:
+                    continue
+            else:
+                if len(build_results) < n:
+                    continue
+                top_n_results = build_results[:n]
+            enhancement_counts = defaultdict(int)
+
+            for result in top_n_results:
+                # Handle both 3-tuple and 4-tuple formats
+                if len(result) == 4:
+                    build, _, _, _ = result
+                elif len(result) == 3:
+                    build, _, _ = result
+                else:
+                    continue
+
+                # Track unique enhancements per build
+                enhancements_in_build = set()
+
+                if isinstance(build, MultiAttackBuild):
+                    # For dual_natured builds, only count primary attack
+                    if build.fallback_type:
+                        primary_build = build.builds[0]
+                        for upgrade in primary_build.upgrades:
+                            enhancements_in_build.add(upgrade)
+                            if upgrade not in enhancement_metadata:
+                                enhancement_metadata[upgrade] = {'type': 'upgrade', 'cost': UPGRADES[upgrade].cost}
+                        for limit in primary_build.limits:
+                            enhancements_in_build.add(limit)
+                            if limit not in enhancement_metadata:
+                                enhancement_metadata[limit] = {'type': 'limit', 'cost': LIMITS[limit].cost}
+                    else:
+                        # Process all sub-builds
+                        for sub_build in build.builds:
+                            for upgrade in sub_build.upgrades:
+                                enhancements_in_build.add(upgrade)
+                                if upgrade not in enhancement_metadata:
+                                    enhancement_metadata[upgrade] = {'type': 'upgrade', 'cost': UPGRADES[upgrade].cost}
+                            for limit in sub_build.limits:
+                                enhancements_in_build.add(limit)
+                                if limit not in enhancement_metadata:
+                                    enhancement_metadata[limit] = {'type': 'limit', 'cost': LIMITS[limit].cost}
+                else:
+                    # Single attack build
+                    for upgrade in build.upgrades:
+                        enhancements_in_build.add(upgrade)
+                        if upgrade not in enhancement_metadata:
+                            enhancement_metadata[upgrade] = {'type': 'upgrade', 'cost': UPGRADES[upgrade].cost}
+                    for limit in build.limits:
+                        enhancements_in_build.add(limit)
+                        if limit not in enhancement_metadata:
+                            enhancement_metadata[limit] = {'type': 'limit', 'cost': LIMITS[limit].cost}
+
+                # Count each unique enhancement
+                for enh in enhancements_in_build:
+                    enhancement_counts[enh] += 1
+
+            # Calculate saturation rates for this threshold
+            enhancement_saturation_by_threshold[n] = {}
+            for enh, count in enhancement_counts.items():
+                saturation_rate = (count / n) * 100
+                enhancement_saturation_by_threshold[n][enh] = saturation_rate
+
+        # Build summary data
+        all_enhancements = set(enhancement_metadata.keys())
+        summary_data = []
+
+        for enh in all_enhancements:
+            row = {
+                'name': enh,
+                'type': enhancement_metadata[enh]['type'],
+                'cost': enhancement_metadata[enh]['cost'],
+                'saturations': {}
+            }
+
+            # Collect saturation rates across all thresholds
+            for n in thresholds:
+                if n in enhancement_saturation_by_threshold and enh in enhancement_saturation_by_threshold[n]:
+                    row['saturations'][n] = enhancement_saturation_by_threshold[n][enh]
+                else:
+                    row['saturations'][n] = 0.0
+
+            # Calculate average saturation
+            saturation_values = [row['saturations'].get(n, 0) for n in thresholds if n in row['saturations']]
+            row['avg_saturation'] = statistics.mean(saturation_values) if saturation_values else 0
+
+            summary_data.append(row)
+
+        # Sort by average saturation (descending), then by Top 10 saturation
+        summary_data.sort(key=lambda x: (-x['avg_saturation'], -x['saturations'].get(10, 0)))
+
+        # Write report
+        report_path = os.path.join(top_n_dir, f'enhancement_saturation_summary.md')
+        with open(report_path, 'w', encoding='utf-8') as f:
+            # Header
+            header_archetype = archetype_label if archetype_label else self.archetype.upper()
+            f.write(f"# {header_archetype} - Enhancement Saturation Summary (Heatmap)\n\n")
+            f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+
+            # Summary
+            f.write("## Summary\n\n")
+            f.write(f"- **Total Enhancements**: {len(summary_data)}\n")
+            f.write(f"- **Overall Median Turns**: {overall_median:.2f}\n\n")
+
+            # Thresholds explanation
+            f.write("**Saturation Thresholds**:\n")
+            f.write("- **(H)** = High (>6%): Core enhancement, appears in most top builds\n")
+            f.write("- **(M)** = Medium (1-6%): Common enhancement, frequently used\n")
+            f.write("- **(L)** = Low (<1%): Niche enhancement, situational use\n\n")
+
+            # Main heatmap table
+            f.write("## Enhancement Saturation Heatmap\n\n")
+            f.write("Sorted by average saturation (descending), then by Top 10 saturation rate.\n\n")
+
+            # Build header row dynamically based on available thresholds
+            available_thresholds = [n for n in thresholds if n in enhancement_saturation_by_threshold]
+            header_cols = ["Rank", "Enhancement", "Type", "Cost"]
+            header_cols.extend([f"Top {n}" for n in available_thresholds])
+            header_cols.append("Avg")
+
+            f.write("| " + " | ".join(header_cols) + " |\n")
+            f.write("|" + "|".join(["------" for _ in header_cols]) + "|\n")
+
+            # Write data rows
+            for rank, row in enumerate(summary_data, 1):
+                cols = [str(rank), row['name'], row['type'], f"{row['cost']}p"]
+
+                # Add saturation rates with H/M/L tags
+                for n in available_thresholds:
+                    sat_rate = row['saturations'].get(n, 0)
+                    tag = get_saturation_tag(sat_rate)
+                    cols.append(f"{sat_rate:.1f}% ({tag})")
+
+                # Add average
+                cols.append(f"{row['avg_saturation']:.1f}%")
+
+                f.write("| " + " | ".join(cols) + " |\n")
+
+            # Distribution analysis
+            f.write("\n## Saturation Distribution (by Average)\n\n")
+
+            # Count by average saturation bracket
+            high_sat = sum(1 for d in summary_data if d['avg_saturation'] > 6)
+            medium_sat = sum(1 for d in summary_data if 1 <= d['avg_saturation'] <= 6)
+            low_sat = sum(1 for d in summary_data if d['avg_saturation'] < 1)
+
+            f.write("| Saturation Level | Count | % of Enhancements |\n")
+            f.write("|-----------------|-------|------------------|\n")
+            if summary_data:
+                f.write(f"| High (>6%) | {high_sat} | {high_sat / len(summary_data) * 100:.1f}% |\n")
+                f.write(f"| Medium (1-6%) | {medium_sat} | {medium_sat / len(summary_data) * 100:.1f}% |\n")
+                f.write(f"| Low (<1%) | {low_sat} | {low_sat / len(summary_data) * 100:.1f}% |\n")
+            else:
+                f.write(f"| High (>6%) | 0 | 0.0% |\n")
+                f.write(f"| Medium (1-6%) | 0 | 0.0% |\n")
+                f.write(f"| Low (<1%) | 0 | 0.0% |\n")
+
+            # Missing enhancements section
+            all_available_enhancements = set(UPGRADES.keys()) | set(LIMITS.keys())
+            missing_enhancements = all_available_enhancements - all_enhancements
+
+            if missing_enhancements:
+                f.write("\n## Missing Enhancements (0% Saturation)\n\n")
+                f.write(f"The following {len(missing_enhancements)} enhancements did not appear in any of the top builds:\n\n")
+
+                # Organize by type
+                missing_upgrades = sorted([e for e in missing_enhancements if e in UPGRADES])
+                missing_limits = sorted([e for e in missing_enhancements if e in LIMITS])
+
+                if missing_upgrades:
+                    f.write("### Upgrades\n\n")
+                    f.write("| Enhancement | Cost |\n")
+                    f.write("|-------------|------|\n")
+                    for upgrade in missing_upgrades:
+                        cost = UPGRADES[upgrade].cost
+                        f.write(f"| {upgrade} | {cost}p |\n")
+                    f.write("\n")
+
+                if missing_limits:
+                    f.write("### Limits\n\n")
+                    f.write("| Limit | Cost |\n")
+                    f.write("|-------|------|\n")
+                    for limit in missing_limits:
+                        cost = LIMITS[limit].cost
+                        f.write(f"| {limit} | {cost}p |\n")
+                    f.write("\n")
+
+                f.write("**Note**: These enhancements had 0% saturation across all tested Top N thresholds. ")
+                f.write("This may indicate they are underperforming, have restrictive conditions, or are outclassed by alternatives.\n")
+
+            # Methodology notes
+            f.write("\n## Methodology\n\n")
+            f.write("This report aggregates saturation data across multiple Top N thresholds:\n\n")
+            for n in available_thresholds:
+                f.write(f"- **Top {n}**: Saturation rate in the best {n} builds\n")
+            f.write(f"\n**Average Saturation**: Mean of saturation rates across all thresholds\n\n")
+            f.write("**Interpretation**:\n")
+            f.write("- Enhancements with high average saturation are consistently valuable across different performance tiers\n")
+            f.write("- Enhancements with high Top 10 but low Top 1000 are \"elite-only\" choices\n")
+            f.write("- Enhancements with increasing saturation (low→high) become more valuable in top builds\n")
+
+        print(f"  + Enhancement saturation summary report: enhancement_saturation_summary.md")

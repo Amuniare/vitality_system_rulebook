@@ -89,7 +89,8 @@ class IndividualTester:
                         self.config.simulation_runs,
                         100,  # target_hp (not used in multi-enemy)
                         self.defender,
-                        enemy_hp_list=scenario.enemy_hp_list
+                        enemy_hp_list=scenario.enemy_hp_list,
+                        archetype=self.archetype
                     )
                 else:
                     results, avg_turns, dpt, win_rate = run_simulation_batch(
@@ -99,7 +100,8 @@ class IndividualTester:
                         100,
                         self.defender,
                         num_enemies=scenario.num_enemies,
-                        enemy_hp=scenario.enemy_hp
+                        enemy_hp=scenario.enemy_hp,
+                        archetype=self.archetype
                     )
                 scenario_turns.append(avg_turns)
 
@@ -147,7 +149,8 @@ class IndividualTester:
                         self.config.simulation_runs,
                         100,
                         self.defender,
-                        enemy_hp_list=scenario.enemy_hp_list
+                        enemy_hp_list=scenario.enemy_hp_list,
+                        archetype=self.archetype
                     )
                 else:
                     results, avg_turns, dpt, win_rate = run_simulation_batch(
@@ -157,7 +160,8 @@ class IndividualTester:
                         100,
                         self.defender,
                         num_enemies=scenario.num_enemies,
-                        enemy_hp=scenario.enemy_hp
+                        enemy_hp=scenario.enemy_hp,
+                        archetype=self.archetype
                     )
                 scenario_turns.append(avg_turns)
 

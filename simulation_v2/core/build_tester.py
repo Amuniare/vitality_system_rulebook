@@ -197,7 +197,7 @@ class BuildTester:
                             print(f"    Processing chunk {chunk_idx + 1}/{len(build_chunks)}... | Time: {current_time} | Memory: {mem_mb:.1f} MB")
 
                         # Create arguments for parallel processing
-                        test_args = [(build, self.attacker, self.defender, self.config) for build in chunk]
+                        test_args = [(build, self.attacker, self.defender, self.config, self.archetype) for build in chunk]
 
                         # Process chunk in parallel
                         chunk_results = pool.starmap(test_single_build_worker, test_args)
@@ -366,7 +366,8 @@ class BuildTester:
                     self.defender,
                     num_enemies=scenario.num_enemies,
                     enemy_hp=scenario.enemy_hp,
-                    enemy_hp_list=scenario.enemy_hp_list
+                    enemy_hp_list=scenario.enemy_hp_list,
+                    archetype=self.archetype
                 )
             elif scenario.enemy_hp_list:
                 # Multi-enemy scenario - use CPU
@@ -376,7 +377,8 @@ class BuildTester:
                     simulation_runs,
                     100,
                     self.defender,
-                    enemy_hp_list=scenario.enemy_hp_list
+                    enemy_hp_list=scenario.enemy_hp_list,
+                    archetype=self.archetype
                 )
             else:
                 # Standard scenario - use CPU
@@ -387,7 +389,8 @@ class BuildTester:
                     100,
                     self.defender,
                     num_enemies=scenario.num_enemies,
-                    enemy_hp=scenario.enemy_hp
+                    enemy_hp=scenario.enemy_hp,
+                    archetype=self.archetype
                 )
 
             all_turns.append(avg_turns)
@@ -400,7 +403,7 @@ class BuildTester:
         return avg_turns, avg_dpt
 
 
-def test_single_build_worker(build, attacker, defender, config):
+def test_single_build_worker(build, attacker, defender, config, archetype):
     """
     Worker function for parallel build testing.
     Must be a module-level function for multiprocessing to work.
@@ -430,7 +433,8 @@ def test_single_build_worker(build, attacker, defender, config):
                 defender,
                 num_enemies=scenario.num_enemies,
                 enemy_hp=scenario.enemy_hp,
-                enemy_hp_list=scenario.enemy_hp_list
+                enemy_hp_list=scenario.enemy_hp_list,
+                archetype=archetype
             )
         elif scenario.enemy_hp_list:
             results, avg_turns, dpt, win_rate = run_simulation_batch(
@@ -439,7 +443,8 @@ def test_single_build_worker(build, attacker, defender, config):
                 config.simulation_runs,
                 100,
                 defender,
-                enemy_hp_list=scenario.enemy_hp_list
+                enemy_hp_list=scenario.enemy_hp_list,
+                archetype=archetype
             )
         else:
             results, avg_turns, dpt, win_rate = run_simulation_batch(
@@ -449,7 +454,8 @@ def test_single_build_worker(build, attacker, defender, config):
                 100,
                 defender,
                 num_enemies=scenario.num_enemies,
-                enemy_hp=scenario.enemy_hp
+                enemy_hp=scenario.enemy_hp,
+                archetype=archetype
             )
 
         all_turns.append(avg_turns)

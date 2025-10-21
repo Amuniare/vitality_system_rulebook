@@ -29,7 +29,7 @@ def calculate_expected_damage(
     Returns:
         Expected damage per attack (float)
     """
-    from src.game_data import ATTACK_TYPES, UPGRADES
+    from src.game_data import ATTACK_TYPES, UPGRADES, LIMITS
 
     # Get attack type data
     attack_type_data = ATTACK_TYPES.get(build.attack_type)
@@ -46,7 +46,13 @@ def calculate_expected_damage(
             accuracy_mod += UPGRADES[upgrade_name].accuracy_mod
             accuracy_mod -= UPGRADES[upgrade_name].accuracy_penalty
 
-    total_accuracy = base_accuracy + accuracy_mod + tier_bonus
+    # Add limit accuracy bonuses (ALL limits apply to both accuracy and damage)
+    limit_bonus = 0
+    for limit_name in build.limits:
+        if limit_name in LIMITS:
+            limit_bonus += LIMITS[limit_name].damage_bonus * attacker.tier
+
+    total_accuracy = base_accuracy + accuracy_mod + tier_bonus + limit_bonus
 
     # Calculate base damage (3d6 exploding average ≈ 10.5)
     base_damage = 10.5 + attacker.tier + attacker.power
@@ -58,7 +64,13 @@ def calculate_expected_damage(
             damage_mod += UPGRADES[upgrade_name].damage_mod
             damage_mod -= UPGRADES[upgrade_name].damage_penalty
 
-    total_damage = base_damage + damage_mod + tier_bonus
+    # Add limit damage bonuses (ALL limits apply to both accuracy and damage)
+    limit_bonus = 0
+    for limit_name in build.limits:
+        if limit_name in LIMITS:
+            limit_bonus += LIMITS[limit_name].damage_bonus * attacker.tier
+
+    total_damage = base_damage + damage_mod + tier_bonus + limit_bonus
 
     # Calculate hit chance (simplified d20 probability)
     # hit_chance = (21 - (defender.avoidance - total_accuracy)) / 20

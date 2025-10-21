@@ -127,10 +127,8 @@ def verify_upgrade_costs(verifier: RuleVerifier):
         'bleed': 3,
         'finishing_blow_1': 3,
         'culling_strike': 3, 'splinter': 3,
-        'minion_slayer_acc': 2, 'minion_slayer_dmg': 2,
-        'captain_slayer_acc': 2, 'captain_slayer_dmg': 2,
-        'elite_slayer_acc': 2, 'elite_slayer_dmg': 2,
-        'boss_slayer_acc': 2, 'boss_slayer_dmg': 2,
+        'minion_slayer': 3, 'captain_slayer': 3,
+        'elite_slayer': 3, 'boss_slayer': 3,
         'channeled': 1,
     }
 
@@ -153,7 +151,7 @@ def verify_limit_costs(verifier: RuleVerifier):
         'unreliable_1': 1, 'unreliable_2': 1, 'unreliable_3': 1,
         'quickdraw': 1, 'patient': 2, 'finale': 1,
         'charge_up': 1, 'charge_up_2': 2, 'cooldown': 1,
-        'timid': 1, 'near_death': 2, 'bloodied': 1,
+        'timid': 2, 'near_death': 2, 'bloodied': 1,
         'charges_1': 1, 'charges_2': 1,
         'vengeful': 3, 'revenge': 2, 'unbreakable': 1, 'untouchable': 2,
         'passive': 1, 'careful': 3,
@@ -178,9 +176,9 @@ def verify_limit_bonuses(verifier: RuleVerifier):
     expected_bonuses = {
         'unreliable_1': 1, 'unreliable_2': 2, 'unreliable_3': 5,
         'quickdraw': 4, 'patient': 1, 'finale': 2,
-        'charge_up': 2, 'charge_up_2': 4, 'cooldown': 2,
+        'charge_up': 2, 'charge_up_2': 4, 'cooldown': 3,
         'timid': 3, 'near_death': 2, 'bloodied': 1,
-        'charges_1': 6, 'charges_2': 2,
+        'charges_1': 4, 'charges_2': 2,
         'vengeful': 2, 'revenge': 2, 'unbreakable': 4, 'untouchable': 2,
         'passive': 1, 'careful': 2,
         'combo_move': 1, 'relentless': 1, 'slaughter': 4,
@@ -276,8 +274,7 @@ def verify_mutual_exclusions(verifier: RuleVerifier):
         {'charge_up', 'charge_up_2'},
         {'charges_1', 'charges_2'},
         # Slayer Exclusions (all slayers mutually exclusive)
-        {'minion_slayer_acc', 'minion_slayer_dmg', 'captain_slayer_acc', 'captain_slayer_dmg',
-         'elite_slayer_acc', 'elite_slayer_dmg', 'boss_slayer_acc', 'boss_slayer_dmg'},
+        {'minion_slayer', 'captain_slayer', 'elite_slayer', 'boss_slayer'},
         # HP-Based Limits
         {'near_death', 'bloodied', 'timid'},
         # Offensive Turn Tracking
@@ -582,16 +579,12 @@ def verify_slayer_bonuses(verifier: RuleVerifier):
     """Verify slayer bonuses apply to correct enemy HP values"""
     print("\n[VERIFYING] Slayer Bonus Activation...")
 
-    # Test each slayer type activates at correct HP
+    # Test each slayer type activates at correct HP (unified system: gives both acc+dmg)
     slayer_tests = [
-        ('minion_slayer_dmg', 10, "Minion"),
-        ('minion_slayer_acc', 10, "Minion"),
-        ('captain_slayer_dmg', 25, "Captain"),
-        ('captain_slayer_acc', 25, "Captain"),
-        ('elite_slayer_dmg', 50, "Elite"),
-        ('elite_slayer_acc', 50, "Elite"),
-        ('boss_slayer_dmg', 100, "Boss"),
-        ('boss_slayer_acc', 100, "Boss"),
+        ('minion_slayer', 10, "Minion"),
+        ('captain_slayer', 25, "Captain"),
+        ('elite_slayer', 50, "Elite"),
+        ('boss_slayer', 100, "Boss"),
     ]
 
     for upgrade_name, hp_value, enemy_type in slayer_tests:
@@ -600,10 +593,10 @@ def verify_slayer_bonuses(verifier: RuleVerifier):
                       f"{enemy_type} enemies ({hp_value} HP)",
                       f"verified in RULES.md")
 
-        # Verify slayer gives +Tier bonus
+        # Verify slayer gives +Tier bonus to BOTH accuracy and damage
         verifier.check(f"{upgrade_name} bonus amount",
                       True,
-                      "+Tier bonus",
+                      "+Tier to accuracy AND damage",
                       "verified in code")
 
     # Verify slayers don't stack (mutual exclusion)

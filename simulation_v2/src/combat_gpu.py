@@ -251,6 +251,7 @@ def calculate_damage_batch_gpu(
         durability: Enemy durability value to subtract
         use_brutal: Whether to apply brutal mechanic
         brutal_threshold: Threshold for brutal bonus (damage - durability - threshold) * 0.5
+                         Should be set to 5 × attacker tier (e.g., 20 for tier 4)
 
     Returns:
         Tensor of shape (batch_size,) with final damage values
@@ -486,7 +487,8 @@ def run_simulation_batch_gpu(
     defender = None,
     num_enemies: int = 1,
     enemy_hp: int = None,
-    enemy_hp_list: List[int] = None
+    enemy_hp_list: List[int] = None,
+    archetype: str = None
 ) -> Tuple[List[int], float, float, dict]:
     """
     GPU-accelerated version of run_simulation_batch.
@@ -519,7 +521,7 @@ def run_simulation_batch_gpu(
         return run_simulation_batch(
             attacker, build, num_runs, target_hp, defender,
             num_enemies=num_enemies, enemy_hp=enemy_hp,
-            max_turns=100, enemy_hp_list=enemy_hp_list
+            max_turns=100, enemy_hp_list=enemy_hp_list, archetype=archetype
         )
 
     # Check if build is MultiAttackBuild - GPU doesn't support this yet
@@ -530,7 +532,7 @@ def run_simulation_batch_gpu(
         return run_simulation_batch(
             attacker, build, num_runs, target_hp, defender,
             num_enemies=num_enemies, enemy_hp=enemy_hp,
-            max_turns=100, enemy_hp_list=enemy_hp_list
+            max_turns=100, enemy_hp_list=enemy_hp_list, archetype=archetype
         )
 
     # GPU now supports multi-enemy scenarios!

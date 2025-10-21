@@ -39,15 +39,15 @@
     },
     {
       "name": "Mixed",
-      "enemy_hp_list": [50, 25, 25]
+      "enemy_hp_list": [25, 25, 50 ]
     },
     {
       "name": "Swarm 1",
-      "enemy_hp_list": [25, 25, 10, 10, 10, 10, 10]
+      "enemy_hp_list": [10, 10, 10, 10, 10, 25, 25]
     },
     {
       "name": "Swarm 2",
-      "enemy_hp_list": [50, 10, 10, 10, 10, 10]
+      "enemy_hp_list": [10,  10, 10, 10, 10,50]
     }
   ]
 }
