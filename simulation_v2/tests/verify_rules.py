@@ -125,7 +125,7 @@ def verify_upgrade_costs(verifier: RuleVerifier):
         'powerful_critical': 2, 'ricochet': 2,
         'double_tap': 3, 'explosive_critical': 1,
         'bleed': 3,
-        'finishing_blow_1': 3,
+        'finishing_blow_1': 2,
         'culling_strike': 3, 'splinter': 3,
         'minion_slayer': 3, 'captain_slayer': 3,
         'elite_slayer': 3, 'boss_slayer': 3,

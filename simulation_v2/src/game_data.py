@@ -20,15 +20,15 @@ ATTACK_TYPES = {
 UPGRADES = {
     'power_attack': Upgrade('power_attack', 1, damage_mod=1, accuracy_penalty=1),
     'high_impact': Upgrade('high_impact', 3, special_effect="flat_15"),
-    'critical_effect': Upgrade('critical_effect', 1, damage_penalty=3, special_effect="explode_5_6"),
+    'critical_effect': Upgrade('critical_effect', 2, damage_penalty=3, special_effect="explode_5_6"),
     'armor_piercing': Upgrade('armor_piercing', 3, accuracy_penalty=1, special_effect="ignore_endurance"),
     'brutal': Upgrade('brutal', 2, special_effect="brutal_tier"),
     'bleed': Upgrade('bleed', 3, damage_penalty=1, special_effect="bleed_1_turn"),
     'powerful_critical': Upgrade('powerful_critical', 2, special_effect="powerful_crit"),
     'double_tap': Upgrade('double_tap', 3, special_effect="double_tap"),
-    'finishing_blow_1': Upgrade('finishing_blow_1', 3, special_effect="finishing_10"),
-    'extra_attack': Upgrade('extra_attack', 1, accuracy_penalty=1, damage_penalty=1, special_effect="extra_attack"),
-    'barrage': Upgrade('barrage', 1, special_effect="barrage_chain", damage_penalty=2, accuracy_penalty=2),
+    'finishing_blow_1': Upgrade('finishing_blow_1', 2, special_effect="finishing_5"),
+    'extra_attack': Upgrade('extra_attack', 2, accuracy_penalty=1, damage_penalty=1, special_effect="extra_attack"),
+    'barrage': Upgrade('barrage', 2, special_effect="barrage_chain", damage_penalty=2, accuracy_penalty=2),
     # Slayer upgrades - unified system (give both accuracy and damage bonuses)
     'minion_slayer': Upgrade('minion_slayer', 2, special_effect="slayer_minion"),
     'captain_slayer': Upgrade('captain_slayer', 2, special_effect="slayer_captain"),
@@ -36,10 +36,10 @@ UPGRADES = {
     'boss_slayer': Upgrade('boss_slayer', 2, special_effect="slayer_boss"),
     'accurate_attack': Upgrade('accurate_attack', 1, accuracy_mod=1, damage_penalty=1),
     'reliable_accuracy': Upgrade('reliable_accuracy', 2, accuracy_penalty=3, special_effect="advantage"),
-    'overhit': Upgrade('overhit', 2, special_effect="overhit"),
+    'overhit': Upgrade('overhit', 3, special_effect="overhit"),
     'explosive_critical': Upgrade('explosive_critical', 1, accuracy_penalty=2, damage_penalty=2, special_effect="explosive_critical"),
-    'culling_strike': Upgrade('culling_strike', 2, special_effect="culling_strike"),
-    'splinter': Upgrade('splinter', 1, accuracy_penalty=2, damage_penalty=2, special_effect="splinter"),
+    'culling_strike': Upgrade('culling_strike', 3, special_effect="culling_strike"),
+    'splinter': Upgrade('splinter', 3, accuracy_penalty=2, damage_penalty=2, special_effect="splinter"),
     'ricochet': Upgrade('ricochet', 2, special_effect="ricochet"),
     'channeled': Upgrade('channeled', 3, special_effect="channeled"),
 }
@@ -48,32 +48,32 @@ UPGRADES = {
 LIMITS = {
     # Reliability/Turn Timing Limits
     'unreliable_1': Limit('unreliable_1', 2, 1, 5),
-    'unreliable_2': Limit('unreliable_2', 1, 2, 10),
-    'unreliable_3': Limit('unreliable_3', 2, 5, 15),
+    'unreliable_2': Limit('unreliable_2', 3, 3, 10),
+    'unreliable_3': Limit('unreliable_3', 2, 6, 15),
     'quickdraw': Limit('quickdraw', 3, 4, 0),
     'patient': Limit('patient', 2, 1, 0),
     'finale': Limit('finale', 2, 2, 0),
-    'charge_up': Limit('charge_up', 2, 4, 0),
-    'charge_up_2': Limit('charge_up_2', 1, 5, 0),
+    'charge_up': Limit('charge_up', 3, 3, 0),
+    'charge_up_2': Limit('charge_up_2', 2, 4, 0),
     'cooldown': Limit('cooldown', 1, 3, 0),
     # HP-Based Limits
-    'charges_1': Limit('charges_1', 1, 3, 0),
-    'charges_2': Limit('charges_2', 2, 2, 0),
-    'near_death': Limit('near_death', 1, 5, 0),
-    'bloodied': Limit('bloodied', 1, 3, 0),
-    'timid': Limit('timid', 1, 3, 0),
+    'charges_1': Limit('charges_1', 1, 6, 0),
+    'charges_2': Limit('charges_2', 1, 3, 0),
+    'near_death': Limit('near_death', 1, 6, 0),
+    'bloodied': Limit('bloodied', 2, 3, 0),
+    'timid': Limit('timid', 1, 4, 0),
     # 'attrition': Limit('attrition', 2, 2, 0),  # REMOVED: HP cost mechanic not suitable for simulation
     # Turn/Combat State Limits
-    'slaughter': Limit('slaughter', 1, 6, 0),  # NOTE: Activates on subsequent attacks after defeating an enemy this turn
-    'relentless': Limit('relentless', 2, 1, 0),
-    'combo_move': Limit('combo_move', 1, 1, 0),
+    'slaughter': Limit('slaughter', 2, 3, 0),  # NOTE: Activates after defeating an enemy on the previous turn
+    'relentless': Limit('relentless', 3, 1, 0),
+    'combo_move': Limit('combo_move', 2, 1, 0),
     # 'infected': Limit('infected', 2, 1, 0),  # REMOVED: Requires Condition system (not yet implemented)
-    'revenge': Limit('revenge', 2, 2, 0),
-    'vengeful': Limit('vengeful', 2, 2, 0),
-    'untouchable': Limit('untouchable', 1, 1, 0),
+    'revenge': Limit('revenge', 3, 2, 0),
+    'vengeful': Limit('vengeful', 2, 1, 0),
+    'untouchable': Limit('untouchable', 1, 2, 0),
     'unbreakable': Limit('unbreakable', 1, 6, 0),
     'passive': Limit('passive', 1, 1, 0),
-    'careful': Limit('careful', 1, 1, 0),
+    'careful': Limit('careful', 1, 2, 0),
 }
 
 # Rule Validation System

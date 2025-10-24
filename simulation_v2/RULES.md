@@ -110,7 +110,7 @@ Point budgets per attack based on tier and archetype:
 - **Effect**: Advantage (roll 2d20, take higher roll) on Accuracy rolls
 - **Penalty**: -3 penalty to all Accuracy rolls
 
-**Overhit** (2p)
+**Overhit** (3p)
 - **Effect**: For every 2 points your Accuracy roll exceeds the target's Avoidance, add +1 to the effect roll
 - **Restriction**: Only occurs if your Accuracy roll exceeds target Avoidance by 3×Tier
 
@@ -118,7 +118,7 @@ Point budgets per attack based on tier and archetype:
 - **Effect**: Replace 3d6 damage roll with flat 15 damage
 - **Restriction**: Damage effects only
 
-**Critical Effect** (1p)
+**Critical Effect** (2p)
 - **Effect**: All dice explode on a 5-6, cumulatively
 - **Penalty**: -3 penalty to all Damage rolls
 - **Restriction**: Damage effects only
@@ -134,11 +134,11 @@ Point budgets per attack based on tier and archetype:
 
 ### Multi-Attack Upgrades
 
-**Barrage** (1p)
+**Barrage** (2p)
 - **Effect**: Make same attack three times against single target
 - **Penalty**: -2×Tier to Accuracy, Damage, and Condition rolls
 
-**Extra Attack** (1p)
+**Extra Attack** (2p)
 - **Effect**: Successful hit with successful effect allows identical attack against same target
 - **Usage**: Must hit and succeed on both Accuracy and Effect
 - **Penalty**: -Tier to Accuracy, Damage, and Condition rolls
@@ -177,14 +177,14 @@ Point budgets per attack based on tier and archetype:
 
 ### Instant Defeat Upgrades
 
-**Finishing Blow** (3p)
-- **Effect**: If attack reduces enemy to 10 HP or below, enemy is defeated instead
+**Finishing Blow** (2p)
+- **Effect**: If attack reduces enemy to 5 HP or below, enemy is defeated instead
 
-**Culling Strike** (2p)
+**Culling Strike** (3p)
 - **Effect**: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead
 - **Restrictions**: Cannot apply to Area or Direct Area attacks. Cannot be paired with Splinter or Explosive Critical
 
-**Splinter** (1p)
+**Splinter** (3p)
 - **Effect**: Defeating enemy triggers another attack against new target before turn ends
 - **Penalty**: -2×Tier to accuracy and damage
 - **Chain Penalty**: Maximum Tier/2 additional attacks (rounded up)
@@ -236,13 +236,13 @@ Point budgets per attack based on tier and archetype:
 - **Limit**: Roll d20, DC 5 or attack fails and action is wasted
 - **Restrictions**: Cannot be paired with Unreliable 2 or Unreliable 3
 
-**Unreliable 2** (1p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
+**Unreliable 2** (3p)
+- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Roll d20, DC 10 or attack fails and action is wasted
 - **Restrictions**: Cannot be paired with Unreliable 1 or Unreliable 3
 
 **Unreliable 3** (2p)
-- **Effect**: +5×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +6×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Must roll 15+ or attack fails and action is wasted
 - **Restrictions**: Cannot be paired with Unreliable 1 or Unreliable 2
 
@@ -263,14 +263,14 @@ Point budgets per attack based on tier and archetype:
 - **Limit**: Turn 7 or later
 - **Restrictions**: Cannot be paired with Quickdraw, Patient, or Cooldown
 
-**Charge Up** (2p)
-- **Effect**: +4×Tier to Accuracy, Damage, and Conditions
+**Charge Up** (3p)
+- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Spend an action on your previous turn
 - **Restrictions**: Cannot be paired with Charge Up 2
 - **Note**: State-based limits (passive, careful, timid, HP conditions, turn timing) are checked every turn including charge turns. Action-based limits (slaughter, relentless, combo_move) are only checked on the FIRST charge turn.
 
-**Charge Up 2** (1p)
-- **Effect**: +5×Tier to Accuracy, Damage, and Conditions
+**Charge Up 2** (2p)
+- **Effect**: +4×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Spend actions on your previous two turns
 - **Restrictions**: Cannot be paired with Charge Up
 - **Note**: State-based limits (passive, careful, timid, HP conditions, turn timing) are checked every turn including charge turns. Action-based limits (slaughter, relentless, combo_move) are only checked on the FIRST charge turn.
@@ -283,39 +283,39 @@ Point budgets per attack based on tier and archetype:
 ### HP-Based Limits
 
 **Timid** (1p)
-- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +4×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At max HP with no conditions
 - **Restrictions**: Cannot be paired with Near Death, Bloodied, Quickdraw, Charges 1, or Charges 2
 
 **Near Death** (1p)
-- **Effect**: +5×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +6×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At 25 Hit Points or less
 - **Restrictions**: Cannot be paired with Timid or Bloodied
 
-**Bloodied** (1p)
+**Bloodied** (2p)
 - **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: At 50 Hit Points or less
 - **Restrictions**: Cannot be paired with Timid or Near Death
 
 
 **Charges 1** (1p)
-- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +6×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Single use, recharges after 1 minute rest
 - **Restrictions**: Cannot be paired with Charges 2 or Cooldown
 
-**Charges 2** (2p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
+**Charges 2** (1p)
+- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
 - **Limit**: 2 uses, recharges after 1 minute rest
 - **Restrictions**: Cannot be paired with Charges 1 or Cooldown
 
 ### Conditional Limits
 
 **Vengeful** (2p)
-- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +1×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been hit since last turn
 - **Restrictions**: Cannot be paired with Revenge, Untouchable, Unbreakable, or Careful
 
-**Revenge** (2p)
+**Revenge** (3p)
 - **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Been damaged since last turn
 - **Restrictions**: Cannot be paired with Vengeful, Untouchable, Unbreakable, or Careful
@@ -326,7 +326,7 @@ Point budgets per attack based on tier and archetype:
 - **Restrictions**: Cannot be paired with Revenge, Vengeful, Untouchable, or Careful
 
 **Untouchable** (1p)
-- **Effect**: +1×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: All attacks missed since last turn, must have been attacked
 - **Restrictions**: Cannot be paired with Revenge, Vengeful, Unbreakable, or Careful
 
@@ -338,25 +338,25 @@ Point budgets per attack based on tier and archetype:
 
 
 **Careful** (1p)
-- **Effect**: +1×Tier to Accuracy, Damage, and Conditions
+- **Effect**: +2×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Not damaged since last turn
 - **Restrictions**: Cannot be paired with Timid, Quickdraw, Revenge, Vengeful, Untouchable, or Unbreakable
 
 ### Sequential Action Limits
 
-**Combo Move** (1p)
+**Combo Move** (2p)
 - **Effect**: +Tier to Accuracy, Damage, and Conditions
 - **Limit**: Hit same enemy last turn
 - **Restrictions**: Cannot be paired with Slaughter or Relentless
 
-**Relentless** (2p)
-- **Effect**: +Tier to Accuracy, Damage, and Conditions
+**Relentless** (3p)
+- **Effect**: +1×Tier to Accuracy, Damage, and Conditions
 - **Limit**: Dealt damage to enemy last turn
 - **Restrictions**: Cannot be paired with Slaughter or Combo Move
 
-**Slaughter** (1p)
-- **Effect**: +6×Tier to Accuracy, Damage, and Conditions
-- **Limit**: Defeated enemy this turn (activates on subsequent attacks after first kill)
+**Slaughter** (2p)
+- **Effect**: +3×Tier to Accuracy, Damage, and Conditions
+- **Limit**: Defeated enemy last turn
 - **Restrictions**: Cannot be paired with Relentless or Combo Move
 
 

@@ -316,23 +316,23 @@ Point budgets per attack based on tier and archetype:
 | 5    |  10      | 8            |     6           |
 
 **Focused Attacker**
-- Single Special Attack
+- 1 Special Attack
 - See table above for points per tier
 - High-risk, high-reward specialization
 
 **Dual-Natured**
-- Two distinct Special Attacks
+- 2 Special Attacks
 - Each gets points from table above
 - Balanced versatility
 
 **Versatile Master**
-- 5 Special Attacks
+- 4 Special Attacks
 - Each receives points from table above
 - Consistent performance without drawbacks
 
 **Specialist**
 - You cannot purchase Attack Upgrades
-- You instead receive Tier extra boons
+- Double the amount of boons that you have
 - If you attack simply use the base formulas plus the bonus from any Boons you have purchased
 
 
@@ -663,13 +663,13 @@ Immune to most Vitality and Resolve conditions, vulnerable to Hacking/Electricit
 **DIRECT DAMAGE ATTACK**
 - **Range:** 15 spaces, auto-hit (no Accuracy roll needed)
 - **Restriction:** Must be Damage Effect
-- **Damage:** Flat 12
+- **Damage:** Flat 15 - Tier
 
 **DIRECT AREA DAMAGE ATTACK**
 - **Range:** Originates from your position, auto-hit (no Accuracy roll needed)
 - **Area Options:** 2sp Radius Burst, 4sp Cone, 8sp Line (choose one at purchase)
 - **Restriction:** Must be Damage Effect
-- **Damage:** Flat 12 - Tier
+- **Damage:** Flat 15 - 2×Tier
 - **Cost Modifier:** All upgrades / limits cost 2x as much
 
 ## **DAMAGE & CONDITIONS **
@@ -773,9 +773,9 @@ Penalty: -3 penalty to all Accuracy rolls
 Restriction: Melee, Ranged, Area attacks only
 
 **Overhit**
-Cost: 2p
-Effect: For every 2 points your Accuracy roll exceeds the target's Avoidance, add +1 to the effect roll. Only occurs if your Accuracy roll exceeds target Avoidance by 15+
-Restriction: Melee, Ranged, Area attacks only
+Cost: 3p
+Effect: For every 2 points your Accuracy roll exceeds the target's Avoidance, add +1 to the effect roll
+Restriction: Only occurs if your Accuracy roll exceeds target Avoidance by 3×Tier
 
 #### Damage Modifications
 
@@ -791,7 +791,7 @@ Effect: Replace 3d6 damage roll with flat 15 damage
 Restriction: Damage effects only, Melee, Ranged, Area attacks only
 
 **Critical Effect**
-Cost: 1p
+Cost: 2p
 Effect: All dice explode on a 5-6, cumulatively
 Penalty: -3 penalty to all Damage rolls
 Restriction: Damage effects only
@@ -804,7 +804,7 @@ Restriction: Cannot take with Direct or Direct Area Attacks, Damage effects only
 
 **Brutal**
 Cost: 2p
-Effect: When Damage roll exceeds target Durability by 20+, deal extra damage equal to half the difference
+Effect: When Damage roll exceeds target Durability by 5×Tier, deal extra damage equal to half the difference
 Restriction: Damage effects only
 
 #### Critical Hit Enhancements
@@ -827,7 +827,7 @@ Restrictions: Cannot apply to AOE attacks. Cannot be paired with Explosive Criti
 **Explosive Critical**
 Cost: 1p
 Effect: Critical hit range expanded to 15-20 on d20, hit rolls of 15-20 trigger attack against all enemies within 2 spaces of target if it would also hit them
-Penalty: -Tier to Accuracy rolls
+Penalty: -2×Tier to Accuracy and Damage rolls
 Restrictions: Cannot apply to AOE attacks. Cannot be paired with Double Tap, Powerful Critical, or Ricochet. Cannot trigger from Double Tap, Ricochet, or other Explosive Critical
 
 **Martial Artist**
@@ -838,7 +838,7 @@ Restriction: Cannot apply to AOE attacks
 #### Multi-Hit Mechanics
 
 **Barrage**
-Cost: 1p
+Cost: 2p
 Effect: Make same attack three times against single target
 Penalty: -2×Tier to Accuracy, Damage, and Condition rolls
 Restriction: Cannot be put on an AOE attack
@@ -852,28 +852,30 @@ Frequency: Once per turn maximum
 Restriction: Cannot be used with Direct Damage or Direct Area Damage attacks
 
 **Channeled**
-Cost: 1p
+Cost: 3p
 Effect: +Tier to Accuracy, Damage, and Condition rolls for each consecutive turn making the same channeled attack
-Penalty: -2×Tier to Accuracy, Damage, and Condition rolls
+Penalty: -3×Tier to Accuracy, Damage, and Condition rolls
 Usage: If you don't make the channeled attack on a turn, you lose your bonus
 Restriction: This enhancement cannot give you more than 5×Tier bonus
+Restrictions: Cannot be paired with Charge Up, Charge Up 2, Charges 1, or Charges 2
 
 #### Chain & Defeat Mechanics
 
 **Splinter**
 Cost: 3p
 Effect: Defeating enemy triggers another attack against new target before turn ends
-Penalty: -Tier to accuracy and damage
+Penalty: -2×Tier to accuracy and damage
 Chain Penalty: Maximum Tier/2 additional attacks (rounded up)
-Restriction: Cannot apply to Area attacks
+Restriction: Cannot apply to AOE attacks
 
 **Finishing Blow**
-Cost: 3p
-Effect: If attack reduces enemy to 10 HP or below, enemy is defeated instead
+Cost: 2p
+Effect: If attack reduces enemy to 5 HP or below, enemy is defeated instead
 
 **Culling Strike**
 Cost: 3p
 Effect: If attack reduces enemy below 1/5 maximum HP, enemy is defeated instead
+Restrictions: Cannot apply to Area or Direct Area attacks. Cannot be paired with Splinter or Explosive Critical
 
 **Intimidating Presence**
 Cost: 2p
@@ -895,8 +897,8 @@ Duration: 1 additional damage instance
 Restriction: Target can only be affected by one instance of bleed at a time, Damage only
 
 **Environmental**
-Cost: 2p per rank
-Effect: All hexes hit by attack become hazardous terrain, until the start of your next turn, each rank after the first is an extra turn
+Cost: 3p
+Effect: All hexes hit by attack become hazardous terrain.
 Hazard Effect: Deal attack's Damage and Condition to any character entering or ending turn in affected spaces
 Restriction: Cannot have precise
 
@@ -948,12 +950,12 @@ Restriction: Cannot apply to AOE attacks, Condition effects only
 #### Movement & Positioning
 
 **Pounce**
-Cost: 2p
+Cost: 1p
 Effect: Move up to 6 spaces in straight line toward target as part of attack
 Usage: Movement occurs during attack resolution
 
 **Disengage**
-Cost: 2p
+Cost: 1p
 Effect: Successful hit prevents opportunity attacks from all hit targets until end of turn
 
 **Bully**
@@ -982,25 +984,25 @@ Frequency: Once per turn
 
 **Minion Slayer**
 Cost: 2p
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Condition rolls
 Usage: Bonus applies against 10 maximum HP enemies
 Restriction: Can only have 1 Slayer bonus per attack
 
 **Captain Slayer**
 Cost: 2p
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Condition rolls
 Usage: Bonus applies against 25 maximum HP enemies
 Restriction: Can only have 1 Slayer bonus per attack
 
 **Elite Slayer**
 Cost: 2p
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Condition rolls
 Usage: Bonus applies against 50 maximum HP enemies
 Restriction: Can only have 1 Slayer bonus per attack
 
 **Boss Slayer**
 Cost: 2p
-Effect: +Tier to chosen roll type (choose Accuracy, Damage, or Conditions when purchasing)
+Effect: +Tier to Accuracy, Damage, and Condition rolls
 Usage: Bonus applies against 100 maximum HP enemies
 Restriction: Can only have 1 Slayer bonus per attack
 
@@ -1011,29 +1013,29 @@ Limits are enhancements that increase the effectiveness of your attacks but can 
 #### Random Activation Limits
 
 **Unreliable 1**
-Cost: 1p
+Cost: 2p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Roll d20, DC 5 or attack fails and action is wasted
 Restrictions: Cannot be paired with Unreliable 2 or Unreliable 3
 
 **Unreliable 2**
-Cost: 1p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Cost: 3p
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: Roll d20, DC 10 or attack fails and action is wasted
 Restrictions: Cannot be paired with Unreliable 1 or Unreliable 3
 
 **Unreliable 3**
-Cost: 1p
-Effect: +5×Tier to Accuracy, Damage, and Conditions
+Cost: 2p
+Effect: +6×Tier to Accuracy, Damage, and Conditions
 Limit: Must roll 15+ or attack fails and action is wasted
 Restrictions: Cannot be paired with Unreliable 1 or Unreliable 2
 
 #### Turn-Based Limits
 
 **Quickdraw**
-Cost: 1p
+Cost: 3p
 Effect: +4×Tier to Accuracy, Damage, and Conditions
-Limit: First round of combat
+Limit: Turn 1 or 2 of combat
 Restrictions: Cannot be paired with Patient, Finale, Cooldown, Timid, Careful, Passive, Charges 1, Charges 2, Combo Move, Relentless, or Slaughter
 
 
@@ -1044,26 +1046,28 @@ Limit: Turn 4 or later
 Restrictions: Cannot be paired with Quickdraw, Finale, or Cooldown
 
 **Finale**
-Cost: 1p
+Cost: 2p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Turn 7 or later
 Restrictions: Cannot be paired with Quickdraw, Patient, or Cooldown
 
 **Charge Up**
-Cost: 1p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Cost: 3p
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: Spend an action on your previous turn
+Restrictions: Cannot be paired with Charge Up 2
 Note: State-based limits (passive, careful, timid, HP conditions, turn timing) are checked every turn including charge turns. Action-based limits (slaughter, relentless, combo_move) are only checked on the FIRST charge turn. 
 
 **Charge Up 2**
 Cost: 2p
 Effect: +4×Tier to Accuracy, Damage, and Conditions
 Limit: Spend actions on your previous two turns
+Restrictions: Cannot be paired with Charge Up
 Note: State-based limits (passive, careful, timid, HP conditions, turn timing) are checked every turn including charge turns. Action-based limits (slaughter, relentless, combo_move) are only checked on the FIRST charge turn. 
 
 **Cooldown**
 Cost: 1p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: Cannot use again for 3 turns after use
 Restrictions: Cannot be paired with Quickdraw, Patient, Finale, Charges 1, or Charges 2
 
@@ -1071,19 +1075,19 @@ Restrictions: Cannot be paired with Quickdraw, Patient, Finale, Charges 1, or Ch
 
 **Timid**
 Cost: 1p
-Effect: +3×Tier to Accuracy, Damage, and Conditions
+Effect: +4×Tier to Accuracy, Damage, and Conditions
 Limit: At max HP with no conditions
-Restrictions: Cannot be paired with Near Death, Bloodied, or Quickdraw
+Restrictions: Cannot be paired with Near Death, Bloodied, Quickdraw, Charges 1, or Charges 2
 
 **Near Death**
-Cost: 2p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Cost: 1p
+Effect: +6×Tier to Accuracy, Damage, and Conditions
 Limit: At 25 Hit Points or less
 Restrictions: Cannot be paired with Timid or Bloodied
 
 **Bloodied**
-Cost: 1p
-Effect: +Tier to Accuracy, Damage, and Conditions
+Cost: 2p
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: At 50 Hit Points or less
 Restrictions: Cannot be paired with Timid or Near Death
 
@@ -1093,6 +1097,7 @@ Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Each use costs 20 HP
 Restriction: Can't have regeneration, leech, healing or any other ability that restores HP
 
+#### Resource Limits
 **Charges 1**
 Cost: 1p
 Effect: +6×Tier to Accuracy, Damage, and Conditions
@@ -1101,35 +1106,35 @@ Restrictions: Cannot be paired with Charges 2 or Cooldown
 
 **Charges 2**
 Cost: 1p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: 2 uses, recharges after 1 minute rest
 Restrictions: Cannot be paired with Charges 1 or Cooldown
 
 #### Conditional Limits
 
 **Vengeful**
-Cost: 3p
-Effect: +2×Tier to Accuracy, Damage, and Conditions
+Cost: 2p
+Effect: +1×Tier to Accuracy, Damage, and Conditions
 Limit: Been hit since last turn
-Restrictions: Cannot be paired with Revenge, Untouchable, or Unbreakable
+Restrictions: Cannot be paired with Revenge, Untouchable, Unbreakable, or Careful
 
 **Revenge**
-Cost: 2p
+Cost: 3p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Been damaged since last turn
-Restrictions: Cannot be paired with Vengeful, Untouchable, or Unbreakable
+Restrictions: Cannot be paired with Vengeful, Untouchable, Unbreakable, or Careful
 
 **Unbreakable**
 Cost: 1p
-Effect: +4×Tier to Accuracy, Damage, and Conditions
+Effect: +6×Tier to Accuracy, Damage, and Conditions
 Limit: Been hit but took no damage since last turn
-Restrictions: Cannot be paired with Revenge, Vengeful, or Untouchable
+Restrictions: Cannot be paired with Revenge, Vengeful, Untouchable, or Careful
 
 **Untouchable**
-Cost: 2p
+Cost: 1p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: All attacks missed since last turn, must have been attacked
-Restrictions: Cannot be paired with Revenge, Vengeful, or Unbreakable
+Restrictions: Cannot be paired with Revenge, Vengeful, Unbreakable, or Careful
 
 **Avenger**
 Cost: 1p
@@ -1143,15 +1148,15 @@ Limit: You haven't made an attack since last turn
 Restrictions: Cannot be paired with Quickdraw
 
 **Careful**
-Cost: 3p
+Cost: 1p
 Effect: +2×Tier to Accuracy, Damage, and Conditions
 Limit: Not damaged since last turn
-Restrictions: Cannot be paired with Timid, Quickdraw, Untouchable, Unbreakable, Revenge, or Vengeful
+Restrictions: Cannot be paired with Timid, Quickdraw, Revenge, Vengeful, Untouchable, or Unbreakable
 
 #### Sequential Action Limits
 
 **Combo Move**
-Cost: 1p
+Cost: 2p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Hit same enemy last turn
 Restrictions: Cannot be paired with Slaughter or Relentless
@@ -1162,21 +1167,21 @@ Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Applied Condition last turn
 
 **Relentless**
-Cost: 2p
+Cost: 3p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Dealt damage to enemy last turn
 Restrictions: Cannot be paired with Slaughter or Combo Move
 
 **Slaughter**
-Cost: 1p
-Effect: +4×Tier to Accuracy, Damage, and Conditions
+Cost: 2p
+Effect: +3×Tier to Accuracy, Damage, and Conditions
 Limit: Defeated enemy last turn
 Restrictions: Cannot be paired with Relentless or Combo Move
 
 #### Positioning Limits
 
 **Rooted**
-Cost: 2p
+Cost: 1p
 Effect: +Tier to Accuracy, Damage, and Conditions
 Limit: Cannot move this turn
 

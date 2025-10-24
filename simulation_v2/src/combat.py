@@ -101,7 +101,7 @@ def can_activate_limit(limit_name: str, turn_number: int, attacker_hp: int, atta
             return False
 
     # Check turn-tracking limits
-    elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_this_turn', False):
+    elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_last_turn', False):
         return False
     elif limit_name == 'relentless' and not combat_state.get('dealt_damage_last_turn', False):
         return False
@@ -382,9 +382,9 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
                     log_file.write(f"      {limit_name} activated: charge {charges_used + 1}/{max_charges} used\n")
 
         # Check turn-tracking limits
-        elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_this_turn', False):
+        elif limit_name == 'slaughter' and not combat_state.get('defeated_enemy_last_turn', False):
             if log_file:
-                log_file.write(f"      {limit_name} failed: did not defeat enemy this turn - using basic attack\n")
+                log_file.write(f"      {limit_name} failed: did not defeat enemy last turn - using basic attack\n")
             return 0, ['basic_attack'], False
         elif limit_name == 'relentless' and not combat_state.get('dealt_damage_last_turn', False):
             if log_file:
@@ -818,7 +818,7 @@ def make_attack(attacker: Character, defender: Character, build: AttackBuild,
         # Handle finishing blow threshold - optimized with cached set
         finishing_threshold = 0
         if 'finishing_blow_1' in upgrades_set:
-            finishing_threshold = 10
+            finishing_threshold = 5
         elif 'finishing_blow_3' in upgrades_set:
             finishing_threshold = 15
 
